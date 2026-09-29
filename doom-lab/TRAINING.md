@@ -99,6 +99,28 @@ python train_self.py --corpus data/corpus3/witnesses.npz \
 The receipt's `outcome_mae` tracks world-model quality; its prediction error
 is the surprise signal a curiosity-driven experience selector can use.
 
+## 5b. The lineage trainer: one brain, its whole life on record
+
+`train_flagship.py` trains the full-feature layouts — `--layout flagship`
+(retinas + efference + fovea history + foresight) or `--layout ultimate`
+(adds a periphery-history stream and larger populations) — and exports a
+registry-ready checkpoint+norms pair **on a time cadence**, each with a
+readiness probe, so the model dropdown becomes the brain's biography:
+
+```sh
+python train_flagship.py --layout ultimate \
+  --corpus data/corpus3/witnesses.npz --out runs/ultimate \
+  --name doom-hero --max-examples 20000 --batch 96 \
+  --export-minutes 60 --threads 16
+```
+
+Exports land in `runs/ultimate/exports/`; copy any of them into
+`data/models/` to play that age of the brain. The run is resumable: a
+`progress.json` sidecar plus the latest export restart it with `--resume`.
+History windows are explicit external context (`cadence.memory.History`),
+built per-row for exactly the frames the run needs — never claim learned
+recurrent memory from them.
+
 ## 6. Install a trained brain into the lab
 
 A model is two files in `data/models/`:

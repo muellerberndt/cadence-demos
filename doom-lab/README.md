@@ -25,26 +25,30 @@ python server.py                  # then open http://localhost:8666
 
 ## The lab
 
-- **FULLSCREEN** (default): the arena full-bleed, the live brain floating in
-  the corner.
-- **STUDENT** — the loaded brain plays. Its settle qualification shows as the
-  green/red dot; if it stands frozen for six seconds the environment restarts
-  the episode and counts it openly ("auto-restarts").
-- **TEACH** — click the game and play: `W A S D`, arrows to turn
-  (`⇧`/`⌥`+arrows to strafe, classic style), `Ctrl`/mouse to fire, `Space` to
-  use. Every fourth tic, your frame-and-buttons pair is queued as a witness
-  and admitted into the brain through atomic batched settlement **while you
-  play**. The 3D view ripples green on every committed batch.
-- **RESET** restarts the episode (world state only — never the brain).
-- **The brain view**: retina planes feed the scene/aim/integration/reflection
-  clouds and the motor column; sampled real connections glow with their
-  source's live activity (blue-gray retina wiring, violet state readback,
-  amber prediction-error readback). Drag to rotate, wheel to zoom.
-- **Models**: the dropdown hot-swaps brains mid-game. A model is a
-  checkpoint + input-normalization pair in `data/models/`. **EXPORT**
-  downloads the live brain as a single portable file; **IMPORT** installs one
-  after full checkpoint validation. Two starter brains ship with the lab
-  (both intentionally under-trained; see the tutorial to train real ones).
+- The AI **plays automatically** when the page opens; **PAUSE/RESUME** and
+  **RESET** (world only, never the brain) are in the top bar.
+- **Model dropdown**: hot-swaps brains mid-game behind a loading screen that
+  lifts only when the new brain is live and the 3D viewer has rebuilt.
+  **EXPORT** downloads the current brain as one portable file; **IMPORT**
+  installs one after full checkpoint validation. Models are
+  checkpoint+norms pairs in `data/models/` — drop new ones in and they
+  appear without a restart.
+- **The brain view**: retina planes feed the population clouds and motor
+  column; sampled real connections glow with their source's live activity
+  (blue-gray retina wiring, violet state readback, amber prediction-error
+  readback), and every committed witness batch sends a green wave through
+  the network. Drag to rotate, wheel to zoom; the settle dot + sweep count
+  sit in the corner.
+- **RETINA** outlines exactly what the brain sees over the live game;
+  **TRAINING** opens learning-curve charts fed by the training receipts in
+  `data/models/`; **FULLSCREEN** (default) runs the arena full-bleed with
+  the brain floating beside it.
+- Kills flash the arena; episode rollovers flash RESPAWN; a stuck player is
+  restarted by the environment and counted openly.
+- Teaching-by-playing exists in the code (`TEACH` mode over the WebSocket:
+  your frames and buttons become witnesses, admitted while you play) but is
+  not in the spectator UI: against large brains, live admission is too slow
+  to feel. Train offline instead — see [TRAINING.md](TRAINING.md).
 
 ## What is honestly claimed
 
@@ -68,3 +72,4 @@ about them is made; see [TRAINING.md](TRAINING.md).
 | `layouts.py` | Candidate brain layouts, including the matched control and the foresight variant |
 | `norms.py` | Fitted input standardization (the conditioning that makes settling fast) |
 | `collect.py`, `train_sweep.py`, `train_self.py`, `evaluate.py`, `dagger.py` | The training pipeline — see [TRAINING.md](TRAINING.md) |
+| `train_flagship.py` | The lineage trainer: full-feature brains, hourly resumable checkpoint exports |
