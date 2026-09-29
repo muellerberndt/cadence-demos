@@ -200,10 +200,19 @@
     <span><i style="background:#cd7212"></i>mean accuracy</span>
     <span><i style="background:#4f8fe0"></i>forward</span>
     <span><i style="background:#c25bb4"></i>fire</span>
+    <span><i style="background:#4fc06a"></i>forward recall</span>
   </div>
   <svg id="chart-acc" viewBox="0 0 430 110" preserveAspectRatio="none"></svg>
   <h3>FORESIGHT ERROR (KILL) &mdash; LOWER IS BETTER</h3>
   <svg id="chart-mae" viewBox="0 0 430 110" preserveAspectRatio="none"></svg>
+  <div id="closed-loop" style="display:none">
+    <h3>CLOSED LOOP &mdash; PATH PER EPISODE</h3>
+    <svg id="chart-live" viewBox="0 0 430 110" preserveAspectRatio="none"></svg>
+  </div>
+  <div id="effort" style="display:none">
+    <h3>ADMISSION EFFORT &mdash; SWEEPS PER BATCH</h3>
+    <svg id="chart-effort" viewBox="0 0 430 110" preserveAspectRatio="none"></svg>
+  </div>
   <details><summary>data table</summary><div id="t-table"></div></details>
 </div>
 <div class="tt" id="tt"></div>
@@ -364,14 +373,33 @@ async function loadTraining() {
     {key: "mean_acc", name: "mean accuracy", color: "#cd7212"},
     {key: "forward_acc", name: "forward", color: "#4f8fe0"},
     {key: "fire_acc", name: "fire", color: "#c25bb4"},
+    {key: "forward_recall", name: "forward recall", color: "#4fc06a"},
   ], 1.0);
   lineChart(document.getElementById("chart-mae"), d.exports, [
     {key: "kill_mae", name: "kill foresight MAE", color: "#9a6fd0"},
   ], 1.2);
+  const paths = d.exports.map(e => e.live_path).filter(v => v != null);
+  if (paths.length) {
+    document.getElementById("closed-loop").style.display = "block";
+    lineChart(document.getElementById("chart-live"), d.exports, [
+      {key: "live_path", name: "path per episode", color: "#d0b04f"},
+    ], Math.max(400, Math.max(...paths) * 1.2));
+  }
+  const series = (p.series || []).map(s => ({batches: s.batch, ...s}));
+  if (series.length > 1) {
+    document.getElementById("effort").style.display = "block";
+    lineChart(document.getElementById("chart-effort"), series, [
+      {key: "sweeps", name: "sweeps per batch", color: "#c25b5b"},
+    ], Math.max(100, Math.max(...series.map(s => s.sweeps)) * 1.2));
+  }
   document.getElementById("t-table").innerHTML =
-    "<table><tr><th>batches</th><th>mean</th><th>fwd</th><th>fire</th><th>kill MAE</th></tr>" +
+    "<table><tr><th>batches</th><th>mean</th><th>fwd</th><th>fwd recall</th>" +
+    "<th>fire</th><th>kill MAE</th><th>path</th><th>fwd rate</th></tr>" +
     d.exports.map(e => `<tr><td>${e.batches}</td><td>${e.mean_acc}</td>` +
-      `<td>${e.forward_acc}</td><td>${e.fire_acc}</td><td>${e.kill_mae}</td></tr>`).join("") +
+      `<td>${e.forward_acc}</td><td>${e.forward_recall ?? "·"}</td>` +
+      `<td>${e.fire_acc}</td><td>${e.kill_mae}</td>` +
+      `<td>${e.live_path ?? "·"}</td><td>${e.forward_rate ?? "·"}</td></tr>`
+    ).join("") +
     "</table>";
 }
 document.getElementById("retina-btn").onclick = () => {

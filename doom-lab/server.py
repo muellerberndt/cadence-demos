@@ -286,7 +286,7 @@ async def training(_):
         probe = meta.get("probe") or {}
         if probe.get("button_acc"):
             acc = probe["button_acc"]
-            exports.append({
+            row = {
                 "batches": int(m.group(1)),
                 "rows": meta.get("rows"),
                 "mean_acc": round(sum(acc) / len(acc), 3),
@@ -294,7 +294,25 @@ async def training(_):
                 "fire_acc": acc[3],
                 "kill_mae": (probe.get("outcome_mae") or [None] * 3)[2],
                 "refused": probe.get("refused", 0),
-            })
+            }
+            deep = meta.get("deep") or {}
+            dp = deep.get("probe") or {}
+            recalls = dp.get("pressed_recall") or []
+            if recalls:
+                known = [r for r in recalls if r is not None]
+                row["forward_recall"] = recalls[0]
+                row["mean_recall"] = round(sum(known) / len(known), 3) \
+                    if known else None
+            live = deep.get("live") or []
+            if live:
+                row["live_path"] = round(
+                    sum(e["path"] for e in live) / len(live), 1)
+                row["live_kills"] = round(
+                    sum(e["kills"] for e in live) / len(live), 2)
+                row["forward_rate"] = round(
+                    sum(e["press_rate"]["forward"] for e in live)
+                    / len(live), 3)
+            exports.append(row)
     progress = {}
     try:
         text = open("data/hero_progress.log").read()
@@ -306,6 +324,18 @@ async def training(_):
                         "rows": last[2].split("=")[1],
                         "eta_min": float(last[-1].replace("eta=", "")
                                          .replace("min", ""))}
+            series = []
+            for line in lines:
+                try:
+                    tail = line.split("sweeps=")[1].split()
+                    series.append({
+                        "batch": int(line.split()[1]),
+                        "sweeps": int(tail[0]),
+                        "seconds": float(tail[1].rstrip("s")),
+                    })
+                except (ValueError, IndexError):
+                    continue
+            progress["series"] = series
         if "FINAL" in text:
             progress["complete"] = True
     except (OSError, ValueError, IndexError):

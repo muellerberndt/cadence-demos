@@ -121,6 +121,21 @@ History windows are explicit external context (`cadence.memory.History`),
 built per-row for exactly the frames the run needs — never claim learned
 recurrent memory from them.
 
+`deep_probe.py` enriches every export with comparable diagnostics: it
+watches the exports directory and writes a `deep` block into each meta
+file, holding a fixed-row settle probe (the same rows for every
+checkpoint, so the trend is free of sample noise), per-button pressed
+recall and predicted press rates, and two short closed-loop episodes
+measuring path, kills and button usage. The lab's TRAINING panel charts
+these values once they appear. `evaluate.py` and `dagger.py` read the
+brain's declared input streams and feed efference and both history
+windows exactly as the lab does, for flagship and ultimate layouts alike.
+
+```sh
+python deep_probe.py --exports runs/ultimate/exports \
+  --corpus data/corpus3/witnesses.npz
+```
+
 ## 6. Install a trained brain into the lab
 
 A model is two files in `data/models/`:
