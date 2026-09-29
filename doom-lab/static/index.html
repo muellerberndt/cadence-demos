@@ -28,6 +28,9 @@
   }
   .spacer { flex: 1; }
   .bargroup { display: flex; gap: 6px; }
+  #extlinks a { color: var(--dim); text-decoration: none; font-size: 11px;
+    letter-spacing: .14em; padding: 7px 6px; border: 1px solid transparent; }
+  #extlinks a:hover { color: var(--ember); }
   button, select {
     background: none; color: var(--dim); border: 1px solid var(--line);
     border-radius: 3px; padding: 6px 12px; font: inherit;
@@ -76,6 +79,67 @@
   #brainpanel { flex: 1; }
   #brain3d { flex: 1; min-height: 0; }
   #brain3d canvas { display: block; }
+  #settle { position: absolute; top: 8px; right: 10px; display: flex;
+    align-items: center; gap: 6px; color: var(--dim); font-size: 10px;
+    letter-spacing: .1em; pointer-events: none; }
+  @keyframes killflash { 0% { box-shadow: inset 0 0 0 0 #b31b0e00; }
+    25% { box-shadow: inset 0 0 60px 12px #b31b0ecc; }
+    100% { box-shadow: inset 0 0 0 0 #b31b0e00; } }
+  #stage.kill { animation: killflash .45s ease-out; }
+  #respawn { position: absolute; inset: 0; display: none; align-items: center;
+    justify-content: center; font-family: "Metal Mania", cursive;
+    font-size: clamp(30px, 5vw, 60px); color: var(--hud); letter-spacing: 6px;
+    text-shadow: 0 0 24px #b31b0e; pointer-events: none; }
+  #stage.respawn #respawn { display: flex; }
+  #idlecard { position: absolute; inset: 0; display: none; align-items: center;
+    justify-content: center; flex-direction: column; gap: 10px;
+    background: #000a; pointer-events: none; }
+  #idlecard b { font-family: "Metal Mania", cursive; font-size: 34px;
+    letter-spacing: 4px; color: var(--blood); }
+  #idlecard span { color: var(--dim); font-size: 12px; letter-spacing: .2em; }
+  body[data-mode="idle"] #idlecard { display: flex; }
+  .retinabox { position: absolute; border: 1px dashed #ff9b30aa; display: none;
+    pointer-events: none; }
+  .retinabox i { position: absolute; top: -16px; left: 0; font-style: normal;
+    font-size: 10px; color: var(--ember); letter-spacing: .15em; }
+  body.retina .retinabox { display: block; }
+  #periph-box { border-color: #5a7ba688; }
+  #periph-box i { color: #7f9cc4; }
+  #loadcard { position: fixed; inset: 0; z-index: 20; display: none;
+    align-items: center; justify-content: center; flex-direction: column;
+    gap: 14px; background: #050303ee; }
+  body.loading #loadcard { display: flex; }
+  #loadcard b { font-family: "Metal Mania", cursive; font-size: 40px;
+    letter-spacing: 5px; color: var(--blood);
+    animation: loadpulse 1.1s ease-in-out infinite; }
+  #loadcard span { color: var(--dim); font-size: 13px; letter-spacing: .15em; }
+  #loadcard .bar { width: 260px; height: 3px; background: #1c1512;
+    border-radius: 2px; overflow: hidden; }
+  #loadcard .bar i { display: block; height: 100%; width: 40%;
+    background: var(--blood); border-radius: 2px;
+    animation: loadslide 1.2s ease-in-out infinite; }
+  @keyframes loadpulse { 50% { opacity: .55; } }
+  @keyframes loadslide { 0% { margin-left: -40%; } 100% { margin-left: 100%; } }
+  #trainpanel { position: fixed; left: 16px; bottom: 16px; width: 430px;
+    z-index: 7; background: #0b0807f2; border: 1px solid var(--line);
+    border-radius: 4px; padding: 12px 14px; display: none; }
+  body.training #trainpanel { display: block; }
+  #trainpanel h3 { margin: 0 0 4px; font-size: 11px; letter-spacing: .18em;
+    color: var(--dim); font-weight: 600; }
+  #trainpanel .status { color: var(--bone); font-size: 12px; margin: 6px 0 10px; }
+  #trainpanel svg { display: block; width: 100%; height: 110px;
+    margin-bottom: 10px; }
+  .tt { position: fixed; display: none; background: #000d; color: var(--bone);
+    border: 1px solid var(--line); border-radius: 4px; padding: 5px 9px;
+    font-size: 11px; pointer-events: none; z-index: 9; white-space: pre; }
+  .tlegend { display: flex; gap: 14px; font-size: 10px; color: var(--dim);
+    margin: -4px 0 8px; }
+  .tlegend i { display: inline-block; width: 10px; height: 3px;
+    border-radius: 2px; margin-right: 4px; vertical-align: middle; }
+  #trainpanel details { font-size: 11px; color: var(--dim); }
+  #trainpanel table { border-collapse: collapse; margin-top: 6px; width: 100%; }
+  #trainpanel td, #trainpanel th { border: 1px solid var(--line);
+    padding: 2px 6px; font-size: 10px; text-align: right; }
   body.show #brainpanel { position: fixed; right: 16px; bottom: 16px;
     width: 380px; height: 300px; z-index: 6; background: #000d; }
   body.show #topbar { border-color: transparent; }
@@ -84,19 +148,13 @@
 <body class="show">
 <header id="topbar">
   <h1>CADENCE&middot;DOOM</h1>
-  <div id="substats">
-    <span class="dot" id="q-dot" title="settlement"></span>
-    <span id="model-cur">&ndash;</span>
-    <span>learned <b id="t-admitted">0</b></span>
-    <span>ep <b id="g-episode">0</b></span>
-    <span id="banner" style="color:var(--ember)"></span>
-  </div>
+  <span id="banner" style="color:var(--ember);font-size:12px"></span>
   <div class="spacer"></div>
   <div class="bargroup">
-    <button id="m-teach">TEACH</button>
-    <button id="m-student">STUDENT</button>
-    <button id="m-idle">PAUSE</button>
+    <button id="pause-btn">PAUSE</button>
     <button id="reset">RESET</button>
+    <button id="retina-btn">RETINA</button>
+    <button id="train-btn">TRAINING</button>
     <button id="show" class="active">FULLSCREEN</button>
   </div>
   <div class="bargroup">
@@ -105,28 +163,54 @@
     <button id="import">IMPORT</button>
     <input type="file" id="import-file" accept=".json" style="display:none">
   </div>
+  <div class="bargroup" id="extlinks">
+    <a href="https://philpapers.org/rec/MUECAP-2" target="_blank" rel="noopener">PAPER</a>
+    <a href="https://github.com/muellerberndt/cadence-demos/tree/main/doom-lab" target="_blank" rel="noopener">GITHUB</a>
+  </div>
 </header>
 <main>
   <div class="panel" id="stagepanel">
     <div id="stage" tabindex="0">
       <img id="screen" src="/video" alt="doom">
       <div id="overlay">
-        <span id="ov-title">CADENCE <b>//</b> STUDENT</span>
+        <span id="ov-title">CADENCE <b>//</b> AI</span>
         <span>HP <b id="ov-health">&ndash;</b> &nbsp; AMMO <b id="ov-ammo">&ndash;</b>
           &nbsp; KILLS <b id="ov-kills">&ndash;</b> &nbsp; EP <b id="ov-episode">&ndash;</b></span>
       </div>
-      <div id="stagehint">click, then play &mdash; the student is watching &middot;
-        W A S D &middot; &larr;&rarr; turn &middot; &#8679;+&larr;&rarr; strafe &middot;
-        ctrl fire &middot; space use</div>
+      <div id="respawn">RESPAWN</div>
+      <div id="idlecard"><b>PAUSED</b><span>press RESUME to let it play</span></div>
+      <div class="retinabox" id="periph-box"><i>PERIPHERY 32&times;20</i></div>
+      <div class="retinabox" id="fovea-box"><i>FOVEA 64&times;6</i></div>
+      <div id="stagehint">the AI is playing &mdash; swap its brain any time</div>
     </div>
   </div>
   <div class="panel" id="brainpanel">
     <div id="brain3d"></div>
+    <div id="settle"><span class="dot" id="q-dot"></span><span id="sweeps-chip">&ndash;</span></div>
   </div>
 </main>
+<div id="loadcard"><b>LOADING BRAIN</b>
+  <span id="load-label">&hellip;</span>
+  <div class="bar"><i></i></div>
+</div>
+<div id="trainpanel">
+  <h3>DOOM-HERO LINEAGE &mdash; LEARNING</h3>
+  <div class="status" id="t-status">waiting for first export&hellip;</div>
+  <div class="tlegend">
+    <span><i style="background:#cd7212"></i>mean accuracy</span>
+    <span><i style="background:#4f8fe0"></i>forward</span>
+    <span><i style="background:#c25bb4"></i>fire</span>
+  </div>
+  <svg id="chart-acc" viewBox="0 0 430 110" preserveAspectRatio="none"></svg>
+  <h3>FORESIGHT ERROR (KILL) &mdash; LOWER IS BETTER</h3>
+  <svg id="chart-mae" viewBox="0 0 430 110" preserveAspectRatio="none"></svg>
+  <details><summary>data table</summary><div id="t-table"></div></details>
+</div>
+<div class="tt" id="tt"></div>
 <script>
 window.BV = {};
 let ws = null, down = new Set(), currentModel = null, modStrafe = false;
+let lastKills = null, lastEpisode = null;
 
 function setText(id, value) { document.getElementById(id).textContent = value; }
 function flash(text) {
@@ -154,7 +238,6 @@ refreshModels();
 
 async function onModelChange(model) {
   currentModel = model.id + ":" + model.fingerprint;
-  setText("model-cur", model.id + " " + model.patches + "p");
   const g = await (await fetch("/graph")).json();
   window.BV.graph = g;
   window.BV.graphVersion = (window.BV.graphVersion || 1) + 1;
@@ -163,21 +246,40 @@ async function onModelChange(model) {
 
 function connect() {
   ws = new WebSocket("ws://" + location.host + "/ws");
-  ws.onopen = resetVideo;
+  ws.onopen = () => { resetVideo(); setTimeout(applyMode, 400); };
   ws.onmessage = (event) => {
     const m = JSON.parse(event.data);
     if (m.type === "saved") { flash("saved"); return; }
-    if (m.type === "model_ack") { if (!m.ok) flash("load refused"); return; }
+    if (m.type === "model_ack") {
+      if (!m.ok) { pendingModel = null; hideLoading(); flash("load refused"); }
+      return;
+    }
     if (m.type !== "state") return;
-    setText("g-episode", m.episode);
+    document.body.dataset.mode = m.mode;
+    if (lastEpisode !== null && m.episode !== lastEpisode && m.mode === "student") {
+      stage.classList.add("respawn");
+      setTimeout(() => stage.classList.remove("respawn"), 900);
+    }
+    lastEpisode = m.episode;
     if (m.game) {
+      if (lastKills !== null && m.game.kills > lastKills) {
+        stage.classList.remove("kill"); void stage.offsetWidth;
+        stage.classList.add("kill");
+      }
+      lastKills = m.game.kills;
       setText("ov-health", m.game.health); setText("ov-ammo", m.game.ammo);
       setText("ov-kills", m.game.kills); setText("ov-episode", m.episode);
     }
     const t = m.trainer || {};
-    setText("t-admitted", t.admitted ?? 0);
     if (m.model && currentModel !== m.model.id + ":" + m.model.fingerprint
-        && !m.model.pending) onModelChange(m.model);
+        && !m.model.pending) {
+      onModelChange(m.model).then(() => {
+        if (pendingModel && m.model.id === pendingModel) {
+          pendingModel = null;
+          hideLoading();  // brain swapped AND 3D graph rebuilt
+        }
+      });
+    }
     const s = m.shadow || {};
     if (s.state) {
       Object.assign(window.BV, {state: s.state, errors: s.errors,
@@ -186,24 +288,132 @@ function connect() {
     window.BV.admitted = t.admitted ?? 0;
     const dot = document.getElementById("q-dot");
     dot.className = "dot " + (s.qualified === true ? "ok" : s.qualified === false ? "bad" : "");
+    setText("sweeps-chip", s.sweeps !== undefined ? s.sweeps + " sw" : "–");
   };
   ws.onclose = () => setTimeout(connect, 1000);
 }
 connect();
 
-function setMode(mode) {
-  send({type: "mode", mode});
+let paused = false;
+function applyMode() {
+  send({type: "mode", mode: paused ? "idle" : "student"});
   resetVideo();
-  ["teach", "student", "idle"].forEach(m =>
-    document.getElementById("m-" + m).classList.toggle("active", m === mode));
-  if (mode === "teach") document.getElementById("stage").focus();
+  const b = document.getElementById("pause-btn");
+  b.textContent = paused ? "RESUME" : "PAUSE";
+  b.classList.toggle("active", paused);
 }
-document.getElementById("m-teach").onclick = () => setMode("teach");
-document.getElementById("m-student").onclick = () => setMode("student");
-document.getElementById("m-idle").onclick = () => setMode("idle");
+document.getElementById("pause-btn").onclick = () => { paused = !paused; applyMode(); };
 document.getElementById("reset").onclick = () => send({type: "reset"});
-document.getElementById("model-sel").onchange = (e) =>
-  send({type: "model", id: e.target.value});
+let trainTimer = null;
+document.getElementById("train-btn").onclick = () => {
+  const on = document.body.classList.toggle("training");
+  document.getElementById("train-btn").classList.toggle("active", on);
+  if (on) { loadTraining(); trainTimer = setInterval(loadTraining, 60000); }
+  else clearInterval(trainTimer);
+};
+const tt = document.getElementById("tt");
+function lineChart(svg, rows, series, yMax) {
+  const W = 430, H = 110, L = 30, R = 6, T = 8, B = 16;
+  const xs = rows.map(r => r.batches);
+  const x0 = Math.min(...xs), x1 = Math.max(...xs, x0 + 1);
+  const X = v => L + (W - L - R) * (v - x0) / (x1 - x0);
+  const Y = v => T + (H - T - B) * (1 - Math.min(v, yMax) / yMax);
+  let g = "";
+  for (const f of [0.5, 1.0]) {
+    g += `<line x1="${L}" y1="${Y(yMax*f)}" x2="${W-R}" y2="${Y(yMax*f)}"
+          stroke="#1c1512" stroke-width="1"/>
+          <text x="${L-4}" y="${Y(yMax*f)+3}" fill="#6f6353" font-size="8"
+          text-anchor="end">${(yMax*f).toFixed(1)}</text>`;
+  }
+  for (const s of series) {
+    const pts = rows.map(r => `${X(r.batches)},${Y(r[s.key] ?? 0)}`).join(" ");
+    g += `<polyline points="${pts}" fill="none" stroke="${s.color}"
+          stroke-width="2" stroke-linejoin="round"/>`;
+    const last = rows[rows.length - 1];
+    g += `<text x="${Math.min(X(last.batches)+4, W-4)}" y="${Y(last[s.key] ?? 0)+3}"
+          fill="#9b8a72" font-size="8">${(last[s.key] ?? 0).toFixed(2)}</text>`;
+    for (const r of rows) {
+      g += `<circle cx="${X(r.batches)}" cy="${Y(r[s.key] ?? 0)}" r="10"
+            fill="transparent" data-tip="batch ${r.batches}
+${s.name}: ${(r[s.key] ?? 0).toFixed(3)}"/>`;
+    }
+  }
+  g += `<text x="${W-R}" y="${H-4}" fill="#6f6353" font-size="8"
+       text-anchor="end">batches →</text>`;
+  svg.innerHTML = g;
+  svg.querySelectorAll("circle").forEach(c => {
+    c.addEventListener("mouseenter", (e) => {
+      tt.textContent = c.dataset.tip; tt.style.display = "block";
+    });
+    c.addEventListener("mousemove", (e) => {
+      tt.style.left = (e.clientX + 12) + "px"; tt.style.top = (e.clientY - 10) + "px";
+    });
+    c.addEventListener("mouseleave", () => tt.style.display = "none");
+  });
+}
+async function loadTraining() {
+  const d = await (await fetch("/training")).json();
+  const p = d.progress || {};
+  let status = p.complete ? "imitation pass COMPLETE" :
+    p.line ? `batch ${p.batch} · rows ${p.rows} · eta ${(p.eta_min/60).toFixed(1)} h`
+           : "warming up — no progress line yet";
+  status += ` · ${d.exports.length} exports fetched`;
+  document.getElementById("t-status").textContent = status;
+  if (!d.exports.length) return;
+  lineChart(document.getElementById("chart-acc"), d.exports, [
+    {key: "mean_acc", name: "mean accuracy", color: "#cd7212"},
+    {key: "forward_acc", name: "forward", color: "#4f8fe0"},
+    {key: "fire_acc", name: "fire", color: "#c25bb4"},
+  ], 1.0);
+  lineChart(document.getElementById("chart-mae"), d.exports, [
+    {key: "kill_mae", name: "kill foresight MAE", color: "#9a6fd0"},
+  ], 1.2);
+  document.getElementById("t-table").innerHTML =
+    "<table><tr><th>batches</th><th>mean</th><th>fwd</th><th>fire</th><th>kill MAE</th></tr>" +
+    d.exports.map(e => `<tr><td>${e.batches}</td><td>${e.mean_acc}</td>` +
+      `<td>${e.forward_acc}</td><td>${e.fire_acc}</td><td>${e.kill_mae}</td></tr>`).join("") +
+    "</table>";
+}
+document.getElementById("retina-btn").onclick = () => {
+  const on = document.body.classList.toggle("retina");
+  document.getElementById("retina-btn").classList.toggle("active", on);
+};
+function placeRetinaBoxes() {
+  requestAnimationFrame(placeRetinaBoxes);
+  if (!document.body.classList.contains("retina")) return;
+  const img = document.getElementById("screen");
+  const box = img.getBoundingClientRect();
+  const stageBox = stage.getBoundingClientRect();
+  // object-fit: contain -> compute the actual rendered 320x200 rect.
+  const scale = Math.min(box.width / 320, box.height / 200);
+  const w = 320 * scale, h = 200 * scale;
+  const x0 = box.left - stageBox.left + (box.width - w) / 2;
+  const y0 = box.top - stageBox.top + (box.height - h) / 2;
+  const place = (id, l, t, ww, hh) => {
+    const el = document.getElementById(id);
+    el.style.left = (x0 + l * w) + "px";
+    el.style.top = (y0 + t * h) + "px";
+    el.style.width = (ww * w) + "px";
+    el.style.height = (hh * h) + "px";
+  };
+  place("periph-box", 0, 0, 1, 1);
+  place("fovea-box", 32 / 320, 78 / 200, 256 / 320, 42 / 200);
+}
+placeRetinaBoxes();
+let pendingModel = null, loadShownAt = 0;
+document.getElementById("model-sel").onchange = (e) => {
+  const sel = e.target;
+  pendingModel = sel.value;
+  document.getElementById("load-label").textContent =
+    sel.options[sel.selectedIndex].textContent;
+  document.body.classList.add("loading");
+  loadShownAt = performance.now();
+  send({type: "model", id: sel.value});
+};
+function hideLoading() {
+  const wait = Math.max(0, 700 - (performance.now() - loadShownAt));
+  setTimeout(() => document.body.classList.remove("loading"), wait);
+}
 document.getElementById("show").onclick = () => {
   const on = document.body.classList.toggle("show");
   document.getElementById("show").classList.toggle("active", on);

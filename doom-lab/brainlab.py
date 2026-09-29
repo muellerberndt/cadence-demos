@@ -20,8 +20,15 @@ import time
 import numpy as np
 
 from cadence import Brain, Cortex
+from cadence.memory import History
 from doomlab import BUTTONS, buttons_from_scores
+from layouts import HIST_SIZE, HIST_STEPS, PHIST_SIZE, PHIST_STEPS
 import norms as nz
+
+
+def _half_fovea(row):
+    """Standardized fovea (6, 64) or flat -> half-resolution flat (96,)."""
+    return np.asarray(row, np.float64).reshape(6, 64)         .reshape(3, 2, 32, 2).mean(axis=(1, 3)).ravel()
 
 CHECKPOINT = "data/live_brain.json.gz"
 MODELS_DIR = "data/models"
@@ -31,6 +38,12 @@ SETTLE_BUDGET = 16384
 LIVE_BUDGET = 384  # per-query ceiling for interactive predictions
 MAX_BATCH = 48
 NOOP_KEEP = 0.25  # fraction of all-buttons-off human witnesses admitted
+
+
+def _quarter_periphery(row):
+    """Standardized periphery (20, 32) or flat -> quarter-resolution (160,)."""
+    return np.asarray(row, np.float64).reshape(20, 32) \
+        .reshape(10, 2, 16, 2).mean(axis=(1, 3)).ravel()
 
 
 def build_layout(seed=7, device="cpu"):
@@ -109,6 +122,14 @@ class Student:
         ]
         self.has_efference = any(
             i["name"] == "efference" for i in info["inputs"])
+        self.has_history = any(
+            i["name"] == "fovea_history" for i in info["inputs"])
+        self.has_phistory = any(
+            i["name"] == "periphery_history" for i in info["inputs"])
+        self._history = History(HIST_SIZE, steps=HIST_STEPS)
+        self._context = [0.0] * self._history.size
+        self._phistory = History(PHIST_SIZE, steps=PHIST_STEPS)
+        self._pcontext = [0.0] * self._phistory.size
         self.model_info = {"patches": info["patches"],
                            "edges": info["connections"],
                            "fingerprint": info["fingerprint"][:12]}
@@ -244,6 +265,27 @@ class Student:
                        "imported": time.strftime("%Y-%m-%d")}, f)
         return model_id
 
+    # ---- temporal context (advanced once per game frame) --------------
+
+    def advance_context(self, periphery_raw, fovea_raw):
+        """Push this frame into the explicit history window. Game thread only."""
+        if not self.has_history and not self.has_phistory:
+            return
+        periphery, fovea = nz.apply(self.norms, np.asarray(periphery_raw),
+                                    np.asarray(fovea_raw))
+        if self.has_history:
+            self._context = list(
+                self._history.push(_half_fovea(fovea).tolist()))
+        if self.has_phistory:
+            self._pcontext = list(
+                self._phistory.push(_quarter_periphery(periphery).tolist()))
+
+    def reset_context(self):
+        self._history.reset()
+        self._context = [0.0] * self._history.size
+        self._phistory.reset()
+        self._pcontext = [0.0] * self._phistory.size
+
     # ---- teacher side -------------------------------------------------
 
     def submit_witness(self, periphery, fovea, buttons, rng):
@@ -259,6 +301,8 @@ class Student:
             fovea.astype(np.float32),
             tuple(int(b) for b in buttons),
             efference,
+            tuple(self._context) if self.has_history else None,
+            tuple(self._pcontext) if self.has_phistory else None,
         )
         try:
             self._queue.put_nowait(record)
@@ -290,11 +334,15 @@ class Student:
                     break
             self.stats["training"] = True
             examples = []
-            for per, fov, buttons, efference in batch:
+            for per, fov, buttons, efference, context, pcontext in batch:
                 inputs = {"periphery": per.tolist(), "fovea": fov.tolist()}
                 if self.has_efference:
                     inputs["efference"] = [0.6 if b else -0.6
                                            for b in efference]
+                if self.has_history and context is not None:
+                    inputs["fovea_history"] = list(context)
+                if self.has_phistory and pcontext is not None:
+                    inputs["periphery_history"] = list(pcontext)
                 examples.append(
                     (inputs, {"motor": targets_from_buttons(buttons)}))
             started = time.perf_counter()
@@ -340,6 +388,10 @@ class Student:
         if self.has_efference:
             inputs["efference"] = [0.6 if b else -0.6
                                    for b in self._last_action]
+        if self.has_history:
+            inputs["fovea_history"] = list(self._context)
+        if self.has_phistory:
+            inputs["periphery_history"] = list(self._pcontext)
         with self._shadow_lock:
             result = self._shadow.step(inputs, budget=LIVE_BUDGET)
         scores = result["outputs"]["motor"]

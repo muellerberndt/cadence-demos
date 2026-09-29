@@ -138,9 +138,11 @@ class Lab:
                 self.reset_request = False
                 self._decision = None
                 self._still_pos = self._still_since = None
+                self.student.reset_context()
                 lab.new_episode()
                 self.episode += 1
             if lab.finished:
+                self.student.reset_context()
                 lab.new_episode()
                 self.episode += 1
             state = lab.state()
@@ -150,6 +152,7 @@ class Lab:
                 continue
             periphery, fovea = brain_view(state.screen_buffer)
             self._latest_view = (periphery, fovea)
+            self.student.advance_context(periphery.ravel(), fovea.ravel())
             gv = state.game_variables
             if self.mode == "student":
                 # Stuck watchdog: the environment (not the brain) restarts a
@@ -265,6 +268,49 @@ routes = web.RouteTableDef()
 @routes.get("/")
 async def index(_):
     return web.FileResponse("static/index.html")
+
+
+@routes.get("/training")
+async def training(_):
+    import glob as _glob
+    import re as _re
+    exports = []
+    for meta_path in sorted(_glob.glob("data/models/doom-hero_b*.meta.json")):
+        m = _re.search(r"_b(\d+)\.meta\.json$", meta_path)
+        if not m:
+            continue
+        try:
+            meta = json.load(open(meta_path))
+        except ValueError:
+            continue
+        probe = meta.get("probe") or {}
+        if probe.get("button_acc"):
+            acc = probe["button_acc"]
+            exports.append({
+                "batches": int(m.group(1)),
+                "rows": meta.get("rows"),
+                "mean_acc": round(sum(acc) / len(acc), 3),
+                "forward_acc": acc[0],
+                "fire_acc": acc[3],
+                "kill_mae": (probe.get("outcome_mae") or [None] * 3)[2],
+                "refused": probe.get("refused", 0),
+            })
+    progress = {}
+    try:
+        text = open("data/hero_progress.log").read()
+        lines = [l for l in text.splitlines() if l.startswith("batch ")]
+        if lines:
+            last = lines[-1].split()
+            progress = {"line": lines[-1],
+                        "batch": int(last[1]),
+                        "rows": last[2].split("=")[1],
+                        "eta_min": float(last[-1].replace("eta=", "")
+                                         .replace("min", ""))}
+        if "FINAL" in text:
+            progress["complete"] = True
+    except (OSError, ValueError, IndexError):
+        pass
+    return web.json_response({"exports": exports, "progress": progress})
 
 
 @routes.get("/models")

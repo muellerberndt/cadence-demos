@@ -89,3 +89,92 @@ def build_self(seed, parameter_prior=0.1, device="cpu", sizes=None):
     cortex.output("motor", shape=(len(BUTTONS),), reads=reflection)
     cortex.output("outcome", shape=(FORESIGHT,), reads=foresight)
     return cortex.build()
+
+
+HIST_STEPS = 4
+HIST_SIZE = 96  # half-resolution fovea (3 x 32) per retained step
+PHIST_STEPS = 3
+PHIST_SIZE = 160  # quarter-resolution periphery (10 x 16) per retained step
+
+
+def history_shape():
+    from cadence.memory import History
+    return History(HIST_SIZE, steps=HIST_STEPS).shape
+
+
+def build_flagship(seed, parameter_prior=0.1, device="cpu", sizes=None):
+    """The full-feature lineage brain: retinas + efference + fovea history in,
+    motor + foresight out. History is explicit external context (a bounded
+    caller-fed window), not learned recurrent memory."""
+    sizes = sizes or SIZES["grand"]
+    cortex = Cortex(seed=seed, device=device, settle_budget=SETTLE_BUDGET,
+                    parameter_prior=parameter_prior)
+    periphery = cortex.input("periphery", shape=(20, 32))
+    fovea = cortex.input("fovea", shape=(6, 64))
+    efference = cortex.input("efference", shape=(len(BUTTONS),))
+    fovea_history = cortex.input("fovea_history", shape=history_shape())
+    scene = cortex.column("scene", patches=sizes["scene"], inputs=periphery)
+    aim = cortex.column("aim", patches=sizes["aim"],
+                        inputs=(fovea, fovea_history))
+    integration = cortex.observer(
+        "integration", patches=sizes["integration"],
+        inputs=(periphery, fovea, efference, fovea_history),
+        observes=(scene, aim),
+    )
+    reflection = cortex.observer(
+        "reflection", patches=sizes["reflection"],
+        observes=(scene, aim, integration),
+    )
+    foresight = cortex.observer(
+        "foresight", patches=max(8, FORESIGHT * 2), inputs=(efference,),
+        observes=(integration,),
+    )
+    cortex.output("motor", shape=(len(BUTTONS),), reads=reflection)
+    cortex.output("outcome", shape=(FORESIGHT,), reads=foresight)
+    return cortex.build()
+
+
+SIZES["ultimate"] = {"scene": 128, "aim": 96, "integration": 64,
+                     "reflection": 32}
+
+
+def periphery_history_shape():
+    from cadence.memory import History
+    return History(PHIST_SIZE, steps=PHIST_STEPS).shape
+
+
+def build_ultimate(seed, parameter_prior=0.1, device="cpu"):
+    """The lineage brain: five sensory streams, motor + foresight heads.
+
+    Both history inputs are explicit external context windows (bounded,
+    caller-fed), not learned recurrent memory.
+    """
+    sizes = SIZES["ultimate"]
+    cortex = Cortex(seed=seed, device=device, settle_budget=SETTLE_BUDGET,
+                    parameter_prior=parameter_prior)
+    periphery = cortex.input("periphery", shape=(20, 32))
+    fovea = cortex.input("fovea", shape=(6, 64))
+    efference = cortex.input("efference", shape=(len(BUTTONS),))
+    fovea_history = cortex.input("fovea_history", shape=history_shape())
+    periphery_history = cortex.input("periphery_history",
+                                     shape=periphery_history_shape())
+    scene = cortex.column("scene", patches=sizes["scene"], inputs=periphery)
+    aim = cortex.column("aim", patches=sizes["aim"],
+                        inputs=(fovea, fovea_history))
+    integration = cortex.observer(
+        "integration", patches=sizes["integration"],
+        inputs=(periphery, fovea, efference, fovea_history,
+                periphery_history),
+        observes=(scene, aim),
+    )
+    reflection = cortex.observer(
+        "reflection", patches=sizes["reflection"],
+        observes=(scene, aim, integration),
+    )
+    foresight = cortex.observer(
+        "foresight", patches=max(8, FORESIGHT * 4), inputs=(efference,),
+        observes=(integration,),
+    )
+    cortex.output("motor", shape=(len(BUTTONS),), reads=reflection)
+    cortex.output("outcome", shape=(FORESIGHT,), reads=foresight)
+    return cortex.build()
