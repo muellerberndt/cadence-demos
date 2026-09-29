@@ -18,7 +18,7 @@ Python 3.11+, then:
 
 ```sh
 python -m venv .venv && . .venv/bin/activate
-pip install -r requirements.txt   # see the note inside about cadence 0.49
+pip install -r requirements.txt
 ./get_wad.sh                      # fetches the freely distributable shareware WAD
 python server.py                  # then open http://localhost:8666
 ```

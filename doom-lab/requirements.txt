@@ -1,7 +1,4 @@
-# The lab needs the batch-admission API (cadence 0.49+). Until that release
-# is on PyPI, install cadence from main:
-#   pip install git+https://github.com/muellerberndt/cadence
-cadence-net>=0.49
+cadence-net>=0.50
 vizdoom>=1.3
 torch>=2.5
 numpy
