@@ -42,6 +42,10 @@ def calibrate(brain, corpus, rows, streams, n=150, budget=512):
             continue
         scores.append(r["outputs"]["motor"])
         truths.append(corpus["buttons"][i])
+    if len(scores) < 20:
+        raise SystemExit(
+            f"calibration failed: {len(scores)} of {len(picks)} probe "
+            f"settles qualified at budget {budget}")
     S = np.array(scores)
     T = np.array(truths, int)
     base = T.mean(0)
@@ -245,9 +249,12 @@ def main():
                        "deep": {"probe": calibration}}, f)
         log[f"round_{round_index}_sha256"] = hashlib.sha256(
             snapshot.encode()).hexdigest()
+        # The log survives an interrupted run round by round.
+        with open(os.path.join(args.out, "dagger_log.json"), "w") as f:
+            json.dump(log, f, indent=2)
     with open(os.path.join(args.out, "dagger_log.json"), "w") as f:
         json.dump(log, f, indent=2)
-    print("done")
+    print("done", flush=True)
 
 
 if __name__ == "__main__":
