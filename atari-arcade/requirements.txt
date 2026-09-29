@@ -4,4 +4,4 @@ numpy
 torch
 ale-py>=0.10
 gymnasium
-cadence-net>=0.50
+cadence-net @ git+https://github.com/muellerberndt/cadence.git
