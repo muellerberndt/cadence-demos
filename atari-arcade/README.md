@@ -11,8 +11,11 @@ effort, witnesses, sweeps, and the lifetime score curve with a skill
 badge from noob to legend.
 
 The brains and emulators run in the Python server; the browser is the
-window. The published configuration serves Atlantis and Freeway. The
-loop follows the bootstrap-then-life pattern from the library's LIVE
+window. Four games are wired: Atlantis, Freeway, Carnival and Space
+Invaders. Carnival and Space Invaders still degrade in self-play
+([#1](https://github.com/muellerberndt/cadence-demos/issues/1)); the
+other two reach expert, and Freeway has beaten its teacher. The loop
+follows the bootstrap-then-life pattern from the library's LIVE
 guide: witness admission during watching, an agreement gate, then
 record-only feedback with budgeted replay pulses under one serial owner
 per brain.
@@ -21,7 +24,7 @@ per brain.
 
 ```sh
 python -m venv .venv && .venv/bin/pip install -r requirements.txt
-ARCADE_GAMES=Atlantis,Freeway .venv/bin/python server.py
+.venv/bin/python server.py
 # open http://localhost:8668
 ```
 

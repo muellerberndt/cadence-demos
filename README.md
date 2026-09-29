@@ -30,14 +30,14 @@ watches a scripted teacher, takes the controls once its decoded actions
 agree often enough, and keeps learning from every reward. The page
 shows the game beside the brain as one settling organ with cortical
 columns and live fibers, a gamepad lit by the executed action, and the
-convergence numbers through a skill badge from noob to legend. The
-published configuration serves Atlantis and Freeway.
+convergence numbers through a skill badge from noob to legend. Four
+games are wired; two still degrade in self-play and say so.
 
 ```sh
 cd atari-arcade
 python -m venv .venv && . .venv/bin/activate
 pip install -r requirements.txt
-ARCADE_GAMES=Atlantis,Freeway python server.py   # open http://localhost:8668
+python server.py   # open http://localhost:8668
 ```
 
 Start with the [Doom Lab README](doom-lab/README.md), then the
