@@ -28,7 +28,7 @@ from train_flagship import (EFF_ON, EFF_OFF, half_fovea, quarter_periphery,
                             window_matrix)
 import norms as nz
 
-LIVE_BUDGET = 384
+LIVE_BUDGET = 512
 
 
 def load_brain(path, device="cpu"):
@@ -184,8 +184,9 @@ def live_episode(policy, seed, decisions=1050):
         lab.close()
 
 
-def brain_policy(brain, norms=None):
+def brain_policy(brain, norms=None, decode=None):
     feeder = ContextFeeder(input_streams(brain))
+    decode = decode or buttons_from_scores
 
     def policy(views):
         periphery, fovea = views
@@ -194,7 +195,7 @@ def brain_policy(brain, norms=None):
         result = brain.step(feeder.frame_inputs(periphery, fovea),
                             budget=LIVE_BUDGET)
         if result["qualified"]:
-            feeder.last = buttons_from_scores(result["outputs"]["motor"])
+            feeder.last = decode(result["outputs"]["motor"])
             return feeder.last, False
         return feeder.last, True
 
@@ -211,14 +212,15 @@ def marginal_policy(corpus, seed):
     return policy
 
 
-def evaluate(brain, corpus, check_indices, episodes=6, seed0=9000, norms=None):
+def evaluate(brain, corpus, check_indices, episodes=6, seed0=9000, norms=None,
+             decode=None):
     """corpus arrays must already be in the brain's input units."""
     report = {"agreement": agreement(brain, corpus, check_indices)}
     print(f"agreement mean={report['agreement']['mean']} "
           f"refused={report['agreement']['refused']}", flush=True)
     live = []
     for i in range(episodes):
-        row = live_episode(brain_policy(brain, norms), seed0 + i)
+        row = live_episode(brain_policy(brain, norms, decode), seed0 + i)
         print(f"live seed={row['seed']} path={row['path']} "
               f"kills={row['kills']} refusals={row['refusals']}", flush=True)
         live.append(row)

@@ -166,7 +166,7 @@ def main():
     corpus = norms_holder = None
     while True:
         for path in sorted(glob.glob(
-                os.path.join(args.exports, "*_b*.json.gz"))):
+                os.path.join(args.exports, "*_b*.json.gz")), reverse=True):
             meta_path = path.replace(".json.gz", ".meta.json")
             if not os.path.exists(meta_path) or not os.path.exists(
                     nz.sibling_path(path)):

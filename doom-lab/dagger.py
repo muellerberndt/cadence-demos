@@ -25,10 +25,52 @@ from doomlab import (DoomLab, FRAME_SKIP, Teacher, brain_view,
                      buttons_from_scores, targets_from_buttons)
 from train_self import foresight_targets
 
-LIVE_BUDGET = 384
+LIVE_BUDGET = 512
 
 
-def student_episode_with_labels(brain, seed, norms, streams, decisions=1050):
+def calibrate(brain, corpus, rows, streams, n=150, budget=512):
+    """Per-button decode thresholds and score means from fixed probe rows.
+
+    Recomputed every round: admission moves the score distribution, so the
+    operating point follows the policy instead of the run's first hour.
+    """
+    picks = random.Random(1234).sample(list(rows), min(n, len(rows)))
+    scores, truths = [], []
+    for i in picks:
+        r = brain.settle(ev.corpus_inputs(corpus, i, streams), budget=budget)
+        if not r["qualified"]:
+            continue
+        scores.append(r["outputs"]["motor"])
+        truths.append(corpus["buttons"][i])
+    S = np.array(scores)
+    T = np.array(truths, int)
+    base = T.mean(0)
+    thresholds = [float(np.quantile(S[:, j], 1 - base[j])) if base[j] > 0
+                  else None for j in range(S.shape[1])]
+    return {"thresholds": thresholds,
+            "score_mean": S.mean(0).round(3).tolist()}
+
+
+def calibrated_decode(calibration):
+    thresholds = calibration["thresholds"]
+
+    def decode(motor):
+        b = [1 if t is not None and s > t else 0
+             for s, t in zip(motor, thresholds)]
+        for i, j in ((0, 7), (1, 2), (5, 6)):
+            if b[i] and b[j]:
+                mi = motor[i] - (thresholds[i] or 0.0)
+                mj = motor[j] - (thresholds[j] or 0.0)
+                keep = i if mi >= mj else j
+                b[i] = 1 if keep == i else 0
+                b[j] = 1 if keep == j else 0
+        return b
+
+    return decode
+
+
+def student_episode_with_labels(brain, seed, norms, streams, decisions=1050,
+                                decode=None):
     """Student drives with its full input set; teacher labels every frame.
 
     Each recorded witness carries the inputs the student actually settled
@@ -41,6 +83,7 @@ def student_episode_with_labels(brain, seed, norms, streams, decisions=1050):
         lab.new_episode()
         teacher = Teacher()
         feeder = ev.ContextFeeder(streams)
+        decode = decode or buttons_from_scores
         witnesses, labels = [], []
         steps = refusals = 0
         while not lab.finished and steps < decisions:
@@ -56,7 +99,7 @@ def student_episode_with_labels(brain, seed, norms, streams, decisions=1050):
             labels.append(label)
             result = brain.step(inputs, budget=LIVE_BUDGET)
             if result["qualified"]:
-                feeder.last = buttons_from_scores(result["outputs"]["motor"])
+                feeder.last = decode(result["outputs"]["motor"])
             else:
                 refusals += 1
             lab.act(feeder.last, FRAME_SKIP)
@@ -83,16 +126,22 @@ def replay_targets(corpus, i, teach_outcome):
 
 def admit_round(brain, examples, batch_size, rng, epochs=1):
     order = list(range(len(examples)))
-    admitted = refused = 0
+    admitted = refused = batches = 0
+    started = time.perf_counter()
     for _ in range(epochs):
         rng.shuffle(order)
         for start in range(0, len(order), batch_size):
             batch = [examples[i] for i in order[start:start + batch_size]]
             result = brain.observe_batch(batch)
+            batches += 1
             if result["accepted"]:
                 admitted += len(batch)
             else:
                 refused += 1
+            if batches % 10 == 0:
+                print(f"admit {admitted}/{len(order) * epochs} "
+                      f"sweeps={result['sweeps']} "
+                      f"{time.perf_counter() - started:.0f}s", flush=True)
     return admitted, refused
 
 
@@ -134,18 +183,25 @@ def main():
     teach_outcome = ("outcome" in ev.output_streams(brain)
                      and all(k in corpus for k in ("health", "ammo", "kills")))
     log = {"start_checkpoint": args.checkpoint, "rounds": []}
+    calibration = calibrate(brain, corpus, check_idx, streams)
+    print("calibration:", json.dumps(calibration), flush=True)
+    log["baseline_calibration"] = calibration
     log["baseline"] = ev.evaluate(brain, corpus, check_idx,
-                                  episodes=args.eval_episodes, norms=norms)
+                                  episodes=args.eval_episodes, norms=norms,
+                                  decode=calibrated_decode(calibration))
     print("baseline:", json.dumps(log["baseline"]["live"]), flush=True)
     for round_index in range(1, args.rounds + 1):
+        decode = calibrated_decode(calibration)
         witnesses, labels, stats = [], [], []
         for e in range(args.episodes):
             w, l, s = student_episode_with_labels(
                 brain, seed=7000 + 100 * round_index + e, norms=norms,
-                streams=streams, decisions=args.decisions)
+                streams=streams, decisions=args.decisions, decode=decode)
             witnesses.extend(w)
             labels.extend(l)
             stats.append(s)
+            print(f"round {round_index} episode {e + 1}: "
+                  f"{json.dumps(s)}", flush=True)
         corrections = [
             (inputs, {"motor": targets_from_buttons(label)})
             for inputs, label in zip(witnesses, labels)
@@ -159,8 +215,12 @@ def main():
         started = time.perf_counter()
         admitted, refused = admit_round(
             brain, corrections + replay, args.batch_size, rng)
+        calibration = calibrate(brain, corpus, check_idx, streams)
+        print(f"round {round_index} calibration:",
+              json.dumps(calibration), flush=True)
         evaluation = ev.evaluate(brain, corpus, check_idx,
-                                 episodes=args.eval_episodes, norms=norms)
+                                 episodes=args.eval_episodes, norms=norms,
+                                 decode=calibrated_decode(calibration))
         entry = {
             "round": round_index,
             "student_episodes": stats,
@@ -169,6 +229,7 @@ def main():
             "admitted": admitted,
             "refused_batches": refused,
             "train_seconds": round(time.perf_counter() - started, 1),
+            "calibration": calibration,
             "evaluation": evaluation,
         }
         log["rounds"].append(entry)
@@ -179,6 +240,9 @@ def main():
         with gzip.open(round_path, "wt") as f:
             f.write(snapshot)
         nz.save(norms, nz.sibling_path(round_path))
+        with open(round_path.replace(".json.gz", ".meta.json"), "w") as f:
+            json.dump({"label": f"DAgger round {round_index}",
+                       "deep": {"probe": calibration}}, f)
         log[f"round_{round_index}_sha256"] = hashlib.sha256(
             snapshot.encode()).hexdigest()
     with open(os.path.join(args.out, "dagger_log.json"), "w") as f:
