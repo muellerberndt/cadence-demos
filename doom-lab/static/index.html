@@ -339,16 +339,18 @@ function lineChart(svg, rows, series, yMax) {
           text-anchor="end">${(yMax*f).toFixed(1)}</text>`;
   }
   for (const s of series) {
-    const pts = rows.map(r => `${X(r.batches)},${Y(r[s.key] ?? 0)}`).join(" ");
+    const present = rows.filter(r => r[s.key] != null);
+    if (!present.length) continue;
+    const pts = present.map(r => `${X(r.batches)},${Y(r[s.key])}`).join(" ");
     g += `<polyline points="${pts}" fill="none" stroke="${s.color}"
           stroke-width="2" stroke-linejoin="round"/>`;
-    const last = rows[rows.length - 1];
-    g += `<text x="${Math.min(X(last.batches)+4, W-4)}" y="${Y(last[s.key] ?? 0)+3}"
-          fill="#9b8a72" font-size="8">${(last[s.key] ?? 0).toFixed(2)}</text>`;
-    for (const r of rows) {
-      g += `<circle cx="${X(r.batches)}" cy="${Y(r[s.key] ?? 0)}" r="10"
+    const last = present[present.length - 1];
+    g += `<text x="${Math.min(X(last.batches)+4, W-4)}" y="${Y(last[s.key])+3}"
+          fill="#9b8a72" font-size="8">${last[s.key].toFixed(2)}</text>`;
+    for (const r of present) {
+      g += `<circle cx="${X(r.batches)}" cy="${Y(r[s.key])}" r="10"
             fill="transparent" data-tip="batch ${r.batches}
-${s.name}: ${(r[s.key] ?? 0).toFixed(3)}"/>`;
+${s.name}: ${r[s.key].toFixed(3)}"/>`;
     }
   }
   g += `<text x="${W-R}" y="${H-4}" fill="#6f6353" font-size="8"
