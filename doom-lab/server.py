@@ -303,6 +303,9 @@ async def training(_):
                 row["forward_recall"] = recalls[0]
                 row["mean_recall"] = round(sum(known) / len(known), 3) \
                     if known else None
+                row["pressed_recall"] = recalls
+                row["pred_press"] = dp.get("pred_press_rate")
+                row["deep_refused"] = dp.get("refused")
             live = deep.get("live") or []
             if live:
                 row["live_path"] = round(

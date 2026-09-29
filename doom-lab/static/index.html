@@ -210,8 +210,12 @@
     <svg id="chart-live" viewBox="0 0 430 110" preserveAspectRatio="none"></svg>
   </div>
   <div id="effort" style="display:none">
-    <h3>ADMISSION EFFORT &mdash; SWEEPS PER BATCH</h3>
+    <h3>ADMISSION EFFORT &mdash; SWEEPS &amp; SECONDS PER BATCH</h3>
     <svg id="chart-effort" viewBox="0 0 430 110" preserveAspectRatio="none"></svg>
+  </div>
+  <div id="btn-deep" style="display:none">
+    <h3 id="btn-deep-title">BUTTONS &mdash; RECALL / PRESS RATE</h3>
+    <div id="btn-deep-table"></div>
   </div>
   <details><summary>data table</summary><div id="t-table"></div></details>
 </div>
@@ -367,6 +371,14 @@ async function loadTraining() {
     p.line ? `batch ${p.batch} · rows ${p.rows} · eta ${(p.eta_min/60).toFixed(1)} h`
            : "warming up — no progress line yet";
   status += ` · ${d.exports.length} exports fetched`;
+  const lastCkpt = d.exports.length
+    ? Math.max(...d.exports.map(e => e.batches)) : 0;
+  const recent = (p.series || []).filter(s => s.batch > lastCkpt);
+  const pool = recent.length ? recent : (p.series || []).slice(-1);
+  if (pool.length) {
+    const avg = pool.reduce((a, s) => a + s.seconds, 0) / pool.length;
+    status += ` · ~${avg.toFixed(0)} s/batch since ckpt`;
+  }
   document.getElementById("t-status").textContent = status;
   if (!d.exports.length) return;
   lineChart(document.getElementById("chart-acc"), d.exports, [
@@ -390,15 +402,34 @@ async function loadTraining() {
     document.getElementById("effort").style.display = "block";
     lineChart(document.getElementById("chart-effort"), series, [
       {key: "sweeps", name: "sweeps per batch", color: "#c25b5b"},
+      {key: "seconds", name: "seconds per batch", color: "#7a9fd0"},
     ], Math.max(100, Math.max(...series.map(s => s.sweeps)) * 1.2));
+  }
+  const deepest = [...d.exports].reverse()
+    .find(e => e.pressed_recall && e.pressed_recall.length);
+  if (deepest) {
+    const names = ["FWD", "TL", "TR", "ATK", "USE", "SL", "SR", "BCK"];
+    document.getElementById("btn-deep").style.display = "block";
+    document.getElementById("btn-deep-title").textContent =
+      `BUTTONS AT BATCH ${deepest.batches} — RECALL / PRESS RATE`;
+    document.getElementById("btn-deep-table").innerHTML =
+      "<table><tr>" + names.map(n => `<th>${n}</th>`).join("") + "</tr><tr>" +
+      deepest.pressed_recall.map(v =>
+        `<td>${v == null ? "·" : v.toFixed(2)}</td>`).join("") +
+      "</tr><tr>" +
+      (deepest.pred_press || []).map(v =>
+        `<td>${v == null ? "·" : v.toFixed(2)}</td>`).join("") +
+      "</tr></table>";
   }
   document.getElementById("t-table").innerHTML =
     "<table><tr><th>batches</th><th>mean</th><th>fwd</th><th>fwd recall</th>" +
-    "<th>fire</th><th>kill MAE</th><th>path</th><th>fwd rate</th></tr>" +
+    "<th>fire</th><th>kill MAE</th><th>path</th><th>kills</th>" +
+    "<th>fwd rate</th></tr>" +
     d.exports.map(e => `<tr><td>${e.batches}</td><td>${e.mean_acc}</td>` +
       `<td>${e.forward_acc}</td><td>${e.forward_recall ?? "·"}</td>` +
       `<td>${e.fire_acc}</td><td>${e.kill_mae}</td>` +
-      `<td>${e.live_path ?? "·"}</td><td>${e.forward_rate ?? "·"}</td></tr>`
+      `<td>${e.live_path ?? "·"}</td><td>${e.live_kills ?? "·"}</td>` +
+      `<td>${e.forward_rate ?? "·"}</td></tr>`
     ).join("") +
     "</table>";
 }
