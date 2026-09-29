@@ -4,6 +4,18 @@ This is the pipeline that produced the shipped brains, end to end. Every
 stage writes receipts (JSON) so results stay auditable. Times below are from
 an Apple M4; a many-core cloud box shortens the sweep linearly.
 
+> **Warning.** The large, deep layouts (`flagship`, `ultimate`) are expensive
+> and sensitive to train. One batch-96 admission of the 327k-edge `ultimate`
+> brain takes 3.5 to 6.5 minutes on a 64-thread cloud machine, one pass over
+> a 20k-witness corpus takes half a day there, and the same run on a laptop
+> takes days. The outcome depends on many coupled hyperparameters: parameter
+> prior, batch size, sweep budgets, target encoding, `forward_keep`, input
+> standardization and decode calibration each moved measured recall by large
+> factors in our runs, and a mis-set one produces a brain that ranks well on
+> its receipts and stands frozen in the game. Start with the small layouts,
+> change one setting at a time, and read every receipt before scaling up.
+> Section 7 lists what our large runs measured.
+
 ## 0. One-time setup
 
 ```sh
@@ -67,7 +79,7 @@ Notes that matter:
   ordinary-composition control** (same patch counts, `observes` replaced by
   plain inputs). Claims about recursion require that pair.
 - The receipt contains the bootstrap history, per-button agreement,
-  pressed-recall (the honest number for rare actions), live kills vs
+  pressed-recall (the number that matters for rare actions), live kills vs
   control, and the checkpoint hash.
 
 ## 4. DAgger: correct the student's own mistakes
@@ -114,6 +126,10 @@ python train_flagship.py --layout ultimate \
   --export-minutes 60 --threads 16
 ```
 
+Do not raise `--threads` past 64: batched admission saturates at or below
+64 threads, and 128 threads measured 13 to 26 % slower than 64 on identical
+re-admissions of a real batch.
+
 Exports land in `runs/ultimate/exports/`; copy any of them into
 `data/models/` to play that age of the brain. The run is resumable: a
 `progress.json` sidecar plus the latest export restart it with `--resume`.
@@ -149,7 +165,50 @@ echo '{"label": "My player"}'         > data/models/my-player.meta.json
 It appears in the lab's dropdown immediately (no restart), or share it with
 someone by pressing EXPORT and letting them IMPORT the file.
 
-## Honest boundaries
+## 7. Measured results at ultimate scale
+
+One `ultimate` lineage (336 patches, 327,104 edges, five input streams,
+batch 96, a 20k-witness multi-map corpus) trained on a 64-vCPU cloud box
+with hourly checkpoint exports and fixed-row deep probes. The run was
+stopped at batch 65 of a planned 208 after the probes went flat. Numbers
+below come from those receipts; the same probes run on any brain you train
+with this pipeline.
+
+- **Settling economics.** The warmup ramp cut the first admission from
+  9,236 to 640 sweeps. A batch-96 admission then ran 438 to 771 sweeps,
+  3.5 to 6.5 minutes at 64 threads.
+- **Ranking is learned early.** Mean AUC over the eight buttons reached
+  0.90 at the first export and held between 0.90 and 0.92 through batch
+  63. Forward AUC opened at 0.85 and sat between 0.78 and 0.83 afterwards.
+- **The decode operating point decides whether the brain moves.** The
+  ±0.6 motor targets are heavily imbalanced, so each button's settled
+  score mean sits near the base-rate mean of its targets (forward:
+  measured −0.284); zero-threshold decode then freezes the policy, with
+  closed-loop path 0.0 while the ranking stays sound. Per-button
+  thresholds calibrated on teacher score quantiles raised forward pressed
+  recall from 0.34 to 0.64 at the same checkpoint and unfroze the closed
+  loop (path 0 → 73.6 and 201.0 on the two probe seeds). The lab's
+  RAW / CAL / TOP-1 decode modes and `dagger.py`'s per-round calibration
+  come from this measurement.
+- **Late batches were net-negative for deployability.** From batch 14 to
+  63, calibrated forward recall held between 0.59 and 0.66 while raw
+  forward recall fell from 0.48 to 0.13, forward score p90 went negative,
+  and settle refusals at the probe budget of 384 rose from 0 to 16 to 52
+  per 150 rows. Longer training bought nothing after the first day.
+- **A linear baseline outranks the big brain at this scale.** Ridge
+  regression on the same standardized rows reaches forward AUC 0.856 on
+  the consumed rows and 0.871 on the full corpus, above the brain's 0.78
+  to 0.83. At small scale the order flips: on 2k-row button prediction
+  the brain beats ridge (0.763 to 0.781 against 0.735, prior-dependent),
+  with the largest margins on sub-1 % actions. The parameter prior drives
+  that margin; see the bootstrap study in the cadence repository
+  ([docs/BOOTSTRAP.md](https://github.com/muellerberndt/cadence/blob/main/docs/BOOTSTRAP.md)).
+- **No large checkpoint clears the live control.** Kills were 0 in every
+  short probe episode, and the best calibrated closed-loop path at batch
+  63 was 52.5 on all three probe seeds. Teacher-mixed DAgger rollouts are
+  implemented; DAgger rounds at this scale are work in progress.
+
+## Boundaries
 
 Settlement qualification is a numerical property, not task success; a
 qualified brain can still play badly. Teaching and DAgger are supervised

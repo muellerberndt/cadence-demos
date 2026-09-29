@@ -50,7 +50,7 @@ python server.py                  # then open http://localhost:8666
   not in the spectator UI: against large brains, live admission is too slow
   to feel. Train offline instead — see [TRAINING.md](TRAINING.md).
 
-## What is honestly claimed
+## What is claimed
 
 Learning here is Cadence's supervised witness admission: batches commit only
 when the whole settlement qualifies, and refusals change nothing. Teaching
@@ -60,6 +60,27 @@ outcomes (health/ammo deltas, kill events, view change) — targets supplied
 by reality, not by a teacher. Trained brains are evaluated against a
 marginal-action control and a matched non-observer control before any claim
 about them is made; see [TRAINING.md](TRAINING.md).
+
+## Training results
+
+The measured picture, from the receipts of our own runs of the pipeline in
+[TRAINING.md](TRAINING.md): at small scale the brain wins. On 2k-row button
+prediction it beats a ridge baseline on every real task we probed, with the
+largest margins on rare actions. At large scale the picture inverts. The
+327k-edge `ultimate` lineage ranks buttons well (mean AUC 0.90 to 0.92),
+yet a ridge baseline on the same rows outranks its forward button, live
+play moves only under calibrated decode thresholds, and no large checkpoint
+beats the marginal-action control in the game. Section 7 of
+[TRAINING.md](TRAINING.md) has the numbers and the operating-point
+analysis behind the lab's RAW / CAL / TOP-1 decode modes.
+
+> **Warning.** Training the large, deep layouts is slow and depends on many
+> coupled hyperparameters (parameter prior, batch size, sweep budgets,
+> target encoding, decode calibration). One admission batch of the
+> `ultimate` brain takes minutes on a 64-thread machine; a run takes half a
+> day there and days on a laptop, and a single mis-set knob can produce a
+> brain that scores well on receipts and stands frozen in the game. Read
+> [TRAINING.md](TRAINING.md) in full before attempting one.
 
 ## Files
 
