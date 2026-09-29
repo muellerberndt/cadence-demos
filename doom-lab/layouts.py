@@ -143,6 +143,44 @@ def periphery_history_shape():
     return History(PHIST_SIZE, steps=PHIST_STEPS).shape
 
 
+def build_ultimate2(seed, parameter_prior=0.1, device="cpu"):
+    """Ultimate with a wide policy read: motor decisions draw on every
+    processing stage instead of the reflection bottleneck alone."""
+    sizes = SIZES["ultimate"]
+    cortex = Cortex(seed=seed, device=device, settle_budget=SETTLE_BUDGET,
+                    parameter_prior=parameter_prior)
+    periphery = cortex.input("periphery", shape=(20, 32))
+    fovea = cortex.input("fovea", shape=(6, 64))
+    efference = cortex.input("efference", shape=(len(BUTTONS),))
+    fovea_history = cortex.input("fovea_history", shape=history_shape())
+    periphery_history = cortex.input("periphery_history",
+                                     shape=periphery_history_shape())
+    scene = cortex.column("scene", patches=sizes["scene"], inputs=periphery)
+    aim = cortex.column("aim", patches=sizes["aim"],
+                        inputs=(fovea, fovea_history))
+    integration = cortex.observer(
+        "integration", patches=sizes["integration"],
+        inputs=(periphery, fovea, efference, fovea_history,
+                periphery_history),
+        observes=(scene, aim),
+    )
+    reflection = cortex.observer(
+        "reflection", patches=sizes["reflection"],
+        observes=(scene, aim, integration),
+    )
+    policy = cortex.observer(
+        "policy", patches=48, inputs=(efference,),
+        observes=(scene, aim, integration, reflection),
+    )
+    foresight = cortex.observer(
+        "foresight", patches=max(8, FORESIGHT * 4), inputs=(efference,),
+        observes=(integration,),
+    )
+    cortex.output("motor", shape=(len(BUTTONS),), reads=policy)
+    cortex.output("outcome", shape=(FORESIGHT,), reads=foresight)
+    return cortex.build()
+
+
 def build_ultimate(seed, parameter_prior=0.1, device="cpu"):
     """The lineage brain: five sensory streams, motor + foresight heads.
 

@@ -23,7 +23,7 @@ import norms as nz
 from cadence.memory import History
 from doomlab import BUTTONS, targets_from_buttons
 from layouts import (HIST_SIZE, HIST_STEPS, PHIST_SIZE, PHIST_STEPS,
-                     build_flagship, build_ultimate)
+                     build_flagship, build_ultimate, build_ultimate2)
 from train_self import foresight_targets, usable_rows
 
 EFF_ON, EFF_OFF = 0.6, -0.6
@@ -135,7 +135,8 @@ def main():
                         help="probe/export at least every N batches")
     parser.add_argument("--export-minutes", type=float, default=None,
                         help="time-based export cadence (overrides batches)")
-    parser.add_argument("--layout", choices=("flagship", "ultimate"),
+    parser.add_argument("--layout",
+                        choices=("flagship", "ultimate", "ultimate2"),
                         default="flagship")
     parser.add_argument("--threads", type=int, default=10)
     parser.add_argument("--resume", action="store_true")
@@ -161,7 +162,7 @@ def main():
           flush=True)
     corpus["fovea_history"] = window_matrix(
         corpus, needed, "fovea", half_fovea, HIST_SIZE, HIST_STEPS)
-    if args.layout == "ultimate":
+    if args.layout in ("ultimate", "ultimate2"):
         corpus["periphery_history"] = window_matrix(
             corpus, needed, "periphery", quarter_periphery,
             PHIST_SIZE, PHIST_STEPS)
@@ -181,7 +182,8 @@ def main():
             brain = Brain.from_snapshot(f.read(), device="cpu")
         print(f"resumed from {exports[-1]} at {done} rows", flush=True)
     else:
-        builder = build_ultimate if args.layout == "ultimate" else build_flagship
+        builder = {"flagship": build_flagship, "ultimate": build_ultimate,
+                   "ultimate2": build_ultimate2}[args.layout]
         brain = builder(args.seed, parameter_prior=args.parameter_prior)
 
     rng = random.Random(args.seed + 5)

@@ -74,7 +74,7 @@ def calibrated_decode(calibration):
 
 
 def student_episode_with_labels(brain, seed, norms, streams, decisions=1050,
-                                decode=None):
+                                decode=None, beta=0.0):
     """Student drives with its full input set; teacher labels every frame.
 
     Each recorded witness carries the inputs the student actually settled
@@ -88,6 +88,7 @@ def student_episode_with_labels(brain, seed, norms, streams, decisions=1050,
         teacher = Teacher()
         feeder = ev.ContextFeeder(streams)
         decode = decode or buttons_from_scores
+        mix = random.Random(seed * 31 + 7)
         witnesses, labels = [], []
         steps = refusals = 0
         while not lab.finished and steps < decisions:
@@ -106,6 +107,10 @@ def student_episode_with_labels(brain, seed, norms, streams, decisions=1050,
                 feeder.last = decode(result["outputs"]["motor"])
             else:
                 refusals += 1
+            if beta > 0 and mix.random() < beta:
+                # Mixed rollout: the teacher acts, the state distribution
+                # reaches its route; efference stays the executed action.
+                feeder.last = [int(b) for b in label]
             lab.act(feeder.last, FRAME_SKIP)
             steps += 1
         import vizdoom as vzd
@@ -162,6 +167,10 @@ def main():
     parser.add_argument("--decisions", type=int, default=1050,
                         help="decision steps per student episode")
     parser.add_argument("--eval-episodes", type=int, default=6)
+    parser.add_argument("--beta0", type=float, default=0.0,
+                        help="round-1 teacher-mixing rate")
+    parser.add_argument("--beta-decay", type=float, default=0.2,
+                        help="mixing reduction per round")
     args = parser.parse_args()
     import torch
     torch.set_num_threads(args.threads)
@@ -196,11 +205,14 @@ def main():
     print("baseline:", json.dumps(log["baseline"]["live"]), flush=True)
     for round_index in range(1, args.rounds + 1):
         decode = calibrated_decode(calibration)
+        beta = max(0.0, args.beta0 - args.beta_decay * (round_index - 1))
+        print(f"round {round_index} beta={beta}", flush=True)
         witnesses, labels, stats = [], [], []
         for e in range(args.episodes):
             w, l, s = student_episode_with_labels(
                 brain, seed=7000 + 100 * round_index + e, norms=norms,
-                streams=streams, decisions=args.decisions, decode=decode)
+                streams=streams, decisions=args.decisions, decode=decode,
+                beta=beta)
             witnesses.extend(w)
             labels.extend(l)
             stats.append(s)
