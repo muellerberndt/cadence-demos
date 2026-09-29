@@ -176,8 +176,14 @@ def build_ultimate2(seed, parameter_prior=0.1, device="cpu"):
         "foresight", patches=max(8, FORESIGHT * 4), inputs=(efference,),
         observes=(integration,),
     )
+    action = cortex.input("action", shape=(len(BUTTONS),))
+    value = cortex.observer(
+        "valuation", patches=8, inputs=(action,),
+        observes=(integration, policy),
+    )
     cortex.output("motor", shape=(len(BUTTONS),), reads=policy)
     cortex.output("outcome", shape=(FORESIGHT,), reads=foresight)
+    cortex.output("value", shape=(1,), reads=value)
     return cortex.build()
 
 

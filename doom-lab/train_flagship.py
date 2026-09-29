@@ -27,6 +27,8 @@ from layouts import (HIST_SIZE, HIST_STEPS, PHIST_SIZE, PHIST_STEPS,
 from train_self import foresight_targets, usable_rows
 
 EFF_ON, EFF_OFF = 0.6, -0.6
+ACTION_ZEROS = None  # set when the layout declares an action input
+TARGET_OFF = -0.6    # unpressed motor target; asymmetric via --target-off
 
 
 def half_fovea(row):
@@ -68,6 +70,10 @@ def window_matrix(corpus, rows_needed, source, reducer, size, steps):
     return out
 
 
+def motor_targets(buttons):
+    return [0.6 if b else TARGET_OFF for b in buttons]
+
+
 def example(corpus, i):
     eff = [EFF_ON if b else EFF_OFF for b in corpus["efference"][i]]
     inputs = {"periphery": corpus["periphery"][i].tolist(),
@@ -76,9 +82,11 @@ def example(corpus, i):
               "fovea_history": corpus["fovea_history"][i].tolist()}
     if "periphery_history" in corpus:
         inputs["periphery_history"] = corpus["periphery_history"][i].tolist()
+    if ACTION_ZEROS is not None:
+        inputs["action"] = ACTION_ZEROS
     return (
         inputs,
-        {"motor": targets_from_buttons(corpus["buttons"][i]),
+        {"motor": motor_targets(corpus["buttons"][i]),
          "outcome": foresight_targets(corpus, i)},
     )
 
@@ -138,9 +146,16 @@ def main():
     parser.add_argument("--layout",
                         choices=("flagship", "ultimate", "ultimate2"),
                         default="flagship")
+    parser.add_argument("--target-off", type=float, default=-0.6,
+                        help="unpressed motor target; -0.2 weakens "
+                             "the base-rate pull on rare buttons")
     parser.add_argument("--threads", type=int, default=10)
     parser.add_argument("--resume", action="store_true")
     args = parser.parse_args()
+    global TARGET_OFF, ACTION_ZEROS
+    TARGET_OFF = args.target_off
+    if args.layout == "ultimate2":
+        ACTION_ZEROS = [0.0] * len(BUTTONS)
     import torch
     torch.set_num_threads(args.threads)
     os.makedirs(args.out, exist_ok=True)
