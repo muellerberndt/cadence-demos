@@ -380,6 +380,11 @@ async function loadTraining() {
   if (pool.length) {
     const avg = pool.reduce((a, s) => a + s.seconds, 0) / pool.length;
     status += ` · ~${avg.toFixed(0)} s/batch since ckpt`;
+    const m = (p.rows || "").match(/(\d+)\/(\d+)/);
+    if (m && !p.complete) {
+      const eta = (+m[2] - +m[1]) / 96 * avg / 3600;
+      status += ` · ~${eta.toFixed(1)} h at recent pace`;
+    }
   }
   document.getElementById("t-status").textContent = status;
   if (!d.exports.length) return;
