@@ -1,0 +1,7 @@
+aiohttp
+pillow
+numpy
+torch
+ale-py>=0.10
+gymnasium
+cadence-net>=0.50

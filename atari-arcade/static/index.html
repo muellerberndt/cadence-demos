@@ -1,0 +1,559 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cadence Arcade</title>
+<style>
+  :root { --bg: #070605; --panel: #0f0c0a; --line: #2a201b;
+          --amber: #e8901c; --bone: #d8cbb8; --dim: #6f6353;
+          --green: #4fc06a; --cyan: #4fb8c0; }
+  body { margin: 0; background: var(--bg); color: var(--bone);
+         font-family: "SF Mono", ui-monospace, monospace; }
+  header { padding: 14px 24px; border-bottom: 1px solid var(--line);
+           display: flex; align-items: baseline; gap: 16px; }
+  h1 { margin: 0; font-size: 15px; letter-spacing: .34em; color: var(--amber);
+       text-shadow: 0 0 12px rgba(232, 144, 28, .5); }
+  header span { color: var(--dim); font-size: 11px; }
+  #rows { max-width: 1560px; margin: 0 auto; padding: 16px 24px;
+          display: flex; flex-direction: column; gap: 20px; }
+  .row { background: var(--panel); border: 1px solid var(--line);
+         border-radius: 10px; padding: 12px; }
+  .head { display: flex; justify-content: space-between; align-items: baseline;
+          padding: 2px 4px 8px; }
+  .head b { color: var(--amber); font-size: 14px; letter-spacing: .16em; }
+  .head span { font-size: 12px; color: var(--bone); }
+  .hud { display: flex; gap: 10px; padding: 0 0 10px; flex-wrap: wrap; }
+  .stat { flex: 1; min-width: 128px; background: #0a0807;
+          border: 1px solid var(--line); border-radius: 6px;
+          padding: 8px 10px; position: relative; }
+  .stat small { display: block; font-size: 9px; letter-spacing: .18em;
+                color: var(--dim); text-transform: uppercase; }
+  .stat b { font-size: 22px; font-weight: 600; color: var(--bone);
+            text-shadow: 0 0 10px rgba(216, 203, 184, .25); }
+  .stat b.up { color: var(--green);
+               text-shadow: 0 0 12px rgba(79, 192, 106, .5); }
+  .stat b.down { color: var(--cyan);
+                 text-shadow: 0 0 12px rgba(79, 184, 192, .5); }
+  .stat svg { position: absolute; right: 6px; bottom: 6px; opacity: .8; }
+  .body { display: flex; gap: 14px; align-items: stretch; }
+  .game { flex: 0 0 auto; }
+  .game canvas { width: 430px; display: block; image-rendering: pixelated;
+                 border: 1px solid var(--line); background: #000;
+                 border-radius: 6px; }
+  .net { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+  .net canvas { width: 100%; display: block;
+                border: 1px solid var(--line); border-radius: 6px;
+                background: radial-gradient(ellipse at 45% 40%,
+                  #0d0a08 0%, #070605 70%); }
+  .foot { display: flex; justify-content: space-between; gap: 16px;
+          padding: 8px 4px 0; font-size: 11px; color: var(--dim);
+          align-items: center; flex-wrap: wrap; }
+  .foot b { color: var(--green); }
+</style>
+</head>
+<body>
+<header><h1>CADENCE ARCADE</h1>
+  <span>cortical-column brains, born on page load, converging live ·
+  every fiber and number is measured, nothing is staged</span>
+  <span style="margin-left:auto">speed
+    <input id="pace" type="range" min="0" max="0.4" step="0.05" value="0"
+      style="vertical-align:middle"> <em id="pace-label"
+      style="font-style:normal">full</em></span></header>
+<div id="rows"></div>
+<script>
+fetch("/pace").then(r => r.json()).then(d => {
+  if (d.locked) {
+    document.getElementById("pace").disabled = true;
+    document.getElementById("pace-label").textContent = "live";
+  }
+});
+document.addEventListener("input", (e) => {
+  if (e.target.id !== "pace") return;
+  const v = e.target.value;
+  document.getElementById("pace-label").textContent =
+    v == 0 ? "full" : `${v}s/frame`;
+  fetch(`/pace?sleep=${v}`);
+});
+
+const BADGE_COLORS = {hatchling: "#6f6353", noob: "#c25b5b",
+                      intermediate: "#e0d24f", expert: "#4fc06a",
+                      legend: "#e8901c"};
+
+function spark(vals, w, h, color) {
+  if (!vals || vals.length < 2) return "";
+  const lo = Math.min(...vals), hi = Math.max(...vals);
+  const pts = vals.map((v, i) =>
+    `${(i * (w - 2) / (vals.length - 1) + 1).toFixed(1)},` +
+    `${(h - 2 - (hi > lo ? (v - lo) / (hi - lo) : 0.5) * (h - 4)).toFixed(1)}`
+  ).join(" ");
+  return `<svg width="${w}" height="${h}"><polyline points="${pts}"
+    fill="none" stroke="${color}" stroke-width="1.3"/></svg>`;
+}
+
+function cortex(canvas, graph) {
+  const W = canvas.width = 900, H = canvas.height = 470;
+  const tsz = graph.tile * graph.tile;
+  const retina = {x: 20, y: 118, w: 96, h: 214};
+  const nodes3 = [];
+  const columns = [];
+  for (const p of graph.populations) {
+    if (/^t\d+$/.test(p.name)) {
+      const t = parseInt(p.name.slice(1));
+      const gx = (t % graph.grid) - 1, gz = Math.floor(t / graph.grid) - 1;
+      const sheetY = 34 - (gx * gx + gz * gz) * 12;
+      columns[t] = {pop: p, gx, gz};
+      for (let i = 0; i < p.count; i++) {
+        nodes3[p.start + i] = [gx * 128, sheetY - i * 22, gz * 112];
+      }
+    } else if (p.name === "r") {
+      for (let i = 0; i < p.count; i++) {
+        const a = (i / p.count) * 6.283;
+        nodes3[p.start + i] = [Math.cos(a) * 170, 130, Math.sin(a) * 146];
+      }
+    } else if (p.name === "p") {
+      for (let i = 0; i < p.count; i++) {
+        const a = (i / p.count) * 6.283 + 0.35;
+        nodes3[p.start + i] = [Math.cos(a) * 100, 178, Math.sin(a) * 84];
+      }
+    } else if (p.name === "v") {
+      for (let i = 0; i < p.count; i++) {
+        const a = (i / p.count) * 6.283;
+        nodes3[p.start + i] = [Math.cos(a) * 40, -92 + Math.sin(a) * 22,
+                              Math.sin(a) * 36];
+      }
+    }
+  }
+  const cx = 470, cy = 236, persp = 850;
+  const project = (rot) => {
+    const cos = Math.cos(rot), sin = Math.sin(rot);
+    const pos = [];
+    nodes3.forEach((n, i) => {
+      if (!n) return;
+      const x = n[0] * cos + n[2] * sin;
+      const z = -n[0] * sin + n[2] * cos;
+      const sc = persp / (persp + z + 230);
+      pos[i] = [cx + x * sc, cy - n[1] * sc * 0.88, sc, z];
+    });
+    return pos;
+  };
+  const srcPos = (k, s, pos) => {
+    if (k === 0) {
+      if (s < graph.n_screen) {
+        const t = Math.floor(s / tsz), local = s % tsz;
+        const gx2 = (t % graph.grid) * graph.tile + (local % graph.tile);
+        const gy2 = Math.floor(t / graph.grid) * graph.tile
+          + Math.floor(local / graph.tile);
+        return [retina.x + gx2 / (graph.grid * graph.tile) * retina.w,
+                retina.y + gy2 / (graph.grid * graph.tile) * retina.h];
+      }
+      return [retina.x + 48, retina.y + retina.h + 28];
+    }
+    return pos[s] || [cx, cy];
+  };
+  return {W, H, columns, retina, project, srcPos, cx, cy};
+}
+
+function netRenderer(canvas, graph) {
+  const ctx = canvas.getContext("2d");
+  const A = cortex(canvas, graph);
+  let ripple = 0;
+  return (fs, meta) => {
+    const {W, H, columns, retina, project, srcPos, cx, cy} = A;
+    const st = fs.state || [], er = fs.errors || [], dl = fs.delta || [];
+    const t = performance.now() / 1000;
+    const rot = Math.sin(t * 0.21) * 0.42;
+    const pos = project(rot);
+    ctx.clearRect(0, 0, W, H);
+    ctx.font = "9px monospace";
+
+    const meanDelta = dl.length
+      ? dl.reduce((a, v) => a + v, 0) / dl.length : 0;
+    const breathe = 0.5 + 0.5 * Math.sin(t * 1.7);
+    ctx.save();
+    ctx.translate(cx, cy - 8);
+    if (!netRenderer._halo) {
+      const hc = document.createElement("canvas");
+      hc.width = 580; hc.height = 430;
+      const hctx = hc.getContext("2d");
+      const hg = hctx.createRadialGradient(290, 215, 50, 290, 215, 270);
+      hg.addColorStop(0, "rgba(232, 144, 28, 0.30)");
+      hg.addColorStop(1, "rgba(232, 144, 28, 0)");
+      hctx.fillStyle = hg;
+      hctx.beginPath();
+      hctx.ellipse(290, 215, 282, 206, 0, 0, 7);
+      hctx.fill();
+      netRenderer._halo = hc;
+    }
+    ctx.globalAlpha = (0.10 + 0.10 * breathe
+      + Math.min(0.25, meanDelta * 4)) / 0.30;
+    ctx.drawImage(netRenderer._halo, -290, -215);
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = "rgba(140, 110, 70, 0.25)";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.ellipse(0, 5, 264, 190, 0, 0, 7);
+    ctx.stroke();
+    ctx.restore();
+    ctx.fillStyle = "#6f6353";
+    ctx.fillText("ONE ORGAN · GLOBAL SETTLING · OVERLAP REPAIR",
+                 cx - 126, 24);
+
+    ctx.fillText("R E T I N A", retina.x, retina.y - 9);
+    if (meta.retina && meta.retina.length === 1764) {
+      if (!netRenderer._rc) {
+        netRenderer._rc = document.createElement("canvas");
+        netRenderer._rc.width = 42; netRenderer._rc.height = 42;
+      }
+      const rc = netRenderer._rc, rctx = rc.getContext("2d");
+      const im = rctx.createImageData(42, 42);
+      for (let i = 0; i < 1764; i++) {
+        const v = meta.retina[i];
+        im.data[i*4] = v; im.data[i*4+1] = v * .68; im.data[i*4+2] = v * .22;
+        im.data[i*4+3] = 255;
+      }
+      rctx.putImageData(im, 0, 0);
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(rc, retina.x, retina.y, retina.w, retina.h);
+    }
+    ctx.strokeStyle = "#3a2d24";
+    for (let g = 1; g < 3; g++) {
+      ctx.beginPath();
+      ctx.moveTo(retina.x + g * retina.w / 3, retina.y);
+      ctx.lineTo(retina.x + g * retina.w / 3, retina.y + retina.h);
+      ctx.moveTo(retina.x, retina.y + g * retina.h / 3);
+      ctx.lineTo(retina.x + retina.w, retina.y + g * retina.h / 3);
+      ctx.stroke();
+    }
+    ctx.strokeStyle = "#2a201b";
+    ctx.strokeRect(retina.x, retina.y, retina.w, retina.h);
+    ctx.fillStyle = "#6f6353";
+    ctx.fillText("MINICOLUMNS", cx - 34, H - 18);
+    ctx.fillText("REFLECTION RING", cx + 118, 52);
+    ctx.fillText("POLICY RING", cx - 34, 74);
+    ctx.fillText("VALUE NUCLEUS", cx - 40, H - 44);
+    // atari gamepad under the retina, lit by the executed action
+    const act = (meta.action || "NOOP").toUpperCase();
+    const jx = retina.x + 34, jy = retina.y + retina.h + 56;
+    const firing = act.includes("FIRE");
+    const dirs = {UP: [0, -1], DOWN: [0, 1], LEFT: [-1, 0], RIGHT: [1, 0]};
+    let dx = 0, dy = 0;
+    for (const [name, v] of Object.entries(dirs)) {
+      if (act.includes(name)) { dx = v[0]; dy = v[1]; }
+    }
+    ctx.strokeStyle = "#3a2d24";
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(jx, jy, 21, 0, 7); ctx.stroke();
+    for (const [name, v] of Object.entries(dirs)) {
+      const on = act.includes(name);
+      ctx.fillStyle = on ? "#e8901c" : "#3a2d24";
+      ctx.beginPath();
+      const ax = jx + v[0] * 15, ay = jy + v[1] * 15;
+      ctx.moveTo(ax + v[1] * 5 - v[0] * 2, ay + v[0] * 5 - v[1] * 2);
+      ctx.lineTo(ax - v[1] * 5 - v[0] * 2, ay - v[0] * 5 - v[1] * 2);
+      ctx.lineTo(ax + v[0] * 7, ay + v[1] * 7);
+      ctx.fill();
+    }
+    ctx.beginPath();
+    ctx.arc(jx + dx * 8, jy + dy * 8, 7, 0, 7);
+    ctx.fillStyle = (dx || dy) ? "#e8901c" : "#6f6353";
+    ctx.fill();
+    const fx = retina.x + 92, fy = jy;
+    ctx.beginPath(); ctx.arc(fx, fy, 11, 0, 7);
+    ctx.fillStyle = firing ? "#e05a3a" : "#3a2d24";
+    ctx.fill();
+    if (firing) {
+      ctx.strokeStyle = "rgba(224, 90, 58, 0.7)";
+      ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.arc(fx, fy, 15, 0, 7); ctx.stroke();
+    }
+    ctx.fillStyle = "#6f6353";
+    ctx.fillText("FIRE", fx - 10, fy + 26);
+    ctx.fillText(act, retina.x, jy + 40);
+
+    ctx.globalCompositeOperation = "lighter";
+    const buckets = new Map();
+    const hot = [];
+    for (const [k, s, tgt, w] of graph.edges) {
+      const P = pos[tgt]; if (!P) continue;
+      const S = srcPos(k, s, pos);
+      const fire = k === 0 ? 0.3
+        : Math.min(1, (dl[s] ?? 0) * 8) * 0.75
+          + Math.min(1, Math.abs(st[s] ?? 0) / 0.6) * 0.25;
+      const depthScale = (P[2] ?? 1);
+      const a = Math.min(0.9, Math.abs(w)) * (0.07 + 0.93 * fire)
+        * meta.excite * (0.5 + 0.5 * depthScale);
+      if (a < 0.09) continue;
+      const col = k === 0 ? "in" : (w >= 0 ? "ex" : "ih");
+      const ab = Math.min(4, Math.floor(a * 5));
+      const wb = Math.abs(w) > 0.9 ? 2 : 1;
+      const key = `${col}${ab}${wb}`;
+      const mx = (S[0] + P[0]) / 2 + (cx - (S[0] + P[0]) / 2) * 0.25;
+      const my = (S[1] + P[1]) / 2 + (cy - (S[1] + P[1]) / 2) * 0.25;
+      let b = buckets.get(key);
+      if (!b) {
+        b = {col, a: (ab + 0.5) / 5, w: wb, segs: []};
+        buckets.set(key, b);
+      }
+      b.segs.push([S[0], S[1], mx, my, P[0], P[1]]);
+      if (fire > 0.55 && k !== 0) hot.push([S, [mx, my], P, a]);
+    }
+    const COLS = {in: "140, 120, 90", ex: "232, 144, 28",
+                  ih: "79, 184, 192"};
+    for (const b of buckets.values()) {
+      ctx.strokeStyle = `rgba(${COLS[b.col]}, ${b.col === "in"
+        ? b.a * 0.28 : b.a})`;
+      ctx.lineWidth = b.col === "in" ? 0.5 : b.w;
+      ctx.beginPath();
+      for (const g of b.segs) {
+        ctx.moveTo(g[0], g[1]);
+        ctx.quadraticCurveTo(g[2], g[3], g[4], g[5]);
+      }
+      ctx.stroke();
+    }
+    ctx.lineDashOffset = -t * 30;
+    ctx.setLineDash([4, 8]);
+    ctx.strokeStyle = "rgba(255, 220, 150, 0.75)";
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    for (const [S, M, P] of hot.slice(0, 22)) {
+      ctx.moveTo(S[0], S[1]);
+      ctx.quadraticCurveTo(M[0], M[1], P[0], P[1]);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    columns.forEach((c, i) => {
+      if (!c) return;
+      const top = pos[c.pop.start], bot = pos[c.pop.start + c.pop.count - 1];
+      if (!top || !bot) return;
+      let esum = 0;
+      for (let k2 = 0; k2 < c.pop.count; k2++)
+        esum += Math.abs(er[c.pop.start + k2] ?? 0);
+      const coh = 1 - Math.min(1, (esum / c.pop.count) * 4);
+      const sc = top[2];
+      ctx.strokeStyle = coh > 0.7
+        ? `rgba(79, 192, 106, ${0.15 + 0.35 * coh * sc})`
+        : `rgba(220, 91, 91, ${0.5 - 0.35 * coh})`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.roundRect(top[0] - 13 * sc, top[1] - 12 * sc, 26 * sc,
+                    (bot[1] - top[1]) + 24 * sc, 11 * sc);
+      ctx.stroke();
+    });
+
+    if (!netRenderer._glow) {
+      netRenderer._glow = {};
+      for (const [key, col] of [["a", "232,144,28"], ["c", "79,184,192"],
+                                ["e", "220,90,90"]]) {
+        const g = document.createElement("canvas");
+        g.width = g.height = 64;
+        const gc = g.getContext("2d");
+        const grad = gc.createRadialGradient(32, 32, 2, 32, 32, 30);
+        grad.addColorStop(0, `rgba(${col}, 0.9)`);
+        grad.addColorStop(0.35, `rgba(${col}, 0.35)`);
+        grad.addColorStop(1, `rgba(${col}, 0)`);
+        gc.fillStyle = grad;
+        gc.fillRect(0, 0, 64, 64);
+        netRenderer._glow[key] = g;
+      }
+    }
+    const GL = netRenderer._glow;
+    const order = [];
+    pos.forEach((P, idx) => { if (P) order.push(idx); });
+    order.sort((a, b) => (pos[a][3] ?? 0) - (pos[b][3] ?? 0));
+    for (const idx of order) {
+      const P = pos[idx];
+      const v = st[idx] ?? 0;
+      const mag = Math.min(1, Math.abs(v) / 0.6);
+      const fire = Math.min(1, (dl[idx] ?? 0) * 8);
+      const sc = P[2];
+      const R = (6 + 7 * mag + 9 * fire) * sc;
+      ctx.globalAlpha = 0.35 + 0.65 * Math.max(mag, fire);
+      ctx.drawImage(GL[v >= 0 ? "a" : "c"],
+                    P[0] - R, P[1] - R, R * 2, R * 2);
+      const e = Math.min(1, Math.abs(er[idx] ?? 0) * 4);
+      if (e > 0.12) {
+        ctx.globalAlpha = e;
+        const ER = R * 1.25;
+        ctx.drawImage(GL.e, P[0] - ER, P[1] - ER, ER * 2, ER * 2);
+      }
+    }
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = "source-over";
+
+    if (meta.admitted) ripple = 1;
+    if (ripple > 0.03) {
+      ctx.strokeStyle = `rgba(79, 192, 106, ${ripple})`;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.ellipse(cx, cy - 8, 76 + (1 - ripple) * 250,
+                  (76 + (1 - ripple) * 250) * 0.72, 0, 0, 7);
+      ctx.stroke();
+      ctx.fillStyle = `rgba(79, 192, 106, ${ripple})`;
+      ctx.fillText("EXPERIENCE ADMITTED — RELATIONS REPAIRED",
+                   cx - 116, H - 6);
+      ripple *= 0.94;
+    }
+    ctx.fillStyle = "#9b8a72";
+    if (meta.caption) ctx.fillText(meta.caption, 140, H - 6);
+  };
+}
+
+function tween(el, target, decimals, suffix) {
+  if (!el) return;
+  const shown = parseFloat(el.dataset.v ?? "0");
+  const next = shown + (target - shown) * 0.25;
+  el.dataset.v = next;
+  el.textContent = next.toFixed(decimals) + (suffix || "");
+}
+
+async function boot() {
+  const d = await (await fetch("/state")).json();
+  const rows = document.getElementById("rows");
+  for (const name of Object.keys(d)) {
+    const r = d[name];
+    const row = document.createElement("div");
+    row.className = "row";
+    row.innerHTML = `
+      <div class="head"><b>${r.game.toUpperCase()}
+        <em id="b-${name}" style="font-style:normal;font-size:11px;
+          border:1px solid var(--line);border-radius:10px;
+          padding:1px 8px;margin-left:8px"></em>
+        <em id="p-${name}" style="font-style:normal;font-size:11px;
+          color:var(--dim);margin-left:6px"></em></b>
+        <span id="s-${name}"></span></div>
+      <div class="hud">
+        <div class="stat"><small>teacher agreement</small>
+          <b id="h1-${name}" class="up">0</b><span id="h1s-${name}"></span></div>
+        <div class="stat"><small>understanding · repair effort fallen</small>
+          <b id="h2-${name}" class="up">0</b></div>
+        <div class="stat"><small>witnesses absorbed</small>
+          <b id="h3-${name}">0</b></div>
+        <div class="stat"><small>sweeps to settle · falls with mastery</small>
+          <b id="h4-${name}" class="down">–</b><span id="h4s-${name}"></span></div>
+        <div class="stat"><small>score this life</small>
+          <b id="h5-${name}">0</b></div>
+      </div>
+      <div class="body">
+        <div class="game"><canvas id="c-${name}" width="320" height="420"></canvas></div>
+        <div class="net"><canvas id="n-${name}"></canvas></div>
+      </div>
+      <div class="foot">
+        <span class="agent">${r.agent}</span>
+        <span id="l-${name}"></span>
+      </div>`;
+    rows.appendChild(row);
+    const gctx = document.getElementById(`c-${name}`).getContext("2d");
+    const tick = () => {
+      const im = new Image();
+      im.onload = () => { gctx.drawImage(im, 0, 0); setTimeout(tick, 115); };
+      im.onerror = () => setTimeout(tick, 900);
+      im.src = `/frame/${name}?t=${Date.now()}`;
+    };
+    tick();
+    const graph = await (await fetch(`/graph/${name}`)).json();
+    const render = netRenderer(document.getElementById(`n-${name}`), graph);
+    let target = null, shown = null, trajT = 0, lastAdm = 0;
+    let admitted = false, latestRetina = null, lastDelta = 0;
+    let latestAction = "NOOP";
+    const pull = async () => {
+      try {
+        const b = await (await fetch(`/brain/${name}`)).json();
+        if (b.t !== trajT && (b.traj || []).length) {
+          target = b.traj[b.traj.length - 1]; trajT = b.t;
+          lastDelta = (target.delta || [])
+            .reduce((a, v) => a + v, 0) / Math.max(1, target.delta.length);
+        }
+        admitted = admitted || (b.admissions || 0) > lastAdm;
+        lastAdm = Math.max(lastAdm, b.admissions || 0);
+        if (b.retina && b.retina.length) latestRetina = b.retina;
+        latestAction = b.action || "NOOP";
+      } catch (e) {}
+      setTimeout(pull, 400);
+    };
+    pull();
+    let visible = true;
+    new IntersectionObserver(
+      (es) => { visible = es[0].isIntersecting; },
+      {threshold: 0.05}).observe(row);
+    const anim = () => {
+      if (!visible) { setTimeout(anim, 300); return; }
+      let caption = "";
+      if (target) {
+        if (!shown) shown = JSON.parse(JSON.stringify(target));
+        shown.state = shown.state.map(
+          (v, i) => v + ((target.state[i] ?? 0) - v) * 0.35);
+        shown.errors = target.errors;
+        shown.delta = target.delta;
+        caption = `EQUILIBRIUM TRACKING THE GAME · MEAN PATCH SHIFT `
+          + `${lastDelta.toFixed(3)}`;
+      }
+      render(shown || {}, {caption, admitted, retina: latestRetina,
+        action: latestAction,
+        excite: Math.min(1, 0.5 + lastDelta * 8)});
+      admitted = false;
+      setTimeout(() => requestAnimationFrame(anim), 100);
+    };
+    anim();
+  }
+  setInterval(async () => {
+    const s = await (await fetch("/state")).json();
+    for (const name of Object.keys(s)) {
+      const r = s[name], W2 = r.watch || {}, L = r.life || {};
+      const el = document.getElementById(`s-${name}`);
+      if (el) el.textContent =
+        `episode ${r.episode} · best ${r.best != null ? r.best.toFixed(0) : "–"}`
+        + (r.teacher != null ? ` · teacher ${r.teacher.toFixed(0)}` : "");
+      const badge = document.getElementById(`b-${name}`);
+      if (badge) {
+        badge.textContent = r.badge;
+        badge.style.color = BADGE_COLORS[r.badge] || "#6f6353";
+        badge.style.borderColor = BADGE_COLORS[r.badge] || "#2a201b";
+      }
+      const ph = document.getElementById(`p-${name}`);
+      if (ph) ph.textContent = r.phase === "watching"
+        ? "watching the teacher" : "playing for itself";
+      tween(document.getElementById(`h1-${name}`),
+            (W2.agreement ?? 0) * 100, 0, "%");
+      const h1s = document.getElementById(`h1s-${name}`);
+      if (h1s) h1s.innerHTML = spark(W2.agree_hist, 60, 20, "#4fc06a");
+      tween(document.getElementById(`h2-${name}`),
+            (W2.coherence ?? 0) * 100, 0, "%");
+      tween(document.getElementById(`h3-${name}`), W2.witnesses ?? 0, 0);
+      if (W2.sweeps != null)
+        tween(document.getElementById(`h4-${name}`), W2.sweeps, 0);
+      const h4s = document.getElementById(`h4s-${name}`);
+      if (h4s) h4s.innerHTML = spark(W2.sweeps_hist, 60, 20, "#4fb8c0");
+      tween(document.getElementById(`h5-${name}`), r.score ?? 0, 0);
+      const life = document.getElementById(`l-${name}`);
+      if (!life) continue;
+      const B = r.brain || {};
+      if ((B.beat_age ?? 0) > 300 || (B.faults ?? 0) > 3) {
+        life.innerHTML = `<span style="color:#c25b5b;font-weight:600">
+          BRAIN FAULT · ${B.last_error ?? "no heartbeat"}
+          (${B.beat_age}s since last thought)</span>`;
+        continue;
+      }
+      if ((B.beat_age ?? 0) > 25) {
+        life.innerHTML = `<span style="color:#e0d24f">deep in repair —
+          admitting experience (${Math.round(B.beat_age)}s)</span>`;
+        continue;
+      }
+      if (r.phase === "watching") {
+        const tt = Math.round((W2.to_takeover ?? 0) * 100);
+        life.innerHTML = `<b>learning by watching:</b> `
+          + `${W2.admissions} batches admitted · `
+          + `<b>${tt}%</b> of the way to taking the controls`;
+      } else {
+        life.innerHTML = spark(L.returns || [], 140, 22, "#4fc06a")
+          + ` <b>living:</b> ${L.transitions} experiences · `
+          + `${L.admissions} admitted`;
+      }
+    }
+  }, 900);
+}
+boot();
+</script>
+</body>
+</html>
