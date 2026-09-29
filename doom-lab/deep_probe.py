@@ -32,6 +32,19 @@ DECISIONS = 300
 BUDGET = 384  # matches the lab's live budget
 
 
+def rank_auc(pos, neg):
+    """P(score of a pressed frame ranks above an unpressed one)."""
+    if not len(pos) or not len(neg):
+        return None
+    merged = np.concatenate([pos, neg])
+    order = merged.argsort()
+    ranks = np.empty(len(merged))
+    ranks[order] = np.arange(1, len(merged) + 1)
+    rank_sum = ranks[:len(pos)].sum()
+    return float((rank_sum - len(pos) * (len(pos) + 1) / 2)
+                 / (len(pos) * len(neg)))
+
+
 def fixed_probe(brain, corpus, rows, streams):
     picks = random.Random(FIXED_SEED).sample(rows, min(N_ROWS, len(rows)))
     hits = np.zeros(len(BUTTONS))
@@ -40,6 +53,7 @@ def fixed_probe(brain, corpus, rows, streams):
     pred_press = np.zeros(len(BUTTONS))
     mae = np.zeros(4)
     refused = counted = 0
+    scores, truths = [], []
     for i in picks:
         result = brain.settle(ev.corpus_inputs(corpus, i, streams),
                               budget=BUDGET)
@@ -47,8 +61,11 @@ def fixed_probe(brain, corpus, rows, streams):
             refused += 1
             continue
         counted += 1
-        decoded = np.array(buttons_from_scores(result["outputs"]["motor"]))
+        motor = result["outputs"]["motor"]
+        decoded = np.array(buttons_from_scores(motor))
         truth = corpus["buttons"][i]
+        scores.append(motor)
+        truths.append(truth)
         hits += decoded == truth
         press_n += truth
         press_hits += decoded * truth
@@ -59,6 +76,18 @@ def fixed_probe(brain, corpus, rows, streams):
                           - np.array(foresight_targets(corpus, i)))
     if counted == 0:
         return {"refused": refused, "counted": 0}
+    S = np.array(scores)
+    T = np.array(truths, int)
+    base = T.mean(0)
+    auc = [rank_auc(S[T[:, j] == 1, j], S[T[:, j] == 0, j])
+           for j in range(len(BUTTONS))]
+    thresholds = [float(np.quantile(S[:, j], 1 - base[j]))
+                  if base[j] > 0 else None for j in range(len(BUTTONS))]
+    cal = (S > np.array([t if t is not None else 1e9
+                         for t in thresholds])).astype(int)
+    cal_recall = [
+        round(float(cal[T[:, j] == 1, j].mean()), 3)
+        if (T[:, j] == 1).any() else None for j in range(len(BUTTONS))]
     return {
         "refused": refused,
         "counted": counted,
@@ -69,6 +98,12 @@ def fixed_probe(brain, corpus, rows, streams):
         ],
         "pred_press_rate": (pred_press / counted).round(3).tolist(),
         "outcome_mae": (mae / counted).round(3).tolist(),
+        "auc": [round(a, 3) if a is not None else None for a in auc],
+        "score_mean": S.mean(0).round(3).tolist(),
+        "score_p90": np.percentile(S, 90, axis=0).round(3).tolist(),
+        "thresholds": [round(t, 3) if t is not None else None
+                       for t in thresholds],
+        "cal_recall": cal_recall,
         "budget": BUDGET,
     }
 

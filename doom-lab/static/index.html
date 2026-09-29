@@ -201,6 +201,7 @@
     <span><i style="background:#4f8fe0"></i>forward</span>
     <span><i style="background:#c25bb4"></i>fire</span>
     <span><i style="background:#4fc06a"></i>forward recall</span>
+    <span><i style="background:#e0d24f"></i>forward AUC</span>
   </div>
   <svg id="chart-acc" viewBox="0 0 430 110" preserveAspectRatio="none"></svg>
   <h3>FORESIGHT ERROR (KILL) &mdash; LOWER IS BETTER</h3>
@@ -393,6 +394,7 @@ async function loadTraining() {
     {key: "forward_acc", name: "forward", color: "#4f8fe0"},
     {key: "fire_acc", name: "fire", color: "#c25bb4"},
     {key: "forward_recall", name: "forward recall", color: "#4fc06a"},
+    {key: "forward_auc", name: "forward AUC", color: "#e0d24f"},
   ], 1.0);
   lineChart(document.getElementById("chart-mae"), d.exports, [
     {key: "kill_mae", name: "kill foresight MAE", color: "#9a6fd0"},
@@ -430,10 +432,12 @@ async function loadTraining() {
   }
   document.getElementById("t-table").innerHTML =
     "<table><tr><th>batches</th><th>mean</th><th>fwd</th><th>fwd recall</th>" +
+    "<th>fwd AUC</th><th>fwd cal-rec</th>" +
     "<th>fire</th><th>kill MAE</th><th>path</th><th>kills</th>" +
     "<th>fwd rate</th></tr>" +
     d.exports.map(e => `<tr><td>${e.batches}</td><td>${e.mean_acc}</td>` +
       `<td>${e.forward_acc}</td><td>${e.forward_recall ?? "·"}</td>` +
+      `<td>${e.forward_auc ?? "·"}</td><td>${e.forward_cal_recall ?? "·"}</td>` +
       `<td>${e.fire_acc}</td><td>${e.kill_mae}</td>` +
       `<td>${e.live_path ?? "·"}</td><td>${e.live_kills ?? "·"}</td>` +
       `<td>${e.forward_rate ?? "·"}</td></tr>`

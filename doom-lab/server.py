@@ -306,6 +306,17 @@ async def training(_):
                 row["pressed_recall"] = recalls
                 row["pred_press"] = dp.get("pred_press_rate")
                 row["deep_refused"] = dp.get("refused")
+                aucs = dp.get("auc") or []
+                if aucs:
+                    known = [a for a in aucs if a is not None]
+                    row["forward_auc"] = aucs[0]
+                    row["mean_auc"] = round(sum(known) / len(known), 3) \
+                        if known else None
+                cal = dp.get("cal_recall") or []
+                if cal:
+                    row["forward_cal_recall"] = cal[0]
+                row["score_mean"] = dp.get("score_mean")
+                row["thresholds"] = dp.get("thresholds")
             live = deep.get("live") or []
             if live:
                 row["live_path"] = round(
