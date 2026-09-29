@@ -159,6 +159,11 @@
   </div>
   <div class="bargroup">
     <select id="model-sel"></select>
+    <select id="decode-sel" title="How motor scores become button presses. CAL and TOP-1 need a deep-probed model.">
+      <option value="raw">RAW DECODE</option>
+      <option value="cal">CALIBRATED</option>
+      <option value="top1">TOP-1</option>
+    </select>
     <button id="export">EXPORT</button>
     <button id="import">IMPORT</button>
     <input type="file" id="import-file" accept=".json" style="display:none">
@@ -470,6 +475,14 @@ function placeRetinaBoxes() {
   place("fovea-box", 32 / 320, 78 / 200, 256 / 320, 42 / 200);
 }
 placeRetinaBoxes();
+document.getElementById("decode-sel").onchange = async (e) => {
+  const d = await (await fetch(`/decode?mode=${e.target.value}`)).json();
+  e.target.style.color = (e.target.value !== "raw" && !d.calibrated)
+    ? "#c25b5b" : "";
+  e.target.title = (e.target.value !== "raw" && !d.calibrated)
+    ? "This model has no deep-probe calibration yet; decoding stays raw."
+    : "How motor scores become button presses.";
+};
 let pendingModel = null, loadShownAt = 0;
 document.getElementById("model-sel").onchange = (e) => {
   const sel = e.target;

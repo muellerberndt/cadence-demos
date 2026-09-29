@@ -270,6 +270,17 @@ async def index(_):
     return web.FileResponse("static/index.html")
 
 
+@routes.get("/decode")
+async def decode_mode(request):
+    mode = request.query.get("mode")
+    if mode in ("raw", "cal", "top1"):
+        lab.student.decode_mode = mode
+    return web.json_response({
+        "mode": lab.student.decode_mode,
+        "calibrated": lab.student.calibration is not None,
+    })
+
+
 @routes.get("/training")
 async def training(_):
     import glob as _glob

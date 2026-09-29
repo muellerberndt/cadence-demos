@@ -92,6 +92,9 @@ class Student:
                 pass
         self._analyze()
         self._swap_request = None
+        self.decode_mode = "raw"
+        self.calibration = None
+        self._load_calibration()
         self._last_action = [0] * len(BUTTONS)
         self._teach_prev = [0] * len(BUTTONS)
         self._shadow_lock = threading.Lock()
@@ -135,6 +138,45 @@ class Student:
                            "fingerprint": info["fingerprint"][:12]}
         self._graph_sample = self._sample_graph(max_edges=1400)
 
+    def _load_calibration(self):
+        """Per-model decode calibration from the deep-probe meta block."""
+        self.calibration = None
+        meta_path = os.path.join(MODELS_DIR, self.model_id + ".meta.json")
+        try:
+            probe = json.load(open(meta_path)).get("deep", {}).get("probe", {})
+        except (OSError, ValueError):
+            return
+        if probe.get("thresholds"):
+            self.calibration = {"thresholds": probe["thresholds"],
+                                "score_mean": probe.get("score_mean")}
+
+    def decode(self, scores):
+        """Scores -> buttons under the selected decode mode.
+
+        "raw" presses above zero. "cal" presses above the button's own
+        teacher-quantile threshold. "top1" presses exactly the button with
+        the largest mean-relative score. Modes needing calibration fall
+        back to raw when the loaded model carries none.
+        """
+        if self.decode_mode == "cal" and self.calibration:
+            th = self.calibration["thresholds"]
+            b = [1 if t is not None and s > t else 0
+                 for s, t in zip(scores, th)]
+            for i, j in ((0, 7), (1, 2), (5, 6)):
+                if b[i] and b[j]:
+                    mi = scores[i] - (th[i] or 0.0)
+                    mj = scores[j] - (th[j] or 0.0)
+                    keep = i if mi >= mj else j
+                    b[i] = 1 if keep == i else 0
+                    b[j] = 1 if keep == j else 0
+            return b
+        if self.decode_mode == "top1" and self.calibration:
+            mean = self.calibration.get("score_mean") \
+                or [0.0] * len(scores)
+            top = max(range(len(scores)), key=lambda k: scores[k] - mean[k])
+            return [1 if k == top else 0 for k in range(len(scores))]
+        return buttons_from_scores(scores)
+
     # ---- model registry -----------------------------------------------
 
     def scan_models(self):
@@ -174,6 +216,7 @@ class Student:
             self._shadow = replacement
         self.model_id = model_id
         self._analyze()
+        self._load_calibration()
         self._last_action = [0] * len(BUTTONS)
         # Queued witnesses were sampled for the previous brain's boundaries.
         try:
@@ -395,7 +438,7 @@ class Student:
         with self._shadow_lock:
             result = self._shadow.step(inputs, budget=LIVE_BUDGET)
         scores = result["outputs"]["motor"]
-        decoded = buttons_from_scores(scores)
+        decoded = self.decode(scores)
         if result["qualified"]:
             self._last_action = decoded
         outcome = result["outputs"].get("outcome")
