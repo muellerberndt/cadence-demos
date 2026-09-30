@@ -1,0 +1,1 @@
+{"ripen":true,"rock":true,"bite":true,"carry":true} at {"read":0.0001} — the page world, 6,000 ticks, seeds 1 and 2

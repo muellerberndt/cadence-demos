@@ -43,3 +43,22 @@ python server.py   # open http://localhost:8668
 Start with the [Doom Lab README](doom-lab/README.md), then the
 [training tutorial](doom-lab/TRAINING.md), then the
 [Atari Arcade README](atari-arcade/README.md).
+
+## [Patch World](patch-world/) — an evolving world in one page
+
+A conserved-mass world under a moving sun, whose creatures carry deep
+recursive settlement brains implemented in JavaScript: an inherited body plan
+(width, depth, fan-in, senses, plasticity), one joint settle per tick, learned
+relations within one life, and a metabolism that prices every patch, relation
+and repair sweep in mass. Three views show the substrate, the union of the
+living observers' records, and one creature's own beliefs beside its settling
+brain. Evolution, biting, hoarding and speech are all open niches; energy and
+death are the only selection, and no depth advantage is claimed.
+
+```sh
+cd patch-world
+python3 -m http.server 8080       # http://localhost:8080/
+```
+
+A headless probe and receipts are included; see
+[the world's contract and its numbers](patch-world/README.md).
