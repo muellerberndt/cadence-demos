@@ -1,0 +1,171 @@
+{
+  "schema": "doom-feedback-descriptive-diagnostics/1",
+  "source_sha256": "06a7551b7cde839dfb64af2cd561c96cdfe0d8372e24fe6533c4353d9f7f8681",
+  "parent_receipt_sha256": "466cfbb1727437083c67ee5392bfa201140716e8a7d0aa199a5ab465cc61ed90",
+  "seconds": 6.168318171999999,
+  "contexts": 64,
+  "target_argmax_disagreements": 28,
+  "target_mean_absolute_difference": 0.15411458333333333,
+  "arms": [
+    {
+      "arm": "hold36_life1",
+      "starting_checkpoint": {
+        "mse": 0.028648932424309617,
+        "held_or_continuation_label_gap": 11.703125,
+        "exact_best_label_fraction": 0.765625,
+        "queries": 64,
+        "sweeps": 1404
+      },
+      "last_assessed_candidate": {
+        "mse": 0.024754600354687364,
+        "held_or_continuation_label_gap": 39.90625,
+        "exact_best_label_fraction": 0.53125,
+        "queries": 64,
+        "sweeps": 1516
+      },
+      "last_candidate_checkpoint_sha256": "535333d1186a3f39bd8a7a1530eab77cf107e06185a7272221096b49ba9c9d20",
+      "rejection_reasons": {
+        "Mean native return improvement did not exceed the development threshold": 16,
+        "Original eight mean regressed versusstarting_anchor": 10,
+        "Original eight mean regressed versuscurrent_champion": 10,
+        "Candidate lost a previously successful development episode": 8,
+        "Lost an original-anchor success": 2
+      },
+      "candidate_return_deltas": [
+        -4.9375,
+        -22.1875,
+        -14.8125,
+        -109.46875,
+        -66.5625,
+        -12.09375,
+        -5.5625,
+        -151.75,
+        -4.9375,
+        -22.1875,
+        -14.8125,
+        -109.46875,
+        -66.5625,
+        -12.09375,
+        -5.5625,
+        -151.75
+      ],
+      "learning_seconds": 2.7715198270001338,
+      "learning_sweeps": 1192,
+      "candidate_gate_seconds": 23.62618649200033
+    },
+    {
+      "arm": "hold36_life4",
+      "starting_checkpoint": {
+        "mse": 0.028648932424309617,
+        "held_or_continuation_label_gap": 11.703125,
+        "exact_best_label_fraction": 0.765625,
+        "queries": 64,
+        "sweeps": 1404
+      },
+      "last_assessed_candidate": {
+        "mse": 0.02120150869019728,
+        "held_or_continuation_label_gap": 30.359375,
+        "exact_best_label_fraction": 0.59375,
+        "queries": 64,
+        "sweeps": 1676
+      },
+      "last_candidate_checkpoint_sha256": "2f0352de3bd6bc2af0e3ba5e371a20c3ce5779eea7a5f6ea6c7013c6bbcc31ae",
+      "rejection_reasons": {
+        "Candidate lost a previously successful development episode": 2,
+        "Mean native return improvement did not exceed the development threshold": 4,
+        "Original eight mean regressed versusstarting_anchor": 4,
+        "Original eight mean regressed versuscurrent_champion": 4
+      },
+      "candidate_return_deltas": [
+        -33.75,
+        -60.78125,
+        -33.75,
+        -60.78125
+      ],
+      "learning_seconds": 2.750791950999883,
+      "learning_sweeps": 1190,
+      "candidate_gate_seconds": 6.084737000000018
+    },
+    {
+      "arm": "continue36_life1",
+      "starting_checkpoint": {
+        "mse": 0.07293918673493036,
+        "held_or_continuation_label_gap": 9.515625,
+        "exact_best_label_fraction": 0.59375,
+        "queries": 64,
+        "sweeps": 1404
+      },
+      "last_assessed_candidate": {
+        "mse": 0.03687377691305614,
+        "held_or_continuation_label_gap": 36.65625,
+        "exact_best_label_fraction": 0.328125,
+        "queries": 64,
+        "sweeps": 1553
+      },
+      "last_candidate_checkpoint_sha256": "f8118e35e57106c68416cfbfa2a4887799404ffc611ead1e36e407ea83a4d861",
+      "rejection_reasons": {
+        "Candidate lost a previously successful development episode": 14,
+        "Mean native return improvement did not exceed the development threshold": 16,
+        "Lost an original-anchor success": 10,
+        "Original eight mean regressed versusstarting_anchor": 16,
+        "Original eight mean regressed versuscurrent_champion": 16
+      },
+      "candidate_return_deltas": [
+        -15.59375,
+        -24.84375,
+        -100.15625,
+        -211.78125,
+        -124.40625,
+        -123.4375,
+        -61.46875,
+        -151.9375,
+        -15.59375,
+        -24.84375,
+        -100.15625,
+        -211.78125,
+        -124.40625,
+        -123.4375,
+        -61.46875,
+        -151.9375
+      ],
+      "learning_seconds": 3.005077712999764,
+      "learning_sweeps": 1306,
+      "candidate_gate_seconds": 30.0102571059997
+    },
+    {
+      "arm": "continue36_life4",
+      "starting_checkpoint": {
+        "mse": 0.07293918673493036,
+        "held_or_continuation_label_gap": 9.515625,
+        "exact_best_label_fraction": 0.59375,
+        "queries": 64,
+        "sweeps": 1404
+      },
+      "last_assessed_candidate": {
+        "mse": 0.033182334166883765,
+        "held_or_continuation_label_gap": 27.859375,
+        "exact_best_label_fraction": 0.359375,
+        "queries": 64,
+        "sweeps": 1702
+      },
+      "last_candidate_checkpoint_sha256": "b36b8246b2251a753c6567b799fa83caf50f76b50b4928b8f38e580d1ff7dc6d",
+      "rejection_reasons": {
+        "Candidate lost a previously successful development episode": 4,
+        "Mean native return improvement did not exceed the development threshold": 4,
+        "Lost an original-anchor success": 4,
+        "Original eight mean regressed versusstarting_anchor": 4,
+        "Original eight mean regressed versuscurrent_champion": 4
+      },
+      "candidate_return_deltas": [
+        -180.84375,
+        -150.03125,
+        -180.84375,
+        -150.03125
+      ],
+      "learning_seconds": 2.7722446649996755,
+      "learning_sweeps": 1184,
+      "candidate_gate_seconds": 9.391474946000017
+    }
+  ],
+  "interpretation": "Post-run training-context diagnostics, not fresh evaluation, hyperparameter selection, or true policy-regret estimates"
+}

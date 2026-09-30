@@ -20,6 +20,22 @@ guide: witness admission during watching, an agreement gate, then
 record-only feedback with budgeted replay pulses under one serial owner
 per brain.
 
+## Brain layout
+
+Atari Arcade uses **recursive observer settlement**. Sensory columns read image
+tiles; successive observers read the columns' live states and exact prediction
+errors, with motor and value outputs taken from observer populations. Those
+bounded patches and their readback settle together in the server's Cadence
+engine. `requirements.txt` installs the library from its Git branch without a
+commit pin, so record the installed source when comparing runs.
+
+This layout explores learned perception and action with internal error feedback.
+Flat settlement is a useful baseline for direct sensory relations; ordinary
+state-coupled settlement tests learned intermediate representations without
+error readback. All three share the library's settlement rule. See the
+[layout guide](https://github.com/muellerberndt/cadence/blob/main/docs/VARIANTS.md)
+and [performance guide](https://github.com/muellerberndt/cadence/blob/main/docs/PERFORMANCE.md).
+
 ## Run it
 
 ```sh

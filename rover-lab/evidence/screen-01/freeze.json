@@ -1,0 +1,83 @@
+{
+  "protocol": {
+    "schema": "rover-protocol-v1",
+    "development_seeds": [
+      17,
+      29
+    ],
+    "confirmation_seeds": [
+      101,
+      211,
+      307
+    ],
+    "weak_gain": 0.35,
+    "declared_gain_range": [
+      0.25,
+      0.5
+    ],
+    "dt": 0.1,
+    "wheel_base": 0.7,
+    "max_speed": 1.5,
+    "action_levels": [
+      -0.8,
+      -0.4,
+      0.0,
+      0.4,
+      0.8
+    ],
+    "bootstrap_epochs": 12,
+    "bootstrap_experiences": 25,
+    "online_presentations_per_transition": 2,
+    "replay_window": 12,
+    "episode_steps": 60,
+    "target_radius": 0.22,
+    "phases": [
+      [
+        "normal",
+        120
+      ],
+      [
+        "weakened",
+        300
+      ],
+      [
+        "restored_probe",
+        120
+      ],
+      [
+        "restored_learning",
+        180
+      ]
+    ],
+    "controller": {
+      "forward_speed": 0.72,
+      "heading_gain": 1.8,
+      "turn_weight": 2.0
+    },
+    "demonstration_gate": {
+      "normal_success_rate_min": 0.75,
+      "weak_distance_integral_ratio_max": 0.9,
+      "weak_success_rate_min": 0.6,
+      "control_p95_ms_max": 100,
+      "deadline_miss_fraction_max": 0.05
+    },
+    "comparison_boundary": "Equal information and transition budgets; each controller produces its own executed witnesses. No commercial advantage or useful-depth claim follows from a frozen-control gain.",
+    "selection_boundary": "Development seeds may diagnose settings. Protocol and implementation hashes are recorded before reserved runs. All scheduled outcomes are retained."
+  },
+  "protocol_hash": "d074f873ff05b871337c5f43d05efcb3e304ab262bed2210b37a8789c86f3865",
+  "sources": {
+    "evaluate.py": "d7574db7a1a778b408ab613ec0c17bffd394ea121ee3e06ff9e68ef063c41365",
+    "models.py": "2a3d0dd324328001cd007788cb1b71d5475f5ad36ef2263ab56d0078f2ffcf3c",
+    "rover.py": "778943afcecfd92d168646aac675d1eed5cd39452ba770bd351a6374ab240f92",
+    "server.py": "6540c2f5ad84b6c0296e095e943f988856b8038d53d406902597d7983a94ec6e"
+  },
+  "seeds": [
+    17
+  ],
+  "steps": 720,
+  "variants": false,
+  "kind": "development",
+  "python": "3.13.7",
+  "platform": "macOS-15.3-arm64-arm-64bit-Mach-O",
+  "timing": "Serial headless process; learning plus candidate settlement and command activation included. Rendering/network excluded."
+}

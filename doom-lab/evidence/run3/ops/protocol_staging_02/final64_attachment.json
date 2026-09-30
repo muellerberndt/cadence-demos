@@ -1,0 +1,26 @@
+{
+  "schema": "doom-protocol-final64-attachment/1",
+  "created_unix": 1790693885.5964928,
+  "prior_package_sha256": "ffdffa3819367831c63427bf9d703bfee01c3527e0fda90fd8b6736ddedd5e2c",
+  "package_sha256": "fb43a6bdf087777e616c2dd018bdd1f16a4d326c695f1daa4606a8a254562685",
+  "confirmed_checkpoint": "ad9b330cd1c1c582a0bb135956f87a9f8e4c0f106d80c35bb60b39c0328ef2cc",
+  "evidence": {
+    "summary.json": "1fa597a393721ce7451d0ba11ef9862310c14cecc565abb3dd1cba4d3727885d",
+    "independent_verification.json": "ceea12482cc2abed1b4c90a4a1f31bb3e0fae1ce24f35c3c89d12341ab14be22"
+  },
+  "old_registry_preserved": [
+    {
+      "relative": "v3/baby-doom_baby_small_depth2_centered_seed0_epoch001/bundle.json",
+      "sha256": "fc9df6acfe36980a46cce3646940ebada76b6a8bd37a4c5314d489c1503866e3",
+      "bytes": 7498049
+    },
+    {
+      "relative": "v3/baby-small-depth3-seed0-epoch002/bundle.json",
+      "sha256": "444e77bc33518f17a25a8097212824a78f51524462ba5c0d5e26f978c8089806",
+      "bytes": 7405597
+    }
+  ],
+  "active_actor_unchanged": true,
+  "package_path": "/home/ec2-user/doom-v3-20260929/lab/baby_02/prepared/h144_update4_confirmed_practice.json",
+  "original_prepared_package_restored_exactly": true
+}

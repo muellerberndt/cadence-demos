@@ -1,0 +1,200 @@
+{
+  "schema": "doom-v3-history-skip-compat-after/1",
+  "old_source_sha256": "da5a06048240fbc8408687b8b88d548eec8e952c1eacea25f76deafaa6bb0a67",
+  "source_sha256": "d91ec34db618ace4e9c6f9c95bd1b7960b741cd8543ac84ac758bf6771495b99",
+  "passed": true,
+  "checks": [
+    {
+      "genome": {
+        "size": "small",
+        "seed": 0,
+        "observer": true,
+        "sensor_skip": true,
+        "parameter_prior": 0.4,
+        "initial_scale": 0.3,
+        "state_prior": 0.01,
+        "settle_budget": 2048,
+        "tolerance": 1e-06
+      },
+      "byte_identical_snapshot": true
+    },
+    {
+      "genome": {
+        "size": "small",
+        "seed": 0,
+        "observer": true,
+        "sensor_skip": true,
+        "parameter_prior": 0.4,
+        "initial_scale": 0.3,
+        "state_prior": 0.01,
+        "settle_budget": 2048,
+        "tolerance": 1e-06,
+        "topology_version": 2,
+        "recursion_depth": 2
+      },
+      "byte_identical_snapshot": true
+    },
+    {
+      "genome": {
+        "size": "small",
+        "seed": 0,
+        "observer": true,
+        "sensor_skip": false,
+        "parameter_prior": 0.4,
+        "initial_scale": 0.3,
+        "state_prior": 0.01,
+        "settle_budget": 2048,
+        "tolerance": 1e-06,
+        "topology_version": 2,
+        "recursion_depth": 2
+      },
+      "byte_identical_snapshot": true
+    },
+    {
+      "genome": {
+        "size": "small",
+        "seed": 0,
+        "observer": false,
+        "sensor_skip": true,
+        "parameter_prior": 0.4,
+        "initial_scale": 0.3,
+        "state_prior": 0.01,
+        "settle_budget": 2048,
+        "tolerance": 1e-06,
+        "topology_version": 2,
+        "recursion_depth": 2
+      },
+      "byte_identical_snapshot": true
+    },
+    {
+      "genome": {
+        "size": "small",
+        "seed": 0,
+        "observer": false,
+        "sensor_skip": false,
+        "parameter_prior": 0.4,
+        "initial_scale": 0.3,
+        "state_prior": 0.01,
+        "settle_budget": 2048,
+        "tolerance": 1e-06,
+        "topology_version": 2,
+        "recursion_depth": 2
+      },
+      "byte_identical_snapshot": true
+    },
+    {
+      "genome": {
+        "size": "small",
+        "seed": 0,
+        "observer": true,
+        "sensor_skip": true,
+        "parameter_prior": 0.4,
+        "initial_scale": 0.3,
+        "state_prior": 0.01,
+        "settle_budget": 2048,
+        "tolerance": 1e-06,
+        "topology_version": 2,
+        "recursion_depth": 3
+      },
+      "byte_identical_snapshot": true
+    },
+    {
+      "genome": {
+        "size": "small",
+        "seed": 0,
+        "observer": true,
+        "sensor_skip": false,
+        "parameter_prior": 0.4,
+        "initial_scale": 0.3,
+        "state_prior": 0.01,
+        "settle_budget": 2048,
+        "tolerance": 1e-06,
+        "topology_version": 2,
+        "recursion_depth": 3
+      },
+      "byte_identical_snapshot": true
+    },
+    {
+      "genome": {
+        "size": "small",
+        "seed": 0,
+        "observer": false,
+        "sensor_skip": true,
+        "parameter_prior": 0.4,
+        "initial_scale": 0.3,
+        "state_prior": 0.01,
+        "settle_budget": 2048,
+        "tolerance": 1e-06,
+        "topology_version": 2,
+        "recursion_depth": 3
+      },
+      "byte_identical_snapshot": true
+    },
+    {
+      "genome": {
+        "size": "small",
+        "seed": 0,
+        "observer": false,
+        "sensor_skip": false,
+        "parameter_prior": 0.4,
+        "initial_scale": 0.3,
+        "state_prior": 0.01,
+        "settle_budget": 2048,
+        "tolerance": 1e-06,
+        "topology_version": 2,
+        "recursion_depth": 3
+      },
+      "byte_identical_snapshot": true
+    },
+    {
+      "genome": {
+        "size": "medium",
+        "seed": 0,
+        "observer": true,
+        "sensor_skip": false,
+        "parameter_prior": 0.4,
+        "initial_scale": 0.3,
+        "state_prior": 0.01,
+        "settle_budget": 2048,
+        "tolerance": 1e-06,
+        "topology_version": 2,
+        "recursion_depth": 3
+      },
+      "byte_identical_snapshot": true
+    },
+    {
+      "genome": {
+        "size": "large",
+        "seed": 0,
+        "observer": true,
+        "sensor_skip": false,
+        "parameter_prior": 0.4,
+        "initial_scale": 0.3,
+        "state_prior": 0.01,
+        "settle_budget": 2048,
+        "tolerance": 1e-06,
+        "topology_version": 2,
+        "recursion_depth": 3
+      },
+      "byte_identical_snapshot": true
+    }
+  ],
+  "no_policy_bypasses_depth3": [
+    {
+      "size": "small",
+      "patches": 52,
+      "edges": 16864
+    },
+    {
+      "size": "medium",
+      "patches": 84,
+      "edges": 34496
+    },
+    {
+      "size": "large",
+      "patches": 148,
+      "edges": 72064
+    }
+  ],
+  "production_or_cloud_mutation": false
+}

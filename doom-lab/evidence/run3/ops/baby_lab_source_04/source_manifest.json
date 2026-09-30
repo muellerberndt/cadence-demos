@@ -1,0 +1,132 @@
+{
+  "schema": "doom-v3-lab-source-package/1",
+  "created_unix": 1790696154.852905,
+  "files": {
+    "server.py": {
+      "sha256": "86ac6db3a4eb17863c874d500b9cd33b8f3a1b4e0718003f11d1a596614a7845",
+      "bytes": 27766
+    },
+    "brainlab.py": {
+      "sha256": "22b192ef239ae869468c045362cf5b30f53a5786d83acf63c5349c8e808c013d",
+      "bytes": 26884
+    },
+    "doomlab.py": {
+      "sha256": "db1a87cc238c7c400dd0fc6781b90a5ef26c3cb4f355846af389b779254d3f9a",
+      "bytes": 12150
+    },
+    "layouts.py": {
+      "sha256": "ebbf17a0df98914181f71ced85f547a4d7733ce2ccc9e6fb349fb86eedbdf42f",
+      "bytes": 9276
+    },
+    "norms.py": {
+      "sha256": "76f2038aa0ddef8d8e87457d9032594defbf4db6e317a1df02d952b84ff3a9c8",
+      "bytes": 2372
+    },
+    "static/index.html": {
+      "sha256": "aa664f28cfee3b1954eb6de870747e7745f5535137c9fbfc3e9d440ebfd8df84",
+      "bytes": 42406
+    },
+    "static/brain3d.js": {
+      "sha256": "f94ba6d87be8df31a64f22608944597883be84b5f1fb46d1ef158edd50bf1931",
+      "bytes": 13454
+    },
+    "v2/lab_adapter.py": {
+      "sha256": "1ad38e5f21fcb212af85b3e2998aa5ed5862ad259367aefbf317aeea8a159e22",
+      "bytes": 11429
+    },
+    "v2/models.py": {
+      "sha256": "fdff81bc30e51b09c63de03b493633b46abed7f8ec7730e4961966e1e530b841",
+      "bytes": 4550
+    },
+    "v2/basic_env.py": {
+      "sha256": "5c40d369f8aa8229fddedc5bcc7fbb1fa1c9c0495d13109f767dfa3a7560e53d",
+      "bytes": 4836
+    },
+    "v2/exporter.py": {
+      "sha256": "43cea8419532ba1cee382a80728ac6245b21acea7f15f73026576e214d2da33c",
+      "bytes": 3255
+    },
+    "v2/online.py": {
+      "sha256": "4ec60c0125fa09746286c39f900621624dcc6c1db52886a3795e82e92b48d3f5",
+      "bytes": 33634
+    },
+    "v2/journal.py": {
+      "sha256": "70eee54ae1122b87d93b7a75f0d04c9a5c33e908e5edf6c549fa8643a8a23c73",
+      "bytes": 3488
+    },
+    "v2/parallel_feedback.py": {
+      "sha256": "b4e79bc7427b93e749de48edec5bd3005737cac68308df41457832c9286fb8e9",
+      "bytes": 7903
+    },
+    "v3/brain.py": {
+      "sha256": "d91ec34db618ace4e9c6f9c95bd1b7960b741cd8543ac84ac758bf6771495b99",
+      "bytes": 14038
+    },
+    "v3/interface.py": {
+      "sha256": "1e1fa1db2a42f8459a19ae9d1d456782d390f1e7939d0eb120a9d59c363977ce",
+      "bytes": 9471
+    },
+    "v3/tasks.py": {
+      "sha256": "2f807b7f8f1d7f5ab9bb886bb9efc8994bdfea2aa39b44e1a08fd3dfe852410d",
+      "bytes": 14759
+    },
+    "v3/runtime.py": {
+      "sha256": "84044d2f7fcfe9987ed68b52a2f972f8c00081bb391f84b9887f391f7ec2b1f9",
+      "bytes": 26127
+    },
+    "v3/practice.py": {
+      "sha256": "b87b5385b1ab5a19d788ed08223c51198df3659c282f694275036ad23443b293",
+      "bytes": 60878
+    },
+    "v3/practice_protocol.py": {
+      "sha256": "a91228c0449229d6a6f56bea8215d382a25664fd9b01697e84827722dcc98870",
+      "bytes": 12993
+    },
+    "v3/experience_sampling.py": {
+      "sha256": "9140dba1a6dd612ce5016a6d3551412ca4c8a388d25f1ea979228e71d17af37e",
+      "bytes": 5953
+    },
+    "v3/protocol_smoke.py": {
+      "sha256": "39811a84978cfe6c86b3fbe9f9f6af1b40f4d553f2d42c2e507fab3a9ba82f5a",
+      "bytes": 6578
+    },
+    "v3/native_feedback.py": {
+      "sha256": "e306d123196c70cf61c189c153f13673ac41134e78a4bd977f8650069a2bb3a1",
+      "bytes": 14328
+    },
+    "v3/native_feedback_long.py": {
+      "sha256": "456a205986889e0f87c825cbd237710e7b7ebe7d91d657d13a18715b1b274d16",
+      "bytes": 11722
+    },
+    "v3/collection.py": {
+      "sha256": "bdb2a22d7be8fc973c823187cb339c113b4a535df965bd77d2bf79dd93694119",
+      "bytes": 11496
+    },
+    "v3/training.py": {
+      "sha256": "f90bd672275a351abdbc56e7110a21a4038933e88f8593a111093d5f6536f375",
+      "bytes": 21791
+    },
+    "v3/teacher.py": {
+      "sha256": "432eb2faaf6047eddb0a07ac495832810b2f9776bd8d930343b169dbeeaa26e5",
+      "bytes": 27640
+    },
+    "v3/evaluate.py": {
+      "sha256": "f7da403763536bd3254cba56e81a2015d97f8e7cc69bda3987328b73f1a2bd7f",
+      "bytes": 11208
+    },
+    "v3/watch_training.py": {
+      "sha256": "55225aa0c7618c42c5ddadf0e6a5ba97ef4402def30253f8694748debf57416c",
+      "bytes": 13609
+    },
+    "v3/lab_deployment.py": {
+      "sha256": "e9528a0abc8c9d0d992fd930d3e6e4ea37ff9d45e9e7b593d006191c19272f0e",
+      "bytes": 6326
+    }
+  },
+  "bytes": 472320,
+  "dependency_contract": "Existing Python3.11+ environment with numpy, torch, aiohttp, pillow, ViZDoom1.3.1; exact matching Cadence core supplied via CADENCE_SRC/PYTHONPATH",
+  "data_included": false,
+  "credentials_included": false,
+  "listening_port": null,
+  "deployment": "Private127.0.0.1:8667 process, browser access through owner SSH tunnel"
+}

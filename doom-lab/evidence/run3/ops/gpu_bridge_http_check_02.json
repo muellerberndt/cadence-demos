@@ -1,0 +1,315 @@
+{
+  "schema": "doom-v3-gpu-bridge-two-wave-http-check/1",
+  "unix": 1790691122.103786,
+  "gpu": {
+    "schema": "doom-v3-gpu-capacity-monitor/1",
+    "checked_unix": 1790691090.398817,
+    "phase": "experimental GPU capacity wave \u00b7 gpu_capacity_01: 1800.0s/job \u00b7 gpu_gene_02: 1200.0s/job",
+    "gpu_state": "reachable",
+    "completed_arms": 4,
+    "scheduled": 12,
+    "accepted_updates": 459,
+    "waves": [
+      {
+        "status": "running",
+        "seconds": 861.8469353810001,
+        "scheduled": 6,
+        "name": "gpu_capacity_01",
+        "workers": 2,
+        "per_job_wall_seconds": [
+          1800.0
+        ]
+      },
+      {
+        "status": "running",
+        "seconds": 184.43177381100008,
+        "scheduled": 6,
+        "name": "gpu_gene_02",
+        "workers": 4,
+        "per_job_wall_seconds": [
+          1200.0
+        ]
+      }
+    ],
+    "candidates": [
+      {
+        "name": "large_depth3_no_skip_centered_cuda_seed0",
+        "wave": "gpu_capacity_01",
+        "status": "running",
+        "trainer_status": "running",
+        "updates": 64,
+        "presentations": 1024,
+        "attempts": 64,
+        "epochs": 1,
+        "seconds": 392.81624799899987,
+        "exit_code": null,
+        "checkpoint_sha256": "a4850a5b290c4b1668f6c4a6c659eacea6cf572f32ea47b70a82eaeef86b3624",
+        "development_teacher_agreement": 0.5625,
+        "error": null
+      },
+      {
+        "name": "large_depth3_skip_centered_cuda_seed0",
+        "wave": "gpu_capacity_01",
+        "status": "running",
+        "trainer_status": "running",
+        "updates": 64,
+        "presentations": 1024,
+        "attempts": 64,
+        "epochs": 1,
+        "seconds": 394.82260502099984,
+        "exit_code": null,
+        "checkpoint_sha256": "1b853141574d0e58e5d701470ce7a99c319a8f0c272c820ac77538aeed40d646",
+        "development_teacher_agreement": 0.5625,
+        "error": null
+      },
+      {
+        "name": "medium_depth3_no_skip_centered_cuda_seed0",
+        "wave": "gpu_capacity_01",
+        "status": "complete",
+        "trainer_status": "complete",
+        "updates": 64,
+        "presentations": 1024,
+        "attempts": 64,
+        "epochs": 2,
+        "seconds": 248.56339287700007,
+        "exit_code": 0,
+        "checkpoint_sha256": "24b32a3739e90de2fe31a322461bd1f3b50cb07e622cf5fb7e6fbf7b6232d06c",
+        "development_teacher_agreement": 0.46875,
+        "error": null
+      },
+      {
+        "name": "medium_depth3_skip_centered_cuda_seed0",
+        "wave": "gpu_capacity_01",
+        "status": "complete",
+        "trainer_status": "complete",
+        "updates": 64,
+        "presentations": 1024,
+        "attempts": 64,
+        "epochs": 2,
+        "seconds": 262.5937382379998,
+        "exit_code": 0,
+        "checkpoint_sha256": "3c998ad9de60d20656064c0e9a888c4044f67ab18ee5ca8b4a36a7d3eabfcb2a",
+        "development_teacher_agreement": 0.65625,
+        "error": null
+      },
+      {
+        "name": "small_depth3_no_skip_centered_cuda_seed0",
+        "wave": "gpu_capacity_01",
+        "status": "complete",
+        "trainer_status": "complete",
+        "updates": 64,
+        "presentations": 1024,
+        "attempts": 64,
+        "epochs": 2,
+        "seconds": 202.424477732,
+        "exit_code": 0,
+        "checkpoint_sha256": "9fa23560393f469b8f1e6618eec78f62ebac829c30b6b4678277f680e106d621",
+        "development_teacher_agreement": 0.46875,
+        "error": null
+      },
+      {
+        "name": "small_depth3_skip_centered_cuda_seed0",
+        "wave": "gpu_capacity_01",
+        "status": "complete",
+        "trainer_status": "complete",
+        "updates": 64,
+        "presentations": 1024,
+        "attempts": 64,
+        "epochs": 2,
+        "seconds": 214.4511056450001,
+        "exit_code": 0,
+        "checkpoint_sha256": "b5fd4312e7b9432ff8cef490ae7b556e79503a423f225606467a338dc69eefbd",
+        "development_teacher_agreement": 0.625,
+        "error": null
+      },
+      {
+        "name": "small_depth3_no_skip_centered_cuda_seed0_scale0.3_prior0.04",
+        "wave": "gpu_gene_02",
+        "status": "failed_or_incomplete",
+        "trainer_status": "failed",
+        "updates": 0,
+        "presentations": 0,
+        "attempts": 1,
+        "epochs": 0,
+        "seconds": 46.11749365500009,
+        "exit_code": 2,
+        "checkpoint_sha256": null,
+        "development_teacher_agreement": null,
+        "error": "RuntimeError: Refused admission; rows not consumed"
+      },
+      {
+        "name": "small_depth3_no_skip_centered_cuda_seed0_scale0.3_prior0.4",
+        "wave": "gpu_gene_02",
+        "status": "running",
+        "trainer_status": "running",
+        "updates": 38,
+        "presentations": 608,
+        "attempts": 38,
+        "epochs": 1,
+        "seconds": 184.42994470000008,
+        "exit_code": null,
+        "checkpoint_sha256": "4c38d39fe1813da0f3d8247f52016addb089bccaa74921af5325765ddb2f091e",
+        "development_teacher_agreement": 0.5625,
+        "error": null
+      },
+      {
+        "name": "small_depth3_no_skip_centered_cuda_seed0_scale1_prior0.04",
+        "wave": "gpu_gene_02",
+        "status": "failed_or_incomplete",
+        "trainer_status": "failed",
+        "updates": 0,
+        "presentations": 0,
+        "attempts": 1,
+        "epochs": 0,
+        "seconds": 46.11680052399993,
+        "exit_code": 2,
+        "checkpoint_sha256": null,
+        "development_teacher_agreement": null,
+        "error": "RuntimeError: Refused admission; rows not consumed"
+      },
+      {
+        "name": "small_depth3_no_skip_centered_cuda_seed0_scale1_prior0.4",
+        "wave": "gpu_gene_02",
+        "status": "running",
+        "trainer_status": "running",
+        "updates": 32,
+        "presentations": 512,
+        "attempts": 32,
+        "epochs": 0,
+        "seconds": 184.429273899,
+        "exit_code": null,
+        "checkpoint_sha256": null,
+        "development_teacher_agreement": null,
+        "error": null
+      },
+      {
+        "name": "small_depth3_no_skip_centered_cuda_seed0_scale2_prior0.04",
+        "wave": "gpu_gene_02",
+        "status": "failed_or_incomplete",
+        "trainer_status": "failed",
+        "updates": 0,
+        "presentations": 0,
+        "attempts": 1,
+        "epochs": 0,
+        "seconds": 104.24105682200002,
+        "exit_code": 2,
+        "checkpoint_sha256": null,
+        "development_teacher_agreement": null,
+        "error": "RuntimeError: Refused admission; rows not consumed"
+      },
+      {
+        "name": "small_depth3_no_skip_centered_cuda_seed0_scale2_prior0.4",
+        "wave": "gpu_gene_02",
+        "status": "running",
+        "trainer_status": "running",
+        "updates": 5,
+        "presentations": 80,
+        "attempts": 5,
+        "epochs": 0,
+        "seconds": 136.30784504200005,
+        "exit_code": null,
+        "checkpoint_sha256": null,
+        "development_teacher_agreement": null,
+        "error": null
+      }
+    ],
+    "resources": {
+      "cpus": 8,
+      "load": [
+        5.55,
+        3.7,
+        2.05
+      ],
+      "disk_free_bytes": 36985217024,
+      "gpu": "NVIDIA A10G, 100, 1692, 23028"
+    },
+    "errors": [],
+    "benchmark": {
+      "cases": [
+        {
+          "size": "small",
+          "device": "cpu",
+          "repair_seconds": 19.280174251000062,
+          "query_seconds_median": 0.09443859150002254,
+          "qualified_queries": 17,
+          "qualified_admissions": 1
+        },
+        {
+          "size": "small",
+          "device": "cuda",
+          "repair_seconds": 4.289220118000003,
+          "query_seconds_median": 0.10080109650004943,
+          "qualified_queries": 17,
+          "qualified_admissions": 1
+        },
+        {
+          "size": "medium",
+          "device": "cpu",
+          "repair_seconds": 23.78056777100005,
+          "query_seconds_median": 0.1368348289999517,
+          "qualified_queries": 17,
+          "qualified_admissions": 1
+        },
+        {
+          "size": "medium",
+          "device": "cuda",
+          "repair_seconds": 3.531076522000035,
+          "query_seconds_median": 0.1396608654999909,
+          "qualified_queries": 17,
+          "qualified_admissions": 1
+        },
+        {
+          "size": "large",
+          "device": "cpu",
+          "repair_seconds": 56.34513374300002,
+          "query_seconds_median": 0.22560164399999394,
+          "qualified_queries": 17,
+          "qualified_admissions": 1
+        },
+        {
+          "size": "large",
+          "device": "cuda",
+          "repair_seconds": 5.526177222999991,
+          "query_seconds_median": 0.2214476634999869,
+          "qualified_queries": 17,
+          "qualified_admissions": 1
+        }
+      ],
+      "comparisons": [
+        {
+          "size": "small",
+          "repair_speedup": 4.495030266712008
+        },
+        {
+          "size": "medium",
+          "repair_speedup": 6.734650926661457
+        },
+        {
+          "size": "large",
+          "repair_speedup": 10.196041760747585
+        }
+      ],
+      "receipt_sha256": "f358ebecd011ae56fc8e6bd03ee8e35b4161a94a62546d1ddd60acd8443b2dab"
+    },
+    "interpretation": "Training admissions and teacher agreement are not native gameplay success or general competence.",
+    "bridge_updated_unix": 1790691090.4166558,
+    "source_host": "54.91.64.176",
+    "bridge_expires_unix": 1790784643.785577
+  },
+  "model": {
+    "id": "baby-small-depth3-seed0-epoch002",
+    "pending": false,
+    "error": null,
+    "patches": 52,
+    "edges": 44384,
+    "fingerprint": "307604135121",
+    "topology_fingerprint": "ae0730cf62a4",
+    "schema": "cadence-doom-player-v3/1",
+    "scenario": "basic",
+    "champion": 0,
+    "deployment_validation": "not_evaluated"
+  },
+  "mode": "idle",
+  "learning_enabled": false,
+  "visual_browser_qa": false
+}

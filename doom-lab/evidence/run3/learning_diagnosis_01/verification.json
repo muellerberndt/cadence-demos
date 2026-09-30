@@ -1,0 +1,8 @@
+{
+  "schema": "doom-learning-diagnosis-verification/1",
+  "checks_passed": 7,
+  "producer_sha256": "6b9e90f37abebf70ca5cfff851bcbb6d0c40cbbe09adca2dfd14c4fe070befe9",
+  "receipt_sha256": "879f87341caaa1df65dbcf8ed488a0a71744992978efd20c91f37f4872d3ba50",
+  "receipt_bytes": 32215,
+  "direct_policy_fraction": 0.9607432116131642
+}

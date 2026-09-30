@@ -1,0 +1,132 @@
+{
+  "archives": [
+    {
+      "archive_bytes": 66548812,
+      "archive_sha256": "b907800d1f042f4d72d615406c2e1d59124d8be291fa27e4f96714608c8ded88",
+      "file_bytes_checked": 107167787,
+      "files_checked": 216,
+      "manifest_sha256": "b27158cb2854564328a68ae003b2630d373a69a2e31947df35cc56adb083e12e",
+      "mismatched_files": [],
+      "number": 1,
+      "passed": true,
+      "saved_verification_sha256": "ff1830c5ea6a368d129f1b7a6ade112ab70e233f4e6a6d0cde610dd5a9966b7d"
+    },
+    {
+      "archive_bytes": 3307480,
+      "archive_sha256": "6dc46525a7cb7a6faf27cb54a30ea40abb7e83c65cc8e79b9e347a166f075711",
+      "file_bytes_checked": 7969684,
+      "files_checked": 95,
+      "manifest_sha256": "823baa9c43af8ba9eaabc084253e29157c1b0a3c217755621cd5b4e36850cc2e",
+      "mismatched_files": [],
+      "number": 2,
+      "passed": true,
+      "saved_verification_sha256": "705f40a45d1ae896bd9fdaf75764dbeabdfebcb6315991124952bde7da816a0a"
+    },
+    {
+      "archive_bytes": 13742971,
+      "archive_sha256": "676d806f7eea9abe3161ee495daa454a8bd7b903c43ac54d09ba1ceb942e3ad4",
+      "file_bytes_checked": 32652619,
+      "files_checked": 93,
+      "manifest_sha256": "9ef218c5eb427b1ec03a3b2681a35184648d831667fa46ff9ed6b60681091fa4",
+      "mismatched_files": [],
+      "number": 3,
+      "passed": true,
+      "saved_verification_sha256": "ac3dd3dffd3a81d26d97f37e7baeb31702456ea337cd5ffa3ac8addb13ac90d7"
+    },
+    {
+      "archive_bytes": 8853680,
+      "archive_sha256": "5b6b987834f7516a85cdf65d7271df26759fd7e6944d1e4166f70355bf363eb6",
+      "file_bytes_checked": 21184440,
+      "files_checked": 77,
+      "manifest_sha256": "38daf087be2a04bd642d152edb25103c6cb4479b4bbe937b251dd264cb6470a4",
+      "mismatched_files": [],
+      "number": 4,
+      "passed": true,
+      "saved_verification_sha256": "91b708b8f89305c18bfafaa7dec004c250bad4d8f40c4de2d8502868f9045eaa"
+    },
+    {
+      "archive_bytes": 57271,
+      "archive_sha256": "b97604b7c5902ae5d22559f5c75155a86053ae0d32f98d1639ed04b13f11a610",
+      "file_bytes_checked": 177255,
+      "files_checked": 19,
+      "manifest_sha256": "6dd2ae8432bc5d43aea81dfe1fdfafdbcca2281b7e0bc6344252feb95438e867",
+      "mismatched_files": [],
+      "number": 5,
+      "passed": true,
+      "saved_verification_sha256": "3784e8e2a707f4b1ae7e14382b70ef5decb6f2792656c54ec93322ecfbcde328"
+    },
+    {
+      "archive_bytes": 82471,
+      "archive_sha256": "96c9d7300ebb3469dbe24ac7c522699ad15822e96bc4ad98195fbe555d252b2e",
+      "file_bytes_checked": 340271,
+      "files_checked": 48,
+      "manifest_sha256": "7ca79bf138582c585e993fa2fb6042934768d1b78a4c70c7d8f688320124ddbe",
+      "mismatched_files": [],
+      "number": 6,
+      "passed": true,
+      "saved_verification_sha256": "7b6e64dbb4d9d82a760899b15d45b206493818120023da96b8575b599d9ed651"
+    }
+  ],
+  "causal_probe": {
+    "cpu1_run_exists": false,
+    "scope": "Probe was targeted atCPU2, so CPU1absence alone is not execution proof. Tool receipt shows sourceSCP succeeded but following remoteunittest was rejected beforeexecution by quota/autoreview; subsequent launch call was neverreached. Parent separately reported noCPU2run directory. No causalresults claimed."
+  },
+  "created_unix": 1790727277.2769647,
+  "errors": [],
+  "host": "CPU1 recovery 3.93.54.244",
+  "models": [
+    {
+      "bytes": 7422150,
+      "checkpoint_sha256": "ad9b330cd1c1c582a0bb135956f87a9f8e4c0f106d80c35bb60b39c0328ef2cc",
+      "file_sha256": "844503dcdce34a253dcb3ba2689b7cd042a338b5bfd381684dfcf5ffc3237dd9",
+      "name": "ad9",
+      "passed": true,
+      "path": "/home/ec2-user/doom-v3-20260929/runs/practice_horizon_01/h144/exports/h144_update4/bundle.json"
+    },
+    {
+      "bytes": 7422837,
+      "checkpoint_sha256": "9b97de044740965b8cc103b38e04e0042301896466ccb5dd08f24023c362be07",
+      "file_sha256": "05845dcb33e286669e40b3ff4a34cfebccf920531dfa0fec8c7fa189bc64bf3f",
+      "name": "9b97",
+      "passed": true,
+      "path": "/home/ec2-user/doom-v3-20260929/runs/replay_ratio_01/life1_old24/exports/h144_update4/bundle.json"
+    },
+    {
+      "bytes": 1017850,
+      "checkpoint_sha256": "0c071bf858f75d7d6c6f4f58a60a8c7a37559b1d1201501d8b5e687de7a9f3d9",
+      "file_sha256": "3b9751010c6804ab6a2f547ac8d50e4ef305b0511e147a68fc04438aa6c14053",
+      "name": "native_blend_eta0",
+      "passed": true,
+      "path": "/home/ec2-user/doom-v3-20260929/runs/native_blend_02/eta0/bundle.json"
+    },
+    {
+      "bytes": 1017887,
+      "checkpoint_sha256": "b703737a9198bde311e05417add2afeef3c12f076c96d3c93b3b0073c378e61a",
+      "file_sha256": "f647e25eceb744f84abd5212bdd72bead9630824827dee28a9307885279ff4dd",
+      "name": "native_blend_eta01",
+      "passed": true,
+      "path": "/home/ec2-user/doom-v3-20260929/runs/native_blend_02/eta01/bundle.json"
+    },
+    {
+      "bytes": 1017837,
+      "checkpoint_sha256": "19f2a151a1cfa8b14abc2e875c6301a68eed8041fef7d40de7d1499815ac5fb3",
+      "file_sha256": "7bfc10c4709387d6b7d4215d36794dada0fc2f4d25be8b2a27e327e9c3254ab0",
+      "name": "native_blend_eta025",
+      "passed": true,
+      "path": "/home/ec2-user/doom-v3-20260929/runs/native_blend_02/eta025/bundle.json"
+    },
+    {
+      "bytes": 1017177,
+      "checkpoint_sha256": "00ab8c64026501c8fb276b7d25ab832ea5528e511d6c0762063d0df4abcfc153",
+      "file_sha256": "5896ab172bbe631777b823a2c23db1053a69a4799a5fb7a83a8ce752bfe5efcd",
+      "name": "native_blend_eta1",
+      "passed": true,
+      "path": "/home/ec2-user/doom-v3-20260929/runs/native_blend_02/eta1/bundle.json"
+    }
+  ],
+  "native_blend_saved_receipt_match": true,
+  "passed": true,
+  "schema": "doom-recovery-durable-audit/1",
+  "scope": "Read-only hashes against saved DATA_CATALOGUE archive identities, archived per-file manifests, prior verification receipts, and saved selected-bundle hashes. No training, native evaluation, service launch, model change, or remote file write.",
+  "seconds": 1.834127871999982
+}

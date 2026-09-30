@@ -1,0 +1,14 @@
+{
+  "arm": "continue36_life1",
+  "contract": "utility_action12_frozen_champion36_v1",
+  "lifetime": 1,
+  "status": "complete",
+  "updates": 1,
+  "presentations": 2,
+  "promotions": 0,
+  "seconds": 0.7805406250990927,
+  "baseline_loss": 0.04483733458574628,
+  "final_loss": 0.04483733458574628,
+  "champion_sha256": "db6df682f3c4411e0a2d18ac4bcb9fff368bbdc6d7186391e9d100a5241050ac",
+  "scheduled_updates": 1
+}

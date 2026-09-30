@@ -1,0 +1,33 @@
+{
+  "schema": "cadence-pinned-runtime/1",
+  "core_set_sha256": "996d7ffdd43f7deffae20272ea35948f2704a7aa2c466d2c5a90905b438deefb",
+  "files": {
+    "__init__.py": "de69e80ad2c1bdc5a30e432e5c0c70124e694d06a072e1d73a7b6fe2607ead26",
+    "_repair.py": "6635dfb8f5559638b3868b639af7e26c89acd4fa19f28d282e320e284692e79a",
+    "_tensor.py": "d5765b286c931863cf540d19133500f734b70270c1bf702d60476c8945d86ce9",
+    "_validation.py": "05d09fd56ec96ef9315cfe569fa818a718795d1aedefd12d5b02bb619808b0ab",
+    "bootstrap.py": "e7f5e0096e1ea3b6ac733805ab814acfd368824b86c7b52969d3936eba48868f",
+    "brain.py": "e87fc184b32a769d0840a14f900ecfd24da8b28c37da2d84c8b83c9df7d7f3fb",
+    "column.py": "d3752d27227ca34dfc03134d792cc046fc41d96ac181f19be852a193d1eee203",
+    "cortex.py": "270f963fa6ca1c91b0deb19ce0f440cd4881f79205fdd115f64ef23942463482",
+    "memory.py": "55eb67223932f54f3dd7a4a39f5f540f1af64eb6c9551b3144c7c74cda0b9e2a",
+    "ports.py": "f0ec46ba314ee20523ff603473256362ae84a1522e89d39751f082f278aa4dca",
+    "reinforcement.py": "9e1c000e9560e50f7e3ee5625c722f21a90a42a7000fd5480ca3ee2e20ba9216",
+    "runtime.py": "85f0464c223578bc4fbd3607a175e7c932f125157b2ca25cd09bd2bb9e0ab428"
+  },
+  "source": "aws:i-0526df18f2fc2b9ae:/home/ec2-user/doom-v2-20260929/cadence/src/cadence",
+  "source_pinned_by": "Doom V2/V3 immutable snapshots and campaign source receipts",
+  "extra_files": {
+    "LICENSE": {
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "source": "cadence/LICENSE",
+      "scope": "Local repository packaging/license context, not part of the remote 12-file runtime hash"
+    },
+    "pyproject.toml": {
+      "sha256": "d39c55841555b060f439f0fc9c7c0497cdd21c64c6cc8c81b86ee9e236dcac02",
+      "source": "cadence/pyproject.toml",
+      "scope": "Local repository packaging/license context, not part of the remote 12-file runtime hash"
+    }
+  },
+  "interpretation": "Exact source recovery; no training, native evaluation, or platform equivalence inferred."
+}

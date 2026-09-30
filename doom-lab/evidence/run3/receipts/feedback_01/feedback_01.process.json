@@ -1,0 +1,9 @@
+{
+  "schema": "doom-feedback-process/1",
+  "started_unix": 1790687312,
+  "ended_unix": 1790687324.4685488,
+  "exit_code": 1,
+  "timeout_seconds": 1800,
+  "kill_grace_seconds": 30,
+  "status": "process_failure"
+}

@@ -1,0 +1,66 @@
+{
+  "schema": "doom-v3-private-qa-cleanup/1",
+  "unix": 1790690698.862919,
+  "model": {
+    "id": "baby-small-depth3-seed0-epoch002",
+    "pending": false,
+    "error": null,
+    "patches": 52,
+    "edges": 44384,
+    "fingerprint": "307604135121",
+    "topology_fingerprint": "ae0730cf62a4",
+    "schema": "cadence-doom-player-v3/1",
+    "scenario": "basic",
+    "champion": 0,
+    "deployment_validation": "not_evaluated"
+  },
+  "deleted": [
+    {
+      "path": "data/models/v2/qa-remote-basic-v2/bundle.json",
+      "bytes": 1218719,
+      "sha256": "b52524ae7fc63b22455a7b215b58c65020e6b70444209acb377fd3f8d0cac65b"
+    },
+    {
+      "path": "data/models/v2/qa-remote-basic-v2-1790690439816318411/bundle.json",
+      "bytes": 1218719,
+      "sha256": "cec84d277d48f0a37779a88158d126bea622f9d44b2a8aadd9d349f0bc51d1e8"
+    },
+    {
+      "path": "data/models/v2/qa-remote-basic-v2-1790690569187196924/bundle.json",
+      "bytes": 1218719,
+      "sha256": "4ab4b217ec333e17881e449877b12c964cdc9e736c687a444ced05eec832dd19"
+    },
+    {
+      "path": "data/models/qa-remote-legacy.json.gz",
+      "bytes": 450682,
+      "sha256": "145c57886760c68c909faf2f85c7a535c4f67fc78ed4a98345409e3eebc8decd"
+    },
+    {
+      "path": "data/models/qa-remote-legacy.norms.json",
+      "bytes": 43372,
+      "sha256": "540733dc8d2604c4df132d616316b227686dc092b4a5f6bf34db93ba6994c616"
+    },
+    {
+      "path": "data/models/qa-remote-legacy.meta.json",
+      "bytes": 66,
+      "sha256": "044a052ee98987542290d98c82f704a4b5826a02eaaf85c54d85431a1d80fe12"
+    },
+    {
+      "path": "data/models/v3/qa-remote-v3/bundle.json",
+      "bytes": 7498049,
+      "sha256": "fc9df6acfe36980a46cce3646940ebada76b6a8bd37a4c5314d489c1503866e3"
+    },
+    {
+      "path": "data/models/v3/qa-remote-v3-1790690433507880833/bundle.json",
+      "bytes": 7498049,
+      "sha256": "fc9df6acfe36980a46cce3646940ebada76b6a8bd37a4c5314d489c1503866e3"
+    },
+    {
+      "path": "data/models/v3/qa-remote-v3-1790690561958656632/bundle.json",
+      "bytes": 7405597,
+      "sha256": "444e77bc33518f17a25a8097212824a78f51524462ba5c0d5e26f978c8089806"
+    }
+  ],
+  "bytes": 26551972,
+  "live_8666_mutated": false
+}

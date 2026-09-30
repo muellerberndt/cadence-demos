@@ -1,0 +1,50 @@
+[
+  {
+    "file": "evidence/screen-02/seed-17.json",
+    "verified": true,
+    "steps": 960,
+    "arms": 4,
+    "transitions": 3840,
+    "protocol_hash": "03272c3b394592da49244fcc0313daec6e5a61b7d0add13557f2f482297ce0be",
+    "transition_hash": "f2c2ebb1d46c050e7b190d3c9b5823d98f9332b32091dad2bc9f20f1942e1278",
+    "gate": {
+      "complete": true,
+      "passed": false,
+      "checks": {
+        "normal_targets": true,
+        "recovery_distance": true,
+        "weak_targets": true,
+        "latency": false,
+        "deadlines": false
+      },
+      "weak_distance_ratio": 0.8567129941548745,
+      "scope": "Demonstration versus frozen Cadence only"
+    },
+    "boundary": "Recomputed witness integrity, physics, error, targets, timing and gate. No authenticity or superiority claim.",
+    "source_archive_verified": 17
+  },
+  {
+    "file": "evidence/screen-02/seed-29.json",
+    "verified": true,
+    "steps": 960,
+    "arms": 4,
+    "transitions": 3840,
+    "protocol_hash": "03272c3b394592da49244fcc0313daec6e5a61b7d0add13557f2f482297ce0be",
+    "transition_hash": "355a2564a26ad26fdf16bfd3e39f243d4a16ca1b0034b0cb1138a1dc2bc0a373",
+    "gate": {
+      "complete": true,
+      "passed": false,
+      "checks": {
+        "normal_targets": true,
+        "recovery_distance": true,
+        "weak_targets": true,
+        "latency": false,
+        "deadlines": false
+      },
+      "weak_distance_ratio": 0.8684596281227858,
+      "scope": "Demonstration versus frozen Cadence only"
+    },
+    "boundary": "Recomputed witness integrity, physics, error, targets, timing and gate. No authenticity or superiority claim.",
+    "source_archive_verified": 17
+  }
+]

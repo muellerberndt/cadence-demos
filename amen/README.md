@@ -14,6 +14,21 @@ in time with the sound. The page says on its face that the brain is still traini
 Live page: [floatingpragma.io/cadence-examples/amen-beats](https://floatingpragma.io/cadence-examples/amen-beats/).
 The same page runs from this directory; see [Run it locally](#run-it-locally).
 
+## Brain layout
+
+This demo uses the legacy `RecordPatchNet` trained at commit `02fec624`: one
+explicit gated context update, record lookup and linear readout per half-beat.
+The browser retains temporal context and keeps record writes off. It computes
+the sequence before rendering and playing the audio; playback displays the
+stored activity trace.
+
+For a Cadence 0.50.0 application, choose among flat settlement, ordinary
+state-coupled settlement and recursive observer settlement. All three use the
+library's common settlement engine. AMEN's direct record-patch computation is
+a separate historical mechanism. See the [layout guide](https://github.com/muellerberndt/cadence/blob/main/docs/VARIANTS.md)
+for task choices and the [performance guide](https://github.com/muellerberndt/cadence/blob/main/docs/PERFORMANCE.md)
+for the execution and timing distinction.
+
 ## Card
 
 - **Name:** Amen

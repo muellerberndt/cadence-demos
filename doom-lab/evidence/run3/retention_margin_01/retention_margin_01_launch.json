@@ -1,0 +1,20 @@
+{
+  "created_unix": 1790696156.9758718,
+  "tmux": "doom-v3-retention-margin-01",
+  "code": "/home/ec2-user/doom-v3-20260929/code/retention_margin_01",
+  "run": "/home/ec2-user/doom-v3-20260929/runs/retention_margin_01",
+  "log": "/home/ec2-user/doom-v3-20260929/logs/retention_margin_01.log",
+  "command": [
+    "env",
+    "CADENCE_SRC=/home/ec2-user/doom-v3-20260929/cadence/src",
+    "PYTHONPATH=/home/ec2-user/doom-v3-20260929/cadence-demos/doom-lab",
+    "/home/ec2-user/venv/bin/python",
+    "-m",
+    "v3.retention_margin_campaign",
+    "supervise",
+    "--source",
+    "/home/ec2-user/doom-v3-20260929/runs/navigation_novelty_01",
+    "--out",
+    "/home/ec2-user/doom-v3-20260929/runs/retention_margin_01"
+  ]
+}

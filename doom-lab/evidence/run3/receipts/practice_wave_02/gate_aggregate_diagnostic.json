@@ -1,0 +1,292 @@
+{
+  "lifetime1": {
+    "anchor_successes": 7,
+    "anchor_mean_return": -147.5,
+    "gates": [
+      {
+        "updates_in_block": 1,
+        "reason": "founder_retained_success_lost",
+        "complete_qualified": true,
+        "successes": 3,
+        "mean_return": -167.375,
+        "lost_seeds": [
+          1220000000,
+          1220000001,
+          1220000002,
+          1220000007
+        ],
+        "gained_seeds": []
+      },
+      {
+        "updates_in_block": 1,
+        "reason": "founder_retained_success_lost",
+        "complete_qualified": true,
+        "successes": 3,
+        "mean_return": -193.375,
+        "lost_seeds": [
+          1220000000,
+          1220000001,
+          1220000003,
+          1220000004
+        ],
+        "gained_seeds": []
+      },
+      {
+        "updates_in_block": 1,
+        "reason": "founder_retained_success_lost",
+        "complete_qualified": true,
+        "successes": 6,
+        "mean_return": -107.375,
+        "lost_seeds": [
+          1220000001,
+          1220000004
+        ],
+        "gained_seeds": [
+          1220000005
+        ]
+      },
+      {
+        "updates_in_block": 1,
+        "reason": "founder_retained_success_lost",
+        "complete_qualified": true,
+        "successes": 4,
+        "mean_return": -154.25,
+        "lost_seeds": [
+          1220000001,
+          1220000002,
+          1220000003,
+          1220000004
+        ],
+        "gained_seeds": [
+          1220000005
+        ]
+      },
+      {
+        "updates_in_block": 1,
+        "reason": "founder_retained_success_lost",
+        "complete_qualified": true,
+        "successes": 3,
+        "mean_return": -158.125,
+        "lost_seeds": [
+          1220000000,
+          1220000001,
+          1220000002,
+          1220000003
+        ],
+        "gained_seeds": []
+      },
+      {
+        "updates_in_block": 1,
+        "reason": "founder_retained_success_lost",
+        "complete_qualified": true,
+        "successes": 5,
+        "mean_return": -113.375,
+        "lost_seeds": [
+          1220000000,
+          1220000002,
+          1220000003
+        ],
+        "gained_seeds": [
+          1220000005
+        ]
+      },
+      {
+        "updates_in_block": 1,
+        "reason": "founder_retained_success_lost",
+        "complete_qualified": true,
+        "successes": 4,
+        "mean_return": -141.625,
+        "lost_seeds": [
+          1220000001,
+          1220000002,
+          1220000007
+        ],
+        "gained_seeds": []
+      },
+      {
+        "updates_in_block": 1,
+        "reason": "founder_retained_success_lost",
+        "complete_qualified": true,
+        "successes": 6,
+        "mean_return": -110.375,
+        "lost_seeds": [
+          1220000003
+        ],
+        "gained_seeds": []
+      },
+      {
+        "updates_in_block": 1,
+        "reason": "founder_retained_success_lost",
+        "complete_qualified": true,
+        "successes": 4,
+        "mean_return": -155.75,
+        "lost_seeds": [
+          1220000000,
+          1220000002,
+          1220000007
+        ],
+        "gained_seeds": []
+      },
+      {
+        "updates_in_block": 1,
+        "reason": "founder_retained_success_lost",
+        "complete_qualified": true,
+        "successes": 5,
+        "mean_return": -59.125,
+        "lost_seeds": [
+          1220000000,
+          1220000002
+        ],
+        "gained_seeds": []
+      },
+      {
+        "updates_in_block": 1,
+        "reason": "founder_retained_success_lost",
+        "complete_qualified": true,
+        "successes": 2,
+        "mean_return": -213.25,
+        "lost_seeds": [
+          1220000001,
+          1220000002,
+          1220000003,
+          1220000004,
+          1220000007
+        ],
+        "gained_seeds": []
+      },
+      {
+        "updates_in_block": 1,
+        "reason": "founder_retained_success_lost",
+        "complete_qualified": true,
+        "successes": 5,
+        "mean_return": -67.875,
+        "lost_seeds": [
+          1220000000,
+          1220000002
+        ],
+        "gained_seeds": []
+      },
+      {
+        "updates_in_block": 1,
+        "reason": "founder_retained_success_lost",
+        "complete_qualified": true,
+        "successes": 3,
+        "mean_return": -158.125,
+        "lost_seeds": [
+          1220000000,
+          1220000001,
+          1220000002,
+          1220000003
+        ],
+        "gained_seeds": []
+      },
+      {
+        "updates_in_block": 1,
+        "reason": "founder_retained_success_lost",
+        "complete_qualified": true,
+        "successes": 5,
+        "mean_return": -86.25,
+        "lost_seeds": [
+          1220000002,
+          1220000007
+        ],
+        "gained_seeds": []
+      },
+      {
+        "updates_in_block": 1,
+        "reason": "founder_retained_success_lost",
+        "complete_qualified": true,
+        "successes": 6,
+        "mean_return": -17.625,
+        "lost_seeds": [
+          1220000000
+        ],
+        "gained_seeds": []
+      }
+    ]
+  },
+  "lifetime16": {
+    "anchor_successes": 7,
+    "anchor_mean_return": -147.5,
+    "gates": [
+      {
+        "updates_in_block": 16,
+        "reason": "founder_retained_success_lost",
+        "complete_qualified": true,
+        "successes": 6,
+        "mean_return": -24.875,
+        "lost_seeds": [
+          1220000000,
+          1220000007
+        ],
+        "gained_seeds": [
+          1220000005
+        ]
+      }
+    ]
+  },
+  "lifetime4": {
+    "anchor_successes": 7,
+    "anchor_mean_return": -147.5,
+    "gates": [
+      {
+        "updates_in_block": 4,
+        "reason": "founder_retained_success_lost",
+        "complete_qualified": true,
+        "successes": 5,
+        "mean_return": -91.375,
+        "lost_seeds": [
+          1220000001,
+          1220000002,
+          1220000003
+        ],
+        "gained_seeds": [
+          1220000005
+        ]
+      },
+      {
+        "updates_in_block": 4,
+        "reason": "founder_retained_success_lost",
+        "complete_qualified": true,
+        "successes": 4,
+        "mean_return": -130.75,
+        "lost_seeds": [
+          1220000001,
+          1220000002,
+          1220000003
+        ],
+        "gained_seeds": []
+      },
+      {
+        "updates_in_block": 4,
+        "reason": "founder_retained_success_lost",
+        "complete_qualified": true,
+        "successes": 1,
+        "mean_return": -251.125,
+        "lost_seeds": [
+          1220000000,
+          1220000001,
+          1220000002,
+          1220000003,
+          1220000004,
+          1220000007
+        ],
+        "gained_seeds": []
+      },
+      {
+        "updates_in_block": 4,
+        "reason": "founder_retained_success_lost",
+        "complete_qualified": true,
+        "successes": 3,
+        "mean_return": -172.75,
+        "lost_seeds": [
+          1220000001,
+          1220000002,
+          1220000003,
+          1220000004
+        ],
+        "gained_seeds": []
+      }
+    ]
+  }
+}

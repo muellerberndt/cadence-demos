@@ -1,6 +1,7 @@
-cadence-net>=0.50
-vizdoom>=1.3
-torch>=2.5
-numpy
-pillow
-aiohttp
+# Cadence is loaded from the verified runtime/cadence-996d7ffdd43f7def source set.
+# Do not install cadence-net: current package releases can change checkpoint identity.
+vizdoom==1.3.1
+torch==2.14.0
+numpy==2.5.3
+pillow==12.3.0
+aiohttp==3.14.3

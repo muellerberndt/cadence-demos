@@ -8,6 +8,22 @@ paying mass for every patch, every relation and every repair sweep. Nothing
 tells them to graze, hunt, hoard or speak; whatever you see them doing, they
 found.
 
+## Brain layout
+
+Patch World uses **recursive observer settlement**: perception reads the senses,
+and observer stages read live states and prediction errors within one coupled
+solve. Its genome varies observer depth. The implementation is the local
+JavaScript `core.js`, with the numerical differences described below; the page
+does not run the Python package.
+
+Cadence 0.50.0 also supports flat settlement for direct sensory relations and
+ordinary state-coupled settlement for learned intermediate representations.
+All three library patterns use one settlement engine. This world explores
+selection under the cost of observer depth; it provides no flat or state-only
+control establishing a benefit from recursion. See the
+[layout guide](https://github.com/muellerberndt/cadence/blob/main/docs/VARIANTS.md)
+and [performance guide](https://github.com/muellerberndt/cadence/blob/main/docs/PERFORMANCE.md).
+
 ## Run it
 
 ```sh

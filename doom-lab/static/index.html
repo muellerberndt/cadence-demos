@@ -86,6 +86,29 @@
     25% { box-shadow: inset 0 0 60px 12px #b31b0ecc; }
     100% { box-shadow: inset 0 0 0 0 #b31b0e00; } }
   #stage.kill { animation: killflash .45s ease-out; }
+  #killtoast { position: absolute; left: 0; right: 0; top: 34%;
+    text-align: center; font-family: "Metal Mania", cursive;
+    font-size: clamp(22px, 3.4vw, 42px); letter-spacing: 3px; color: var(--ember);
+    text-shadow: 0 0 18px #b31b0e; opacity: 0; pointer-events: none;
+    transition: opacity .25s ease-out; }
+  #killtoast.on { opacity: 1; }
+  #feedpanel { flex: 0 0 300px; padding: 10px 12px; overflow-y: auto; }
+  #feedpanel h3 { margin: 0 0 8px; font-size: 11px; letter-spacing: .18em;
+    color: var(--dim); font-weight: 600; }
+  #pipeline { color: var(--bone); font-size: 11px; line-height: 1.7;
+    border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-bottom: 8px; }
+  #pipeline b { color: var(--ember); font-weight: 600; }
+  #feed { display: flex; flex-direction: column; gap: 3px; font-size: 11px;
+    min-height: 60px; }
+  #feed div { color: var(--dim); }
+  #feed div.kill { color: var(--ember); }
+  #feed div.promotion { color: var(--good); }
+  #feed div.gate, #feed div.repair { color: var(--bone); }
+  #feed-hint { color: var(--dim); font-size: 10px; line-height: 1.5;
+    border-top: 1px solid var(--line); padding-top: 8px; margin-top: 8px; }
+  body.show #feedpanel { position: fixed; left: 16px; bottom: 16px; width: 340px;
+    max-height: 44vh; z-index: 6; background: #000d; }
+  body.training #feedpanel { display: none; }
   #respawn { position: absolute; inset: 0; display: none; align-items: center;
     justify-content: center; font-family: "Metal Mania", cursive;
     font-size: clamp(30px, 5vw, 60px); color: var(--hud); letter-spacing: 6px;
@@ -147,23 +170,20 @@
 </head>
 <body class="show">
 <header id="topbar">
-  <h1>CADENCE&middot;DOOM</h1>
+  <h1>CADENCE&middot;DOOM <small>v1</small></h1>
   <span id="banner" style="color:var(--ember);font-size:12px"></span>
   <div class="spacer"></div>
   <div class="bargroup">
-    <button id="pause-btn">PAUSE</button>
+    <button id="pause-btn" disabled>CONNECTING</button>
     <button id="reset">RESET</button>
     <button id="retina-btn">RETINA</button>
     <button id="train-btn">TRAINING</button>
+    <button id="learn-btn" disabled title="Learn from simulator feedback; candidates are evaluated before activation">AUTOLEARN OFF</button>
+    <button id="rollback-btn" disabled title="Restore the previous champion at the next episode boundary">ROLLBACK</button>
     <button id="show" class="active">FULLSCREEN</button>
   </div>
   <div class="bargroup">
     <select id="model-sel"></select>
-    <select id="decode-sel" title="How motor scores become button presses. CAL and TOP-1 need a deep-probed model.">
-      <option value="raw">RAW DECODE</option>
-      <option value="cal">CALIBRATED</option>
-      <option value="top1">TOP-1</option>
-    </select>
     <button id="export">EXPORT</button>
     <button id="import">IMPORT</button>
     <input type="file" id="import-file" accept=".json" style="display:none">
@@ -178,20 +198,34 @@
     <div id="stage" tabindex="0">
       <img id="screen" src="/video" alt="doom">
       <div id="overlay">
-        <span id="ov-title">CADENCE <b>//</b> AI</span>
+        <span id="ov-title">CADENCE <b>//</b> BABY</span>
         <span>HP <b id="ov-health">&ndash;</b> &nbsp; AMMO <b id="ov-ammo">&ndash;</b>
-          &nbsp; KILLS <b id="ov-kills">&ndash;</b> &nbsp; EP <b id="ov-episode">&ndash;</b></span>
+          &nbsp; KILLS <b id="ov-kills">&ndash;</b> &nbsp; R <b id="ov-reward">&ndash;</b>
+          &nbsp; EP <b id="ov-episode">&ndash;</b></span>
       </div>
+      <div id="killtoast"></div>
       <div id="respawn">RESPAWN</div>
-      <div id="idlecard"><b>PAUSED</b><span>press RESUME to let it play</span></div>
+      <div id="idlecard"><b>PAUSED</b><span>press RESUME to let the baby play</span></div>
       <div class="retinabox" id="periph-box"><i>PERIPHERY 32&times;20</i></div>
-      <div class="retinabox" id="fovea-box"><i>FOVEA 64&times;6</i></div>
-      <div id="stagehint">the AI is playing &mdash; swap its brain any time</div>
+      <div class="retinabox" id="fovea-box"><i>FOVEA 32&times;12</i></div>
+      <div id="stagehint">the baby is playing &mdash; swap its brain any time</div>
     </div>
   </div>
   <div class="panel" id="brainpanel">
     <div id="brain3d"></div>
+    <div id="learning-status" style="padding:4px 12px;font:11px ui-monospace,monospace;color:var(--ember)"></div>
     <div id="settle"><span class="dot" id="q-dot"></span><span id="sweeps-chip">&ndash;</span></div>
+  </div>
+  <div class="panel" id="feedpanel">
+    <h3>LIVE LEARNING</h3>
+    <div id="pipeline">&ndash;</div>
+    <div id="feed"></div>
+    <div id="feed-hint">The baby sees only pixels and its own past actions.
+      Killing the monster raises its native reward. With AUTOLEARN on, played
+      states are rebuilt in native simulators that try all 20 actions and
+      continue with the frozen actor; the outcomes become preference targets.
+      The public repair rule admits them into a separate candidate, which
+      replaces the champion only after keeping the founder's wins.</div>
   </div>
 </main>
 <div id="loadcard"><b>LOADING BRAIN</b>
@@ -199,37 +233,73 @@
   <div class="bar"><i></i></div>
 </div>
 <div id="trainpanel">
-  <h3>DOOM-HERO LINEAGE &mdash; LEARNING</h3>
-  <div class="status" id="t-status">waiting for first export&hellip;</div>
-  <div class="tlegend">
-    <span><i style="background:#cd7212"></i>mean accuracy</span>
-    <span><i style="background:#4f8fe0"></i>forward</span>
-    <span><i style="background:#c25bb4"></i>fire</span>
-    <span><i style="background:#4fc06a"></i>forward recall</span>
-    <span><i style="background:#e0d24f"></i>forward AUC</span>
-  </div>
-  <svg id="chart-acc" viewBox="0 0 430 110" preserveAspectRatio="none"></svg>
-  <h3>FORESIGHT ERROR (KILL) &mdash; LOWER IS BETTER</h3>
-  <svg id="chart-mae" viewBox="0 0 430 110" preserveAspectRatio="none"></svg>
-  <div id="closed-loop" style="display:none">
-    <h3>CLOSED LOOP &mdash; PATH PER EPISODE</h3>
-    <svg id="chart-live" viewBox="0 0 430 110" preserveAspectRatio="none"></svg>
-  </div>
-  <div id="effort" style="display:none">
-    <h3>ADMISSION EFFORT &mdash; SWEEPS &amp; SECONDS PER BATCH</h3>
-    <svg id="chart-effort" viewBox="0 0 430 110" preserveAspectRatio="none"></svg>
-  </div>
-  <div id="btn-deep" style="display:none">
-    <h3 id="btn-deep-title">BUTTONS &mdash; RECALL / PRESS RATE</h3>
-    <div id="btn-deep-table"></div>
-  </div>
-  <details><summary>data table</summary><div id="t-table"></div></details>
+  <section id="development-training">
+    <h3>PRESERVED EXPERIMENTS</h3>
+    <div class="status" id="development-status">Loading preserved results.</div>
+    <div class="status" id="development-resources"></div>
+    <div class="status" id="development-browser"></div>
+    <div class="status" id="development-gates">No student task gates reported yet.</div>
+    <div id="development-runs" style="overflow-x:auto"></div>
+  </section>
+  <section><h3>CURRENT ACTOR AND LEARNING</h3>
+    <div class="status" id="online-status"></div>
+    <div class="status" id="online-contract"></div>
+    <div class="status" id="online-collection"></div>
+    <div class="status" id="online-validation"></div>
+    <details><summary>current status</summary><pre id="online-detail" style="white-space:pre-wrap;overflow-wrap:anywhere"></pre></details>
+  </section>
 </div>
 <div class="tt" id="tt"></div>
 <script>
 window.BV = {};
-let ws = null, down = new Set(), currentModel = null, modStrafe = false;
-let lastKills = null, lastEpisode = null;
+let ws = null, currentModel = null;
+let lastKills = null, lastEpisode = null, learningEnabled = false;
+let serverMode = null, nextGraphRetry = 0;
+let lastEventSeq = 0, killToastTimer = null;
+const feedEvents = [];
+
+function describeEvent(ev) {
+  if (ev.kind === "kill") return ["kill",
+    "MONSTER KILLED · native reward " + (ev.reward >= 0 ? "+" : "") + ev.reward];
+  if (ev.kind === "episode") return ["episode",
+    "episode " + ev.episode + " over · return " + (ev.return ?? "–") +
+    (ev.kills ? " · " + ev.kills + " kill" + (ev.kills > 1 ? "s" : "") : "") +
+    (ev.cutoff ? " · " + ev.cutoff : "")];
+  if (ev.kind === "repair") return ["repair",
+    "repair admitted · candidate update #" + ev.updates];
+  if (ev.kind === "gate") return ["gate", "retention gate · " +
+    (ev.rollback ? "rollback" : ev.promote ? "passed, promoting" : "candidate rejected") +
+    (ev.reason ? " · " + ev.reason : "")];
+  if (ev.kind === "promotion") return ["promotion", "NEW CHAMPION v" + (ev.champion ?? "?")];
+  if (ev.kind === "learning") return ["learning", "autolearn " + (ev.enabled ? "on" : "off")];
+  return ["", String(ev.kind || "event")];
+}
+function showKillToast(ev) {
+  const toast = document.getElementById("killtoast");
+  toast.textContent = "+" + ev.reward + " KILL";
+  toast.classList.add("on");
+  if (killToastTimer) clearTimeout(killToastTimer);
+  killToastTimer = setTimeout(() => toast.classList.remove("on"), 1400);
+}
+function processEvents(events) {
+  let changed = false;
+  for (const ev of events) {
+    if (!ev || !(ev.seq > lastEventSeq)) continue;
+    lastEventSeq = ev.seq;
+    feedEvents.unshift(ev); changed = true;
+    if (ev.kind === "kill") showKillToast(ev);
+  }
+  if (feedEvents.length > 14) feedEvents.length = 14;
+  if (!changed) return;
+  const rows = feedEvents.map(ev => {
+    const row = document.createElement("div");
+    const parts = describeEvent(ev);
+    if (parts[0]) row.classList.add(parts[0]);
+    row.textContent = parts[1];
+    return row;
+  });
+  document.getElementById("feed").replaceChildren(...rows);
+}
 
 function setText(id, value) { document.getElementById(id).textContent = value; }
 function flash(text) {
@@ -256,25 +326,45 @@ async function refreshModels() {
 refreshModels();
 
 async function onModelChange(model) {
-  currentModel = model.id + ":" + model.fingerprint;
-  const g = await (await fetch("/graph")).json();
-  window.BV.graph = g;
-  window.BV.graphVersion = (window.BV.graphVersion || 1) + 1;
-  refreshModels();
+  const identity = model.id + ":" + model.fingerprint;
+  currentModel = identity;
+  Object.assign(window.BV, {state: null, errors: null, retina_p: null, retina_f: null, buttons: null});
+  try {
+    const response = await fetch("/graph");
+    if (response.ok === false) throw new Error("HTTP " + response.status);
+    const g = await response.json();
+    if (currentModel !== identity) return;
+    window.BV.graph = g;
+    window.BV.graphVersion = (window.BV.graphVersion || 1) + 1;
+    refreshModels();
+  } catch (error) {
+    if (currentModel === identity) { currentModel = null; nextGraphRetry = Date.now() + 2000; }
+    flash("Brain graph unavailable; retrying: " + error.message);
+  }
 }
 
 function connect() {
-  ws = new WebSocket("ws://" + location.host + "/ws");
-  ws.onopen = () => { resetVideo(); setTimeout(applyMode, 400); };
-  ws.onmessage = (event) => {
+  syncMode(null);
+  const socket = new WebSocket((location.protocol === "https:" ? "wss://" : "ws://") + location.host + "/ws");
+  ws = socket;
+  // Connecting a tab observes the shared player; only a click changes its mode.
+  socket.onopen = () => { if (socket === ws) resetVideo(); };
+  socket.onmessage = (event) => {
+    if (socket !== ws) return;
     const m = JSON.parse(event.data);
     if (m.type === "saved") { flash("saved"); return; }
+    if (m.type === "learning_ack" || m.type === "rollback_ack") {
+      if (!m.ok) flash(m.error || "No previous champion available");
+      else if (m.type === "rollback_ack") flash("Rollback queued for next episode");
+      return;
+    }
     if (m.type === "model_ack") {
       if (!m.ok) { pendingModel = null; hideLoading(); flash("load refused"); }
       return;
     }
     if (m.type !== "state") return;
     document.body.dataset.mode = m.mode;
+    syncMode(m.mode);
     if (lastEpisode !== null && m.episode !== lastEpisode && m.mode === "student") {
       stage.classList.add("respawn");
       setTimeout(() => stage.classList.remove("respawn"), 900);
@@ -288,10 +378,38 @@ function connect() {
       lastKills = m.game.kills;
       setText("ov-health", m.game.health); setText("ov-ammo", m.game.ammo);
       setText("ov-kills", m.game.kills); setText("ov-episode", m.episode);
+      setText("ov-reward", Number(m.game.reward || 0).toFixed(1));
     }
     const t = m.trainer || {};
+    const learning = m.learning || {};
+    learningEnabled = !!learning.enabled;
+    const learnButton = document.getElementById("learn-btn");
+    learnButton.disabled = !learning.available;
+    learnButton.textContent = learningEnabled ? "AUTOLEARN ON" : "AUTOLEARN OFF";
+    learnButton.classList.toggle("active", learningEnabled);
+    document.getElementById("rollback-btn").disabled = !learning.rollback_available;
+    const status = "CADENCE v1 · " + (m.model?.scenario || "unknown task") + " · " +
+      (learning.error || (learningEnabled && learning.pending_transition ?
+        "Learning is catching up; play pauses until the queued transition is recorded." :
+        learning.phase || "frozen actor")) +
+      " · updates " + (learning.accepted_updates ?? 0) +
+      " · promotions " + (learning.promotions ?? 0) + " · queue " + (learning.queue_depth ?? 0) +
+      (learning.collection_stride > 1 ? " · collect 1/" + learning.collection_stride : "") +
+      " · local deployment " + (m.model?.deployment_validation || "unknown") +
+      (Number.isFinite(m.model?.edges) ? " · " + m.model.patches + " patches · " +
+        Math.min(1400, m.model.edges) + "/" + m.model.edges + " links shown" : "");
+    setText("learning-status", status);
+    setText("pipeline", "PLAY ep " + (m.episode ?? "–") +
+      " · R " + (m.game ? Number(m.game.reward || 0).toFixed(1) : "–") +
+      "  →  RECORD queue " + (learning.queue_depth ?? 0) +
+      "  →  SIM FEEDBACK 20 actions × " + (learning.native_feedback_horizon_tics ?? "–") + " tics" +
+      "  →  REPAIR " + (learning.accepted_updates ?? 0) + " admitted" +
+      "  →  RETENTION GATE  →  CHAMPION v" + (learning.champion ?? 0));
+    processEvents(m.events || []);
+    if (m.model?.error && pendingModel) { pendingModel = null; hideLoading(); flash(m.model.error); }
+
     if (m.model && currentModel !== m.model.id + ":" + m.model.fingerprint
-        && !m.model.pending) {
+        && !m.model.pending && Date.now() >= nextGraphRetry) {
       onModelChange(m.model).then(() => {
         if (pendingModel && m.model.id === pendingModel) {
           pendingModel = null;
@@ -300,154 +418,175 @@ function connect() {
       });
     }
     const s = m.shadow || {};
+    if (s.error) setText("learning-status", s.error);
     if (s.state) {
       Object.assign(window.BV, {state: s.state, errors: s.errors,
-        retina_p: s.retina_p, retina_f: s.retina_f, buttons: s.buttons});
+        retina_p: s.retina_p, retina_f: s.retina_f, buttons: s.ui_buttons || s.buttons});
     }
     window.BV.admitted = t.admitted ?? 0;
     const dot = document.getElementById("q-dot");
     dot.className = "dot " + (s.qualified === true ? "ok" : s.qualified === false ? "bad" : "");
     setText("sweeps-chip", s.sweeps !== undefined ? s.sweeps + " sw" : "–");
   };
-  ws.onclose = () => setTimeout(connect, 1000);
+  socket.onclose = () => {
+    if (socket !== ws) return;
+    syncMode(null);
+    setTimeout(connect, 1000);
+  };
 }
 connect();
 
-let paused = false;
-function applyMode() {
-  send({type: "mode", mode: paused ? "idle" : "student"});
-  resetVideo();
+function syncMode(mode) {
+  serverMode = mode;
   const b = document.getElementById("pause-btn");
-  b.textContent = paused ? "RESUME" : "PAUSE";
-  b.classList.toggle("active", paused);
+  b.disabled = mode === null;
+  b.textContent = mode === null ? "CONNECTING" : mode === "idle" ? "RESUME" : "PAUSE";
+  b.classList.toggle("active", mode === "idle");
 }
-document.getElementById("pause-btn").onclick = () => { paused = !paused; applyMode(); };
+document.getElementById("pause-btn").onclick = () => {
+  if (serverMode === null) return;
+  send({type: "mode", mode: serverMode === "idle" ? "student" : "idle"});
+  resetVideo();
+};
 document.getElementById("reset").onclick = () => send({type: "reset"});
+document.getElementById("learn-btn").onclick = () => send({type: "learning", enabled: !learningEnabled});
+document.getElementById("rollback-btn").onclick = () => send({type: "rollback"});
 let trainTimer = null;
 document.getElementById("train-btn").onclick = () => {
   const on = document.body.classList.toggle("training");
   document.getElementById("train-btn").classList.toggle("active", on);
-  if (on) { loadTraining(); trainTimer = setInterval(loadTraining, 60000); }
+  if (on) { loadTraining(); trainTimer = setInterval(loadTraining, 10000); }
   else clearInterval(trainTimer);
 };
-const tt = document.getElementById("tt");
-function lineChart(svg, rows, series, yMax) {
-  const W = 430, H = 110, L = 30, R = 6, T = 8, B = 16;
-  const xs = rows.map(r => r.batches);
-  const x0 = Math.min(...xs), x1 = Math.max(...xs, x0 + 1);
-  const X = v => L + (W - L - R) * (v - x0) / (x1 - x0);
-  const Y = v => T + (H - T - B) * (1 - Math.min(v, yMax) / yMax);
-  let g = "";
-  for (const f of [0.5, 1.0]) {
-    g += `<line x1="${L}" y1="${Y(yMax*f)}" x2="${W-R}" y2="${Y(yMax*f)}"
-          stroke="#1c1512" stroke-width="1"/>
-          <text x="${L-4}" y="${Y(yMax*f)+3}" fill="#6f6353" font-size="8"
-          text-anchor="end">${(yMax*f).toFixed(1)}</text>`;
-  }
-  for (const s of series) {
-    const present = rows.filter(r => r[s.key] != null);
-    if (!present.length) continue;
-    const pts = present.map(r => `${X(r.batches)},${Y(r[s.key])}`).join(" ");
-    g += `<polyline points="${pts}" fill="none" stroke="${s.color}"
-          stroke-width="2" stroke-linejoin="round"/>`;
-    const last = present[present.length - 1];
-    g += `<text x="${Math.min(X(last.batches)+4, W-4)}" y="${Y(last[s.key])+3}"
-          fill="#9b8a72" font-size="8">${last[s.key].toFixed(2)}</text>`;
-    for (const r of present) {
-      g += `<circle cx="${X(r.batches)}" cy="${Y(r[s.key])}" r="10"
-            fill="transparent" data-tip="batch ${r.batches}
-${s.name}: ${r[s.key].toFixed(3)}"/>`;
+function renderFullGame(data) {
+  if (data.mode === "archived") {
+    setText("development-status", "Preserved results · no live cloud campaign is being monitored");
+    setText("development-resources", "Original model bytes and evidence are retained. This panel does not report current cloud resources.");
+    setText("development-browser", "The current actor and local learning state are shown below.");
+    setText("development-gates", "Measured Basic results only. Navigation and full-game mastery have not been demonstrated.");
+    const holder = document.getElementById("development-runs"); holder.replaceChildren();
+    const table = document.createElement("table"), header = document.createElement("tr");
+    for (const title of ["Model", "Scope", "Wins", "Evidence"]) {
+      const cell = document.createElement("th"); cell.textContent = title; header.appendChild(cell);
     }
+    table.appendChild(header);
+    for (const row of data.results || []) {
+      const tr = document.createElement("tr");
+      for (const value of [row.model, row.scope, row.successes + "/" + row.scheduled, row.receipt_sha256.slice(0,12)]) {
+        const cell = document.createElement("td"); cell.textContent = value; tr.appendChild(cell);
+      }
+      table.appendChild(tr);
+    }
+    holder.appendChild(table); return;
   }
-  g += `<text x="${W-R}" y="${H-4}" fill="#6f6353" font-size="8"
-       text-anchor="end">batches →</text>`;
-  svg.innerHTML = g;
-  svg.querySelectorAll("circle").forEach(c => {
-    c.addEventListener("mouseenter", (e) => {
-      tt.textContent = c.dataset.tip; tt.style.display = "block";
-    });
-    c.addEventListener("mousemove", (e) => {
-      tt.style.left = (e.clientX + 12) + "px"; tt.style.top = (e.clientY - 10) + "px";
-    });
-    c.addEventListener("mouseleave", () => tt.style.display = "none");
-  });
+
+  const age = data.last_cloud_update_unix ? Math.max(0, Date.now()/1000-data.last_cloud_update_unix) : null;
+  const state = data.cloud_state === "reachable" ? "cloud reachable" : "cloud state unknown";
+  setText("development-status", "Full-game development · " + state +
+    (age === null ? "" : " · observed " + Math.round(age) + "s ago" + (age > 60 ? " (stale)" : "")) +
+    (data.monitor_state === "expired" ? " · monitor lifetime ended" : "") +
+    (data.error ? " · " + data.error : ""));
+  const r = data.resources || {};
+  const gib = bytes => Number.isFinite(bytes) ? (bytes/1073741824).toFixed(1) : "–";
+  setText("development-resources", "Cloud: " + (r.cpus ?? "–") + " CPUs" +
+    (Number.isFinite(r.cpu_utilization_percent) ? " · " + r.cpu_utilization_percent.toFixed(1) + "% CPU" : "") +
+    (Array.isArray(r.load) ? " · load " + Number(r.load[0]).toFixed(2) : "") +
+    " · RAM available " + gib(r.memory_available_bytes) + "/" + gib(r.memory_total_bytes) + " GiB" +
+    " · disk free " + gib(r.disk_free_bytes) + " GiB" +
+    " · tracked processes " + (r.processes?.length ?? "–"));
+  const actor = data.browser_actor;
+  setText("development-browser", actor ? "Current browser actor: " + (actor.scenario || "unknown scenario") +
+    " · " + actor.model_id + " · champion " + (actor.champion ?? "–") + " · " + (actor.mode || "unknown mode") +
+    ". Cloud development does not change this actor." + (data.local_error ? " · status unavailable: " + data.local_error : "") :
+    "Current browser actor status unavailable; cloud development has not selected a replacement.");
+  const gates = Array.isArray(data.task_gates) ? data.task_gates : [];
+  setText("development-gates", gates.length ? "Declared task gates: " + gates.map(g =>
+    (g.scope || "unspecified") + " / " + g.task_id + ": " + (g.passed ? "passed" : "not passed")).join(" · ") +
+    ". Teacher gates are not student competence." : "No explicit task gates reported yet. Full-game competence has not been demonstrated.");
+  const holder = document.getElementById("development-runs");
+  holder.replaceChildren();
+  const rows = Array.isArray(data.runs) ? data.runs : [];
+  if (!rows.length) return;
+  const table = document.createElement("table"), header = document.createElement("tr");
+  for (const title of ["Run", "Work", "Progress", "State / cap"]) {
+    const cell = document.createElement("th"); cell.textContent = title; header.appendChild(cell);
+  }
+  table.appendChild(header);
+  for (const row of rows) {
+    const files = row.files || {}, status = files["status.json"] || {}, freeze = files["freeze.json"] || {};
+    const summary = files["summary.json"] || files["receipt.json"] || {};
+    const failure = files["failure.json"], outcome = summary.outcome || {};
+    const schema = summary.schema || status.schema || freeze.schema || "";
+    const gpuCapacity = schema === "doom-v3-gpu-capacity-monitor/1";
+    const role = gpuCapacity ? "Experimental GPU capacity" :
+      schema.includes("teacher") || String(row.run).includes("teacher") ? "Teacher probe" :
+      schema.includes("feedback") || String(row.run).startsWith("feedback") ? "Basic feedback diagnostic" :
+      schema.includes("student-evaluation") ? "Student evaluation" : "Development";
+    const parts = [];
+    if (status.completed_contexts != null) parts.push(status.completed_contexts + "/" + (freeze.contexts ?? "?") + " contexts");
+    if (status.completed_arms != null) parts.push(status.completed_arms + " arms");
+    if ((status.accepted_updates ?? status.updates) != null) parts.push((status.accepted_updates ?? status.updates) + " updates");
+    if (summary.returned != null) parts.push(summary.returned + "/" + (summary.scheduled ?? "?") + " episodes");
+    if (outcome.tics != null) parts.push(outcome.tics + " tics");
+    if (outcome.killcount != null) parts.push(outcome.killcount + " kills");
+    if (gpuCapacity) {
+      for (const candidate of (status.candidates || [])) {
+        parts.push(candidate.name + ": " + candidate.status +
+          (candidate.updates != null ? " (" + candidate.updates + " admissions)" : ""));
+      }
+      if (status.resources?.gpu) parts.push("GPU " + status.resources.gpu);
+      for (const comparison of (status.benchmark?.comparisons || [])) {
+        if (Number.isFinite(comparison.repair_speedup)) parts.push(comparison.size +
+          " repair benchmark " + comparison.repair_speedup.toFixed(1) + "× CPU/GPU");
+      }
+    }
+    const error = failure?.error || failure?.reason || status.error || summary.error;
+    let phase = error || (failure ? "failed" : summary.status || status.phase || status.status ||
+      (outcome.timeout ? "native timeout" : outcome.dead ? "death" : outcome.native_exit ? "native exit" : "awaiting result"));
+    const cap = freeze.wall_seconds ?? freeze.max_seconds ?? freeze.wall_cap_seconds ?? freeze.timeout_seconds;
+    if (cap != null) phase += " · cap " + cap + "s";
+    if (gpuCapacity && Number.isFinite(status.checked_unix)) {
+      phase += " · GPU observed " + Math.max(0, Math.round(Date.now()/1000-status.checked_unix)) + "s ago";
+    }
+    if (row.errors?.length) phase += " · partial monitor metadata";
+    const tr = document.createElement("tr");
+    for (const value of [row.run, role, parts.join(" · ") || "–", phase]) {
+      const cell = document.createElement("td"); cell.textContent = value; tr.appendChild(cell);
+    }
+    if (error || failure) tr.style.color = "#c25b5b";
+    table.appendChild(tr);
+  }
+  holder.appendChild(table);
+}
+async function loadFullGame() {
+  try {
+    const response = await fetch("/static/training_status.json", {cache: "no-store"});
+    if (!response.ok) throw new Error("monitor status unavailable");
+    renderFullGame(await response.json());
+  } catch (error) {
+    setText("development-status", "Full-game development · monitor status unavailable. " + error.message);
+  }
 }
 async function loadTraining() {
-  const d = await (await fetch("/training")).json();
-  const p = d.progress || {};
-  let status = p.complete ? "imitation pass COMPLETE" :
-    p.line ? `batch ${p.batch} · rows ${p.rows} · eta ${(p.eta_min/60).toFixed(1)} h`
-           : "warming up — no progress line yet";
-  status += ` · ${d.exports.length} exports fetched`;
-  const lastCkpt = d.exports.length
-    ? Math.max(...d.exports.map(e => e.batches)) : 0;
-  const recent = (p.series || []).filter(s => s.batch > lastCkpt);
-  const pool = recent.length ? recent : (p.series || []).slice(-1);
-  if (pool.length) {
-    const avg = pool.reduce((a, s) => a + s.seconds, 0) / pool.length;
-    status += ` · ~${avg.toFixed(0)} s/batch since ckpt`;
-    const m = (p.rows || "").match(/(\d+)\/(\d+)/);
-    if (m && !p.complete) {
-      const eta = (+m[2] - +m[1]) / 96 * avg / 3600;
-      status += ` · ~${eta.toFixed(1)} h at recent pace`;
-    }
-  }
-  document.getElementById("t-status").textContent = status;
-  if (!d.exports.length) return;
-  lineChart(document.getElementById("chart-acc"), d.exports, [
-    {key: "mean_acc", name: "mean accuracy", color: "#cd7212"},
-    {key: "forward_acc", name: "forward", color: "#4f8fe0"},
-    {key: "fire_acc", name: "fire", color: "#c25bb4"},
-    {key: "forward_recall", name: "forward recall", color: "#4fc06a"},
-    {key: "forward_auc", name: "forward AUC", color: "#e0d24f"},
-  ], 1.0);
-  lineChart(document.getElementById("chart-mae"), d.exports, [
-    {key: "kill_mae", name: "kill foresight MAE", color: "#9a6fd0"},
-  ], 1.2);
-  const paths = d.exports.map(e => e.live_path).filter(v => v != null);
-  if (paths.length) {
-    document.getElementById("closed-loop").style.display = "block";
-    lineChart(document.getElementById("chart-live"), d.exports, [
-      {key: "live_path", name: "path per episode", color: "#d0b04f"},
-    ], Math.max(400, Math.max(...paths) * 1.2));
-  }
-  const series = (p.series || []).map(s => ({batches: s.batch, ...s}));
-  if (series.length > 1) {
-    document.getElementById("effort").style.display = "block";
-    lineChart(document.getElementById("chart-effort"), series, [
-      {key: "sweeps", name: "sweeps per batch", color: "#c25b5b"},
-      {key: "seconds", name: "seconds per batch", color: "#7a9fd0"},
-    ], Math.max(100, Math.max(...series.map(s => s.sweeps)) * 1.2));
-  }
-  const deepest = [...d.exports].reverse()
-    .find(e => e.pressed_recall && e.pressed_recall.length);
-  if (deepest) {
-    const names = ["FWD", "TL", "TR", "ATK", "USE", "SL", "SR", "BCK"];
-    document.getElementById("btn-deep").style.display = "block";
-    document.getElementById("btn-deep-title").textContent =
-      `BUTTONS AT BATCH ${deepest.batches} — RECALL / PRESS RATE`;
-    document.getElementById("btn-deep-table").innerHTML =
-      "<table><tr>" + names.map(n => `<th>${n}</th>`).join("") + "</tr><tr>" +
-      deepest.pressed_recall.map(v =>
-        `<td>${v == null ? "·" : v.toFixed(2)}</td>`).join("") +
-      "</tr><tr>" +
-      (deepest.pred_press || []).map(v =>
-        `<td>${v == null ? "·" : v.toFixed(2)}</td>`).join("") +
-      "</tr></table>";
-  }
-  document.getElementById("t-table").innerHTML =
-    "<table><tr><th>batches</th><th>mean</th><th>fwd</th><th>fwd recall</th>" +
-    "<th>fwd AUC</th><th>fwd cal-rec</th>" +
-    "<th>fire</th><th>kill MAE</th><th>path</th><th>kills</th>" +
-    "<th>fwd rate</th></tr>" +
-    d.exports.map(e => `<tr><td>${e.batches}</td><td>${e.mean_acc}</td>` +
-      `<td>${e.forward_acc}</td><td>${e.forward_recall ?? "·"}</td>` +
-      `<td>${e.forward_auc ?? "·"}</td><td>${e.forward_cal_recall ?? "·"}</td>` +
-      `<td>${e.fire_acc}</td><td>${e.kill_mae}</td>` +
-      `<td>${e.live_path ?? "·"}</td><td>${e.live_kills ?? "·"}</td>` +
-      `<td>${e.forward_rate ?? "·"}</td></tr>`
-    ).join("") +
-    "</table>";
+  await loadFullGame();
+  try {
+    const response = await fetch("/training", {cache: "no-store"});
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    const d = await response.json(), online = d.online || {};
+    setText("online-status", (online.enabled ? "Learning enabled" : "Learning paused") +
+      " · " + (online.phase || "frozen actor") + " · updates " + (online.accepted_updates ?? 0) +
+      " · examples " + (online.accepted_examples ?? 0) + " · queue " + (online.queue_depth ?? 0) +
+      " · promotions " + (online.promotions ?? 0) + (online.error ? " · " + online.error : ""));
+    setText("online-contract", "Native feedback: " + (online.native_feedback_protocol || "none") +
+      " · horizon " + (online.native_feedback_horizon_tics ?? "–") + " tics" +
+      " · frozen continuation " + (online.continuation_checkpoint_sha256 || "").slice(0,12));
+    setText("online-collection", "Capture stride " + (online.collection_stride ?? 1) +
+      " · selected " + (online.selected_transitions ?? 0) +
+      " · intentionally unsampled " + (online.intentionally_unsampled_transitions ?? 0));
+    setText("online-validation", "Local deployment: " + (d.model?.deployment_validation || "unknown") +
+      ". Basic validation does not establish navigation or full-game mastery.");
+    setText("online-detail", JSON.stringify(online, null, 2));
+  } catch (error) { setText("online-status", "Status unavailable: " + error.message); }
 }
 document.getElementById("retina-btn").onclick = () => {
   const on = document.body.classList.toggle("retina");
@@ -459,9 +598,10 @@ function placeRetinaBoxes() {
   const img = document.getElementById("screen");
   const box = img.getBoundingClientRect();
   const stageBox = stage.getBoundingClientRect();
-  // object-fit: contain -> compute the actual rendered 320x200 rect.
-  const scale = Math.min(box.width / 320, box.height / 200);
-  const w = 320 * scale, h = 200 * scale;
+  // All supported actors observe the same320×240 native frame.
+  const imageHeight = 240;
+  const scale = Math.min(box.width / 320, box.height / imageHeight);
+  const w = 320 * scale, h = imageHeight * scale;
   const x0 = box.left - stageBox.left + (box.width - w) / 2;
   const y0 = box.top - stageBox.top + (box.height - h) / 2;
   const place = (id, l, t, ww, hh) => {
@@ -472,17 +612,9 @@ function placeRetinaBoxes() {
     el.style.height = (hh * h) + "px";
   };
   place("periph-box", 0, 0, 1, 1);
-  place("fovea-box", 32 / 320, 78 / 200, 256 / 320, 42 / 200);
+  place("fovea-box", 32 / 320, 48 / 240, 256 / 320, 144 / 240);
 }
 placeRetinaBoxes();
-document.getElementById("decode-sel").onchange = async (e) => {
-  const d = await (await fetch(`/decode?mode=${e.target.value}`)).json();
-  e.target.style.color = (e.target.value !== "raw" && !d.calibrated)
-    ? "#c25b5b" : "";
-  e.target.title = (e.target.value !== "raw" && !d.calibrated)
-    ? "This model has no deep-probe calibration yet; decoding stays raw."
-    : "How motor scores become button presses.";
-};
 let pendingModel = null, loadShownAt = 0;
 document.getElementById("model-sel").onchange = (e) => {
   const sel = e.target;
@@ -522,47 +654,9 @@ document.getElementById("import-file").onchange = async (e) => {
 
 const stage = document.getElementById("stage");
 stage.addEventListener("focus", () => stage.classList.add("focused"));
-stage.addEventListener("blur", () => {
-  stage.classList.remove("focused"); down.clear(); modStrafe = false; sendDerived();
-});
-const KEY_ALIAS = {a: "KeyA", d: "KeyD", s: "KeyS", w: "KeyW", e: "KeyE",
-                   j: "KeyJ", " ": "Space", arrowleft: "ArrowLeft",
-                   arrowright: "ArrowRight", arrowup: "ArrowUp",
-                   arrowdown: "ArrowDown", control: "ControlLeft"};
-function keyId(e) {
-  if (e.code && e.code !== "Unidentified") return e.code;
-  return KEY_ALIAS[(e.key || "").toLowerCase()] || null;
-}
-function derived() {
-  const out = new Set();
-  for (const code of down) {
-    if (modStrafe && code === "ArrowLeft") out.add("KeyA");
-    else if (modStrafe && code === "ArrowRight") out.add("KeyD");
-    else out.add(code);
-  }
-  return [...out];
-}
-function sendDerived() { send({type: "keys", down: derived()}); }
-window.addEventListener("keydown", (e) => {
-  if (document.activeElement !== stage) return;
-  if (e.code === "Tab") return;
-  e.preventDefault();
-  modStrafe = e.shiftKey || e.altKey;
-  const id = keyId(e);
-  if (id && !down.has(id)) down.add(id);
-  sendDerived();
-});
-window.addEventListener("keyup", (e) => {
-  modStrafe = e.shiftKey || e.altKey;
-  const id = keyId(e);
-  if (id) { down.delete(id); e.preventDefault(); }
-  if (e.key === "Meta" && down.size) down.clear();
-  sendDerived();
-});
-stage.addEventListener("mousedown", () => { stage.focus(); down.add("Mouse"); sendDerived(); });
-window.addEventListener("mouseup", () => { if (down.delete("Mouse")) sendDerived(); });
+stage.addEventListener("blur", () => stage.classList.remove("focused"));
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.147.0/three.min.js"></script>
-<script src="/static/brain3d.js?v=1790639690"></script>
+<script src="/static/brain3d.js?v=1790850000"></script>
 </body>
 </html>

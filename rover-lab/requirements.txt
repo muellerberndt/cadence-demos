@@ -1,0 +1,3 @@
+numpy>=2.0,<3
+# Cadence is loaded from ../../cadence/src in this workspace.
+# Outside the workspace install the source-compatible cadence-net==0.50.0.

@@ -1,0 +1,443 @@
+{
+  "schema": "doom-gpu-wave-custody/1",
+  "root": "/home/ec2-user/doom-gpu-bench/runs/gpu_capacity_01",
+  "files": [
+    {
+      "path": "freeze.json",
+      "bytes": 7742,
+      "sha256": "4e0fae948ef72a0f6df0fc12033515cb41a6dfa25426fc0ac680af3cbe479867"
+    },
+    {
+      "path": "large_depth3_no_skip_centered_cuda_seed0/admissions.jsonl",
+      "bytes": 18469,
+      "sha256": "c289074a3267de91c28d6152bd6e0cf1599cf8a46cf79c6368fde8011cfc6755"
+    },
+    {
+      "path": "large_depth3_no_skip_centered_cuda_seed0/checkpoints/doom_baby_large_depth3_no_skip_centered_cuda_seed0_epoch000_bf2ab548533f.json",
+      "bytes": 1772028,
+      "sha256": "071ec9ad336ac8f3d277b9bced26c5d6c4a6890050ceb00136a72e6d895967cb"
+    },
+    {
+      "path": "large_depth3_no_skip_centered_cuda_seed0/checkpoints/doom_baby_large_depth3_no_skip_centered_cuda_seed0_epoch001_a4850a5b290c.json",
+      "bytes": 1774403,
+      "sha256": "ff8c79ffaec559bc982da9337010f3a37997f3ef41cd5b6ecd14cb60c72866da"
+    },
+    {
+      "path": "large_depth3_no_skip_centered_cuda_seed0/checkpoints/doom_baby_large_depth3_no_skip_centered_cuda_seed0_epoch002_1783a93273c9.json",
+      "bytes": 1774157,
+      "sha256": "6468e501a82cfcbb3eafd222eff78dfc8ad73ec648d06c28e9e3be5d648ebc52"
+    },
+    {
+      "path": "large_depth3_no_skip_centered_cuda_seed0/freeze.json",
+      "bytes": 1834,
+      "sha256": "2cb846f73a1ee23bbb00b384b1466f97791a3669730cc000ee45938f32749a7c"
+    },
+    {
+      "path": "large_depth3_no_skip_centered_cuda_seed0/receipt.json",
+      "bytes": 9778,
+      "sha256": "86651eff0628f7cf5f016246805b3c611896525862f597024a9aaa39c12a00a6"
+    },
+    {
+      "path": "large_depth3_no_skip_centered_cuda_seed0/sources/brain.py",
+      "bytes": 13388,
+      "sha256": "da5a06048240fbc8408687b8b88d548eec8e952c1eacea25f76deafaa6bb0a67"
+    },
+    {
+      "path": "large_depth3_no_skip_centered_cuda_seed0/sources/collection.py",
+      "bytes": 11496,
+      "sha256": "bdb2a22d7be8fc973c823187cb339c113b4a535df965bd77d2bf79dd93694119"
+    },
+    {
+      "path": "large_depth3_no_skip_centered_cuda_seed0/sources/interface.py",
+      "bytes": 9471,
+      "sha256": "1e1fa1db2a42f8459a19ae9d1d456782d390f1e7939d0eb120a9d59c363977ce"
+    },
+    {
+      "path": "large_depth3_no_skip_centered_cuda_seed0/sources/tasks.py",
+      "bytes": 14759,
+      "sha256": "2f807b7f8f1d7f5ab9bb886bb9efc8994bdfea2aa39b44e1a08fd3dfe852410d"
+    },
+    {
+      "path": "large_depth3_no_skip_centered_cuda_seed0/sources/teacher.py",
+      "bytes": 27640,
+      "sha256": "432eb2faaf6047eddb0a07ac495832810b2f9776bd8d930343b169dbeeaa26e5"
+    },
+    {
+      "path": "large_depth3_no_skip_centered_cuda_seed0/sources/training.py",
+      "bytes": 21137,
+      "sha256": "af07aa72699814b5565162fba530f09dcfe2269e175dec945d62f4d204bbebb5"
+    },
+    {
+      "path": "large_depth3_no_skip_centered_cuda_seed0/status.json",
+      "bytes": 9778,
+      "sha256": "86651eff0628f7cf5f016246805b3c611896525862f597024a9aaa39c12a00a6"
+    },
+    {
+      "path": "large_depth3_no_skip_centered_cuda_seed0.log",
+      "bytes": 606,
+      "sha256": "eb599c83165b5e70b4994786a366dd188286d0e841818879c3d49df2cff0df4d"
+    },
+    {
+      "path": "large_depth3_skip_centered_cuda_seed0/admissions.jsonl",
+      "bytes": 18453,
+      "sha256": "090787596057fb4574bb8ba97a65530a096b82cf85425291dcaab0bc82208e30"
+    },
+    {
+      "path": "large_depth3_skip_centered_cuda_seed0/checkpoints/doom_baby_large_depth3_skip_centered_cuda_seed0_epoch000_f13b34d000aa.json",
+      "bytes": 2222164,
+      "sha256": "c2d82e668fea2748ab4f66611b98048a2773add4775387dfffdca7d15c37f267"
+    },
+    {
+      "path": "large_depth3_skip_centered_cuda_seed0/checkpoints/doom_baby_large_depth3_skip_centered_cuda_seed0_epoch001_1b853141574d.json",
+      "bytes": 2222163,
+      "sha256": "bd65669bae7358af9d42d7291beed0b64c96797436a29f52587de8c5dac82643"
+    },
+    {
+      "path": "large_depth3_skip_centered_cuda_seed0/checkpoints/doom_baby_large_depth3_skip_centered_cuda_seed0_epoch002_da44356483e2.json",
+      "bytes": 2221557,
+      "sha256": "143202b058fc62cc71b2210af9e9e71aeae554b72b828ef6a95954d679f016b5"
+    },
+    {
+      "path": "large_depth3_skip_centered_cuda_seed0/freeze.json",
+      "bytes": 1833,
+      "sha256": "e609b72a2456512b5ced2692415bcfb7486de38ca15ba40a66254542df849d72"
+    },
+    {
+      "path": "large_depth3_skip_centered_cuda_seed0/receipt.json",
+      "bytes": 9775,
+      "sha256": "118e7044c669e02f689721c6b9e3ea7d244640b2d4de01260b1213a8bb827d05"
+    },
+    {
+      "path": "large_depth3_skip_centered_cuda_seed0/sources/brain.py",
+      "bytes": 13388,
+      "sha256": "da5a06048240fbc8408687b8b88d548eec8e952c1eacea25f76deafaa6bb0a67"
+    },
+    {
+      "path": "large_depth3_skip_centered_cuda_seed0/sources/collection.py",
+      "bytes": 11496,
+      "sha256": "bdb2a22d7be8fc973c823187cb339c113b4a535df965bd77d2bf79dd93694119"
+    },
+    {
+      "path": "large_depth3_skip_centered_cuda_seed0/sources/interface.py",
+      "bytes": 9471,
+      "sha256": "1e1fa1db2a42f8459a19ae9d1d456782d390f1e7939d0eb120a9d59c363977ce"
+    },
+    {
+      "path": "large_depth3_skip_centered_cuda_seed0/sources/tasks.py",
+      "bytes": 14759,
+      "sha256": "2f807b7f8f1d7f5ab9bb886bb9efc8994bdfea2aa39b44e1a08fd3dfe852410d"
+    },
+    {
+      "path": "large_depth3_skip_centered_cuda_seed0/sources/teacher.py",
+      "bytes": 27640,
+      "sha256": "432eb2faaf6047eddb0a07ac495832810b2f9776bd8d930343b169dbeeaa26e5"
+    },
+    {
+      "path": "large_depth3_skip_centered_cuda_seed0/sources/training.py",
+      "bytes": 21137,
+      "sha256": "af07aa72699814b5565162fba530f09dcfe2269e175dec945d62f4d204bbebb5"
+    },
+    {
+      "path": "large_depth3_skip_centered_cuda_seed0/status.json",
+      "bytes": 9775,
+      "sha256": "118e7044c669e02f689721c6b9e3ea7d244640b2d4de01260b1213a8bb827d05"
+    },
+    {
+      "path": "large_depth3_skip_centered_cuda_seed0.log",
+      "bytes": 605,
+      "sha256": "5622af6f56d672df7cc7ebfa7ef5dec24674a2a6a651ee5ad2d956af24b0d1af"
+    },
+    {
+      "path": "medium_depth3_no_skip_centered_cuda_seed0/admissions.jsonl",
+      "bytes": 18493,
+      "sha256": "e8b1caec7e030f493f70ddd84990daa546530631a871e52e7757adfc88e8f425"
+    },
+    {
+      "path": "medium_depth3_no_skip_centered_cuda_seed0/checkpoints/doom_baby_medium_depth3_no_skip_centered_cuda_seed0_epoch000_30d3551f928e.json",
+      "bytes": 954518,
+      "sha256": "47e24b6c1cd1f72e3a5338f80d6ed7d0dacd5584d562548f381000e96920ed2d"
+    },
+    {
+      "path": "medium_depth3_no_skip_centered_cuda_seed0/checkpoints/doom_baby_medium_depth3_no_skip_centered_cuda_seed0_epoch001_832d3bfcaaf5.json",
+      "bytes": 955837,
+      "sha256": "97678830489d8786be05088d33bb1867428a946ebe787758f5092f824c20599c"
+    },
+    {
+      "path": "medium_depth3_no_skip_centered_cuda_seed0/checkpoints/doom_baby_medium_depth3_no_skip_centered_cuda_seed0_epoch002_24b32a3739e9.json",
+      "bytes": 955880,
+      "sha256": "c801ce30f9ce26ce69673dcf787269a1d6b04bd3eaf45e9f0b1d4ccc740bc837"
+    },
+    {
+      "path": "medium_depth3_no_skip_centered_cuda_seed0/freeze.json",
+      "bytes": 1835,
+      "sha256": "2687b0d4aacd3bc92353bddf33e74623704c6d4f72c496f7f51607857cd53dfa"
+    },
+    {
+      "path": "medium_depth3_no_skip_centered_cuda_seed0/receipt.json",
+      "bytes": 9810,
+      "sha256": "4738c8bac04dbc5d9fd4bcc086698778b0a31b616dc7519b7c5ee5e084dccb0c"
+    },
+    {
+      "path": "medium_depth3_no_skip_centered_cuda_seed0/sources/brain.py",
+      "bytes": 13388,
+      "sha256": "da5a06048240fbc8408687b8b88d548eec8e952c1eacea25f76deafaa6bb0a67"
+    },
+    {
+      "path": "medium_depth3_no_skip_centered_cuda_seed0/sources/collection.py",
+      "bytes": 11496,
+      "sha256": "bdb2a22d7be8fc973c823187cb339c113b4a535df965bd77d2bf79dd93694119"
+    },
+    {
+      "path": "medium_depth3_no_skip_centered_cuda_seed0/sources/interface.py",
+      "bytes": 9471,
+      "sha256": "1e1fa1db2a42f8459a19ae9d1d456782d390f1e7939d0eb120a9d59c363977ce"
+    },
+    {
+      "path": "medium_depth3_no_skip_centered_cuda_seed0/sources/tasks.py",
+      "bytes": 14759,
+      "sha256": "2f807b7f8f1d7f5ab9bb886bb9efc8994bdfea2aa39b44e1a08fd3dfe852410d"
+    },
+    {
+      "path": "medium_depth3_no_skip_centered_cuda_seed0/sources/teacher.py",
+      "bytes": 27640,
+      "sha256": "432eb2faaf6047eddb0a07ac495832810b2f9776bd8d930343b169dbeeaa26e5"
+    },
+    {
+      "path": "medium_depth3_no_skip_centered_cuda_seed0/sources/training.py",
+      "bytes": 21137,
+      "sha256": "af07aa72699814b5565162fba530f09dcfe2269e175dec945d62f4d204bbebb5"
+    },
+    {
+      "path": "medium_depth3_no_skip_centered_cuda_seed0/status.json",
+      "bytes": 9810,
+      "sha256": "4738c8bac04dbc5d9fd4bcc086698778b0a31b616dc7519b7c5ee5e084dccb0c"
+    },
+    {
+      "path": "medium_depth3_no_skip_centered_cuda_seed0.log",
+      "bytes": 608,
+      "sha256": "d7947e891c6d22cfc1c22b622a0caed36faf3733e70f6fb92a2b96d14e86dbd4"
+    },
+    {
+      "path": "medium_depth3_skip_centered_cuda_seed0/admissions.jsonl",
+      "bytes": 18491,
+      "sha256": "87ca129be92e355195c68703d9bcee538b4e44bf64a7fbaa32dff9988bc7b863"
+    },
+    {
+      "path": "medium_depth3_skip_centered_cuda_seed0/checkpoints/doom_baby_medium_depth3_skip_centered_cuda_seed0_epoch000_d1f211af0661.json",
+      "bytes": 1404232,
+      "sha256": "af9b41948e251e2789464acab8aa57ddd2715aa5a84147ce95a1f6a06e3416e0"
+    },
+    {
+      "path": "medium_depth3_skip_centered_cuda_seed0/checkpoints/doom_baby_medium_depth3_skip_centered_cuda_seed0_epoch001_c8c7cd0e6cc1.json",
+      "bytes": 1402930,
+      "sha256": "4bf87ab7d1f641ddf8a5ff92aa45b3fe0f7751c2b442f6f0a57eec83cd5efad0"
+    },
+    {
+      "path": "medium_depth3_skip_centered_cuda_seed0/checkpoints/doom_baby_medium_depth3_skip_centered_cuda_seed0_epoch002_3c998ad9de60.json",
+      "bytes": 1402470,
+      "sha256": "623f148a46b7ae8c871e59656b2713bf7d1a97b8aca86ae65deb353573e07fec"
+    },
+    {
+      "path": "medium_depth3_skip_centered_cuda_seed0/freeze.json",
+      "bytes": 1834,
+      "sha256": "4fee0c40a831bdae70222c306dcc573588bd2844b618bab9618438f8f5d6d42d"
+    },
+    {
+      "path": "medium_depth3_skip_centered_cuda_seed0/receipt.json",
+      "bytes": 9783,
+      "sha256": "ca2ca5c9bfbe9dae0958914497cdbd4ddb38fbab031176e71e361a55edb2079a"
+    },
+    {
+      "path": "medium_depth3_skip_centered_cuda_seed0/sources/brain.py",
+      "bytes": 13388,
+      "sha256": "da5a06048240fbc8408687b8b88d548eec8e952c1eacea25f76deafaa6bb0a67"
+    },
+    {
+      "path": "medium_depth3_skip_centered_cuda_seed0/sources/collection.py",
+      "bytes": 11496,
+      "sha256": "bdb2a22d7be8fc973c823187cb339c113b4a535df965bd77d2bf79dd93694119"
+    },
+    {
+      "path": "medium_depth3_skip_centered_cuda_seed0/sources/interface.py",
+      "bytes": 9471,
+      "sha256": "1e1fa1db2a42f8459a19ae9d1d456782d390f1e7939d0eb120a9d59c363977ce"
+    },
+    {
+      "path": "medium_depth3_skip_centered_cuda_seed0/sources/tasks.py",
+      "bytes": 14759,
+      "sha256": "2f807b7f8f1d7f5ab9bb886bb9efc8994bdfea2aa39b44e1a08fd3dfe852410d"
+    },
+    {
+      "path": "medium_depth3_skip_centered_cuda_seed0/sources/teacher.py",
+      "bytes": 27640,
+      "sha256": "432eb2faaf6047eddb0a07ac495832810b2f9776bd8d930343b169dbeeaa26e5"
+    },
+    {
+      "path": "medium_depth3_skip_centered_cuda_seed0/sources/training.py",
+      "bytes": 21137,
+      "sha256": "af07aa72699814b5565162fba530f09dcfe2269e175dec945d62f4d204bbebb5"
+    },
+    {
+      "path": "medium_depth3_skip_centered_cuda_seed0/status.json",
+      "bytes": 9783,
+      "sha256": "ca2ca5c9bfbe9dae0958914497cdbd4ddb38fbab031176e71e361a55edb2079a"
+    },
+    {
+      "path": "medium_depth3_skip_centered_cuda_seed0.log",
+      "bytes": 609,
+      "sha256": "ba973b967ec5a9a275b502c5b785ab509dca88d11203b2bd5438805af319d470"
+    },
+    {
+      "path": "receipt.json",
+      "bytes": 3067,
+      "sha256": "43188cbe55a9529b1c6aa833eeebf66d707f0b52794b980ce53eb20dff0c42b7"
+    },
+    {
+      "path": "small_depth3_no_skip_centered_cuda_seed0/admissions.jsonl",
+      "bytes": 18492,
+      "sha256": "4d1819ceb48e7ff08e81be33409952278c6e8d509bb35441e789a3bc487aa090"
+    },
+    {
+      "path": "small_depth3_no_skip_centered_cuda_seed0/checkpoints/doom_baby_small_depth3_no_skip_centered_cuda_seed0_epoch000_033b9a08ec55.json",
+      "bytes": 570405,
+      "sha256": "f0656540102f33e30a84c564e563231f9b19db4c9c356b514b90edb667012bff"
+    },
+    {
+      "path": "small_depth3_no_skip_centered_cuda_seed0/checkpoints/doom_baby_small_depth3_no_skip_centered_cuda_seed0_epoch001_e8bbe908fc10.json",
+      "bytes": 571084,
+      "sha256": "8150bf3afbe4ce2043a11d0e0fd0447ae3273ae4caf69ef1cefc0453727fc7c1"
+    },
+    {
+      "path": "small_depth3_no_skip_centered_cuda_seed0/checkpoints/doom_baby_small_depth3_no_skip_centered_cuda_seed0_epoch002_9fa23560393f.json",
+      "bytes": 571028,
+      "sha256": "b81b932df1c3cc78fbfdec4a79f0dfc92a5c49dea8de2b60eb27184d42d78b3f"
+    },
+    {
+      "path": "small_depth3_no_skip_centered_cuda_seed0/freeze.json",
+      "bytes": 1834,
+      "sha256": "2339be0862044fc58b8cf02f0b4cf7d82dda7c12875d6fbcf3a3f7aa129fd7e5"
+    },
+    {
+      "path": "small_depth3_no_skip_centered_cuda_seed0/receipt.json",
+      "bytes": 9799,
+      "sha256": "fd79c6c188dfb2a38f48e5d6b23436e7741a3954fdc2f9fd76f3867772d27315"
+    },
+    {
+      "path": "small_depth3_no_skip_centered_cuda_seed0/sources/brain.py",
+      "bytes": 13388,
+      "sha256": "da5a06048240fbc8408687b8b88d548eec8e952c1eacea25f76deafaa6bb0a67"
+    },
+    {
+      "path": "small_depth3_no_skip_centered_cuda_seed0/sources/collection.py",
+      "bytes": 11496,
+      "sha256": "bdb2a22d7be8fc973c823187cb339c113b4a535df965bd77d2bf79dd93694119"
+    },
+    {
+      "path": "small_depth3_no_skip_centered_cuda_seed0/sources/interface.py",
+      "bytes": 9471,
+      "sha256": "1e1fa1db2a42f8459a19ae9d1d456782d390f1e7939d0eb120a9d59c363977ce"
+    },
+    {
+      "path": "small_depth3_no_skip_centered_cuda_seed0/sources/tasks.py",
+      "bytes": 14759,
+      "sha256": "2f807b7f8f1d7f5ab9bb886bb9efc8994bdfea2aa39b44e1a08fd3dfe852410d"
+    },
+    {
+      "path": "small_depth3_no_skip_centered_cuda_seed0/sources/teacher.py",
+      "bytes": 27640,
+      "sha256": "432eb2faaf6047eddb0a07ac495832810b2f9776bd8d930343b169dbeeaa26e5"
+    },
+    {
+      "path": "small_depth3_no_skip_centered_cuda_seed0/sources/training.py",
+      "bytes": 21137,
+      "sha256": "af07aa72699814b5565162fba530f09dcfe2269e175dec945d62f4d204bbebb5"
+    },
+    {
+      "path": "small_depth3_no_skip_centered_cuda_seed0/status.json",
+      "bytes": 9799,
+      "sha256": "fd79c6c188dfb2a38f48e5d6b23436e7741a3954fdc2f9fd76f3867772d27315"
+    },
+    {
+      "path": "small_depth3_no_skip_centered_cuda_seed0.log",
+      "bytes": 606,
+      "sha256": "e3c9637aab0c064eadf4344fb271c5d78f7d252f88a3c0c4a64c1b5e812d4b71"
+    },
+    {
+      "path": "small_depth3_skip_centered_cuda_seed0/admissions.jsonl",
+      "bytes": 18485,
+      "sha256": "587302bf4087ee3c33d7e138ca1583ee2a43ac7fffca180228df94e3a82da2e3"
+    },
+    {
+      "path": "small_depth3_skip_centered_cuda_seed0/checkpoints/doom_baby_small_depth3_skip_centered_cuda_seed0_epoch000_033b28efc853.json",
+      "bytes": 1020504,
+      "sha256": "cddb40ed5b3fcf73d455642988838dd70105c5fde2aadde06e5e5b9d7264f913"
+    },
+    {
+      "path": "small_depth3_skip_centered_cuda_seed0/checkpoints/doom_baby_small_depth3_skip_centered_cuda_seed0_epoch001_73847643c28e.json",
+      "bytes": 1018308,
+      "sha256": "0ee33c2e8ddd70f5d78015b38b455f659ba1138d94c663e65dfae85246bcede5"
+    },
+    {
+      "path": "small_depth3_skip_centered_cuda_seed0/checkpoints/doom_baby_small_depth3_skip_centered_cuda_seed0_epoch002_b5fd4312e7b9.json",
+      "bytes": 1017958,
+      "sha256": "43082c56f6b94359e6c19918cc3248165a7b0b1bc7fd7048fce93d5cebcc64b9"
+    },
+    {
+      "path": "small_depth3_skip_centered_cuda_seed0/freeze.json",
+      "bytes": 1832,
+      "sha256": "681754ffcca37858213b1531bcfb880428eb4e014833b1838a575fa41928ceca"
+    },
+    {
+      "path": "small_depth3_skip_centered_cuda_seed0/receipt.json",
+      "bytes": 9778,
+      "sha256": "40b2721ed312e8956f65430887ecd2d329c4d87386260343a9a3c3240529238d"
+    },
+    {
+      "path": "small_depth3_skip_centered_cuda_seed0/sources/brain.py",
+      "bytes": 13388,
+      "sha256": "da5a06048240fbc8408687b8b88d548eec8e952c1eacea25f76deafaa6bb0a67"
+    },
+    {
+      "path": "small_depth3_skip_centered_cuda_seed0/sources/collection.py",
+      "bytes": 11496,
+      "sha256": "bdb2a22d7be8fc973c823187cb339c113b4a535df965bd77d2bf79dd93694119"
+    },
+    {
+      "path": "small_depth3_skip_centered_cuda_seed0/sources/interface.py",
+      "bytes": 9471,
+      "sha256": "1e1fa1db2a42f8459a19ae9d1d456782d390f1e7939d0eb120a9d59c363977ce"
+    },
+    {
+      "path": "small_depth3_skip_centered_cuda_seed0/sources/tasks.py",
+      "bytes": 14759,
+      "sha256": "2f807b7f8f1d7f5ab9bb886bb9efc8994bdfea2aa39b44e1a08fd3dfe852410d"
+    },
+    {
+      "path": "small_depth3_skip_centered_cuda_seed0/sources/teacher.py",
+      "bytes": 27640,
+      "sha256": "432eb2faaf6047eddb0a07ac495832810b2f9776bd8d930343b169dbeeaa26e5"
+    },
+    {
+      "path": "small_depth3_skip_centered_cuda_seed0/sources/training.py",
+      "bytes": 21137,
+      "sha256": "af07aa72699814b5565162fba530f09dcfe2269e175dec945d62f4d204bbebb5"
+    },
+    {
+      "path": "small_depth3_skip_centered_cuda_seed0/status.json",
+      "bytes": 9778,
+      "sha256": "40b2721ed312e8956f65430887ecd2d329c4d87386260343a9a3c3240529238d"
+    },
+    {
+      "path": "small_depth3_skip_centered_cuda_seed0.log",
+      "bytes": 607,
+      "sha256": "0b7588d5ab9832a5ebc31621f28de2413f99ee20d1a40c4cf1afaa836854c061"
+    },
+    {
+      "path": "status.json",
+      "bytes": 3067,
+      "sha256": "43188cbe55a9529b1c6aa833eeebf66d707f0b52794b980ce53eb20dff0c42b7"
+    }
+  ],
+  "bytes": 24675820,
+  "created_unix": 1790691232.6474898
+}

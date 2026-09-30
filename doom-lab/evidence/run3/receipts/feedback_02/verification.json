@@ -1,0 +1,26 @@
+{
+  "schema": "doom-feedback-verification/1",
+  "passed": true,
+  "fixture_rows": 64,
+  "paired_branch_rollouts": 768,
+  "admitted_updates": 64,
+  "presentations": 512,
+  "development_gates": 40,
+  "candidate_episodes": 1280,
+  "candidate_episode_status_counts": {
+    "complete": 1280
+  },
+  "unqualified_or_fallback_episodes": 0,
+  "promotions": 0,
+  "remote_run_bytes": 7434865,
+  "fixture_bytes": 538065,
+  "files": {
+    "freeze.json": "c27f79e450f89f2b69395505c108db0f89fd940e8111fac1e6123b7b6ca4804f",
+    "receipt.json": "466cfbb1727437083c67ee5392bfa201140716e8a7d0aa199a5ab465cc61ed90",
+    "diagnostics.json": "56d6dd429ccaea27892a0e116841217d53902b79f40956f53c89ae22318f7bf3",
+    "feedback.json": "9e39fe47a4f99b842c97239593be25a7bb9f7499141c66d0ba5233f4bb687ef5",
+    "contexts.json": "ec99277d42a1eda542b5250533a3362a45eb4d7566975b8787519d701f21b771",
+    "anchor.json": "02a32d5e57d1f0add89d39a641876b7f6a3eb622af3608d3ecfe5cfe0a6abc6e"
+  },
+  "interpretation": "Recomputed custody, work counts, native outcome sums and complete schedule from existing artifacts; no new gameplay or selection"
+}

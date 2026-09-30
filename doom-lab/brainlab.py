@@ -1,482 +1,136 @@
-"""The live Cadence student: persistent brain, real-time trainer, shadow.
-
-One learning Brain is owned by the trainer thread; witnesses stream in from
-the teacher window and are admitted through atomic ``observe_batch`` calls.
-A separate read-only shadow Brain, refreshed from snapshots, answers
-prediction requests from the UI and drives the student player mode without
-violating the one-serial-owner-per-brain contract.
-"""
-
+"""Single-version model registry; one game owner publishes qualified actors."""
 from __future__ import annotations
 
-import gzip
+import copy
 import json
 import os
-import queue
-import random as _random
+from pathlib import Path
 import threading
-import time
 
-import numpy as np
+from v1.brain import BUNDLE_SCHEMA, write_bundle
+from v1.interface import ACTION_NAMES
+from v1.practice import atomic_json
+from v1.runtime import Adapter, validate_deployment
 
-from cadence import Brain, Cortex
-from cadence.memory import History
-from doomlab import BUTTONS, buttons_from_scores
-from layouts import HIST_SIZE, HIST_STEPS, PHIST_SIZE, PHIST_STEPS
-import norms as nz
-
-
-def _half_fovea(row):
-    """Standardized fovea (6, 64) or flat -> half-resolution flat (96,)."""
-    return np.asarray(row, np.float64).reshape(6, 64)         .reshape(3, 2, 32, 2).mean(axis=(1, 3)).ravel()
-
-CHECKPOINT = "data/live_brain.json.gz"
-MODELS_DIR = "data/models"
-POINTER = "data/current_model.json"
-WITNESS_DIR = "data/sessions"
-SETTLE_BUDGET = 16384
-LIVE_BUDGET = 384  # per-query ceiling for interactive predictions
-MAX_BATCH = 48
-NOOP_KEEP = 0.25  # fraction of all-buttons-off human witnesses admitted
-
-
-def _quarter_periphery(row):
-    """Standardized periphery (20, 32) or flat -> quarter-resolution (160,)."""
-    return np.asarray(row, np.float64).reshape(20, 32) \
-        .reshape(10, 2, 16, 2).mean(axis=(1, 3)).ravel()
-
-
-def build_layout(seed=7, device="cpu"):
-    cortex = Cortex(seed=seed, device=device, settle_budget=SETTLE_BUDGET)
-    periphery = cortex.input("periphery", shape=(20, 32))
-    fovea = cortex.input("fovea", shape=(6, 64))
-    scene = cortex.column("scene", patches=32, inputs=periphery)
-    aim = cortex.column("aim", patches=24, inputs=fovea)
-    integration = cortex.observer(
-        "integration", patches=16, inputs=(periphery, fovea), observes=(scene, aim),
-    )
-    reflection = cortex.observer(
-        "reflection", patches=8, observes=(scene, aim, integration),
-    )
-    cortex.output("motor", shape=(len(BUTTONS),), reads=reflection)
-    return cortex.build()
+LAB = Path(__file__).resolve().parent
+DATA_DIR = Path(os.environ.get('DOOM_LAB_DATA', LAB/'data')).resolve()
+MODELS_DIR = DATA_DIR/'models'
+POINTER = DATA_DIR/'current_model.json'
 
 
 class Student:
-    """Owns the learning brain, its trainer thread and the shadow reader."""
-
-    def __init__(self, device="cpu"):
-        self.device = device
-        self.norms = nz.ensure_live_norms()
-        if os.path.exists(CHECKPOINT) and not os.path.exists(
-                nz.sibling_path(CHECKPOINT)):
-            # Pre-conditioning checkpoint: incompatible input units. Retire it.
-            os.rename(CHECKPOINT, CHECKPOINT + ".preconditioning.bak")
-        self.loaded = False
-        if os.path.exists(CHECKPOINT):
-            with gzip.open(CHECKPOINT, "rt") as f:
-                candidate = Brain.from_snapshot(f.read(), device=device)
-            if tuple(candidate.inspect()["outputs"][0]["shape"]) == (len(BUTTONS),):
-                self.brain = candidate
-                self.loaded = True
-            else:
-                os.rename(CHECKPOINT, CHECKPOINT + ".motorwidth.bak")
-        if not self.loaded:
-            self.brain = build_layout(device=device)
-        self._shadow = Brain.from_snapshot(self.brain.snapshot(), device=device)
-        self.model_id = "live"
-        if os.path.exists(POINTER):
-            try:
-                self.model_id = json.load(open(POINTER)).get("id", "live")
-            except ValueError:
-                pass
-        self._analyze()
+    """Registry and actor ownership only; all learning belongs to PracticeLearner."""
+    def __init__(self, *, data_dir=None):
+        self.data_dir = Path(data_dir or DATA_DIR).resolve()
+        self.models_dir = self.data_dir/'models'
+        self.pointer = self.data_dir/'current_model.json'
+        self.lock = threading.RLock()
+        self.adapter = None
+        self.generation = 0
+        self.model_id = None
+        self.swap_error = None
         self._swap_request = None
-        self.decode_mode = "raw"
-        self.calibration = None
-        self._load_calibration()
-        self._last_action = [0] * len(BUTTONS)
-        self._teach_prev = [0] * len(BUTTONS)
-        self._shadow_lock = threading.Lock()
-        self._queue = queue.Queue(maxsize=4096)
-        self._log = []
-        self._log_lock = threading.Lock()
-        self.stats = {
-            "admitted": self.brain.inspect()["admissions"],
-            "queued": 0,
-            "batches": 0,
-            "refusals": 0,
-            "last_batch_seconds": None,
-            "last_batch_size": 0,
-            "checkpoint_loaded": self.loaded,
-            "training": False,
-        }
-        self._stop = threading.Event()
-        self._thread = threading.Thread(target=self._train_loop, daemon=True)
-        self._thread.start()
+        self._swapping = False
+        if not self.pointer.is_file():
+            raise FileNotFoundError('No active model. Run python -m v1.deployment prepare before starting the Lab.')
+        model_id = json.loads(self.pointer.read_text())['id']
+        if not self.request_swap(model_id):
+            raise ValueError('The saved model is absent from the v1 registry: '+str(model_id))
+        self.apply_swap()
+        if self.adapter is None:
+            raise ValueError('Cannot load the saved model: '+str(self.swap_error))
 
-    def _analyze(self):
-        """Recompute everything derived from the current brain."""
-        info = self.brain.inspect()
-        self.layout_meta = [
-            {"name": p["name"], "role": p["role"],
-             "start": p["indices"][0], "count": p["patches"]}
-            for p in info["populations"]
-        ]
-        self.has_efference = any(
-            i["name"] == "efference" for i in info["inputs"])
-        self.has_history = any(
-            i["name"] == "fovea_history" for i in info["inputs"])
-        self.has_phistory = any(
-            i["name"] == "periphery_history" for i in info["inputs"])
-        self._history = History(HIST_SIZE, steps=HIST_STEPS)
-        self._context = [0.0] * self._history.size
-        self._phistory = History(PHIST_SIZE, steps=PHIST_STEPS)
-        self._pcontext = [0.0] * self._phistory.size
-        self.model_info = {"patches": info["patches"],
-                           "edges": info["connections"],
-                           "fingerprint": info["fingerprint"][:12]}
-        self._graph_sample = self._sample_graph(max_edges=1400)
-
-    def _load_calibration(self):
-        """Per-model decode calibration from the deep-probe meta block."""
-        self.calibration = None
-        meta_path = os.path.join(MODELS_DIR, self.model_id + ".meta.json")
-        try:
-            probe = json.load(open(meta_path)).get("deep", {}).get("probe", {})
-        except (OSError, ValueError):
-            return
-        if probe.get("thresholds"):
-            self.calibration = {"thresholds": probe["thresholds"],
-                                "score_mean": probe.get("score_mean")}
-
-    def decode(self, scores):
-        """Scores -> buttons under the selected decode mode.
-
-        "raw" presses above zero. "cal" presses above the button's own
-        teacher-quantile threshold. "top1" presses exactly the button with
-        the largest mean-relative score. Modes needing calibration fall
-        back to raw when the loaded model carries none.
-        """
-        if self.decode_mode == "cal" and self.calibration:
-            th = self.calibration["thresholds"]
-            b = [1 if t is not None and s > t else 0
-                 for s, t in zip(scores, th)]
-            for i, j in ((0, 7), (1, 2), (5, 6)):
-                if b[i] and b[j]:
-                    mi = scores[i] - (th[i] or 0.0)
-                    mj = scores[j] - (th[j] or 0.0)
-                    keep = i if mi >= mj else j
-                    b[i] = 1 if keep == i else 0
-                    b[j] = 1 if keep == j else 0
-            return b
-        if self.decode_mode == "top1" and self.calibration:
-            mean = self.calibration.get("score_mean") \
-                or [0.0] * len(scores)
-            top = max(range(len(scores)), key=lambda k: scores[k] - mean[k])
-            return [1 if k == top else 0 for k in range(len(scores))]
-        return buttons_from_scores(scores)
-
-    # ---- model registry -----------------------------------------------
+    @property
+    def layout_meta(self):
+        return self.adapter.layout_meta if self.adapter else []
 
     def scan_models(self):
-        models = []
-        if os.path.isdir(MODELS_DIR):
-            for name in sorted(os.listdir(MODELS_DIR)):
-                if not name.endswith(".json.gz"):
+        rows = []
+        for path in sorted(self.models_dir.glob('*/bundle.json')):
+            if path.is_symlink():
+                continue
+            try:
+                bundle = json.loads(path.read_text())
+                if bundle.get('schema') != BUNDLE_SCHEMA:
                     continue
-                model_id = name[: -len(".json.gz")]
-                meta_path = os.path.join(MODELS_DIR, model_id + ".meta.json")
-                label = model_id
-                if os.path.exists(meta_path):
-                    try:
-                        label = json.load(open(meta_path)).get("label", model_id)
-                    except ValueError:
-                        pass
-                models.append({"id": model_id, "label": label})
-        return models
+                meta = bundle['metadata']
+                task = meta.get('deployment_task', 'unknown')
+                if isinstance(task, dict):
+                    task = task.get('task_id', 'unknown')
+                rows.append({'id': path.parent.name, 'label': meta.get('label', bundle['model_id']),
+                    'checkpoint_sha256': bundle['hashes']['checkpoint_sha256'],
+                    'scenario': task, 'validation': meta.get('deployment_validation', {}).get('status', 'unknown'),
+                    'role': meta.get('role', 'imported')})
+            except (OSError, ValueError, KeyError, TypeError):
+                continue
+        return rows
 
     def request_swap(self, model_id):
-        path = os.path.join(MODELS_DIR, model_id + ".json.gz")
-        if not os.path.exists(path) or not os.path.exists(
-                nz.sibling_path(path)):
-            return False
-        self._swap_request = model_id
-        return True
+        with self.lock:
+            if model_id not in {row['id'] for row in self.scan_models()}:
+                return False
+            self._swap_request = model_id
+            self.swap_error = None
+            return True
 
-    def _apply_swap(self):
-        model_id, self._swap_request = self._swap_request, None
-        path = os.path.join(MODELS_DIR, model_id + ".json.gz")
-        with gzip.open(path, "rt") as f:
-            brain = Brain.from_snapshot(f.read(), device=self.device)
-        replacement = Brain.from_snapshot(brain.snapshot(), device=self.device)
-        self.brain = brain
-        self.norms = nz.load(nz.sibling_path(path))
-        with self._shadow_lock:
-            self._shadow = replacement
-        self.model_id = model_id
-        self._analyze()
-        self._load_calibration()
-        self._last_action = [0] * len(BUTTONS)
-        # Queued witnesses were sampled for the previous brain's boundaries.
+    def apply_swap(self):
+        """Called only by the game owner, after its current session has ended."""
+        with self.lock:
+            model_id = self._swap_request
+            if model_id is None:
+                return False
+            self._swap_request = None
+            self._swapping = True
+        replacement = None
         try:
-            while True:
-                self._queue.get_nowait()
-        except queue.Empty:
-            pass
-        self.stats["queued"] = 0
-        self.stats["admitted"] = self.brain.inspect()["admissions"]
-        json.dump({"id": model_id}, open(POINTER, "w"))
-
-    def _sample_graph(self, max_edges=1400):
-        """Stratified edge sample per functional pathway, for the 3D view."""
-        graph = self.brain.graph
-        def zone(kind, source):
-            if kind == "input":
-                return "periphery" if source < 640 else "fovea"
-            for p in self.layout_meta:
-                if p["start"] <= source < p["start"] + p["count"]:
-                    return p["name"]
-            return "?"
-        def pop_of(target):
-            return zone("state", target)
-        groups = {}
-        for index, (kind, source, target) in enumerate(graph.edges):
-            groups.setdefault((kind, zone(kind, source), pop_of(target)),
-                              []).append(index)
-        total = len(graph.edges)
-        rng = _random.Random(7)
-        kinds = {"input": 0, "state": 1, "residual": 2}
-        sample = []
-        for (kind, _, _), members in groups.items():
-            if kind == "input":
-                take = max(6, int(max_edges * len(members) / total))
-            else:
-                # Recursive readback is the anatomy worth seeing; keep the
-                # bundles thick even though they are numerically few.
-                take = min(90, len(members))
-            for index in (rng.sample(members, take) if take < len(members)
-                          else members):
-                sample.append(index)
-        edges = []
-        for index in sorted(sample):
-            kind, source, target = graph.edges[index]
-            edges.append((kinds[kind], source, target, index))
-        return edges
-
-    def graph_payload(self):
-        """Static topology sample plus the current weights on those edges."""
-        weights = self.brain.weights
-        return {
-            "n_periphery": 640,
-            "n_fovea": 384,
-            "populations": self.layout_meta,
-            "motor": len(BUTTONS),
-            "edges": [[k, s, t, round(weights[i], 3)]
-                      for k, s, t, i in self._graph_sample],
-        }
-
-    def export_bundle(self):
-        """Portable brain file: snapshot + norms + provenance."""
-        return {
-            "schema": "doomlab-brain/1",
-            "model_id": self.model_id,
-            "exported": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-            "norms": self.norms,
-            "snapshot": self.brain.snapshot(),
-        }
+            replacement = Adapter(self.models_dir/model_id/'bundle.json')
+            # Publish the pointer first. A failed write preserves the old actor.
+            atomic_json(self.pointer, {'id': model_id})
+            with self.lock:
+                previous = self.adapter
+                self.adapter = replacement
+                self.model_id = model_id
+                self.generation += 1
+                self.swap_error = None
+            if previous:
+                previous.close()
+            return True
+        except Exception as error:
+            if replacement:
+                replacement.close()
+            self.swap_error = str(error)
+            return False
+        finally:
+            self._swapping = False
 
     def import_bundle(self, name, data):
-        """Validate an uploaded brain fully, then install it in the registry."""
-        if not isinstance(data, dict) or data.get("schema") != "doomlab-brain/1":
-            raise ValueError("Not a doomlab brain bundle")
-        snapshot = data["snapshot"]
-        Brain.from_snapshot(snapshot, device=self.device)  # full validation
-        norms = data["norms"]
-        for field in ("periphery", "fovea", "clip", "scale"):
-            if field not in norms:
-                raise ValueError("Bundle norms are incomplete")
-        model_id = "".join(c if c.isalnum() or c in "-_" else "-"
-                           for c in name)[:48] or "imported"
-        os.makedirs(MODELS_DIR, exist_ok=True)
-        path = os.path.join(MODELS_DIR, model_id + ".json.gz")
-        with gzip.open(path, "wt") as f:
-            f.write(snapshot)
-        nz.save(norms, nz.sibling_path(path))
-        with open(os.path.join(MODELS_DIR, model_id + ".meta.json"), "w") as f:
-            json.dump({"label": model_id + " (imported)",
-                       "imported": time.strftime("%Y-%m-%d")}, f)
+        """Validate before writing; imports never activate or enable learning."""
+        _, bundle = validate_deployment(data)
+        model_id = ''.join(c if c.isascii() and (c.isalnum() or c in '-_') else '-' for c in str(name)).strip('-')[:80] or 'imported'
+        with self.lock:
+            base, number = model_id, 1
+            while (self.models_dir/model_id).exists():
+                model_id = f'{base}-{number}'; number += 1
+            write_bundle(self.models_dir/model_id/'bundle.json', bundle)
         return model_id
 
-    # ---- temporal context (advanced once per game frame) --------------
+    def export_bundle(self):
+        with self.lock:
+            return self.adapter.export_bundle()
 
-    def advance_context(self, periphery_raw, fovea_raw):
-        """Push this frame into the explicit history window. Game thread only."""
-        if not self.has_history and not self.has_phistory:
-            return
-        periphery, fovea = nz.apply(self.norms, np.asarray(periphery_raw),
-                                    np.asarray(fovea_raw))
-        if self.has_history:
-            self._context = list(
-                self._history.push(_half_fovea(fovea).tolist()))
-        if self.has_phistory:
-            self._pcontext = list(
-                self._phistory.push(_quarter_periphery(periphery).tolist()))
-
-    def reset_context(self):
-        self._history.reset()
-        self._context = [0.0] * self._history.size
-        self._phistory.reset()
-        self._pcontext = [0.0] * self._phistory.size
-
-    # ---- teacher side -------------------------------------------------
-
-    def submit_witness(self, periphery, fovea, buttons, rng):
-        """Queue one human decision; no-ops are subsampled, never all kept."""
-        if not any(buttons) and rng.random() > NOOP_KEEP:
-            return False
-        periphery, fovea = nz.apply(self.norms, np.asarray(periphery),
-                                    np.asarray(fovea))
-        efference = tuple(self._teach_prev)
-        self._teach_prev = [int(b) for b in buttons]
-        record = (
-            periphery.astype(np.float32),
-            fovea.astype(np.float32),
-            tuple(int(b) for b in buttons),
-            efference,
-            tuple(self._context) if self.has_history else None,
-            tuple(self._pcontext) if self.has_phistory else None,
-        )
-        try:
-            self._queue.put_nowait(record)
-        except queue.Full:
-            return False
-        with self._log_lock:
-            self._log.append(record)
-        self.stats["queued"] = self._queue.qsize()
-        return True
-
-    def _train_loop(self):
-        from doomlab import targets_from_buttons
-
-        while not self._stop.is_set():
-            if self._swap_request is not None:
-                self._apply_swap()
-            batch = []
-            try:
-                batch.append(self._queue.get(timeout=0.5))
-            except queue.Empty:
-                self.stats["training"] = False
-                continue
-            # Ramp batch size on a cold brain: small batches qualify first.
-            cap = MAX_BATCH if self.stats["batches"] >= 3 else 8
-            while len(batch) < cap:
-                try:
-                    batch.append(self._queue.get_nowait())
-                except queue.Empty:
-                    break
-            self.stats["training"] = True
-            examples = []
-            for per, fov, buttons, efference, context, pcontext in batch:
-                inputs = {"periphery": per.tolist(), "fovea": fov.tolist()}
-                if self.has_efference:
-                    inputs["efference"] = [0.6 if b else -0.6
-                                           for b in efference]
-                if self.has_history and context is not None:
-                    inputs["fovea_history"] = list(context)
-                if self.has_phistory and pcontext is not None:
-                    inputs["periphery_history"] = list(pcontext)
-                examples.append(
-                    (inputs, {"motor": targets_from_buttons(buttons)}))
-            started = time.perf_counter()
-            try:
-                result = self.brain.observe_batch(examples)
-                accepted = bool(result["accepted"])
-            except ValueError:
-                accepted = False
-            self.stats["last_batch_seconds"] = round(
-                time.perf_counter() - started, 2)
-            self.stats["last_batch_size"] = len(batch)
-            self.stats["batches"] += 1
-            if accepted:
-                self.stats["admitted"] += len(batch)
-                snapshot = self.brain.snapshot()
-                replacement = Brain.from_snapshot(snapshot, device=self.device)
-                with self._shadow_lock:
-                    self._shadow = replacement
-            else:
-                self.stats["refusals"] += 1
-                if len(batch) > 1:
-                    # Split and requeue once rather than losing witnesses.
-                    half = len(batch) // 2
-                    for part in (batch[:half], batch[half:]):
-                        try:
-                            for record in part:
-                                self._queue.put_nowait(record)
-                        except queue.Full:
-                            break
-            self.stats["queued"] = self._queue.qsize()
-
-    # ---- reader side --------------------------------------------------
-
-    def predict_buttons(self, periphery, fovea):
-        """Shadow-brain prediction: scores, decoded buttons, qualification.
-
-        The lock is held through the solve: brains require one serial caller,
-        and the trainer may swap in a fresher shadow between predictions.
-        """
-        periphery, fovea = nz.apply(self.norms, periphery, fovea)
-        inputs = {"periphery": periphery.ravel().tolist(),
-                  "fovea": fovea.ravel().tolist()}
-        if self.has_efference:
-            inputs["efference"] = [0.6 if b else -0.6
-                                   for b in self._last_action]
-        if self.has_history:
-            inputs["fovea_history"] = list(self._context)
-        if self.has_phistory:
-            inputs["periphery_history"] = list(self._pcontext)
-        with self._shadow_lock:
-            result = self._shadow.step(inputs, budget=LIVE_BUDGET)
-        scores = result["outputs"]["motor"]
-        decoded = self.decode(scores)
-        if result["qualified"]:
-            self._last_action = decoded
-        outcome = result["outputs"].get("outcome")
-        return {
-            "scores": [round(s, 3) for s in scores],
-            "outcome": [round(v, 3) for v in outcome] if outcome else None,
-            "buttons": decoded,
-            "qualified": result["qualified"],
-            "sweeps": result["sweeps"],
-            "state": [round(x, 3) for x in result["state"]],
-            "errors": [round(e, 3) for e in result["errors"]],
-            "retina_p": [round(float(v), 2) for v in np.ravel(periphery)],
-            "retina_f": [round(float(v), 2) for v in np.ravel(fovea)],
-            "energy": round(result["energy"], 5),
-            "stationarity": float(f"{result['stationarity']:.2e}"),
-        }
-
-    # ---- persistence --------------------------------------------------
+    def graph_payload(self):
+        return self.adapter.graph_payload()
 
     def save(self):
-        os.makedirs(os.path.dirname(CHECKPOINT), exist_ok=True)
-        with gzip.open(CHECKPOINT, "wt") as f:
-            f.write(self.brain.snapshot())
-        nz.save(self.norms, nz.sibling_path(CHECKPOINT))
-        with self._log_lock:
-            log, self._log = self._log, []
-        if log:
-            os.makedirs(WITNESS_DIR, exist_ok=True)
-            stamp = time.strftime("%Y%m%d_%H%M%S")
-            np.savez_compressed(
-                os.path.join(WITNESS_DIR, f"session_{stamp}.npz"),
-                periphery=np.stack([r[0] for r in log]),
-                fovea=np.stack([r[1] for r in log]),
-                buttons=np.array([r[2] for r in log], np.int8),
-            )
-        return {"admitted": self.stats["admitted"], "logged": len(log)}
+        with self.lock:
+            bundle = self.export_bundle()
+            model_id = self.model_id
+            path = self.models_dir/model_id/'saved_export.json'
+            write_bundle(path, bundle)
+            return {'model_id': model_id, 'checkpoint_sha256': bundle['hashes']['checkpoint_sha256'],
+                    'path': str(path), 'learning_state': 'durably owned by the practice worker'}
 
     def close(self):
-        self._stop.set()
-        self._thread.join(timeout=5)
-        return self.save()
+        if self.adapter:
+            self.adapter.close()
+        return self.save() if self.adapter else {'saved': False}

@@ -1,0 +1,9 @@
+{
+  "local_remote_source_parity": true,
+  "verifier_sha256": "c6bf01bd56c26c4099cf2896a97738b1cb6734d621f0556040829db79e4c5339",
+  "verification_sha256": "5a6c59528e1f44d505511337cfaed279aa67227e967f92d57bcbfc76bfc4fca8",
+  "receipt_sha256": "7c6900f30f169cd734f16b4f02ff5dbccd37ccd313afb4fb6d4dd7604e5eb487",
+  "freeze_sha256": "52388a6c732c6bd0694524037e5df9936db5d1e88e30125a95bb622f8e484adf",
+  "guard_tests_passed": 3,
+  "original_batch_input_parity": true
+}

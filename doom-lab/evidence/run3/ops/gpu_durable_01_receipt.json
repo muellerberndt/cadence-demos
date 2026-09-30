@@ -1,0 +1,10 @@
+{
+  "schema": "doom-gpu-durable-custody/1",
+  "archive": "/home/ec2-user/doom-gpu-bench/durable_01.tar.gz",
+  "bytes": 66548812,
+  "sha256": "b907800d1f042f4d72d615406c2e1d59124d8be291fa27e4f96714608c8ded88",
+  "source_bytes": 107167787,
+  "source_files": 216,
+  "manifest_sha256": "b27158cb2854564328a68ae003b2630d373a69a2e31947df35cc56adb083e12e",
+  "created_unix": 1790691680.3758414
+}

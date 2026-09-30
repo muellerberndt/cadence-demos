@@ -1,0 +1,2180 @@
+[
+  {
+    "index": 0,
+    "contracts": {
+      "utility_hold36_v1": {
+        "ok": true,
+        "contract": "utility_hold36_v1",
+        "labels": [
+          -0.12,
+          -0.12,
+          -0.12,
+          -0.17,
+          -0.17,
+          -0.17
+        ],
+        "branches": [
+          {
+            "ok": true,
+            "action": 0,
+            "contract": "utility_hold36_v1",
+            "label": -0.12,
+            "reward": -36.0,
+            "tics": 36,
+            "actions": [
+              0,
+              0,
+              0
+            ],
+            "transitions": [
+              {
+                "reward": -12.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -12.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -12.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              }
+            ],
+            "queries": [],
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1,
+              "feedback_branch_tics": 36,
+              "feedback_branch_calls": 3
+            }
+          },
+          {
+            "ok": true,
+            "action": 1,
+            "contract": "utility_hold36_v1",
+            "label": -0.12,
+            "reward": -36.0,
+            "tics": 36,
+            "actions": [
+              1,
+              1,
+              1
+            ],
+            "transitions": [
+              {
+                "reward": -12.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -12.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -12.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              }
+            ],
+            "queries": [],
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1,
+              "feedback_branch_tics": 36,
+              "feedback_branch_calls": 3
+            }
+          },
+          {
+            "ok": true,
+            "action": 2,
+            "contract": "utility_hold36_v1",
+            "label": -0.12,
+            "reward": -36.0,
+            "tics": 36,
+            "actions": [
+              2,
+              2,
+              2
+            ],
+            "transitions": [
+              {
+                "reward": -12.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -12.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -12.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              }
+            ],
+            "queries": [],
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1,
+              "feedback_branch_tics": 36,
+              "feedback_branch_calls": 3
+            }
+          },
+          {
+            "ok": true,
+            "action": 3,
+            "contract": "utility_hold36_v1",
+            "label": -0.17,
+            "reward": -51.0,
+            "tics": 36,
+            "actions": [
+              3,
+              3,
+              3
+            ],
+            "transitions": [
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              }
+            ],
+            "queries": [],
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1,
+              "feedback_branch_tics": 36,
+              "feedback_branch_calls": 3
+            }
+          },
+          {
+            "ok": true,
+            "action": 4,
+            "contract": "utility_hold36_v1",
+            "label": -0.17,
+            "reward": -51.0,
+            "tics": 36,
+            "actions": [
+              4,
+              4,
+              4
+            ],
+            "transitions": [
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              }
+            ],
+            "queries": [],
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1,
+              "feedback_branch_tics": 36,
+              "feedback_branch_calls": 3
+            }
+          },
+          {
+            "ok": true,
+            "action": 5,
+            "contract": "utility_hold36_v1",
+            "label": -0.17,
+            "reward": -51.0,
+            "tics": 36,
+            "actions": [
+              5,
+              5,
+              5
+            ],
+            "transitions": [
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              }
+            ],
+            "queries": [],
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1,
+              "feedback_branch_tics": 36,
+              "feedback_branch_calls": 3
+            }
+          }
+        ],
+        "seconds": 0.5622804580489174
+      },
+      "utility_action12_frozen_champion36_v1": {
+        "ok": true,
+        "contract": "utility_action12_frozen_champion36_v1",
+        "labels": [
+          -0.15333333333333332,
+          0.21333333333333335,
+          -0.15333333333333332,
+          -0.15333333333333332,
+          -0.17,
+          -0.17
+        ],
+        "branches": [
+          {
+            "ok": true,
+            "action": 0,
+            "contract": "utility_action12_frozen_champion36_v1",
+            "label": -0.15333333333333332,
+            "reward": -46.0,
+            "tics": 36,
+            "actions": [
+              0,
+              4,
+              4
+            ],
+            "transitions": [
+              {
+                "reward": -12.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              }
+            ],
+            "queries": [
+              {
+                "action": 4,
+                "qualified": true,
+                "sweeps": 19
+              },
+              {
+                "action": 4,
+                "qualified": true,
+                "sweeps": 20
+              }
+            ],
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1,
+              "feedback_branch_tics": 36,
+              "feedback_branch_calls": 3,
+              "continuation_queries": 2,
+              "continuation_sweeps": 39
+            }
+          },
+          {
+            "ok": true,
+            "action": 1,
+            "contract": "utility_action12_frozen_champion36_v1",
+            "label": 0.21333333333333335,
+            "reward": 64.0,
+            "tics": 32,
+            "actions": [
+              1,
+              4,
+              4
+            ],
+            "transitions": [
+              {
+                "reward": -12.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": 93.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  100.0,
+                  -1.0
+                ],
+                "tics": 8,
+                "terminal": true,
+                "timeout": false
+              }
+            ],
+            "queries": [
+              {
+                "action": 4,
+                "qualified": true,
+                "sweeps": 25
+              },
+              {
+                "action": 4,
+                "qualified": true,
+                "sweeps": 20
+              }
+            ],
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1,
+              "feedback_branch_tics": 32,
+              "feedback_branch_calls": 3,
+              "continuation_queries": 2,
+              "continuation_sweeps": 45
+            }
+          },
+          {
+            "ok": true,
+            "action": 2,
+            "contract": "utility_action12_frozen_champion36_v1",
+            "label": -0.15333333333333332,
+            "reward": -46.0,
+            "tics": 36,
+            "actions": [
+              2,
+              4,
+              4
+            ],
+            "transitions": [
+              {
+                "reward": -12.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              }
+            ],
+            "queries": [
+              {
+                "action": 4,
+                "qualified": true,
+                "sweeps": 21
+              },
+              {
+                "action": 4,
+                "qualified": true,
+                "sweeps": 25
+              }
+            ],
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1,
+              "feedback_branch_tics": 36,
+              "feedback_branch_calls": 3,
+              "continuation_queries": 2,
+              "continuation_sweeps": 46
+            }
+          },
+          {
+            "ok": true,
+            "action": 3,
+            "contract": "utility_action12_frozen_champion36_v1",
+            "label": -0.15333333333333332,
+            "reward": -46.0,
+            "tics": 36,
+            "actions": [
+              3,
+              0,
+              4
+            ],
+            "transitions": [
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -12.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              }
+            ],
+            "queries": [
+              {
+                "action": 0,
+                "qualified": true,
+                "sweeps": 25
+              },
+              {
+                "action": 4,
+                "qualified": true,
+                "sweeps": 20
+              }
+            ],
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1,
+              "feedback_branch_tics": 36,
+              "feedback_branch_calls": 3,
+              "continuation_queries": 2,
+              "continuation_sweeps": 45
+            }
+          },
+          {
+            "ok": true,
+            "action": 4,
+            "contract": "utility_action12_frozen_champion36_v1",
+            "label": -0.17,
+            "reward": -51.0,
+            "tics": 36,
+            "actions": [
+              4,
+              4,
+              4
+            ],
+            "transitions": [
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              }
+            ],
+            "queries": [
+              {
+                "action": 4,
+                "qualified": true,
+                "sweeps": 20
+              },
+              {
+                "action": 4,
+                "qualified": true,
+                "sweeps": 23
+              }
+            ],
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1,
+              "feedback_branch_tics": 36,
+              "feedback_branch_calls": 3,
+              "continuation_queries": 2,
+              "continuation_sweeps": 43
+            }
+          },
+          {
+            "ok": true,
+            "action": 5,
+            "contract": "utility_action12_frozen_champion36_v1",
+            "label": -0.17,
+            "reward": -51.0,
+            "tics": 36,
+            "actions": [
+              5,
+              4,
+              4
+            ],
+            "transitions": [
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              }
+            ],
+            "queries": [
+              {
+                "action": 4,
+                "qualified": true,
+                "sweeps": 22
+              },
+              {
+                "action": 4,
+                "qualified": true,
+                "sweeps": 19
+              }
+            ],
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1,
+              "feedback_branch_tics": 36,
+              "feedback_branch_calls": 3,
+              "continuation_queries": 2,
+              "continuation_sweeps": 41
+            }
+          }
+        ],
+        "seconds": 0.7739029590738937
+      }
+    }
+  },
+  {
+    "index": 1,
+    "contracts": {
+      "utility_hold36_v1": {
+        "ok": true,
+        "contract": "utility_hold36_v1",
+        "labels": [
+          -0.12,
+          -0.12,
+          -0.12,
+          -0.17,
+          -0.17,
+          -0.17
+        ],
+        "branches": [
+          {
+            "ok": true,
+            "action": 0,
+            "contract": "utility_hold36_v1",
+            "label": -0.12,
+            "reward": -36.0,
+            "tics": 36,
+            "actions": [
+              0,
+              0,
+              0
+            ],
+            "transitions": [
+              {
+                "reward": -12.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -12.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -12.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              }
+            ],
+            "queries": [],
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1,
+              "feedback_replay_tics": 12,
+              "feedback_replay_calls": 1,
+              "feedback_branch_tics": 36,
+              "feedback_branch_calls": 3
+            }
+          },
+          {
+            "ok": true,
+            "action": 1,
+            "contract": "utility_hold36_v1",
+            "label": -0.12,
+            "reward": -36.0,
+            "tics": 36,
+            "actions": [
+              1,
+              1,
+              1
+            ],
+            "transitions": [
+              {
+                "reward": -12.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -12.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -12.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              }
+            ],
+            "queries": [],
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1,
+              "feedback_replay_tics": 12,
+              "feedback_replay_calls": 1,
+              "feedback_branch_tics": 36,
+              "feedback_branch_calls": 3
+            }
+          },
+          {
+            "ok": true,
+            "action": 2,
+            "contract": "utility_hold36_v1",
+            "label": -0.12,
+            "reward": -36.0,
+            "tics": 36,
+            "actions": [
+              2,
+              2,
+              2
+            ],
+            "transitions": [
+              {
+                "reward": -12.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -12.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -12.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              }
+            ],
+            "queries": [],
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1,
+              "feedback_replay_tics": 12,
+              "feedback_replay_calls": 1,
+              "feedback_branch_tics": 36,
+              "feedback_branch_calls": 3
+            }
+          },
+          {
+            "ok": true,
+            "action": 3,
+            "contract": "utility_hold36_v1",
+            "label": -0.17,
+            "reward": -51.0,
+            "tics": 36,
+            "actions": [
+              3,
+              3,
+              3
+            ],
+            "transitions": [
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              }
+            ],
+            "queries": [],
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1,
+              "feedback_replay_tics": 12,
+              "feedback_replay_calls": 1,
+              "feedback_branch_tics": 36,
+              "feedback_branch_calls": 3
+            }
+          },
+          {
+            "ok": true,
+            "action": 4,
+            "contract": "utility_hold36_v1",
+            "label": -0.17,
+            "reward": -51.0,
+            "tics": 36,
+            "actions": [
+              4,
+              4,
+              4
+            ],
+            "transitions": [
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              }
+            ],
+            "queries": [],
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1,
+              "feedback_replay_tics": 12,
+              "feedback_replay_calls": 1,
+              "feedback_branch_tics": 36,
+              "feedback_branch_calls": 3
+            }
+          },
+          {
+            "ok": true,
+            "action": 5,
+            "contract": "utility_hold36_v1",
+            "label": -0.17,
+            "reward": -51.0,
+            "tics": 36,
+            "actions": [
+              5,
+              5,
+              5
+            ],
+            "transitions": [
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              }
+            ],
+            "queries": [],
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1,
+              "feedback_replay_tics": 12,
+              "feedback_replay_calls": 1,
+              "feedback_branch_tics": 36,
+              "feedback_branch_calls": 3
+            }
+          }
+        ],
+        "seconds": 0.6796888749813661
+      },
+      "utility_action12_frozen_champion36_v1": {
+        "ok": true,
+        "contract": "utility_action12_frozen_champion36_v1",
+        "labels": [
+          0.21333333333333335,
+          0.27666666666666667,
+          -0.15333333333333332,
+          0.18333333333333332,
+          -0.15333333333333332,
+          -0.17
+        ],
+        "branches": [
+          {
+            "ok": true,
+            "action": 0,
+            "contract": "utility_action12_frozen_champion36_v1",
+            "label": 0.21333333333333335,
+            "reward": 64.0,
+            "tics": 32,
+            "actions": [
+              0,
+              4,
+              3
+            ],
+            "transitions": [
+              {
+                "reward": -12.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": 93.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  100.0,
+                  -1.0
+                ],
+                "tics": 8,
+                "terminal": true,
+                "timeout": false
+              }
+            ],
+            "queries": [
+              {
+                "action": 4,
+                "qualified": true,
+                "sweeps": 27
+              },
+              {
+                "action": 3,
+                "qualified": true,
+                "sweeps": 24
+              }
+            ],
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1,
+              "feedback_replay_tics": 12,
+              "feedback_replay_calls": 1,
+              "feedback_branch_tics": 32,
+              "feedback_branch_calls": 3,
+              "continuation_queries": 2,
+              "continuation_sweeps": 51
+            }
+          },
+          {
+            "ok": true,
+            "action": 1,
+            "contract": "utility_action12_frozen_champion36_v1",
+            "label": 0.27666666666666667,
+            "reward": 83.0,
+            "tics": 18,
+            "actions": [
+              1,
+              4
+            ],
+            "transitions": [
+              {
+                "reward": -12.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": 95.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  100.0,
+                  -1.0
+                ],
+                "tics": 6,
+                "terminal": true,
+                "timeout": false
+              }
+            ],
+            "queries": [
+              {
+                "action": 4,
+                "qualified": true,
+                "sweeps": 19
+              }
+            ],
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1,
+              "feedback_replay_tics": 12,
+              "feedback_replay_calls": 1,
+              "feedback_branch_tics": 18,
+              "feedback_branch_calls": 2,
+              "continuation_queries": 1,
+              "continuation_sweeps": 19
+            }
+          },
+          {
+            "ok": true,
+            "action": 2,
+            "contract": "utility_action12_frozen_champion36_v1",
+            "label": -0.15333333333333332,
+            "reward": -46.0,
+            "tics": 36,
+            "actions": [
+              2,
+              4,
+              4
+            ],
+            "transitions": [
+              {
+                "reward": -12.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              }
+            ],
+            "queries": [
+              {
+                "action": 4,
+                "qualified": true,
+                "sweeps": 24
+              },
+              {
+                "action": 4,
+                "qualified": true,
+                "sweeps": 23
+              }
+            ],
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1,
+              "feedback_replay_tics": 12,
+              "feedback_replay_calls": 1,
+              "feedback_branch_tics": 36,
+              "feedback_branch_calls": 3,
+              "continuation_queries": 2,
+              "continuation_sweeps": 47
+            }
+          },
+          {
+            "ok": true,
+            "action": 3,
+            "contract": "utility_action12_frozen_champion36_v1",
+            "label": 0.18333333333333332,
+            "reward": 55.0,
+            "tics": 36,
+            "actions": [
+              3,
+              4,
+              5
+            ],
+            "transitions": [
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": 89.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  100.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": true,
+                "timeout": false
+              }
+            ],
+            "queries": [
+              {
+                "action": 4,
+                "qualified": true,
+                "sweeps": 34
+              },
+              {
+                "action": 5,
+                "qualified": true,
+                "sweeps": 25
+              }
+            ],
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1,
+              "feedback_replay_tics": 12,
+              "feedback_replay_calls": 1,
+              "feedback_branch_tics": 36,
+              "feedback_branch_calls": 3,
+              "continuation_queries": 2,
+              "continuation_sweeps": 59
+            }
+          },
+          {
+            "ok": true,
+            "action": 4,
+            "contract": "utility_action12_frozen_champion36_v1",
+            "label": -0.15333333333333332,
+            "reward": -46.0,
+            "tics": 36,
+            "actions": [
+              4,
+              4,
+              1
+            ],
+            "transitions": [
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -12.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              }
+            ],
+            "queries": [
+              {
+                "action": 4,
+                "qualified": true,
+                "sweeps": 23
+              },
+              {
+                "action": 1,
+                "qualified": true,
+                "sweeps": 20
+              }
+            ],
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1,
+              "feedback_replay_tics": 12,
+              "feedback_replay_calls": 1,
+              "feedback_branch_tics": 36,
+              "feedback_branch_calls": 3,
+              "continuation_queries": 2,
+              "continuation_sweeps": 43
+            }
+          },
+          {
+            "ok": true,
+            "action": 5,
+            "contract": "utility_action12_frozen_champion36_v1",
+            "label": -0.17,
+            "reward": -51.0,
+            "tics": 36,
+            "actions": [
+              5,
+              4,
+              4
+            ],
+            "transitions": [
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0,
+                  -1.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              },
+              {
+                "reward": -17.0,
+                "rewards": [
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -1.0,
+                  -6.0,
+                  -1.0
+                ],
+                "tics": 12,
+                "terminal": false,
+                "timeout": false
+              }
+            ],
+            "queries": [
+              {
+                "action": 4,
+                "qualified": true,
+                "sweeps": 22
+              },
+              {
+                "action": 4,
+                "qualified": true,
+                "sweeps": 22
+              }
+            ],
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1,
+              "feedback_replay_tics": 12,
+              "feedback_replay_calls": 1,
+              "feedback_branch_tics": 36,
+              "feedback_branch_calls": 3,
+              "continuation_queries": 2,
+              "continuation_sweeps": 44
+            }
+          }
+        ],
+        "seconds": 0.3937727080192417
+      }
+    }
+  }
+]

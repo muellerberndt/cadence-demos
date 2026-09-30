@@ -1,0 +1,705 @@
+{
+  "schema": "doom-horizon-comparison-verification/1",
+  "arms": {
+    "36": {
+      "feedback_rows": 128,
+      "all_native_verified": true,
+      "feedback_file_sha256": "b31c5b3e23cefdfd4a3de35a60f9894610df94420ebde60e11710ee3c12ecf0b",
+      "receipt": {
+        "accepted_examples": 128,
+        "all_tied_contexts": 57,
+        "attempted_updates": 8,
+        "bootstrap_presentations": 36,
+        "candidate_block_updates": 0,
+        "champion_checkpoint": "3076041351210d5818df542b23c167278a76ce59d7ceae531b52e05398f80ad8",
+        "claim": "Repeated development selection only; no fresh confirmation",
+        "contexts_attempted": 128,
+        "contexts_refused": 0,
+        "contexts_verified": 128,
+        "feedback_seconds": 264.72323273400525,
+        "gate_seconds": 39.90635456600012,
+        "gates": 2,
+        "informative_contexts": 71,
+        "native_cost": {
+          "branch_tics": 90235,
+          "continuation_queries": 20030,
+          "engine_initialization_attempts": 2560,
+          "engine_initializations": 2560,
+          "qualified_continuation_queries": 20030,
+          "replay_tics": 140640
+        },
+        "native_presentations": 92,
+        "new_pending": 7,
+        "promotions": 0,
+        "repair_seconds": 70.11907436999991,
+        "scheduled_contexts": 128,
+        "seconds": 387.6083481300002,
+        "status": "complete",
+        "unprocessed_contexts": 0,
+        "updates": 8
+      }
+    },
+    "144": {
+      "feedback_rows": 128,
+      "all_native_verified": true,
+      "feedback_file_sha256": "ff33a788cb981a1bc9003595a41c7dc7a66585de393477e0654cc9e9e3250f7f",
+      "receipt": {
+        "accepted_examples": 256,
+        "all_tied_contexts": 0,
+        "attempted_updates": 16,
+        "bootstrap_presentations": 68,
+        "candidate_block_updates": 0,
+        "champion_checkpoint": "ad9b330cd1c1c582a0bb135956f87a9f8e4c0f106d80c35bb60b39c0328ef2cc",
+        "claim": "Repeated development selection only; no fresh confirmation",
+        "contexts_attempted": 128,
+        "contexts_refused": 0,
+        "contexts_verified": 128,
+        "feedback_seconds": 768.2000122510026,
+        "gate_seconds": 60.59322651099956,
+        "gates": 4,
+        "informative_contexts": 128,
+        "native_cost": {
+          "branch_tics": 303896,
+          "continuation_queries": 73719,
+          "engine_initialization_attempts": 2560,
+          "engine_initializations": 2560,
+          "qualified_continuation_queries": 73719,
+          "replay_tics": 140640
+        },
+        "native_presentations": 188,
+        "new_pending": 0,
+        "promotions": 1,
+        "repair_seconds": 145.82318275499983,
+        "scheduled_contexts": 128,
+        "seconds": 1007.9103958489995,
+        "status": "complete",
+        "unprocessed_contexts": 0,
+        "updates": 16
+      }
+    },
+    "300": {
+      "feedback_rows": 128,
+      "all_native_verified": true,
+      "feedback_file_sha256": "dfddf0b64870bcf97340eedac29490a40c8ea741d1b4358a7697e792c835cf7e",
+      "receipt": {
+        "accepted_examples": 256,
+        "all_tied_contexts": 0,
+        "attempted_updates": 16,
+        "bootstrap_presentations": 68,
+        "candidate_block_updates": 0,
+        "champion_checkpoint": "ad9b330cd1c1c582a0bb135956f87a9f8e4c0f106d80c35bb60b39c0328ef2cc",
+        "claim": "Repeated development selection only; no fresh confirmation",
+        "contexts_attempted": 128,
+        "contexts_refused": 0,
+        "contexts_verified": 128,
+        "feedback_seconds": 1053.6197073289986,
+        "gate_seconds": 52.317019444000834,
+        "gates": 4,
+        "informative_contexts": 128,
+        "native_cost": {
+          "branch_tics": 424044,
+          "continuation_queries": 103993,
+          "engine_initialization_attempts": 2560,
+          "engine_initializations": 2560,
+          "qualified_continuation_queries": 103993,
+          "replay_tics": 140640
+        },
+        "native_presentations": 188,
+        "new_pending": 0,
+        "promotions": 1,
+        "repair_seconds": 139.871105850003,
+        "scheduled_contexts": 128,
+        "seconds": 1277.4892496809998,
+        "status": "complete",
+        "unprocessed_contexts": 0,
+        "updates": 16
+      }
+    }
+  },
+  "gates": {
+    "36": [
+      {
+        "candidate_checkpoint": "3f2d92ec1e363598356289b0844980421bd7b8b1fcc7fc64136547ac7dfe16f5",
+        "reason": "founder_retained_success_lost",
+        "promote": false,
+        "descriptive_aggregates": {
+          "candidate": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -58.5,
+              "returns_reported": 8,
+              "successes": 6
+            }
+          },
+          "champion": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -147.5,
+              "returns_reported": 8,
+              "successes": 7
+            }
+          },
+          "founder": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -147.5,
+              "returns_reported": 8,
+              "successes": 7
+            }
+          }
+        }
+      },
+      {
+        "candidate_checkpoint": "14f8ce2f06f7d4b8deb0a406bd8fdfa8b53bef52633874213efbd8acc508b059",
+        "reason": "founder_retained_success_lost",
+        "promote": false,
+        "descriptive_aggregates": {
+          "candidate": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -213.625,
+              "returns_reported": 8,
+              "successes": 2
+            }
+          },
+          "champion": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -147.5,
+              "returns_reported": 8,
+              "successes": 7
+            }
+          },
+          "founder": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -147.5,
+              "returns_reported": 8,
+              "successes": 7
+            }
+          }
+        }
+      }
+    ],
+    "144": [
+      {
+        "candidate_checkpoint": "ad9b330cd1c1c582a0bb135956f87a9f8e4c0f106d80c35bb60b39c0328ef2cc",
+        "reason": "qualified_native_improvement",
+        "promote": true,
+        "descriptive_aggregates": {
+          "candidate": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -29.125,
+              "returns_reported": 8,
+              "successes": 8
+            }
+          },
+          "champion": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -147.5,
+              "returns_reported": 8,
+              "successes": 7
+            }
+          },
+          "founder": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -147.5,
+              "returns_reported": 8,
+              "successes": 7
+            }
+          }
+        }
+      },
+      {
+        "candidate_checkpoint": "ab7166bfd341067c42f43f530d11d485446c55c2a50f8147870d4552cbe1bb91",
+        "reason": "founder_retained_success_lost",
+        "promote": false,
+        "descriptive_aggregates": {
+          "candidate": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -57.5,
+              "returns_reported": 8,
+              "successes": 6
+            }
+          },
+          "champion": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -29.125,
+              "returns_reported": 8,
+              "successes": 8
+            }
+          },
+          "founder": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -147.5,
+              "returns_reported": 8,
+              "successes": 7
+            }
+          }
+        }
+      },
+      {
+        "candidate_checkpoint": "d504ac8dae0002932938562aff55cad547bbebecd138a54ee7a1e585cfdfc839",
+        "reason": "founder_retained_success_lost",
+        "promote": false,
+        "descriptive_aggregates": {
+          "candidate": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -114.125,
+              "returns_reported": 8,
+              "successes": 7
+            }
+          },
+          "champion": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -29.125,
+              "returns_reported": 8,
+              "successes": 8
+            }
+          },
+          "founder": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -147.5,
+              "returns_reported": 8,
+              "successes": 7
+            }
+          }
+        }
+      },
+      {
+        "candidate_checkpoint": "a961392226c63329089e3623f31aac4f0050f53649ea4c15c822dc31f3502e76",
+        "reason": "founder_retained_success_lost",
+        "promote": false,
+        "descriptive_aggregates": {
+          "candidate": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -221.625,
+              "returns_reported": 8,
+              "successes": 2
+            }
+          },
+          "champion": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -29.125,
+              "returns_reported": 8,
+              "successes": 8
+            }
+          },
+          "founder": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -147.5,
+              "returns_reported": 8,
+              "successes": 7
+            }
+          }
+        }
+      }
+    ],
+    "300": [
+      {
+        "candidate_checkpoint": "ad9b330cd1c1c582a0bb135956f87a9f8e4c0f106d80c35bb60b39c0328ef2cc",
+        "reason": "qualified_native_improvement",
+        "promote": true,
+        "descriptive_aggregates": {
+          "candidate": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -29.125,
+              "returns_reported": 8,
+              "successes": 8
+            }
+          },
+          "champion": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -147.5,
+              "returns_reported": 8,
+              "successes": 7
+            }
+          },
+          "founder": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -147.5,
+              "returns_reported": 8,
+              "successes": 7
+            }
+          }
+        }
+      },
+      {
+        "candidate_checkpoint": "7279f81fb31329acae3833367d92b78b3ad0cdb3e8f84732b836ee6fd412c133",
+        "reason": "founder_retained_success_lost",
+        "promote": false,
+        "descriptive_aggregates": {
+          "candidate": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -46.625,
+              "returns_reported": 8,
+              "successes": 7
+            }
+          },
+          "champion": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -29.125,
+              "returns_reported": 8,
+              "successes": 8
+            }
+          },
+          "founder": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -147.5,
+              "returns_reported": 8,
+              "successes": 7
+            }
+          }
+        }
+      },
+      {
+        "candidate_checkpoint": "dd4f7821fb7dad58024ef7da80be66387f95e096b6052caedbc6834462086bc1",
+        "reason": "founder_retained_success_lost",
+        "promote": false,
+        "descriptive_aggregates": {
+          "candidate": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -134.75,
+              "returns_reported": 8,
+              "successes": 5
+            }
+          },
+          "champion": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -29.125,
+              "returns_reported": 8,
+              "successes": 8
+            }
+          },
+          "founder": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -147.5,
+              "returns_reported": 8,
+              "successes": 7
+            }
+          }
+        }
+      },
+      {
+        "candidate_checkpoint": "ecff0b6e827b06c5df17c808558cf084062a19d9a2bbd3af6ad1412c145b294a",
+        "reason": "founder_retained_success_lost",
+        "promote": false,
+        "descriptive_aggregates": {
+          "candidate": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -73.0,
+              "returns_reported": 8,
+              "successes": 5
+            }
+          },
+          "champion": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -29.125,
+              "returns_reported": 8,
+              "successes": 8
+            }
+          },
+          "founder": {
+            "basic": {
+              "complete_qualified": true,
+              "episodes": 8,
+              "mean_return": -147.5,
+              "returns_reported": 8,
+              "successes": 7
+            }
+          }
+        }
+      }
+    ]
+  },
+  "label_comparison": {
+    "36_vs_144": {
+      "contexts": 128,
+      "winner_sets_changed": 105,
+      "changed_indices": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        78,
+        79,
+        80,
+        81,
+        82,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127
+      ]
+    },
+    "36_vs_300": {
+      "contexts": 128,
+      "winner_sets_changed": 105,
+      "changed_indices": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        78,
+        79,
+        80,
+        81,
+        82,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127
+      ]
+    },
+    "144_vs_300": {
+      "contexts": 128,
+      "winner_sets_changed": 7,
+      "changed_indices": [
+        46,
+        78,
+        93,
+        107,
+        108,
+        109,
+        111
+      ]
+    }
+  },
+  "passed": true
+}

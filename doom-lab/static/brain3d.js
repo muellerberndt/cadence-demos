@@ -36,6 +36,28 @@
   // ---- interaction: drag rotate, wheel zoom, gentle idle spin ----
   let dragging = false, lastX = 0, lastY = 0;
   let lastInteract = -1e9;  // time-based idle spin; a counter can get stuck
+  let spin = true;
+  try { spin = localStorage.getItem("brain3d.spin") !== "off"; } catch (e) {}
+  const spinBtn = document.createElement("button");
+  spinBtn.id = "spin-btn";
+  spinBtn.style.cssText = "position:absolute;top:8px;left:10px;z-index:2;" +
+    "background:none;border:1px solid #1c1512;border-radius:3px;" +
+    "padding:3px 8px;font:10px ui-monospace,Menlo,monospace;" +
+    "letter-spacing:.1em;cursor:pointer;color:#6f6353;";
+  function paintSpin() {
+    spinBtn.textContent = spin ? "SPIN ON" : "SPIN OFF";
+    spinBtn.style.color = spin ? "#ff9b30" : "#6f6353";
+    spinBtn.title = spin ? "Stop the idle rotation of the brain view"
+                         : "Resume the idle rotation of the brain view";
+  }
+  paintSpin();
+  spinBtn.addEventListener("click", () => {
+    spin = !spin;
+    paintSpin();
+    try { localStorage.setItem("brain3d.spin", spin ? "on" : "off"); } catch (e) {}
+  });
+  container.style.position = "relative";
+  container.appendChild(spinBtn);
   renderer.domElement.style.cursor = "grab";
   renderer.domElement.addEventListener("mousedown", (e) => {
     dragging = true; lastX = e.clientX; lastY = e.clientY;
@@ -94,11 +116,15 @@
     const push = (list, name) => {
       for (const p of list) { positions.push(p); groupOf.push(name); }
     };
-    push(grid(32, 20, -150, 30, 0, 5.4, 5.4), "periphery");
-    push(grid(64, 6, -150, -78, 0, 2.9, 5.0), "fovea");
+    const ps = graphMeta.periphery_shape || [20, 32];
+    const fs = graphMeta.fovea_shape || [6, 64];
+    push(grid(ps[1], ps[0], -150, 30, 0, 172.8 / ps[1], 108 / ps[0]), "periphery");
+    push(grid(fs[1], fs[0], -150, -78, 0, 185.6 / fs[1], 30 / fs[0]), graphMeta.fovea_label || "fovea");
     const anchors = {
       scene: [-58, 34, 0, 42], aim: [-58, -66, 0, 30],
       integration: [28, -8, 0, 40], reflection: [98, -4, 0, 26],
+      hidden: [-40, 20, 0, 42], policy: [80, -4, 0, 35],
+      reflection1: [-4, 12, 0, 30], reflection2: [38, -28, 0, 26],
     };
     let seed = 0;
     for (const p of counts.pops) {
@@ -198,11 +224,11 @@
   function nodeActivity(i, BV) {
     const patchBase = counts.periphery + counts.fovea;
     if (i < counts.periphery)
-      return BV.retina_p ? Math.abs(BV.retina_p[i]) / 0.6 : 0.2;
+      return Number.isFinite(BV.retina_p?.[i]) ? Math.abs(BV.retina_p[i]) / 0.6 : 0;
     if (i < patchBase)
-      return BV.retina_f ? Math.abs(BV.retina_f[i - counts.periphery]) / 0.6 : 0.2;
+      return Number.isFinite(BV.retina_f?.[i - counts.periphery]) ? Math.abs(BV.retina_f[i - counts.periphery]) / 0.6 : 0;
     const j = i - patchBase;
-    return now.s && j < now.s.length ? Math.abs(now.s[j]) / 0.6 : 0.2;
+    return Number.isFinite(now.s?.[j]) ? Math.abs(now.s[j]) / 0.6 : 0;
   }
 
   let builtVersion = 0;
@@ -236,33 +262,35 @@
       teardown();
       buildMeshes(BV.graph);
       builtVersion = version;
+      lastAdmitted = -1; pulse = 0;
     }
     if (!nodes) { renderer.render(scene, camera); return; }
     if (BV.admitted !== undefined && lastAdmitted >= 0 &&
         BV.admitted > lastAdmitted) pulse = 1;
     if (BV.admitted !== undefined) lastAdmitted = Math.max(lastAdmitted, BV.admitted);
     pulse *= 0.96;
-    if (!dragging && t - lastInteract > 3000) world.rotation.y += 0.0022;
+    if (spin && !dragging && t - lastInteract > 3000) world.rotation.y += 0.0022;
 
     const patchBase = counts.periphery + counts.fovea;
     const st = BV.state, er = BV.errors;
-    if (st) {
+    if (Array.isArray(st) && st.length === counts.pops.reduce((n, p) => n + p.count, 0) && st.every(Number.isFinite)) {
       if (!now.s || now.s.length !== st.length) {
-        now.s = st.slice(); now.e = (er || st.map(() => 0)).slice();
+        now.s = st.slice(); now.e = st.map((_, i) => Number.isFinite(er?.[i]) ? er[i] : 0);
       }
       for (let i = 0; i < st.length; i++) {
         now.s[i] += (st[i] - now.s[i]) * 0.16;
-        now.e[i] += ((er ? er[i] : 0) - now.e[i]) * 0.16;
+        now.e[i] += ((Number.isFinite(er?.[i]) ? er[i] : 0) - now.e[i]) * 0.16;
       }
-    }
+    } else { now.s = null; now.e = null; }
     const sec = t / 1000;
     for (let i = 0; i < positions.length; i++) {
       let scale = 1, colorSet = false;
-      if (i < counts.periphery && BV.retina_p) {
+      tmp.copy(dimmed);
+      if (i < counts.periphery && Number.isFinite(BV.retina_p?.[i])) {
         const v = (BV.retina_p[i] + 0.6) / 1.2;
         tmp.setScalar(0.09 + 0.38 * Math.max(0, Math.min(1, v)));
         colorSet = true;
-      } else if (i >= counts.periphery && i < patchBase && BV.retina_f) {
+      } else if (i >= counts.periphery && i < patchBase && Number.isFinite(BV.retina_f?.[i - counts.periphery])) {
         const v = (BV.retina_f[i - counts.periphery] + 0.6) / 1.2;
         tmp.setRGB(0.1 + 0.4 * v, 0.1 + 0.35 * v, 0.13 + 0.3 * v);
         colorSet = true;
@@ -292,8 +320,8 @@
             (positions[i].x + 160) / 330 - (1 - pulse)) * 6);
           tmp.lerp(new THREE.Color(0x46a758), 0.6 * wave * pulse);
         }
-        nodes.setColorAt(i, tmp);
       }
+      nodes.setColorAt(i, tmp);
       dummy.position.copy(positions[i]);
       dummy.scale.setScalar(scale);
       dummy.updateMatrix();
@@ -324,5 +352,5 @@
   }
   requestAnimationFrame(tick);
 
-  fetch("/graph").then((r) => r.json()).then((g) => { window.BV = window.BV || {}; window.BV.graph = g; });
+  // index.html alone owns graph requests and model-version ordering.
 })();

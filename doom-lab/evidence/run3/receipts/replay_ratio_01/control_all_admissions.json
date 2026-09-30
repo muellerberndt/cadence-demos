@@ -1,0 +1,14 @@
+{
+  "schema": "doom-cached-control-all-admissions-verification/1",
+  "controls": {
+    "0": {
+      "admissions": 7,
+      "all_admission_rows_and_checkpoints_exact": true
+    },
+    "1": {
+      "admissions": 7,
+      "all_admission_rows_and_checkpoints_exact": true
+    }
+  },
+  "passed": true
+}

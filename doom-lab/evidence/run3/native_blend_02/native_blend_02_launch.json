@@ -1,0 +1,24 @@
+{
+  "created_unix": 1790697407.0587087,
+  "tmux": "doom-v3-native-blend-02",
+  "run": "/home/ec2-user/doom-v3-20260929/runs/native_blend_02",
+  "code": "/home/ec2-user/doom-v3-20260929/code/native_blend_02",
+  "log": "/home/ec2-user/doom-v3-20260929/logs/native_blend_02.log",
+  "command": [
+    "env",
+    "CADENCE_SRC=/home/ec2-user/doom-v3-20260929/cadence/src",
+    "PYTHONPATH=/home/ec2-user/doom-v3-20260929/cadence-demos/doom-lab",
+    "/home/ec2-user/venv/bin/python",
+    "-m",
+    "v3.native_blend_campaign",
+    "supervise",
+    "--rehearsal",
+    "/home/ec2-user/doom-v3-20260929/datasets/own_rehearsal_02",
+    "--horizon",
+    "/home/ec2-user/doom-v3-20260929/runs/navigation_horizon_01",
+    "--baseline",
+    "/home/ec2-user/doom-v3-20260929/runs/navigation_novelty_01",
+    "--out",
+    "/home/ec2-user/doom-v3-20260929/runs/native_blend_02"
+  ]
+}

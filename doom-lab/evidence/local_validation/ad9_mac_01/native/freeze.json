@@ -1,0 +1,179 @@
+{
+  "schema": "doom-v3-student-evaluation-freeze/1",
+  "created_unix": 1790728562.8031511,
+  "bundle_path": "/Users/muellerberndt/Projects/oph-meta/cadence-demos/doom-lab/models/confirmed/ad9b330cd1c1c582a0bb135956f87a9f8e4c0f106d80c35bb60b39c0328ef2cc/bundle.json",
+  "bundle_sha256": "844503dcdce34a253dcb3ba2689b7cd042a338b5bfd381684dfcf5ffc3237dd9",
+  "checkpoint_sha256": "ad9b330cd1c1c582a0bb135956f87a9f8e4c0f106d80c35bb60b39c0328ef2cc",
+  "tasks": [
+    {
+      "task": {
+        "task_id": "basic",
+        "asset": "freedoom2",
+        "map_name": "map01",
+        "objective": "kill",
+        "skill": 2,
+        "timeout_tics": 300,
+        "no_monsters": false,
+        "min_kills": 1,
+        "split": "train",
+        "scenario": "basic"
+      },
+      "engine_version": "1.3.1",
+      "iwad": {
+        "name": "freedoom2.wad",
+        "bytes": 28787748,
+        "sha256": "a8772e088847032510d97ba2312406a6998f21cbab44d4ff10696faa9c0ecd4b"
+      },
+      "screen": {
+        "format": "GRAY8",
+        "width": 320,
+        "height": 240,
+        "hud": true,
+        "weapon": true,
+        "crosshair": false,
+        "decals": true,
+        "particles": true,
+        "automap_buffer": false
+      },
+      "engine_config": "fresh per-engine temporary vizdoom.ini",
+      "sound": false,
+      "action_names": [
+        "noop",
+        "forward",
+        "backward",
+        "turn_left",
+        "turn_right",
+        "strafe_left",
+        "strafe_right",
+        "forward_left",
+        "forward_right",
+        "forward_strafe_left",
+        "forward_strafe_right",
+        "use",
+        "fire",
+        "fire_left",
+        "fire_right",
+        "fire_strafe_left",
+        "fire_strafe_right",
+        "backward_fire",
+        "forward_fire",
+        "weapon_next"
+      ],
+      "button_names": [
+        "MOVE_FORWARD",
+        "MOVE_BACKWARD",
+        "TURN_LEFT",
+        "TURN_RIGHT",
+        "MOVE_LEFT",
+        "MOVE_RIGHT",
+        "USE",
+        "ATTACK",
+        "SELECT_NEXT_WEAPON"
+      ],
+      "repeat_tics": 4,
+      "episode_start_time": 14,
+      "episode_start_source": "scenario_cfg",
+      "scenario_files": {
+        "cfg": {
+          "sha256": "306ce424442279a1e5d98a75c36a900b616c2496dcdac93a2923946049c926e7",
+          "bytes": 1033
+        },
+        "wad": {
+          "sha256": "fd0b7e5e2422e09288c786e7fc32181bb8ee4a3faa613a75ef88a3e39b5ce94e",
+          "bytes": 2704
+        }
+      },
+      "boundary": "Actor receives visible screen and its own past actions only; all variables/labels/geometry are teacher or evaluator evidence"
+    }
+  ],
+  "seeds": [
+    1600000000,
+    1600000001,
+    1600000002,
+    1600000003,
+    1600000004,
+    1600000005,
+    1600000006,
+    1600000007,
+    1600000008,
+    1600000009,
+    1600000010,
+    1600000011,
+    1600000012,
+    1600000013,
+    1600000014,
+    1600000015
+  ],
+  "expected": [
+    [
+      "basic",
+      1600000000
+    ],
+    [
+      "basic",
+      1600000001
+    ],
+    [
+      "basic",
+      1600000002
+    ],
+    [
+      "basic",
+      1600000003
+    ],
+    [
+      "basic",
+      1600000004
+    ],
+    [
+      "basic",
+      1600000005
+    ],
+    [
+      "basic",
+      1600000006
+    ],
+    [
+      "basic",
+      1600000007
+    ],
+    [
+      "basic",
+      1600000008
+    ],
+    [
+      "basic",
+      1600000009
+    ],
+    [
+      "basic",
+      1600000010
+    ],
+    [
+      "basic",
+      1600000011
+    ],
+    [
+      "basic",
+      1600000012
+    ],
+    [
+      "basic",
+      1600000013
+    ],
+    [
+      "basic",
+      1600000014
+    ],
+    [
+      "basic",
+      1600000015
+    ]
+  ],
+  "workers": 2,
+  "episode_wall_seconds": 60,
+  "allow_heldout": false,
+  "evaluator_sha256": "f7da403763536bd3254cba56e81a2015d97f8e7cc69bda3987328b73f1a2bd7f",
+  "tasks_sha256": "2f807b7f8f1d7f5ab9bb886bb9efc8994bdfea2aa39b44e1a08fd3dfe852410d",
+  "interpretation": "One frozen learned actor, no oracle/planner/interventions or checkpoint selection"
+}

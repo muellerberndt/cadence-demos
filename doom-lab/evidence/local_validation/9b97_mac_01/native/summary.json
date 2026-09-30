@@ -1,0 +1,27 @@
+{
+  "schema": "doom-v3-student-evaluation-result/1",
+  "freeze_sha256": "5c530aaddbd005264f16f5ac209a06b810a771aa63e2f3a7f5321c34ce36bcef",
+  "tasks": {
+    "basic": {
+      "scheduled": 16,
+      "returned": 16,
+      "missing": 0,
+      "successes": 15,
+      "success_rate": 0.9375,
+      "native_exits": 0,
+      "deaths": 0,
+      "native_timeouts": 1,
+      "queries": 666,
+      "qualified_queries": 666,
+      "cutoffs_or_errors": 0,
+      "mean_return_present": -124.125,
+      "mean_tics_present": 164.75
+    }
+  },
+  "scheduled": 16,
+  "returned": 16,
+  "missing": 0,
+  "successes": 15,
+  "all_scheduled_accounted": true,
+  "interpretation": "Native task outcomes at one frozen checkpoint; no selection or fallback policy"
+}

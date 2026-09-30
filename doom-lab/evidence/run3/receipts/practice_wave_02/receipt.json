@@ -1,0 +1,74 @@
+{
+  "scheduled": 3,
+  "returned": 3,
+  "seconds": 1046.2372655049994,
+  "results": [
+    {
+      "lifetime": 16,
+      "pid": 58062,
+      "returncode": 0,
+      "missing_receipt": false,
+      "missing_supervisor": false,
+      "metrics": {
+        "updates": 16,
+        "accepted_examples": 256,
+        "processed_transitions": 215,
+        "informative_contexts": 131,
+        "uninformative_contexts": 84,
+        "promotions": 0,
+        "champion_checkpoint": "3076041351210d5818df542b23c167278a76ce59d7ceae531b52e05398f80ad8",
+        "error": null,
+        "seconds": 851.4364055270003,
+        "native_feedback_seconds": 604.1570862489953,
+        "repair_seconds": 167.42618138199896,
+        "gate_seconds": 24.233777986999485,
+        "pending_records_preserved": 41
+      }
+    },
+    {
+      "lifetime": 4,
+      "pid": 58061,
+      "returncode": 0,
+      "missing_receipt": false,
+      "missing_supervisor": false,
+      "metrics": {
+        "updates": 16,
+        "accepted_examples": 256,
+        "processed_transitions": 223,
+        "informative_contexts": 128,
+        "uninformative_contexts": 95,
+        "promotions": 0,
+        "champion_checkpoint": "3076041351210d5818df542b23c167278a76ce59d7ceae531b52e05398f80ad8",
+        "error": null,
+        "seconds": 925.2863842359998,
+        "native_feedback_seconds": 627.4426048740002,
+        "repair_seconds": 172.83424404300058,
+        "gate_seconds": 67.72933727400141,
+        "pending_records_preserved": 33
+      }
+    },
+    {
+      "lifetime": 1,
+      "pid": 58060,
+      "returncode": 0,
+      "missing_receipt": false,
+      "missing_supervisor": false,
+      "metrics": {
+        "updates": 15,
+        "accepted_examples": 240,
+        "processed_transitions": 218,
+        "informative_contexts": 122,
+        "uninformative_contexts": 96,
+        "promotions": 0,
+        "champion_checkpoint": "3076041351210d5818df542b23c167278a76ce59d7ceae531b52e05398f80ad8",
+        "error": null,
+        "seconds": 1042.6314364300001,
+        "native_feedback_seconds": 611.8276705370031,
+        "repair_seconds": 172.41861703599943,
+        "gate_seconds": 203.0236493809989,
+        "pending_records_preserved": 38
+      }
+    }
+  ],
+  "complete": true
+}

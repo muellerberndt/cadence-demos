@@ -1,0 +1,1 @@
+{"status": "failed_before_destination_execution", "error": "Remote Python wrapper had an unterminated string literal; no destination file was created.", "source_archive_unchanged": true}

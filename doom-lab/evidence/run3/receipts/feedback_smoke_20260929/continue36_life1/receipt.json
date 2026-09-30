@@ -1,0 +1,122 @@
+{
+  "arm": "continue36_life1",
+  "contract": "utility_action12_frozen_champion36_v1",
+  "lifetime": 1,
+  "status": "complete",
+  "updates": 1,
+  "presentations": 2,
+  "promotions": 0,
+  "seconds": 0.7805406250990927,
+  "baseline_loss": 0.04483733458574628,
+  "final_loss": 0.04483733458574628,
+  "champion_sha256": "db6df682f3c4411e0a2d18ac4bcb9fff368bbdc6d7186391e9d100a5241050ac",
+  "champion": [
+    {
+      "seed": 740000,
+      "status": "complete",
+      "killed": true,
+      "return_": 95.0,
+      "tics": 6,
+      "queries": 1,
+      "qualified_queries": 1,
+      "fallback_actions": 0,
+      "timeout": false
+    },
+    {
+      "seed": 740001,
+      "status": "complete",
+      "killed": true,
+      "return_": 76.0,
+      "tics": 20,
+      "queries": 2,
+      "qualified_queries": 2,
+      "fallback_actions": 0,
+      "timeout": false
+    }
+  ],
+  "admissions": [
+    {
+      "epoch": 0,
+      "batch_start": 0,
+      "accepted": true,
+      "examples": 2,
+      "seconds": 0.0963686250615865,
+      "sweeps": 81,
+      "reason": "qualified",
+      "event_id": 44,
+      "checkpoint_sha256": "06d897eca77ddec987e356498f28101c11ce6df92f1e1be900bbc992eb0f5615"
+    }
+  ],
+  "gates": [
+    {
+      "update": 1,
+      "block_updates": 1,
+      "checkpoint_sha256": "06d897eca77ddec987e356498f28101c11ce6df92f1e1be900bbc992eb0f5615",
+      "seconds": 0.667847582953982,
+      "candidate": [
+        {
+          "seed": 740000,
+          "status": "complete",
+          "killed": false,
+          "return_": -370.0,
+          "tics": 300,
+          "queries": 25,
+          "qualified_queries": 25,
+          "fallback_actions": 0,
+          "timeout": true
+        },
+        {
+          "seed": 740001,
+          "status": "complete",
+          "killed": true,
+          "return_": -97.0,
+          "tics": 168,
+          "queries": 14,
+          "qualified_queries": 14,
+          "fallback_actions": 0,
+          "timeout": false
+        }
+      ],
+      "champion": [
+        {
+          "seed": 740000,
+          "status": "complete",
+          "killed": true,
+          "return_": 95.0,
+          "tics": 6,
+          "queries": 1,
+          "qualified_queries": 1,
+          "fallback_actions": 0,
+          "timeout": false
+        },
+        {
+          "seed": 740001,
+          "status": "complete",
+          "killed": true,
+          "return_": 76.0,
+          "tics": 20,
+          "queries": 2,
+          "qualified_queries": 2,
+          "fallback_actions": 0,
+          "timeout": false
+        }
+      ],
+      "gate": {
+        "passed": false,
+        "reasons": [
+          "Candidate lost a previously successful development episode",
+          "Mean native return improvement did not exceed the development threshold",
+          "Lost an original-anchor success",
+          "Original eight mean regressed versusstarting_anchor",
+          "Original eight mean regressed versuscurrent_champion"
+        ],
+        "mean_return_delta": -319.0,
+        "champion_kills": 2,
+        "candidate_kills": 1,
+        "episodes": 2,
+        "interpretation": "repeated32-seed development selection only; no fresh confirmation"
+      }
+    }
+  ],
+  "scheduled_updates": 1
+}

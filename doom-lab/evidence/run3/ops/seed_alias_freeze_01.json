@@ -1,0 +1,423 @@
+{
+  "schema": "doom-v3-basic-seed-alias-freeze/1",
+  "created_unix": 1790691275.2590175,
+  "source_sha256": "d3118b22673ae12ee87171ff0c2397aa4ad2580eec6e969fd54384695e4cba68",
+  "tasks_sha256": "2f807b7f8f1d7f5ab9bb886bb9efc8994bdfea2aa39b44e1a08fd3dfe852410d",
+  "task_identity": {
+    "task": {
+      "task_id": "basic",
+      "asset": "freedoom2",
+      "map_name": "map01",
+      "objective": "kill",
+      "skill": 2,
+      "timeout_tics": 300,
+      "no_monsters": false,
+      "min_kills": 1,
+      "split": "train",
+      "scenario": "basic"
+    },
+    "engine_version": "1.3.1",
+    "iwad": {
+      "name": "freedoom2.wad",
+      "bytes": 28787748,
+      "sha256": "a8772e088847032510d97ba2312406a6998f21cbab44d4ff10696faa9c0ecd4b"
+    },
+    "screen": {
+      "format": "GRAY8",
+      "width": 320,
+      "height": 240,
+      "hud": true,
+      "weapon": true,
+      "crosshair": false,
+      "decals": true,
+      "particles": true,
+      "automap_buffer": false
+    },
+    "engine_config": "fresh per-engine temporary vizdoom.ini",
+    "sound": false,
+    "action_names": [
+      "noop",
+      "forward",
+      "backward",
+      "turn_left",
+      "turn_right",
+      "strafe_left",
+      "strafe_right",
+      "forward_left",
+      "forward_right",
+      "forward_strafe_left",
+      "forward_strafe_right",
+      "use",
+      "fire",
+      "fire_left",
+      "fire_right",
+      "fire_strafe_left",
+      "fire_strafe_right",
+      "backward_fire",
+      "forward_fire",
+      "weapon_next"
+    ],
+    "button_names": [
+      "MOVE_FORWARD",
+      "MOVE_BACKWARD",
+      "TURN_LEFT",
+      "TURN_RIGHT",
+      "MOVE_LEFT",
+      "MOVE_RIGHT",
+      "USE",
+      "ATTACK",
+      "SELECT_NEXT_WEAPON"
+    ],
+    "repeat_tics": 4,
+    "episode_start_time": 14,
+    "episode_start_source": "scenario_cfg",
+    "scenario_files": {
+      "cfg": {
+        "sha256": "306ce424442279a1e5d98a75c36a900b616c2496dcdac93a2923946049c926e7",
+        "bytes": 1033
+      },
+      "wad": {
+        "sha256": "fd0b7e5e2422e09288c786e7fc32181bb8ee4a3faa613a75ef88a3e39b5ce94e",
+        "bytes": 2704
+      }
+    },
+    "boundary": "Actor receives visible screen and its own past actions only; all variables/labels/geometry are teacher or evaluator evidence"
+  },
+  "actions": [
+    0,
+    3,
+    4,
+    5,
+    6,
+    12,
+    15,
+    16
+  ],
+  "jobs": [
+    {
+      "group": "gate",
+      "seed": 1220000000,
+      "base_seed": 1220000000,
+      "offset": 0
+    },
+    {
+      "group": "gate",
+      "seed": 1220000256,
+      "base_seed": 1220000000,
+      "offset": 256
+    },
+    {
+      "group": "gate",
+      "seed": 1220001024,
+      "base_seed": 1220000000,
+      "offset": 1024
+    },
+    {
+      "group": "gate",
+      "seed": 1300000000,
+      "base_seed": 1220000000,
+      "offset": 80000000
+    },
+    {
+      "group": "gate",
+      "seed": 1220000001,
+      "base_seed": 1220000001,
+      "offset": 0
+    },
+    {
+      "group": "gate",
+      "seed": 1220000257,
+      "base_seed": 1220000001,
+      "offset": 256
+    },
+    {
+      "group": "gate",
+      "seed": 1220001025,
+      "base_seed": 1220000001,
+      "offset": 1024
+    },
+    {
+      "group": "gate",
+      "seed": 1300000001,
+      "base_seed": 1220000001,
+      "offset": 80000000
+    },
+    {
+      "group": "gate",
+      "seed": 1220000002,
+      "base_seed": 1220000002,
+      "offset": 0
+    },
+    {
+      "group": "gate",
+      "seed": 1220000258,
+      "base_seed": 1220000002,
+      "offset": 256
+    },
+    {
+      "group": "gate",
+      "seed": 1220001026,
+      "base_seed": 1220000002,
+      "offset": 1024
+    },
+    {
+      "group": "gate",
+      "seed": 1300000002,
+      "base_seed": 1220000002,
+      "offset": 80000000
+    },
+    {
+      "group": "gate",
+      "seed": 1220000003,
+      "base_seed": 1220000003,
+      "offset": 0
+    },
+    {
+      "group": "gate",
+      "seed": 1220000259,
+      "base_seed": 1220000003,
+      "offset": 256
+    },
+    {
+      "group": "gate",
+      "seed": 1220001027,
+      "base_seed": 1220000003,
+      "offset": 1024
+    },
+    {
+      "group": "gate",
+      "seed": 1300000003,
+      "base_seed": 1220000003,
+      "offset": 80000000
+    },
+    {
+      "group": "gate",
+      "seed": 1220000004,
+      "base_seed": 1220000004,
+      "offset": 0
+    },
+    {
+      "group": "gate",
+      "seed": 1220000260,
+      "base_seed": 1220000004,
+      "offset": 256
+    },
+    {
+      "group": "gate",
+      "seed": 1220001028,
+      "base_seed": 1220000004,
+      "offset": 1024
+    },
+    {
+      "group": "gate",
+      "seed": 1300000004,
+      "base_seed": 1220000004,
+      "offset": 80000000
+    },
+    {
+      "group": "gate",
+      "seed": 1220000005,
+      "base_seed": 1220000005,
+      "offset": 0
+    },
+    {
+      "group": "gate",
+      "seed": 1220000261,
+      "base_seed": 1220000005,
+      "offset": 256
+    },
+    {
+      "group": "gate",
+      "seed": 1220001029,
+      "base_seed": 1220000005,
+      "offset": 1024
+    },
+    {
+      "group": "gate",
+      "seed": 1300000005,
+      "base_seed": 1220000005,
+      "offset": 80000000
+    },
+    {
+      "group": "gate",
+      "seed": 1220000006,
+      "base_seed": 1220000006,
+      "offset": 0
+    },
+    {
+      "group": "gate",
+      "seed": 1220000262,
+      "base_seed": 1220000006,
+      "offset": 256
+    },
+    {
+      "group": "gate",
+      "seed": 1220001030,
+      "base_seed": 1220000006,
+      "offset": 1024
+    },
+    {
+      "group": "gate",
+      "seed": 1300000006,
+      "base_seed": 1220000006,
+      "offset": 80000000
+    },
+    {
+      "group": "gate",
+      "seed": 1220000007,
+      "base_seed": 1220000007,
+      "offset": 0
+    },
+    {
+      "group": "gate",
+      "seed": 1220000263,
+      "base_seed": 1220000007,
+      "offset": 256
+    },
+    {
+      "group": "gate",
+      "seed": 1220001031,
+      "base_seed": 1220000007,
+      "offset": 1024
+    },
+    {
+      "group": "gate",
+      "seed": 1300000007,
+      "base_seed": 1220000007,
+      "offset": 80000000
+    },
+    {
+      "group": "repeat_control",
+      "seed": 1220000000
+    },
+    {
+      "group": "repeat_control",
+      "seed": 1220000001
+    },
+    {
+      "group": "repeat_control",
+      "seed": 1220000002
+    },
+    {
+      "group": "repeat_control",
+      "seed": 1220000003
+    },
+    {
+      "group": "repeat_control",
+      "seed": 1220000004
+    },
+    {
+      "group": "repeat_control",
+      "seed": 1220000005
+    },
+    {
+      "group": "repeat_control",
+      "seed": 1220000006
+    },
+    {
+      "group": "repeat_control",
+      "seed": 1220000007
+    },
+    {
+      "group": "fresh_development",
+      "seed": 1220100000
+    },
+    {
+      "group": "fresh_development",
+      "seed": 1220100001
+    },
+    {
+      "group": "fresh_development",
+      "seed": 1220100002
+    },
+    {
+      "group": "fresh_development",
+      "seed": 1220100003
+    },
+    {
+      "group": "fresh_development",
+      "seed": 1220100004
+    },
+    {
+      "group": "fresh_development",
+      "seed": 1220100005
+    },
+    {
+      "group": "fresh_development",
+      "seed": 1220100006
+    },
+    {
+      "group": "fresh_development",
+      "seed": 1220100007
+    },
+    {
+      "group": "bootstrap",
+      "seed": 1100100000
+    },
+    {
+      "group": "bootstrap",
+      "seed": 1100100001
+    },
+    {
+      "group": "bootstrap",
+      "seed": 1100100002
+    },
+    {
+      "group": "bootstrap",
+      "seed": 1100100003
+    },
+    {
+      "group": "bootstrap",
+      "seed": 1100100004
+    },
+    {
+      "group": "bootstrap",
+      "seed": 1100100005
+    },
+    {
+      "group": "bootstrap",
+      "seed": 1100100006
+    },
+    {
+      "group": "bootstrap",
+      "seed": 1100100007
+    },
+    {
+      "group": "bootstrap",
+      "seed": 1100100008
+    },
+    {
+      "group": "bootstrap",
+      "seed": 1100100009
+    },
+    {
+      "group": "bootstrap",
+      "seed": 1100100010
+    },
+    {
+      "group": "bootstrap",
+      "seed": 1100100011
+    },
+    {
+      "group": "bootstrap",
+      "seed": 1100100012
+    },
+    {
+      "group": "bootstrap",
+      "seed": 1100100013
+    },
+    {
+      "group": "bootstrap",
+      "seed": 1100100014
+    },
+    {
+      "group": "bootstrap",
+      "seed": 1100100015
+    }
+  ],
+  "workers": 4,
+  "controls": "Eight repeated fresh-engine runs; fixed seed families and offsets declared before execution",
+  "question": "Do disjoint integer seed families overlap in exact native initial or fixed-probe trajectory identity?",
+  "max_external_seconds": 90,
+  "retains": "Hashes, native transition fields and small receipts only"
+}

@@ -1,0 +1,24 @@
+[
+  {
+    "seed": 740000,
+    "status": "complete",
+    "killed": true,
+    "return_": 95.0,
+    "tics": 6,
+    "queries": 1,
+    "qualified_queries": 1,
+    "fallback_actions": 0,
+    "timeout": false
+  },
+  {
+    "seed": 740001,
+    "status": "complete",
+    "killed": true,
+    "return_": 76.0,
+    "tics": 20,
+    "queries": 2,
+    "qualified_queries": 2,
+    "fallback_actions": 0,
+    "timeout": false
+  }
+]

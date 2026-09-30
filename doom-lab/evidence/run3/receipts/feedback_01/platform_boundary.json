@@ -1,0 +1,58 @@
+{
+  "schema": "doom-feedback-platform-boundary/1",
+  "mac_version": "1.3.1",
+  "linux_version": "1.3.1",
+  "mac_only": [
+    ".dylibs/libSDL2-2.0.0.dylib",
+    ".dylibs/libSDL3.dylib",
+    ".dylibs/libboost_atomic.dylib",
+    ".dylibs/libboost_chrono.dylib",
+    ".dylibs/libboost_container.dylib",
+    ".dylibs/libboost_date_time.dylib",
+    ".dylibs/libboost_filesystem.dylib",
+    ".dylibs/libboost_iostreams.dylib",
+    ".dylibs/libboost_random.dylib",
+    ".dylibs/libboost_thread.dylib",
+    ".dylibs/libjpeg.8.3.2.dylib",
+    ".dylibs/liblzma.5.dylib",
+    ".dylibs/libzstd.1.5.7.dylib",
+    "vizdoom.cpython-312-darwin.so"
+  ],
+  "linux_only": [
+    "vizdoom.cpython-311-x86_64-linux-gnu.so"
+  ],
+  "shared_different": {
+    "__init__.py": {
+      "mac": {
+        "sha256": "c469954d45e99aa338e8bdb35c275996bd8b08d6aecf2ab19cd1786182d69df9",
+        "bytes": 1283
+      },
+      "linux": {
+        "sha256": "223233538d922519c71344a346c6245fde650c9f1f7b2ce049149865a5327f82",
+        "bytes": 1283
+      }
+    },
+    "vizdoom": {
+      "mac": {
+        "sha256": "381913d92377f79c4646b80a5ec1707d1c0812453345018cd746271f97bb74a3",
+        "bytes": 5450624
+      },
+      "linux": {
+        "sha256": "4c228e1d0bd929dada21ed86e814a88cdc23204722916ca8223d07fc4426044a",
+        "bytes": 5679696
+      }
+    },
+    "vizdoom.pk3": {
+      "mac": {
+        "sha256": "f9d4273103db7b6d41e09ca3e7f60a63c4a5166721606f3ef182cef933ac98a5",
+        "bytes": 630827
+      },
+      "linux": {
+        "sha256": "f6805351b9750c6c3942bfb01cfc6217645fb01511a4ffc4546ba6497a72e037",
+        "bytes": 630827
+      }
+    }
+  },
+  "shared_equal_count": 50,
+  "result": "All six hold branches refused the first Mac frame on Linux; new Linux fixture required, no tolerance relaxation"
+}

@@ -1,0 +1,105 @@
+{
+  "created_unix": 1790694267.078913,
+  "schema": "doom-query-budget-diagnostic/1",
+  "selection": "First seed-sorted refused actual Basic context for each prior0.1 model; originalweights/tolerance/input retained, no training or deployment",
+  "records": [
+    {
+      "bundle_sha256": "1b0cdd6d751028e824574a2934e77c8ff2c564418d25e70d809efa372433a111",
+      "checkpoint_sha256": "044a15919a2dfc9f06caf158747ddc282ff5b3502d1da961983df9ca303c7a30",
+      "name": "forced_deep_prior01_0",
+      "refused_step": 17,
+      "seed": 1220100001,
+      "trace_sha256": "e49615847a6717be085ce17b4b76766077c2841c9d7cfdf86b19984a04703b5b",
+      "results": [
+        {
+          "action": null,
+          "budget": 512,
+          "qualified": false,
+          "seconds": 1.3098508429993672,
+          "solver": {
+            "qualified": false,
+            "sweeps": 512,
+            "stationarity": 1.951162692420986e-06,
+            "reason": "budget",
+            "settled": null
+          }
+        },
+        {
+          "action": 1,
+          "budget": 1024,
+          "qualified": true,
+          "seconds": 0.5498725099996591,
+          "solver": {
+            "qualified": true,
+            "sweeps": 552,
+            "stationarity": 8.016195660797906e-07,
+            "reason": "qualified",
+            "settled": null
+          }
+        },
+        {
+          "action": 1,
+          "budget": 2048,
+          "qualified": true,
+          "seconds": 0.5494002570003431,
+          "solver": {
+            "qualified": true,
+            "sweeps": 552,
+            "stationarity": 8.016195660797906e-07,
+            "reason": "qualified",
+            "settled": null
+          }
+        }
+      ]
+    },
+    {
+      "bundle_sha256": "7c9778a8b8b5855e5d021d940842249b213820c4056b6ca2eea72675d3532eb9",
+      "checkpoint_sha256": "6be5baf1641ee3e598de14b9560ecb4b15d1f71afb1e85b09321068e9eaba820",
+      "name": "forced_deep_prior01_1",
+      "refused_step": 3,
+      "seed": 1220100001,
+      "trace_sha256": "1d681aac574adc0d58781fe6b86945e686fd44688339b26be05dc0d02586a2f2",
+      "results": [
+        {
+          "action": null,
+          "budget": 512,
+          "qualified": false,
+          "seconds": 0.514782150999963,
+          "solver": {
+            "qualified": false,
+            "sweeps": 512,
+            "stationarity": 6.8312234867716265e-06,
+            "reason": "budget",
+            "settled": null
+          }
+        },
+        {
+          "action": 13,
+          "budget": 1024,
+          "qualified": true,
+          "seconds": 0.5983523740005694,
+          "solver": {
+            "qualified": true,
+            "sweeps": 588,
+            "stationarity": 9.67727031422525e-07,
+            "reason": "qualified",
+            "settled": null
+          }
+        },
+        {
+          "action": 13,
+          "budget": 2048,
+          "qualified": true,
+          "seconds": 0.5946059999996578,
+          "solver": {
+            "qualified": true,
+            "sweeps": 588,
+            "stationarity": 9.67727031422525e-07,
+            "reason": "qualified",
+            "settled": null
+          }
+        }
+      ]
+    }
+  ]
+}

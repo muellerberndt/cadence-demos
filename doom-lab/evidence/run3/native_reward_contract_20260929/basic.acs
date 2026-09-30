@@ -1,0 +1,62 @@
+#include "zcommon.acs"
+
+int target_id = 10;
+
+global int 0:reward;
+
+
+script 1 OPEN
+{
+    SpawnTarget();
+    reward = 0;
+}
+int c =0;
+script 2 ENTER
+{
+    TakeInventory("Fist",1);
+    ACS_Execute(3, 1, 0, 0, 0);
+
+}
+
+script 3 (void)
+{
+    int bullets = CheckInventory("Clip");
+    while(true)
+    {        
+        int t_bullets = CheckInventory("Clip");
+        if(t_bullets < bullets)
+        {
+            reward = reward - 5.0;
+        }
+        bullets = t_bullets;
+    
+        delay(1);
+    }
+}
+
+script 4 (void)
+{
+    reward = reward + 106.0;
+    Exit_Normal(0);
+
+}
+
+function void SpawnTarget(void)
+{
+
+    int y = Random(-161.0,224.0);
+    Spawn("Cacodemon", 0.0, y,0.0,target_id,128);
+    //disables movement
+    SetActorProperty(target_id, APROP_Speed, 0);
+    //makes it die on one hit
+    SetActorProperty(target_id, APROP_Health, 1);
+    //makes it ignore the player and attack actor with tid 100
+    Thing_Hate (target_id, 100, 6);
+    SetThingSpecial(target_id, ACS_ExecuteAlways, 4);
+   
+}
+
+
+
+
+

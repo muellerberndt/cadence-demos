@@ -1,0 +1,348 @@
+{
+  "schema": "doom-v3-basic-seed-alias-result/1",
+  "rows": 64,
+  "unique_initial_frames": 55,
+  "unique_probe_fingerprints": 56,
+  "offset_comparisons": [
+    {
+      "seed": 1220000000,
+      "offset": 256,
+      "same_initial": false,
+      "same_initial_facts": true,
+      "same_all_probe_steps": false,
+      "same_probe_fingerprint": false
+    },
+    {
+      "seed": 1220000000,
+      "offset": 1024,
+      "same_initial": false,
+      "same_initial_facts": true,
+      "same_all_probe_steps": false,
+      "same_probe_fingerprint": false
+    },
+    {
+      "seed": 1220000000,
+      "offset": 80000000,
+      "same_initial": false,
+      "same_initial_facts": true,
+      "same_all_probe_steps": false,
+      "same_probe_fingerprint": false
+    },
+    {
+      "seed": 1220000001,
+      "offset": 256,
+      "same_initial": false,
+      "same_initial_facts": true,
+      "same_all_probe_steps": false,
+      "same_probe_fingerprint": false
+    },
+    {
+      "seed": 1220000001,
+      "offset": 1024,
+      "same_initial": false,
+      "same_initial_facts": true,
+      "same_all_probe_steps": false,
+      "same_probe_fingerprint": false
+    },
+    {
+      "seed": 1220000001,
+      "offset": 80000000,
+      "same_initial": false,
+      "same_initial_facts": true,
+      "same_all_probe_steps": false,
+      "same_probe_fingerprint": false
+    },
+    {
+      "seed": 1220000002,
+      "offset": 256,
+      "same_initial": false,
+      "same_initial_facts": true,
+      "same_all_probe_steps": false,
+      "same_probe_fingerprint": false
+    },
+    {
+      "seed": 1220000002,
+      "offset": 1024,
+      "same_initial": false,
+      "same_initial_facts": true,
+      "same_all_probe_steps": false,
+      "same_probe_fingerprint": false
+    },
+    {
+      "seed": 1220000002,
+      "offset": 80000000,
+      "same_initial": false,
+      "same_initial_facts": true,
+      "same_all_probe_steps": false,
+      "same_probe_fingerprint": false
+    },
+    {
+      "seed": 1220000003,
+      "offset": 256,
+      "same_initial": false,
+      "same_initial_facts": true,
+      "same_all_probe_steps": false,
+      "same_probe_fingerprint": false
+    },
+    {
+      "seed": 1220000003,
+      "offset": 1024,
+      "same_initial": false,
+      "same_initial_facts": true,
+      "same_all_probe_steps": false,
+      "same_probe_fingerprint": false
+    },
+    {
+      "seed": 1220000003,
+      "offset": 80000000,
+      "same_initial": false,
+      "same_initial_facts": true,
+      "same_all_probe_steps": false,
+      "same_probe_fingerprint": false
+    },
+    {
+      "seed": 1220000004,
+      "offset": 256,
+      "same_initial": false,
+      "same_initial_facts": true,
+      "same_all_probe_steps": false,
+      "same_probe_fingerprint": false
+    },
+    {
+      "seed": 1220000004,
+      "offset": 1024,
+      "same_initial": false,
+      "same_initial_facts": true,
+      "same_all_probe_steps": false,
+      "same_probe_fingerprint": false
+    },
+    {
+      "seed": 1220000004,
+      "offset": 80000000,
+      "same_initial": false,
+      "same_initial_facts": true,
+      "same_all_probe_steps": false,
+      "same_probe_fingerprint": false
+    },
+    {
+      "seed": 1220000005,
+      "offset": 256,
+      "same_initial": false,
+      "same_initial_facts": true,
+      "same_all_probe_steps": false,
+      "same_probe_fingerprint": false
+    },
+    {
+      "seed": 1220000005,
+      "offset": 1024,
+      "same_initial": false,
+      "same_initial_facts": true,
+      "same_all_probe_steps": false,
+      "same_probe_fingerprint": false
+    },
+    {
+      "seed": 1220000005,
+      "offset": 80000000,
+      "same_initial": false,
+      "same_initial_facts": true,
+      "same_all_probe_steps": false,
+      "same_probe_fingerprint": false
+    },
+    {
+      "seed": 1220000006,
+      "offset": 256,
+      "same_initial": false,
+      "same_initial_facts": true,
+      "same_all_probe_steps": false,
+      "same_probe_fingerprint": false
+    },
+    {
+      "seed": 1220000006,
+      "offset": 1024,
+      "same_initial": false,
+      "same_initial_facts": true,
+      "same_all_probe_steps": false,
+      "same_probe_fingerprint": false
+    },
+    {
+      "seed": 1220000006,
+      "offset": 80000000,
+      "same_initial": false,
+      "same_initial_facts": true,
+      "same_all_probe_steps": false,
+      "same_probe_fingerprint": false
+    },
+    {
+      "seed": 1220000007,
+      "offset": 256,
+      "same_initial": false,
+      "same_initial_facts": true,
+      "same_all_probe_steps": false,
+      "same_probe_fingerprint": false
+    },
+    {
+      "seed": 1220000007,
+      "offset": 1024,
+      "same_initial": false,
+      "same_initial_facts": true,
+      "same_all_probe_steps": false,
+      "same_probe_fingerprint": false
+    },
+    {
+      "seed": 1220000007,
+      "offset": 80000000,
+      "same_initial": false,
+      "same_initial_facts": true,
+      "same_all_probe_steps": false,
+      "same_probe_fingerprint": false
+    }
+  ],
+  "repeat_controls": [
+    {
+      "seed": 1220000000,
+      "same_probe_fingerprint": true
+    },
+    {
+      "seed": 1220000001,
+      "same_probe_fingerprint": true
+    },
+    {
+      "seed": 1220000002,
+      "same_probe_fingerprint": true
+    },
+    {
+      "seed": 1220000003,
+      "same_probe_fingerprint": true
+    },
+    {
+      "seed": 1220000004,
+      "same_probe_fingerprint": true
+    },
+    {
+      "seed": 1220000005,
+      "same_probe_fingerprint": true
+    },
+    {
+      "seed": 1220000006,
+      "same_probe_fingerprint": true
+    },
+    {
+      "seed": 1220000007,
+      "same_probe_fingerprint": true
+    }
+  ],
+  "group_overlap": [
+    {
+      "left": "gate",
+      "right": "fresh_development",
+      "field": "initial_frame_sha256",
+      "left_unique": 8,
+      "right_unique": 8,
+      "shared_unique": 0,
+      "matching_seed_pairs": []
+    },
+    {
+      "left": "gate",
+      "right": "fresh_development",
+      "field": "probe_fingerprint",
+      "left_unique": 8,
+      "right_unique": 8,
+      "shared_unique": 0,
+      "matching_seed_pairs": []
+    },
+    {
+      "left": "gate",
+      "right": "bootstrap",
+      "field": "initial_frame_sha256",
+      "left_unique": 8,
+      "right_unique": 16,
+      "shared_unique": 0,
+      "matching_seed_pairs": []
+    },
+    {
+      "left": "gate",
+      "right": "bootstrap",
+      "field": "probe_fingerprint",
+      "left_unique": 8,
+      "right_unique": 16,
+      "shared_unique": 0,
+      "matching_seed_pairs": []
+    },
+    {
+      "left": "gate",
+      "right": "practice",
+      "field": "initial_frame_sha256",
+      "left_unique": 8,
+      "right_unique": 8,
+      "shared_unique": 0,
+      "matching_seed_pairs": []
+    },
+    {
+      "left": "gate",
+      "right": "practice",
+      "field": "probe_fingerprint",
+      "left_unique": 8,
+      "right_unique": 8,
+      "shared_unique": 0,
+      "matching_seed_pairs": []
+    },
+    {
+      "left": "fresh_development",
+      "right": "bootstrap",
+      "field": "initial_frame_sha256",
+      "left_unique": 8,
+      "right_unique": 16,
+      "shared_unique": 0,
+      "matching_seed_pairs": []
+    },
+    {
+      "left": "fresh_development",
+      "right": "bootstrap",
+      "field": "probe_fingerprint",
+      "left_unique": 8,
+      "right_unique": 16,
+      "shared_unique": 0,
+      "matching_seed_pairs": []
+    },
+    {
+      "left": "fresh_development",
+      "right": "practice",
+      "field": "initial_frame_sha256",
+      "left_unique": 8,
+      "right_unique": 8,
+      "shared_unique": 0,
+      "matching_seed_pairs": []
+    },
+    {
+      "left": "fresh_development",
+      "right": "practice",
+      "field": "probe_fingerprint",
+      "left_unique": 8,
+      "right_unique": 8,
+      "shared_unique": 0,
+      "matching_seed_pairs": []
+    },
+    {
+      "left": "bootstrap",
+      "right": "practice",
+      "field": "initial_frame_sha256",
+      "left_unique": 16,
+      "right_unique": 8,
+      "shared_unique": 0,
+      "matching_seed_pairs": []
+    },
+    {
+      "left": "bootstrap",
+      "right": "practice",
+      "field": "probe_fingerprint",
+      "left_unique": 16,
+      "right_unique": 8,
+      "shared_unique": 0,
+      "matching_seed_pairs": []
+    }
+  ],
+  "interpretation": "Exact equality is demonstrated only for the declared visible frame/facts/fixed-action prefix. It is not proof that arbitrary future policies or hidden RNG states are identical.",
+  "seconds": 2.6375312520003718,
+  "freeze_sha256": "044fc7b764461eecacf825c4fe614f51bf2043f3b76903917085336d271bc13f",
+  "rows_sha256": "4a2ee3226bfa5350f7cb2e440764d4130d1f6418a736c42b4ec0320c4bbb6415"
+}

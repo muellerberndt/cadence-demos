@@ -1,0 +1,464 @@
+"""Lab bridge: qualified visual actor, separately owned native learner.
+
+Practice is an additional explicit opt-in. No privileged policy teacher ever
+chooses browser actions; the actor always uses its current qualified patches.
+"""
+from __future__ import annotations
+
+import copy
+import json
+import os
+from pathlib import Path
+import platform
+import random
+import threading
+import time
+
+from .brain import Actor, BUNDLE_SCHEMA, load_bundle, write_bundle
+from .interface import ACTION_NAMES, REPEAT_TICS, features, canonical, digest
+from .tasks import DoomEnv, get_task, sha_file, task_identity, vizdoom_module
+
+
+def platform_identity():
+    root = Path(vizdoom_module().__file__).parent
+    binary = root/'vizdoom'
+    if not binary.is_file():
+        raise FileNotFoundError('Cannot identify the native Doom engine executable')
+    return {'system': platform.system(), 'machine': platform.machine(),
+            'engine_binary_sha256': sha_file(binary)}
+
+
+def validate_deployment(data):
+    """Task identity and transport metadata are not gameplay revalidation."""
+    _, bundle = load_bundle(data, device='python')
+    metadata = bundle.get('metadata', {})
+    if 'deployment_task' not in metadata or 'deployment_identity' not in metadata:
+        raise ValueError('A full-game bundle must explicitly bind its deployment task and native identity')
+    task = get_task(metadata['deployment_task'])
+    if task != get_task(task.task_id):
+        raise ValueError('Deployment task differs from its canonical task contract')
+    if task.split in ('heldout', 'reserved_extension'):
+        raise ValueError('Held-out tasks belong to the frozen evaluator, not browser practice')
+    local_task = task_identity(task)
+    if metadata['deployment_identity'] != local_task:
+        raise ValueError('Deployment task/engine/WAD identity differs from this runtime')
+    source, target = metadata.get('source_platform'), platform_identity()
+    if not isinstance(source, dict) or set(source) != set(target):
+        raise ValueError('Bundle must declare its source platform and native executable hash')
+    validation = metadata.get('deployment_validation', {})
+    if (validation.get('source_platform') != source or validation.get('target_platform') != target
+            or validation.get('checkpoint_sha256') != bundle['hashes']['checkpoint_sha256']):
+        raise ValueError('Explicit platform-specific deployment evaluation metadata is required')
+    status = validation.get('status')
+    if status == 'not_evaluated':
+        if os.environ.get('DOOM_LAB_PORT') not in ('8667', '8668'):
+            raise ValueError('Unevaluated full-game actors are restricted to staging ports8667/8668')
+    elif status == 'passed':
+        receipt = validation.get('receipt_sha256', '')
+        if len(receipt) != 64 or any(c not in '0123456789abcdef' for c in receipt):
+            raise ValueError('A passed local evaluation must identify its retained receipt')
+    else:
+        raise ValueError('Deployment validation must explicitly be passed or not_evaluated')
+    from .practice_protocol import unpack_package
+    resolved = unpack_package(bundle)
+    if resolved is not None and task.task_id != 'basic':
+        raise ValueError('The attached native practice wave is Basic only')
+    return task, bundle
+
+
+def prepare_staging_bundle(data, task, *, source_platform=None):
+    """Explicitly mark local staging as unvalidated; never manufacture a pass."""
+    _, bundle = load_bundle(data, device='python')
+    identity = task_identity(task)
+    metadata = bundle.setdefault('metadata', {})
+    source = source_platform or metadata.get('source_platform')
+    if source is None:
+        raise ValueError('Declare the actual training/source platform for staging transport')
+    metadata.update(deployment_task=identity['task'], deployment_identity=identity,
+                    source_platform=copy.deepcopy(source), deployment_validation={
+                        'status': 'not_evaluated', 'source_platform': copy.deepcopy(source),
+                        'target_platform': platform_identity(),
+                        'checkpoint_sha256': bundle['hashes']['checkpoint_sha256']})
+    return bundle
+
+
+class Adapter:
+    """Own one frozen actor and an independently serialized practice candidate."""
+    def __init__(self, path):
+        self.path = Path(path)
+        self.task, self.bundle = validate_deployment(json.loads(self.path.read_text()))
+        from .practice_protocol import unpack_package
+        self.practice_wave = unpack_package(self.bundle)
+        self.founder_bundle = copy.deepcopy(self.practice_wave['founder'] if self.practice_wave else self.bundle)
+        self.continuation_bundle = copy.deepcopy(self.practice_wave['continuation'] if self.practice_wave else self.bundle)
+        self.founder_hash = self.founder_bundle['hashes']['checkpoint_sha256']
+        self.practice_path = (self.path.parent/'practice_waves'/self.practice_wave['wave_sha256']
+                              if self.practice_wave else self.path.parent)
+        if self.practice_wave and ((self.path.parent/'pending_transition.json').exists()
+                                   or (self.path.parent/'practice_pending').exists()):
+            raise ValueError('Existing legacy practice custody must be retained in its original model directory; import this wave separately')
+        active = self.path.parent/'active_champion.json'
+        if active.is_file():
+            _, saved = validate_deployment(json.loads(active.read_text()))
+            if saved.get('metadata', {}).get('base_checkpoint_sha256') != self.founder_hash:
+                raise ValueError('Restored champion belongs to a different frozen founder')
+            for field in ('contract', 'genome', 'normalization'):
+                if saved[field] != self.bundle[field]:
+                    raise ValueError('Restored champion changes the founder '+field)
+            saved_wave = unpack_package(saved)
+            if ((saved_wave or {}).get('wave_sha256') != (self.practice_wave or {}).get('wave_sha256')):
+                raise ValueError('Restored champion belongs to a different native practice wave; preserve its state separately')
+            self.bundle = saved
+        self.actor = Actor(self.bundle, device='cpu')
+        self.lock = threading.RLock()
+        self.learner = None
+        self.enabled = False
+        self._pending_promotion = None
+        pending = self.practice_path/'pending_transition.json'
+        if self.practice_wave and pending.exists():
+            from .practice_protocol import prepare_wave_directory
+            prepare_wave_directory(self.path.parent, self.practice_wave)
+        self.pending = json.loads(pending.read_text()) if pending.is_file() else None
+        self.sampler = None
+        if self.practice_wave and self.practice_wave.get('experience_collection') is not None:
+            from .experience_sampling import ExperienceSampler
+            from .practice_protocol import prepare_wave_directory
+            if pending.exists():
+                raise ValueError('Historical pending evidence cannot be relabeled as sampled collection')
+            self.practice_path = prepare_wave_directory(self.path.parent, self.practice_wave)
+            self.sampler = ExperienceSampler(self.practice_path/'experience_collection.json',
+                self.practice_wave['wave_sha256'], self.practice_wave['experience_collection'])
+            self.pending = self.sampler.pending
+        self.error = None
+        self.last_episode = None
+        self._closed = False
+        self.version = int(self.bundle.get('metadata', {}).get('online_version', 0))
+        self.version_offset = self.version
+        self._analyze()
+
+    def _analyze(self):
+        info = self.actor.brain.inspect()
+        self.layout_meta = [dict(name=p['name'], role=p['role'], start=p['indices'][0], count=p['patches'])
+                            for p in info['populations']]
+        self.model_info = {'patches': info['patches'], 'edges': info['connections'],
+                           'fingerprint': self.actor.checkpoint_hash[:12],
+                           'topology_fingerprint': info['fingerprint'][:12], 'schema': BUNDLE_SCHEMA,
+                           'scenario': self.task.task_id, 'champion': self.version,
+                           'deployment_validation': self.bundle['metadata']['deployment_validation']['status']}
+
+    def _needs_practice_package(self):
+        target = self.founder_bundle['target_contract']
+        return (self.practice_wave is None and ('native_contract_sha256' in target
+                or target.get('schema') == 'doom-v3-native-ranked-preference/1'))
+
+    def _practice_available(self):
+        metadata = self.founder_bundle.get('metadata', {})
+        rows = metadata.get('seed_replay')
+        # A trained native preference import cannot silently become a new
+        # retention founder with the historical default36 protocol.
+        unresolved_native = self._needs_practice_package()
+        return (not unresolved_native and os.environ.get('DOOM_LAB_PRACTICE', '1') == '1' and self.task.task_id == 'basic'
+                and isinstance(rows, list) and bool(rows)
+                and metadata.get('seed_replay_sha256') == digest(canonical(rows)))
+
+    def _worker_status(self):
+        base = self.learner.status() if self.learner else {}
+        if self.learner and not base.get('enabled'):
+            self.enabled = False
+        return base
+
+    def status(self):
+        base = self._worker_status()
+        wave = self.practice_wave
+        protocol = wave['protocol']['native_contract'] if wave else None
+        unresolved = self._needs_practice_package()
+        return {**base, **(self.sampler.status() if self.sampler else {'collection_stride': 1}),
+                'available': self._practice_available(), 'enabled': self.enabled,
+                'phase': base.get('phase', 'frozen full-game actor'),
+                'queue_depth': base.get('queue', 0), 'accepted_updates': base.get('updates', 0),
+                'pending_transition': self.pending is not None,
+                'champion': self.version, 'champion_sha256': self.actor.checkpoint_hash,
+                'error': base.get('error') or self.error, 'last_episode': self.last_episode,
+                'deployment_validation': self.model_info['deployment_validation'],
+                'rollback_available': base.get('rollback_available', False),
+                'practice_wave_sha256': wave['wave_sha256'] if wave else None,
+                'native_feedback_protocol': (protocol['id'] if protocol else
+                                             'unresolved_native_import' if unresolved else 'historical_default_v1'),
+                'native_feedback_horizon_tics': protocol['horizon_tics'] if protocol else None if unresolved else 36,
+                'retention_founder_checkpoint_sha256': self.founder_hash,
+                'continuation_checkpoint_sha256': self.continuation_bundle['hashes']['checkpoint_sha256']}
+
+    def set_enabled(self, value):
+        if self._closed:
+            raise ValueError('Model has been unloaded')
+        requested = bool(value)
+        if requested and not self._practice_available():
+            raise ValueError('Full-game online learning is not yet attached: Basic practice opt-in and verified frozen replay are required')
+        if requested and self.learner is None:
+            from .practice import PracticeLearner, PracticeConfig
+            options = {}
+            if self.practice_wave:
+                from .practice_protocol import prepare_wave_directory
+                self.practice_path = prepare_wave_directory(self.path.parent, self.practice_wave)
+                config = self.practice_wave['config']
+                options = {'native_protocol': self.practice_wave['protocol'],
+                           'practice_wave_sha256': self.practice_wave['wave_sha256'],
+                           'continuation_bundle': self.continuation_bundle}
+            else:
+                config = PracticeConfig(gate_tasks=('basic',),
+                    gate_workers=int(os.environ.get('DOOM_PRACTICE_GATE_WORKERS', '2')),
+                    feedback_workers=int(os.environ.get('DOOM_FEEDBACK_WORKERS', '6')),
+                    max_journal_bytes=int(os.environ.get('DOOM_PRACTICE_JOURNAL_MB', '32'))*1024*1024)
+            self.learner = PracticeLearner.from_bundle(self.founder_bundle,
+                initial_bundle=self.bundle, journal_path=self.practice_path/'practice.jsonl', config=config, **options)
+        if self._closed:
+            if self.learner:
+                self.learner.close(wait=False)
+            raise ValueError('Model was unloaded while its practice worker was starting')
+        accepted = self.learner.set_enabled(requested) if self.learner else False
+        self.enabled = requested and accepted is True
+        if requested and not self.enabled:
+            self.error = self._worker_status().get('error') or 'Practice worker refused to start'
+            raise RuntimeError(self.error)
+        if requested:
+            self.error = None
+
+    def flush_pending(self):
+        self._worker_status()
+        if self.pending is None or not self.enabled:
+            return True
+        if self.learner.submit_transition(self.pending):
+            if self.sampler:
+                self.sampler.acknowledge(self.pending)
+            else:
+                (self.practice_path/'pending_transition.json').unlink(missing_ok=True)
+            self.pending = None
+            return True
+        self._worker_status()
+        return not self.enabled
+
+    def record_transition(self, record):
+        """Persist before handing off; queue backpressure may never replace evidence."""
+        from .practice import atomic_json, validate_transition
+        if self.sampler:
+            return self.collect_transition(record, learning_enabled=True)
+        if self.pending is not None:
+            raise RuntimeError('An unconsumed native transition would be overwritten')
+        record = validate_transition(record)
+        atomic_json(self.practice_path/'pending_transition.json', record)
+        self.pending = record
+        return self.flush_pending()
+
+    def collect_transition(self, record, *, learning_enabled):
+        if self.sampler is None:
+            return self.record_transition(record) if learning_enabled else True
+        self.sampler.observe(record, learning_enabled=learning_enabled)
+        self.pending = self.sampler.pending
+        return self.flush_pending()
+
+    def episode_boundary(self):
+        if self.learner is None:
+            return False
+        if self._pending_promotion is None:
+            self._pending_promotion = self.learner.take_promotion()
+        proposal = self._pending_promotion
+        if not proposal:
+            return False
+        bundle = copy.deepcopy(proposal['bundle'])
+        checkpoint = bundle['hashes']['checkpoint_sha256']
+        gate = proposal['gate']
+        if gate.get('rollback'):
+            candidates = [self.bundle]
+            previous = self.path.parent/'previous_champion.json'
+            if previous.is_file():
+                candidates.append(json.loads(previous.read_text()))
+            known = next((b for b in candidates if b['hashes']['checkpoint_sha256'] == checkpoint), None)
+            if known is None:
+                raise ValueError('Rollback did not identify a previously deployed champion')
+            bundle = copy.deepcopy(known)
+        else:
+            if (gate.get('promote') is not True or gate.get('candidate_checkpoint') != checkpoint
+                    or digest(canonical(gate)) != proposal.get('gate_sha256')):
+                raise ValueError('Promotion lacks its exact qualified native gate receipt')
+            platform = platform_identity()
+            bundle['metadata'].update(source_platform=platform,
+                deployment_task=vars(self.task), deployment_identity=task_identity(self.task),
+                deployment_validation={'status': 'passed', 'source_platform': platform,
+                    'target_platform': platform, 'checkpoint_sha256': checkpoint,
+                    'receipt_sha256': proposal['gate_sha256'], 'scope': 'repeated Basic development gate'})
+        version = self.version_offset+proposal['version']
+        bundle['metadata'].update(online_version=version, base_checkpoint_sha256=self.founder_hash)
+        if self.practice_wave:
+            from .practice_protocol import attach_package
+            bundle = attach_package(bundle, self.practice_wave['package'])
+        validate_deployment(bundle)
+        replacement = Actor(bundle, device='cpu')
+        with self.lock:
+            # A failed publication leaves the current actor and proposal intact.
+            write_bundle(self.path.parent/'previous_champion.json', self.bundle)
+            write_bundle(self.path.parent/'active_champion.json', bundle)
+            self.bundle, self.actor, self.version = bundle, replacement, version
+            self._analyze()
+            self._pending_promotion = None
+        if self.practice_wave:
+            try:
+                if self.learner.acknowledge_deployment(checkpoint) is not True:
+                    raise RuntimeError('Practice owner refused the published checkpoint acknowledgment')
+            except Exception as error:
+                # Publication is already durable. Do not overwrite previous
+                # actor custody on a retry; exact source/target recovery is in
+                # the learner continuation if acknowledgment was interrupted.
+                self.enabled = False
+                self.learner.set_enabled(False)
+                self.error = 'Actor published; learner acknowledgment requires recovery: '+str(error)
+                raise RuntimeError(self.error) from error
+        return True
+
+    def rollback(self):
+        if self.learner is None:
+            return False
+        if self.practice_wave:
+            previous = self.path.parent/'previous_champion.json'
+            if not previous.is_file():
+                return False
+            _, bundle = validate_deployment(json.loads(previous.read_text()))
+            from .practice_protocol import unpack_package
+            wave = unpack_package(bundle)
+            if wave is None or wave['wave_sha256'] != self.practice_wave['wave_sha256']:
+                raise ValueError('Previous deployed actor belongs to a different practice wave')
+            return bool(self.learner.rollback(bundle))
+        return bool(self.learner.rollback())
+
+    def close(self):
+        self._closed = True
+        self.enabled = False
+        if self.learner:
+            self.learner.close(wait=False)
+
+    def export_bundle(self):
+        with self.lock:
+            return copy.deepcopy(self.bundle)
+
+    def graph_payload(self):
+        with self.lock:
+            brain = self.actor.brain
+            indices = list(range(len(brain.graph.edges)))
+            if len(indices) > 1400:
+                rng = random.Random(7)
+                readback = [i for i in indices if brain.graph.edges[i][0] != 'input']
+                sensory = [i for i in indices if brain.graph.edges[i][0] == 'input']
+                recursive_sample = rng.sample(readback, min(len(readback), 700))
+                indices = sorted(recursive_sample+rng.sample(sensory, 1400-len(recursive_sample)))
+            kinds = {'input': 0, 'state': 1, 'residual': 2}
+            return {'n_periphery': 640, 'n_fovea': 1380, 'periphery_shape': [20, 32],
+                    'fovea_shape': [30, 46], 'fovea_label': 'fovea + visual/action memory',
+                    'populations': self.layout_meta, 'motor': 20, 'action_names': list(ACTION_NAMES),
+                    'total_edges': len(brain.graph.edges), 'sampled_edges': len(indices),
+                    'edge_sample': 'readback-stratified deterministic sample, seed7, at most1400 edges',
+                    'edges': [[kinds[brain.graph.edges[i][0]], *brain.graph.edges[i][1:], round(brain.weights[i], 3)]
+                              for i in indices]}
+
+    def run_session(self, lab):
+        """Execute only current, qualified proposals and acknowledge actual tics."""
+        if lab.mode != 'student':
+            raise ValueError('The v1 runtime supports the qualified STUDENT actor only')
+        generation = lab.student.generation
+        env = None
+        queries = qualified_queries = 0
+        prefix_actions, prefix_outcomes = [], []
+        cutoff = None
+        episode_kills = 0
+        note_event = getattr(lab, 'note_event', None)
+        def finish(reason=None):
+            if env is not None:
+                self.last_episode = {**env.outcome(external_cutoff=reason),
+                    'session_id': lab.session_id, 'queries': queries,
+                    'qualified_queries': qualified_queries, 'fallback_actions': 0,
+                    'policy_checkpoint_sha256': self.actor.checkpoint_hash,
+                    'behavior_source': 'qualified_cadence_actor', 'cutoff_reason': reason}
+                if note_event is not None:
+                    note_event({'kind': 'episode', 'episode': lab.episode, 'kills': episode_kills,
+                                'return': round(float(self.last_episode.get('return', 0.0)), 2),
+                                'cutoff': reason})
+        try:
+            while (not lab._stop.is_set() and not self._closed and lab.mode == 'student'
+                   and lab.student.adapter is self and lab.student.generation == generation):
+                if lab.student._swapping or lab.student._swap_request:
+                    cutoff = 'model_change'; break
+                if not self.flush_pending():
+                    lab._stop.wait(.1)
+                    continue
+                if env is None or env.finished or lab.reset_request:
+                    if env is not None:
+                        finish(None if env.finished else 'reset')
+                        env.close()
+                    self.episode_boundary()
+                    lab.reset_request = False
+                    self.actor.reset()
+                    env = DoomEnv(self.task, lab.rng.randrange(800000000, 900000000), teacher=False)
+                    lab.episode += 1
+                    queries = qualified_queries = 0
+                    prefix_actions, prefix_outcomes = [], []
+                    episode_kills = 0
+                learning_enabled = self.enabled
+                decision_started = time.monotonic()
+                raw = env.observe()
+                visible = features(raw)
+                lab._publish_frame(raw, (visible['periphery']*1.2-.6).reshape(20, 32),
+                                   (visible['fovea']*1.2-.6).reshape(12, 32))
+                with self.lock:
+                    decision = self.actor.choose(raw)
+                queries += 1
+                qualified_queries += int(decision['qualified'])
+                result = decision['result']
+                lab.shadow_view = {'qualified': decision['qualified'], 'sweeps': result['sweeps'],
+                    'state': list(result['state']), 'errors': list(result['errors']),
+                    'ui_buttons': [int(i == decision['action']) for i in range(20)],
+                    'buttons': decision['buttons'], 'retina_p': decision['inputs']['periphery'],
+                    'retina_f': decision['inputs']['fovea']+decision['inputs']['visual_history']+decision['inputs']['executed_action_history'],
+                    'action': decision['action'], 'checkpoint_sha256': self.actor.checkpoint_hash,
+                    'query_seconds': decision['query_seconds']}
+                if (lab.mode != 'student' or lab.reset_request or lab.student.adapter is not self
+                        or lab.student._swapping or lab.student._swap_request
+                        or lab.student.generation != generation or self._closed or lab._stop.is_set()):
+                    self.actor.reset()  # discard an unexecuted proposal, never commit it
+                    cutoff = 'interrupted_before_execution'; break
+                if not decision['qualified']:
+                    self.error = 'Query refused; no action executed'
+                    cutoff = 'query_refused'
+                    lab.set_mode('idle'); break
+                self.error = None
+                transition = env.step(decision['action'], tics=REPEAT_TICS)
+                with self.lock:
+                    self.actor.acknowledge(raw, decision['action'], transition['tics'])
+                if learning_enabled or self.sampler:
+                    self.collect_transition({'task': vars(self.task), 'seed': env.seed,
+                        'episode_id': f'{lab.session_id}:{generation}:{lab.episode}:{env.seed}',
+                        'step_index': len(prefix_actions), 'prefix_actions': list(prefix_actions),
+                        'prefix_outcomes': copy.deepcopy(prefix_outcomes), 'raw_sha256': decision['raw_sha256'],
+                        'inputs': decision['inputs'], 'executed_action': decision['action'], 'transition': transition,
+                        'policy_checkpoint_sha256': decision['checkpoint_sha256'],
+                        'qualified': True, 'fallback': False, 'behavior_source': 'autonomous'},
+                        learning_enabled=learning_enabled)
+                prefix_actions.append(decision['action'])
+                prefix_outcomes.append(transition)
+                facts = env.last_facts  # HUD/evidence only; never supplied to Actor
+                kills = int(facts['killcount'])
+                step_reward = round(float(transition.get('reward', 0.0)), 3)
+                lab.game_stats = {'health': round(facts['health']), 'ammo': round(facts['selected_weapon_ammo']),
+                                  'kills': kills, 'reward': env.total_reward,
+                                  'step_reward': step_reward,
+                                  'scenario': self.task.task_id, 'qualified': True,
+                                  'seed': env.seed, 'native_exit': bool(env.finished and not facts['dead'] and not facts['timeout']
+                                                                     and self.task.objective == 'native_exit')}
+                if kills > episode_kills and note_event is not None:
+                    note_event({'kind': 'kill', 'reward': step_reward,
+                                'kills': kills, 'episode': lab.episode, 'step': len(prefix_actions)})
+                episode_kills = max(episode_kills, kills)
+                # Include perception/query/engine work in the pacing interval.
+                # Solver budget is not a deadline: overrun is exposed as latency.
+                lab._stop.wait(max(0, transition['tics']/35-(time.monotonic()-decision_started)))
+        finally:
+            if env is not None:
+                finish(None if env.finished else cutoff or ('paused' if lab.mode == 'idle' else 'interrupted'))
+                env.close()

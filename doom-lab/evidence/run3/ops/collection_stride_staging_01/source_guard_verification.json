@@ -1,0 +1,65 @@
+{
+  "schema": "doom-stride-source-guard-verification/1",
+  "unix": 1790695875.5119107,
+  "source_checks": {
+    "server.py": true,
+    "brainlab.py": true,
+    "doomlab.py": true,
+    "layouts.py": true,
+    "norms.py": true,
+    "static/index.html": true,
+    "static/brain3d.js": true,
+    "v2/lab_adapter.py": true,
+    "v2/models.py": true,
+    "v2/basic_env.py": true,
+    "v2/exporter.py": true,
+    "v2/online.py": true,
+    "v2/journal.py": true,
+    "v2/parallel_feedback.py": true,
+    "v3/brain.py": true,
+    "v3/interface.py": true,
+    "v3/tasks.py": true,
+    "v3/runtime.py": true,
+    "v3/practice.py": true,
+    "v3/practice_protocol.py": true,
+    "v3/experience_sampling.py": true,
+    "v3/protocol_smoke.py": true,
+    "v3/native_feedback.py": true,
+    "v3/native_feedback_long.py": true,
+    "v3/collection.py": true,
+    "v3/training.py": true,
+    "v3/teacher.py": true,
+    "v3/evaluate.py": true,
+    "v3/watch_training.py": true,
+    "v3/lab_deployment.py": true
+  },
+  "source_unchanged": true,
+  "aws_sizes": {
+    "/home/ec2-user/doom-v3-20260929/lab/baby_02": {
+      "bytes": 202087171,
+      "files": 231
+    },
+    "/home/ec2-user/doom-v3-20260929/lab/baby_03": {
+      "bytes": 84544121,
+      "files": 112
+    }
+  },
+  "guard": {
+    "state": "watching",
+    "started_unix": 1790695744.7413595,
+    "deadline_unix": 1790702944.7413595,
+    "updated_unix": 1790695866.3290217,
+    "last_error": null
+  },
+  "processes": {
+    "518372": true,
+    "518373": true,
+    "518480": true
+  },
+  "previous_quiescent_process_states": {
+    "419894": "absent",
+    "419896": "absent",
+    "420144": "absent",
+    "504927": "absent"
+  }
+}

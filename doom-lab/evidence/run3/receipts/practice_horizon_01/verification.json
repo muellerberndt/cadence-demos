@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "checks": {
+    "fixture_hash": true,
+    "contexts128": true,
+    "order_monotone": true,
+    "unique_rows": true,
+    "ten_episodes": true,
+    "native_smoke_complete": true,
+    "native_smoke_qualification": true,
+    "old_frozen_practice": true,
+    "old_frozen_brain": true,
+    "practice_fixture.py": true,
+    "practice_horizon_comparison.py": true,
+    "practice_horizon_campaign.py": true,
+    "native_feedback_long.py": true
+  },
+  "scope": "Source/fixture/native-smoke custody only; no claim that future training improves gameplay"
+}

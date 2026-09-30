@@ -1,0 +1,32 @@
+{
+  "schema": "doom-capacity-grid-command-check/1",
+  "passed": true,
+  "source_sha256": "77900f60ed054e4cf96c1678d0cff1852a013d4ceaa2100bf5fa78132f8b767e",
+  "jobs": [
+    {
+      "size": "small",
+      "batch_size": 64,
+      "batches_per_epoch": 16,
+      "total_presentations": 4096
+    },
+    {
+      "size": "small",
+      "batch_size": 128,
+      "batches_per_epoch": 8,
+      "total_presentations": 4096
+    },
+    {
+      "size": "large",
+      "batch_size": 64,
+      "batches_per_epoch": 16,
+      "total_presentations": 4096
+    },
+    {
+      "size": "large",
+      "batch_size": 128,
+      "batches_per_epoch": 8,
+      "total_presentations": 4096
+    }
+  ],
+  "note": "Command-generation fixture only; false executable deliberately prevents any training."
+}

@@ -1,0 +1,96 @@
+{
+  "protocol": {
+    "schema": "rover-protocol-v1",
+    "development_seeds": [
+      17,
+      29
+    ],
+    "confirmation_seeds": [
+      101,
+      211,
+      307
+    ],
+    "weak_gain": 0.35,
+    "declared_gain_range": [
+      0.25,
+      0.5
+    ],
+    "dt": 0.1,
+    "wheel_base": 0.7,
+    "max_speed": 1.5,
+    "action_levels": [
+      0.0,
+      0.4,
+      0.8
+    ],
+    "bootstrap_epochs": 12,
+    "bootstrap_experiences": 9,
+    "online_presentations_per_transition": 2,
+    "replay_window": 12,
+    "episode_steps": 80,
+    "target_radius": 0.22,
+    "phases": [
+      [
+        "normal",
+        160
+      ],
+      [
+        "weakened",
+        400
+      ],
+      [
+        "restored_probe",
+        160
+      ],
+      [
+        "restored_learning",
+        240
+      ]
+    ],
+    "controller": {
+      "forward_speed": 0.72,
+      "minimum_speed": 0.28,
+      "heading_gain": 1.8,
+      "turn_weight": 12.0
+    },
+    "demonstration_gate": {
+      "normal_success_rate_min": 0.75,
+      "weak_distance_integral_ratio_max": 0.9,
+      "weak_success_rate_min": 0.6,
+      "control_p95_ms_max": 100,
+      "deadline_miss_fraction_max": 0.05
+    },
+    "comparison_boundary": "Equal information and transition budgets; each controller produces its own executed witnesses. No commercial advantage or useful-depth claim follows from a frozen-control gain.",
+    "selection_boundary": "Development seeds may diagnose settings. Protocol and implementation hashes are recorded before reserved runs. All scheduled outcomes are retained."
+  },
+  "protocol_hash": "03272c3b394592da49244fcc0313daec6e5a61b7d0add13557f2f482297ce0be",
+  "sources": {
+    "models.py": "5de30de08d970c3b4cc195891d826bbe4c2fba6e10b1c3d3c44f7e1fc7cf1e16",
+    "rover.py": "d6b0cf886e627cea8b86baba37977c6ebdab904363253c9ccc90b80ec213777f",
+    "evaluate.py": "d7574db7a1a778b408ab613ec0c17bffd394ea121ee3e06ff9e68ef063c41365",
+    "protocol.json": "a69f63fd1a9392e13620c36a91ce0b568d83f74cd148d16b2e0e2bf146c2045a",
+    "checkpoint.py": "12bf8af119cbd1032be6e0c9b6fcde643738cf81dc2f894919bfeb9c6d0c9854",
+    "cadence/__init__.py": "de69e80ad2c1bdc5a30e432e5c0c70124e694d06a072e1d73a7b6fe2607ead26",
+    "cadence/_repair.py": "6635dfb8f5559638b3868b639af7e26c89acd4fa19f28d282e320e284692e79a",
+    "cadence/_tensor.py": "d5765b286c931863cf540d19133500f734b70270c1bf702d60476c8945d86ce9",
+    "cadence/_validation.py": "05d09fd56ec96ef9315cfe569fa818a718795d1aedefd12d5b02bb619808b0ab",
+    "cadence/bootstrap.py": "e7f5e0096e1ea3b6ac733805ab814acfd368824b86c7b52969d3936eba48868f",
+    "cadence/brain.py": "e87fc184b32a769d0840a14f900ecfd24da8b28c37da2d84c8b83c9df7d7f3fb",
+    "cadence/column.py": "d3752d27227ca34dfc03134d792cc046fc41d96ac181f19be852a193d1eee203",
+    "cadence/cortex.py": "270f963fa6ca1c91b0deb19ce0f440cd4881f79205fdd115f64ef23942463482",
+    "cadence/memory.py": "55eb67223932f54f3dd7a4a39f5f540f1af64eb6c9551b3144c7c74cda0b9e2a",
+    "cadence/ports.py": "f0ec46ba314ee20523ff603473256362ae84a1522e89d39751f082f278aa4dca",
+    "cadence/reinforcement.py": "9e1c000e9560e50f7e3ee5625c722f21a90a42a7000fd5480ca3ee2e20ba9216",
+    "cadence/runtime.py": "85f0464c223578bc4fbd3607a175e7c932f125157b2ca25cd09bd2bb9e0ab428"
+  },
+  "seeds": [
+    17,
+    29
+  ],
+  "steps": 960,
+  "variants": false,
+  "kind": "development",
+  "python": "3.13.7",
+  "platform": "macOS-15.3-arm64-arm-64bit-Mach-O",
+  "timing": "Serial headless process; learning plus candidate settlement and command activation included. Rendering/network excluded."
+}

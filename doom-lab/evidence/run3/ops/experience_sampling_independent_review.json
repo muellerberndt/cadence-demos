@@ -1,0 +1,20 @@
+{
+  "schema": "doom-experience-sampling-independent-review/1",
+  "sources": {
+    "experience_sampling.py": "dcaf48ad4860b61e9c2b5a7c4a7745f056c213076356dd55b51e622662f1dc03",
+    "runtime.py": "84044d2f7fcfe9987ed68b52a2f972f8c00081bb391f84b9887f391f7ec2b1f9",
+    "practice_protocol.py": "e3b7534486fd1b14afd6fb0545163181c8fa3ddbb5d273cab50c503bd3db5f8d",
+    "test_experience_sampling.py": "b8c63e1ccdc17663730e3c36f6933baae32c844ff5d126ea886d4c2d7ea114ac"
+  },
+  "test_command": "PYTHONPATH=cadence-demos/doom-lab:cadence/src demos/doom/.venv/bin/python -m unittest v3.test_experience_sampling",
+  "tests": 7,
+  "seconds": 10.451,
+  "passed": true,
+  "findings": [
+    "No concrete custody, toggle, immediate retry, full-prefix or restart defect found.",
+    "Serial runtime acknowledges every actual action; selected pending is atomically persisted before learner offer.",
+    "Learning-disabled actions advance global index; preserved selected pending is offered when enabled.",
+    "Helper only deduplicates immediate previous transition, sufficient for current serial runtime but not a general out-of-order ingestion API."
+  ],
+  "changes_made": false
+}

@@ -1,0 +1,182 @@
+{
+  "schema": "doom-independent-practice-repeat-verification/1",
+  "lives": {
+    "0": {
+      "receipt": {
+        "accepted_examples": 112,
+        "all_tied_contexts": 2,
+        "attempted_updates": 7,
+        "bootstrap_presentations": 32,
+        "candidate_block_updates": 3,
+        "champion_checkpoint": "3076041351210d5818df542b23c167278a76ce59d7ceae531b52e05398f80ad8",
+        "claim": "Repeated development selection only; no fresh confirmation",
+        "contexts_attempted": 64,
+        "contexts_refused": 0,
+        "contexts_verified": 64,
+        "feedback_seconds": 244.91330638399359,
+        "gate_seconds": 27.383755111000028,
+        "gates": 1,
+        "informative_contexts": 62,
+        "native_cost": {
+          "branch_tics": 137151,
+          "continuation_queries": 33176,
+          "engine_initialization_attempts": 1280,
+          "engine_initializations": 1280,
+          "qualified_continuation_queries": 33176,
+          "replay_tics": 104000
+        },
+        "native_presentations": 80,
+        "new_pending": 6,
+        "promotions": 0,
+        "repair_seconds": 65.83841274199949,
+        "scheduled_contexts": 64,
+        "seconds": 344.98849548900034,
+        "status": "complete",
+        "unprocessed_contexts": 0,
+        "updates": 7
+      },
+      "collection": {
+        "seconds": 18.408260264999626,
+        "actual_contexts": 178,
+        "queries": 178,
+        "qualified_queries": 178,
+        "episodes": 5,
+        "successes": 5
+      },
+      "checks": {
+        "selected64": true,
+        "complete_feedback64": true,
+        "all_native_verified": true,
+        "all_continuation_qualified": true,
+        "rng_frozen": true,
+        "complete": true
+      },
+      "gates": [
+        {
+          "reason": "founder_retained_success_lost",
+          "promote": false,
+          "candidate_checkpoint": "175b22fd19b3896a9f4a69617501208bec9a17bcce52f2b01fa01ac74ad18518",
+          "descriptive_aggregates": {
+            "candidate": {
+              "basic": {
+                "complete_qualified": true,
+                "episodes": 8,
+                "mean_return": -183.75,
+                "returns_reported": 8,
+                "successes": 4
+              }
+            },
+            "champion": {
+              "basic": {
+                "complete_qualified": true,
+                "episodes": 8,
+                "mean_return": -147.5,
+                "returns_reported": 8,
+                "successes": 7
+              }
+            },
+            "founder": {
+              "basic": {
+                "complete_qualified": true,
+                "episodes": 8,
+                "mean_return": -147.5,
+                "returns_reported": 8,
+                "successes": 7
+              }
+            }
+          }
+        }
+      ],
+      "feedback_sha256": "a29714a506e5914517d111600dc97c2624c59e34b870eb303b16b8cacc960d7d"
+    },
+    "1": {
+      "receipt": {
+        "accepted_examples": 112,
+        "all_tied_contexts": 7,
+        "attempted_updates": 7,
+        "bootstrap_presentations": 32,
+        "candidate_block_updates": 3,
+        "champion_checkpoint": "3076041351210d5818df542b23c167278a76ce59d7ceae531b52e05398f80ad8",
+        "claim": "Repeated development selection only; no fresh confirmation",
+        "contexts_attempted": 64,
+        "contexts_refused": 0,
+        "contexts_verified": 64,
+        "feedback_seconds": 221.7964948090057,
+        "gate_seconds": 21.388936564000687,
+        "gates": 1,
+        "informative_contexts": 57,
+        "native_cost": {
+          "branch_tics": 115747,
+          "continuation_queries": 27875,
+          "engine_initialization_attempts": 1280,
+          "engine_initializations": 1280,
+          "qualified_continuation_queries": 27875,
+          "replay_tics": 157360
+        },
+        "native_presentations": 80,
+        "new_pending": 1,
+        "promotions": 0,
+        "repair_seconds": 73.45734342999731,
+        "scheduled_contexts": 64,
+        "seconds": 323.31951490399933,
+        "status": "complete",
+        "unprocessed_contexts": 0,
+        "updates": 7
+      },
+      "collection": {
+        "seconds": 25.788592701000198,
+        "actual_contexts": 253,
+        "queries": 253,
+        "qualified_queries": 253,
+        "episodes": 4,
+        "successes": 2
+      },
+      "checks": {
+        "selected64": true,
+        "complete_feedback64": true,
+        "all_native_verified": true,
+        "all_continuation_qualified": true,
+        "rng_frozen": true,
+        "complete": true
+      },
+      "gates": [
+        {
+          "reason": "founder_retained_success_lost",
+          "promote": false,
+          "candidate_checkpoint": "78fbf31739263256fc3a3717521e96a71a245f53dead0eeeade5aa731dd9c02c",
+          "descriptive_aggregates": {
+            "candidate": {
+              "basic": {
+                "complete_qualified": true,
+                "episodes": 8,
+                "mean_return": -51.375,
+                "returns_reported": 8,
+                "successes": 6
+              }
+            },
+            "champion": {
+              "basic": {
+                "complete_qualified": true,
+                "episodes": 8,
+                "mean_return": -147.5,
+                "returns_reported": 8,
+                "successes": 7
+              }
+            },
+            "founder": {
+              "basic": {
+                "complete_qualified": true,
+                "episodes": 8,
+                "mean_return": -147.5,
+                "returns_reported": 8,
+                "successes": 7
+              }
+            }
+          }
+        }
+      ],
+      "feedback_sha256": "e20ba140686dc0a5a4ff783180e82264d557f287cf948d220c8d328933f9341a"
+    }
+  },
+  "passed": true
+}

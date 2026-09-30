@@ -1,0 +1,202 @@
+{
+  "schema": "doom-v3-history-skip-compat-before/1",
+  "source_sha256": "da5a06048240fbc8408687b8b88d548eec8e952c1eacea25f76deafaa6bb0a67",
+  "cases": [
+    {
+      "genome": {
+        "size": "small",
+        "seed": 0,
+        "observer": true,
+        "sensor_skip": true,
+        "parameter_prior": 0.4,
+        "initial_scale": 0.3,
+        "state_prior": 0.01,
+        "settle_budget": 2048,
+        "tolerance": 1e-06
+      },
+      "snapshot_sha256": "b8484156b2458834301b047efd2224c2996bc3bb05b84228c2522884d715415b",
+      "edges": 61120,
+      "patches": 52
+    },
+    {
+      "genome": {
+        "size": "small",
+        "seed": 0,
+        "observer": true,
+        "sensor_skip": true,
+        "parameter_prior": 0.4,
+        "initial_scale": 0.3,
+        "state_prior": 0.01,
+        "settle_budget": 2048,
+        "tolerance": 1e-06,
+        "topology_version": 2,
+        "recursion_depth": 2
+      },
+      "snapshot_sha256": "53a6958268972ebbeda857d2da052a9474239edd7cd48f16b398c92a952d074f",
+      "edges": 48680,
+      "patches": 52
+    },
+    {
+      "genome": {
+        "size": "small",
+        "seed": 0,
+        "observer": true,
+        "sensor_skip": false,
+        "parameter_prior": 0.4,
+        "initial_scale": 0.3,
+        "state_prior": 0.01,
+        "settle_budget": 2048,
+        "tolerance": 1e-06,
+        "topology_version": 2,
+        "recursion_depth": 2
+      },
+      "snapshot_sha256": "ad2e0c4c50a8cb4943d98e02a9627dfbad39cdfe8c9f1ab346e7393ecf95fc1d",
+      "edges": 28200,
+      "patches": 52
+    },
+    {
+      "genome": {
+        "size": "small",
+        "seed": 0,
+        "observer": false,
+        "sensor_skip": true,
+        "parameter_prior": 0.4,
+        "initial_scale": 0.3,
+        "state_prior": 0.01,
+        "settle_budget": 2048,
+        "tolerance": 1e-06,
+        "topology_version": 2,
+        "recursion_depth": 2
+      },
+      "snapshot_sha256": "3c2421b060795ce84f94c3f635b39c12b260a94b62561a29fda4791a1bea59ee",
+      "edges": 48200,
+      "patches": 52
+    },
+    {
+      "genome": {
+        "size": "small",
+        "seed": 0,
+        "observer": false,
+        "sensor_skip": false,
+        "parameter_prior": 0.4,
+        "initial_scale": 0.3,
+        "state_prior": 0.01,
+        "settle_budget": 2048,
+        "tolerance": 1e-06,
+        "topology_version": 2,
+        "recursion_depth": 2
+      },
+      "snapshot_sha256": "9811058b77e6a0371e3772621ecfab02306fb8db4f3ae9c096a1d5a338aef416",
+      "edges": 27720,
+      "patches": 52
+    },
+    {
+      "genome": {
+        "size": "small",
+        "seed": 0,
+        "observer": true,
+        "sensor_skip": true,
+        "parameter_prior": 0.4,
+        "initial_scale": 0.3,
+        "state_prior": 0.01,
+        "settle_budget": 2048,
+        "tolerance": 1e-06,
+        "topology_version": 2,
+        "recursion_depth": 3
+      },
+      "snapshot_sha256": "066c66ee65e8ad1c3c626b5468e1f8b7b5ee3b270adb359de5761153b4f8d75c",
+      "edges": 44384,
+      "patches": 52
+    },
+    {
+      "genome": {
+        "size": "small",
+        "seed": 0,
+        "observer": true,
+        "sensor_skip": false,
+        "parameter_prior": 0.4,
+        "initial_scale": 0.3,
+        "state_prior": 0.01,
+        "settle_budget": 2048,
+        "tolerance": 1e-06,
+        "topology_version": 2,
+        "recursion_depth": 3
+      },
+      "snapshot_sha256": "87377a8067af25f82de690248b754304d6994e44ae6ae144bd75d24e2110cab4",
+      "edges": 23904,
+      "patches": 52
+    },
+    {
+      "genome": {
+        "size": "small",
+        "seed": 0,
+        "observer": false,
+        "sensor_skip": true,
+        "parameter_prior": 0.4,
+        "initial_scale": 0.3,
+        "state_prior": 0.01,
+        "settle_budget": 2048,
+        "tolerance": 1e-06,
+        "topology_version": 2,
+        "recursion_depth": 3
+      },
+      "snapshot_sha256": "a46122234326b5511df1a6b6aea42b405306a3ec8b53f0380da877f4fa3e13ef",
+      "edges": 44032,
+      "patches": 52
+    },
+    {
+      "genome": {
+        "size": "small",
+        "seed": 0,
+        "observer": false,
+        "sensor_skip": false,
+        "parameter_prior": 0.4,
+        "initial_scale": 0.3,
+        "state_prior": 0.01,
+        "settle_budget": 2048,
+        "tolerance": 1e-06,
+        "topology_version": 2,
+        "recursion_depth": 3
+      },
+      "snapshot_sha256": "ef6fca8e29639a2873dbe1d53aa00c534c56a0e55e4f7157fd06b8f41de2c847",
+      "edges": 23552,
+      "patches": 52
+    },
+    {
+      "genome": {
+        "size": "medium",
+        "seed": 0,
+        "observer": true,
+        "sensor_skip": false,
+        "parameter_prior": 0.4,
+        "initial_scale": 0.3,
+        "state_prior": 0.01,
+        "settle_budget": 2048,
+        "tolerance": 1e-06,
+        "topology_version": 2,
+        "recursion_depth": 3
+      },
+      "snapshot_sha256": "ed3c93fa3b2f4c7e4960398e5f649a86dbe9a88130de5173bc7745eb2a6483b1",
+      "edges": 41536,
+      "patches": 84
+    },
+    {
+      "genome": {
+        "size": "large",
+        "seed": 0,
+        "observer": true,
+        "sensor_skip": false,
+        "parameter_prior": 0.4,
+        "initial_scale": 0.3,
+        "state_prior": 0.01,
+        "settle_budget": 2048,
+        "tolerance": 1e-06,
+        "topology_version": 2,
+        "recursion_depth": 3
+      },
+      "snapshot_sha256": "b06dab865f835cc2e6a6aa4ba1fd3eda6995dd1c6b40d096bc574c29d5fb84a6",
+      "edges": 79104,
+      "patches": 148
+    }
+  ]
+}

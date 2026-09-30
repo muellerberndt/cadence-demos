@@ -1,0 +1,13 @@
+{
+  "schema": "doom-v3-monitor-process/1",
+  "pid": 97694,
+  "started_unix": 1790687804.5204759,
+  "expires_unix": 1790716604.5204759,
+  "host": "100.31.68.116",
+  "remote_base": "/home/ec2-user/doom-v3-20260929",
+  "interval_seconds": 15.0,
+  "hours": 8.0,
+  "output": "/Users/muellerberndt/Projects/oph-meta/cadence-demos/doom-lab/static/v3_training_status.json",
+  "read_only_cloud": true,
+  "state": "running"
+}

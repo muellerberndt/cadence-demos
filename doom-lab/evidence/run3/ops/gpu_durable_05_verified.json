@@ -1,0 +1,12 @@
+{
+  "schema": "doom-gpu-durable-verified/1",
+  "archive": "/home/ec2-user/doom-v3-20260929/receipts/gpu_durable_05.tar.gz",
+  "archive_bytes": 57271,
+  "archive_sha256": "b97604b7c5902ae5d22559f5c75155a86053ae0d32f98d1639ed04b13f11a610",
+  "expanded": "/home/ec2-user/doom-v3-20260929/gpu_archive_05",
+  "verified_files": 19,
+  "verified_bytes": 177255,
+  "manifest_sha256": "6dd2ae8432bc5d43aea81dfe1fdfafdbcca2281b7e0bc6344252feb95438e867",
+  "verified_unix": 1790697269.7496328,
+  "passed": true
+}

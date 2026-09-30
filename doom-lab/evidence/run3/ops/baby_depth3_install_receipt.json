@@ -1,0 +1,85 @@
+{
+  "schema": "doom-v3-baby-founder-install/1",
+  "source": "/home/ec2-user/doom-v3-20260929/runs/baby_bootstrap_02/small_depth3_centered_seed0/checkpoints/doom_baby_small_depth3_centered_seed0_epoch002_307604135121.json",
+  "prepared_bundle": "/home/ec2-user/doom-v3-20260929/lab/baby_01/deployments/depth3_seed0_epoch002.json",
+  "registry_id": "baby-small-depth3-seed0-epoch002",
+  "checkpoint_sha256": "3076041351210d5818df542b23c167278a76ce59d7ceae531b52e05398f80ad8",
+  "genome": {
+    "initial_scale": 0.3,
+    "observer": true,
+    "parameter_prior": 0.4,
+    "recursion_depth": 3,
+    "seed": 0,
+    "sensor_skip": true,
+    "settle_budget": 2048,
+    "size": "small",
+    "state_prior": 0.01,
+    "tolerance": 1e-06,
+    "topology_version": 2
+  },
+  "seed_replay_rows": 192,
+  "seed_replay_sha256": "57b2e5d8bf5b5d826849919c067b6085029e477d939d971f785be37e0d9169e8",
+  "development_screen_sha256": "f5378ff7cf8bda3430b9ca232f9cc3459919c7910a3ac039d8c8a31501c073ee",
+  "development_screen": {
+    "candidate": "small_depth3_centered_seed0",
+    "checkpoint_sha256": "3076041351210d5818df542b23c167278a76ce59d7ceae531b52e05398f80ad8",
+    "evaluation": {
+      "all_scheduled_accounted": true,
+      "freeze_sha256": "c500468590ad7fbed893b6d139a1397790f4f16b4de2680fcb74f06d463889bf",
+      "interpretation": "Native task outcomes at one frozen checkpoint; no selection or fallback policy",
+      "missing": 0,
+      "returned": 8,
+      "scheduled": 8,
+      "schema": "doom-v3-student-evaluation-result/1",
+      "successes": 4,
+      "tasks": {
+        "basic": {
+          "cutoffs_or_errors": 0,
+          "deaths": 0,
+          "mean_return_present": -222.25,
+          "mean_tics_present": 240.75,
+          "missing": 0,
+          "native_exits": 0,
+          "native_timeouts": 0,
+          "qualified_queries": 242,
+          "queries": 242,
+          "returned": 4,
+          "scheduled": 4,
+          "success_rate": 1.0,
+          "successes": 4
+        },
+        "navigation": {
+          "cutoffs_or_errors": 0,
+          "deaths": 0,
+          "mean_return_present": -0.2100000000000019,
+          "mean_tics_present": 2100.0,
+          "missing": 0,
+          "native_exits": 0,
+          "native_timeouts": 4,
+          "qualified_queries": 2100,
+          "queries": 2100,
+          "returned": 4,
+          "scheduled": 4,
+          "success_rate": 0.0,
+          "successes": 0
+        }
+      }
+    }
+  },
+  "deployment_validation": {
+    "status": "not_evaluated",
+    "source_platform": {
+      "system": "Linux",
+      "machine": "x86_64",
+      "engine_binary_sha256": "4c228e1d0bd929dada21ed86e814a88cdc23204722916ca8223d07fc4426044a"
+    },
+    "target_platform": {
+      "system": "Linux",
+      "machine": "x86_64",
+      "engine_binary_sha256": "4c228e1d0bd929dada21ed86e814a88cdc23204722916ca8223d07fc4426044a"
+    },
+    "checkpoint_sha256": "3076041351210d5818df542b23c167278a76ce59d7ceae531b52e05398f80ad8"
+  },
+  "activated": false,
+  "learning_enabled": false
+}

@@ -1,0 +1,75 @@
+[
+  {
+    "index": 0,
+    "contracts": {
+      "utility_hold36_v1": {
+        "ok": false,
+        "contract": "utility_hold36_v1",
+        "labels": null,
+        "branches": [
+          {
+            "ok": false,
+            "action": 0,
+            "contract": "utility_hold36_v1",
+            "error": "ValueError: Pre-action frame does not replay exactly",
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1
+            }
+          },
+          {
+            "ok": false,
+            "action": 1,
+            "contract": "utility_hold36_v1",
+            "error": "ValueError: Pre-action frame does not replay exactly",
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1
+            }
+          },
+          {
+            "ok": false,
+            "action": 2,
+            "contract": "utility_hold36_v1",
+            "error": "ValueError: Pre-action frame does not replay exactly",
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1
+            }
+          },
+          {
+            "ok": false,
+            "action": 3,
+            "contract": "utility_hold36_v1",
+            "error": "ValueError: Pre-action frame does not replay exactly",
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1
+            }
+          },
+          {
+            "ok": false,
+            "action": 4,
+            "contract": "utility_hold36_v1",
+            "error": "ValueError: Pre-action frame does not replay exactly",
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1
+            }
+          },
+          {
+            "ok": false,
+            "action": 5,
+            "contract": "utility_hold36_v1",
+            "error": "ValueError: Pre-action frame does not replay exactly",
+            "cost": {
+              "engine_initialization_attempts": 1,
+              "engine_initializations": 1
+            }
+          }
+        ],
+        "seconds": 0.13960079999998243
+      }
+    }
+  }
+]

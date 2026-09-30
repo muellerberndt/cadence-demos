@@ -1,0 +1,31 @@
+{
+  "all_core_matches": true,
+  "all_engine_matches": true,
+  "core_files": {
+    "cadence/__init__.py": true,
+    "cadence/_repair.py": true,
+    "cadence/_tensor.py": true,
+    "cadence/_validation.py": true,
+    "cadence/bootstrap.py": true,
+    "cadence/brain.py": true,
+    "cadence/column.py": true,
+    "cadence/cortex.py": true,
+    "cadence/memory.py": true,
+    "cadence/ports.py": true,
+    "cadence/reinforcement.py": true,
+    "cadence/runtime.py": true
+  },
+  "engine_files": {
+    "vizdoom": true,
+    "vizdoom.cpython-311-x86_64-linux-gnu.so": true,
+    "vizdoom.pk3": true
+  },
+  "observed_phase": {
+    "last_seed": 1320000001,
+    "phase": "collecting",
+    "seconds": 11.945448530999784
+  },
+  "observed_unix": 1790695002.8129632,
+  "reference_freeze_sha256": "85ca79572dbc39f3bae9ca52a769af32ef388ff57870e7863d137977cbc64327",
+  "source": "Independent read-only comparison with already preserved final64 implementation freeze; observed after campaign launch, not a retroactive preregistration"
+}
