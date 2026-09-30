@@ -1,4 +1,0 @@
-aiohttp
-numpy
-torch
-cadence-net @ git+https://github.com/muellerberndt/cadence.git
