@@ -1,0 +1,172 @@
+# Amen: a jungle composer in one patch, running in the browser
+
+One Cadence record patch learned jungle tracks as events per half-beat: a slice of a drum
+break, a sub-bass note, a change flag and a texture. The page ships that brain as a row of
+checkpoints, each of which heard more material than the one before and can be trained
+further. Nothing on the page is recorded: press the button and the brain starts from
+silence, hears a count-in and computes a track in the browser, one half-beat at a time,
+hearing each half-beat it plays, while the page shows its activity. When the track is
+computed it is rendered through the instrument and played, with every note and the brain
+in time with the sound. The page says on its face that the brain is still training.
+
+[![A dub playing: the studio and the waveform on the left, the brain on the right with its context channels, record cells and the loop through the world](screenshot.png)](https://floatingpragma.io/cadence-examples/amen-beats/)
+
+Live page: [floatingpragma.io/cadence-examples/amen-beats](https://floatingpragma.io/cadence-examples/amen-beats/).
+The same page runs from this directory; see [Run it locally](#run-it-locally).
+
+## Card
+
+- **Name:** Amen
+- **Author:** Bernhard Mueller
+- **Description:** One record patch learned jungle tracks as events per half-beat: a slice of a drum break, a sub-bass note, a change flag and a texture. The page ships the trained brain, starts from silence, computes a track in the browser while hearing each half-beat it plays, and renders it through the instrument.
+- **Cadence version:** The brain on the page was trained on 0.11.0 (library commit `02fec624`, as its receipt records). The browser engine is checked under the examples' 0.12.0 pin against the archived run of that brain.
+- **Hardware for initial training:** 1,559 CPU seconds on a laptop, no GPU, over 71 tracks and windows (6.2 hours of audio), with Python 3.13 and NumPy 2.5.
+- **Cadence features showcased:** `cadence.RecordPatchNet` with 128 context channels and 8,192 record cells, 48 of which fire per reading; slow parameters that carry the corpus and records that carry particular readings; held-out prediction measured with the records writing online; a loop through the world, where the patch hears what it played; the record writes reproduced in the browser to 4e-8 (`memorize`, `forget`) and kept off on the page.
+- **Problems encountered during development:**
+  - Every dub sounded the same. From silence the highest score at every port gives one track, the bass settled on one note, and the transcription reads every repeating bar as the break in order, so a track's own chop is absent from the training data. The pad sat 18 to 30 dB under the mix. Each dub draws its bass, its opening pattern and its instrument settings from its seed.
+  - Three times the material and three more epochs did not move the held-out scores. The instrument and the transcription set the ceiling; what changes between brains is the playing from silence.
+  - A brain trained from scratch under 0.12.0 for six epochs scored normally under teacher forcing and played nothing from silence: the closed loop predicted silence and heard it back. The export tool refuses a brain whose free run plays drums on fewer than half of the half-beats or bass on fewer than a quarter.
+  - A three-epoch 0.12.0 brain matched the held-out scores, and its dubs repeated notes and lost the rhythm. Neither the scores nor the export gate detect that, so a brain goes on the page after its dubs have been listened to. The page carries the 0.11.0 brain.
+  - Records the brain wrote during a dub did not bring the opening back: record recall is by content, with a code overlap of 0.91 where the stream recurs and 0.16 after a phase shift. The page keeps the writes off.
+  - A training run lost its receipt because the library's source changed mid-run and the run's source-freeze check failed. The run was repeated.
+  - Headless Chrome under a virtual time budget never resolves audio decoding, so the browser tests drive Chrome over the DevTools protocol in real time.
+- **Hosted at:** https://floatingpragma.io/cadence-examples/amen-beats/
+- **Receipts and checks:** `runs/record-composer-v12/receipt.json` (the sealed run, its independent verification and its held-out figures), `verify.py`, `parity.mjs` (the browser engine against the archived generation from silence). `python amen/verify.py` from the repository root.
+- **Data and rights:** The training material is two DJ mixes and 45 full tracks from the owner's library and is not part of this repository. The instrument is 32 half-beat slices of a sampled drum break and twelve sub-bass notes from a sample pack; whether they may be redistributed has not been verified, and the kit is a separate folder so it can be replaced.
+- **Work in progress:** a phrase clock for the placement of departures; a transformer or recurrent baseline on the same stream; a second training seed; a brain for a later Cadence release, admitted after listening.
+
+## What this example shows
+
+- **Creation.** The brain starts from silence and computes a track of its own, one half-beat at a time. Nothing on the page is recorded.
+- **A loop through the world.** It hears each half-beat it plays, so what it does next depends on what it did.
+- **Slow and fast memory in one patch.** The slow parameters carry what the corpus sounds like and 8,192 record cells carry particular readings. The held-out figures are measured with the records writing online; the page keeps those writes off.
+- **Prediction on tracks it never heard**, against baselines on the same rows.
+
+## What is here
+
+- `web/index.html`: the page, in two columns: the studio and the sound on the left, the
+  brain pinned on the right so it stays in view. A button, a Departures slider (it scales
+  the probability of leaving the loop at a predicted change point), a Variation slider (how
+  much each dub differs, see below), a bar count and a brain selector; then the sound, a
+  notes panel (every slice, bass note, change point and texture band; a returning pattern
+  slice in gold, a fresh departure in red), and the brain: the heard event, the 128 context
+  channels with their gates, the strongest synaptic drives, the 8,192 record cells with the
+  48 that fire and their push into the output, the output scores, and the loop through the
+  world. Static, no build step, no external service.
+- `web/engine.js`: the brain's forward pass and its playing rule, the same arithmetic as the
+  library: a gated linear context, a k-winner record code over a fixed random projection
+  regenerated from the seed, a record read added to a linear readout.
+- `web/models/<name>/`: one trained brain each: the slow parameters (float64), the record
+  tables (float32), the running mean of the record reading, and `model.json` with every
+  constant. `web/models/index.json` lists them with what each was trained on and its
+  held-out figures; the page offers them as a selector, so checkpoints can be compared by ear.
+- `web/card.png`: the 1200 by 630 social card the page's Open Graph and Twitter tags point
+  to; they carry the absolute URL of the page's current home and must follow it if it moves.
+- `web/kit/`: the instrument: 32 half-beat slices of a drum break and twelve sub-bass notes
+  as 16-bit wav, and `kit.json` with gains and the texture bands.
+- `runs/<run>/receipt.json`: one receipt per brain, which every number here comes from, and
+  `parity.json`, the archived run's own sixteen bars from silence and its self-primed
+  continuation.
+- `parity.mjs`: the browser engine against every archived run. `verify.py`: rechecks the
+  receipt's sources, the model files, and runs the parity test when node is installed.
+
+The development project (training sources, transcription, fixtures, listening rounds) is
+kept elsewhere and is not part of this repository.
+
+## Run it locally
+
+From the root of this repository, with Python 3 and node installed. The page is static, needs
+no install and no build step, and computes the track in the browser:
+
+```bash
+python -m http.server -d amen/web 8803     # then open http://127.0.0.1:8803 and press Cut a dub
+```
+
+To check the receipts, the model files and the browser engine against the archived runs:
+
+```bash
+python amen/verify.py                      # the receipts and model files; runs the parity test when node is installed
+node amen/parity.mjs                       # the browser engine alone
+```
+
+## What the receipt says
+
+The page carries the brain trained on the full corpus on Cadence 0.11.0; its receipt is under `runs/record-composer-v12/`. A receipt names the composer run's own sealed receipt
+and its independent verification, the Cadence commit it trained with, the size of the brain
+(80 input ports, 128 context channels, 71 output ports, 29,895 slow parameters, 8,192 record
+cells of which 48 fire), the training cost (CPU minutes on a laptop, no GPU), and next-event
+accuracy on held-out tracks with the records writing online, against baselines on the same
+rows (in brackets):
+
+| Brain | Heard | Held-out tracks | Next drum slice (most frequent slice) | Next bass note (repeat the previous) | Texture error (repeat the previous) | Change points recalled |
+|---|---|---|---|---|---|---|
+| Three corpora, on 0.11.0 | 71 tracks and windows: two DJ mixes and 45 full tracks, 6.2 hours | 8 | 0.85 to 0.88 (0.03 to 0.05) | 0.41 to 0.64 (0.13 to 0.52) | 0.080 to 0.134 (0.099 to 0.173) | 0.08 to 0.22 |
+
+The page opens with that brain (`default` in `web/models/index.json`). A brain trained with the same recipe on Cadence 0.12.0 scored the same on the held-out tracks, but from silence its dubs repeated notes and lost the rhythm, so it left the page; its receipt is in the cadence-examples repository's history. Earlier
+brains that heard one mix or two, and one trained three more epochs, are in the cadence-examples repository's
+history: more material and more epochs did not move the held-out scores, so the instrument and
+the transcription set the ceiling, and what changes between brains is the playing from silence.
+
+Parity: on each archived generation from silence in the highest-score mode the browser
+engine reproduces all 128 slices, bass notes and change points, with output scores equal
+to 2e-8 (the record tables ship as float32). It also reproduces the library's record writes:
+after observing its own first four bars, the continuation matches to 4e-8. The page keeps
+those writes off; measured on six seeds they did not make a dub's opening return.
+
+## Supplied and learned
+
+Supplied: the transcription of recordings into events (the break's position per half-beat,
+the sub-bass semitone, a change point where a half-beat departs from the same position one
+bar earlier, the sustain above 250 Hz with the played slice's own tail removed), the
+instrument, the eight-position clock, the count-in, and the three moves a departure may make
+(a roll repeats the slice just heard, a retrigger restarts the break at a bar start, a bar
+jump plays the same position in another bar of the break). The moves are declared: among
+the corpus's change points only the roll stands out from chance (0.12 against 0.03); a
+retrigger occurs at 0.12, its chance level, and a bar jump at 0.05. Learned from random
+parameters and empty records: every event the brain plays, the gains, the bass line, when a
+change point is due, and the texture.
+
+## Why two dubs differ
+
+From silence, the highest score at every port gives one and the same track, and the bass
+settles on the same note every time. Each dub therefore draws the following from its seed,
+scaled by the Variation slider; at zero none of it is drawn (departures still are: with both
+sliders at zero every dub is the same track).
+
+- The bass of the first two bars, and of every departure, is drawn from the brain's own
+  scores over notes.
+- A drum pattern of the dub's own. The break enters on one of its four bars. Over the first
+  one, two or four bars departures are drawn at a raised probability, with the dub's own
+  shares of the three moves and its preferred targets. That opening is the dub's loop: the
+  slice at the cycle start and at each of the opening's departures returns at the same place
+  in every cycle, unless the brain draws a fresh departure there. Between those places the
+  brain plays on from what it hears, so a fill stays local and the groove comes back. This
+  is a rule of the instrument: the transcription reads every repeating bar as the break in
+  order, so a track's own chop is not in the training data.
+- Instrument settings: a tempo between 165 and 182 bpm, the break's pitch (up to four
+  semitones either way, set apart from the tempo as on a sampler), a
+  key (bass and pad transposed by two semitones down to five up), the pad's waveform, chord, register
+  and detune, how it is played (held, a skank on beats two and four, a dotted stab or a
+  swell per bar), and a filter sweep over 4, 8 or 16 bars. The pad sounds at the bass note each
+  bar plays most; the brain's texture bands shape it over time, and the instrument sets the
+  layer 12 dB under the drums and bass.
+
+The seed is printed under the button. The same seed and settings give the same dub.
+
+## Limits
+
+The break is one break, so the drum vocabulary is its 32 slices. One training seed. No
+transformer or recurrent baseline on the same stream yet. Change points are hard to predict,
+and the brain has no phrase clock, so it places departures by what it just heard and not by
+where a sixteen-bar phrase ends. The texture is smoother than a recorded one, because a
+squared-error readout predicts the mean. Slice identity beyond the kind of sound is not
+measurable in a mixed recording, so outside change points the transcription supplies the
+loop position by declaration.
+
+The instrument's drum slices come from a sampled drum break and its bass notes from a
+sample pack. Whether they may be redistributed publicly has not been verified; the kit is a
+separate folder with its own description so it can be replaced without touching the brain.
+
+## Build on it
+
+Fork it and train a composer on other material: the engine, the page and the receipt format do not depend on the break.

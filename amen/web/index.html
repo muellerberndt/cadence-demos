@@ -1,0 +1,624 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Amen Brain · a jungle composer that thinks in your browser</title>
+<meta name="description" content="One small brain learned jungle as events per half-beat. Nothing is recorded: it computes a track in your browser, from silence, while you watch it think, then plays it.">
+<meta name="theme-color" content="#050505">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23050505'/%3E%3Cpath d='M0 46h64v6H0z' fill='%23e0232b'/%3E%3Cpath d='M0 52h64v6H0z' fill='%23f7c52d'/%3E%3Cpath d='M0 58h64v6H0z' fill='%231faa59'/%3E%3Ctext x='32' y='40' font-family='Impact,Arial Black,sans-serif' font-size='40' text-anchor='middle' fill='%23f7c52d'%3EA%3C/text%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pragma Research">
+<meta property="og:title" content="Amen Brain: a jungle composer that thinks in your browser">
+<meta property="og:description" content="One small brain learned jungle as events per half-beat. Nothing is recorded: it computes a track from silence while you watch it think, then plays it. 30 thousand parameters, no GPU.">
+<meta property="og:url" content="https://floatingpragma.io/cadence-examples/amen-beats/">
+<meta property="og:image" content="https://floatingpragma.io/cadence-examples/amen-beats/card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Amen Brain: the brain of a jungle composer, two rings of drum slices around a field of context channels">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Amen Brain: a jungle composer that thinks in your browser">
+<meta name="twitter:description" content="One small brain learned jungle. Nothing is recorded: it computes a track from silence while you watch it think, then plays it.">
+<meta name="twitter:image" content="https://floatingpragma.io/cadence-examples/amen-beats/card.png">
+<meta name="twitter:image:alt" content="Amen Brain: the brain of a jungle composer, two rings of drum slices around a field of context channels">
+<style>
+:root{--bg:#050505;--panel:#09090a;--ink:#f1ead6;--dim:#8d8775;--gold:#f7c52d;--red:#e0232b;--green:#1faa59;--cyan:#4cc9f0;--line:#26241d;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--slab:Impact,Haettenschweiler,"Arial Narrow Bold","Helvetica Neue",Arial,sans-serif}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 var(--mono)}
+body{background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px),radial-gradient(1100px 520px at 92% -12%,rgba(224,35,43,.13),transparent 60%),radial-gradient(900px 500px at -5% 0%,rgba(31,170,89,.10),transparent 60%);background-attachment:fixed}
+.hazard{height:12px;background:repeating-linear-gradient(-45deg,var(--gold) 0 16px,#000 16px 32px)}
+header{max-width:1560px;margin:0 auto;padding:14px 24px 2px;position:relative}
+.titlebar{display:flex;align-items:flex-end;gap:14px 34px;flex-wrap:wrap}
+.crumbs{display:flex;gap:8px;font:700 10.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin:0 0 16px}
+.crumbs a{color:var(--dim);text-decoration:none}.crumbs a:hover{color:var(--ink)}
+h1{margin:0;font:900 clamp(44px,5.4vw,84px)/.82 var(--slab);letter-spacing:-.005em;text-transform:uppercase;transform:skew(-7deg);transform-origin:left bottom;text-shadow:3px 3px 0 var(--red),6px 6px 0 var(--green)}
+h1 span{color:var(--gold)}
+.stripe{display:flex;height:6px;width:100%;margin:14px 0 0}
+.stripe i{flex:1}.stripe i:nth-child(1){background:var(--red)}.stripe i:nth-child(2){background:var(--gold)}.stripe i:nth-child(3){background:var(--green)}
+.stamp{margin-left:auto;border:3px solid var(--gold);color:var(--gold);padding:9px 13px;font:800 11.5px/1.35 var(--mono);letter-spacing:.16em;text-transform:uppercase;transform:rotate(8deg);text-align:center;background:rgba(0,0,0,.55)}
+.stamp b{display:block;font:900 22px/1 var(--slab);letter-spacing:.06em;color:var(--ink)}
+.sub{margin:0 0 4px;color:var(--dim);max-width:62ch;font-size:12.5px;letter-spacing:.02em;flex:1 1 320px}
+.sub b{color:var(--ink);font-weight:700}
+.brains{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:0 0 12px;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.brains b{background:var(--ink);color:#000;padding:6px 9px;font:900 12px/1 var(--slab);letter-spacing:.14em}
+.brains button{background:#000;color:var(--ink);border:2px solid var(--line);padding:6px 10px;font:800 11.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.brains button.on{background:var(--green);color:#000;border-color:var(--green)}
+.brains button:disabled{opacity:.5;cursor:wait}
+.brains i{font-style:normal;text-transform:none;letter-spacing:.02em}
+.studio{display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px;margin:4px 0 14px}
+.studio #cut{background:var(--red);color:var(--ink);border:0;padding:14px 30px;font:900 24px/1 var(--slab);letter-spacing:.12em;text-transform:uppercase;cursor:pointer;box-shadow:5px 5px 0 var(--gold);transform:skew(-7deg)}
+.studio #cut:disabled{background:#2a2822;color:var(--dim);box-shadow:5px 5px 0 #000;cursor:wait}
+.studio #cut:not(:disabled):active{transform:skew(-7deg) translate(3px,3px);box-shadow:2px 2px 0 var(--gold)}
+.studio label{display:flex;align-items:center;gap:8px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.studio input[type=range]{accent-color:var(--gold);width:150px}
+.studio select{background:#000;color:var(--ink);border:2px solid var(--line);font:800 12px var(--mono);padding:4px 6px}
+.studio output{color:var(--gold);font-weight:800;min-width:38px}
+#status{font:800 11px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:#000;background:var(--green);padding:6px 10px}
+#status.busy{background:var(--gold);animation:blink 0.7s steps(2) infinite}
+@keyframes blink{50%{opacity:.45}}
+nav{display:flex;flex-wrap:wrap;gap:8px 22px;align-items:center}
+.side{display:flex;align-items:center;gap:5px}
+.side>b{background:var(--ink);color:#000;padding:6px 9px;font:900 12px/1 var(--slab);letter-spacing:.14em;text-transform:uppercase}
+.side>i{font-style:normal;color:var(--dim);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;margin-right:4px}
+nav button{background:#000;color:var(--ink);border:2px solid var(--line);min-width:40px;padding:6px 9px;font:800 13px/1 var(--mono);cursor:pointer;transition:transform .08s}
+nav button:hover{border-color:var(--ink);transform:translate(-1px,-1px)}
+nav button.on{background:var(--gold);color:#000;border-color:var(--gold);box-shadow:3px 3px 0 var(--red)}
+#now{margin:12px 0 0;color:var(--dim);font-size:12px;letter-spacing:.05em;min-height:18px}
+#now b{color:#000;background:var(--gold);padding:1px 6px;margin-right:8px;font-weight:800}
+main{max-width:1560px;margin:0 auto;padding:4px 24px 40px}
+.wip{display:flex;gap:12px;align-items:baseline;margin:14px 0 0;padding:9px 12px;border:1px dashed var(--gold);color:var(--dim);font:400 12px/1.5 var(--mono);letter-spacing:.03em}
+.wip b{flex:none;background:var(--gold);color:#000;padding:2px 8px;font:800 10.5px/1.5 var(--mono);letter-spacing:.16em;text-transform:uppercase}
+.deck{display:grid;grid-template-columns:minmax(360px,5fr) 8fr;gap:24px;align-items:start}
+.left{min-width:0}.right{position:sticky;top:10px;min-width:0}
+.right section{margin-top:22px}
+.studiowrap{padding:20px 16px 12px}
+.knobs{display:flex;flex-wrap:wrap;gap:10px 22px;margin:0 0 12px}
+.knobs label{display:flex;align-items:center;gap:8px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.knobs input[type=range]{accent-color:var(--gold);width:150px}
+.knobs select{background:#000;color:var(--ink);border:2px solid var(--line);font:800 12px var(--mono);padding:4px 6px}
+.knobs output{color:var(--gold);font-weight:800;min-width:38px}
+section{background:var(--panel);border:2px solid var(--line);margin:22px 0;position:relative;box-shadow:7px 7px 0 #000,8px 8px 0 var(--line)}
+section[data-tape]::before{content:attr(data-tape);position:absolute;top:-12px;left:16px;background:var(--gold);color:#000;font:900 10.5px/1 var(--mono);letter-spacing:.18em;padding:5px 9px;text-transform:uppercase;transform:rotate(-1.6deg);z-index:2}
+section[data-tape="brain"]::before{background:var(--red);color:var(--ink)}
+section[data-tape="notes"]::before{background:var(--green);color:#000}
+#wave canvas{display:block;width:100%;height:96px;cursor:crosshair}
+.bar{display:flex;align-items:center;gap:18px;padding:10px 14px;border-top:2px solid var(--line);font-variant-numeric:tabular-nums;font-size:12px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
+.bar button{background:var(--gold);color:#000;border:0;padding:10px 26px;font:900 17px/1 var(--slab);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;box-shadow:4px 4px 0 var(--red)}
+.bar button:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--red)}
+.bar b{color:var(--ink)}
+#brain{display:block;width:100%;height:auto}
+#score{display:block;width:100%;height:230px;cursor:crosshair}
+#err{color:var(--red);font-size:12px;padding:0 18px 10px;white-space:pre-wrap}
+#readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:0;padding:12px 6px 4px}
+#readout div{padding:8px 10px;border-right:2px solid var(--line)}
+#readout div:last-child{border-right:0}
+#readout small{display:block;color:var(--dim);text-transform:uppercase;letter-spacing:.12em;font-size:9.5px}
+#readout b{font:800 14px/1.3 var(--mono);font-variant-numeric:tabular-nums}
+#readout b.gold{color:var(--gold)}#readout b.red{color:var(--red)}#readout b.green{color:var(--green)}
+#notes{padding:16px 18px 12px;color:var(--dim);font-size:12.5px}
+#notes p{margin:0 0 6px}
+.legend{display:flex;flex-wrap:wrap;gap:10px 22px;padding:10px 18px 14px;font-size:11px;color:var(--dim);border-top:2px solid var(--line);letter-spacing:.04em}
+.legend i{display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px}
+details.card{padding:16px 18px;color:var(--dim);font-size:13px}
+details.card summary{cursor:pointer;color:var(--ink);font:900 15px/1 var(--slab);letter-spacing:.14em;text-transform:uppercase}
+details.card summary small{color:var(--dim);font:400 11.5px var(--mono);letter-spacing:.04em;text-transform:none;margin-left:12px}
+details.card h3{color:var(--gold);font:800 10.5px var(--mono);letter-spacing:.16em;text-transform:uppercase;margin:16px 0 4px}
+details.card p,details.card li{max-width:96ch}details.card ul{margin:4px 0;padding-left:18px}
+footer a{color:inherit;text-underline-offset:3px}
+footer{max-width:1560px;margin:0 auto;padding:0 24px 26px;color:var(--dim);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase}
+button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+@media (max-width:1020px){.deck{grid-template-columns:1fr;gap:0}.left{display:contents}.left>.studiowrap{order:-2}.right{order:-1;top:0;z-index:5;background:var(--bg)}.right section{margin-top:14px}.stamp{display:none}}
+@media (max-width:760px){.wip{flex-direction:column;gap:6px}.right .legend{display:none}.bar{flex-wrap:wrap;gap:8px 14px}#phase{display:none}header,main,footer{padding-left:12px;padding-right:12px}#readout b{font-size:13px}}
+</style>
+</head>
+<body>
+<div class="hazard"></div>
+<header>
+  <div class="crumbs"><a href="https://floatingpragma.io/">Pragma Research</a><span>/</span><a href="https://floatingpragma.io/cadence/">Cadence</a><span>/</span><span>Amen</span></div>
+  <div class="titlebar">
+    <h1>Amen <span>Brain</span></h1>
+    <p class="sub"><b>One patch learned jungle.</b> Nothing here is recorded: the trained brain computes a track in your browser, from silence, while you watch it think. Then it plays.</p>
+    <div class="stamp"><b>Dubplate</b>one patch · no GPU<br>165 to 182 bpm · live</div>
+  </div>
+  <div class="stripe"><i></i><i></i><i></i></div>
+  <p class="wip"><b>Still training</b><span>This brain is a work in progress. It is still learning from more tracks, and the dubs will get more varied as it does. Every checkpoint in the selector can be trained further.</span></p>
+</header>
+<main class="deck">
+  <div class="left">
+    <section data-tape="studio" class="studiowrap">
+      <div class="studio">
+        <button id="cut" disabled>Cut a dub</button>
+        <span id="status">waking the brain</span>
+      </div>
+      <div class="knobs">
+        <label title="How readily the brain leaves the loop where it predicts a change point">Departures<input type="range" id="energy" min="0" max="3" step="0.1" value="1"><output id="energyOut">1.0×</output></label>
+        <label title="How much each dub differs: the bass draws from the brain's own spread over plausible notes, and the dub gets its own drum edits, tempo, key, pad chord and filter sweep">Variation<input type="range" id="variation" min="0" max="1" step="0.05" value="0.6"><output id="variationOut">0.60</output></label>
+        <label>Bars<select id="bars"><option value="16" selected>16</option><option value="32">32</option></select></label>
+      </div>
+      <div class="brains" id="brains"></div>
+      <nav id="clips"></nav>
+      <p id="now"></p>
+    </section>
+    <section id="wave" data-tape="sound"><canvas id="waveform"></canvas>
+      <div class="bar"><button id="play" title="Space">Play</button><span>bar <b id="bar">0</b></span><span>half-beat <b id="hb">0</b></span><span id="phase"></span><span id="time">0.0 s</span></div>
+    </section>
+    <section id="scorewrap" data-tape="notes"><canvas id="score"></canvas></section>
+    <section id="readout" data-tape="numbers"></section>
+    <section id="notes" data-tape="this dub"><p id="clipnote">Press CUT A DUB.</p><div id="err"></div></section>
+    <section data-tape="model card"><details class="card">
+    <summary>Model card<small>what this brain is, what plays here, what was measured</small></summary>
+    <h3>The brain</h3>
+    <p>One Cadence record patch. 80 input ports (a wake, an eight-position clock, and the 71 ports of the event it played last), 128 context channels whose time constants run from 2 to 128 half-beats, one linear readout to 71 output ports, 29,895 slow parameters, and a record store of 8,192 cells of which 48 fire per reading. The records hold what the slow readout got wrong at each reading, keyed by the event heard and the context. Every brain in the selector has this shape; they differ in what they heard. All were trained on a laptop CPU in minutes, no GPU.</p>
+    <h3>What plays here</h3>
+    <p>Nothing is recorded. The page loads the trained brain (30 thousand slow parameters and the record tables, 2.5 MB) and an instrument: 32 half-beat slices of a drum break, twelve sub-bass notes, a detuned saw pad and band-passed noise for the texture. When you press the button the brain starts from silence, hears a count-in, and computes the track one half-beat at a time, about 1.7 million multiply-adds each, hearing every half-beat it plays. Each half-beat it states a slice, a loudness, a bass note or a hold, a change point, and ten texture levels; the pad sounds at the bass note each bar plays most, and the brain's texture bands set how loud and how bright it is.</p>
+    <p>The brain leaves the loop only where it predicts a change point, by one of three declared moves: a roll (the slice just heard repeats), a retrigger (the break restarts at a bar start) or a bar jump (the same position in another bar of the break). The Departures slider scales that probability. What a departure contains is not predictable from the recordings (0.02 to 0.06 correct), so the moves are a rule of the instrument and the brain decides when.</p>
+    <h3>Why two dubs differ</h3>
+    <p>From silence, the highest score at every port gives one and the same track. Each dub therefore draws from its seed. The bass of the first two bars, and of every departure, is drawn from the brain's own scores over notes; the Variation slider sets how freely. The dub gets a drum pattern of its own: it enters on one of the break's four bars, and over its first one, two or four bars departures are drawn at a raised probability with the dub's own shares of the three moves. That opening is the dub's loop: the slice at the cycle start and at each of the opening's departures returns at the same place in every cycle (gold marks in the notes view) unless the brain draws a fresh departure there (red marks). Between those places the brain plays on from what it hears, so a fill stays local and the groove comes back. It also gets instrument settings: a tempo between 165 and 182 bpm, the break's pitch (up to four semitones either way, set apart from the tempo as on a sampler: a raised slice ends early, a lowered one is cut where the next begins), a key (bass and pad transposed by two semitones down to five up, because from silence the brain settles on the same notes every time), the pad's waveform, chord, register and detune, how it is played (held, a skank on beats two and four, a dotted stab or a swell per bar), and a filter sweep over 4, 8 or 16 bars. At zero variation none of this is drawn; departures still are, and with both sliders at zero every dub is the same track. The seed is printed under the button; the same seed and settings give the same dub.</p>
+    <h3>Measured on tracks it never trained on</h3>
+    <ul id="cardMeasured"><li>Choose a brain.</li></ul>
+    <p>The browser engine is the same arithmetic as the library. On each archived run's generation from silence it reproduces every slice, note and change point with scores equal to 2e-8, and it reproduces the library's record writes to 4e-8.</p>
+    <h3>Supplied, learned, limits</h3>
+    <p>Supplied: the transcription of the recordings into events (which slice, which note, where a bar departs from the bar before, the sustain above 250 Hz), the instrument that renders events, the clock, the three moves a departure may make, and the per-dub settings above. Learned: every event the brain plays, from random parameters and empty records. Limits: the break is one break, so the drum vocabulary is its 32 slices; the brain has no phrase clock, so it places departures by what it just heard and not by where a sixteen-bar phrase ends; change points are hard to predict; one training seed; no transformer or recurrent baseline on the same stream yet; and a texture smoother than the recorded one because a squared-error readout predicts the mean.</p>
+  </details></section>
+  </div>
+  <div class="right">
+    <section data-tape="brain" id="brainwrap"><canvas id="brain"></canvas>
+      <div class="legend">
+        <span><i style="background:var(--gold)"></i>channel +</span>
+        <span><i style="background:var(--cyan)"></i>channel −</span>
+        <span><i style="background:#fff"></i>record cell</span>
+        <span><i style="background:var(--red)"></i>change point</span>
+        <span><i style="background:var(--green)"></i>bass</span>
+        <span>fast channels at the centre, slow at the rim · halos are open gates · particles are synaptic drive · the arc is the loop through the world</span>
+      </div>
+    </section>
+  </div>
+</main>
+<footer>Every dub is computed in your browser by the trained brain · receipts beside the page · <a href="https://github.com/muellerberndt/cadence-demos/tree/main/amen" target="_blank" rel="noopener">the source on GitHub</a>: fork it and train your own · Made with <span class="heart" aria-label="love">♥</span> by <a href="https://floatingpragma.io" target="_blank" rel="noopener">Pragma Research</a></footer>
+<div class="hazard"></div>
+
+<script type="module">
+import {Brain, compose, mulberry} from './engine.js';
+(() => {
+const $ = id => document.getElementById(id);
+const audio = new Audio(); audio.preload = 'auto';
+let trace = null, weights = null, decoded = null, waveImage = null, scoreImage = null, layout = null;
+const report = m => { const e = document.getElementById('err'); e.textContent = (e.textContent + '\n' + m).trim(); };
+addEventListener('error', e => report(e.message + ' @' + e.lineno));
+addEventListener('unhandledrejection', e => report('rejected: ' + (e.reason && e.reason.message || e.reason)));
+let lastStep = -1, particles = [], flashes = {cells: new Map(), change: 0, played: 0, heard: 0, write: 0}, hbHold = 0;
+
+
+const argmax = (a, s = 0, e = a.length) => { let m = s; for (let i = s; i < e; i++) if (a[i] > a[m]) m = i; return m; };
+const norm = a => Math.sqrt(a.reduce((x, y) => x + y * y, 0));
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+
+let model = null, kit = null, brain = null, audioCtx = null, kitBuffers = null, computing = null, tracks = [], voiceCache = new Map();
+const setStatus = (text, busy) => { const s = $('status'); s.textContent = text; s.classList.toggle('busy', !!busy); };
+
+const bytes = async path => (await fetch(path)).arrayBuffer();
+let brains = [], current = null;
+
+async function wake(entry) {
+  $('cut').disabled = true; setStatus('waking the brain', true);
+  for (const b of $('brains').querySelectorAll('button')) { b.disabled = true; b.classList.toggle('on', b.dataset.name === entry.name); }
+  const base = 'models/' + entry.name + '/';
+  const next = await (await fetch(base + 'model.json')).json();
+  const [params, recordsY, recordsMean] = await Promise.all([bytes(base + next.files.params), bytes(base + next.files.records_y), bytes(base + next.files.records_mean)]);
+  await new Promise(r => setTimeout(r, 30));
+  model = next; brain = new Brain(model, params, recordsY, recordsMean); layout = model.layout; current = entry; geo = null;
+  const rows = (flat, r, c) => Array.from({length: r}, (_, i) => Array.from(flat.subarray(i * c, (i + 1) * c)));
+  weights = {hidden: model.hidden, inputs: model.inputs, outputs: model.outputs, cells: model.records.cells, active: model.records.active, timescales: brain.timescales,
+             B: rows(brain.p.B, model.hidden, model.inputs), C: rows(brain.p.C, model.outputs, model.hidden), layout};
+  const r = entry.held_out_ranges, f = (v, d = 2) => v[0].toFixed(d) + ' to ' + v[1].toFixed(d);
+  $('cardMeasured').replaceChildren(...[
+    'This brain (' + entry.label + ') heard ' + entry.trained_on + '. ' + entry.held_out_tracks + ' tracks were held out.',
+    'Next drum slice: ' + f(r.drum_identity_accuracy) + ' correct across the held-out tracks; the most frequent slice scores ' + f(r.frequency_baseline_drum_identity_accuracy) + '.',
+    'Next bass note: ' + f(r.bass_note_accuracy) + ' correct; repeating the previous note scores ' + f(r.repeat_previous_bass_note_accuracy) + '.',
+    'Texture bands: mean error ' + f(r.texture_mae, 3) + '; repeating the previous half-beat ' + f(r.repeat_previous_texture_mae, 3) + '.',
+    'Change points: recall ' + f(r.change_recall) + '.'].map(line => { const li = document.createElement('li'); li.textContent = line; return li; }));
+  $('brainNote').textContent = entry.trained_on + ' · on ' + entry.held_out_tracks + ' unheard tracks: next slice ' + f(r.drum_identity_accuracy) + ', next bass note ' + f(r.bass_note_accuracy);
+  for (const b of $('brains').querySelectorAll('button')) b.disabled = false;
+  $('cut').disabled = false; setStatus('ready');
+}
+
+async function boot() {
+  resize(); addEventListener('resize', resize);
+  requestAnimationFrame(frame);
+  $('energy').oninput = () => $('energyOut').textContent = Number($('energy').value).toFixed(1) + '×';
+  $('variation').oninput = () => $('variationOut').textContent = Number($('variation').value).toFixed(2);
+  kit = await (await fetch('kit/kit.json')).json();
+  kitBuffers = {raw: await Promise.all([bytes('kit/' + kit.break_file), bytes('kit/' + kit.bass_file)])};
+  const index = await (await fetch('models/index.json')).json(); brains = index.brains;
+  const strip = $('brains'); const tag = document.createElement('b'); tag.textContent = 'Brain'; strip.appendChild(tag);
+  for (const entry of brains) { const b = document.createElement('button'); b.dataset.name = entry.name; b.textContent = entry.label; b.title = entry.trained_on; b.onclick = () => { if (!computing) wake(entry); }; strip.appendChild(b); }
+  const note = document.createElement('i'); note.id = 'brainNote'; strip.appendChild(note);
+  const wanted = new URLSearchParams(location.search).get('brain');
+  await wake(brains.find(b => b.name === wanted) || brains.find(b => b.name === index.default) || brains[brains.length - 1]);
+  if (new URLSearchParams(location.search).has('debug')) window.__amen = {get tracks() { return tracks; }};
+  if (new URLSearchParams(location.search).has('autocut')) $('cut').click();
+  $('clipnote').textContent = 'Nothing is recorded here. Press CUT A DUB: the brain starts from silence, hears a count-in, and computes ' + $('bars').value + ' bars, one half-beat at a time, hearing each half-beat it plays. Run receipt ' + model.run_receipt_sha256.slice(0, 8) + '.';
+}
+
+$('cut').onclick = async () => {
+  if (computing || !brain) return;
+  audio.pause();
+  if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); const [a, b] = kitBuffers.raw; kitBuffers.drums = await audioCtx.decodeAudioData(a.slice(0)); kitBuffers.bass = await audioCtx.decodeAudioData(b.slice(0)); }
+  const bars = Number($('bars').value), energy = Number($('energy').value), variation = Number($('variation').value), seed = (Math.random() * 4294967296) >>> 0, number = tracks.length + 1;
+  const dice = mulberry((seed ^ 0x9e3779b9) >>> 0), pickOne = list => list[Math.floor(dice() * list.length)], wild = Math.min(1, variation * 2);
+  // at zero variation nothing is drawn: one fixed patch
+  const patch = wild > 0 ? {tempo: 1 + wild * (dice() * 0.10 - 0.06), key: Math.round(wild * (dice() * 7 - 2)), pitch: Math.round(wild * (dice() * 8 - 4)), chord: pickOne([[0, 7, 12], [0, 3, 7], [0, 5, 10], [0, 7, 10], [0, 12, 19]]), octaves: dice() < 0.5 ? 2 : 3, detune: 4 + 8 * dice(), wave: pickOne(['sawtooth', 'sawtooth', 'square', 'triangle']), gate: pickOne(['held', 'held', 'skank', 'dotted', 'swell']),
+                 sweepBars: pickOne([4, 8, 8, 16]), sweepDepth: 0.35 + 0.55 * dice(), padGain: 0.8 + 0.6 * dice()}
+    : {tempo: 1, key: 0, pitch: 0, chord: [0, 7, 12], octaves: 3, detune: 7, wave: 'sawtooth', gate: 'held', sweepBars: 8, sweepDepth: 0.5, padGain: 1};
+  trace = {clip: 'DUB ' + String(number).padStart(2, '0'), title: bars + ' bars from silence', mode: 'sample', hop_seconds: kit.hop_seconds / patch.tempo, patch, bpm: Math.round(175 * patch.tempo), primer_half_beats: 0, wake_played: true,
+           primer_writes: 0, receipt_sha256: model.run_receipt_sha256, total_steps: 8 * bars, steps: [], seed, energy, variation, bars, brain: current.label, weights, layout: model.layout};
+  decoded = null; waveImage = null; scoreImage = null; lastStep = -1; particles = []; flashes.cells.clear(); geo = null;
+  computing = {steps: compose(brain, {bars, mode: 'sample', energy, seed, variation}), perFrame: bars > 16 ? 2 : 1};
+  $('cut').disabled = true; setStatus('computing', true); showNow();
+};
+
+function showNow() {
+  const now = $('now'); now.textContent = ''; if (!trace) return;
+  const tag = document.createElement('b'); tag.textContent = trace.clip; now.appendChild(tag);
+  now.appendChild(document.createTextNode(' ' + trace.title + ' · ' + trace.bpm + ' bpm · key ' + (trace.patch.key > 0 ? '+' : '') + trace.patch.key + ' · break ' + (trace.patch.pitch > 0 ? '+' : '') + trace.patch.pitch + ' st · brain: ' + trace.brain + ' · departures ' + trace.energy.toFixed(1) + '× · variation ' + trace.variation.toFixed(2) + ' · seed ' + trace.seed));
+}
+
+function advanceComputing() {
+  for (let i = 0; i < computing.perFrame; i++) {
+    const next = computing.steps.next();
+    if (next.done) { const done = trace; computing = null; finish(done); return; }
+    trace.steps.push(next.value); scoreImage = null;
+  }
+}
+
+async function finish(done) {
+  setStatus('buffering', true);
+  const buffer = await renderTrack(done);
+  done.buffer = buffer; done.url = URL.createObjectURL(wavBlob(buffer));
+  tracks.push(done); addToRack(done);
+  if (trace === done) play(done);
+  $('cut').disabled = false;
+}
+
+function play(item) {
+  trace = item; weights = item.weights; layout = item.layout; decoded = item.buffer; waveImage = null; scoreImage = null; lastStep = -1; geo = null;
+  audio.src = item.url; audio.currentTime = 0; audio.play().then(() => setStatus('playing')).catch(() => setStatus('press play'));
+  for (const b of $('clips').querySelectorAll('button')) b.classList.toggle('on', b.dataset.id === item.clip);
+  showNow();
+  const returns = item.steps.filter(s => s.played.returned).length, changes = item.steps.filter(s => s.played[layout.change] > 0.5).length - returns, sig = item.steps[item.steps.length - 1].signature;
+  $('clipnote').textContent = item.clip + ' · computed in your browser just now: ' + item.steps.length + ' half-beats from silence at ' + item.bpm + ' bpm. ' + (sig ? 'The break enters on its bar ' + (sig.entry + 1) + '; the first ' + (sig.loopBars === 1 ? 'bar is' : sig.loopBars + ' bars are') + ' the dub\'s own drum pattern, which came back at ' + returns + ' places. ' : '') + changes + ' departures where the brain predicted a change point (a roll, a retrigger or a bar jump), bass drawn from its own note scores, texture as predicted. Run receipt ' + model.run_receipt_sha256.slice(0, 8) + '.';
+}
+
+function addToRack(item) {
+  const nav = $('clips'); let rack = nav.querySelector('.side');
+  if (!rack) { rack = document.createElement('div'); rack.className = 'side'; const tag = document.createElement('b'); tag.textContent = 'Your dubs'; rack.appendChild(tag); nav.appendChild(rack); }
+  const b = document.createElement('button'); b.dataset.id = item.clip; b.textContent = item.clip.slice(4); b.title = item.title; b.onclick = () => { if (!computing) play(item); }; rack.appendChild(b);
+}
+
+// The instrument: slices of the break, sub-bass notes resampled by the semitone, band-passed noise for the texture.
+async function bandVoices(seconds, rate) {
+  const key = Math.ceil(seconds) + '@' + rate; if (voiceCache.has(key)) return voiceCache.get(key);
+  const frames = Math.ceil(seconds * rate), voices = [];
+  for (let k = 0; k < kit.texture_bands.length; k++) {
+    const [lo, hi] = kit.texture_bands[k], ctx = new OfflineAudioContext(2, frames, rate), noise = ctx.createBuffer(2, frames, rate);
+    for (let ch = 0; ch < 2; ch++) { const data = noise.getChannelData(ch); let s = (7 + 31 * k + 977 * ch) >>> 0; for (let i = 0; i < frames; i++) { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; data[i] = s / 2147483648 - 1; } }
+    const src = ctx.createBufferSource(); src.buffer = noise; let node = src;
+    for (let stage = 0; stage < 2; stage++) { const f = ctx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = Math.sqrt(lo * Math.min(hi, rate / 2 - 100)); f.Q.value = f.frequency.value / (Math.min(hi, rate / 2 - 100) - lo); node.connect(f); node = f; }
+    node.connect(ctx.destination); src.start();
+    const out = await ctx.startRendering(); let sq = 0; const d = out.getChannelData(0); for (let i = 0; i < frames; i++) sq += d[i] * d[i];
+    voices.push({buffer: out, rms: Math.sqrt(sq / frames) || 1});
+  }
+  voiceCache.set(key, voices); return voices;
+}
+
+async function renderTrack(item) {
+  const L = item.layout, hop = item.hop_seconds, patch = item.patch, steps = item.steps, rate = audioCtx.sampleRate, seconds = steps.length * hop;
+  const solo = new URLSearchParams(location.search).get('solo'), on = layer => !solo || solo === layer;
+  const voices = await bandVoices(seconds, rate), ctx = new OfflineAudioContext(2, Math.ceil(seconds * rate), rate);
+  if (on('drums')) steps.forEach((s, i) => { const p = s.played; if (p[L.drum_on] > 0.5) { const src = ctx.createBufferSource(), g = ctx.createGain(); src.buffer = kitBuffers.drums; src.connect(g); g.connect(ctx.destination);
+    // The break's pitch is set apart from the tempo, as on a sampler: a raised slice ends before the next begins, a lowered one is cut where the next begins.
+    const speed = patch.tempo * Math.pow(2, patch.pitch / 12), content = Math.min(kit.hop_seconds, hop * speed), sounding = content / speed, level = kit.drum_gain * clamp(p[L.drum_gain], 0, 1);
+    src.playbackRate.value = speed; g.gain.setValueAtTime(level, i * hop); if (patch.pitch !== 0) { g.gain.setValueAtTime(level, i * hop + Math.max(0, sounding - 0.004)); g.gain.linearRampToValueAtTime(0, i * hop + sounding); }
+    src.start(i * hop, argmax(p, 0, L.crops) * kit.hop_seconds, content); } });
+  const noteOf = p => argmax(p, L.note_start, L.note_start + L.notes) - L.note_start;
+  for (let i = 0; on('bass') && i < steps.length; i++) {
+    const p = steps[i].played; if (!(p[L.bass_on] > 0.5)) continue;
+    const held = p[L.bass_hold] > 0.5 && i > 0 && steps[i - 1].played[L.bass_on] > 0.5 && noteOf(steps[i - 1].played) === noteOf(p); if (held) continue;
+    const note = noteOf(p); let j = i + 1; while (j < steps.length && steps[j].played[L.bass_on] > 0.5 && steps[j].played[L.bass_hold] > 0.5 && noteOf(steps[j].played) === note) j++;
+    const midi = kit.first_midi + note + patch.key; let sample = kit.bass_notes[0]; for (const n of kit.bass_notes) if (Math.abs(n.root_midi - midi) < Math.abs(sample.root_midi - midi)) sample = n;
+    const ratio = Math.pow(2, (midi - sample.root_midi) / 12), length = Math.min((j - i) * hop, sample.length / kit.sample_rate / ratio), end = i * hop + length;
+    const src = ctx.createBufferSource(), g = ctx.createGain(); src.buffer = kitBuffers.bass; src.playbackRate.value = ratio;
+    g.gain.setValueAtTime(kit.bass_gain, i * hop); g.gain.setValueAtTime(kit.bass_gain, Math.max(i * hop, end - kit.bass_fade_seconds)); g.gain.linearRampToValueAtTime(0, end);
+    src.connect(g); g.connect(ctx.destination); src.start(i * hop, sample.start / kit.sample_rate, length * ratio);
+  }
+  const bands = kit.texture_bands.length, first = L.texture_start + 2 + (L.texture_ports - 2 - bands);
+  const floor = kit.texture_floor || 0, tilt = kit.texture_tilt || [], heard = v => Math.max(0, (clamp(v, 0, 1) - floor) / (1 - floor));
+  const ramp = (g, k, unit) => { g.gain.setValueAtTime(heard(steps[0].played[first + k]) * unit, 0); for (let i = 1; i <= steps.length; i++) g.gain.linearRampToValueAtTime(heard(steps[Math.min(i, steps.length - 1)].played[first + k]) * unit, i * hop); };
+  const pad = kit.texture_pad, padBands = pad ? pad.bands : 0;
+  if (on('texture') && pad) {
+    // The pad is rendered by itself and set to one level under the drums and the bass: the brain's bands shape it over time,
+    // the instrument sets how loud the layer is, so a dark patch and a bright one are heard alike.
+    const layer = new OfflineAudioContext(2, Math.ceil(seconds * rate), rate);
+    // How the pad is played is part of the dub's patch: held, a skank on beats two and four, a dotted 3-3-2 stab, or a swell per bar.
+    const gate = layer.createGain(); gate.connect(layer.destination);
+    if (patch.gate === 'held') gate.gain.value = 1;
+    else { gate.gain.setValueAtTime(patch.gate === 'swell' ? 0.15 : 0.04, 0);
+      for (let i = 0; i < steps.length; i++) { const q = i % 8, at = i * hop;
+        if (patch.gate === 'swell') { if (q === 0) { gate.gain.setValueAtTime(0.15, at); gate.gain.linearRampToValueAtTime(1, at + 7.5 * hop); gate.gain.linearRampToValueAtTime(0.15, at + 8 * hop - 0.001); } }
+        else if (patch.gate === 'skank' ? (q === 2 || q === 6) : (q === 0 || q === 3 || q === 6)) { gate.gain.setValueAtTime(0.04, Math.max(0, at - 0.001)); gate.gain.linearRampToValueAtTime(1, at + 0.006); gate.gain.setTargetAtTime(0.04, at + 0.05, 0.09); } } }
+    // The harmony of a bar is the bass note it plays most, held through rests; the pad changes pitch at bar lines only.
+    const bus = layer.createBiquadFilter(); bus.type = 'lowpass'; bus.Q.value = 2.5; const roots = []; let last = null;
+    // the sweep: a slow filter opening and closing over the dub's own number of bars
+    const curve = new Float32Array(steps.length * 4); for (let i = 0; i < curve.length; i++) { const phase = (i / 4) / (patch.sweepBars * 8); curve[i] = 500 * Math.pow(2, patch.sweepDepth * 4.5 * (0.5 - 0.5 * Math.cos(2 * Math.PI * phase))); }
+    bus.frequency.setValueCurveAtTime(curve, 0, seconds);
+    for (let b = 0; b * 8 < steps.length; b++) { const count = new Map(); for (const s of steps.slice(b * 8, b * 8 + 8)) if (s.played[L.bass_on] > 0.5) { const n = noteOf(s.played); count.set(n, (count.get(n) || 0) + 1); }
+      if (count.size) last = [...count.entries()].sort((x, y) => y[1] - x[1] || x[0] - y[0])[0][0]; roots.push(last); }
+    const firstRoot = roots.find(r => r !== null);
+    if (firstRoot !== undefined) for (const interval of patch.chord) for (const cents of [-patch.detune, patch.detune]) {
+      const osc = layer.createOscillator(); osc.type = patch.wave; const hz = r => 440 * Math.pow(2, (kit.first_midi + r + patch.key + patch.octaves * 12 + interval - 69) / 12) * Math.pow(2, cents / 1200);
+      osc.frequency.setValueAtTime(hz(firstRoot), 0); roots.forEach((r, b) => { if (r !== null && b > 0) osc.frequency.setTargetAtTime(hz(r), b * 8 * hop, 0.04); });
+      osc.connect(bus); osc.start(0); }
+    for (let k = 0; k < padBands; k++) { const [lo, hi] = kit.texture_bands[k], f = layer.createBiquadFilter(), g = layer.createGain(); f.type = 'bandpass'; f.frequency.value = Math.sqrt(lo * hi); f.Q.value = f.frequency.value / (hi - lo);
+      bus.connect(f); f.connect(g); g.connect(gate); ramp(g, k, 1); }
+    const sound = await layer.startRendering(), d = sound.getChannelData(0); let sq = 0; for (let i = 0; i < d.length; i++) sq += d[i] * d[i];
+    const rms = Math.sqrt(sq / d.length), gain = rms > 1e-9 ? (pad.level || 0.05) * patch.padGain / rms : 0, ceiling = 0.25;
+    // a soft ceiling: where the swept resonance meets a harmonic the pad would spike; it bends instead
+    for (let c = 0; c < sound.numberOfChannels; c++) { const x = sound.getChannelData(c); for (let i = 0; i < x.length; i++) x[i] = ceiling * Math.tanh(x[i] * gain / ceiling); }
+    const src = ctx.createBufferSource(); src.buffer = sound; src.connect(ctx.destination); src.start(0);
+  }
+  if (on('texture')) voices.forEach((voice, k) => { if (k < padBands) return; const src = ctx.createBufferSource(), g = ctx.createGain(); src.buffer = voice.buffer;
+    ramp(g, k, kit.texture_gain * (tilt[k] ?? 1) / Math.sqrt(bands) / voice.rms); src.connect(g); g.connect(ctx.destination); src.start(0); });
+  // a peak guard: the whole dub is scaled down if its loudest sample would clip
+  const out = await ctx.startRendering(); let peak = 0; for (let c = 0; c < out.numberOfChannels; c++) { const d = out.getChannelData(c); for (let i = 0; i < d.length; i++) { const v = Math.abs(d[i]); if (v > peak) peak = v; } }
+  if (peak > 0.97) for (let c = 0; c < out.numberOfChannels; c++) { const d = out.getChannelData(c), k = 0.97 / peak; for (let i = 0; i < d.length; i++) d[i] *= k; }
+  return out;
+}
+
+function wavBlob(buffer) {
+  const channels = buffer.numberOfChannels, frames = buffer.length, view = new DataView(new ArrayBuffer(44 + frames * channels * 2));
+  const text = (at, s) => { for (let i = 0; i < s.length; i++) view.setUint8(at + i, s.charCodeAt(i)); };
+  text(0, 'RIFF'); view.setUint32(4, 36 + frames * channels * 2, true); text(8, 'WAVEfmt '); view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, channels, true);
+  view.setUint32(24, buffer.sampleRate, true); view.setUint32(28, buffer.sampleRate * channels * 2, true); view.setUint16(32, channels * 2, true); view.setUint16(34, 16, true); text(36, 'data'); view.setUint32(40, frames * channels * 2, true);
+  const data = Array.from({length: channels}, (_, ch) => buffer.getChannelData(ch)); let at = 44;
+  for (let i = 0; i < frames; i++) for (let ch = 0; ch < channels; ch++) { view.setInt16(at, Math.round(clamp(data[ch][i], -1, 1) * 32767), true); at += 2; }
+  return new Blob([view], {type: 'audio/wav'});
+}
+
+$('play').onclick = () => { if (!trace || computing || !trace.url) return; if (audio.paused) audio.play(); else audio.pause(); };
+audio.addEventListener('ended', () => setStatus('ready'));
+addEventListener('keydown', e => { if (e.code === 'Space' && !/^(INPUT|SELECT|BUTTON|TEXTAREA)$/.test(document.activeElement.tagName)) { e.preventDefault(); $('play').click(); } });
+audio.addEventListener('play', () => $('play').textContent = 'Pause');
+audio.addEventListener('pause', () => $('play').textContent = 'Play');
+const seek = e => { if (!trace) return; const r = e.currentTarget.getBoundingClientRect(); audio.currentTime = (e.clientX - r.left) / r.width * clipSeconds(); };
+$('waveform').addEventListener('click', seek); $('score').addEventListener('click', seek);
+function clipSeconds() { return decoded ? decoded.duration : (trace.total_steps || trace.steps.length) * trace.hop_seconds; }
+
+function resize() {
+  const dpr = devicePixelRatio || 1;
+  const w = $('waveform'); w.width = w.clientWidth * dpr; w.height = 96 * dpr; waveImage = null;
+  const s = $('score'); s.width = s.clientWidth * dpr; s.height = 230 * dpr; scoreImage = null; geo = null;
+  const b = $('brain'); const width = b.clientWidth, wide = innerWidth > 1020, legend = b.nextElementSibling ? b.nextElementSibling.offsetHeight : 0;
+  const height = wide ? Math.max(440, Math.min(innerHeight - legend - 50, width * 1.05)) : Math.max(280, Math.min(innerHeight * 0.46, width * 0.8));
+  b.style.height = height + 'px'; b.width = width * dpr; b.height = height * dpr;
+}
+
+function drawWave() {
+  const c = $('waveform'), g = c.getContext('2d'), W = c.width, H = c.height;
+  if (!decoded) { g.fillStyle = '#060607'; g.fillRect(0, 0, W, H); const F = devicePixelRatio || 1; g.fillStyle = '#8d8775'; g.font = `${12 * F}px ui-monospace, Menlo, monospace`; g.textAlign = 'center'; g.fillText(computing ? 'NO SOUND YET · THE BRAIN IS COMPUTING' : (trace ? 'BUFFERING' : 'PRESS CUT A DUB'), W / 2, H / 2 + 4 * F); if (computing) { g.fillStyle = '#f7c52d'; g.fillRect(0, H - 4 * F, W * trace.steps.length / trace.total_steps, 4 * F); } return; }
+  if (!waveImage) {
+    waveImage = document.createElement('canvas'); waveImage.width = W; waveImage.height = H;
+    const gg = waveImage.getContext('2d'); gg.fillStyle = '#060607'; gg.fillRect(0, 0, W, H);
+    const data = decoded.getChannelData(0), per = data.length / W;
+    if (trace.primer_half_beats) { gg.fillStyle = 'rgba(242,182,50,0.08)'; gg.fillRect(0, 0, W * trace.primer_half_beats * trace.hop_seconds / decoded.duration, H); }
+    gg.strokeStyle = '#1f1e1a'; gg.lineWidth = 1;
+    const bars = Math.round(decoded.duration / (trace.hop_seconds * 8));
+    for (let k = 0; k <= bars; k++) { const x = Math.round(k * 8 * trace.hop_seconds / decoded.duration * W) + .5; gg.beginPath(); gg.moveTo(x, 0); gg.lineTo(x, H); gg.stroke(); }
+    gg.fillStyle = '#f1ead6';
+    for (let x = 0; x < W; x++) { let lo = 1, hi = -1; const s = Math.floor(x * per), e = Math.floor((x + 1) * per); for (let i = s; i < e; i += 2) { const v = data[i]; if (v < lo) lo = v; if (v > hi) hi = v; } gg.fillRect(x, (1 - hi) * H / 2, 1, Math.max(1, (hi - lo) * H / 2)); }
+  }
+  g.drawImage(waveImage, 0, 0);
+  const x = audio.currentTime / decoded.duration * W;
+  g.fillStyle = 'rgba(242,182,50,0.25)'; g.fillRect(0, 0, x, H);
+  g.fillStyle = '#f2b632'; g.fillRect(x - 1, 0, 2, H);
+}
+
+function ringPos(cx, cy, r, i, n) { const a = -Math.PI / 2 + i / n * 2 * Math.PI; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; }
+function neuronPos(i, cx, cy, rIn, rOut, n) { const a = i * 2.39996; const r = rIn + (rOut - rIn) * Math.sqrt(i / (n - 1)); return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; }
+
+function currentStep() {
+  if (!trace || !trace.steps.length) return -1;
+  if (computing) return trace.steps.length - 1;
+  const k = Math.floor(audio.currentTime / trace.hop_seconds + 1e-6);
+  const first = trace.steps[0].t < 0 ? 1 : 0;
+  return clamp(k + first, 0, trace.steps.length - 1);
+}
+
+function onStep(step, prev) {
+  const s = trace.steps[step]; const L = layout; const now = performance.now();
+  flashes.played = now; flashes.heard = now;
+  if (s.played && s.played[L.change] > .5) flashes.change = now;
+  if (s.phase === 'primer') flashes.write = now;
+  for (let i = 0; i < s.cells.length; i++) flashes.cells.set(s.cells[i], [now, s.cell_push[i]]);
+  // synaptic drive: input -> channel, the strongest products B_ij * u_j
+  const u = inputVector(s); const drives = [];
+  for (let i = 0; i < weights.hidden; i++) { const row = weights.B[i]; for (let j = 0; j < u.length; j++) if (u[j] !== 0) { const d = row[j] * u[j] * (1 - s.gate[i]); if (Math.abs(d) > 0.05) drives.push([Math.abs(d), j, i, d > 0]); } }
+  drives.sort((a, b) => b[0] - a[0]);
+  for (const [m, j, i, pos] of drives.slice(0, 60)) particles.push({from: inputPos(j), to: nPos[i], born: now, life: 260 + Math.random() * 120, size: 1.2 + 3 * Math.min(1, m), color: pos ? 'rgba(242,182,50,' : 'rgba(76,201,240,'});
+  // channel -> output, the strongest C_kj * h_j
+  const outs = [];
+  for (let k = 0; k < weights.outputs; k++) { const row = weights.C[k]; for (let j = 0; j < weights.hidden; j++) { const d = row[j] * s.h[j]; if (Math.abs(d) > 0.06) outs.push([Math.abs(d), j, k]); } }
+  outs.sort((a, b) => b[0] - a[0]);
+  for (const [m, j, k] of outs.slice(0, 60)) particles.push({from: nPos[j], to: outputPos(k), born: now + 120, life: 260 + Math.random() * 120, size: 1.2 + 3 * Math.min(1, m), color: 'rgba(236,231,217,'});
+  // the loop through the world: what was played travels back to the heard ring
+  if (s.played && s.played[L.drum_on] > .5) { const c = argmax(s.played, 0, L.crops); particles.push({from: outputPos(c), to: inputPos(L.heard_start + c), born: now + 200, life: 420, size: 4, color: 'rgba(242,182,50,', arc: true}); }
+  // repair cascade: record cells push their stored residual into the output ports
+  const pushMax = Math.max(1e-6, ...s.cell_push);
+  s.cells.forEach((cell, i) => { if (s.cell_push[i] > 0.15 * pushMax) { const target = argmax(s.read.map(Math.abs)); particles.push({from: cellPos(cell), to: outputPos(target), born: now + 60, life: 300, size: 1 + 3 * s.cell_push[i] / pushMax, color: 'rgba(255,255,255,'}); } });
+  if (s.phase === 'primer') { const rMax = Math.max(1e-6, ...s.residual.map(Math.abs)); s.cells.forEach((cell, i) => particles.push({from: outputPos(argmax(s.residual.map(Math.abs))), to: cellPos(cell), born: now + 80, life: 320, size: 1 + 2 * s.cell_weights[i], color: 'rgba(242,182,50,'})); }
+  drawReadout(s);
+}
+
+function inputVector(s) {
+  const u = new Array(weights.inputs).fill(0);
+  if (s.phase === 'primer') { if (s.t === 0) u[0] = 1; u[1 + (s.t % 8)] = 1; const p = s.heard ? s.heard : (s.t > 0 ? trace.steps[s.t - 1].played : null); if (p) for (let k = 0; k < p.length; k++) u[layout.heard_start + k] = p[k]; }
+  else { if (s.phase === 'wake' || (trace.wake_played && s.t === 0 && !trace.primer_half_beats)) u[0] = 1; u[1 + s.clock] = 1; if (s.heard) for (let k = 0; k < s.heard.length; k++) u[layout.heard_start + k] = s.heard[k]; }
+  return u;
+}
+
+let geo = null, nPos = [];
+function computeGeometry(W, H) {
+  const L = layout;
+  geo = {W, H, heard: [W * 0.16, H * 0.40, Math.min(W * 0.11, H * 0.24)], brain: [W * 0.5, H * 0.40, Math.min(W * 0.05, H * 0.06), Math.min(W * 0.19, H * 0.33)],
+         out: [W * 0.84, H * 0.40, Math.min(W * 0.11, H * 0.24)], records: [W * 0.30, H * 0.80, W * 0.40, H * 0.11], keysL: [W * 0.06, H * 0.71, W * 0.20], keysR: [W * 0.74, H * 0.71, W * 0.20], clock: [W * 0.16, H * 0.40, Math.min(W * 0.11, H * 0.24) * 0.55]};
+  nPos = []; for (let i = 0; i < weights.hidden; i++) nPos.push(neuronPos(i, geo.brain[0], geo.brain[1], geo.brain[2], geo.brain[3], weights.hidden));
+  const cols = 128, rows = Math.ceil(weights.cells / cols); geo.cell = [geo.records[2] / cols, geo.records[3] / rows, cols];
+}
+function inputPos(j) {
+  const L = layout, [cx, cy, r] = geo.heard;
+  if (j === 0) return [cx, cy];
+  if (j < 9) return ringPos(geo.clock[0], geo.clock[1], geo.clock[2], j - 1, 8);
+  const k = j - L.heard_start;
+  if (k < L.crops) return ringPos(cx, cy, r, k, L.crops);
+  if (k === L.drum_on || k === L.drum_gain) return [cx - r * 0.5, geo.keysL[1] + 30];
+  if (k >= L.note_start && k < L.note_start + L.notes) return [geo.keysL[0] + (k - L.note_start + .5) / L.notes * geo.keysL[2], geo.keysL[1]];
+  if (k === L.change) return [cx + r * 0.6, geo.keysL[1] + 30];
+  return [cx + r * 0.2, geo.keysL[1] + 30];
+}
+function outputPos(k) {
+  const L = layout, [cx, cy, r] = geo.out;
+  if (k < L.crops) return ringPos(cx, cy, r, k, L.crops);
+  if (k === L.drum_on || k === L.drum_gain) return [cx - r * 0.5, geo.keysR[1] + 30];
+  if (k >= L.note_start && k < L.note_start + L.notes) return [geo.keysR[0] + (k - L.note_start + .5) / L.notes * geo.keysR[2], geo.keysR[1]];
+  if (k === L.change) return [cx + r * 0.6, geo.keysR[1] + 30];
+  return [cx + r * 0.2, geo.keysR[1] + 30];
+}
+function cellPos(cell) { const [x0, y0] = geo.records; const [cw, ch, cols] = geo.cell; return [x0 + (cell % cols + .5) * cw, y0 + (Math.floor(cell / cols) + .5) * ch]; }
+
+function drawBrain(step) {
+  const c = $('brain'), g = c.getContext('2d'), W = c.width, H = c.height, dpr = devicePixelRatio || 1;
+  g.fillStyle = '#060607'; g.fillRect(0, 0, W, H);
+  if (!trace || !weights || step < 0) {
+    // at rest: the three rings of the patch, breathing slowly, until the first dub is cut
+    const F = dpr, cx = W / 2, cy = H * 0.46, breath = 0.5 + 0.5 * Math.sin(performance.now() / 1400);
+    [[0.30, '#f7c52d'], [0.21, '#4cc9f0'], [0.12, '#e0232b']].forEach(([r, colour], i) => { g.strokeStyle = colour; g.globalAlpha = 0.10 + 0.10 * breath * (1 - i * 0.2); g.lineWidth = 1.2 * F; g.setLineDash([2 * F, 7 * F]); g.beginPath(); g.arc(cx, cy, Math.min(W, H) * r * (1 + 0.015 * breath), 0, 2 * Math.PI); g.stroke(); });
+    g.setLineDash([]); g.globalAlpha = 1; g.fillStyle = '#8d8775'; g.font = `${12 * F}px ui-monospace, Menlo, monospace`; g.textAlign = 'center';
+    g.fillText(brain ? 'THE BRAIN IS AWAKE AND SILENT' : 'WAKING THE BRAIN', cx, cy - 8 * F); g.fillStyle = '#f7c52d'; g.fillText(brain ? 'PRESS CUT A DUB' : '', cx, cy + 12 * F); g.textAlign = 'left';
+    return;
+  }
+  if (!geo || geo.W !== W || geo.H !== H) computeGeometry(W, H);
+  const s = trace.steps[step], L = layout, now = performance.now(), F = dpr;
+  g.font = `${11 * F}px Helvetica, Arial, sans-serif`; g.textAlign = 'center';
+  // records field
+  const [rx, ry, rw, rh] = geo.records, [cw, ch, cols] = geo.cell;
+  g.fillStyle = '#0c0c11'; g.fillRect(rx, ry, rw, rh);
+  for (const [cell, [born, push]] of flashes.cells) { const age = (now - born) / 900; if (age > 1) { flashes.cells.delete(cell); continue; } const [x, y] = cellPos(cell); const a = (1 - age); g.fillStyle = s.phase === 'primer' ? `rgba(242,182,50,${a})` : `rgba(255,255,255,${a})`; g.fillRect(x - cw / 2, y - ch / 2, Math.max(cw, 2 * F), Math.max(ch, 2 * F)); }
+  g.fillStyle = '#8a8776'; g.fillText(`${weights.cells} record cells · ${weights.active} fire per half-beat`, rx + rw / 2, ry + rh + 16 * F);
+  // heard ring and output ring
+  const heard = s.heard ? s.heard : (s.phase === 'primer' ? (s.t > 0 ? trace.steps[s.t - 1].played : null) : null);
+  const heardCrop = heard && heard[L.drum_on] > .5 ? argmax(heard, 0, L.crops) : -1;
+  const playedCrop = s.played && s.played[L.drum_on] > .5 ? argmax(s.played, 0, L.crops) : -1;
+  const scores = s.out.slice(0, L.crops).map(v => clamp(v, 0, 1));
+  const drawRing = ([cx, cy, r], hot, lit, label, playedMark) => {
+    g.strokeStyle = '#1f1e1a'; g.lineWidth = 1 * F; g.beginPath(); g.arc(cx, cy, r, 0, 2 * Math.PI); g.stroke();
+    for (let i = 0; i < L.crops; i++) { const [x, y] = ringPos(cx, cy, r, i, L.crops); const v = lit ? lit[i] : 0; const rad = (2.2 + 4 * v) * F;
+      g.fillStyle = i % 8 === 0 ? `rgba(242,182,50,${0.25 + 0.75 * v})` : `rgba(236,231,217,${0.18 + 0.82 * v})`; g.beginPath(); g.arc(x, y, rad, 0, 2 * Math.PI); g.fill();
+      if (i === hot) { const age = clamp((now - flashes.heard) / 400, 0, 1); g.strokeStyle = `rgba(242,182,50,${1 - 0.5 * age})`; g.lineWidth = 2 * F; g.beginPath(); g.arc(x, y, (7 + 6 * (1 - age)) * F, 0, 2 * Math.PI); g.stroke(); }
+      if (i === playedMark) { g.strokeStyle = '#fff'; g.lineWidth = 2 * F; g.beginPath(); g.arc(x, y, 8 * F, 0, 2 * Math.PI); g.stroke(); } }
+    g.fillStyle = '#8a8776'; g.fillText(label, cx, cy + r + 18 * F);
+  };
+  drawRing(geo.heard, heardCrop, null, 'heard', -1);
+  drawRing(geo.out, -1, scores, 'plays · white ring', playedCrop);
+  // clock
+  for (let i = 0; i < 8; i++) { const [x, y] = ringPos(geo.clock[0], geo.clock[1], geo.clock[2], i, 8); const on = (s.phase === 'primer' ? s.t % 8 : s.clock) === i; g.fillStyle = on ? '#e5383b' : '#2a2822'; g.beginPath(); g.arc(x, y, (on ? 4 : 2.5) * F, 0, 2 * Math.PI); g.fill(); }
+  g.fillStyle = '#8a8776'; g.fillText('clock', geo.clock[0], geo.clock[1] + 4 * F);
+  // bass keyboards
+  const keys = ([x0, y0, w], vec, playedNote, label) => { for (let n = 0; n < L.notes; n++) { const v = vec ? clamp(vec[L.note_start + n], 0, 1) : 0; const black = [1, 3, 6, 8, 10].includes(n % 12); g.fillStyle = `rgba(43,182,115,${0.12 + 0.88 * v})`; const kw = w / L.notes; g.fillRect(x0 + n * kw + F, y0 - (black ? 10 : 14) * F, kw - 2 * F, (black ? 10 : 14) * F); if (n === playedNote) { g.strokeStyle = '#fff'; g.lineWidth = 1.5 * F; g.strokeRect(x0 + n * kw + F, y0 - 16 * F, kw - 2 * F, 18 * F); } }
+    if (W / F >= 620) { g.fillStyle = '#8a8776'; g.fillText(label, x0 + w / 2, y0 + 14 * F); } };
+  const heardNote = heard && heard[L.bass_on] > .5 ? argmax(heard, L.note_start, L.note_start + L.notes) - L.note_start : -1;
+  const playedNote = s.played && s.played[L.bass_on] > .5 ? argmax(s.played, L.note_start, L.note_start + L.notes) - L.note_start : -1;
+  keys(geo.keysL, heard, heardNote, 'heard bass');
+  keys(geo.keysR, s.out, playedNote, 'bass scores');
+  // change lamp and gain
+  if (L.change !== null && L.change !== undefined) { const p = clamp(s.out[L.change], 0, 1); const [x, y] = outputPos(L.change); const age = clamp((now - flashes.change) / 700, 0, 1); g.fillStyle = `rgba(229,56,59,${0.15 + 0.85 * Math.max(p, 1 - age)})`; g.beginPath(); g.arc(x, y, (5 + 9 * (1 - age)) * F, 0, 2 * Math.PI); g.fill(); g.fillStyle = '#8a8776'; g.fillText(`change ${p.toFixed(2)}`, x, y + 20 * F); }
+  const [gx, gy] = outputPos(L.drum_gain); const gain = clamp(s.out[L.drum_gain], 0, 1); g.fillStyle = '#2a2822'; g.fillRect(gx - 20 * F, gy - 4 * F, 40 * F, 8 * F); g.fillStyle = '#ece7d9'; g.fillRect(gx - 20 * F, gy - 4 * F, 40 * F * gain, 8 * F); if (W / F >= 620) { g.fillStyle = '#8a8776'; g.fillText('gain', gx, gy + 20 * F); }
+  // context channels: phyllotaxis, fast inside, slow outside
+  const [bx, by, rIn, rOut] = geo.brain;
+  g.strokeStyle = '#1a1915'; g.lineWidth = 1 * F; g.beginPath(); g.arc(bx, by, rOut + 12 * F, 0, 2 * Math.PI); g.stroke();
+  for (let i = 0; i < weights.hidden; i++) { const [x, y] = nPos[i]; const h = s.h[i], open = 1 - s.gate[i]; const a = clamp(Math.abs(h) * 1.4, 0.08, 1);
+    if (open > 0.2) { g.fillStyle = `rgba(242,182,50,${0.35 * open})`; g.beginPath(); g.arc(x, y, (5 + 9 * open) * F, 0, 2 * Math.PI); g.fill(); }
+    g.fillStyle = h >= 0 ? `rgba(242,182,50,${a})` : `rgba(76,201,240,${a})`; g.beginPath(); g.arc(x, y, (2.5 + 4.5 * Math.min(1, Math.abs(h))) * F, 0, 2 * Math.PI); g.fill(); }
+  g.fillStyle = '#8a8776'; g.fillText(W / F < 620 ? `${weights.hidden} context channels` : `${weights.hidden} context channels · 2 to ${weights.timescales[weights.timescales.length - 1]} half-beats`, bx, by + rOut + 30 * F);
+  // particles
+  for (let i = particles.length - 1; i >= 0; i--) { const p = particles[i]; const age = (now - p.born) / p.life; if (age > 1) { particles.splice(i, 1); continue; } if (age < 0) continue; const e = age < .5 ? 2 * age * age : 1 - Math.pow(-2 * age + 2, 2) / 2;
+    let x = p.from[0] + (p.to[0] - p.from[0]) * e, y = p.from[1] + (p.to[1] - p.from[1]) * e; if (p.arc) y += Math.sin(e * Math.PI) * H * 0.42;
+    g.fillStyle = p.color + (1 - age * 0.7) + ')'; g.beginPath(); g.arc(x, y, p.size * F, 0, 2 * Math.PI); g.fill(); }
+  // the loop through the world, as a standing arc
+  g.strokeStyle = 'rgba(242,182,50,0.18)'; g.lineWidth = 1.5 * F; g.beginPath(); g.moveTo(geo.out[0], geo.out[1] + geo.out[2]); g.bezierCurveTo(geo.out[0], H * 0.98, geo.heard[0], H * 0.98, geo.heard[0], geo.heard[1] + geo.heard[2]); g.stroke();
+  g.fillStyle = '#8a8776'; g.textAlign = 'left'; g.fillText(computing ? (W / F < 620 ? 'COMPUTING · half-beat ' : 'COMPUTING · the brain plays ahead of the sound, half-beat ') + (step + 1) + ' of ' + trace.total_steps : W / F < 620 ? 'PLAYING' : 'PLAYING · closed loop, parameters and records fixed', 16 * F, 20 * F);
+  g.textAlign = 'right'; g.fillText(`${trace.clip} · ${trace.mode}`, W - 16 * F, 20 * F);
+}
+
+function drawReadout(s) {
+  const R = $('readout'); if (!s) { R.innerHTML = ''; return; }
+  const L = layout; const heard = s.heard ? s.heard : (s.phase === 'primer' ? (s.t > 0 ? trace.steps[s.t - 1].played : null) : null);
+  const crop = v => v && v[L.drum_on] > .5 ? argmax(v, 0, L.crops) : '·';
+  const key = trace && trace.patch ? trace.patch.key : 0, pitch = v => argmax(v, L.note_start, L.note_start + L.notes) - L.note_start + key + 12;
+  const note = v => v && v[L.bass_on] > .5 ? ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'][pitch(v) % 12] + Math.floor(pitch(v) / 12) : '·';
+  const top = s.out.slice(0, L.crops).map((v, i) => [v, i]).sort((a, b) => b[0] - a[0]).slice(0, 3).map(([v, i]) => `${i}:${v.toFixed(2)}`).join(' ');
+  const cells = [['heard', crop(heard), ''], ['plays', crop(s.played), 'gold'], ['top scores', top, ''], ['bass', note(s.played), 'green'],
+    ['change', L.change != null ? `${s.played && s.played[L.change] > .5 ? 'YES' : 'no'} · p ${clamp(s.out[L.change], 0, 1).toFixed(2)}` : 'no port', s.played && L.change != null && s.played[L.change] > .5 ? 'red' : ''],
+    ['record read', norm(s.read).toFixed(2), ''], ['mean gate', (s.gate.reduce((a, b) => a + b, 0) / s.gate.length).toFixed(2), '']];
+  if (L.texture_start != null && L.texture_ports && s.played) cells.push(['texture level · brightness', clamp(s.played[L.texture_start], 0, 1).toFixed(2) + ' · ' + clamp(s.played[L.texture_start + 1], 0, 1).toFixed(2), '']);
+  R.innerHTML = cells.map(([k, v, cls]) => `<div><small>${k}</small><b class="${cls}">${v}</b></div>`).join('');
+}
+
+function ensureGeometry() { const c = $('brain'); if (!geo || geo.W !== c.width || geo.H !== c.height) computeGeometry(c.width, c.height); }
+function frame() {
+  let step = -1;
+  try {
+    if (computing) advanceComputing();
+    drawWave();
+    step = currentStep();
+    if (trace && weights && step >= 0) { ensureGeometry(); if (step !== lastStep) { onStep(step, lastStep); lastStep = step; } }
+    drawScore(step);
+    drawBrain(step);
+  } catch (e) { report('frame: ' + (e.stack || e)); }
+  if (trace && step >= 0) { const s = trace.steps[step]; $('hb').textContent = s.t; $('bar').textContent = (1 + Math.floor(s.t / 8)) + '.' + (1 + Math.floor((s.t % 8) / 2)); $('phase').textContent = s.phase === 'primer' ? 'primer' : 'own playing'; $('time').textContent = audio.currentTime.toFixed(1) + ' s'; }
+  requestAnimationFrame(frame);
+}
+
+function drawScore(step) {
+  const c = $('score'), g = c.getContext('2d'), W = c.width, H = c.height, F = devicePixelRatio || 1;
+  if (!trace || !layout) { g.fillStyle = '#060607'; g.fillRect(0, 0, W, H); return; }
+  const L = layout, steps = trace.steps.filter(s => s.t >= 0), n = trace.total_steps || steps.length, cw = W / n;
+  const hasTexture = L.texture_start != null && L.texture_ports;
+  const left = 40 * F, top = 14 * F, drumH = H * (hasTexture ? 0.40 : 0.55), gap = 12 * F, bassTop = top + drumH + gap, bassH = (hasTexture ? H * 0.20 : H - bassTop - 16 * F);
+  const texTop = bassTop + bassH + gap, texH = H - texTop - 16 * F;
+  if (!scoreImage) {
+    scoreImage = document.createElement('canvas'); scoreImage.width = W; scoreImage.height = H;
+    const s = scoreImage.getContext('2d'); s.fillStyle = '#060607'; s.fillRect(0, 0, W, H);
+    const usable = W - left; const col = usable / n;
+    if (trace.primer_half_beats) { s.fillStyle = 'rgba(242,182,50,0.08)'; s.fillRect(left, 0, col * trace.primer_half_beats, H); }
+    s.strokeStyle = '#1f1e1a'; s.lineWidth = 1;
+    for (let k = 0; k <= n; k += 8) { const x = Math.round(left + k * col) + .5; s.beginPath(); s.moveTo(x, top); s.lineTo(x, H - 14 * F); s.stroke(); }
+    const rowD = drumH / L.crops, rowB = bassH / L.notes;
+    steps.forEach((st, k) => { const p = st.played; if (!p) return; const x = left + k * col;
+      if (p[L.drum_on] > .5) { const crop = argmax(p, 0, L.crops); const gain = clamp(p[L.drum_gain], 0, 1); s.fillStyle = crop % 8 === 0 ? `rgba(242,182,50,${0.35 + 0.65 * gain})` : `rgba(236,231,217,${0.3 + 0.7 * gain})`; s.fillRect(x + .5, top + (L.crops - 1 - crop) * rowD, Math.max(1, col - 1), Math.max(1, rowD - 0.5)); }
+      if (L.change != null && p[L.change] > .5) { s.fillStyle = p.returned ? '#f7c52d' : '#e5383b'; s.fillRect(x, top - 6 * F, Math.max(1, col - 1), 4 * F); }
+      if (p[L.bass_on] > .5) { const note = argmax(p, L.note_start, L.note_start + L.notes) - L.note_start; const hold = p[L.bass_hold] > .5; s.fillStyle = hold ? 'rgba(43,182,115,0.55)' : 'rgba(43,182,115,1)'; s.fillRect(x + (hold ? 0 : .5), bassTop + (L.notes - 1 - note) * rowB, Math.max(1, col - (hold ? 0 : 1)), Math.max(1, rowB - 0.5)); }
+      if (hasTexture) { const bands = L.texture_ports - 2, rowT = texH / bands; for (let b = 0; b < bands; b++) { const v = clamp(p[L.texture_start + 2 + b], 0, 1); if (v > 0.02) { s.fillStyle = `rgba(190,140,255,${0.15 + 0.85 * v})`; s.fillRect(x, texTop + (bands - 1 - b) * rowT, Math.max(1, col), Math.max(1, rowT - 0.5)); } } } });
+    s.fillStyle = '#8a8776'; s.font = `${10 * F}px Helvetica, Arial, sans-serif`; s.textAlign = 'right';
+    for (const [label, y] of [['31', top + 4 * F], ['crop', top + drumH / 2], ['0', top + drumH]]) s.fillText(label, left - 4 * F, y);
+    ['B2', 'bass', 'C1'].forEach((label, i) => s.fillText(label, left - 4 * F, bassTop + [4 * F, bassH / 2, bassH][i]));
+    if (hasTexture) ['high', 'texture', 'low'].forEach((label, i) => s.fillText(label, left - 4 * F, texTop + [4 * F, texH / 2, texH][i]));
+    s.textAlign = 'left'; s.fillText('every half-beat: the crop played (rows in loop order, gold = bar-start crops), red ticks = change points, bass notes below (pale = held)' + (hasTexture ? ', texture bands at the bottom (violet)' : ''), left, H - 3 * F);
+  }
+  g.drawImage(scoreImage, 0, 0);
+  if (step >= 0) { const k = trace.steps[step].t; if (k >= 0) { const x = left + k * (W - left) / n; g.fillStyle = 'rgba(242,182,50,0.9)'; g.fillRect(x - 1, top - 8 * F, 2, H - top - 6 * F); } }
+}
+boot();
+})();
+</script>
+</body>
+</html>
