@@ -1,0 +1,55 @@
+{
+  "scope": "public construction only; no numerical queries or training",
+  "checks": [
+    {
+      "input_width": 3,
+      "latent_width": 2,
+      "arms": [
+        {
+          "observer": false,
+          "parameters": 76,
+          "patches": 14,
+          "edges": 62,
+          "context_sources": {
+            "state": 20
+          }
+        },
+        {
+          "observer": true,
+          "parameters": 60,
+          "patches": 12,
+          "edges": 48,
+          "context_sources": {
+            "state": 10,
+            "residual": 6
+          }
+        }
+      ]
+    },
+    {
+      "input_width": 7,
+      "latent_width": 4,
+      "arms": [
+        {
+          "observer": false,
+          "parameters": 228,
+          "patches": 24,
+          "edges": 204,
+          "context_sources": {
+            "state": 88
+          }
+        },
+        {
+          "observer": true,
+          "parameters": 188,
+          "patches": 20,
+          "edges": 168,
+          "context_sources": {
+            "state": 44,
+            "residual": 28
+          }
+        }
+      ]
+    }
+  ]
+}

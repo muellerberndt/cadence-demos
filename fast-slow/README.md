@@ -171,6 +171,20 @@ training result yet. Exact original folds and Hopfield construction remain
 reproduction gates; native Cadence uses its own patch law. Whole-object
 acquisition precedes any partial-view capability comparison.
 
+`acquisition_controls.py` separates fixed-rule learning, balanced mixed-rule
+experience, capacity and replay duration. Its development seed is excluded from
+independent confirmation. `verify_acquisition_controls.py` replays saved query
+checks without learning. The complete small synthetic run, frozen sources,
+interrupted attempts and checkpoints are preserved in the verified archive
+under `evidence/20261001/acquisition-controls-pilot/`.
+
+`readback_signal_probe.py` measures the errors available to an observer in an
+untrained graph, with all states free or an observed boundary clamped.
+`verify_readback_signal.py` recomputes its four-patch predictions and free-state
+energy derivatives directly. This is a signal diagnostic, not a learned
+advantage. Shared-innovation experiments use independent synthetic body targets
+to test whether those signals can support useful correction.
+
 Use the sibling Cadence checkout through `PYTHONPATH=../../cadence/src` from this
 directory. Training needs NumPy and CPU Torch. Native play/replay additionally
 needs Gymnasium/ALE and available ROMs. Music rendering uses the existing Amen

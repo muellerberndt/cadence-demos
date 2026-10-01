@@ -31,6 +31,14 @@
     "prepare.py": {
       "bytes": 6212,
       "sha256": "81d92a5af1c2472af6a9f4d2c6aa8ea07b6650fa102852b728040dc1b7924c30"
+    },
+    "public_graph_check.py": {
+      "bytes": 2029,
+      "sha256": "f12606c4301dc46890c207bdcd2e04ae7c1a7604d0b754c4e55ca26bdc715111"
+    },
+    "public_graph_check.json": {
+      "bytes": 1093,
+      "sha256": "3678549b1f700978c527d4d8a12b1ad667bddc3a3b47d5e698c65781bb066601"
     }
   },
   "source_manifest_sha256": "1e72a2756c5b712c5af8cb1db55d22b0137f7f7a6fa599c9333268301ca98fb5",
@@ -41,7 +49,9 @@
   "native_cadence_result": false,
   "protocol": {
     "path": "fast-slow/occlusion_protocol.json",
-    "sha256": "4c5c6804e61c07ec15f7322b1a850232a33a95d24ca1341c2791f87435957dcb",
-    "status": "preregistered_candidate_design_pending_fidelity_gates_and_runner_implementation"
+    "sha256": "f967a43850a45a2f0b4ddc21c7f4ab70e6f78e1e12f5bb8d4964b5bda2296d55",
+    "status": "preregistered_candidate_design_pending_fidelity_gates_and_runner_implementation",
+    "previous_sha256": "4c5c6804e61c07ec15f7322b1a850232a33a95d24ca1341c2791f87435957dcb",
+    "revision_reason": "Prior candidate B<-C<-B state cycle is unsupported by the public builder. Also public observes adds BOTH state and error contacts, so prior residual-only contact counts were invalid. Replaced with a public acyclic graph and a slightly larger ordinary control; no original-data or run results changed."
   }
 }

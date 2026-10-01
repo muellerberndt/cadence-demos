@@ -1,0 +1,2849 @@
+{
+  "schema": "cadence-acquisition-verification/1",
+  "valid": true,
+  "protocol_sha256": "309c11103b7346922209881de484b88d1339a349abe162753023bf7302173323",
+  "verifier_sha256": "877275e45fb8ebde68571bdcdaddb947e8a5a3726e56d1740b84a20f2d3b9b6e",
+  "shared_verifier_helpers_sha256": "f60bbcc771cbf929831efac7ccc09b172f42f32f4831ca2fb452ca0548c69cb0",
+  "pilot_cases_expected": 12,
+  "cases": [
+    {
+      "spec": {
+        "arm_order": [
+          "ordinary",
+          "observer"
+        ],
+        "condition": "fixed_positive",
+        "id": "seed2-fixed_positive-small-beta0p1",
+        "layout": "small",
+        "parameter_prior": 0.1,
+        "parameters": 34,
+        "role": "development",
+        "seed": 2
+      },
+      "verification": "verified",
+      "arms": [
+        {
+          "arm": "ordinary",
+          "status": "complete",
+          "calls": 1004,
+          "admissions": 512,
+          "attempted_presentations": 8192,
+          "admitted_presentations": 8192,
+          "refusals": 0,
+          "unknown_work_calls": 0,
+          "unlogged_inflight_work_unknown": false,
+          "partial_ledger_tail": false,
+          "work": {
+            "backtracks": 7813,
+            "edge_visits": 21693488,
+            "evaluations": 28039,
+            "patch_visits": 4651248,
+            "proposals": 26031
+          },
+          "gates": [
+            {
+              "status": "complete",
+              "update_attempts": 32,
+              "admissions": 32,
+              "presentations": 512,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "0.3": [
+                  0.0030005532021651687,
+                  0.001273317711316884
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.004689873715466362,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.05819457794968107,
+                0.14351510813173504,
+                0.029215763085697795,
+                -0.06685604342322513
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 128,
+              "admissions": 128,
+              "presentations": 2048,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "0.3": [
+                  0.0032731928624501866,
+                  0.001193801569900126
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.004432635738255448,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.06148026644739539,
+                0.14855073642444314,
+                0.02930908841954442,
+                -0.06678285075123552
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 512,
+              "admissions": 512,
+              "presentations": 8192,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "0.3": [
+                  0.003118318459882848,
+                  0.0012849403547260882
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.004380050792992013,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.07146772529833346,
+                0.16657031600544803,
+                0.029608800170061584,
+                -0.06617571358207791
+              ]
+            }
+          ],
+          "checkpoints_reloaded": 5,
+          "replayed_queries": 492,
+          "replay_work": {
+            "evaluations": 4068,
+            "edge_visits": 215472,
+            "patch_visits": 48816,
+            "proposals": 3084,
+            "backtracks": 0
+          }
+        },
+        {
+          "arm": "observer",
+          "status": "complete",
+          "calls": 1004,
+          "admissions": 512,
+          "attempted_presentations": 8192,
+          "admitted_presentations": 8192,
+          "refusals": 0,
+          "unknown_work_calls": 0,
+          "unlogged_inflight_work_unknown": false,
+          "partial_ledger_tail": false,
+          "work": {
+            "backtracks": 7378,
+            "edge_visits": 20800124,
+            "evaluations": 25775,
+            "patch_visits": 4458660,
+            "proposals": 23767
+          },
+          "gates": [
+            {
+              "status": "complete",
+              "update_attempts": 32,
+              "admissions": 32,
+              "presentations": 512,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "0.3": [
+                  0.0030591407334713268,
+                  0.001262356142700226
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.004765263569578596,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.12284831032632404,
+                0.08459445033302046,
+                0.01758026117283947,
+                -0.05838216208345843
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 128,
+              "admissions": 128,
+              "presentations": 2048,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "0.3": [
+                  0.003131616395066361,
+                  0.001202687376631272
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.0045709645246545146,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.1306568707449254,
+                0.08504533207711878,
+                0.01703192094860329,
+                -0.058391168263044864
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 512,
+              "admissions": 512,
+              "presentations": 8192,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "0.3": [
+                  0.003102971703855518,
+                  0.0012819492849768695
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.00451540899743591,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.15956593385190815,
+                0.0867005014611432,
+                0.014976820751328702,
+                -0.058431568152555055
+              ]
+            }
+          ],
+          "checkpoints_reloaded": 5,
+          "replayed_queries": 492,
+          "replay_work": {
+            "evaluations": 2723,
+            "edge_visits": 145532,
+            "patch_visits": 32676,
+            "proposals": 1739,
+            "backtracks": 0
+          }
+        }
+      ],
+      "execution": {
+        "case_seconds_cap": 120,
+        "returncode": 0,
+        "spec": {
+          "arm_order": [
+            "ordinary",
+            "observer"
+          ],
+          "condition": "fixed_positive",
+          "id": "seed2-fixed_positive-small-beta0p1",
+          "layout": "small",
+          "parameter_prior": 0.1,
+          "parameters": 34,
+          "role": "development",
+          "seed": 2
+        }
+      },
+      "case_status": "complete"
+    },
+    {
+      "spec": {
+        "arm_order": [
+          "observer",
+          "ordinary"
+        ],
+        "condition": "fixed_positive",
+        "id": "seed2-fixed_positive-small-beta0p01",
+        "layout": "small",
+        "parameter_prior": 0.01,
+        "parameters": 34,
+        "role": "development",
+        "seed": 2
+      },
+      "verification": "verified",
+      "arms": [
+        {
+          "arm": "ordinary",
+          "status": "complete",
+          "calls": 1004,
+          "admissions": 512,
+          "attempted_presentations": 8192,
+          "admitted_presentations": 8192,
+          "refusals": 0,
+          "unknown_work_calls": 0,
+          "unlogged_inflight_work_unknown": false,
+          "partial_ledger_tail": false,
+          "work": {
+            "backtracks": 21135,
+            "edge_visits": 43846860,
+            "evaluations": 53279,
+            "patch_visits": 9398868,
+            "proposals": 51271
+          },
+          "gates": [
+            {
+              "status": "complete",
+              "update_attempts": 32,
+              "admissions": 32,
+              "presentations": 512,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "0.3": [
+                  0.003080582066801671,
+                  0.001255402277234872
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.0046807356827441105,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.09074568538136689,
+                0.1535014276291089,
+                0.023465656332867856,
+                -0.06778335830979124
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 128,
+              "admissions": 128,
+              "presentations": 2048,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "0.3": [
+                  0.00341962367153979,
+                  0.0011639340245214774
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.004370706388631575,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.12093327931431014,
+                0.19291485982907808,
+                0.024471486882147207,
+                -0.06630600003682759
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 512,
+              "admissions": 512,
+              "presentations": 8192,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "0.3": [
+                  0.003279657254728026,
+                  0.0013235885707881087
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.0035279385774739445,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.25887716857704673,
+                0.3780436812865686,
+                0.03018916934549254,
+                -0.057856550510796335
+              ]
+            }
+          ],
+          "checkpoints_reloaded": 5,
+          "replayed_queries": 492,
+          "replay_work": {
+            "evaluations": 4615,
+            "edge_visits": 243916,
+            "patch_visits": 55380,
+            "proposals": 3631,
+            "backtracks": 29
+          }
+        },
+        {
+          "arm": "observer",
+          "status": "complete",
+          "calls": 1004,
+          "admissions": 512,
+          "attempted_presentations": 8192,
+          "admitted_presentations": 8192,
+          "refusals": 0,
+          "unknown_work_calls": 0,
+          "unlogged_inflight_work_unknown": false,
+          "partial_ledger_tail": false,
+          "work": {
+            "backtracks": 21910,
+            "edge_visits": 45159316,
+            "evaluations": 53442,
+            "patch_visits": 9678924,
+            "proposals": 51434
+          },
+          "gates": [
+            {
+              "status": "complete",
+              "update_attempts": 32,
+              "admissions": 32,
+              "presentations": 512,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "0.3": [
+                  0.003087176615272229,
+                  0.0012199658997079118
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.004804017786623569,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.059256308446679624,
+                0.10362435359671454,
+                0.029808553026902926,
+                -0.06538813753701823
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 128,
+              "admissions": 128,
+              "presentations": 2048,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "0.3": [
+                  0.0033180888914229223,
+                  0.0011720819932416135
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.004611167608880358,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.1318086029292832,
+                0.10869451057064947,
+                0.02387625947736687,
+                -0.06559151819913339
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 512,
+              "admissions": 512,
+              "presentations": 8192,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "0.3": [
+                  0.0033169252526889137,
+                  0.0013258344376401328
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.003939878575204029,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.3219789651740321,
+                0.11967361827515197,
+                0.010396357772921666,
+                -0.06619581185226624
+              ]
+            }
+          ],
+          "checkpoints_reloaded": 5,
+          "replayed_queries": 492,
+          "replay_work": {
+            "evaluations": 3233,
+            "edge_visits": 172052,
+            "patch_visits": 38796,
+            "proposals": 2249,
+            "backtracks": 0
+          }
+        }
+      ],
+      "execution": {
+        "case_seconds_cap": 120,
+        "returncode": 0,
+        "spec": {
+          "arm_order": [
+            "observer",
+            "ordinary"
+          ],
+          "condition": "fixed_positive",
+          "id": "seed2-fixed_positive-small-beta0p01",
+          "layout": "small",
+          "parameter_prior": 0.01,
+          "parameters": 34,
+          "role": "development",
+          "seed": 2
+        }
+      },
+      "case_status": "complete"
+    },
+    {
+      "spec": {
+        "arm_order": [
+          "ordinary",
+          "observer"
+        ],
+        "condition": "fixed_positive",
+        "id": "seed2-fixed_positive-interaction-beta0p1",
+        "layout": "interaction",
+        "parameter_prior": 0.1,
+        "parameters": 62,
+        "role": "development",
+        "seed": 2
+      },
+      "verification": "verified",
+      "arms": [
+        {
+          "arm": "ordinary",
+          "status": "complete",
+          "calls": 1004,
+          "admissions": 512,
+          "attempted_presentations": 8192,
+          "admitted_presentations": 8192,
+          "refusals": 0,
+          "unknown_work_calls": 0,
+          "unlogged_inflight_work_unknown": false,
+          "partial_ledger_tail": false,
+          "work": {
+            "backtracks": 23182,
+            "edge_visits": 76844436,
+            "evaluations": 63823,
+            "patch_visits": 14791460,
+            "proposals": 61815
+          },
+          "gates": [
+            {
+              "status": "complete",
+              "update_attempts": 32,
+              "admissions": 32,
+              "presentations": 512,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "0.3": [
+                  0.005434623690273699,
+                  0.004393010418212728
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.004758617875513723,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.03261949433976825,
+                0.0471152586670723,
+                -0.05891547992797447,
+                0.0077653266146270805,
+                -0.043486707694361366,
+                0.09156993146468602,
+                0.017249047270540576,
+                0.069874370747761
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 128,
+              "admissions": 128,
+              "presentations": 2048,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "0.3": [
+                  0.004320103768193792,
+                  0.004511838544154292
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.004526387195005194,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.03391821711830572,
+                0.04774134329977383,
+                -0.05043101190402342,
+                0.00903851105301062,
+                -0.040223833099907125,
+                0.09269093951738697,
+                0.017074584696722295,
+                0.06950531851639422
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 512,
+              "admissions": 512,
+              "presentations": 8192,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "0.3": [
+                  0.005859720370176378,
+                  0.00498380418609606
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.004480575268877877,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.03190104051230698,
+                0.048809371036232674,
+                -0.05241444532506757,
+                0.010203852946698573,
+                -0.04300119982214644,
+                0.09412869142121462,
+                0.017008738825662777,
+                0.06959602365209709
+              ]
+            }
+          ],
+          "checkpoints_reloaded": 5,
+          "replayed_queries": 492,
+          "replay_work": {
+            "evaluations": 18773,
+            "edge_visits": 1881236,
+            "patch_visits": 375460,
+            "proposals": 17789,
+            "backtracks": 5314
+          }
+        },
+        {
+          "arm": "observer",
+          "status": "complete",
+          "calls": 1004,
+          "admissions": 512,
+          "attempted_presentations": 8192,
+          "admitted_presentations": 8192,
+          "refusals": 0,
+          "unknown_work_calls": 0,
+          "unlogged_inflight_work_unknown": false,
+          "partial_ledger_tail": false,
+          "work": {
+            "backtracks": 22756,
+            "edge_visits": 75625796,
+            "evaluations": 62741,
+            "patch_visits": 14556820,
+            "proposals": 60733
+          },
+          "gates": [
+            {
+              "status": "complete",
+              "update_attempts": 32,
+              "admissions": 32,
+              "presentations": 512,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "0.3": [
+                  0.005158664901752707,
+                  0.004399369538151554
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.004738735028754572,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.10318938659678628,
+                0.03264299659324853,
+                0.043031398504396814,
+                -0.006159833786977886,
+                0.05764498062895242,
+                0.07477744422984005,
+                -0.010432566311045988,
+                0.07279287165401802
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 128,
+              "admissions": 128,
+              "presentations": 2048,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "0.3": [
+                  0.004291579829806742,
+                  0.004514960974725733
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.004546110359395505,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.10600556043586033,
+                0.032728042715059615,
+                0.04768899000117319,
+                -0.0060691963638606315,
+                0.06097821508608917,
+                0.07487424062244803,
+                -0.011376033551858589,
+                0.07278861002428444
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 512,
+              "admissions": 512,
+              "presentations": 8192,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "0.3": [
+                  0.006078562220557536,
+                  0.00494153903961205
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.004489574006828966,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.11395734895372217,
+                0.03295618656903829,
+                0.060622369051105955,
+                -0.005794280517650108,
+                0.07042431167637257,
+                0.07513668872086288,
+                -0.013817264845894446,
+                0.0727639284259688
+              ]
+            }
+          ],
+          "checkpoints_reloaded": 5,
+          "replayed_queries": 492,
+          "replay_work": {
+            "evaluations": 18401,
+            "edge_visits": 1844036,
+            "patch_visits": 368020,
+            "proposals": 17417,
+            "backtracks": 5222
+          }
+        }
+      ],
+      "execution": {
+        "case_seconds_cap": 120,
+        "returncode": 0,
+        "spec": {
+          "arm_order": [
+            "ordinary",
+            "observer"
+          ],
+          "condition": "fixed_positive",
+          "id": "seed2-fixed_positive-interaction-beta0p1",
+          "layout": "interaction",
+          "parameter_prior": 0.1,
+          "parameters": 62,
+          "role": "development",
+          "seed": 2
+        }
+      },
+      "case_status": "complete"
+    },
+    {
+      "spec": {
+        "arm_order": [
+          "observer",
+          "ordinary"
+        ],
+        "condition": "fixed_positive",
+        "id": "seed2-fixed_positive-interaction-beta0p01",
+        "layout": "interaction",
+        "parameter_prior": 0.01,
+        "parameters": 62,
+        "role": "development",
+        "seed": 2
+      },
+      "verification": "verified",
+      "arms": [
+        {
+          "arm": "ordinary",
+          "status": "censored",
+          "calls": 497,
+          "admissions": 168,
+          "attempted_presentations": 2704,
+          "admitted_presentations": 2688,
+          "refusals": 0,
+          "unknown_work_calls": 1,
+          "unlogged_inflight_work_unknown": false,
+          "partial_ledger_tail": false,
+          "work": {
+            "backtracks": 34325,
+            "edge_visits": 87484108,
+            "evaluations": 73171,
+            "patch_visits": 16840220,
+            "proposals": 72179
+          },
+          "gates": [
+            {
+              "status": "complete",
+              "update_attempts": 32,
+              "admissions": 32,
+              "presentations": 512,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "0.3": [
+                  0.007429968903525379,
+                  0.004698970805066895
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.004784295054459419,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.028699445903172596,
+                0.04342178376465625,
+                -0.06082175248810804,
+                0.003124811644750252,
+                -0.04477596114028692,
+                0.08663526563140729,
+                0.03747332937800988,
+                0.07320960793942122
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 128,
+              "admissions": 128,
+              "presentations": 2048,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "0.3": [
+                  0.008189953028563107,
+                  0.005863289941777256
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.004532633556825268,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.021863819762549627,
+                0.043848560636427905,
+                -0.07075867786490564,
+                0.0033916275268945956,
+                -0.05390073020473596,
+                0.0871346210304748,
+                0.04087290657848953,
+                0.07321567438774629
+              ]
+            },
+            {
+              "update_attempts": 512,
+              "status": "missing",
+              "passed": false
+            }
+          ],
+          "checkpoints_reloaded": 4,
+          "replayed_queries": 328,
+          "replay_work": {
+            "evaluations": 21915,
+            "edge_visits": 2194124,
+            "patch_visits": 438300,
+            "proposals": 21259,
+            "backtracks": 8147
+          }
+        },
+        {
+          "arm": "observer",
+          "status": "censored",
+          "calls": 503,
+          "admissions": 174,
+          "attempted_presentations": 2800,
+          "admitted_presentations": 2784,
+          "refusals": 0,
+          "unknown_work_calls": 1,
+          "unlogged_inflight_work_unknown": false,
+          "partial_ledger_tail": false,
+          "work": {
+            "backtracks": 35003,
+            "edge_visits": 90075636,
+            "evaluations": 74031,
+            "patch_visits": 17338020,
+            "proposals": 73027
+          },
+          "gates": [
+            {
+              "status": "complete",
+              "update_attempts": 32,
+              "admissions": 32,
+              "presentations": 512,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "0.3": [
+                  0.00731867499826573,
+                  0.004663527844571561
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.004808156594360348,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.07220688988327958,
+                0.04325973795535613,
+                0.02392930532342,
+                0.0014486887527174596,
+                0.019522592315221625,
+                0.08712823239669552,
+                -0.015726887787605146,
+                0.07319307429661996
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 128,
+              "admissions": 128,
+              "presentations": 2048,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "0.3": [
+                  0.008454125492746493,
+                  0.005848110478539945
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.0046278439841423765,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.08815103583684174,
+                0.04365005822295925,
+                0.051399701371688096,
+                0.0020110260327289966,
+                0.037995437633353446,
+                0.08757315151928284,
+                -0.02701330368286566,
+                0.07298860632536067
+              ]
+            },
+            {
+              "update_attempts": 512,
+              "status": "missing",
+              "passed": false
+            }
+          ],
+          "checkpoints_reloaded": 4,
+          "replayed_queries": 328,
+          "replay_work": {
+            "evaluations": 21173,
+            "edge_visits": 2119924,
+            "patch_visits": 423460,
+            "proposals": 20517,
+            "backtracks": 7989
+          }
+        }
+      ],
+      "execution": {
+        "case_seconds_cap": 120,
+        "returncode": 2,
+        "spec": {
+          "arm_order": [
+            "observer",
+            "ordinary"
+          ],
+          "condition": "fixed_positive",
+          "id": "seed2-fixed_positive-interaction-beta0p01",
+          "layout": "interaction",
+          "parameter_prior": 0.01,
+          "parameters": 62,
+          "role": "development",
+          "seed": 2
+        }
+      },
+      "case_status": "incomplete"
+    },
+    {
+      "spec": {
+        "arm_order": [
+          "ordinary",
+          "observer"
+        ],
+        "condition": "fixed_negative",
+        "id": "seed2-fixed_negative-small-beta0p1",
+        "layout": "small",
+        "parameter_prior": 0.1,
+        "parameters": 34,
+        "role": "development",
+        "seed": 2
+      },
+      "verification": "verified",
+      "arms": [
+        {
+          "arm": "ordinary",
+          "status": "complete",
+          "calls": 1004,
+          "admissions": 512,
+          "attempted_presentations": 8192,
+          "admitted_presentations": 8192,
+          "refusals": 0,
+          "unknown_work_calls": 0,
+          "unlogged_inflight_work_unknown": false,
+          "partial_ledger_tail": false,
+          "work": {
+            "backtracks": 7226,
+            "edge_visits": 20600684,
+            "evaluations": 26679,
+            "patch_visits": 4416948,
+            "proposals": 24671
+          },
+          "gates": [
+            {
+              "status": "complete",
+              "update_attempts": 32,
+              "admissions": 32,
+              "presentations": 512,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.0035940344619947045,
+                  0.001053610555560862
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.004299901361184593,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.039739459019574076,
+                0.11896631073222366,
+                0.03342693392156176,
+                -0.06826349996088998
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 128,
+              "admissions": 128,
+              "presentations": 2048,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.0033526405642538407,
+                  0.0011975578774271547
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.0038637164941686024,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.04189401853722621,
+                0.12369089496962427,
+                0.033594640407806894,
+                -0.0680978981807205
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 512,
+              "admissions": 512,
+              "presentations": 8192,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.004726468944030633,
+                  0.0009652116842547938
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.004270249484716814,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.05110762196944166,
+                0.14412539478489317,
+                0.03388958391709196,
+                -0.06740691798650272
+              ]
+            }
+          ],
+          "checkpoints_reloaded": 5,
+          "replayed_queries": 492,
+          "replay_work": {
+            "evaluations": 3919,
+            "edge_visits": 207724,
+            "patch_visits": 47028,
+            "proposals": 2935,
+            "backtracks": 0
+          }
+        },
+        {
+          "arm": "observer",
+          "status": "complete",
+          "calls": 1004,
+          "admissions": 512,
+          "attempted_presentations": 8192,
+          "admitted_presentations": 8192,
+          "refusals": 0,
+          "unknown_work_calls": 0,
+          "unlogged_inflight_work_unknown": false,
+          "partial_ledger_tail": false,
+          "work": {
+            "backtracks": 7101,
+            "edge_visits": 20169968,
+            "evaluations": 24937,
+            "patch_visits": 4323504,
+            "proposals": 22929
+          },
+          "gates": [
+            {
+              "status": "complete",
+              "update_attempts": 32,
+              "admissions": 32,
+              "presentations": 512,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.0034851791379898515,
+                  0.001039814645355544
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.004377035583924235,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.11288580185878111,
+                0.07127773401240384,
+                0.008446614660261881,
+                -0.06110176674082326
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 128,
+              "admissions": 128,
+              "presentations": 2048,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.0033285475921163246,
+                  0.0011916867485811358
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.003928600372551896,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.1237638202711153,
+                0.07163488396117845,
+                0.008040744779449356,
+                -0.06110809188628887
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 512,
+              "admissions": 512,
+              "presentations": 8192,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.004488021396643028,
+                  0.0009758810030087053
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.004359575192323215,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.16449277351691666,
+                0.07294847117197996,
+                0.0065401769381283874,
+                -0.0611360430415896
+              ]
+            }
+          ],
+          "checkpoints_reloaded": 5,
+          "replayed_queries": 492,
+          "replay_work": {
+            "evaluations": 2580,
+            "edge_visits": 138096,
+            "patch_visits": 30960,
+            "proposals": 1596,
+            "backtracks": 0
+          }
+        }
+      ],
+      "execution": {
+        "case_seconds_cap": 120,
+        "returncode": 0,
+        "spec": {
+          "arm_order": [
+            "ordinary",
+            "observer"
+          ],
+          "condition": "fixed_negative",
+          "id": "seed2-fixed_negative-small-beta0p1",
+          "layout": "small",
+          "parameter_prior": 0.1,
+          "parameters": 34,
+          "role": "development",
+          "seed": 2
+        }
+      },
+      "case_status": "complete"
+    },
+    {
+      "spec": {
+        "arm_order": [
+          "observer",
+          "ordinary"
+        ],
+        "condition": "fixed_negative",
+        "id": "seed2-fixed_negative-small-beta0p01",
+        "layout": "small",
+        "parameter_prior": 0.01,
+        "parameters": 34,
+        "role": "development",
+        "seed": 2
+      },
+      "verification": "verified",
+      "arms": [
+        {
+          "arm": "ordinary",
+          "status": "complete",
+          "calls": 1004,
+          "admissions": 512,
+          "attempted_presentations": 8192,
+          "admitted_presentations": 8192,
+          "refusals": 0,
+          "unknown_work_calls": 0,
+          "unlogged_inflight_work_unknown": false,
+          "partial_ledger_tail": false,
+          "work": {
+            "backtracks": 22533,
+            "edge_visits": 46253424,
+            "evaluations": 55947,
+            "patch_visits": 9914544,
+            "proposals": 53939
+          },
+          "gates": [
+            {
+              "status": "complete",
+              "update_attempts": 32,
+              "admissions": 32,
+              "presentations": 512,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.003792232181541108,
+                  0.000991149246134424
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.00477943003504079,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.07403316968723746,
+                0.12655340882821128,
+                0.026409904164063754,
+                -0.06865847731354476
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 128,
+              "admissions": 128,
+              "presentations": 2048,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.0033331766955495747,
+                  0.0012162816878436386
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.003793580227870127,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.10855020668394082,
+                0.17126392329891674,
+                0.027447169129365425,
+                -0.06711051464719586
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 512,
+              "admissions": 512,
+              "presentations": 8192,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.004767239980990203,
+                  0.0009388743823857182
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.0031888014738078066,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.298898649153458,
+                0.42163861821676124,
+                0.0354268112486913,
+                -0.05559238362841354
+              ]
+            }
+          ],
+          "checkpoints_reloaded": 5,
+          "replayed_queries": 492,
+          "replay_work": {
+            "evaluations": 4596,
+            "edge_visits": 242928,
+            "patch_visits": 55152,
+            "proposals": 3612,
+            "backtracks": 31
+          }
+        },
+        {
+          "arm": "observer",
+          "status": "complete",
+          "calls": 1004,
+          "admissions": 512,
+          "attempted_presentations": 8192,
+          "admitted_presentations": 8192,
+          "refusals": 0,
+          "unknown_work_calls": 0,
+          "unlogged_inflight_work_unknown": false,
+          "partial_ledger_tail": false,
+          "work": {
+            "backtracks": 23042,
+            "edge_visits": 47212776,
+            "evaluations": 55682,
+            "patch_visits": 10118904,
+            "proposals": 53674
+          },
+          "gates": [
+            {
+              "status": "complete",
+              "update_attempts": 32,
+              "admissions": 32,
+              "presentations": 512,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.0037364888078995407,
+                  0.0009653368529351601
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.00490951489761239,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.06222499467274876,
+                0.09815276344412825,
+                0.02659563697955627,
+                -0.06650161633180375
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 128,
+              "admissions": 128,
+              "presentations": 2048,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.0033349855238852723,
+                  0.0012165558471711562
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.003921335173665038,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.15728595311533927,
+                0.10218500329120234,
+                0.019954467558175787,
+                -0.06675967565857992
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 512,
+              "admissions": 512,
+              "presentations": 8192,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.004679028511726666,
+                  0.0009466683046583029
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.0038283768503278425,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.39842409330296363,
+                0.10742136315743686,
+                0.006436065094149116,
+                -0.06763399360656053
+              ]
+            }
+          ],
+          "checkpoints_reloaded": 5,
+          "replayed_queries": 492,
+          "replay_work": {
+            "evaluations": 3178,
+            "edge_visits": 169192,
+            "patch_visits": 38136,
+            "proposals": 2194,
+            "backtracks": 0
+          }
+        }
+      ],
+      "execution": {
+        "case_seconds_cap": 120,
+        "returncode": 0,
+        "spec": {
+          "arm_order": [
+            "observer",
+            "ordinary"
+          ],
+          "condition": "fixed_negative",
+          "id": "seed2-fixed_negative-small-beta0p01",
+          "layout": "small",
+          "parameter_prior": 0.01,
+          "parameters": 34,
+          "role": "development",
+          "seed": 2
+        }
+      },
+      "case_status": "complete"
+    },
+    {
+      "spec": {
+        "arm_order": [
+          "ordinary",
+          "observer"
+        ],
+        "condition": "fixed_negative",
+        "id": "seed2-fixed_negative-interaction-beta0p1",
+        "layout": "interaction",
+        "parameter_prior": 0.1,
+        "parameters": 62,
+        "role": "development",
+        "seed": 2
+      },
+      "verification": "verified",
+      "arms": [
+        {
+          "arm": "ordinary",
+          "status": "complete",
+          "calls": 1004,
+          "admissions": 512,
+          "attempted_presentations": 8192,
+          "admitted_presentations": 8192,
+          "refusals": 0,
+          "unknown_work_calls": 0,
+          "unlogged_inflight_work_unknown": false,
+          "partial_ledger_tail": false,
+          "work": {
+            "backtracks": 23261,
+            "edge_visits": 76913092,
+            "evaluations": 64447,
+            "patch_visits": 14805140,
+            "proposals": 62439
+          },
+          "gates": [
+            {
+              "status": "complete",
+              "update_attempts": 32,
+              "admissions": 32,
+              "presentations": 512,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.003856124372810616,
+                  0.0039182430472163386
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.004183467039143477,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.01741639413194576,
+                0.050486064535143635,
+                -0.04676989706972637,
+                0.007619221743204556,
+                -0.052192975411043015,
+                0.0935775468217488,
+                -0.030131900258244537,
+                0.0720295990607395
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 128,
+              "admissions": 128,
+              "presentations": 2048,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.004734314818339478,
+                  0.004395910415907607
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.003754122437131412,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.021306322785229762,
+                0.05149160471785923,
+                -0.04060341035767892,
+                0.007594155208752259,
+                -0.04813822081937626,
+                0.09415957721652277,
+                -0.022675479149954998,
+                0.07280269017249166
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 512,
+              "admissions": 512,
+              "presentations": 8192,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.0046250188116288395,
+                  0.004680652400366405
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.00412836863017052,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.016573235932495226,
+                0.05388532178578652,
+                -0.042923893278831365,
+                0.008809913603901232,
+                -0.052012443276221704,
+                0.09604674933390278,
+                -0.02427172620894341,
+                0.07365684541708944
+              ]
+            }
+          ],
+          "checkpoints_reloaded": 5,
+          "replayed_queries": 492,
+          "replay_work": {
+            "evaluations": 19393,
+            "edge_visits": 1943236,
+            "patch_visits": 387860,
+            "proposals": 18409,
+            "backtracks": 5562
+          }
+        },
+        {
+          "arm": "observer",
+          "status": "complete",
+          "calls": 1004,
+          "admissions": 512,
+          "attempted_presentations": 8192,
+          "admitted_presentations": 8192,
+          "refusals": 0,
+          "unknown_work_calls": 0,
+          "unlogged_inflight_work_unknown": false,
+          "partial_ledger_tail": false,
+          "work": {
+            "backtracks": 22964,
+            "edge_visits": 76413124,
+            "evaluations": 63545,
+            "patch_visits": 14708500,
+            "proposals": 61537
+          },
+          "gates": [
+            {
+              "status": "complete",
+              "update_attempts": 32,
+              "admissions": 32,
+              "presentations": 512,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.004114766191357301,
+                  0.00388869815156361
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.004226477559689377,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.10768553001480113,
+                0.037868003338977003,
+                0.027959572649326928,
+                0.002027432513111225,
+                0.04269716171419608,
+                0.08443903388820194,
+                0.032871436988763034,
+                0.06557335354427615
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 128,
+              "admissions": 128,
+              "presentations": 2048,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.004761398760813767,
+                  0.004429658516994636
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.003774727001170312,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.11229155663895893,
+                0.037841729974636536,
+                0.030951037527774988,
+                0.002006073614461763,
+                0.04610748886542946,
+                0.0844208390173893,
+                0.03540592622480962,
+                0.06555133289977866
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 512,
+              "admissions": 512,
+              "presentations": 8192,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.004729276901819924,
+                  0.00470105326821393
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.004175261046311569,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.12659352117978132,
+                0.037730670672363305,
+                0.04001447773759466,
+                0.0019190538639615635,
+                0.05638136932547815,
+                0.08433609700238683,
+                0.04316612726418006,
+                0.06546803691820698
+              ]
+            }
+          ],
+          "checkpoints_reloaded": 5,
+          "replayed_queries": 492,
+          "replay_work": {
+            "evaluations": 18753,
+            "edge_visits": 1879236,
+            "patch_visits": 375060,
+            "proposals": 17769,
+            "backtracks": 5333
+          }
+        }
+      ],
+      "execution": {
+        "case_seconds_cap": 120,
+        "returncode": 0,
+        "spec": {
+          "arm_order": [
+            "ordinary",
+            "observer"
+          ],
+          "condition": "fixed_negative",
+          "id": "seed2-fixed_negative-interaction-beta0p1",
+          "layout": "interaction",
+          "parameter_prior": 0.1,
+          "parameters": 62,
+          "role": "development",
+          "seed": 2
+        }
+      },
+      "case_status": "complete"
+    },
+    {
+      "spec": {
+        "arm_order": [
+          "observer",
+          "ordinary"
+        ],
+        "condition": "fixed_negative",
+        "id": "seed2-fixed_negative-interaction-beta0p01",
+        "layout": "interaction",
+        "parameter_prior": 0.01,
+        "parameters": 62,
+        "role": "development",
+        "seed": 2
+      },
+      "verification": "verified",
+      "arms": [
+        {
+          "arm": "ordinary",
+          "status": "censored",
+          "calls": 498,
+          "admissions": 169,
+          "attempted_presentations": 2720,
+          "admitted_presentations": 2704,
+          "refusals": 0,
+          "unknown_work_calls": 1,
+          "unlogged_inflight_work_unknown": false,
+          "partial_ledger_tail": false,
+          "work": {
+            "backtracks": 35969,
+            "edge_visits": 90513892,
+            "evaluations": 76005,
+            "patch_visits": 17423700,
+            "proposals": 75011
+          },
+          "gates": [
+            {
+              "status": "complete",
+              "update_attempts": 32,
+              "admissions": 32,
+              "presentations": 512,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.0040234584871965415,
+                  0.004371461345619371
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.004635201199363781,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.02568535031128983,
+                0.05110750048663324,
+                -0.060611185155744665,
+                0.009815095634897514,
+                -0.06743671491537515,
+                0.09581540882324067,
+                -0.020136409480514338,
+                0.07321816177919427
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 128,
+              "admissions": 128,
+              "presentations": 2048,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.009557527972835978,
+                  0.005888822885953553
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.00365107490086583,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.014036699860464366,
+                0.054521793055038806,
+                -0.0717861587923401,
+                0.012777090750065409,
+                -0.08094778469149198,
+                0.09954755926932367,
+                -0.024630028385288508,
+                0.07429626258534892
+              ]
+            },
+            {
+              "update_attempts": 512,
+              "status": "missing",
+              "passed": false
+            }
+          ],
+          "checkpoints_reloaded": 4,
+          "replayed_queries": 328,
+          "replay_work": {
+            "evaluations": 22993,
+            "edge_visits": 2301924,
+            "patch_visits": 459860,
+            "proposals": 22337,
+            "backtracks": 8731
+          }
+        },
+        {
+          "arm": "observer",
+          "status": "censored",
+          "calls": 506,
+          "admissions": 177,
+          "attempted_presentations": 2848,
+          "admitted_presentations": 2832,
+          "refusals": 0,
+          "unknown_work_calls": 1,
+          "unlogged_inflight_work_unknown": false,
+          "partial_ledger_tail": false,
+          "work": {
+            "backtracks": 36535,
+            "edge_visits": 92864700,
+            "evaluations": 76882,
+            "patch_visits": 17875340,
+            "proposals": 75872
+          },
+          "gates": [
+            {
+              "status": "complete",
+              "update_attempts": 32,
+              "admissions": 32,
+              "presentations": 512,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.004315078526980022,
+                  0.004337194557061515
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.0047312428280492196,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.07026610136281933,
+                0.04278141728131864,
+                0.01989999127990032,
+                0.0032124428043842947,
+                0.02481747388191267,
+                0.08647255373876009,
+                0.016661867868597947,
+                0.06801286610316087
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 128,
+              "admissions": 128,
+              "presentations": 2048,
+              "passed": true,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.009411593694997738,
+                  0.005909652414298553
+                ]
+              },
+              "correct_response_signs": 16,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.0036950657505870604,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.09214921322932049,
+                0.04239891969186392,
+                0.047139824844203204,
+                0.002713093518951656,
+                0.05174886296765173,
+                0.0859856774443952,
+                0.03151767838138603,
+                0.06773175489037303
+              ]
+            },
+            {
+              "update_attempts": 512,
+              "status": "missing",
+              "passed": false
+            }
+          ],
+          "checkpoints_reloaded": 4,
+          "replayed_queries": 328,
+          "replay_work": {
+            "evaluations": 22423,
+            "edge_visits": 2244924,
+            "patch_visits": 448460,
+            "proposals": 21767,
+            "backtracks": 8556
+          }
+        }
+      ],
+      "execution": {
+        "case_seconds_cap": 120,
+        "returncode": 2,
+        "spec": {
+          "arm_order": [
+            "observer",
+            "ordinary"
+          ],
+          "condition": "fixed_negative",
+          "id": "seed2-fixed_negative-interaction-beta0p01",
+          "layout": "interaction",
+          "parameter_prior": 0.01,
+          "parameters": 62,
+          "role": "development",
+          "seed": 2
+        }
+      },
+      "case_status": "incomplete"
+    },
+    {
+      "spec": {
+        "arm_order": [
+          "ordinary",
+          "observer"
+        ],
+        "condition": "balanced_mixed",
+        "id": "seed2-balanced_mixed-small-beta0p1",
+        "layout": "small",
+        "parameter_prior": 0.1,
+        "parameters": 34,
+        "role": "development",
+        "seed": 2
+      },
+      "verification": "verified",
+      "arms": [
+        {
+          "arm": "ordinary",
+          "status": "complete",
+          "calls": 1016,
+          "admissions": 512,
+          "attempted_presentations": 8192,
+          "admitted_presentations": 8192,
+          "refusals": 0,
+          "unknown_work_calls": 0,
+          "unlogged_inflight_work_unknown": false,
+          "partial_ledger_tail": false,
+          "work": {
+            "backtracks": 74420,
+            "edge_visits": 71539304,
+            "evaluations": 149395,
+            "patch_visits": 15392280,
+            "proposals": 147363
+          },
+          "gates": [
+            {
+              "status": "complete",
+              "update_attempts": 32,
+              "admissions": 32,
+              "presentations": 512,
+              "passed": false,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.11163059355895565,
+                  0.11078996240762842
+                ],
+                "0.3": [
+                  0.12164801892793363,
+                  0.12246435698536016
+                ]
+              },
+              "correct_response_signs": 8,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.031796148990328746,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.9631444483921915,
+                0.7174708735118728,
+                1.0270912114753803,
+                0.510910896647012
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 128,
+              "admissions": 128,
+              "presentations": 2048,
+              "passed": false,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.10965244458703215,
+                  0.10918620066148091
+                ],
+                "0.3": [
+                  0.12161117461825649,
+                  0.12173747553886805
+                ]
+              },
+              "correct_response_signs": 8,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.013155507323106962,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                1.8629093964046481,
+                1.1300162696691225,
+                1.8982459148237634,
+                0.8965467051330076
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 512,
+              "admissions": 512,
+              "presentations": 8192,
+              "passed": false,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.10951671863326425,
+                  0.1094558840461725
+                ],
+                "0.3": [
+                  0.12107828193428799,
+                  0.12027535420790052
+                ]
+              },
+              "correct_response_signs": 8,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.0069257741984088,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                2.90861806870509,
+                1.6114983800077036,
+                2.9027284665211353,
+                1.3418857928723245
+              ]
+            }
+          ],
+          "checkpoints_reloaded": 5,
+          "replayed_queries": 504,
+          "replay_work": {
+            "evaluations": 73842,
+            "edge_visits": 3843816,
+            "patch_visits": 886104,
+            "proposals": 72834,
+            "backtracks": 37076
+          }
+        },
+        {
+          "arm": "observer",
+          "status": "censored",
+          "calls": 534,
+          "admissions": 197,
+          "attempted_presentations": 3168,
+          "admitted_presentations": 3152,
+          "refusals": 0,
+          "unknown_work_calls": 1,
+          "unlogged_inflight_work_unknown": false,
+          "partial_ledger_tail": false,
+          "work": {
+            "backtracks": 84045,
+            "edge_visits": 83076524,
+            "evaluations": 149497,
+            "patch_visits": 17853204,
+            "proposals": 148431
+          },
+          "gates": [
+            {
+              "status": "complete",
+              "update_attempts": 32,
+              "admissions": 32,
+              "presentations": 512,
+              "passed": false,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.1099842460377771,
+                  0.10916066606675985
+                ],
+                "0.3": [
+                  0.12309117004657996,
+                  0.12409893652602721
+                ]
+              },
+              "correct_response_signs": 8,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.028287039975889595,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.7148581298968523,
+                0.6888637015358324,
+                0.601138806445375,
+                0.5553077464542335
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 128,
+              "admissions": 128,
+              "presentations": 2048,
+              "passed": false,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.110753558372214,
+                  0.11018290378724516
+                ],
+                "0.3": [
+                  0.12105233085627867,
+                  0.12123573243367732
+                ]
+              },
+              "correct_response_signs": 8,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.011229851802019459,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                1.5327528823963243,
+                1.5240248843391646,
+                1.4920283197611046,
+                1.472160699725692
+              ]
+            },
+            {
+              "update_attempts": 512,
+              "status": "missing",
+              "passed": false
+            }
+          ],
+          "checkpoints_reloaded": 4,
+          "replayed_queries": 336,
+          "replay_work": {
+            "evaluations": 60279,
+            "edge_visits": 3137196,
+            "patch_visits": 723348,
+            "proposals": 59607,
+            "backtracks": 33441
+          }
+        }
+      ],
+      "execution": {
+        "case_seconds_cap": 120,
+        "returncode": 2,
+        "spec": {
+          "arm_order": [
+            "ordinary",
+            "observer"
+          ],
+          "condition": "balanced_mixed",
+          "id": "seed2-balanced_mixed-small-beta0p1",
+          "layout": "small",
+          "parameter_prior": 0.1,
+          "parameters": 34,
+          "role": "development",
+          "seed": 2
+        }
+      },
+      "case_status": "incomplete"
+    },
+    {
+      "spec": {
+        "arm_order": [
+          "observer",
+          "ordinary"
+        ],
+        "condition": "balanced_mixed",
+        "id": "seed2-balanced_mixed-small-beta0p01",
+        "layout": "small",
+        "parameter_prior": 0.01,
+        "parameters": 34,
+        "role": "development",
+        "seed": 2
+      },
+      "verification": "verified",
+      "arms": [
+        {
+          "arm": "ordinary",
+          "status": "censored",
+          "calls": 472,
+          "admissions": 135,
+          "attempted_presentations": 2176,
+          "admitted_presentations": 2160,
+          "refusals": 0,
+          "unknown_work_calls": 1,
+          "unlogged_inflight_work_unknown": false,
+          "partial_ledger_tail": false,
+          "work": {
+            "backtracks": 107061,
+            "edge_visits": 87826288,
+            "evaluations": 188397,
+            "patch_visits": 18901584,
+            "proposals": 187455
+          },
+          "gates": [
+            {
+              "status": "complete",
+              "update_attempts": 32,
+              "admissions": 32,
+              "presentations": 512,
+              "passed": false,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.11908747024644743,
+                  0.11661433146911972
+                ],
+                "0.3": [
+                  0.1174042529710958,
+                  0.11951166692011059
+                ]
+              },
+              "correct_response_signs": 8,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.00915446554132504,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                2.4524980513369026,
+                1.4397189448204646,
+                2.514976243277683,
+                1.1025692270166332
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 128,
+              "admissions": 128,
+              "presentations": 2048,
+              "passed": false,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.10538695427965841,
+                  0.10457268260240662
+                ],
+                "0.3": [
+                  0.12255128524241697,
+                  0.12316597487283712
+                ]
+              },
+              "correct_response_signs": 8,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.005354819958091391,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                3.696114052104341,
+                2.0542814666841775,
+                3.708851983042837,
+                1.6683969814131006
+              ]
+            },
+            {
+              "update_attempts": 512,
+              "status": "missing",
+              "passed": false
+            }
+          ],
+          "checkpoints_reloaded": 4,
+          "replayed_queries": 336,
+          "replay_work": {
+            "evaluations": 95948,
+            "edge_visits": 4991984,
+            "patch_visits": 1151376,
+            "proposals": 95276,
+            "backtracks": 52972
+          }
+        },
+        {
+          "arm": "observer",
+          "status": "censored",
+          "calls": 208,
+          "admissions": 39,
+          "attempted_presentations": 640,
+          "admitted_presentations": 624,
+          "refusals": 0,
+          "unknown_work_calls": 1,
+          "unlogged_inflight_work_unknown": false,
+          "partial_ledger_tail": false,
+          "work": {
+            "backtracks": 118988,
+            "edge_visits": 82051568,
+            "evaluations": 191554,
+            "patch_visits": 17673168,
+            "proposals": 191140
+          },
+          "gates": [
+            {
+              "status": "complete",
+              "update_attempts": 32,
+              "admissions": 32,
+              "presentations": 512,
+              "passed": false,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.1103252222085036,
+                  0.10763952282393893
+                ],
+                "0.3": [
+                  0.12248497878161987,
+                  0.12467708668468606
+                ]
+              },
+              "correct_response_signs": 8,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.007508467787167015,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                2.0735980412393107,
+                2.008153654762391,
+                2.093168651425648,
+                1.8633752718763943
+              ]
+            },
+            {
+              "update_attempts": 128,
+              "status": "missing",
+              "passed": false
+            },
+            {
+              "update_attempts": 512,
+              "status": "missing",
+              "passed": false
+            }
+          ],
+          "checkpoints_reloaded": 3,
+          "replayed_queries": 168,
+          "replay_work": {
+            "evaluations": 106140,
+            "edge_visits": 5520624,
+            "patch_visits": 1273680,
+            "proposals": 105804,
+            "backtracks": 65835
+          }
+        }
+      ],
+      "execution": {
+        "case_seconds_cap": 120,
+        "returncode": 2,
+        "spec": {
+          "arm_order": [
+            "observer",
+            "ordinary"
+          ],
+          "condition": "balanced_mixed",
+          "id": "seed2-balanced_mixed-small-beta0p01",
+          "layout": "small",
+          "parameter_prior": 0.01,
+          "parameters": 34,
+          "role": "development",
+          "seed": 2
+        }
+      },
+      "case_status": "incomplete"
+    },
+    {
+      "spec": {
+        "arm_order": [
+          "ordinary",
+          "observer"
+        ],
+        "condition": "balanced_mixed",
+        "id": "seed2-balanced_mixed-interaction-beta0p1",
+        "layout": "interaction",
+        "parameter_prior": 0.1,
+        "parameters": 62,
+        "role": "development",
+        "seed": 2
+      },
+      "verification": "verified",
+      "arms": [
+        {
+          "arm": "ordinary",
+          "status": "censored",
+          "calls": 644,
+          "admissions": 307,
+          "attempted_presentations": 4928,
+          "admitted_presentations": 4912,
+          "refusals": 0,
+          "unknown_work_calls": 1,
+          "unlogged_inflight_work_unknown": false,
+          "partial_ledger_tail": false,
+          "work": {
+            "backtracks": 46000,
+            "edge_visits": 96259852,
+            "evaluations": 100792,
+            "patch_visits": 18546140,
+            "proposals": 99506
+          },
+          "gates": [
+            {
+              "status": "complete",
+              "update_attempts": 32,
+              "admissions": 32,
+              "presentations": 512,
+              "passed": false,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.10894822742908138,
+                  0.10834218071152107
+                ],
+                "0.3": [
+                  0.12436383963932665,
+                  0.1252907222882857
+                ]
+              },
+              "correct_response_signs": 8,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.029549231934251807,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                -0.042037418188784564,
+                0.200611204664368,
+                -0.07172143608166898,
+                -0.06293245373965116,
+                -0.09819284145131078,
+                0.18600963506555823,
+                -0.011872900980428825,
+                0.03772336080288891
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 128,
+              "admissions": 128,
+              "presentations": 2048,
+              "passed": false,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.10731218608465085,
+                  0.10806104910139272
+                ],
+                "0.3": [
+                  0.12238056122311773,
+                  0.12198979039486682
+                ]
+              },
+              "correct_response_signs": 8,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.012892271156804061,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                -0.3647399936417014,
+                0.8756677918530701,
+                0.04653944857054071,
+                -0.2581445981705905,
+                -0.31410928523504794,
+                0.645846408898582,
+                0.04397434161670176,
+                -0.060920842033798224
+              ]
+            },
+            {
+              "update_attempts": 512,
+              "status": "missing",
+              "passed": false
+            }
+          ],
+          "checkpoints_reloaded": 4,
+          "replayed_queries": 336,
+          "replay_work": {
+            "evaluations": 45691,
+            "edge_visits": 4571788,
+            "patch_visits": 913820,
+            "proposals": 45019,
+            "backtracks": 20538
+          }
+        },
+        {
+          "arm": "observer",
+          "status": "censored",
+          "calls": 553,
+          "admissions": 216,
+          "attempted_presentations": 3472,
+          "admitted_presentations": 3456,
+          "refusals": 0,
+          "unknown_work_calls": 1,
+          "unlogged_inflight_work_unknown": false,
+          "partial_ledger_tail": false,
+          "work": {
+            "backtracks": 64702,
+            "edge_visits": 109890112,
+            "evaluations": 130899,
+            "patch_visits": 21185280,
+            "proposals": 129795
+          },
+          "gates": [
+            {
+              "status": "complete",
+              "update_attempts": 32,
+              "admissions": 32,
+              "presentations": 512,
+              "passed": false,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.10900985008903365,
+                  0.10819851720675147
+                ],
+                "0.3": [
+                  0.12429522127862248,
+                  0.12538345223379677
+                ]
+              },
+              "correct_response_signs": 8,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.029042960397677533,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.21805029014698538,
+                0.15660596129317775,
+                0.027537788767890127,
+                -0.006929171293519914,
+                0.1285860572629257,
+                0.17285829850139967,
+                0.005377294632400331,
+                0.05894605485846916
+              ]
+            },
+            {
+              "status": "complete",
+              "update_attempts": 128,
+              "admissions": 128,
+              "presentations": 2048,
+              "passed": false,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.10761199067592787,
+                  0.10840934743335723
+                ],
+                "0.3": [
+                  0.12239060461513948,
+                  0.12200278329783248
+                ]
+              },
+              "correct_response_signs": 8,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.011754826062109945,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                0.6669577988306779,
+                0.6295638480641852,
+                -0.16913992450110304,
+                -0.21825612780979262,
+                0.4512293049910152,
+                0.5125599168241036,
+                -0.09740980265906514,
+                -0.0514111346482132
+              ]
+            },
+            {
+              "update_attempts": 512,
+              "status": "missing",
+              "passed": false
+            }
+          ],
+          "checkpoints_reloaded": 4,
+          "replayed_queries": 336,
+          "replay_work": {
+            "evaluations": 69008,
+            "edge_visits": 6903488,
+            "patch_visits": 1380160,
+            "proposals": 68336,
+            "backtracks": 33755
+          }
+        }
+      ],
+      "execution": {
+        "case_seconds_cap": 120,
+        "returncode": 2,
+        "spec": {
+          "arm_order": [
+            "ordinary",
+            "observer"
+          ],
+          "condition": "balanced_mixed",
+          "id": "seed2-balanced_mixed-interaction-beta0p1",
+          "layout": "interaction",
+          "parameter_prior": 0.1,
+          "parameters": 62,
+          "role": "development",
+          "seed": 2
+        }
+      },
+      "case_status": "incomplete"
+    },
+    {
+      "spec": {
+        "arm_order": [
+          "observer",
+          "ordinary"
+        ],
+        "condition": "balanced_mixed",
+        "id": "seed2-balanced_mixed-interaction-beta0p01",
+        "layout": "interaction",
+        "parameter_prior": 0.01,
+        "parameters": 62,
+        "role": "development",
+        "seed": 2
+      },
+      "verification": "verified",
+      "arms": [
+        {
+          "arm": "ordinary",
+          "status": "censored",
+          "calls": 247,
+          "admissions": 78,
+          "attempted_presentations": 1264,
+          "admitted_presentations": 1248,
+          "refusals": 0,
+          "unknown_work_calls": 1,
+          "unlogged_inflight_work_unknown": false,
+          "partial_ledger_tail": false,
+          "work": {
+            "backtracks": 73113,
+            "edge_visits": 114583240,
+            "evaluations": 136429,
+            "patch_visits": 22090280,
+            "proposals": 135937
+          },
+          "gates": [
+            {
+              "status": "complete",
+              "update_attempts": 32,
+              "admissions": 32,
+              "presentations": 512,
+              "passed": false,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.11418619220484798,
+                  0.1130546856314173
+                ],
+                "0.3": [
+                  0.11841944870577777,
+                  0.12027728230135538
+                ]
+              },
+              "correct_response_signs": 8,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.009114246626666453,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                -0.6328581442635619,
+                1.4136039636550233,
+                -0.05802803195847128,
+                -0.08633338329305586,
+                -0.611892368488163,
+                1.1904533083851223,
+                -0.012474719244123893,
+                0.047927850901965635
+              ]
+            },
+            {
+              "update_attempts": 128,
+              "status": "missing",
+              "passed": false
+            },
+            {
+              "update_attempts": 512,
+              "status": "missing",
+              "passed": false
+            }
+          ],
+          "checkpoints_reloaded": 3,
+          "replayed_queries": 168,
+          "replay_work": {
+            "evaluations": 71890,
+            "edge_visits": 7190344,
+            "patch_visits": 1437800,
+            "proposals": 71554,
+            "backtracks": 37798
+          }
+        },
+        {
+          "arm": "observer",
+          "status": "censored",
+          "calls": 204,
+          "admissions": 35,
+          "attempted_presentations": 576,
+          "admitted_presentations": 560,
+          "refusals": 0,
+          "unknown_work_calls": 1,
+          "unlogged_inflight_work_unknown": false,
+          "partial_ledger_tail": false,
+          "work": {
+            "backtracks": 130889,
+            "edge_visits": 101626040,
+            "evaluations": 233637,
+            "patch_visits": 19684440,
+            "proposals": 233231
+          },
+          "gates": [
+            {
+              "status": "complete",
+              "update_attempts": 32,
+              "admissions": 32,
+              "presentations": 512,
+              "passed": false,
+              "complete": true,
+              "all_queries_qualified": true,
+              "per_gain_future_mae": {
+                "-0.3": [
+                  0.11061833623458497,
+                  0.10954823767432628
+                ],
+                "0.3": [
+                  0.12093442036135509,
+                  0.12273167682083419
+                ]
+              },
+              "correct_response_signs": 8,
+              "response_sign_queries": 16,
+              "forecast_past_residual_rms": 0.007605467618574352,
+              "all_training_qualified": true,
+              "replacement_coefficients": [
+                1.0350910418470065,
+                1.0857020741021526,
+                -0.07886061467352236,
+                -0.11290679481663385,
+                0.74177242781635,
+                0.8697941433810263,
+                -0.03095795738047021,
+                0.016788857271197378
+              ]
+            },
+            {
+              "update_attempts": 128,
+              "status": "missing",
+              "passed": false
+            },
+            {
+              "update_attempts": 512,
+              "status": "missing",
+              "passed": false
+            }
+          ],
+          "checkpoints_reloaded": 3,
+          "replayed_queries": 168,
+          "replay_work": {
+            "evaluations": 183598,
+            "edge_visits": 18361144,
+            "patch_visits": 3671960,
+            "proposals": 183262,
+            "backtracks": 102680
+          }
+        }
+      ],
+      "execution": {
+        "case_seconds_cap": 120,
+        "returncode": 2,
+        "spec": {
+          "arm_order": [
+            "observer",
+            "ordinary"
+          ],
+          "condition": "balanced_mixed",
+          "id": "seed2-balanced_mixed-interaction-beta0p01",
+          "layout": "interaction",
+          "parameter_prior": 0.01,
+          "parameters": 62,
+          "role": "development",
+          "seed": 2
+        }
+      },
+      "case_status": "incomplete"
+    }
+  ],
+  "selected": null,
+  "summary_verified": true,
+  "summary_error": null,
+  "fresh_query_replay": true,
+  "elapsed_seconds": 22.625161250005476,
+  "replayed_queries": 9568,
+  "limits": "Acquisition screen only; seed2 selects, not independent confirmation. Fresh queries are verification work, not training exposure. Numerical learning updates are not replayed. Missing/censored arms remain unselected."
+}

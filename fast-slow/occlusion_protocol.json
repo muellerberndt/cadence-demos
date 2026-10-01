@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "name": "Tang2018 original-task replication and native Cadence comparison",
   "created_utc": "2026-10-01",
   "final_goal": "A patch-net equilibrium brain that is more scalable, more capable and more efficient than a transformer. Every Cadence result is measured against that goal at matched information, matched task and a declared resource model. The Amen jungle composer is the first test platform.",
@@ -104,6 +104,11 @@
       "id": "original_plotting_bins_and_metrics",
       "state": "source_files_cached_not_fully_reproduced",
       "requirement": "Recover exact visibility-bin boundaries and human/model aggregation from original plotting/statistics code before original-figure comparison. Keep modern object-cluster confidence intervals separately labeled."
+    },
+    {
+      "id": "strict_capacity_match",
+      "state": "unresolved_if_exact_match_claim_required",
+      "requirement": "The proposed public ordinary control has n*n+6*n additional parameters (<0.5% at these widths), and more patches. Report paired capacity/work curves. An exact-capacity promotion claim requires another publicly constructible control; this pair alone cannot establish a unique residual-reading mechanism."
     }
   ],
   "information_regimes": {
@@ -146,42 +151,6 @@
     "representation": "All4096 original fc7 features, no PCA, truncation or t-SNE. Per coordinate divide by max(1, maximum authorized whole-training value), then clip to[0,1] for native reconstruction boundary; record test clipping fraction and affected rows without retuning the transform. All native arms share the same transform. Original SVM retains original preprocessing.",
     "normalization_fit": "Fit per outer information regime, never partial test arrays; inner validation uses inner-training normalization.",
     "fixed_baseline": "Flat5 class patches reading4096 inputs,20485 parameters, measured as a lower-capacity floor only.",
-    "matched_pair_genome": {
-      "candidate_gene_widths": [
-        16,
-        32,
-        64
-      ],
-      "hand_set_control_width": 32,
-      "populations": {
-        "B": "n latent patches read4096 inputs and n context states",
-        "R": "4096 reconstruction patches each read all n latent states",
-        "C": "n context patches read all n latent states plus4096 extra contacts",
-        "Y": "5 category patches each read all B and C states"
-      },
-      "ordinary_extra_contacts": "C reads R states",
-      "readback_extra_contacts": "C reads exact live R residuals",
-      "query_witnesses": "R coordinates clamp to currently observed sensory features; Y remains entirely free. All B,C,Y state derivatives and all transitive error derivatives are freshly qualified.",
-      "training_witnesses": "Whole visual record supplies R coordinates. Only authorized training object category supplies Y witnesses. Familiar-memory pretraining omits category witnesses for all objects.",
-      "matched_parameters_formula": "2*n*n+12300*n+4101",
-      "matched_patches_formula": "4096+2*n+5",
-      "counts": {
-        "16": {
-          "parameters": 201413,
-          "patches": 4133
-        },
-        "32": {
-          "parameters": 399749,
-          "patches": 4165
-        },
-        "64": {
-          "parameters": 799493,
-          "patches": 4229
-        }
-      },
-      "initialization": "Map identical shared-edge weights/biases and identical extra-slot random draws between pair members; record correspondence and source-specific values. No advantage from different random iteration order.",
-      "scope": "Matches exogenous information, patch count, parameter count and contact count. It is a state-contact versus error-contact wiring comparison, not a proof of equal expressive power or identical derivative cost."
-    },
     "acquisition": {
       "selection_only_on_whole_inner_training_and_validation": true,
       "seeds": [
@@ -210,7 +179,7 @@
       "query_budget": 4096,
       "admission_budget": 8192,
       "dtype": "float64",
-      "device": "Selected in a bounded timing smoke before training; all matched arms share same hardware/backend and thread count.",
+      "device": "Selected in a bounded timing smoke before training; both comparison arms share same hardware/backend and thread count.",
       "tolerance": "Pinned unchanged candidate default, exact numeric value exported into execution protocol before first admission.",
       "selection": "Choose smallest paired width/prior satisfying both acquisition gates across all declared seeds, on whole-only validation. Any larger/different genome requires a new preregistration before partial evaluation.",
       "failure_interpretation": "Insufficient whole-task acquisition or resource exhaustion; do not interpret as a negative recurrence capability result."
@@ -225,19 +194,87 @@
     "resource_model": {
       "first_pilot": "One fold, seed2, width16, paired ordinary/readback, at most12 admissions or600seconds per arm; timing/acquisition feasibility only, not capability.",
       "full_execution_gate": "Freeze measured hardware, counts, exact tolerance, source hashes, fold IDs and per-arm hard time cap after timing smoke; require new reviewed execution receipt before full training.",
-      "training_budget_matching": "Same ordered records and maximum admissions; separately report accepted admissions, examples, work and wall time; capped/incomplete arms are never treated as equally trained.",
+      "training_budget_matching": "Same ordered records and maximum admissions; the ordinary arm has a disclosed small parameter excess. Separately report accepted admissions, examples, work and wall time; capped/incomplete arms are never treated as equally trained.",
       "inference_budget_slices": [
         256,
         1024,
         4096
       ],
-      "same_work_comparison": "Report accuracy versus real edge/gradient/tensor/reference work and wall time, in addition to matched parameter counts. A refusal contributes an incorrect/abstained result, not an omitted row.",
+      "same_work_comparison": "Report accuracy versus real edge/gradient/tensor/reference work and wall time, in addition to disclosed parameter counts. A refusal contributes an incorrect/abstained result, not an omitted row.",
       "routine_cost": "Compare whole-image cost with increasingly occluded-image cost. Extra compute counts as useful only if it improves task outcomes."
     },
     "category_encoding": {
       "correct_class": 0.9,
       "other_classes": -0.9,
       "query_decision": "argmax of the five free qualified Y states; stable lowest-index tie break"
+    },
+    "near_matched_pair_genome": {
+      "candidate_gene_widths": [
+        16,
+        32,
+        64
+      ],
+      "hand_set_control_width": 32,
+      "populations": {
+        "B": "n latent patches read4096 raw inputs only",
+        "R": "4096 reconstruction patches each read all n latent states",
+        "C_observer": "n context patches receive inputs=B and observes=R, hence B.states,R.states,R.errors",
+        "C_ordinary": "2n context patches receive inputs=(B,R), hence B.states,R.states",
+        "Y": "5 category patches each read all B and C states"
+      },
+      "query_witnesses": "R coordinates clamp to currently observed sensory features; Y remains entirely free. All B,C,Y state derivatives and all transitive error derivatives are freshly qualified.",
+      "training_witnesses": "Whole visual record supplies R coordinates. Only authorized training object category supplies Y witnesses. Familiar-memory pretraining omits category witnesses for all objects.",
+      "counts": {
+        "16": {
+          "observer": {
+            "parameters": 266693,
+            "patches": 4133
+          },
+          "ordinary": {
+            "parameters": 267045,
+            "patches": 4149
+          },
+          "ordinary_extra_parameters": 352,
+          "ordinary_relative_parameter_excess": 0.0013198696628707915
+        },
+        "32": {
+          "observer": {
+            "parameters": 529797,
+            "patches": 4165
+          },
+          "ordinary": {
+            "parameters": 531013,
+            "patches": 4197
+          },
+          "ordinary_extra_parameters": 1216,
+          "ordinary_relative_parameter_excess": 0.002295218734722922
+        },
+        "64": {
+          "observer": {
+            "parameters": 1057541,
+            "patches": 4229
+          },
+          "ordinary": {
+            "parameters": 1062021,
+            "patches": 4293
+          },
+          "ordinary_extra_parameters": 4480,
+          "ordinary_relative_parameter_excess": 0.0042362423773640925
+        }
+      },
+      "initialization": "Use identical shared B/R coefficients and biases. C width and incoming count differ; report native fan-in normalization and actual draws rather than pretending all context/head slots have exact correspondence.",
+      "scope": "Near-matched parameter comparison with ordinary slightly larger; not exact parameter/patch matching, equal expressive capacity or sole-contact causal isolation. Every ordinary contact carries an existing distinct population coordinate; no duplicate raw/clamped-state input capacity padding.",
+      "public_declaration_order": [
+        "sensory",
+        "B",
+        "R",
+        "C",
+        "Y"
+      ],
+      "max_connections": 2000000,
+      "observer_parameters_formula": "n*n+16396*n+4101",
+      "ordinary_parameters_formula": "2*n*n+16402*n+4101",
+      "feedback": "Ordinary and observer energy derivatives already return influence through the acyclic graph to B. No independently learned reverse state edge is introduced."
     }
   },
   "ablations": [
@@ -247,11 +284,11 @@
     },
     {
       "id": "extra_contacts_removed",
-      "requirement": "Construct and record a modified graph with extra state/error contacts removed, then requalify that entire graph. This has less effective information/capacity; disclose exact counts. Never reuse the intact observer certificate."
+      "requirement": "Construct a modified graph omitting the C branch and routing Y from B alone, then train/evaluate and freshly qualify that whole graph. This is a lower-capacity control, not a matched causal ablation. Never reuse the intact observer certificate."
     },
     {
       "id": "readback_contact_permutation",
-      "requirement": "At fixed learned parameters, apply a frozen nonidentity permutation of residual source IDs as a declared graph intervention; requalify the entire modified graph. Report changed dependency structure. Do not feed stale/fabricated residual values."
+      "requirement": "Deferred: coordinate-level residual-source permutation is not a public Cortex operation. Do not mutate a private graph or claim a public-API ablation. A future publicly constructible equivalent must be specified before execution."
     },
     {
       "id": "fewer_whole_patterns",
@@ -276,7 +313,8 @@
       "wall-time median/p95/p99",
       "peak memory",
       "parameter displacement",
-      "source and state preservation"
+      "source and state preservation",
+      "ordinary versus observer parameter/patch counts and paired capacity/work curves"
     ]
   },
   "adversarial_checks": [
@@ -285,7 +323,7 @@
     "Changing the order of independently reset test images does not change their answers.",
     "Independent original pres/category text exports match decoded MCOS fields and whole labels for every row.",
     "Original fc7 and bipolar t0 baselines both reported, isolating thresholding from recurrence.",
-    "Source contact permutation/removal produces a new recorded graph and fresh all-coordinate qualification.",
+    "Only publicly constructible ablations may run; every modified graph has its own recorded topology and fresh all-coordinate qualification. Coordinate permutation remains deferred.",
     "Changing max budget cannot turn a refusal into a counted qualified answer without a valid fresh certificate.",
     "Training and query wrappers preserve sources, admission atomicity and pure-query continuation."
   ],
@@ -294,5 +332,12 @@
     "native_requirement": "First establish static original-task effect. For timed mask intervention define actual input substitution/injection and a physical/algorithmic clock; do not label early unqualified solver iterates as settled Cadence answers.",
     "time_mapping_warning": "Authors plotted0=>25ms and256=>150ms with interpolation; this is not a measured conversion from Cadence sweeps to neural time.",
     "release_role": "No biological or masking replication claim until this separate stage passes."
-  }
+  },
+  "revisions": [
+    {
+      "previous_protocol_sha256": "4c5c6804e61c07ec15f7322b1a850232a33a95d24ca1341c2791f87435957dcb",
+      "reason": "Prior candidate B<-C<-B state cycle is unsupported by the public builder. Also public observes adds BOTH state and error contacts, so prior residual-only contact counts were invalid. Replaced with a public acyclic graph and a slightly larger ordinary control; no original-data or run results changed.",
+      "date": "2026-10-01"
+    }
+  ]
 }

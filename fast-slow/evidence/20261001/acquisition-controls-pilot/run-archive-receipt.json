@@ -1,0 +1,9 @@
+{
+  "archive": "/Users/muellerberndt/Projects/oph-meta/cadence-demos/fast-slow/evidence/20261001/acquisition-controls-pilot/run-archive.tar.gz",
+  "bytes": 6114593,
+  "sha256": "4d9d96d385aebe38a6783df3ab7a8bd3dcb5bf2175cec1f6d2cce9ebb5f069b4",
+  "source_files": 334,
+  "source_bytes": 26544373,
+  "manifest_sha256": "1d5035feb7d9c67b8540326a7638d4405ff83e297956579fb2315713a116f345",
+  "every_member_verified": true
+}
