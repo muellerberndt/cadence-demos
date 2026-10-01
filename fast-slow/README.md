@@ -276,7 +276,11 @@ exercise the existing engines: Amen's archived record patch, Atari's 0.50
 JavaScript port and Patch World's separate JavaScript implementation. They do
 not establish candidate compatibility, musical quality or recursive advantage.
 The website comparison covers local synchronized runtime files and their
-recorded manifest; no live browser or audio check was performed in this audit.
+recorded manifest; no live browser or audio check was performed in that initial audit.
+A subsequent [Browser Use check](evidence/20261001/demo-baselines/live-browser.json)
+loaded all three published demos, generated one Amen dub, observed Atari
+activity and advancing Patch World counters, and paused Patch World. It records
+visible UI behavior only, with no audio-quality or candidate-migration claim.
 
 The receipt also reproduces the Python Atari loop's lost pending-action flag
 using a fake action owner, and checks that its old feedback call does not bind
