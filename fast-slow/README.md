@@ -194,6 +194,45 @@ replays saved queries independently and retains every scheduled outcome.
 exposure hypothesis suggested by development, while retaining the later
 accuracy and counted-work comparisons. Equal exposure is not equal compute.
 
+`work_matched_innovation.py` freezes the observer's 32-admission endpoint and
+continues the ordinary model until it reaches the same cumulative training
+edge visits. Whole admissions may overshoot that work target. Its verifier
+also keeps the ordinary 32-admission and both final checkpoints, preventing
+extra training from hiding a late reversal. Complete small archives include
+the exact core sources, ledgers and query-replay verification.
+
+`residual_reuse.py` separates input-only prediction-error reuse from a
+predictor whose latent state can change during correction. Each within-layout
+pair has identical parameter counts and observations; comparisons between
+the two- and three-patch layouts are mechanism controls, not capacity matches.
+`residual_representation_witness.py` supplies a six-case analytic obstruction
+for the specific ordinary two-patch head and an engineered error-reading
+solution. It uses fixed private-kernel coefficients, not a learned checkpoint;
+the public builder verifies both topology inventories. This narrow result
+cannot establish a general recursive, learning or efficiency advantage.
+
+`cycle_memory_probe.py` and `learned_cycle_memory.py` investigate explicit
+state cycles through the private kernel. The public builder does not currently
+expose those topologies. Both use the common patch law and freely settled
+chronological queries, checking write, blank retention, opposite-cue overwrite
+and reset separately. The former uses engineered coefficients; the latter
+learns from paired small random initializations. A history-input arm explicitly
+has one extra external memory scalar. Persistent nonzero activity is a local
+metastable equilibrium; it is not the globally lowest-energy state, learned
+planning, or proof that residual-observer columns help. Every failed arm and
+numerical refusal remains in the frozen comparison.
+`cycle_write_confirmation.py` separately freezes stronger cue targets and
+64/256/1,024 admissions using fresh seeds. It retains the failed original
+regime as a control and evaluates every checkpoint through the same free
+chronological memory task. The original flat/history controls remain historical;
+this follow-up tests acquired cyclic memory, not matched performance superiority.
+`cycle_write_continuation.py` continues every source-bound final checkpoint
+to a separately declared endpoint while preserving the earlier failed result.
+Its self-contained parent bundle allows replay after raw parent cleanup.
+`flat_blank_obstruction.py` proves the specific one-patch flat control cannot
+retain opposed histories under identical blank input; this is not a theorem
+about all ordinary graphs.
+
 `delayed_bandit.py` tests one outstanding executed decision with immediate or
 delayed actual outcomes. It retains the original forecasts and teaches only
 the executed action's witnessed outcome through the common patch law. Its

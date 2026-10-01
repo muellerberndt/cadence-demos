@@ -1,0 +1,20 @@
+{
+  "schema": "cadence-060-mechanism-validation/1",
+  "core_commit": "4facfea90c872eaf9e9c76e88e408846f71b7d06",
+  "core_source_changed": false,
+  "core_ci": {
+    "status": "all ten jobs passed",
+    "draft_pr": "https://github.com/muellerberndt/cadence/pull/73"
+  },
+  "local_suite": {
+    "command": "PYTHONPATH=temp/worktrees/cadence-060/src cadence/.venv/bin/python -m pytest -q cadence-demos/fast-slow",
+    "passed": 264,
+    "seconds": 9.87,
+    "scope": "Complete fast-slow suite including final cycle continuation and flat obstruction"
+  },
+  "ruff": "All added collectors, verifiers and test files passed their scoped Ruff checks",
+  "aws_instance": "i-0a57d4aaeffa98a7e",
+  "aws_state": "stopped",
+  "new_cloud_resources_started": false,
+  "release_performed": false
+}

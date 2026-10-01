@@ -1,0 +1,9 @@
+{
+  "archive": "/Users/muellerberndt/Projects/oph-meta/cadence-demos/fast-slow/evidence/20261001/learned-cycle/run-archive.tar.gz",
+  "bytes": 1736384,
+  "sha256": "48abeb8e3e32511da4a6879b22c8330c5835fcaa74e45c5d9fd4131691f90d94",
+  "source_files": 295,
+  "source_bytes": 44610299,
+  "manifest_sha256": "269b419ab85ccc80789c1af1ff1ea7c7bd38670832064228c360a86180dce2a0",
+  "every_member_verified": true
+}

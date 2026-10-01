@@ -1,0 +1,9 @@
+{
+  "archive": "/Users/muellerberndt/Projects/oph-meta/cadence-demos/fast-slow/evidence/20261001/cycle-continuation/run-archive.tar.gz",
+  "bytes": 2811325,
+  "sha256": "2cc9c3459e65687266714a648fe4aa817aecb2c472b1ac1883197e9321f34c6a",
+  "source_files": 184,
+  "source_bytes": 45883419,
+  "manifest_sha256": "2f940ce6ca6393b2cc6718070b431dc382afdcf4979ae46d0dfb0f3e1c33ccd5",
+  "every_member_verified": true
+}

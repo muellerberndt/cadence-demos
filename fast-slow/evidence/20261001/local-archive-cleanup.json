@@ -1,0 +1,62 @@
+[
+  {
+    "raw_removed": "temp/cadence-060-acquisition-20261001",
+    "verified_archive": "cadence-demos/fast-slow/evidence/20261001/acquisition-controls-pilot/run-archive.tar.gz",
+    "sha256": "4d9d96d385aebe38a6783df3ab7a8bd3dcb5bf2175cec1f6d2cce9ebb5f069b4",
+    "every_member_verified": true
+  },
+  {
+    "raw_removed": "temp/cadence-060-shared-innovation-20261001",
+    "verified_archive": "cadence-demos/fast-slow/evidence/20261001/shared-innovation/run-archive.tar.gz",
+    "sha256": "79d789b14a8585f60d57a95420c211d06f9b05cd976d57714f881ff63af14b18",
+    "every_member_verified": true
+  },
+  {
+    "raw_removed": "temp/cadence-060-innovation-confirmation-20261001",
+    "verified_archive": "cadence-demos/fast-slow/evidence/20261001/innovation-confirmation/run-archive.tar.gz",
+    "sha256": "1735acaaf47bc5fcbe664a8768cac2f63da6fa293e04da12dd951a87a8921362",
+    "every_member_verified": true
+  },
+  {
+    "raw_removed": "temp/cadence-060-work-matched-20261001",
+    "verified_archive": "cadence-demos/fast-slow/evidence/20261001/work-matched/run-archive.tar.gz",
+    "sha256": "079da64ec2026f6bb9e1887b86ecb7a828440219ed775496dda6664aeb3483ef",
+    "every_member_verified": true
+  },
+  {
+    "raw_removed": "temp/cadence-060-cycle-memory-20261001",
+    "verified_archive": "cadence-demos/fast-slow/evidence/20261001/cycle-memory/run-archive.tar.gz",
+    "sha256": "308c1d84608c1936f9de1faadea6096b42a300475e30867cef9082b2fada48e2",
+    "every_member_verified": true
+  },
+  {
+    "raw_removed": "temp/cadence-060-representation-witness-v3-20261001",
+    "verified_archive": "cadence-demos/fast-slow/evidence/20261001/representation-witness/run-archive.tar.gz",
+    "sha256": "2febacc749ea300c04962e3a857aa484070f3974e91edbd34c64599a7087f858",
+    "every_member_verified": true
+  },
+  {
+    "raw_removed": "temp/cadence-060-residual-reuse-20261001",
+    "verified_archive": "cadence-demos/fast-slow/evidence/20261001/residual-reuse/run-archive.tar.gz",
+    "sha256": "51a3bdbe563071282a30e72efaf5d4fe0be43a501925339664859d908a9acfed",
+    "every_member_verified": true
+  },
+  {
+    "raw_removed": "temp/cadence-060-learned-cycle-20261001",
+    "verified_archive": "cadence-demos/fast-slow/evidence/20261001/learned-cycle/run-archive.tar.gz",
+    "sha256": "48abeb8e3e32511da4a6879b22c8330c5835fcaa74e45c5d9fd4131691f90d94",
+    "every_member_verified": true
+  },
+  {
+    "raw_removed": "temp/cadence-060-cycle-write-20261001",
+    "verified_archive": "cadence-demos/fast-slow/evidence/20261001/cycle-write/run-archive.tar.gz",
+    "sha256": "81df18e8264bbee1a59006da7040228e098da2aa0cc1c7ab10b9d8b0ae64f365",
+    "every_member_verified": true
+  },
+  {
+    "raw_removed": "temp/cadence-060-cycle-continuation-20261001",
+    "verified_archive": "cadence-demos/fast-slow/evidence/20261001/cycle-continuation/run-archive.tar.gz",
+    "sha256": "2cc9c3459e65687266714a648fe4aa817aecb2c472b1ac1883197e9321f34c6a",
+    "every_member_verified": true
+  }
+]

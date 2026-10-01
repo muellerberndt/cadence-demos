@@ -1,0 +1,9 @@
+{
+  "archive": "/Users/muellerberndt/Projects/oph-meta/cadence-demos/fast-slow/evidence/20261001/cycle-write/run-archive.tar.gz",
+  "bytes": 3689834,
+  "sha256": "81df18e8264bbee1a59006da7040228e098da2aa0cc1c7ab10b9d8b0ae64f365",
+  "source_files": 192,
+  "source_bytes": 53710109,
+  "manifest_sha256": "2d89765b592236c31e38c9738966570eac579155f5ddd43c8651d7c9a9ac1896",
+  "every_member_verified": true
+}

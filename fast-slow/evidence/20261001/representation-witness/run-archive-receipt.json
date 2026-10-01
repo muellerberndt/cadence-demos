@@ -1,0 +1,9 @@
+{
+  "archive": "/Users/muellerberndt/Projects/oph-meta/cadence-demos/fast-slow/evidence/20261001/representation-witness/run-archive.tar.gz",
+  "bytes": 46187,
+  "sha256": "2febacc749ea300c04962e3a857aa484070f3974e91edbd34c64599a7087f858",
+  "source_files": 19,
+  "source_bytes": 202779,
+  "manifest_sha256": "410d06d659ec3b05e4d150b1bb3ad627b20dffed722b29c5e0d1a4923891b989",
+  "every_member_verified": true
+}

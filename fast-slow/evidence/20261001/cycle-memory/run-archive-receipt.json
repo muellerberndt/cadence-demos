@@ -1,0 +1,9 @@
+{
+  "archive": "/Users/muellerberndt/Projects/oph-meta/cadence-demos/fast-slow/evidence/20261001/cycle-memory/run-archive.tar.gz",
+  "bytes": 90572,
+  "sha256": "308c1d84608c1936f9de1faadea6096b42a300475e30867cef9082b2fada48e2",
+  "source_files": 17,
+  "source_bytes": 3667407,
+  "manifest_sha256": "ae99d851046f3778bc8e2b06d52343227320ec4e9c3422f8b73854937421efbb",
+  "every_member_verified": true
+}

@@ -1,0 +1,2012 @@
+{
+  "cases": [
+    {
+      "admitted_batches": 192,
+      "arm": "observer",
+      "checkpoints_reloaded": 4,
+      "eligible": true,
+      "endpoints": {
+        "mixed0": {
+          "accepted_updates": 64,
+          "inference_work_at_check": {
+            "backtracks": 245,
+            "edge_visits": 16109,
+            "evaluations": 1447,
+            "patch_visits": 8682,
+            "proposals": 1255
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 1536,
+            "edge_visits": 785280,
+            "evaluations": 4090,
+            "patch_visits": 392640,
+            "proposals": 3962
+          }
+        },
+        "mixed128": {
+          "accepted_updates": 192,
+          "inference_work_at_check": {
+            "backtracks": 2402,
+            "edge_visits": 62254,
+            "evaluations": 5642,
+            "patch_visits": 33852,
+            "proposals": 5450
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 7024,
+            "edge_visits": 3244224,
+            "evaluations": 16897,
+            "patch_visits": 1622112,
+            "proposals": 16513
+          }
+        },
+        "mixed32": {
+          "accepted_updates": 96,
+          "inference_work_at_check": {
+            "backtracks": 897,
+            "edge_visits": 32873,
+            "evaluations": 2971,
+            "patch_visits": 17826,
+            "proposals": 2779
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 2583,
+            "edge_visits": 1287360,
+            "evaluations": 6705,
+            "patch_visits": 643680,
+            "proposals": 6513
+          }
+        }
+      },
+      "execution": {
+        "arm": "observer",
+        "code": 0,
+        "pid": 85114,
+        "seed": 83,
+        "status": "returned"
+      },
+      "groups": [
+        {
+          "check": "mixed0",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.0018847817588556577,
+            "past": 0.004142558891344114
+          }
+        },
+        {
+          "check": "mixed0",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.06514629726319879,
+            "past": 0.0
+          }
+        },
+        {
+          "check": "mixed32",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.015360224853221372,
+            "past": 0.007124630221312981
+          }
+        },
+        {
+          "check": "mixed32",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.023315523155947,
+            "past": 0.0
+          }
+        },
+        {
+          "check": "mixed128",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.008681406655409596,
+            "past": 0.007277399364607742
+          }
+        },
+        {
+          "check": "mixed128",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.007009274568286934,
+            "past": 0.0
+          }
+        }
+      ],
+      "inference_work": {
+        "backtracks": 3544,
+        "edge_visits": 111236,
+        "evaluations": 10060,
+        "patch_visits": 60360,
+        "proposals": 9484
+      },
+      "ordinary_crossing": null,
+      "replay_work": {
+        "backtracks": 3544,
+        "edge_visits": 111236,
+        "evaluations": 10060,
+        "patch_visits": 60360,
+        "proposals": 9484
+      },
+      "replayed_queries": 288,
+      "returned_calls": 480,
+      "returned_cpu_seconds": 6.150438999999999,
+      "returned_wall_seconds": 6.586488174507394,
+      "seed": 83,
+      "status": "complete",
+      "training_work": {
+        "backtracks": 7024,
+        "edge_visits": 3244224,
+        "evaluations": 16897,
+        "patch_visits": 1622112,
+        "proposals": 16513
+      },
+      "unknown_work": false
+    },
+    {
+      "admitted_batches": 192,
+      "arm": "ordinary",
+      "checkpoints_reloaded": 5,
+      "eligible": true,
+      "endpoints": {
+        "mixed0": {
+          "accepted_updates": 64,
+          "inference_work_at_check": {
+            "backtracks": 219,
+            "edge_visits": 15031,
+            "evaluations": 1349,
+            "patch_visits": 8094,
+            "proposals": 1157
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 1415,
+            "edge_visits": 727488,
+            "evaluations": 3789,
+            "patch_visits": 363744,
+            "proposals": 3661
+          }
+        },
+        "mixed128": {
+          "accepted_updates": 192,
+          "inference_work_at_check": {
+            "backtracks": 1618,
+            "edge_visits": 47679,
+            "evaluations": 4317,
+            "patch_visits": 25902,
+            "proposals": 4125
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 5885,
+            "edge_visits": 2788800,
+            "evaluations": 14525,
+            "patch_visits": 1394400,
+            "proposals": 14141
+          }
+        },
+        "mixed32": {
+          "accepted_updates": 96,
+          "inference_work_at_check": {
+            "backtracks": 568,
+            "edge_visits": 24788,
+            "evaluations": 2236,
+            "patch_visits": 13416,
+            "proposals": 2044
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 2377,
+            "edge_visits": 1201536,
+            "evaluations": 6258,
+            "patch_visits": 600768,
+            "proposals": 6066
+          }
+        },
+        "mixed38": {
+          "accepted_updates": 102,
+          "inference_work_at_check": {
+            "backtracks": 659,
+            "edge_visits": 26680,
+            "evaluations": 2408,
+            "patch_visits": 14448,
+            "proposals": 2216
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 2577,
+            "edge_visits": 1295616,
+            "evaluations": 6748,
+            "patch_visits": 647808,
+            "proposals": 6544
+          }
+        }
+      },
+      "execution": {
+        "arm": "ordinary",
+        "code": 0,
+        "pid": 85166,
+        "seed": 83,
+        "status": "returned"
+      },
+      "groups": [
+        {
+          "check": "mixed0",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.0017623235080783221,
+            "past": 0.004064136013068725
+          }
+        },
+        {
+          "check": "mixed0",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.06872984119527312,
+            "past": 0.0
+          }
+        },
+        {
+          "check": "mixed32",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.01464218229693767,
+            "past": 0.0033012757869165417
+          }
+        },
+        {
+          "check": "mixed32",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.02809185391955987,
+            "past": 0.0
+          }
+        },
+        {
+          "check": "mixed128",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.010027276098570567,
+            "past": 0.009336154388170379
+          }
+        },
+        {
+          "check": "mixed128",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.004005518658747372,
+            "past": 0.0
+          }
+        },
+        {
+          "check": "mixed38",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.013540981659306747,
+            "past": 0.00322954192675149
+          }
+        },
+        {
+          "check": "mixed38",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.022943232081549934,
+            "past": 0.0
+          }
+        }
+      ],
+      "inference_work": {
+        "backtracks": 3064,
+        "edge_visits": 114178,
+        "evaluations": 10310,
+        "patch_visits": 61860,
+        "proposals": 9542
+      },
+      "ordinary_crossing": 38,
+      "replay_work": {
+        "backtracks": 3064,
+        "edge_visits": 114178,
+        "evaluations": 10310,
+        "patch_visits": 61860,
+        "proposals": 9542
+      },
+      "replayed_queries": 384,
+      "returned_calls": 576,
+      "returned_cpu_seconds": 5.395910999999999,
+      "returned_wall_seconds": 5.697669787216,
+      "seed": 83,
+      "status": "complete",
+      "training_work": {
+        "backtracks": 5885,
+        "edge_visits": 2788800,
+        "evaluations": 14525,
+        "patch_visits": 1394400,
+        "proposals": 14141
+      },
+      "unknown_work": false
+    },
+    {
+      "admitted_batches": 192,
+      "arm": "observer",
+      "checkpoints_reloaded": 4,
+      "eligible": true,
+      "endpoints": {
+        "mixed0": {
+          "accepted_updates": 64,
+          "inference_work_at_check": {
+            "backtracks": 212,
+            "edge_visits": 15240,
+            "evaluations": 1368,
+            "patch_visits": 8208,
+            "proposals": 1176
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 1454,
+            "edge_visits": 755712,
+            "evaluations": 3936,
+            "patch_visits": 377856,
+            "proposals": 3808
+          }
+        },
+        "mixed128": {
+          "accepted_updates": 192,
+          "inference_work_at_check": {
+            "backtracks": 2027,
+            "edge_visits": 56875,
+            "evaluations": 5153,
+            "patch_visits": 30918,
+            "proposals": 4961
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 6119,
+            "edge_visits": 2914560,
+            "evaluations": 15180,
+            "patch_visits": 1457280,
+            "proposals": 14796
+          }
+        },
+        "mixed32": {
+          "accepted_updates": 96,
+          "inference_work_at_check": {
+            "backtracks": 647,
+            "edge_visits": 27439,
+            "evaluations": 2477,
+            "patch_visits": 14862,
+            "proposals": 2285
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 2406,
+            "edge_visits": 1221696,
+            "evaluations": 6363,
+            "patch_visits": 610848,
+            "proposals": 6171
+          }
+        }
+      },
+      "execution": {
+        "arm": "observer",
+        "code": 0,
+        "pid": 85115,
+        "seed": 89,
+        "status": "returned"
+      },
+      "groups": [
+        {
+          "check": "mixed0",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.0016746822438679673,
+            "past": 0.0038413454030668563
+          }
+        },
+        {
+          "check": "mixed0",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.0754998754245509,
+            "past": 0.0
+          }
+        },
+        {
+          "check": "mixed32",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.01585852682977619,
+            "past": 0.006635616175626944
+          }
+        },
+        {
+          "check": "mixed32",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.024833158327220464,
+            "past": 0.0
+          }
+        },
+        {
+          "check": "mixed128",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.008841180242013483,
+            "past": 0.007834552518621044
+          }
+        },
+        {
+          "check": "mixed128",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.005108083442586999,
+            "past": 0.0
+          }
+        }
+      ],
+      "inference_work": {
+        "backtracks": 2886,
+        "edge_visits": 99554,
+        "evaluations": 8998,
+        "patch_visits": 53988,
+        "proposals": 8422
+      },
+      "ordinary_crossing": null,
+      "replay_work": {
+        "backtracks": 2886,
+        "edge_visits": 99554,
+        "evaluations": 8998,
+        "patch_visits": 53988,
+        "proposals": 8422
+      },
+      "replayed_queries": 288,
+      "returned_calls": 480,
+      "returned_cpu_seconds": 5.542585999999993,
+      "returned_wall_seconds": 5.94939650176093,
+      "seed": 89,
+      "status": "complete",
+      "training_work": {
+        "backtracks": 6119,
+        "edge_visits": 2914560,
+        "evaluations": 15180,
+        "patch_visits": 1457280,
+        "proposals": 14796
+      },
+      "unknown_work": false
+    },
+    {
+      "admitted_batches": 192,
+      "arm": "ordinary",
+      "checkpoints_reloaded": 5,
+      "eligible": true,
+      "endpoints": {
+        "mixed0": {
+          "accepted_updates": 64,
+          "inference_work_at_check": {
+            "backtracks": 160,
+            "edge_visits": 13480,
+            "evaluations": 1208,
+            "patch_visits": 7248,
+            "proposals": 1016
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 1432,
+            "edge_visits": 727488,
+            "evaluations": 3789,
+            "patch_visits": 363744,
+            "proposals": 3661
+          }
+        },
+        "mixed128": {
+          "accepted_updates": 192,
+          "inference_work_at_check": {
+            "backtracks": 1550,
+            "edge_visits": 45886,
+            "evaluations": 4154,
+            "patch_visits": 24924,
+            "proposals": 3962
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 5900,
+            "edge_visits": 2788608,
+            "evaluations": 14524,
+            "patch_visits": 1394304,
+            "proposals": 14140
+          }
+        },
+        "mixed32": {
+          "accepted_updates": 96,
+          "inference_work_at_check": {
+            "backtracks": 469,
+            "edge_visits": 22555,
+            "evaluations": 2033,
+            "patch_visits": 12198,
+            "proposals": 1841
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 2410,
+            "edge_visits": 1202304,
+            "evaluations": 6262,
+            "patch_visits": 601152,
+            "proposals": 6070
+          }
+        },
+        "mixed34": {
+          "accepted_updates": 98,
+          "inference_work_at_check": {
+            "backtracks": 525,
+            "edge_visits": 24051,
+            "evaluations": 2169,
+            "patch_visits": 13014,
+            "proposals": 1977
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 2468,
+            "edge_visits": 1229568,
+            "evaluations": 6404,
+            "patch_visits": 614784,
+            "proposals": 6208
+          }
+        }
+      },
+      "execution": {
+        "arm": "ordinary",
+        "code": 0,
+        "pid": 85164,
+        "seed": 89,
+        "status": "returned"
+      },
+      "groups": [
+        {
+          "check": "mixed0",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.0017401821901862125,
+            "past": 0.0039166666074360095
+          }
+        },
+        {
+          "check": "mixed0",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.06986268349569004,
+            "past": 0.0
+          }
+        },
+        {
+          "check": "mixed32",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.015497244437368444,
+            "past": 0.0040766581268654
+          }
+        },
+        {
+          "check": "mixed32",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.02857539476594833,
+            "past": 0.0
+          }
+        },
+        {
+          "check": "mixed128",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.009741155352336274,
+            "past": 0.009025278777538474
+          }
+        },
+        {
+          "check": "mixed128",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.00401573028274835,
+            "past": 0.0
+          }
+        },
+        {
+          "check": "mixed34",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.014283780937865993,
+            "past": 0.004840768749732165
+          }
+        },
+        {
+          "check": "mixed34",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.025516253919041807,
+            "past": 0.0
+          }
+        }
+      ],
+      "inference_work": {
+        "backtracks": 2704,
+        "edge_visits": 105972,
+        "evaluations": 9564,
+        "patch_visits": 57384,
+        "proposals": 8796
+      },
+      "ordinary_crossing": 34,
+      "replay_work": {
+        "backtracks": 2704,
+        "edge_visits": 105972,
+        "evaluations": 9564,
+        "patch_visits": 57384,
+        "proposals": 8796
+      },
+      "replayed_queries": 384,
+      "returned_calls": 576,
+      "returned_cpu_seconds": 5.391359000000003,
+      "returned_wall_seconds": 5.719614961300977,
+      "seed": 89,
+      "status": "complete",
+      "training_work": {
+        "backtracks": 5900,
+        "edge_visits": 2788608,
+        "evaluations": 14524,
+        "patch_visits": 1394304,
+        "proposals": 14140
+      },
+      "unknown_work": false
+    },
+    {
+      "admitted_batches": 192,
+      "arm": "observer",
+      "checkpoints_reloaded": 4,
+      "eligible": true,
+      "endpoints": {
+        "mixed0": {
+          "accepted_updates": 64,
+          "inference_work_at_check": {
+            "backtracks": 226,
+            "edge_visits": 15174,
+            "evaluations": 1362,
+            "patch_visits": 8172,
+            "proposals": 1170
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 1480,
+            "edge_visits": 751872,
+            "evaluations": 3916,
+            "patch_visits": 375936,
+            "proposals": 3788
+          }
+        },
+        "mixed128": {
+          "accepted_updates": 192,
+          "inference_work_at_check": {
+            "backtracks": 2341,
+            "edge_visits": 62925,
+            "evaluations": 5703,
+            "patch_visits": 34218,
+            "proposals": 5511
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 6458,
+            "edge_visits": 3015744,
+            "evaluations": 15707,
+            "patch_visits": 1507872,
+            "proposals": 15323
+          }
+        },
+        "mixed32": {
+          "accepted_updates": 96,
+          "inference_work_at_check": {
+            "backtracks": 785,
+            "edge_visits": 30475,
+            "evaluations": 2753,
+            "patch_visits": 16518,
+            "proposals": 2561
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 2593,
+            "edge_visits": 1278336,
+            "evaluations": 6658,
+            "patch_visits": 639168,
+            "proposals": 6466
+          }
+        }
+      },
+      "execution": {
+        "arm": "observer",
+        "code": 0,
+        "pid": 85116,
+        "seed": 97,
+        "status": "returned"
+      },
+      "groups": [
+        {
+          "check": "mixed0",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.0018950905682236546,
+            "past": 0.004554709964512742
+          }
+        },
+        {
+          "check": "mixed0",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.06415389165322195,
+            "past": 0.0
+          }
+        },
+        {
+          "check": "mixed32",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.014376950960589687,
+            "past": 0.0061445609547520165
+          }
+        },
+        {
+          "check": "mixed32",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.02228733874846029,
+            "past": 0.0
+          }
+        },
+        {
+          "check": "mixed128",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.009014057478205875,
+            "past": 0.007947235294128583
+          }
+        },
+        {
+          "check": "mixed128",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.005523912360728824,
+            "past": 0.0
+          }
+        }
+      ],
+      "inference_work": {
+        "backtracks": 3352,
+        "edge_visits": 108574,
+        "evaluations": 9818,
+        "patch_visits": 58908,
+        "proposals": 9242
+      },
+      "ordinary_crossing": null,
+      "replay_work": {
+        "backtracks": 3352,
+        "edge_visits": 108574,
+        "evaluations": 9818,
+        "patch_visits": 58908,
+        "proposals": 9242
+      },
+      "replayed_queries": 288,
+      "returned_calls": 480,
+      "returned_cpu_seconds": 5.727076000000003,
+      "returned_wall_seconds": 6.132542408653535,
+      "seed": 97,
+      "status": "complete",
+      "training_work": {
+        "backtracks": 6458,
+        "edge_visits": 3015744,
+        "evaluations": 15707,
+        "patch_visits": 1507872,
+        "proposals": 15323
+      },
+      "unknown_work": false
+    },
+    {
+      "admitted_batches": 192,
+      "arm": "ordinary",
+      "checkpoints_reloaded": 5,
+      "eligible": true,
+      "endpoints": {
+        "mixed0": {
+          "accepted_updates": 64,
+          "inference_work_at_check": {
+            "backtracks": 231,
+            "edge_visits": 15350,
+            "evaluations": 1378,
+            "patch_visits": 8268,
+            "proposals": 1186
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 1479,
+            "edge_visits": 748032,
+            "evaluations": 3896,
+            "patch_visits": 374016,
+            "proposals": 3768
+          }
+        },
+        "mixed128": {
+          "accepted_updates": 192,
+          "inference_work_at_check": {
+            "backtracks": 1622,
+            "edge_visits": 47415,
+            "evaluations": 4293,
+            "patch_visits": 25758,
+            "proposals": 4101
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 6000,
+            "edge_visits": 2840256,
+            "evaluations": 14793,
+            "patch_visits": 1420128,
+            "proposals": 14409
+          }
+        },
+        "mixed32": {
+          "accepted_updates": 96,
+          "inference_work_at_check": {
+            "backtracks": 554,
+            "edge_visits": 24568,
+            "evaluations": 2216,
+            "patch_visits": 13296,
+            "proposals": 2024
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 2512,
+            "edge_visits": 1239744,
+            "evaluations": 6457,
+            "patch_visits": 619872,
+            "proposals": 6265
+          }
+        },
+        "mixed35": {
+          "accepted_updates": 99,
+          "inference_work_at_check": {
+            "backtracks": 617,
+            "edge_visits": 25998,
+            "evaluations": 2346,
+            "patch_visits": 14076,
+            "proposals": 2154
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 2614,
+            "edge_visits": 1286400,
+            "evaluations": 6700,
+            "patch_visits": 643200,
+            "proposals": 6502
+          }
+        }
+      },
+      "execution": {
+        "arm": "ordinary",
+        "code": 0,
+        "pid": 85165,
+        "seed": 97,
+        "status": "returned"
+      },
+      "groups": [
+        {
+          "check": "mixed0",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.0018924617419564399,
+            "past": 0.004553961567776309
+          }
+        },
+        {
+          "check": "mixed0",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.0642500395303185,
+            "past": 0.0
+          }
+        },
+        {
+          "check": "mixed32",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.01433461564005933,
+            "past": 0.0037260605954937847
+          }
+        },
+        {
+          "check": "mixed32",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.02637719742050605,
+            "past": 0.0
+          }
+        },
+        {
+          "check": "mixed128",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.009949984218062877,
+            "past": 0.009262833775779302
+          }
+        },
+        {
+          "check": "mixed128",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.003861555572995081,
+            "past": 0.0
+          }
+        },
+        {
+          "check": "mixed35",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.015285877601941403,
+            "past": 0.004000215192827972
+          }
+        },
+        {
+          "check": "mixed35",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.02458188788799412,
+            "past": 0.0
+          }
+        }
+      ],
+      "inference_work": {
+        "backtracks": 3024,
+        "edge_visits": 113331,
+        "evaluations": 10233,
+        "patch_visits": 61398,
+        "proposals": 9465
+      },
+      "ordinary_crossing": 35,
+      "replay_work": {
+        "backtracks": 3024,
+        "edge_visits": 113331,
+        "evaluations": 10233,
+        "patch_visits": 61398,
+        "proposals": 9465
+      },
+      "replayed_queries": 384,
+      "returned_calls": 576,
+      "returned_cpu_seconds": 5.484090000000001,
+      "returned_wall_seconds": 5.7775351627497,
+      "seed": 97,
+      "status": "complete",
+      "training_work": {
+        "backtracks": 6000,
+        "edge_visits": 2840256,
+        "evaluations": 14793,
+        "patch_visits": 1420128,
+        "proposals": 14409
+      },
+      "unknown_work": false
+    },
+    {
+      "admitted_batches": 192,
+      "arm": "observer",
+      "checkpoints_reloaded": 4,
+      "eligible": true,
+      "endpoints": {
+        "mixed0": {
+          "accepted_updates": 64,
+          "inference_work_at_check": {
+            "backtracks": 264,
+            "edge_visits": 16076,
+            "evaluations": 1444,
+            "patch_visits": 8664,
+            "proposals": 1252
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 1472,
+            "edge_visits": 749376,
+            "evaluations": 3903,
+            "patch_visits": 374688,
+            "proposals": 3775
+          }
+        },
+        "mixed128": {
+          "accepted_updates": 192,
+          "inference_work_at_check": {
+            "backtracks": 2278,
+            "edge_visits": 60285,
+            "evaluations": 5463,
+            "patch_visits": 32778,
+            "proposals": 5271
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 6654,
+            "edge_visits": 3085056,
+            "evaluations": 16068,
+            "patch_visits": 1542528,
+            "proposals": 15684
+          }
+        },
+        "mixed32": {
+          "accepted_updates": 96,
+          "inference_work_at_check": {
+            "backtracks": 815,
+            "edge_visits": 30948,
+            "evaluations": 2796,
+            "patch_visits": 16776,
+            "proposals": 2604
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 2555,
+            "edge_visits": 1256640,
+            "evaluations": 6545,
+            "patch_visits": 628320,
+            "proposals": 6353
+          }
+        }
+      },
+      "execution": {
+        "arm": "observer",
+        "code": 0,
+        "pid": 85203,
+        "seed": 101,
+        "status": "returned"
+      },
+      "groups": [
+        {
+          "check": "mixed0",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.0016705161989222406,
+            "past": 0.004128654958149174
+          }
+        },
+        {
+          "check": "mixed0",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.07368239915894909,
+            "past": 0.0
+          }
+        },
+        {
+          "check": "mixed32",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.016069862222850412,
+            "past": 0.006833710290701427
+          }
+        },
+        {
+          "check": "mixed32",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.02535312097108885,
+            "past": 0.0
+          }
+        },
+        {
+          "check": "mixed128",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.008747388585740434,
+            "past": 0.007480758178654975
+          }
+        },
+        {
+          "check": "mixed128",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.00655692578261751,
+            "past": 0.0
+          }
+        }
+      ],
+      "inference_work": {
+        "backtracks": 3357,
+        "edge_visits": 107309,
+        "evaluations": 9703,
+        "patch_visits": 58218,
+        "proposals": 9127
+      },
+      "ordinary_crossing": null,
+      "replay_work": {
+        "backtracks": 3357,
+        "edge_visits": 107309,
+        "evaluations": 9703,
+        "patch_visits": 58218,
+        "proposals": 9127
+      },
+      "replayed_queries": 288,
+      "returned_calls": 480,
+      "returned_cpu_seconds": 5.640418000000004,
+      "returned_wall_seconds": 5.862434801296331,
+      "seed": 101,
+      "status": "complete",
+      "training_work": {
+        "backtracks": 6654,
+        "edge_visits": 3085056,
+        "evaluations": 16068,
+        "patch_visits": 1542528,
+        "proposals": 15684
+      },
+      "unknown_work": false
+    },
+    {
+      "admitted_batches": 192,
+      "arm": "ordinary",
+      "checkpoints_reloaded": 5,
+      "eligible": true,
+      "endpoints": {
+        "mixed0": {
+          "accepted_updates": 64,
+          "inference_work_at_check": {
+            "backtracks": 232,
+            "edge_visits": 15504,
+            "evaluations": 1392,
+            "patch_visits": 8352,
+            "proposals": 1200
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 1459,
+            "edge_visits": 733632,
+            "evaluations": 3821,
+            "patch_visits": 366816,
+            "proposals": 3693
+          }
+        },
+        "mixed128": {
+          "accepted_updates": 192,
+          "inference_work_at_check": {
+            "backtracks": 1663,
+            "edge_visits": 47866,
+            "evaluations": 4334,
+            "patch_visits": 26004,
+            "proposals": 4142
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 5786,
+            "edge_visits": 2743872,
+            "evaluations": 14291,
+            "patch_visits": 1371936,
+            "proposals": 13907
+          }
+        },
+        "mixed32": {
+          "accepted_updates": 96,
+          "inference_work_at_check": {
+            "backtracks": 537,
+            "edge_visits": 24359,
+            "evaluations": 2197,
+            "patch_visits": 13182,
+            "proposals": 2005
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 2395,
+            "edge_visits": 1191168,
+            "evaluations": 6204,
+            "patch_visits": 595584,
+            "proposals": 6012
+          }
+        },
+        "mixed37": {
+          "accepted_updates": 101,
+          "inference_work_at_check": {
+            "backtracks": 573,
+            "edge_visits": 24843,
+            "evaluations": 2241,
+            "patch_visits": 13446,
+            "proposals": 2049
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 2567,
+            "edge_visits": 1276032,
+            "evaluations": 6646,
+            "patch_visits": 638016,
+            "proposals": 6444
+          }
+        }
+      },
+      "execution": {
+        "arm": "ordinary",
+        "code": 0,
+        "pid": 85254,
+        "seed": 101,
+        "status": "returned"
+      },
+      "groups": [
+        {
+          "check": "mixed0",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.0016663283166792318,
+            "past": 0.004123366444120755
+          }
+        },
+        {
+          "check": "mixed0",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.0741062358960707,
+            "past": 0.0
+          }
+        },
+        {
+          "check": "mixed32",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.016600990138857345,
+            "past": 0.004202041951916538
+          }
+        },
+        {
+          "check": "mixed32",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.030517522099191993,
+            "past": 0.0
+          }
+        },
+        {
+          "check": "mixed128",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.009686183489591589,
+            "past": 0.009078884260522288
+          }
+        },
+        {
+          "check": "mixed128",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.004224370862998103,
+            "past": 0.0
+          }
+        },
+        {
+          "check": "mixed37",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.01589604116315847,
+            "past": 0.003993812147357861
+          }
+        },
+        {
+          "check": "mixed37",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.025453684375842504,
+            "past": 0.0
+          }
+        }
+      ],
+      "inference_work": {
+        "backtracks": 3005,
+        "edge_visits": 112572,
+        "evaluations": 10164,
+        "patch_visits": 60984,
+        "proposals": 9396
+      },
+      "ordinary_crossing": 37,
+      "replay_work": {
+        "backtracks": 3005,
+        "edge_visits": 112572,
+        "evaluations": 10164,
+        "patch_visits": 60984,
+        "proposals": 9396
+      },
+      "replayed_queries": 384,
+      "returned_calls": 576,
+      "returned_cpu_seconds": 5.119997999999997,
+      "returned_wall_seconds": 5.364377518882975,
+      "seed": 101,
+      "status": "complete",
+      "training_work": {
+        "backtracks": 5786,
+        "edge_visits": 2743872,
+        "evaluations": 14291,
+        "patch_visits": 1371936,
+        "proposals": 13907
+      },
+      "unknown_work": false
+    },
+    {
+      "admitted_batches": 192,
+      "arm": "observer",
+      "checkpoints_reloaded": 4,
+      "eligible": true,
+      "endpoints": {
+        "mixed0": {
+          "accepted_updates": 64,
+          "inference_work_at_check": {
+            "backtracks": 171,
+            "edge_visits": 13865,
+            "evaluations": 1243,
+            "patch_visits": 7458,
+            "proposals": 1051
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 1424,
+            "edge_visits": 725568,
+            "evaluations": 3779,
+            "patch_visits": 362784,
+            "proposals": 3651
+          }
+        },
+        "mixed128": {
+          "accepted_updates": 192,
+          "inference_work_at_check": {
+            "backtracks": 2187,
+            "edge_visits": 59999,
+            "evaluations": 5437,
+            "patch_visits": 32622,
+            "proposals": 5245
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 6396,
+            "edge_visits": 2989824,
+            "evaluations": 15572,
+            "patch_visits": 1494912,
+            "proposals": 15188
+          }
+        },
+        "mixed32": {
+          "accepted_updates": 96,
+          "inference_work_at_check": {
+            "backtracks": 686,
+            "edge_visits": 28275,
+            "evaluations": 2553,
+            "patch_visits": 15318,
+            "proposals": 2361
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 2408,
+            "edge_visits": 1203072,
+            "evaluations": 6266,
+            "patch_visits": 601536,
+            "proposals": 6074
+          }
+        }
+      },
+      "execution": {
+        "arm": "observer",
+        "code": 0,
+        "pid": 85204,
+        "seed": 103,
+        "status": "returned"
+      },
+      "groups": [
+        {
+          "check": "mixed0",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.001672948601806488,
+            "past": 0.003646537094204092
+          }
+        },
+        {
+          "check": "mixed0",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.07667667616532593,
+            "past": 0.0
+          }
+        },
+        {
+          "check": "mixed32",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.016565351826919972,
+            "past": 0.007577227949883324
+          }
+        },
+        {
+          "check": "mixed32",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.0252244115865237,
+            "past": 0.0
+          }
+        },
+        {
+          "check": "mixed128",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.008557484359080639,
+            "past": 0.007298339440246084
+          }
+        },
+        {
+          "check": "mixed128",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.00608148174635249,
+            "past": 0.0
+          }
+        }
+      ],
+      "inference_work": {
+        "backtracks": 3044,
+        "edge_visits": 102139,
+        "evaluations": 9233,
+        "patch_visits": 55398,
+        "proposals": 8657
+      },
+      "ordinary_crossing": null,
+      "replay_work": {
+        "backtracks": 3044,
+        "edge_visits": 102139,
+        "evaluations": 9233,
+        "patch_visits": 55398,
+        "proposals": 8657
+      },
+      "replayed_queries": 288,
+      "returned_calls": 480,
+      "returned_cpu_seconds": 5.371717999999999,
+      "returned_wall_seconds": 5.594092340907082,
+      "seed": 103,
+      "status": "complete",
+      "training_work": {
+        "backtracks": 6396,
+        "edge_visits": 2989824,
+        "evaluations": 15572,
+        "patch_visits": 1494912,
+        "proposals": 15188
+      },
+      "unknown_work": false
+    },
+    {
+      "admitted_batches": 192,
+      "arm": "ordinary",
+      "checkpoints_reloaded": 5,
+      "eligible": true,
+      "endpoints": {
+        "mixed0": {
+          "accepted_updates": 64,
+          "inference_work_at_check": {
+            "backtracks": 174,
+            "edge_visits": 13909,
+            "evaluations": 1247,
+            "patch_visits": 7482,
+            "proposals": 1055
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 1404,
+            "edge_visits": 727872,
+            "evaluations": 3791,
+            "patch_visits": 363936,
+            "proposals": 3663
+          }
+        },
+        "mixed128": {
+          "accepted_updates": 192,
+          "inference_work_at_check": {
+            "backtracks": 1480,
+            "edge_visits": 44060,
+            "evaluations": 3988,
+            "patch_visits": 23928,
+            "proposals": 3796
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 5720,
+            "edge_visits": 2735424,
+            "evaluations": 14247,
+            "patch_visits": 1367712,
+            "proposals": 13863
+          }
+        },
+        "mixed32": {
+          "accepted_updates": 96,
+          "inference_work_at_check": {
+            "backtracks": 516,
+            "edge_visits": 23853,
+            "evaluations": 2151,
+            "patch_visits": 12906,
+            "proposals": 1959
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 2356,
+            "edge_visits": 1188480,
+            "evaluations": 6190,
+            "patch_visits": 594240,
+            "proposals": 5998
+          }
+        },
+        "mixed34": {
+          "accepted_updates": 98,
+          "inference_work_at_check": {
+            "backtracks": 514,
+            "edge_visits": 23644,
+            "evaluations": 2132,
+            "patch_visits": 12792,
+            "proposals": 1940
+          },
+          "qualified_queries": 96,
+          "training_work": {
+            "backtracks": 2416,
+            "edge_visits": 1217280,
+            "evaluations": 6340,
+            "patch_visits": 608640,
+            "proposals": 6144
+          }
+        }
+      },
+      "execution": {
+        "arm": "ordinary",
+        "code": 0,
+        "pid": 85253,
+        "seed": 103,
+        "status": "returned"
+      },
+      "groups": [
+        {
+          "check": "mixed0",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.0016768272757517527,
+            "past": 0.003687439420494779
+          }
+        },
+        {
+          "check": "mixed0",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.07418950382431672,
+            "past": 0.0
+          }
+        },
+        {
+          "check": "mixed32",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.017742165259882137,
+            "past": 0.006086611015685078
+          }
+        },
+        {
+          "check": "mixed32",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.030973225148519225,
+            "past": 0.0
+          }
+        },
+        {
+          "check": "mixed128",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.009115846770375104,
+            "past": 0.008493516904469457
+          }
+        },
+        {
+          "check": "mixed128",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.004341704519517647,
+            "past": 0.0
+          }
+        },
+        {
+          "check": "mixed34",
+          "clean_gate": true,
+          "completed": 32,
+          "expected": 32,
+          "group": "clean-free",
+          "qualified": 32,
+          "qualified_only_mae": {
+            "future": 0.016466204811755956,
+            "past": 0.006512298990788663
+          }
+        },
+        {
+          "check": "mixed34",
+          "clean_gate": null,
+          "completed": 64,
+          "expected": 64,
+          "group": "correction",
+          "qualified": 64,
+          "qualified_only_mae": {
+            "future": 0.027660963849288824,
+            "past": 0.0
+          }
+        }
+      ],
+      "inference_work": {
+        "backtracks": 2684,
+        "edge_visits": 105466,
+        "evaluations": 9518,
+        "patch_visits": 57108,
+        "proposals": 8750
+      },
+      "ordinary_crossing": 34,
+      "replay_work": {
+        "backtracks": 2684,
+        "edge_visits": 105466,
+        "evaluations": 9518,
+        "patch_visits": 57108,
+        "proposals": 8750
+      },
+      "replayed_queries": 384,
+      "returned_calls": 576,
+      "returned_cpu_seconds": 5.096087999999998,
+      "returned_wall_seconds": 5.3661969563690946,
+      "seed": 103,
+      "status": "complete",
+      "training_work": {
+        "backtracks": 5720,
+        "edge_visits": 2735424,
+        "evaluations": 14247,
+        "patch_visits": 1367712,
+        "proposals": 13863
+      },
+      "unknown_work": false
+    }
+  ],
+  "collector_sha256": "d7c8681d49e38b51b5a7ecd596c1943f639d82aa1a2953e109a5e0aa8d6f0609",
+  "comparison": {
+    "all_pairs_eligible": true,
+    "mean_mae_reductions": {
+      "ordinary32": 0.004704328112897033,
+      "ordinary_matched": 0.0010284938648953766
+    },
+    "primary_pass": false,
+    "rows": [
+      {
+        "eligible": true,
+        "observer128": 0.007009274568286934,
+        "observer32": 0.023315523155947,
+        "ordinary128": 0.004005518658747372,
+        "ordinary32": 0.02809185391955987,
+        "ordinary_crossing": 38,
+        "ordinary_matched": 0.022943232081549934,
+        "seed": 83
+      },
+      {
+        "eligible": true,
+        "observer128": 0.005108083442586999,
+        "observer32": 0.024833158327220464,
+        "ordinary128": 0.00401573028274835,
+        "ordinary32": 0.02857539476594833,
+        "ordinary_crossing": 34,
+        "ordinary_matched": 0.025516253919041807,
+        "seed": 89
+      },
+      {
+        "eligible": true,
+        "observer128": 0.005523912360728824,
+        "observer32": 0.02228733874846029,
+        "ordinary128": 0.003861555572995081,
+        "ordinary32": 0.02637719742050605,
+        "ordinary_crossing": 35,
+        "ordinary_matched": 0.02458188788799412,
+        "seed": 97
+      },
+      {
+        "eligible": true,
+        "observer128": 0.00655692578261751,
+        "observer32": 0.02535312097108885,
+        "ordinary128": 0.004224370862998103,
+        "ordinary32": 0.030517522099191993,
+        "ordinary_crossing": 37,
+        "ordinary_matched": 0.025453684375842504,
+        "seed": 101
+      },
+      {
+        "eligible": true,
+        "observer128": 0.00608148174635249,
+        "observer32": 0.0252244115865237,
+        "ordinary128": 0.004341704519517647,
+        "ordinary32": 0.030973225148519225,
+        "ordinary_crossing": 34,
+        "ordinary_matched": 0.027660963849288824,
+        "seed": 103
+      }
+    ]
+  },
+  "helper_sha256": "f60bbcc771cbf929831efac7ccc09b172f42f32f4831ca2fb452ca0548c69cb0",
+  "limits": "Learning updates are not numerically replayed. All saved queries are replayed under the pinned source. Whole-admission first crossing is conservative training-work dominance with extra ordinary examples, not exact compute, latency or exposure matching. Five model seeds share one environment tape. No planning or memory claim.",
+  "protocol_sha256": "d447f3cb95808ec86d8243b01c632fe730a1d259fce31b3dc8066bcfdcc24457",
+  "pure_replay_enabled": true,
+  "seconds": 7.726581707946025,
+  "totals": {
+    "admitted_batches": 1920,
+    "checkpoints_reloaded": 45,
+    "planned_arms": 10,
+    "replayed_queries": 3360,
+    "returned_calls": 5280,
+    "statuses": {
+      "complete": 10
+    }
+  },
+  "valid": true,
+  "verifier_sha256": "8c6057d56b81ffca81e67f3f22eaa83b6b99203848373a4032acf9bb19c64a4f"
+}

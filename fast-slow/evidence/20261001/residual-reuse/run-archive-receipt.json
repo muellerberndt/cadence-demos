@@ -1,0 +1,9 @@
+{
+  "archive": "/Users/muellerberndt/Projects/oph-meta/cadence-demos/fast-slow/evidence/20261001/residual-reuse/run-archive.tar.gz",
+  "bytes": 3253295,
+  "sha256": "51a3bdbe563071282a30e72efaf5d4fe0be43a501925339664859d908a9acfed",
+  "source_files": 247,
+  "source_bytes": 19543375,
+  "manifest_sha256": "7336d982a80a2f7d8a7f02bcbcf868edfa148ab9f6f0333c747435e2e5543be6",
+  "every_member_verified": true
+}

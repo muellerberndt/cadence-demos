@@ -1,0 +1,1825 @@
+{
+  "accepted_admissions": 15360,
+  "cases": [
+    {
+      "accepted_admissions": 1024,
+      "checks": [
+        {
+          "all_state_sufficient_cue_bound": 1.9603808042387922,
+          "bit_memory_gate": false,
+          "checkpoint": 64,
+          "free_target_mae": 0.7711173054671752,
+          "held_interval_sufficient_cue_bound": 1.643217220916825,
+          "held_magnitude": 0.7699257422984582,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 4592,
+            "evaluations": 1148,
+            "patch_visits": 2296,
+            "proposals": 70
+          },
+          "minimum_signed_response": -0.9746517386959939,
+          "parameters": [
+            0.7817892718363836,
+            1.3785270307528272,
+            -6.931782479003489e-17
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 4,
+            "edge_visits": 20928,
+            "evaluations": 327,
+            "patch_visits": 10464,
+            "proposals": 199
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.9524017878785445,
+          "bit_memory_gate": false,
+          "checkpoint": 256,
+          "free_target_mae": 0.771289797207441,
+          "held_interval_sufficient_cue_bound": 1.6319788016407102,
+          "held_magnitude": 0.766764850644504,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 9160,
+            "evaluations": 2290,
+            "patch_visits": 4580,
+            "proposals": 134
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            0.9242238114156965,
+            1.3738194569869349,
+            1.2120436127271272e-17
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 4,
+            "edge_visits": 70080,
+            "evaluations": 1095,
+            "patch_visits": 35040,
+            "proposals": 583
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.9515017887763473,
+          "bit_memory_gate": false,
+          "checkpoint": 1024,
+          "free_target_mae": 0.7712975029996052,
+          "held_interval_sufficient_cue_bound": 1.6307082739043448,
+          "held_magnitude": 0.766405021428584,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 13728,
+            "evaluations": 3432,
+            "patch_visits": 6864,
+            "proposals": 198
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            0.9504663524243312,
+            1.373289429566772,
+            -9.823554924471312e-19
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 4,
+            "edge_visits": 225024,
+            "evaluations": 3516,
+            "patch_visits": 112512,
+            "proposals": 1468
+          }
+        }
+      ],
+      "complete": true,
+      "inference_work": {
+        "backtracks": 0,
+        "edge_visits": 13728,
+        "evaluations": 3432,
+        "patch_visits": 6864,
+        "proposals": 198
+      },
+      "maximum_independent_derivative_gap": 6.591949208711867e-17,
+      "primary_pass": false,
+      "refusals": {},
+      "regime": 0,
+      "replayed_query_calls": 1617,
+      "replayed_training_calls": 1024,
+      "seed": 179,
+      "status": "complete",
+      "training_work": {
+        "backtracks": 4,
+        "edge_visits": 225024,
+        "evaluations": 3516,
+        "patch_visits": 112512,
+        "proposals": 1468
+      },
+      "unknown_work": false
+    },
+    {
+      "accepted_admissions": 1024,
+      "checks": [
+        {
+          "all_state_sufficient_cue_bound": 1.96665031982399,
+          "bit_memory_gate": false,
+          "checkpoint": 64,
+          "free_target_mae": 0.7712404293934314,
+          "held_interval_sufficient_cue_bound": 1.6520161931229933,
+          "held_magnitude": 0.7723732024295471,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 4568,
+            "evaluations": 1142,
+            "patch_visits": 2284,
+            "proposals": 64
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            0.9323690346713562,
+            1.3822367579705281,
+            8.205839856638787e-17
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 2,
+            "edge_visits": 21760,
+            "evaluations": 340,
+            "patch_visits": 10880,
+            "proposals": 212
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.9553764011189512,
+          "bit_memory_gate": false,
+          "checkpoint": 256,
+          "free_target_mae": 0.7713498805495052,
+          "held_interval_sufficient_cue_bound": 1.6361742305724345,
+          "held_magnitude": 0.7679496117450637,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 9120,
+            "evaluations": 2280,
+            "patch_visits": 4560,
+            "proposals": 124
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            1.2597446151928953,
+            1.375572663105538,
+            -1.0756605175885001e-18
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 2,
+            "edge_visits": 70912,
+            "evaluations": 1108,
+            "patch_visits": 35456,
+            "proposals": 596
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.9524013330815504,
+          "bit_memory_gate": false,
+          "checkpoint": 1024,
+          "free_target_mae": 0.7713694785212121,
+          "held_interval_sufficient_cue_bound": 1.6319786356615138,
+          "held_magnitude": 0.7667650153945282,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 13680,
+            "evaluations": 3420,
+            "patch_visits": 6840,
+            "proposals": 186
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            1.5910438724992715,
+            1.373819189098271,
+            3.933566340853534e-18
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 2,
+            "edge_visits": 267520,
+            "evaluations": 4180,
+            "patch_visits": 133760,
+            "proposals": 2132
+          }
+        }
+      ],
+      "complete": true,
+      "inference_work": {
+        "backtracks": 0,
+        "edge_visits": 13680,
+        "evaluations": 3420,
+        "patch_visits": 6840,
+        "proposals": 186
+      },
+      "maximum_independent_derivative_gap": 2.6020852139652106e-18,
+      "primary_pass": false,
+      "refusals": {},
+      "regime": 1,
+      "replayed_query_calls": 1617,
+      "replayed_training_calls": 1024,
+      "seed": 179,
+      "status": "complete",
+      "training_work": {
+        "backtracks": 2,
+        "edge_visits": 267520,
+        "evaluations": 4180,
+        "patch_visits": 133760,
+        "proposals": 2132
+      },
+      "unknown_work": false
+    },
+    {
+      "accepted_admissions": 1024,
+      "checks": [
+        {
+          "all_state_sufficient_cue_bound": 1.966920506728874,
+          "bit_memory_gate": false,
+          "checkpoint": 64,
+          "free_target_mae": 0.7712425154243199,
+          "held_interval_sufficient_cue_bound": 1.652394765812885,
+          "held_magnitude": 0.77247796617273,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 4568,
+            "evaluations": 1142,
+            "patch_visits": 2284,
+            "proposals": 64
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            0.9388256598678962,
+            1.3823968414187544,
+            4.64050495721057e-17
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 2,
+            "edge_visits": 21888,
+            "evaluations": 342,
+            "patch_visits": 10944,
+            "proposals": 214
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.9555045361691736,
+          "bit_memory_gate": false,
+          "checkpoint": 256,
+          "free_target_mae": 0.7713537002291405,
+          "held_interval_sufficient_cue_bound": 1.636354805428716,
+          "held_magnitude": 0.7680004792244929,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 9120,
+            "evaluations": 2280,
+            "patch_visits": 4560,
+            "proposals": 124
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            1.2738359767368588,
+            1.375648232693036,
+            4.698071519589492e-18
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 2,
+            "edge_visits": 71040,
+            "evaluations": 1110,
+            "patch_visits": 35520,
+            "proposals": 598
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.952465231429354,
+          "bit_memory_gate": false,
+          "checkpoint": 1024,
+          "free_target_mae": 0.7713740985672837,
+          "held_interval_sufficient_cue_bound": 1.632068830871236,
+          "held_magnitude": 0.7667905460546839,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 13688,
+            "evaluations": 3422,
+            "patch_visits": 6844,
+            "proposals": 188
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            1.6206910123846316,
+            1.3738568275763214,
+            2.512180327159322e-18
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 2,
+            "edge_visits": 267648,
+            "evaluations": 4182,
+            "patch_visits": 133824,
+            "proposals": 2134
+          }
+        }
+      ],
+      "complete": true,
+      "inference_work": {
+        "backtracks": 0,
+        "edge_visits": 13688,
+        "evaluations": 3422,
+        "patch_visits": 6844,
+        "proposals": 188
+      },
+      "maximum_independent_derivative_gap": 1.734723475976807e-18,
+      "primary_pass": false,
+      "refusals": {},
+      "regime": 2,
+      "replayed_query_calls": 1617,
+      "replayed_training_calls": 1024,
+      "seed": 179,
+      "status": "complete",
+      "training_work": {
+        "backtracks": 2,
+        "edge_visits": 267648,
+        "evaluations": 4182,
+        "patch_visits": 133824,
+        "proposals": 2134
+      },
+      "unknown_work": false
+    },
+    {
+      "accepted_admissions": 1024,
+      "checks": [
+        {
+          "all_state_sufficient_cue_bound": 1.9606758643349678,
+          "bit_memory_gate": false,
+          "checkpoint": 64,
+          "free_target_mae": 0.7711040272252321,
+          "held_interval_sufficient_cue_bound": 1.6436319384380513,
+          "held_magnitude": 0.770041632040817,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 4592,
+            "evaluations": 1148,
+            "patch_visits": 2296,
+            "proposals": 70
+          },
+          "minimum_signed_response": -0.9719100974622069,
+          "parameters": [
+            0.778119437789071,
+            1.3787014089141165,
+            9.313032728519655e-18
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 2,
+            "edge_visits": 20672,
+            "evaluations": 323,
+            "patch_visits": 10336,
+            "proposals": 195
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.9524165368168358,
+          "bit_memory_gate": false,
+          "checkpoint": 256,
+          "free_target_mae": 0.7712896676820762,
+          "held_interval_sufficient_cue_bound": 1.6319996178097158,
+          "held_magnitude": 0.7667707418325753,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 9160,
+            "evaluations": 2290,
+            "patch_visits": 4580,
+            "proposals": 134
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            0.9238253704250824,
+            1.3738281445679827,
+            -5.922757752124135e-18
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 2,
+            "edge_visits": 69824,
+            "evaluations": 1091,
+            "patch_visits": 34912,
+            "proposals": 579
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.9515017996442476,
+          "bit_memory_gate": false,
+          "checkpoint": 1024,
+          "free_target_mae": 0.7712975029091717,
+          "held_interval_sufficient_cue_bound": 1.6307082892500944,
+          "held_magnitude": 0.7664050257777436,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 13728,
+            "evaluations": 3432,
+            "patch_visits": 6864,
+            "proposals": 198
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            0.9504660098371793,
+            1.373289435965908,
+            -9.242344372662573e-19
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 2,
+            "edge_visits": 224832,
+            "evaluations": 3513,
+            "patch_visits": 112416,
+            "proposals": 1465
+          }
+        }
+      ],
+      "complete": true,
+      "inference_work": {
+        "backtracks": 0,
+        "edge_visits": 13728,
+        "evaluations": 3432,
+        "patch_visits": 6864,
+        "proposals": 198
+      },
+      "maximum_independent_derivative_gap": 2.0816681711721685e-17,
+      "primary_pass": false,
+      "refusals": {},
+      "regime": 0,
+      "replayed_query_calls": 1617,
+      "replayed_training_calls": 1024,
+      "seed": 181,
+      "status": "complete",
+      "training_work": {
+        "backtracks": 2,
+        "edge_visits": 224832,
+        "evaluations": 3513,
+        "patch_visits": 112416,
+        "proposals": 1465
+      },
+      "unknown_work": false
+    },
+    {
+      "accepted_admissions": 1024,
+      "checks": [
+        {
+          "all_state_sufficient_cue_bound": 1.9669474663330584,
+          "bit_memory_gate": false,
+          "checkpoint": 64,
+          "free_target_mae": 0.771237335689091,
+          "held_interval_sufficient_cue_bound": 1.6524325292663846,
+          "held_magnitude": 0.7724884104863573,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 4568,
+            "evaluations": 1142,
+            "patch_visits": 2284,
+            "proposals": 64
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            0.9276469069301146,
+            1.3824128157120275,
+            -3.5004728099550935e-17
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 2,
+            "edge_visits": 21824,
+            "evaluations": 341,
+            "patch_visits": 10912,
+            "proposals": 213
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.9553971844802338,
+          "bit_memory_gate": false,
+          "checkpoint": 256,
+          "free_target_mae": 0.7713497094737314,
+          "held_interval_sufficient_cue_bound": 1.6362035181887433,
+          "held_magnitude": 0.7679578616931466,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 9120,
+            "evaluations": 2280,
+            "patch_visits": 4560,
+            "proposals": 124
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            1.258483498257399,
+            1.3755849201380292,
+            -4.250952601949369e-19
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 2,
+            "edge_visits": 70976,
+            "evaluations": 1109,
+            "patch_visits": 35488,
+            "proposals": 597
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.9524026132719074,
+          "bit_memory_gate": false,
+          "checkpoint": 1024,
+          "free_target_mae": 0.7713694743838337,
+          "held_interval_sufficient_cue_bound": 1.6319804423866882,
+          "held_magnitude": 0.7667655266771092,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 13680,
+            "evaluations": 3420,
+            "patch_visits": 6840,
+            "proposals": 186
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            1.5907380997475251,
+            1.3738199431677727,
+            4.196386936371105e-18
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 2,
+            "edge_visits": 267584,
+            "evaluations": 4181,
+            "patch_visits": 133792,
+            "proposals": 2133
+          }
+        }
+      ],
+      "complete": true,
+      "inference_work": {
+        "backtracks": 0,
+        "edge_visits": 13680,
+        "evaluations": 3420,
+        "patch_visits": 6840,
+        "proposals": 186
+      },
+      "maximum_independent_derivative_gap": 1.734723475976807e-18,
+      "primary_pass": false,
+      "refusals": {},
+      "regime": 1,
+      "replayed_query_calls": 1617,
+      "replayed_training_calls": 1024,
+      "seed": 181,
+      "status": "complete",
+      "training_work": {
+        "backtracks": 2,
+        "edge_visits": 267584,
+        "evaluations": 4181,
+        "patch_visits": 133792,
+        "proposals": 2133
+      },
+      "unknown_work": false
+    },
+    {
+      "accepted_admissions": 1024,
+      "checks": [
+        {
+          "all_state_sufficient_cue_bound": 1.967218095241507,
+          "bit_memory_gate": false,
+          "checkpoint": 64,
+          "free_target_mae": 0.7712394127311303,
+          "held_interval_sufficient_cue_bound": 1.652811665121376,
+          "held_magnitude": 0.7725932814197939,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 4568,
+            "evaluations": 1142,
+            "patch_visits": 2284,
+            "proposals": 64
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            0.934068875162706,
+            1.3825731802608994,
+            -8.237219634936965e-17
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 2,
+            "edge_visits": 21824,
+            "evaluations": 341,
+            "patch_visits": 10912,
+            "proposals": 213
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.9555254678574228,
+          "bit_memory_gate": false,
+          "checkpoint": 256,
+          "free_target_mae": 0.7713535264537388,
+          "held_interval_sufficient_cue_bound": 1.6363843001286478,
+          "held_magnitude": 0.7680087858391503,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 9120,
+            "evaluations": 2280,
+            "patch_visits": 4560,
+            "proposals": 124
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            1.2725468087418819,
+            1.3756605778505921,
+            3.334709762902037e-18
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 2,
+            "edge_visits": 70976,
+            "evaluations": 1109,
+            "patch_visits": 35488,
+            "proposals": 597
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.952466540355546,
+          "bit_memory_gate": false,
+          "checkpoint": 1024,
+          "free_target_mae": 0.7713740939792763,
+          "held_interval_sufficient_cue_bound": 1.6320706780923429,
+          "held_magnitude": 0.7667910687457884,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 13688,
+            "evaluations": 3422,
+            "patch_visits": 6844,
+            "proposals": 188
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            1.6203677730947668,
+            1.3738575985923647,
+            -5.122049685956592e-18
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 2,
+            "edge_visits": 267584,
+            "evaluations": 4181,
+            "patch_visits": 133792,
+            "proposals": 2133
+          }
+        }
+      ],
+      "complete": true,
+      "inference_work": {
+        "backtracks": 0,
+        "edge_visits": 13688,
+        "evaluations": 3422,
+        "patch_visits": 6844,
+        "proposals": 188
+      },
+      "maximum_independent_derivative_gap": 1.734723475976807e-18,
+      "primary_pass": false,
+      "refusals": {},
+      "regime": 2,
+      "replayed_query_calls": 1617,
+      "replayed_training_calls": 1024,
+      "seed": 181,
+      "status": "complete",
+      "training_work": {
+        "backtracks": 2,
+        "edge_visits": 267584,
+        "evaluations": 4181,
+        "patch_visits": 133792,
+        "proposals": 2133
+      },
+      "unknown_work": false
+    },
+    {
+      "accepted_admissions": 1024,
+      "checks": [
+        {
+          "all_state_sufficient_cue_bound": 1.9607442003100974,
+          "bit_memory_gate": false,
+          "checkpoint": 64,
+          "free_target_mae": 0.771100977972474,
+          "held_interval_sufficient_cue_bound": 1.643727978278328,
+          "held_magnitude": 0.7700684620491757,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 4592,
+            "evaluations": 1148,
+            "patch_visits": 2296,
+            "proposals": 70
+          },
+          "minimum_signed_response": -0.9712823114619532,
+          "parameters": [
+            0.7772792156356401,
+            1.3787417979153862,
+            8.036841303225048e-17
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 1,
+            "edge_visits": 20992,
+            "evaluations": 328,
+            "patch_visits": 10496,
+            "proposals": 200
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.9524198857467305,
+          "bit_memory_gate": false,
+          "checkpoint": 256,
+          "free_target_mae": 0.7712896382586042,
+          "held_interval_sufficient_cue_bound": 1.632004344357846,
+          "held_magnitude": 0.7667720794749847,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 9160,
+            "evaluations": 2290,
+            "patch_visits": 4580,
+            "proposals": 134
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            0.9237350263681522,
+            1.3738301171986729,
+            4.893258587666087e-18
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 1,
+            "edge_visits": 70144,
+            "evaluations": 1096,
+            "patch_visits": 35072,
+            "proposals": 584
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.9515017957156706,
+          "bit_memory_gate": false,
+          "checkpoint": 1024,
+          "free_target_mae": 0.7712975029418618,
+          "held_interval_sufficient_cue_bound": 1.6307082837028446,
+          "held_magnitude": 0.7664050242055902,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 13728,
+            "evaluations": 3432,
+            "patch_visits": 6864,
+            "proposals": 198
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            0.9504661336772885,
+            1.3732894336527197,
+            1.0954079792141934e-19
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 1,
+            "edge_visits": 225408,
+            "evaluations": 3522,
+            "patch_visits": 112704,
+            "proposals": 1474
+          }
+        }
+      ],
+      "complete": true,
+      "inference_work": {
+        "backtracks": 0,
+        "edge_visits": 13728,
+        "evaluations": 3432,
+        "patch_visits": 6864,
+        "proposals": 198
+      },
+      "maximum_independent_derivative_gap": 8.500145032286355e-17,
+      "primary_pass": false,
+      "refusals": {},
+      "regime": 0,
+      "replayed_query_calls": 1617,
+      "replayed_training_calls": 1024,
+      "seed": 191,
+      "status": "complete",
+      "training_work": {
+        "backtracks": 1,
+        "edge_visits": 225408,
+        "evaluations": 3522,
+        "patch_visits": 112704,
+        "proposals": 1474
+      },
+      "unknown_work": false
+    },
+    {
+      "accepted_admissions": 1024,
+      "checks": [
+        {
+          "all_state_sufficient_cue_bound": 1.9670135999262666,
+          "bit_memory_gate": false,
+          "checkpoint": 64,
+          "free_target_mae": 0.7712366464402671,
+          "held_interval_sufficient_cue_bound": 1.6525251816070523,
+          "held_magnitude": 0.7725140418789622,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 4568,
+            "evaluations": 1142,
+            "patch_visits": 2284,
+            "proposals": 64
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            0.9266081900066452,
+            1.3824520023863853,
+            -6.635555509852495e-17
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 1,
+            "edge_visits": 21952,
+            "evaluations": 343,
+            "patch_visits": 10976,
+            "proposals": 215
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.9554017340408678,
+          "bit_memory_gate": false,
+          "checkpoint": 256,
+          "free_target_mae": 0.7713496719899356,
+          "held_interval_sufficient_cue_bound": 1.6362099293234982,
+          "held_magnitude": 0.7679596675924508,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 9120,
+            "evaluations": 2280,
+            "patch_visits": 4560,
+            "proposals": 124
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            1.2582082993905634,
+            1.3755876032652374,
+            8.047332637673952e-18
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 1,
+            "edge_visits": 71104,
+            "evaluations": 1111,
+            "patch_visits": 35552,
+            "proposals": 599
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.952402892194072,
+          "bit_memory_gate": false,
+          "checkpoint": 1024,
+          "free_target_mae": 0.7713694734812705,
+          "held_interval_sufficient_cue_bound": 1.6319808360277643,
+          "held_magnitude": 0.7667656380729057,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 13680,
+            "evaluations": 3420,
+            "patch_visits": 6840,
+            "proposals": 186
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            1.5906715312916582,
+            1.373820107461125,
+            -4.876037047765485e-18
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 1,
+            "edge_visits": 267712,
+            "evaluations": 4183,
+            "patch_visits": 133856,
+            "proposals": 2135
+          }
+        }
+      ],
+      "complete": true,
+      "inference_work": {
+        "backtracks": 0,
+        "edge_visits": 13680,
+        "evaluations": 3420,
+        "patch_visits": 6840,
+        "proposals": 186
+      },
+      "maximum_independent_derivative_gap": 9.215718466126788e-19,
+      "primary_pass": false,
+      "refusals": {},
+      "regime": 1,
+      "replayed_query_calls": 1617,
+      "replayed_training_calls": 1024,
+      "seed": 191,
+      "status": "complete",
+      "training_work": {
+        "backtracks": 1,
+        "edge_visits": 267712,
+        "evaluations": 4183,
+        "patch_visits": 133856,
+        "proposals": 2135
+      },
+      "unknown_work": false
+    },
+    {
+      "accepted_admissions": 1024,
+      "checks": [
+        {
+          "all_state_sufficient_cue_bound": 1.9672840963011513,
+          "bit_memory_gate": false,
+          "checkpoint": 64,
+          "free_target_mae": 0.7712387239141882,
+          "held_interval_sufficient_cue_bound": 1.6529041193345473,
+          "held_magnitude": 0.7726188472112678,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 4568,
+            "evaluations": 1142,
+            "patch_visits": 2284,
+            "proposals": 64
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            0.9330261307251958,
+            1.3826122926674822,
+            4.28735336363859e-17
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 1,
+            "edge_visits": 22080,
+            "evaluations": 345,
+            "patch_visits": 11040,
+            "proposals": 217
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.9555300346206366,
+          "bit_memory_gate": false,
+          "checkpoint": 256,
+          "free_target_mae": 0.7713534885069606,
+          "held_interval_sufficient_cue_bound": 1.6363907350820885,
+          "held_magnitude": 0.7680105980839822,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 9120,
+            "evaluations": 2280,
+            "patch_visits": 4560,
+            "proposals": 124
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            1.2722664250834852,
+            1.3756632712647776,
+            -1.7295460196430127e-19
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 1,
+            "edge_visits": 71232,
+            "evaluations": 1113,
+            "patch_visits": 35616,
+            "proposals": 601
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.9524668246042722,
+          "bit_memory_gate": false,
+          "checkpoint": 1024,
+          "free_target_mae": 0.7713740929818543,
+          "held_interval_sufficient_cue_bound": 1.632071079237992,
+          "held_magnitude": 0.7667911822541332,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 13688,
+            "evaluations": 3422,
+            "patch_visits": 6844,
+            "proposals": 188
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            1.6202976331488494,
+            1.373857766027627,
+            -5.27498887686611e-18
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 1,
+            "edge_visits": 267840,
+            "evaluations": 4185,
+            "patch_visits": 133920,
+            "proposals": 2137
+          }
+        }
+      ],
+      "complete": true,
+      "inference_work": {
+        "backtracks": 0,
+        "edge_visits": 13688,
+        "evaluations": 3422,
+        "patch_visits": 6844,
+        "proposals": 188
+      },
+      "maximum_independent_derivative_gap": 1.0842021724855044e-18,
+      "primary_pass": false,
+      "refusals": {},
+      "regime": 2,
+      "replayed_query_calls": 1617,
+      "replayed_training_calls": 1024,
+      "seed": 191,
+      "status": "complete",
+      "training_work": {
+        "backtracks": 1,
+        "edge_visits": 267840,
+        "evaluations": 4185,
+        "patch_visits": 133920,
+        "proposals": 2137
+      },
+      "unknown_work": false
+    },
+    {
+      "accepted_admissions": 1024,
+      "checks": [
+        {
+          "all_state_sufficient_cue_bound": 1.960976850999758,
+          "bit_memory_gate": false,
+          "checkpoint": 64,
+          "free_target_mae": 0.7710906681200288,
+          "held_interval_sufficient_cue_bound": 1.644054922277063,
+          "held_magnitude": 0.7701597767482271,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 4592,
+            "evaluations": 1148,
+            "patch_visits": 2296,
+            "proposals": 70
+          },
+          "minimum_signed_response": -0.9691647236781636,
+          "parameters": [
+            0.7744453429913145,
+            1.3788793111966762,
+            2.7557632170028018e-17
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 1,
+            "edge_visits": 20544,
+            "evaluations": 321,
+            "patch_visits": 10272,
+            "proposals": 193
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.9524311048836007,
+          "bit_memory_gate": false,
+          "checkpoint": 256,
+          "free_target_mae": 0.7712895396527351,
+          "held_interval_sufficient_cue_bound": 1.6320201785477808,
+          "held_magnitude": 0.7667765605978787,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 9160,
+            "evaluations": 2290,
+            "patch_visits": 4580,
+            "proposals": 134
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            0.9234327089369093,
+            1.3738367256619128,
+            5.566535525368674e-18
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 1,
+            "edge_visits": 69696,
+            "evaluations": 1089,
+            "patch_visits": 34848,
+            "proposals": 577
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.951501793048471,
+          "bit_memory_gate": false,
+          "checkpoint": 1024,
+          "free_target_mae": 0.7712975029640563,
+          "held_interval_sufficient_cue_bound": 1.6307082799366917,
+          "held_magnitude": 0.7664050231382196,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 13728,
+            "evaluations": 3432,
+            "patch_visits": 6864,
+            "proposals": 198
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            0.9504662177551769,
+            1.3732894320822442,
+            -4.64594875865257e-19
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 1,
+            "edge_visits": 225280,
+            "evaluations": 3520,
+            "patch_visits": 112640,
+            "proposals": 1472
+          }
+        }
+      ],
+      "complete": true,
+      "inference_work": {
+        "backtracks": 0,
+        "edge_visits": 13728,
+        "evaluations": 3432,
+        "patch_visits": 6864,
+        "proposals": 198
+      },
+      "maximum_independent_derivative_gap": 6.071532165918825e-17,
+      "primary_pass": false,
+      "refusals": {},
+      "regime": 0,
+      "replayed_query_calls": 1617,
+      "replayed_training_calls": 1024,
+      "seed": 193,
+      "status": "complete",
+      "training_work": {
+        "backtracks": 1,
+        "edge_visits": 225280,
+        "evaluations": 3520,
+        "patch_visits": 112640,
+        "proposals": 1472
+      },
+      "unknown_work": false
+    },
+    {
+      "accepted_admissions": 1024,
+      "checks": [
+        {
+          "all_state_sufficient_cue_bound": 1.9672498464043708,
+          "bit_memory_gate": false,
+          "checkpoint": 64,
+          "free_target_mae": 0.7712341822153949,
+          "held_interval_sufficient_cue_bound": 1.652856135124133,
+          "held_magnitude": 0.772605575469997,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 4568,
+            "evaluations": 1142,
+            "patch_visits": 2284,
+            "proposals": 64
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            0.9229331348288455,
+            1.382591995956153,
+            2.431944256566083e-17
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 2,
+            "edge_visits": 22208,
+            "evaluations": 347,
+            "patch_visits": 11104,
+            "proposals": 219
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.955417766429561,
+          "bit_memory_gate": false,
+          "checkpoint": 256,
+          "free_target_mae": 0.771349539800602,
+          "held_interval_sufficient_cue_bound": 1.6362325216738156,
+          "held_magnitude": 0.7679660313420252,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 9120,
+            "evaluations": 2280,
+            "patch_visits": 4560,
+            "proposals": 124
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            1.2572409731435006,
+            1.3755970584903214,
+            9.65592441304744e-18
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 2,
+            "edge_visits": 71360,
+            "evaluations": 1115,
+            "patch_visits": 35680,
+            "proposals": 603
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.9524038713593042,
+          "bit_memory_gate": false,
+          "checkpoint": 1024,
+          "free_target_mae": 0.7713694703095969,
+          "held_interval_sufficient_cue_bound": 1.6319822179170127,
+          "held_magnitude": 0.7667660291309463,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 13680,
+            "evaluations": 3420,
+            "patch_visits": 6840,
+            "proposals": 186
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            1.5904379874873151,
+            1.373820684218373,
+            -5.12597351080686e-20
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 2,
+            "edge_visits": 267968,
+            "evaluations": 4187,
+            "patch_visits": 133984,
+            "proposals": 2139
+          }
+        }
+      ],
+      "complete": true,
+      "inference_work": {
+        "backtracks": 0,
+        "edge_visits": 13680,
+        "evaluations": 3420,
+        "patch_visits": 6840,
+        "proposals": 186
+      },
+      "maximum_independent_derivative_gap": 1.734723475976807e-18,
+      "primary_pass": false,
+      "refusals": {},
+      "regime": 1,
+      "replayed_query_calls": 1617,
+      "replayed_training_calls": 1024,
+      "seed": 193,
+      "status": "complete",
+      "training_work": {
+        "backtracks": 2,
+        "edge_visits": 267968,
+        "evaluations": 4187,
+        "patch_visits": 133984,
+        "proposals": 2139
+      },
+      "unknown_work": false
+    },
+    {
+      "accepted_admissions": 1024,
+      "checks": [
+        {
+          "all_state_sufficient_cue_bound": 1.9675208143655398,
+          "bit_memory_gate": false,
+          "checkpoint": 64,
+          "free_target_mae": 0.7712362514358958,
+          "held_interval_sufficient_cue_bound": 1.6532356888295263,
+          "held_magnitude": 0.7727105124533011,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 4568,
+            "evaluations": 1142,
+            "patch_visits": 2284,
+            "proposals": 64
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            0.929321883763824,
+            1.382752580985253,
+            7.242323782070127e-18
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 2,
+            "edge_visits": 22272,
+            "evaluations": 348,
+            "patch_visits": 11136,
+            "proposals": 220
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.9555461941750876,
+          "bit_memory_gate": false,
+          "checkpoint": 256,
+          "free_target_mae": 0.7713533541362184,
+          "held_interval_sufficient_cue_bound": 1.6364135051336213,
+          "held_magnitude": 0.7680170106000581,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 9120,
+            "evaluations": 2280,
+            "patch_visits": 4560,
+            "proposals": 124
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            1.2712767978209212,
+            1.375672801988413,
+            -9.075119558208315e-18
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 2,
+            "edge_visits": 71424,
+            "evaluations": 1116,
+            "patch_visits": 35712,
+            "proposals": 604
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.9524678266381668,
+          "bit_memory_gate": false,
+          "checkpoint": 1024,
+          "free_target_mae": 0.7713740894626641,
+          "held_interval_sufficient_cue_bound": 1.6320724933565995,
+          "held_magnitude": 0.7667915823933535,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 13688,
+            "evaluations": 3422,
+            "patch_visits": 6844,
+            "proposals": 188
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            1.6200505327781891,
+            1.3738583562707372,
+            -1.3999950458115128e-19
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 2,
+            "edge_visits": 268032,
+            "evaluations": 4188,
+            "patch_visits": 134016,
+            "proposals": 2140
+          }
+        }
+      ],
+      "complete": true,
+      "inference_work": {
+        "backtracks": 0,
+        "edge_visits": 13688,
+        "evaluations": 3422,
+        "patch_visits": 6844,
+        "proposals": 188
+      },
+      "maximum_independent_derivative_gap": 1.734723475976807e-18,
+      "primary_pass": false,
+      "refusals": {},
+      "regime": 2,
+      "replayed_query_calls": 1617,
+      "replayed_training_calls": 1024,
+      "seed": 193,
+      "status": "complete",
+      "training_work": {
+        "backtracks": 2,
+        "edge_visits": 268032,
+        "evaluations": 4188,
+        "patch_visits": 134016,
+        "proposals": 2140
+      },
+      "unknown_work": false
+    },
+    {
+      "accepted_admissions": 1024,
+      "checks": [
+        {
+          "all_state_sufficient_cue_bound": 1.9607257060574752,
+          "bit_memory_gate": false,
+          "checkpoint": 64,
+          "free_target_mae": 0.7711018022635842,
+          "held_interval_sufficient_cue_bound": 1.643701986658166,
+          "held_magnitude": 0.7700612012265212,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 4592,
+            "evaluations": 1148,
+            "patch_visits": 2296,
+            "proposals": 70
+          },
+          "minimum_signed_response": -0.9714519512507203,
+          "parameters": [
+            0.7775062559402924,
+            1.378730867040934,
+            1.727347639972328e-17
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 4,
+            "edge_visits": 21120,
+            "evaluations": 330,
+            "patch_visits": 10560,
+            "proposals": 202
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.9524189818368565,
+          "bit_memory_gate": false,
+          "checkpoint": 256,
+          "free_target_mae": 0.7712896462007731,
+          "held_interval_sufficient_cue_bound": 1.63200306861575,
+          "held_magnitude": 0.7667717184327556,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 9160,
+            "evaluations": 2290,
+            "patch_visits": 4580,
+            "proposals": 134
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            0.923759406518821,
+            1.3738295847655337,
+            -1.1460061493044885e-17
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 4,
+            "edge_visits": 70272,
+            "evaluations": 1098,
+            "patch_visits": 35136,
+            "proposals": 586
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.9515017942979946,
+          "bit_memory_gate": false,
+          "checkpoint": 1024,
+          "free_target_mae": 0.7712975029536586,
+          "held_interval_sufficient_cue_bound": 1.6307082817010505,
+          "held_magnitude": 0.766405023638259,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 13728,
+            "evaluations": 3432,
+            "patch_visits": 6864,
+            "proposals": 198
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            0.9504661783663417,
+            1.373289432817977,
+            2.201078912884068e-20
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 4,
+            "edge_visits": 225472,
+            "evaluations": 3523,
+            "patch_visits": 112736,
+            "proposals": 1475
+          }
+        }
+      ],
+      "complete": true,
+      "inference_work": {
+        "backtracks": 0,
+        "edge_visits": 13728,
+        "evaluations": 3432,
+        "patch_visits": 6864,
+        "proposals": 198
+      },
+      "maximum_independent_derivative_gap": 5.724587470723463e-17,
+      "primary_pass": false,
+      "refusals": {},
+      "regime": 0,
+      "replayed_query_calls": 1617,
+      "replayed_training_calls": 1024,
+      "seed": 197,
+      "status": "complete",
+      "training_work": {
+        "backtracks": 4,
+        "edge_visits": 225472,
+        "evaluations": 3523,
+        "patch_visits": 112736,
+        "proposals": 1475
+      },
+      "unknown_work": false
+    },
+    {
+      "accepted_admissions": 1024,
+      "checks": [
+        {
+          "all_state_sufficient_cue_bound": 1.96699799879045,
+          "bit_memory_gate": false,
+          "checkpoint": 64,
+          "free_target_mae": 0.7712368090592179,
+          "held_interval_sufficient_cue_bound": 1.6525033248844108,
+          "held_magnitude": 0.7725079956616803,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 4568,
+            "evaluations": 1142,
+            "patch_visits": 2284,
+            "proposals": 64
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            0.9268528307324089,
+            1.3824427580247243,
+            -4.064214327275328e-17
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 3,
+            "edge_visits": 22208,
+            "evaluations": 347,
+            "patch_visits": 11104,
+            "proposals": 219
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.9554006632387488,
+          "bit_memory_gate": false,
+          "checkpoint": 256,
+          "free_target_mae": 0.771349680813382,
+          "held_interval_sufficient_cue_bound": 1.6362084203754534,
+          "held_magnitude": 0.7679592425505588,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 9120,
+            "evaluations": 2280,
+            "patch_visits": 4560,
+            "proposals": 124
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            1.2582730434222833,
+            1.3755869717536298,
+            1.0673719151236295e-17
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 3,
+            "edge_visits": 71360,
+            "evaluations": 1115,
+            "patch_visits": 35680,
+            "proposals": 603
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.9524028265882363,
+          "bit_memory_gate": false,
+          "checkpoint": 1024,
+          "free_target_mae": 0.7713694736936005,
+          "held_interval_sufficient_cue_bound": 1.6319807434386704,
+          "held_magnitude": 0.7667656118712849,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 13680,
+            "evaluations": 3420,
+            "patch_visits": 6840,
+            "proposals": 186
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            1.5906871873201431,
+            1.373820068817358,
+            5.361927471001018e-18
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 3,
+            "edge_visits": 267968,
+            "evaluations": 4187,
+            "patch_visits": 133984,
+            "proposals": 2139
+          }
+        }
+      ],
+      "complete": true,
+      "inference_work": {
+        "backtracks": 0,
+        "edge_visits": 13680,
+        "evaluations": 3420,
+        "patch_visits": 6840,
+        "proposals": 186
+      },
+      "maximum_independent_derivative_gap": 2.6020852139652106e-18,
+      "primary_pass": false,
+      "refusals": {},
+      "regime": 1,
+      "replayed_query_calls": 1617,
+      "replayed_training_calls": 1024,
+      "seed": 197,
+      "status": "complete",
+      "training_work": {
+        "backtracks": 3,
+        "edge_visits": 267968,
+        "evaluations": 4187,
+        "patch_visits": 133984,
+        "proposals": 2139
+      },
+      "unknown_work": false
+    },
+    {
+      "accepted_admissions": 1024,
+      "checks": [
+        {
+          "all_state_sufficient_cue_bound": 1.9672686751978894,
+          "bit_memory_gate": false,
+          "checkpoint": 64,
+          "free_target_mae": 0.7712388848775142,
+          "held_interval_sufficient_cue_bound": 1.652882517740985,
+          "held_magnitude": 0.7726128740916399,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 4568,
+            "evaluations": 1142,
+            "patch_visits": 2284,
+            "proposals": 64
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            0.9332693758026369,
+            1.3826031539868535,
+            -8.538409520465915e-17
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 3,
+            "edge_visits": 22272,
+            "evaluations": 348,
+            "patch_visits": 11136,
+            "proposals": 220
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.9555289700140661,
+          "bit_memory_gate": false,
+          "checkpoint": 256,
+          "free_target_mae": 0.7713534973542023,
+          "held_interval_sufficient_cue_bound": 1.636389234963228,
+          "held_magnitude": 0.7680101756139107,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 9120,
+            "evaluations": 2280,
+            "patch_visits": 4560,
+            "proposals": 124
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            1.2723317602230635,
+            1.3756626433740018,
+            4.627589084811664e-18
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 3,
+            "edge_visits": 71424,
+            "evaluations": 1116,
+            "patch_visits": 35712,
+            "proposals": 604
+          }
+        },
+        {
+          "all_state_sufficient_cue_bound": 1.9524667583822977,
+          "bit_memory_gate": false,
+          "checkpoint": 1024,
+          "free_target_mae": 0.7713740932142601,
+          "held_interval_sufficient_cue_bound": 1.6320709857823201,
+          "held_magnitude": 0.7667911558098806,
+          "inference_work_so_far": {
+            "backtracks": 0,
+            "edge_visits": 13688,
+            "evaluations": 3422,
+            "patch_visits": 6844,
+            "proposals": 188
+          },
+          "minimum_signed_response": -1.0,
+          "parameters": [
+            1.6203139720271593,
+            1.3738577270199088,
+            7.106893558213978e-19
+          ],
+          "queries": 539,
+          "status": "complete",
+          "training_work": {
+            "backtracks": 3,
+            "edge_visits": 268032,
+            "evaluations": 4188,
+            "patch_visits": 134016,
+            "proposals": 2140
+          }
+        }
+      ],
+      "complete": true,
+      "inference_work": {
+        "backtracks": 0,
+        "edge_visits": 13688,
+        "evaluations": 3422,
+        "patch_visits": 6844,
+        "proposals": 188
+      },
+      "maximum_independent_derivative_gap": 1.734723475976807e-18,
+      "primary_pass": false,
+      "refusals": {},
+      "regime": 2,
+      "replayed_query_calls": 1617,
+      "replayed_training_calls": 1024,
+      "seed": 197,
+      "status": "complete",
+      "training_work": {
+        "backtracks": 3,
+        "edge_visits": 268032,
+        "evaluations": 4188,
+        "patch_visits": 134016,
+        "proposals": 2140
+      },
+      "unknown_work": false
+    }
+  ],
+  "collector_sha256": "1c1c9de1bfed1265173c6d17baf1abb6f2ba89ce0dacd6c3e089b1d93e729506",
+  "conclusions": [
+    {
+      "all_five_complete": true,
+      "all_five_primary_pass": false,
+      "regime": 0
+    },
+    {
+      "all_five_complete": true,
+      "all_five_primary_pass": false,
+      "regime": 1
+    },
+    {
+      "all_five_complete": true,
+      "all_five_primary_pass": false,
+      "regime": 2
+    }
+  ],
+  "custody_helper_sha256": "f60bbcc771cbf929831efac7ccc09b172f42f32f4831ca2fb452ca0548c69cb0",
+  "elapsed_seconds": 17.290736542083323,
+  "full_training_and_query_replay": true,
+  "independent_helper_sha256": "950bc676e146632673761ef1c37e753045140795827ba23ce6d0a980aebeaeb5",
+  "limits": [
+    "Same pinned solver is numerically replayed; independent scalar derivatives, body, reset schedule and gates supplement it.",
+    "Private recurrent topology; no public API change, residual-observer advantage or matched-baseline superiority.",
+    "Historical controls and stricter-tolerance refusals remain separate; this is a new supervised attractor-acquisition experiment.",
+    "All checkpoint outcomes remain visible; only1024 gates enter each predeclared regime's all-five primary."
+  ],
+  "planned_outcomes": 15,
+  "protocol_sha256": "f1eaa1a615ab9fcc60f97000b420b6f54388ccd1dee319c41fc662867c207d21",
+  "replayed_query_calls": 24255,
+  "replayed_training_calls": 15360,
+  "schema": "cycle-write-confirmation-verification/1",
+  "valid": true,
+  "verifier_sha256": "11bde27a2dd885860adda4c106c1f83c0adb3b8a8c3136e97716db7244d9fca8"
+}
