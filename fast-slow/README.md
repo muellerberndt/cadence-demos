@@ -288,3 +288,30 @@ The owner selects a newly trained **flat Amen brain** as the first application
 test. Atari and Patch World should start with flat or shallow controls; deeper
 observation needs a measured task benefit. Baseline reproduction and a passing
 page smoke remain distinct from a tested replacement under the new architecture.
+
+
+## Parallel routine bootstrap on the public candidate
+
+The application checks use independent brains and serialized admissions within
+each brain. They retain the common patch rule, require qualified free actions,
+and preserve failed attempts. Full cloud journals and checkpoints remain at the
+paths in the workspace data catalogue; compact receipts are beside the code.
+
+- [Atari Freeway](atari_flat_README.md): a flat brain acquires a supplied
+  constant-UP routine, then controls complete native games without teacher
+  fallback. This tests routine acquisition and execution, not visual strategy
+  or reward-driven discovery.
+- [Patch World](patchworld_README.md): flat, composed and observer layouts learn
+  a supplied local-foraging routine, then act in the unchanged JavaScript body.
+  The bounded single-organism experiment checks actual metabolism, actions and
+  conserved mass. It does not replace the website's separate brain engine.
+- Amen's flat composer is trained by the workspace's
+  `cadence-amen/drsn_amen/train.py --wiring flat`. Its next-event acquisition and
+  free generation from silence are separate gates. A successful prediction fit
+  alone cannot qualify a replacement musical demo.
+
+The public candidate's [brain-design guide](https://github.com/muellerberndt/cadence/blob/codex/cadence-0.60/docs/BRAIN_DESIGN.md)
+explains how to choose observations, context, connected capacity and exposure,
+and how to test whether deeper observation justifies its cost. These routine
+checks do not demonstrate integrated System 1/System 2 attention or a causal
+advantage from recursive correction.
