@@ -1,0 +1,458 @@
+{
+  "schema": "cadence-routine-integration-source-audit/1",
+  "date_utc": "2026-10-01",
+  "kind": "read-only source and contract audit; not an experimental capability receipt",
+  "sources": {
+    "legacy_exports": {
+      "revision": "1a0dc32fa04fa2bc57baf80df57b2f50912b3ee1",
+      "path": "src/cadence/__init__.py",
+      "sha256": "a29064027ac79c7ef2a8b950598bed5534e20718f6942922fce2d2cd884b8527",
+      "bytes": 3130,
+      "anchors": [
+        {
+          "line": 39,
+          "claim": "Valence exported"
+        },
+        {
+          "line": 96,
+          "claim": "Version 0.9.0"
+        }
+      ],
+      "repository": "cadence"
+    },
+    "legacy_plasticity": {
+      "revision": "1a0dc32fa04fa2bc57baf80df57b2f50912b3ee1",
+      "path": "src/cadence/plasticity.py",
+      "sha256": "456549b68685567ad6755e8707435eee99b14a92b4f04475f1d34608bfa93ffe",
+      "bytes": 31695,
+      "anchors": [
+        {
+          "line": 10,
+          "claim": "eligibility recurrence"
+        },
+        {
+          "line": 11,
+          "claim": "TD signal"
+        },
+        {
+          "line": 12,
+          "claim": "synapse update"
+        },
+        {
+          "line": 84,
+          "claim": "Valence"
+        },
+        {
+          "line": 117,
+          "claim": "running baseline"
+        },
+        {
+          "line": 135,
+          "claim": "centering and floor"
+        },
+        {
+          "line": 494,
+          "claim": "reward/next-value target"
+        },
+        {
+          "line": 518,
+          "claim": "scalar broadcast across traces"
+        },
+        {
+          "line": 540,
+          "claim": "learner parameter update"
+        },
+        {
+          "line": 544,
+          "claim": "separate critic update"
+        }
+      ],
+      "repository": "cadence"
+    },
+    "candidate_reinforcement": {
+      "revision": "ab3cad2207e4c8b50b269829a4b44c2d18543ed5",
+      "path": "src/cadence/reinforcement.py",
+      "sha256": "de0aea848b3fccddd4de790defc8844326dc29e07311cd5c617fde3dc6201676",
+      "bytes": 28860,
+      "anchors": [
+        {
+          "line": 258,
+          "claim": "pending tuple has context/action/identity, not original forecast"
+        },
+        {
+          "line": 269,
+          "claim": "feedback boundary"
+        },
+        {
+          "line": 334,
+          "claim": "actual transition record"
+        },
+        {
+          "line": 436,
+          "claim": "executed action selects value output"
+        },
+        {
+          "line": 447,
+          "claim": "one common-rule estimated batch admission"
+        },
+        {
+          "line": 489,
+          "claim": "snapshot"
+        }
+      ],
+      "repository": "cadence"
+    },
+    "candidate_repair": {
+      "revision": "ab3cad2207e4c8b50b269829a4b44c2d18543ed5",
+      "path": "src/cadence/_repair.py",
+      "sha256": "76f57fcdffad1e39b65e327af8a2ae26f89467dafa11520e96ac07a8ea67595a",
+      "bytes": 29577,
+      "anchors": [
+        {
+          "line": 182,
+          "claim": "input/state/residual signal definition"
+        },
+        {
+          "line": 193,
+          "claim": "prediction and residual"
+        },
+        {
+          "line": 195,
+          "claim": "joint energy"
+        },
+        {
+          "line": 200,
+          "claim": "reverse residual dependency differentiation"
+        },
+        {
+          "line": 214,
+          "claim": "local parameter derivative"
+        },
+        {
+          "line": 215,
+          "claim": "returning state/residual derivatives"
+        },
+        {
+          "line": 219,
+          "claim": "proximal parameter anchor"
+        },
+        {
+          "line": 419,
+          "claim": "projected whole-graph qualification"
+        }
+      ],
+      "repository": "cadence"
+    },
+    "candidate_brain": {
+      "revision": "ab3cad2207e4c8b50b269829a4b44c2d18543ed5",
+      "path": "src/cadence/brain.py",
+      "sha256": "e87fc184b32a769d0840a14f900ecfd24da8b28c37da2d84c8b83c9df7d7f3fb",
+      "bytes": 27158,
+      "anchors": [
+        {
+          "line": 52,
+          "claim": "state/error edges join coupled components"
+        },
+        {
+          "line": 60,
+          "claim": "fixed sensors do not join separate components"
+        },
+        {
+          "line": 269,
+          "claim": "witnessed admission API"
+        },
+        {
+          "line": 305,
+          "claim": "private-state batch admission API"
+        },
+        {
+          "line": 390,
+          "claim": "brain-global admission identity"
+        },
+        {
+          "line": 404,
+          "claim": "latest-only idempotency"
+        }
+      ],
+      "repository": "cadence"
+    },
+    "candidate_runtime": {
+      "revision": "ab3cad2207e4c8b50b269829a4b44c2d18543ed5",
+      "path": "src/cadence/runtime.py",
+      "sha256": "85f0464c223578bc4fbd3607a175e7c932f125157b2ca25cd09bd2bb9e0ab428",
+      "bytes": 12123,
+      "anchors": [
+        {
+          "line": 64,
+          "claim": "extra callback fields ignored"
+        },
+        {
+          "line": 70,
+          "claim": "replaceable observation slot"
+        },
+        {
+          "line": 150,
+          "claim": "command-only read"
+        },
+        {
+          "line": 155,
+          "claim": "separate inspection/identity operation"
+        },
+        {
+          "line": 173,
+          "claim": "last completed submission ID"
+        }
+      ],
+      "repository": "cadence"
+    },
+    "candidate_design_doc": {
+      "revision": "851daea7ec087b714851f5d179ccbd1ce95f2464",
+      "path": "docs/BRAIN_DESIGN.md",
+      "sha256": "34268f684b1bba08308751da691fa64eacb8d41bc5c025b9047a1e650a2d653c",
+      "bytes": 19611,
+      "anchors": [
+        {
+          "line": 256,
+          "claim": "derived Q targets"
+        },
+        {
+          "line": 262,
+          "claim": "connected reward influence"
+        },
+        {
+          "line": 263,
+          "claim": "no automatic emotion broadcast"
+        }
+      ],
+      "repository": "cadence"
+    },
+    "candidate_live_doc": {
+      "revision": "851daea7ec087b714851f5d179ccbd1ce95f2464",
+      "path": "docs/LIVE.md",
+      "sha256": "6042e492f809b0ae2aa7e899071a19d61ca075dfae54ae79d57bf7976f44430d",
+      "bytes": 25956,
+      "anchors": [
+        {
+          "line": 119,
+          "claim": "scaled discounted value target"
+        },
+        {
+          "line": 253,
+          "claim": "actual consequence learning"
+        },
+        {
+          "line": 270,
+          "claim": "one physical needs/reward boundary"
+        },
+        {
+          "line": 288,
+          "claim": "progress heuristic limits"
+        },
+        {
+          "line": 297,
+          "claim": "homeostatic/plasticity mechanisms absent"
+        },
+        {
+          "line": 324,
+          "claim": "lossy sensing versus lossless outcomes"
+        }
+      ],
+      "repository": "cadence"
+    },
+    "legacy_nes_dependency": {
+      "workspace_path": "cadence-1942/requirements.txt",
+      "sha256": "075f3029049480c9c5da24770dd77f2ccfd346ab7b884906f5a62cbabb8fb210",
+      "bytes": 171,
+      "anchors": [
+        {
+          "line": 1,
+          "claim": "exact legacy dependency revision"
+        }
+      ],
+      "revision": "ea70301601b45573a261650b36166887e9133796"
+    },
+    "legacy_nes_practice": {
+      "workspace_path": "cadence-1942/brain1942/practice.py",
+      "sha256": "ebb537ef9265d15043e43bc4ab6d28260b3b83733334e7376a1363a931810547",
+      "bytes": 32217,
+      "anchors": [
+        {
+          "line": 3,
+          "claim": "reward practice contract"
+        },
+        {
+          "line": 5,
+          "claim": "synaptic eligibility"
+        },
+        {
+          "line": 7,
+          "claim": "valence and fixed habits"
+        }
+      ],
+      "revision": "ea70301601b45573a261650b36166887e9133796"
+    },
+    "legacy_nes_readme": {
+      "workspace_path": "cadence-1942/README.md",
+      "sha256": "f77eea26236ea5625e3dd5c5537636d6f0d70b3cb108241a9eb4707ed6dbdb07",
+      "bytes": 30087,
+      "anchors": [
+        {
+          "line": 250,
+          "claim": "one global dopamine scalar"
+        }
+      ],
+      "revision": "ea70301601b45573a261650b36166887e9133796"
+    },
+    "legacy_amen_readme": {
+      "workspace_path": "cadence-demos/amen/README.md",
+      "sha256": "2105db347f6a36a911e12dc9ae57f77efbeff47347757f3871eb3bcea66c7cf1",
+      "bytes": 15082,
+      "anchors": [
+        {
+          "line": 37,
+          "claim": "old trained version"
+        },
+        {
+          "line": 39,
+          "claim": "RecordPatchNet mechanism"
+        }
+      ],
+      "revision": "99250b570594bcae05977c90c884312691632000"
+    },
+    "causal_body": {
+      "workspace_path": "cadence-amen/experiments/causal_instrument.py",
+      "sha256": "0938b37e009abec872af8538956803d8c840b4ee7ed8f8ac052d1a131cd93da2",
+      "bytes": 13420,
+      "anchors": [
+        {
+          "line": 56,
+          "claim": "scaled RMS"
+        },
+        {
+          "line": 90,
+          "claim": "surprise is not valence"
+        }
+      ],
+      "revision": null,
+      "source_status": "working-tree prototype; exact bytes bound here, no commit attribution"
+    },
+    "causal_body_doc": {
+      "workspace_path": "cadence-amen/experiments/README.md",
+      "sha256": "091f76a689d7923d4a619c583a4166fb34d0b56945f18844fde1adf799ff96d2",
+      "bytes": 7425,
+      "anchors": [
+        {
+          "line": 17,
+          "claim": "ACK consumes receipt before durable brain admission"
+        },
+        {
+          "line": 19,
+          "claim": "historical forecast surprise"
+        },
+        {
+          "line": 62,
+          "claim": "missing original-forecast coupling"
+        },
+        {
+          "line": 64,
+          "claim": "musical valence not supplied by RMS"
+        }
+      ],
+      "revision": null,
+      "source_status": "working-tree prototype; exact bytes bound here, no commit attribution"
+    }
+  },
+  "source_checks": {
+    "historical_objects_read_from_git": true,
+    "candidate_core_equals_ab3cad2": true,
+    "candidate_docs_equal_recorded_revision": true,
+    "local_source_pins_checked_before_write": true,
+    "new_tests_or_experiments_run_for_this_receipt": false
+  },
+  "historical_mechanism": {
+    "owner_recollection_has_source_basis": true,
+    "legacy_version": "0.9.0",
+    "rule": "eligibility <- gamma*lambda*eligibility + action contrast; delta <- reward + gamma*V(next) - V(current); optional Valence centers/floors/caps delta; eligible synapse/bias updates multiply the same per-stream delta by their local traces.",
+    "limits": "This was global modulation of eligible plasticity, not proof of biological emotion or universal useful credit. Fixed habit relations and zero eligibility need not change. The linear critic had its own traced update.",
+    "legacy_amen_distinction": "The shipped Amen brain used RecordPatchNet context and addressed record memory. Its documented mechanism is not this NES ActorCritic/Valence attachment.",
+    "migration_boundary": "Current Reinforcement is a different reward-learning orchestration. Restoring the old trace update unchanged would add a separate parameter update law to the selected current repair law."
+  },
+  "current_mechanisms_retained": [
+    "One compiled Brain may jointly expose motor/action values and physical consequence forecasts from connected ordinary and residual-reading populations.",
+    "Reinforcement owns one pending discrete decision, requires issued identity and actual executed action, records bounded reward and next context, retains valid experience after a refused fit, and deduplicates the latest identical feedback.",
+    "Q-learning target construction and bounded replay use observe_batch(source=estimate); actual measured consequence targets can separately use source=witness.",
+    "Every used query must qualify the complete eligible free-state problem; an admitted fit must qualify its eligible state and parameter coordinates.",
+    "A single body-level task-value stream can enter connected relations through shared joint repair without one evaluator per population."
+  ],
+  "current_mechanisms_absent_or_not_demonstrated": [
+    "No exported Valence/ActorCritic broadcast or synaptic eligibility-trace mechanism in the current candidate sources.",
+    "No automatic guarantee that every population receives reward or every parameter changes usefully.",
+    "Reinforcement pending/snapshot/replay does not retain original physical forecasts or their model version; its transition record contains context, executed action, reward, following context, episode and decision identity.",
+    "No built-in learned semantic attention, guaranteed retention, long-horizon planning, or intrinsic task evaluator.",
+    "LiveController replaces pending sensory observations and ignores additional callback result fields. Command read and completed-result identity inspection are separate operations, not an atomic action/forecast receipt.",
+    "The causal software body consumes an ACK entry without durable admission to a brain and acknowledges generated PCM, not physical playback delivery."
+  ],
+  "mathematical_propagation": {
+    "definitions": "p_i=tanh(b_i+sum_e w_e*s_e), e_i=x_i-p_i; s_e is fixed input, source state, or source residual.",
+    "energy": "E=mean_rows[0.5*sum_i(e_i^2)+0.5*alpha*sum_i(x_i^2)]+0.5*beta*||theta-theta_at_admission||^2. The parameter anchor is counted once per admission, not once per row.",
+    "residual_adjoint": "For a single row, lambda_i=e_i-sum_{residual edges i->j} lambda_j*(1-p_j^2)*w_ij, evaluated in reverse residual-dependency order.",
+    "state_gradient": "dE/dx_i=alpha*x_i+lambda_i-sum_{state edges i->j} lambda_j*(1-p_j^2)*w_ij before row averaging and constraint projection.",
+    "parameter_gradient": "dE/dw_e=-lambda_target*(1-p_target^2)*s_e+beta*(w_e-anchor_e); the residual term is averaged over batch rows.",
+    "reward_path": "A derived executed-action value target clamps the selected value output. Changes can influence connected upstream/downstream state and residual relations through the shared solve and these derivatives.",
+    "not_a_broadcast": "Fixed shared input readings do not themselves couple otherwise separate patch components. Zero signals/weights, saturation, cancellation, bounds and the anchored optimum can prevent a particular parameter from moving. Connected influence is not an automatic all-population update or useful credit guarantee.",
+    "surprise_distinction": "Historical surprise compares a retained pre-execution forecast with a later actual observation. Settled e_i and projected stationarity are different quantities; task valence separately says whether the outcome helps the objective."
+  },
+  "minimal_integration_recommendation": {
+    "public_api_extension_required_for_serial_prototype": false,
+    "owner": "One serial owner, one connected Brain, one body-level outcome/value stream; no evaluator or optimizer per population.",
+    "sequence": [
+      "Query all selected physical forecasts and action values unclamped; retain the qualified chosen forecast, original sensory context, proposed action and source/state identity before execution.",
+      "Persist the actual executed action and measured consequence with the original ticket. If execution differs, distinguish actuation surprise from a forecast conditioned on the executed action; do not silently relabel the original forecast.",
+      "Keep factual outcome, historical innovation and bounded task valence as separate fields. Correctly predicted harm still matters; harmless unexpected variation is not automatically negative reward.",
+      "Admit factual consequence targets through the same Brain with source=witness. Record executed-action reward via Reinforcement and perform derived value replay with source=estimate. Do not combine factual and estimated provenance silently.",
+      "Use one brain-global admission identity allocator and a persistent receipt before consuming a body ACK. Body ticket IDs and reinforcement decision IDs are distinct from Brain event IDs; replay also advances the latter.",
+      "Keep refused fits replayable, preserve their work, and retain original experience. Do not advance or reconstruct a lost original forecast from updated parameters.",
+      "Measure full qualified routine queries separately from expensive replay. An externally chosen outcome-triggered schedule is a declared control/candidate gene, not learned attention."
+    ],
+    "possible_later_generic_api_change": "If asynchronous actuation is required, first add an atomic command receipt with command, submission identity and freshness/status, and a lossless acknowledged outcome path owned by the same serial worker. The current separate read()/inspect() calls cannot guarantee atomic pairing. Avoid an emotion alias or extra population-specific interfaces."
+  },
+  "finite_voice_integration_test_outline": {
+    "status": "proposed bounded falsifiable integration gate; no code, launch, result or numerical thresholds selected by this audit",
+    "body": "Finite recorded voice with HOLD and RETRIGGER commands and measured audio energy; one declared maintenance objective rewards sustained signal and charges retrigger cost. This is a small physical maintenance task, not an assessment of music.",
+    "graph": "One connected public graph, per-action physical forecasts and action values, one shared scalar task-valence stream. Use the same information and learning law for every architecture control.",
+    "stages": [
+      "Acquire and verify free/native routine competence against always-HOLD, always-RETRIGGER and random controls.",
+      "Introduce a declared early-quiet voice fault that the frozen acquired policy fails; retain original forecasts and only learn from actual executed observations/rewards.",
+      "Require useful correction within a frozen exposure/work allowance, restored competent operation after fault removal, and retention of the earlier routine."
+    ],
+    "controls": [
+      "Frozen learning",
+      "Always-replay",
+      "Outcome-triggered replay with explicitly declared scheduling control"
+    ],
+    "required_prelaunch_freeze": [
+      "All model seeds and body tapes",
+      "Acquisition, maintenance, recovery and retention thresholds",
+      "Fault definition and onset",
+      "Observation/acknowledgment delays and ownership",
+      "Work and exposure limits",
+      "No selection of successful acquisition survivors"
+    ],
+    "receipt_requirements": [
+      "All planned outcomes, refusals, censors and failed acquisition cases",
+      "Actual executed actions and immutable original forecasts",
+      "Factual versus estimated target provenance",
+      "Brain/source continuation and admission IDs",
+      "Qualified task behavior, physical loss and action cost",
+      "Routine versus correction work and time",
+      "Old-skill retention"
+    ],
+    "nonclaims": [
+      "RMS is not musical preference or emotional value.",
+      "Passing the interface/maintenance test does not establish observer-only advantage.",
+      "A supplied replay trigger is not learned internal attention.",
+      "No guarantee of success, biological equivalence, general planning or release readiness."
+    ]
+  },
+  "release_recommendation": "Do not claim the integrated owner-requested routine/disturbance/correction/cheap-maintenance capability from the current interfaces or numerical qualifications. Require an acquired and retained behavioral cycle with truthful work and causal outcome ownership; evaluate any observer or attention advantage separately."
+}
