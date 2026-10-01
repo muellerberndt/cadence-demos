@@ -35,7 +35,7 @@ explains their costs.
 | --- | --- | --- |
 | [Rover Lab](rover-lab/) | All three, side by side on one task | Sibling Cadence 0.50.0 checkout |
 | [Doom Lab](doom-lab/) | Recursive observer settlement, with a state-coupled control | Bundled Cadence 0.50.0 runtime |
-| [Atari Arcade](atari-arcade/) | Recursive observer settlement | Cadence from its Git branch, without a commit pin |
+| [Atari Arcade](atari-arcade/) | Recursive observer settlement | Python server: Cadence from its Git branch, without a commit pin; browser edition: a JavaScript port of the 0.50.0 reference engine, checked against the library |
 | [Patch World](patch-world/) | Recursive observer settlement, with evolving observer depth | Separate JavaScript implementation |
 | [Amen](amen/) | Legacy record patch, older than the three patterns | Browser engine running an archived Cadence 0.11.0 brain |
 
@@ -118,13 +118,18 @@ read image tiles, and successive observers read their live states and exact
 prediction errors. The page shows the game beside the brain as one settling
 organ with cortical columns and live fibers, a gamepad lit by the executed
 action, and the convergence numbers through a skill badge from noob to
-legend. Four games are wired; two degrade in self-play and say so.
+legend. Four games are wired; two degrade in self-play and say so. The two
+that reach expert, Freeway and Atlantis, also run entirely in the browser at
+[floatingpragma.io/demos/atari-arcade](https://floatingpragma.io/demos/atari-arcade/):
+an Atari 2600 core and a JavaScript port of the Cadence engine in web workers,
+with a parity harness against the library and recorded receipts.
 
 ```sh
 cd atari-arcade
 python -m venv .venv && . .venv/bin/activate
 pip install -r requirements.txt
 python server.py   # open http://localhost:8668
+python3 -m http.server 8080 --directory web   # the browser edition at http://localhost:8080/
 ```
 
 See the [Atari Arcade README](atari-arcade/README.md).

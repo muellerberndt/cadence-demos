@@ -1,0 +1,12 @@
+{
+  "name": "atari-arcade-emulator",
+  "private": true,
+  "description": "Bundles the 6502.ts Atari 2600 core with the arcade's ALE-style game interface into ../emulator.js",
+  "scripts": {
+    "build": "esbuild ale.js --bundle --format=esm --platform=browser --target=es2020 --outfile=../emulator.js --legal-comments=inline --banner:js=\"// emulator.js: the 6502.ts Atari 2600 core (MIT, Christian Speckner and contributors) bundled with the arcade's game interface. Built from emulator/ale.js; do not edit by hand.\""
+  },
+  "devDependencies": {
+    "6502.ts": "1.1.4",
+    "esbuild": "0.24.2"
+  }
+}
