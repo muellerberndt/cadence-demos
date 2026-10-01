@@ -266,3 +266,25 @@ hashes, matched exposure and snapshot reloading. Run focused tests with:
 ```sh
 PYTHONPATH=../../cadence/src python -m pytest -q .
 ```
+
+## Website demo baselines before candidate migration
+
+[`demo-baselines/smoke.json`](evidence/20261001/demo-baselines/smoke.json)
+records the original Amen source/model verifier, Atari browser fixture parity
+and a 20-tick Patch World mass-conservation probe. All three pass. These checks
+exercise the existing engines: Amen's archived record patch, Atari's 0.50
+JavaScript port and Patch World's separate JavaScript implementation. They do
+not establish candidate compatibility, musical quality or recursive advantage.
+The website comparison covers local synchronized runtime files and their
+recorded manifest; no live browser or audio check was performed in this audit.
+
+The receipt also reproduces the Python Atari loop's lost pending-action flag
+using a fake action owner, and checks that its old feedback call does not bind
+to the candidate's executed-outcome signature. Migration must preserve actual
+execution, rewards and episode identity together; merely adding keywords is
+insufficient. Existing native behavior must be remeasured after that repair.
+
+The owner selects a newly trained **flat Amen brain** as the first application
+test. Atari and Patch World should start with flat or shallow controls; deeper
+observation needs a measured task benefit. Baseline reproduction and a passing
+page smoke remain distinct from a tested replacement under the new architecture.

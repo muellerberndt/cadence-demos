@@ -1,0 +1,144 @@
+{
+  "candidate_api_source_sha256": "de0aea848b3fccddd4de790defc8844326dc29e07311cd5c617fde3dc6201676",
+  "demo_payload_bytes": 5575975,
+  "deterministic_python_loop_diagnostic": {
+    "argv": [
+      "cadence/.venv/bin/python",
+      "-c",
+      "import ast,inspect,pathlib,threading,types\nfrom cadence import Reinforcement\np=pathlib.Path(\"cadence-demos/atari-arcade/server.py\");tree=ast.parse(p.read_text());cls=next(n for n in tree.body if isinstance(n,ast.ClassDef) and n.name==\"Runner\");m=next(n for n in cls.body if isinstance(n,ast.FunctionDef) and n.name==\"_brain_iteration\");ns={};exec(compile(ast.Module(body=[m],type_ignores=[]),str(p),\"exec\"),ns)\nclass FakeRF:\n def __init__(self):self.pending=False;self.acts=0;self.feedbacks=0;self.resets=0\n def act(self,*args,**kwargs):\n  if self.pending:raise ValueError(\"pending\")\n  self.pending=True;self.acts+=1;return {\"action\":0}\n def reset(self):self.pending=False;self.resets+=1\nr=types.SimpleNamespace(lock=threading.Lock(),latest=({},0,0),episode_done=False,phase=\"playing\",rf=FakeRF(),transitions=1)\nns[\"time\"]=types.SimpleNamespace(time=lambda:0);ns[\"BUDGET\"]=256\npending=ns[\"_brain_iteration\"](r,False);pending2=ns[\"_brain_iteration\"](r,pending)\nassert pending is None and pending2 is None and r.rf.acts==1 and r.rf.resets==1 and r.rf.feedbacks==0\nprint({\"first_return\":pending,\"second_return\":pending2,\"acts\":r.rf.acts,\"resets\":r.rf.resets,\"feedbacks\":r.rf.feedbacks})\ntry:inspect.signature(Reinforcement.feedback).bind(object(),0,{},terminal=False,learn=False)\nexcept TypeError as e:print(\"candidate_feedback_binding:\",str(e))\nelse:raise AssertionError(\"Old feedback unexpectedly binds\")\n"
+    ],
+    "cwd": "/Users/muellerberndt/Projects/oph-meta",
+    "elapsed_seconds": 0.16633483301848173,
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "{'first_return': None, 'second_return': None, 'acts': 1, 'resets': 1, 'feedbacks': 0}\ncandidate_feedback_binding: missing a required keyword-only argument: 'decision_id'\n"
+  },
+  "diagnostic_environment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "temp/worktrees/cadence-060/src"
+  },
+  "runs": [
+    {
+      "argv": [
+        "python3",
+        "cadence-demos/amen/verify.py"
+      ],
+      "cwd": "/Users/muellerberndt/Projects/oph-meta",
+      "elapsed_seconds": 1.465509583009407,
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "amen: 1 receipt, every source matches; parity: ok   three-corpora (record-composer-v12)\n"
+    },
+    {
+      "argv": [
+        "node",
+        "cadence-demos/atari-arcade/web/parity.mjs"
+      ],
+      "cwd": "/Users/muellerberndt/Projects/oph-meta",
+      "elapsed_seconds": 0.39182416698895395,
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "OK   {\"check\":\"arcade birth 3 actions\",\"ok\":true,\"edges\":61336,\"weights_head\":[-0.003494935754279431,-0.001794432740304857,-0.007659333051605508]}\nOK   {\"check\":\"arcade birth 4 actions\",\"ok\":true,\"edges\":61344,\"weights_head\":[-0.003494935754279431,-0.001794432740304857,-0.007659333051605508]}\nOK   {\"check\":\"small birth\",\"ok\":true,\"edges\":298}\nOK   {\"check\":\"query before learning\",\"ok\":true,\"sweeps\":[8,8],\"state_diff\":1.3877787807814457e-17,\"bound\":0.00009999999999999999}\nOK   {\"check\":\"batch 1 (3 witnesses)\",\"ok\":true,\"sweeps\":[143,161],\"accepted\":[true,true],\"weight_diff\":0.000014468031344250232,\"bias_diff\":7.309034175499718e-7,\"energy\":[0.35952844544997,0.3595284454900064]}\nOK   {\"check\":\"batch 2 (8 witnesses)\",\"ok\":true,\"sweeps\":[56,63],\"accepted\":[true,true],\"weight_diff\":0.000020809547940307815,\"bias_diff\":0.000002947509913538149,\"energy\":[0.20800489764723032,0.20800515896690563]}\nOK   {\"check\":\"query after learning\",\"ok\":true,\"sweeps\":[28,28],\"state_diff\":0.000003243158518628775,\"bound\":0.00009999999999999999}\nOK   {\"check\":\"acting matches\",\"ok\":true,\"actions\":[[2,2,false,false],[2,2,true,true],[2,2,false,false],[2,2,false,false],[2,2,false,false],[2,2,false,false],[2,2,false,false],[2,2,false,false]],\"max_value_diff\":2.0364596326448436e-7}\nOK   {\"check\":\"replay matches\",\"ok\":true,\"indices\":[[4,5,6,1,3,0,2,7],[4,5,6,1,3,0,2,7]],\"targets_diff\":1.9320917254983527e-7,\"accepted\":[true,true],\"sweeps\":[78,69],\"weight_diff\":0.000020816475708451687}\nPARITY PASSED\n"
+    },
+    {
+      "argv": [
+        "node",
+        "cadence-demos/patch-world/probe.js",
+        "{\"ripen\":true,\"rock\":true,\"bite\":true,\"carry\":true}",
+        "20",
+        "1",
+        "{\"read\":0.0001}"
+      ],
+      "cwd": "/Users/muellerberndt/Projects/oph-meta",
+      "elapsed_seconds": 2.851333624916151,
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "{\"t\":20,\"alive\":256,\"births\":3,\"deaths\":8,\"bites\":110,\"mass_ok\":true,\"age\":20,\"patches\":29,\"depth\":2,\"width\":10,\"fanin\":9,\"readUnits\":161,\"radius\":1,\"horizon\":0,\"splitAt\":24,\"prior\":0.3,\"gamma\":0.6,\"eps\":0.1,\"settled\":0.985,\"learned\":0.999,\"sweepsTick\":23.8,\"speak\":0,\"symbolsMean\":0,\"hears\":1,\"depthHist\":{\"1\":1,\"2\":255},\"horizonHist\":{\"0\":256},\"census\":{\"food\":1,\"occ\":1,\"energy\":1,\"out\":1,\"light\":1,\"green\":1,\"rock\":1,\"kin\":1,\"carried\":1,\"heard\":1},\"s\":2}\n{\"final\":true,\"rules\":{\"ripen\":true,\"rock\":true,\"bite\":true,\"carry\":true},\"seed\":1,\"T\":20,\"prices\":{\"read\":0.0001},\"lifeByPatches\":{\"20-29\":{\"n\":6,\"median\":13,\"mean\":11},\"30-44\":{\"n\":2,\"median\":16,\"mean\":9}},\"lifeByDepth\":{\"2\":{\"n\":8,\"median\":13,\"mean\":10}},\"lifeByWidth\":{\"10\":{\"n\":6,\"median\":13,\"mean\":11},\"14\":{\"n\":2,\"median\":16,\"mean\":9}},\"lifeByHorizon\":{\"0\":{\"n\":7,\"median\":13,\"mean\":12},\"1\":{\"n\":1,\"median\":2,\"mean\":2}},\"lifeByRadius\":{\"1\":{\"n\":8,\"median\":13,\"mean\":10}},\"symbols\":{\"food\":{\"n\":0,\"mi\":0,\"chance\":0},\"neighbour\":{\"n\":0,\"mi\":0,\"chance\":0},\"kin\":{\"n\":0,\"mi\":0,\"chance\":0}},\"rewardPerTick\":{\"hears\":0.0141,\"deaf\":null}}\n"
+    }
+  ],
+  "schema": "legacy-demo-baseline-smoke/1",
+  "scope": [
+    "Legacy reproduction only; NOT a Cadence0.60 qualification or migration pass.",
+    "No source/checkpoint edits, downloads, cloud or publication.",
+    "Amen uses archived0.11 RecordPatchNet and browser engine, Atari JavaScript is0.50 reference port, PatchWorld is separate approximate0.50-model implementation.",
+    "Atari parity is against old unversioned fixture JSON; it does not dynamically compare with candidate Python.",
+    "Pending-flag test executes existing method AST with a fake action owner, without a game or learning. Candidate feedback incompatibility is verified by argument binding.",
+    "No UI/audio decoding/playback, browser workers, native Atari takeover, long-horizon learning, quality assessment or full6000-tick ecology run was performed."
+  ],
+  "source_and_asset_sha256": {
+    "cadence-demos/amen/.gitignore": "2de877eb52971fe45332210b59c5b26c59dd23e315f6685c09fcc1caf57f3a9f",
+    "cadence-demos/amen/README.md": "2105db347f6a36a911e12dc9ae57f77efbeff47347757f3871eb3bcea66c7cf1",
+    "cadence-demos/amen/parity.mjs": "b4c40369cd44a5b5c42930bff9fe4377dfedf765ff9b9bdbd607264cefb0e806",
+    "cadence-demos/amen/runs/record-composer-v12/parity.json": "afd5797c677d96351895a32e4020b30a9a94a38e71e19aeaabc369320845613b",
+    "cadence-demos/amen/runs/record-composer-v12/receipt.json": "d5d2b9be67bfe9b891c86fdb7c39b4000a843843d51ffa5c84b64e9358834cfe",
+    "cadence-demos/amen/screenshot.png": "6445748a332ab445f061321320679a9455e6155d73998d196834892cde76b7a8",
+    "cadence-demos/amen/verify.py": "e8245c813c5b30a71ddfae4b5a4f052dbdaeb31894298d66fc780a3cf2baca38",
+    "cadence-demos/amen/web/card.png": "8e2e0ae990544159e88d14b4f5bd78c3dd257ac87107b4c781181ecddc865214",
+    "cadence-demos/amen/web/engine.js": "7a7bef9ae9005b8338b08921c4fff7e3b1c5d21a160023c227c6b0539bcfea85",
+    "cadence-demos/amen/web/index.html": "eabed72121f0cff95ed9015b946d41006b2e27242f7a5a43e07d45c6dfe19cf7",
+    "cadence-demos/amen/web/kit/bass.wav": "37590125f23b05d1a9bd9eb5343437523876966a8bb8b475b9383638e588aaff",
+    "cadence-demos/amen/web/kit/break.wav": "82be2cdd68794040dd85a90f46686664ba610c2967a2f23a9796bf02fa59ff81",
+    "cadence-demos/amen/web/kit/kit.json": "83001713dd2f32ff78ae5c814076b0769f4e7f64405bf93e690032c8b265b57d",
+    "cadence-demos/amen/web/models/index.json": "b8a50615567b7f157cdc11eb3202a2ea8b718c5867883cc4686abd135f699743",
+    "cadence-demos/amen/web/models/three-corpora/model.json": "0917a691572df9e9817d9a1d9ec6f92a7d7de095c236e878d5045988ad5e1cde",
+    "cadence-demos/amen/web/models/three-corpora/params.f64": "68ec6c493526571ed5cd333fd4cdaac159326620b1de5d51add927899783cb69",
+    "cadence-demos/amen/web/models/three-corpora/records_mean.f64": "c566b1e0db4fd0b9cb0c1d288886e51d205c5305d2568e2cd1d2b332062ed141",
+    "cadence-demos/amen/web/models/three-corpora/records_y.f32": "6db9f1650eaedb178c560e74538d022b2d08cc99fcafbeb3269a676fbc42e2e4",
+    "cadence-demos/atari-arcade/.gitignore": "57a8ad0e62346f7b0f2e261d59a7b90f1310043424bcb9d229208f183f1940d9",
+    "cadence-demos/atari-arcade/README.md": "c04a0f5c7e950e4cb7b6e9ab6a8dabfb6672e513de45e82f86dce4a0ac152f3e",
+    "cadence-demos/atari-arcade/headless_control.py": "49276c0ead3f6e2639ac58499b07286decd5ae2bc18393342e9db1f989842743",
+    "cadence-demos/atari-arcade/requirements.txt": "3a80c299179c715c92d9f5c12a2cc3d987ede064cd24353e95a1783e9adbe68d",
+    "cadence-demos/atari-arcade/server.py": "3404d0bda63b36449077263fb5f725f674fc6cca4adbf8d8eafcd11cc32fedd1",
+    "cadence-demos/atari-arcade/static/index.html": "8b3a854e2c04eb7c56531ee9763cf3e6284591027d8b40272b1780392ba20aea",
+    "cadence-demos/atari-arcade/web/THIRD_PARTY.md": "4cbca25c54ab1c32fc17108407ba451af22f4199d6fcc4383dee89a086530e50",
+    "cadence-demos/atari-arcade/web/arcade.js": "79ce2d333b23452184d67010ddcef47b375d74228b7645cdcb8cf77d4d2d296c",
+    "cadence-demos/atari-arcade/web/brain_worker.js": "f2b9c9efcc0e6e0025f2c104d3f026d5b00ca6a57c185011c49f0e9eb6195614",
+    "cadence-demos/atari-arcade/web/cadence.js": "a7f38a7df19f86705045657a506adff9dc5b0f6099b9f6a926784be13cc3a088",
+    "cadence-demos/atari-arcade/web/emulator.js": "58b3b0587c372ebac8056249441b6572ccb18f89dc4f6d1cc524e66223c11412",
+    "cadence-demos/atari-arcade/web/emulator/.gitignore": "4d56952b0fb13bf8f9b6c13a6d4c34a075bac3af447636a1df4335d7576e2f97",
+    "cadence-demos/atari-arcade/web/emulator/ale.js": "e6319c82c58b9a124ad1fdb711df6d744af4566aae941cf8edaca609377ba574",
+    "cadence-demos/atari-arcade/web/emulator/package-lock.json": "9793b441965b0c398f2658606e181e4df01216ad2868e3a7e0d41e288e020d92",
+    "cadence-demos/atari-arcade/web/emulator/package.json": "09fa59501895c8e7fab76d216f310b1b6d42ce8d6f23ea257d24ad9d9268d7fd",
+    "cadence-demos/atari-arcade/web/emulator_worker.js": "260e43e96ab8dcecd67ed7dcdb82a1d58a3f97d2856cc0ca10b761dd88bf182f",
+    "cadence-demos/atari-arcade/web/fixtures/parity_arcade.json": "dd2527efce2caa26dfd798c892bbc37ed50c7162f01e4ef7e33cf4ddf72dc15f",
+    "cadence-demos/atari-arcade/web/fixtures/parity_small.json": "bad550c05d579465e30c85de1c694db47cefa82f382a3fcaeb18409ca5b1f102",
+    "cadence-demos/atari-arcade/web/headless.mjs": "331cd99cfc683f17b1027b9d7d157b01e62af60c066fa1ac25de172a097df0b6",
+    "cadence-demos/atari-arcade/web/index.html": "a2dfe76e5724a22f6e2e4acf8f597bacb02b08d96a2378d225663ec404f36935",
+    "cadence-demos/atari-arcade/web/parity.mjs": "92db66468e36330d62813335f4cb08a130d1bcd5ad9cba4260accd24b371d77c",
+    "cadence-demos/atari-arcade/web/receipts/atlantis_living.json": "3b0397b8e64c93f4b366b8691a0b281e0a2e1cbf25de0668b0066a60c31ccdb4",
+    "cadence-demos/atari-arcade/web/receipts/freeway_living.json": "c02ab260bb601f4d2176e312a6fcf91a71ac484876c948ebfe67e074f1f2f5b4",
+    "cadence-demos/atari-arcade/web/roms/atlantis.bin": "cef4b7b91ea245f7827604a1c620a5ca7f94288c2c6b54d90a931de8eeb5227d",
+    "cadence-demos/atari-arcade/web/roms/freeway.bin": "3ef620234b98f22bfd7c06d2467bac9d208e763c9f4309452384d59a741ba893",
+    "cadence-demos/atari-arcade/web/tools/make_parity_fixture.py": "5af1c9d5f8d161d356eef0277e2f4c83d78f19073344f3517dfb5a98be9fd3c3",
+    "cadence-demos/patch-world/README.md": "0a18428e53dc2c2fff15b2aed864b33d38dac99f13d51377ecb4ecbf420ba11d",
+    "cadence-demos/patch-world/build.py": "25b2013d2c26843bd073f061720455a488c4dde450d0934da36dab4f3b79afbb",
+    "cadence-demos/patch-world/core.js": "83f3feae1f634920a794ee7203e0bc290773808d7f0fc63e30680b2ad4deb563",
+    "cadence-demos/patch-world/index.html": "3663c837fbffb2eb94229289d2807784a3d2e90bf459a39580ca2fcbe42406e9",
+    "cadence-demos/patch-world/page.html": "a6fb83b59514ab219ab4da0d5b63af2fa486a4ac7df7902250f5dcd9f049c1ff",
+    "cadence-demos/patch-world/probe.js": "d4c492ed3e82a998b6455cc7b4d7f86a1dd320518d1918e5a82c906061b6311c",
+    "cadence-demos/patch-world/receipts/SUMMARY.txt": "7ecd4c81ea5695451e1ed167d8a8f6e6c3997be968a9cf731dcb2f7a449d90eb",
+    "cadence-demos/patch-world/receipts/page_world_s1.jsonl": "586124e8caa03b2f4d95129c18a40e4aa75da8977ef78d8ccf4f79cac893cbc8",
+    "cadence-demos/patch-world/receipts/page_world_s2.jsonl": "973c929ca9862086c6eff86660a2d49b5169c0fc244c8fcfd1bfab1e2802bdb5",
+    "cadence-demos/patch-world/receipts/sets.txt": "694e9ccf57313d966fc67bf3f7205e49d7c102c1a903b90dd5d25d14e496b1e8",
+    "cadence-demos/patch-world/summarize.py": "3323565ebe29f53fe664a72aa4ea9199374ddfaa0f4670be7af2875e3224e60c"
+  },
+  "sources_and_assets_unchanged": true,
+  "status": "legacy_checks_passed_candidate_migration_open",
+  "versions": {
+    "candidate_git_head": "4facfea90c872eaf9e9c76e88e408846f71b7d06",
+    "candidate_python": "Python 3.13.0",
+    "demo_git_head": "c115548d53d256f338dfecf86edef50258e09b58",
+    "node": "v25.8.1",
+    "python": "Python 3.13.7",
+    "website_git_head": "74756311fcfb56d7a0eeec7bc939d5d16fc9736d"
+  },
+  "website": {
+    "demo_source_mismatches": [],
+    "files_verified": 19,
+    "manifest_sha256": "9d78bfa5f997082119a0eaebe24f181151a34518e7a2ac52be9d2ac091f1ab69",
+    "patch_world_generated_html_matches_sources": true,
+    "published_mismatches": [],
+    "published_payload_bytes": 4489058,
+    "source_commit": "192a099bcab7df2b9fa3ed3c505fa9c87b410215"
+  }
+}
