@@ -319,3 +319,12 @@ explains how to choose observations, context, connected capacity and exposure,
 and how to test whether deeper observation justifies its cost. These routine
 checks do not demonstrate integrated System 1/System 2 attention or a causal
 advantage from recursive correction.
+
+The governing application test is acquired routine competence, actual
+disturbance, useful correction, and restored competence at lower ongoing cost.
+Numerical stationarity alone does not establish this cycle. The
+[integration audit](evidence/20261001/routine-integration-audit.json) traces the
+legacy valence mechanism and current outcome-learning boundary. The
+[ordinary Amen diagnostics](amen_ordinary_README.md) reproduce the training
+cost bottleneck and test private same-objective solver proposals without
+claiming musical acquisition or changing the candidate core.
