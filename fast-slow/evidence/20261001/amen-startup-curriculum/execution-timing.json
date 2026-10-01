@@ -1,0 +1,13 @@
+{
+  "launch_observed_utc": "2026-10-01T08:52:31Z",
+  "launch_observation": "date -u printed immediately before frozen launch invocation",
+  "execution_receipt_mtime_utc": "2026-10-01T09:00:44.200365+00:00",
+  "all_six_exit_codes": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ]
+}

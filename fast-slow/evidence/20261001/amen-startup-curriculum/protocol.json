@@ -1,0 +1,391 @@
+{
+  "app": "/home/ec2-user/cadence-060-flat-amen-startup-20261001/app",
+  "arms": [
+    "uniform",
+    "startup-balanced"
+  ],
+  "baseline_files": {
+    "/home/ec2-user/cadence-060-flat-amen-20261001/runs/flat-1103/final.json": "4ba5424edd3fb0d7538cb11eccd572ab09b8a7f9e49c8abb072ec6853bf8af6c",
+    "/home/ec2-user/cadence-060-flat-amen-20261001/runs/flat-1103/receipt.json": "1c31fb312654062ebff8e874f851c2df9f6dd2da4a1d1fad5889b37d2b9c8e86"
+  },
+  "batch": 32,
+  "compute": {
+    "admission_budget": 8192,
+    "arm_hard_seconds": 900,
+    "device": "cpu",
+    "dtype": "float64",
+    "signal_seconds": 895,
+    "threads": 4,
+    "workers": 6
+  },
+  "conclusion": "Campaign requires all6 numerically complete/no-refusal and all3 balanced original smoke gates. Report every paired direction and balanced-minus-uniform heldoutMAE (.01 degradation diagnostic). No best-seed/checkpoint selection. Uniform failures remain outcomes, not removed comparators.",
+  "data_files": {
+    "clock.npy": "cece025cf225c520ab68e4b3a532369855af849b785de05eb20c4b8df5223e94",
+    "history.npy": "38f59c84f48e974a9f667a0662d4895ae0580578c1b7e2d3b57fdb77f983ae7c",
+    "origin.npy": "4d0f170c639d02363b39d7c6f5b02f4205a67ab5a0c4bd6ff434f1da95aed0e9",
+    "targets.npy": "949f08c61041b3ae1c9b8516ef63ed2be4f8972d18f9419a584ce75203fc5da2",
+    "wake.npy": "5de3abe90ccee4f207d948d9b017be08c821e0877d0e769737e468691709451e"
+  },
+  "evaluation_sample": [
+    {
+      "region": "reference_05",
+      "rows": 16,
+      "start": 577
+    },
+    {
+      "region": "reference_12",
+      "rows": 16,
+      "start": 323
+    },
+    {
+      "region": "reference_19",
+      "rows": 16,
+      "start": 131
+    },
+    {
+      "region": "intelligent_04",
+      "rows": 16,
+      "start": 1292
+    },
+    {
+      "region": "intelligent_10",
+      "rows": 16,
+      "start": 1034
+    },
+    {
+      "region": "library_010",
+      "rows": 16,
+      "start": 675
+    },
+    {
+      "region": "library_024",
+      "rows": 16,
+      "start": 51
+    },
+    {
+      "region": "library_038",
+      "rows": 16,
+      "start": 324
+    }
+  ],
+  "exposure": {
+    "1103-startup-balanced": {
+      "other_rows": 2043,
+      "prefix_rows": 2053,
+      "presentations": 4096,
+      "repeated_presentations": 1485,
+      "unique_rows": 2611,
+      "wake_rows": 255
+    },
+    "1103-uniform": {
+      "other_rows": 4083,
+      "prefix_rows": 13,
+      "presentations": 4096,
+      "repeated_presentations": 0,
+      "unique_rows": 4096,
+      "wake_rows": 1
+    },
+    "1109-startup-balanced": {
+      "other_rows": 2042,
+      "prefix_rows": 2054,
+      "presentations": 4096,
+      "repeated_presentations": 1486,
+      "unique_rows": 2610,
+      "wake_rows": 259
+    },
+    "1109-uniform": {
+      "other_rows": 4080,
+      "prefix_rows": 16,
+      "presentations": 4096,
+      "repeated_presentations": 0,
+      "unique_rows": 4096,
+      "wake_rows": 4
+    },
+    "1117-startup-balanced": {
+      "other_rows": 2045,
+      "prefix_rows": 2051,
+      "presentations": 4096,
+      "repeated_presentations": 1483,
+      "unique_rows": 2613,
+      "wake_rows": 248
+    },
+    "1117-uniform": {
+      "other_rows": 4085,
+      "prefix_rows": 11,
+      "presentations": 4096,
+      "repeated_presentations": 0,
+      "unique_rows": 4096,
+      "wake_rows": 2
+    }
+  },
+  "fixture_files": {
+    "/home/ec2-user/cadence-060-flat-amen-startup-20261001/app/fixtures/reference-events-v9/arrays.npz": "b480009f8915e087573d6e468b7d30ca574f67d27478c76a9f02870d274aa0a9",
+    "/home/ec2-user/cadence-060-flat-amen-startup-20261001/app/fixtures/reference-events-v9/fixture.json": "d04e9a916eccb6363f1ec831155cea4e726010529435883bbbf74549919261b7"
+  },
+  "fixture_receipt": "2f13f39da4ef60b3da2eeed2d8c44e95bd2722472d4740b34835738e153590dd",
+  "founders": {
+    "1103": "7160e880b58d09cb8ca23e2e386fcdeed704bc895fbbc6d26dc33f53800110c7",
+    "1109": "59b4dd480120c6d06aa004d8fe36ae0ca1a4b32a0d8193a325708d389eba1e4d",
+    "1117": "81f54e7bd5f216a43c623becc6b7ba2bcf810361dd8e181108e5c5a7d3d3744c"
+  },
+  "gates": {
+    "all128_admissions": true,
+    "all_free_calls_qualified": true,
+    "argmax_bass_min": 0.25,
+    "argmax_drum_min": 0.5,
+    "argmax_half_beats": 128,
+    "browser_export_ready": false,
+    "heldout_mae_gain_min": 0.01,
+    "sample_seeds": [
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "held_out": [
+    "reference_05",
+    "reference_12",
+    "reference_19",
+    "intelligent_04",
+    "intelligent_10",
+    "library_010",
+    "library_024",
+    "library_038"
+  ],
+  "heldout_sha256": "e10a81982262a4f2f926478c92928846cc6b1e388805ecc0422b6a4bcd56fc19",
+  "jobs": [
+    [
+      1103,
+      "uniform"
+    ],
+    [
+      1103,
+      "startup-balanced"
+    ],
+    [
+      1109,
+      "uniform"
+    ],
+    [
+      1109,
+      "startup-balanced"
+    ],
+    [
+      1117,
+      "uniform"
+    ],
+    [
+      1117,
+      "startup-balanced"
+    ]
+  ],
+  "lengths": [
+    1624,
+    1032,
+    1104,
+    1256,
+    1336,
+    912,
+    1400,
+    1024,
+    1632,
+    1248,
+    1392,
+    1288,
+    1088,
+    1616,
+    1528,
+    1152,
+    1680,
+    1688,
+    1720,
+    1752,
+    1720,
+    1856,
+    1832,
+    1856,
+    1840,
+    1848,
+    2080,
+    1440,
+    1336,
+    2216,
+    2080,
+    1848,
+    2008,
+    1728,
+    1776,
+    1744,
+    1680,
+    1304,
+    1864,
+    1760,
+    1472,
+    1800,
+    1688,
+    2176,
+    1832,
+    1312,
+    1648,
+    2000,
+    2104,
+    1784,
+    2360,
+    2024,
+    2072,
+    1768,
+    2504,
+    1856,
+    2120,
+    2168,
+    1520,
+    1560,
+    1912,
+    1704,
+    1792,
+    2160,
+    2056,
+    2336,
+    2064,
+    1568,
+    1640,
+    1600,
+    2008
+  ],
+  "original_uniform128": "/home/ec2-user/cadence-060-flat-amen-20261001/runs/flat-1103",
+  "prefix_fraction": 0.5,
+  "prefix_steps": 8,
+  "receipt_encoding": "All returned solver fields except parameters; canonical weights/biases hash instead. Full snapshots and call before/after hashes retained; unknown interrupted work explicitly counted.",
+  "reference_helper": "/home/ec2-user/cadence-060-flat-amen-startup-20261001/reference.py",
+  "runtime": {
+    "cadence": "0.50.0",
+    "numpy": "2.5.3",
+    "python": "3.12.14 (main, Aug 24 2026, 00:00:00) [GCC 11.5.0 20240719 (Red Hat 11.5.0-5)]",
+    "torch": "2.14.0+cpu"
+  },
+  "sampler": "Uniform: original rng(seed) permutation first4096 rows. Balanced: retain first16 IDs of each uniform32 batch; replace last16 with cyclic complete permutations of every actual train-region first8 row, independent RNG SeedSequence([seed,20261010]). Preserve repeats/overlap. No target-dependent selection, synthetic starts, altered history or decoder.",
+  "schedules_sha256": "2bac12a5a909b2e89b56b4b95de2021cb7507774b88109d1c08fd9e39019f317",
+  "schema": "amen-startup-curriculum/1",
+  "scope": "Development curriculum gene (half prefix/eight steps), not architecture advantage.1103 reused;1109/1117 fresh seeds within the same development hypothesis, not fresh task confirmation. Five heldoutregions share source recordings with training. No listening/browser/export/long-term music-quality claim.",
+  "seeds": [
+    1103,
+    1109,
+    1117
+  ],
+  "source_overlap": {
+    "intelligent_04": true,
+    "intelligent_10": true,
+    "library_010": false,
+    "library_024": false,
+    "library_038": false,
+    "reference_05": true,
+    "reference_12": true,
+    "reference_19": true
+  },
+  "sources": {
+    "/home/ec2-user/cadence-060-flat-amen-startup-20261001/app/drsn_amen/__init__.py": "6a6ebef1e07168dcf90140dccc75a62d3e91a73ba8ca26d05c653ce5189f6eec",
+    "/home/ec2-user/cadence-060-flat-amen-startup-20261001/app/drsn_amen/compose.py": "44d4c2242ec1331777dedb896aef2ee1f3f04aac3bfc1273312a569b0c8c2860",
+    "/home/ec2-user/cadence-060-flat-amen-startup-20261001/app/drsn_amen/evaluate.py": "303965986e9fb8bbd50299b7607759457deeb1ad8d01e38e0a42b010294a469b",
+    "/home/ec2-user/cadence-060-flat-amen-startup-20261001/app/drsn_amen/model.py": "9a2c904229e5685b626f80764929923b66fc3bc2e3f9aadd99f1f9846ac9241e",
+    "/home/ec2-user/cadence-060-flat-amen-startup-20261001/app/drsn_amen/probe_free_run.py": "c74a71b02032ff01a57cea82e73d7a1b81366644bb4e12cf16b0330bbb7d45cb",
+    "/home/ec2-user/cadence-060-flat-amen-startup-20261001/app/drsn_amen/stream.py": "0b40c6743b3637dd98d6832fafcb77ae717d2cbb1426beee0831285da32d40b7",
+    "/home/ec2-user/cadence-060-flat-amen-startup-20261001/app/drsn_amen/train.py": "844b8c6cca83e9407148b70b5648bdae8832e2dea178e5402a5473c8662ae0b5",
+    "/home/ec2-user/cadence-060-flat-amen-startup-20261001/collector/amen_startup_curriculum.py": "2f3b8974ecf2a9019b336d26eadb74e5442c533b195204f75a7e76b395039718",
+    "/home/ec2-user/cadence-060-flat-amen-startup-20261001/core/src/cadence/__init__.py": "de69e80ad2c1bdc5a30e432e5c0c70124e694d06a072e1d73a7b6fe2607ead26",
+    "/home/ec2-user/cadence-060-flat-amen-startup-20261001/core/src/cadence/_repair.py": "76f57fcdffad1e39b65e327af8a2ae26f89467dafa11520e96ac07a8ea67595a",
+    "/home/ec2-user/cadence-060-flat-amen-startup-20261001/core/src/cadence/_tensor.py": "d5765b286c931863cf540d19133500f734b70270c1bf702d60476c8945d86ce9",
+    "/home/ec2-user/cadence-060-flat-amen-startup-20261001/core/src/cadence/_validation.py": "05d09fd56ec96ef9315cfe569fa818a718795d1aedefd12d5b02bb619808b0ab",
+    "/home/ec2-user/cadence-060-flat-amen-startup-20261001/core/src/cadence/bootstrap.py": "e7f5e0096e1ea3b6ac733805ab814acfd368824b86c7b52969d3936eba48868f",
+    "/home/ec2-user/cadence-060-flat-amen-startup-20261001/core/src/cadence/brain.py": "e87fc184b32a769d0840a14f900ecfd24da8b28c37da2d84c8b83c9df7d7f3fb",
+    "/home/ec2-user/cadence-060-flat-amen-startup-20261001/core/src/cadence/column.py": "d3752d27227ca34dfc03134d792cc046fc41d96ac181f19be852a193d1eee203",
+    "/home/ec2-user/cadence-060-flat-amen-startup-20261001/core/src/cadence/cortex.py": "270f963fa6ca1c91b0deb19ce0f440cd4881f79205fdd115f64ef23942463482",
+    "/home/ec2-user/cadence-060-flat-amen-startup-20261001/core/src/cadence/memory.py": "55eb67223932f54f3dd7a4a39f5f540f1af64eb6c9551b3144c7c74cda0b9e2a",
+    "/home/ec2-user/cadence-060-flat-amen-startup-20261001/core/src/cadence/ports.py": "f0ec46ba314ee20523ff603473256362ae84a1522e89d39751f082f278aa4dca",
+    "/home/ec2-user/cadence-060-flat-amen-startup-20261001/core/src/cadence/reinforcement.py": "de0aea848b3fccddd4de790defc8844326dc29e07311cd5c617fde3dc6201676",
+    "/home/ec2-user/cadence-060-flat-amen-startup-20261001/core/src/cadence/runtime.py": "85f0464c223578bc4fbd3607a175e7c932f125157b2ca25cd09bd2bb9e0ab428",
+    "/home/ec2-user/cadence-060-flat-amen-startup-20261001/reference.py": "e13ce5604012abdc96dc8b3acf7aa8ebc4cadf46f6341a7cc5bea78db37ca31b"
+  },
+  "startup_targets": {
+    "prefix_bass_fraction": 0.6320422535211268,
+    "prefix_drum_fraction": 0.8503521126760564,
+    "prefix_rows": 568,
+    "regions": 71,
+    "wake_bass": 50,
+    "wake_drums": 57
+  },
+  "train_regions": [
+    "reference_01",
+    "reference_02",
+    "reference_03",
+    "reference_04",
+    "reference_06",
+    "reference_07",
+    "reference_08",
+    "reference_09",
+    "reference_10",
+    "reference_11",
+    "reference_13",
+    "reference_14",
+    "reference_15",
+    "reference_16",
+    "reference_17",
+    "reference_18",
+    "intelligent_01",
+    "intelligent_02",
+    "intelligent_03",
+    "intelligent_05",
+    "intelligent_06",
+    "intelligent_07",
+    "intelligent_08",
+    "intelligent_09",
+    "intelligent_11",
+    "intelligent_12",
+    "library_001",
+    "library_002",
+    "library_003",
+    "library_004",
+    "library_005",
+    "library_006",
+    "library_007",
+    "library_008",
+    "library_009",
+    "library_011",
+    "library_012",
+    "library_013",
+    "library_014",
+    "library_015",
+    "library_016",
+    "library_017",
+    "library_018",
+    "library_019",
+    "library_020",
+    "library_021",
+    "library_022",
+    "library_023",
+    "library_025",
+    "library_026",
+    "library_027",
+    "library_028",
+    "library_029",
+    "library_031",
+    "library_033",
+    "library_034",
+    "library_035",
+    "library_036",
+    "library_037",
+    "library_039",
+    "library_040",
+    "library_041",
+    "library_042",
+    "library_043",
+    "library_044",
+    "library_045",
+    "library_046",
+    "library_047",
+    "library_048",
+    "library_049",
+    "library_050"
+  ],
+  "updates": 128
+}

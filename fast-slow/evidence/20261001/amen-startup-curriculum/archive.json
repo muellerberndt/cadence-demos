@@ -1,0 +1,17 @@
+{
+  "all_six_cases": true,
+  "archive": "/home/ec2-user/cadence-060-flat-amen-startup-20261001.tar.gz",
+  "audio_outputs": 30,
+  "bytes": 180719805,
+  "excluded_reproducible_dependencies": [
+    "test-deps",
+    "__pycache__",
+    ".pytest_cache"
+  ],
+  "manifest_sha256": "b0abdac2ee6c01a1658ee759b419b40cecaccfc59d063fd044282f8553dcfd9c",
+  "no_source_or_run_deletion": true,
+  "sha256": "5a74babdfc7f773043d3b30ce6db23ba091c5ce7a2c25384282ad2ad3509513d",
+  "shared_fixture_dependency": "/home/ec2-user/amen/fixtures; existing durable EBS catalogue, symlink archived without dereferencing",
+  "source_file_bytes": 912096579,
+  "verified_members": 208
+}
