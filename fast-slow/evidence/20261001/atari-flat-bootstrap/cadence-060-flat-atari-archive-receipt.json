@@ -1,0 +1,17 @@
+{
+  "all_archive_members_verified": true,
+  "archive": "/home/ec2-user/cadence-060-flat-atari-complete-20261001.tar.gz",
+  "archive_bytes": 50721874,
+  "failed_attempt_verification_sha256": "73b1e973aa442f48c33bd3c388e6ae88e8761bf0d808b148033966abcc762e31",
+  "manifest_sha256": "fe770ea2e191830fb5bab120d2d0aa949dbda69dfe5a3fb1b666ed73a31f7e1d",
+  "roots": {
+    "/home/ec2-user/cadence-060-flat-atari-20261001": 100637269,
+    "/home/ec2-user/cadence-060-flat-atari-v2-20261001": 55752060
+  },
+  "sha256": "f5b81ea8eadc0aa83b486de0773df6547cb7963059af6d87e486875301da8a43",
+  "source_bytes": 156395353,
+  "source_files": 244,
+  "sources_unchanged_after_archive": true,
+  "v2_verification_sha256": "1ec0936ccdc5e73aeef455047150f0b1c234b203cca1f392a5f9d8ac543a33b0",
+  "verified": true
+}

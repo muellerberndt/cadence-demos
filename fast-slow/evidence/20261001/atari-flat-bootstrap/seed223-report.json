@@ -1,0 +1,224 @@
+{
+  "accepted_row_presentations": 1024,
+  "accepted_updates": 64,
+  "acquisition_seconds": 10.830933109999933,
+  "attempted_row_presentations": 1024,
+  "attempted_updates": 64,
+  "checkpoints": [
+    {
+      "name": "update016.json",
+      "sha256": "abddec7c780dd0c41d0acc210d4b6d4eafb11592f66eea0fef5de648f105844f"
+    },
+    {
+      "name": "update032.json",
+      "sha256": "d8b15a48fb74f3a351aba9b5c9a619d50d75f348f9faec3eb811a06cd5c98bbb"
+    },
+    {
+      "name": "update048.json",
+      "sha256": "d799bad4dcf64337fb9f23b166973aa5dff52e15888b874f6eb10724ff00bb1b"
+    },
+    {
+      "name": "update064.json",
+      "sha256": "2ac53695915d6a3c4dd654b63f2b20ba1c65861f305152fe4b319ae1cd4d459a"
+    }
+  ],
+  "collection_sha256": "747677440e7f5c32ac1d9cb1899d8b09cd2defbcf890f66637b9ef39ee327fb9",
+  "episodes": [
+    {
+      "baseline": null,
+      "censored": false,
+      "decisions": 2038,
+      "latency": {
+        "calls": 2038,
+        "max_ms": 7.672763999948984,
+        "median_ms": 7.053336000012678,
+        "misses_15hz": 0,
+        "p95_ms": 7.18659345004653,
+        "seconds": 14.3843479020004
+      },
+      "query_latency": {
+        "calls": 2038,
+        "max_ms": 3.9849919999142003,
+        "median_ms": 3.635295499975655,
+        "misses_15hz": 0,
+        "p95_ms": 3.734136850050618,
+        "seconds": 7.4038164299977325
+      },
+      "refused": false,
+      "return": 26.0,
+      "seed": 810211,
+      "terminated": true,
+      "truncated": false
+    },
+    {
+      "baseline": null,
+      "censored": false,
+      "decisions": 2026,
+      "latency": {
+        "calls": 2026,
+        "max_ms": 7.337549999988369,
+        "median_ms": 7.068971500018506,
+        "misses_15hz": 0,
+        "p95_ms": 7.185229500038304,
+        "seconds": 14.325828840000327
+      },
+      "query_latency": {
+        "calls": 2026,
+        "max_ms": 3.839689999949769,
+        "median_ms": 3.6269989999482277,
+        "misses_15hz": 0,
+        "p95_ms": 3.723133499988762,
+        "seconds": 7.346212319000074
+      },
+      "refused": false,
+      "return": 27.0,
+      "seed": 810223,
+      "terminated": true,
+      "truncated": false
+    },
+    {
+      "baseline": null,
+      "censored": false,
+      "decisions": 2022,
+      "latency": {
+        "calls": 2022,
+        "max_ms": 7.448420000059741,
+        "median_ms": 7.075503500004743,
+        "misses_15hz": 0,
+        "p95_ms": 7.21899935001602,
+        "seconds": 14.322336838998694
+      },
+      "query_latency": {
+        "calls": 2022,
+        "max_ms": 3.908270000010816,
+        "median_ms": 3.644947499992668,
+        "misses_15hz": 0,
+        "p95_ms": 3.763541599965947,
+        "seconds": 7.369458836999343
+      },
+      "refused": false,
+      "return": 23.0,
+      "seed": 810227,
+      "terminated": true,
+      "truncated": false
+    }
+  ],
+  "files": {
+    "calls.jsonl": {
+      "bytes": 10214539,
+      "sha256": "7e44947179cef3db5c7b51570d65a96b3b2023c605605b45b373365a88762628"
+    },
+    "final.json": {
+      "bytes": 56472,
+      "sha256": "2ac53695915d6a3c4dd654b63f2b20ba1c65861f305152fe4b319ae1cd4d459a"
+    },
+    "initial.json": {
+      "bytes": 56249,
+      "sha256": "c42f0510fc4d13c75ce9f9bcac152ee947d034070b6805c07d814e64aa0fa1e2"
+    },
+    "latest.json": {
+      "bytes": 56472,
+      "sha256": "2ac53695915d6a3c4dd654b63f2b20ba1c65861f305152fe4b319ae1cd4d459a"
+    },
+    "play810211.json": {
+      "bytes": 843302,
+      "sha256": "0bd4fd00054dc62c1e62038cbc1f87386a0df0650827c90f6335bb213f53b76a"
+    },
+    "play810223.json": {
+      "bytes": 838278,
+      "sha256": "edb1978f27ff823792a05283d70a15ec9704d3c1ad8d3ca6bc15021d87b10cb4"
+    },
+    "play810227.json": {
+      "bytes": 836649,
+      "sha256": "0117e4ad3e909d69125e0a3db03c1c88303808c03c23d8b2a72faf9fb176c02f"
+    },
+    "transitions.jsonl": {
+      "bytes": 2120891,
+      "sha256": "a6254b9c432c3ee63c616c304df3a163ec2e6be0b64275f876827ed161de2493"
+    },
+    "update016.json": {
+      "bytes": 56359,
+      "sha256": "abddec7c780dd0c41d0acc210d4b6d4eafb11592f66eea0fef5de648f105844f"
+    },
+    "update032.json": {
+      "bytes": 56380,
+      "sha256": "d8b15a48fb74f3a351aba9b5c9a619d50d75f348f9faec3eb811a06cd5c98bbb"
+    },
+    "update048.json": {
+      "bytes": 56388,
+      "sha256": "d799bad4dcf64337fb9f23b166973aa5dff52e15888b874f6eb10724ff00bb1b"
+    },
+    "update064.json": {
+      "bytes": 56472,
+      "sha256": "2ac53695915d6a3c4dd654b63f2b20ba1c65861f305152fe4b319ae1cd4d459a"
+    }
+  },
+  "final_heldout": {
+    "agreement": 1.0,
+    "latency": {
+      "calls": 512,
+      "max_ms": 7.133208999903218,
+      "median_ms": 3.618525499973657,
+      "misses_15hz": 0,
+      "p95_ms": 3.742954599948689,
+      "seconds": 1.9135312310013433
+    },
+    "qualified": 512,
+    "rows": 512
+  },
+  "final_sha256": "2ac53695915d6a3c4dd654b63f2b20ba1c65861f305152fe4b319ae1cd4d459a",
+  "initial_heldout": {
+    "agreement": 0.322265625,
+    "latency": {
+      "calls": 512,
+      "max_ms": 7.782197000096858,
+      "median_ms": 3.548483499912436,
+      "misses_15hz": 0,
+      "p95_ms": 3.624974950065507,
+      "seconds": 1.8202292649996252
+    },
+    "qualified": 512,
+    "rows": 512
+  },
+  "initial_sha256": "c42f0510fc4d13c75ce9f9bcac152ee947d034070b6805c07d814e64aa0fa1e2",
+  "passed": true,
+  "protocol_sha256": "a4cd746ab7d38e048c5b7cd044cac0c5ba293eba073576be4c83ba2a76067f77",
+  "query_latency_all_phases": {
+    "calls": 7110,
+    "max_ms": 7.782197000096858,
+    "median_ms": 3.6285284999735268,
+    "misses_15hz": 0,
+    "p95_ms": 3.740571849994012,
+    "seconds": 25.853248081998117
+  },
+  "refused_calls": 0,
+  "returned_calls": 7174,
+  "seed": 223,
+  "sources_unchanged": true,
+  "status": "complete",
+  "unknown_calls": 0,
+  "wall_seconds": 57.82140479399993,
+  "work": {
+    "admission": {
+      "backtracks": 1,
+      "edge_visits": 50499072,
+      "evaluations": 624,
+      "patch_visits": 59904,
+      "proposals": 368
+    },
+    "heldout": {
+      "backtracks": 0,
+      "edge_visits": 31076352,
+      "evaluations": 6144,
+      "patch_visits": 36864,
+      "proposals": 2048
+    },
+    "native": {
+      "backtracks": 0,
+      "edge_visits": 184697928,
+      "evaluations": 36516,
+      "patch_visits": 219096,
+      "proposals": 12172
+    }
+  }
+}
