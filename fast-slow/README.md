@@ -200,6 +200,11 @@ the executed action's witnessed outcome through the common patch law. Its
 four-patch, 14-parameter comparison uses explicit collector memory; it does
 not demonstrate learned temporal memory or planning. Run the full campaign
 on AWS because its complete outcome journals exceed the local data limit.
+`verify_delayed_bandit.py` checks every outcome's action ownership, original
+forecast, witness order and complete-graph qualification, then replays the
+held-out checkpoint queries and verifies that neutral delays preserve the
+learning trajectory. Compact receipts are under
+`evidence/20261001/delayed-bandit/`; full journals stay at the catalogued AWS path.
 
 Use the sibling Cadence checkout through `PYTHONPATH=../../cadence/src` from this
 directory. Training needs NumPy and CPU Torch. Native play/replay additionally

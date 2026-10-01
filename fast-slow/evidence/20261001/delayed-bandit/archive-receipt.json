@@ -1,0 +1,9 @@
+{
+  "archive": "/home/ec2-user/cadence-060-delayed-bandit-20261001-complete.tar.gz",
+  "bytes": 22999013,
+  "sha256": "9e468705b60779f9f4ef4d13518b858655c5b74827fd408a9dd85f358aca88a5",
+  "source_files": 450,
+  "source_bytes": 190864373,
+  "manifest_sha256": "1cff546fb7818a2ac7ed6bc5e843e2976b9704fbe2b516a031596295cb945c25",
+  "every_member_verified": true
+}

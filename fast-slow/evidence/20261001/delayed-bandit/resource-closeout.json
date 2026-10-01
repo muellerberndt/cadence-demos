@@ -1,0 +1,20 @@
+{
+  "schema": "cadence-experiment-resource-closeout/1",
+  "instance_id": "i-0a57d4aaeffa98a7e",
+  "region": "us-east-1",
+  "instance_type": "c7i.16xlarge",
+  "address_during_run": "54.172.171.60",
+  "launch_utc": "2026-10-01T06:47:37Z",
+  "automatic_shutdown_scheduled_utc": "2026-10-01T07:03:32Z",
+  "explicit_stop_requested_utc": "2026-10-01T06:57:20Z",
+  "aws_state_observed": "stopped",
+  "state_observed_utc": "2026-10-01T06:58:55Z",
+  "aws_transition_reason": "User initiated (2026-10-01 06:57:20 GMT)",
+  "evidence_archive": "/home/ec2-user/cadence-060-delayed-bandit-20261001-complete.tar.gz",
+  "archive_sha256": "9e468705b60779f9f4ef4d13518b858655c5b74827fd408a9dd85f358aca88a5",
+  "every_archive_member_verified_remotely": true,
+  "full_evidence_downloaded": false,
+  "compact_fetched_source_bytes": 291830,
+  "source_bundle_sha256": "d66b2c1a5c0f65d7f7f0aebb91e21b86acb3de6051e1d2d1312ed4b056001367",
+  "retention": "Existing EBS preserved; durable archive must be copied before host/volume termination."
+}
