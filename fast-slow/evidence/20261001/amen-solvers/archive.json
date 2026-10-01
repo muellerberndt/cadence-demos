@@ -1,0 +1,22 @@
+{
+  "archive": "/home/ec2-user/cadence-060-amen-solvers-20261001.tar.gz",
+  "audio_outputs": 0,
+  "bytes": 9552662,
+  "discarded_timing_probes": 4,
+  "excluded_reproducible_dependencies": [
+    "test-deps",
+    "__pycache__",
+    ".pytest_cache"
+  ],
+  "failed_receipt_attempts": 2,
+  "manifest_sha256": "2f562ceffcd52ef0257c4f41cfb252e8a401f010598c4bfcd5a52dcd366bd9bc",
+  "no_source_or_run_deletion": true,
+  "public_candidate_admissions": 0,
+  "raw_solver_attempts": 4,
+  "sha256": "61926fa4d905e86d63cffa32b2b773a03e87ea4be2d07bd1c05b7504c85e2c9a",
+  "shared_fixture_dependency": "/home/ec2-user/amen/fixtures; existing durable EBS catalogue, symlink archived without dereferencing",
+  "shared_row_cache_dependency": "/home/ec2-user/cadence-060-flat-amen-startup-20261001/run/data; already included in verified startup archive",
+  "source_file_bytes": 20168674,
+  "verified_members": 189,
+  "verified_qualified_repeat_candidates": 2
+}

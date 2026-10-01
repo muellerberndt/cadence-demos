@@ -1,0 +1,14 @@
+[
+  {
+    "exit_code": 1,
+    "method": "diagonal_spectral",
+    "stderr": "Traceback (most recent call last):\n  File \"/home/ec2-user/cadence-060-ordinary-amen-20261001/collector/amen_solver_candidates.py\", line 655, in <module>\n    arm(a.root.resolve(), a.out.resolve(), a.method)\n  File \"/home/ec2-user/cadence-060-ordinary-amen-20261001/collector/amen_solver_candidates.py\", line 585, in arm\n    A.write(case / \"report.json\", report)\n  File \"/home/ec2-user/cadence-060-ordinary-amen-20261001/collector/amen_architecture_calibrate.py\", line 34, in write\n    json.dump(value, f, sort_keys=True, indent=2, allow_nan=False)\n  File \"/usr/lib64/python3.12/json/__init__.py\", line 179, in dump\n    for chunk in iterable:\n                 ^^^^^^^^\n  File \"/usr/lib64/python3.12/json/encoder.py\", line 432, in _iterencode\n    yield from _iterencode_dict(o, _current_indent_level)\n  File \"/usr/lib64/python3.12/json/encoder.py\", line 406, in _iterencode_dict\n    yield from chunks\n  File \"/usr/lib64/python3.12/json/encoder.py\", line 439, in _iterencode\n    o = _default(o)\n        ^^^^^^^^^^^\n  File \"/usr/lib64/python3.12/json/encoder.py\", line 180, in default\n    raise TypeError(f'Object of type {o.__class__.__name__} '\nTypeError: Object of type bool is not JSON serializable\n",
+    "stdout": ""
+  },
+  {
+    "exit_code": 1,
+    "method": "gauss_newton_cg",
+    "stderr": "Traceback (most recent call last):\n  File \"/home/ec2-user/cadence-060-ordinary-amen-20261001/collector/amen_solver_candidates.py\", line 655, in <module>\n    arm(a.root.resolve(), a.out.resolve(), a.method)\n  File \"/home/ec2-user/cadence-060-ordinary-amen-20261001/collector/amen_solver_candidates.py\", line 585, in arm\n    A.write(case / \"report.json\", report)\n  File \"/home/ec2-user/cadence-060-ordinary-amen-20261001/collector/amen_architecture_calibrate.py\", line 34, in write\n    json.dump(value, f, sort_keys=True, indent=2, allow_nan=False)\n  File \"/usr/lib64/python3.12/json/__init__.py\", line 179, in dump\n    for chunk in iterable:\n                 ^^^^^^^^\n  File \"/usr/lib64/python3.12/json/encoder.py\", line 432, in _iterencode\n    yield from _iterencode_dict(o, _current_indent_level)\n  File \"/usr/lib64/python3.12/json/encoder.py\", line 406, in _iterencode_dict\n    yield from chunks\n  File \"/usr/lib64/python3.12/json/encoder.py\", line 439, in _iterencode\n    o = _default(o)\n        ^^^^^^^^^^^\n  File \"/usr/lib64/python3.12/json/encoder.py\", line 180, in default\n    raise TypeError(f'Object of type {o.__class__.__name__} '\nTypeError: Object of type bool is not JSON serializable\n",
+    "stdout": ""
+  }
+]
