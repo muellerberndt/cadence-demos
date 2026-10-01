@@ -1,0 +1,330 @@
+{
+  "schema": "amen-matched-render-verification/1",
+  "valid": true,
+  "verifier_sha256": "37043398d708ce3d3d36802279b734cf4ed0afd7adf9e7b59d52b89d086bfa14",
+  "receipt_sha256": "50dc3f673a060c1c6786c30e4c5f296bb2a26eb999dbe533aae9ce8ddf9ad848",
+  "protocol_sha256": "a55a974fce4fe60a061a92fd1a6337c1f5beca26602a12d69048d61d28f80354",
+  "cases": {
+    "plain/legacy/argmax-0": {
+      "events": 128,
+      "wav_maximum_quantization_gap": 3.051687963306904e-05,
+      "last_bar": {
+        "bar": 16,
+        "drum_fraction": 1.0,
+        "bass_fraction": 1.0,
+        "mean_played_drum_gain": 0.9351013050897868,
+        "rms": 0.19306964316652875,
+        "stem_rms": {
+          "drum": 0.10456589029168535,
+          "bass": 0.16380335603546134,
+          "texture": 0.00805264813670943
+        }
+      }
+    },
+    "plain/legacy/sample-1": {
+      "events": 128,
+      "wav_maximum_quantization_gap": 3.0516181141138077e-05,
+      "last_bar": {
+        "bar": 16,
+        "drum_fraction": 1.0,
+        "bass_fraction": 1.0,
+        "mean_played_drum_gain": 0.8000020959889277,
+        "rms": 0.12279760476652186,
+        "stem_rms": {
+          "drum": 0.08947002728581598,
+          "bass": 0.08587805844593137,
+          "texture": 0.0033224593620791035
+        }
+      }
+    },
+    "plain/legacy/sample-2": {
+      "events": 128,
+      "wav_maximum_quantization_gap": 3.051687963306904e-05,
+      "last_bar": {
+        "bar": 16,
+        "drum_fraction": 1.0,
+        "bass_fraction": 1.0,
+        "mean_played_drum_gain": 0.8623789010814813,
+        "rms": 0.1716926227539328,
+        "stem_rms": {
+          "drum": 0.09954444515711602,
+          "bass": 0.1445049993129035,
+          "texture": 0.007383165986918432
+        }
+      }
+    },
+    "plain/legacy/sample-3": {
+      "events": 128,
+      "wav_maximum_quantization_gap": 3.051571547985077e-05,
+      "last_bar": {
+        "bar": 16,
+        "drum_fraction": 1.0,
+        "bass_fraction": 1.0,
+        "mean_played_drum_gain": 0.8516817663677976,
+        "rms": 0.1628373793991205,
+        "stem_rms": {
+          "drum": 0.09298643078928252,
+          "bass": 0.13108498277647726,
+          "texture": 0.0035836729019027907
+        }
+      }
+    },
+    "plain/legacy/sample-4": {
+      "events": 128,
+      "wav_maximum_quantization_gap": 3.0517112463712692e-05,
+      "last_bar": {
+        "bar": 16,
+        "drum_fraction": 1.0,
+        "bass_fraction": 1.0,
+        "mean_played_drum_gain": 0.865352382596482,
+        "rms": 0.19342122463101866,
+        "stem_rms": {
+          "drum": 0.09531332538298716,
+          "bass": 0.17044257303667937,
+          "texture": 0.00539605257152592
+        }
+      }
+    },
+    "plain/pilot/argmax-0": {
+      "events": 128,
+      "wav_maximum_quantization_gap": 3.0517112463712692e-05,
+      "last_bar": {
+        "bar": 16,
+        "drum_fraction": 0.0,
+        "bass_fraction": 0.0,
+        "mean_played_drum_gain": 0.0,
+        "rms": 0.02167001843105612,
+        "stem_rms": {
+          "drum": 0.0,
+          "bass": 0.0,
+          "texture": 0.02167001843105612
+        }
+      }
+    },
+    "plain/pilot/sample-1": {
+      "events": 128,
+      "wav_maximum_quantization_gap": 3.0517112463712692e-05,
+      "last_bar": {
+        "bar": 16,
+        "drum_fraction": 1.0,
+        "bass_fraction": 0.0,
+        "mean_played_drum_gain": 0.007083202486758547,
+        "rms": 0.01494954891547698,
+        "stem_rms": {
+          "drum": 0.0017038458893698597,
+          "bass": 0.0,
+          "texture": 0.014864139954593507
+        }
+      }
+    },
+    "plain/pilot/sample-2": {
+      "events": 128,
+      "wav_maximum_quantization_gap": 3.0517112463712692e-05,
+      "last_bar": {
+        "bar": 16,
+        "drum_fraction": 1.0,
+        "bass_fraction": 0.0,
+        "mean_played_drum_gain": 0.04965691247574063,
+        "rms": 0.014191337996106232,
+        "stem_rms": {
+          "drum": 0.006730966796158335,
+          "bass": 0.0,
+          "texture": 0.012519439372359257
+        }
+      }
+    },
+    "plain/pilot/sample-3": {
+      "events": 128,
+      "wav_maximum_quantization_gap": 3.0517112463712692e-05,
+      "last_bar": {
+        "bar": 16,
+        "drum_fraction": 0.0,
+        "bass_fraction": 0.0,
+        "mean_played_drum_gain": 0.0,
+        "rms": 0.01874010010277197,
+        "stem_rms": {
+          "drum": 0.0,
+          "bass": 0.0,
+          "texture": 0.01874010010277197
+        }
+      }
+    },
+    "plain/pilot/sample-4": {
+      "events": 128,
+      "wav_maximum_quantization_gap": 3.0516646802425385e-05,
+      "last_bar": {
+        "bar": 16,
+        "drum_fraction": 1.0,
+        "bass_fraction": 1.0,
+        "mean_played_drum_gain": 0.017908633294615735,
+        "rms": 0.04675975748086662,
+        "stem_rms": {
+          "drum": 0.0022409823641679435,
+          "bass": 0.0,
+          "texture": 0.046716089790073724
+        }
+      }
+    },
+    "web/legacy/argmax-0": {
+      "events": 128,
+      "wav_maximum_quantization_gap": 3.051687963306904e-05,
+      "last_bar": {
+        "bar": 16,
+        "drum_fraction": 1.0,
+        "bass_fraction": 1.0,
+        "mean_played_drum_gain": 0.9351013050897868,
+        "rms": 0.19306964316652875,
+        "stem_rms": {
+          "drum": 0.10456589029168535,
+          "bass": 0.16380335603546134,
+          "texture": 0.00805264813670943
+        }
+      }
+    },
+    "web/legacy/sample-1": {
+      "events": 128,
+      "wav_maximum_quantization_gap": 3.051571547985077e-05,
+      "last_bar": {
+        "bar": 16,
+        "drum_fraction": 1.0,
+        "bass_fraction": 1.0,
+        "mean_played_drum_gain": 0.9046930389803289,
+        "rms": 0.1872171154707115,
+        "stem_rms": {
+          "drum": 0.10355593479722236,
+          "bass": 0.15609599306989289,
+          "texture": 0.008986075058905297
+        }
+      }
+    },
+    "web/legacy/sample-2": {
+      "events": 128,
+      "wav_maximum_quantization_gap": 3.0516646802425385e-05,
+      "last_bar": {
+        "bar": 16,
+        "drum_fraction": 1.0,
+        "bass_fraction": 1.0,
+        "mean_played_drum_gain": 0.9024446811366192,
+        "rms": 0.18294977983308744,
+        "stem_rms": {
+          "drum": 0.10058918725209762,
+          "bass": 0.15466305766833421,
+          "texture": 0.006741816856088767
+        }
+      }
+    },
+    "web/legacy/sample-3": {
+      "events": 128,
+      "wav_maximum_quantization_gap": 3.0516821425408125e-05,
+      "last_bar": {
+        "bar": 16,
+        "drum_fraction": 1.0,
+        "bass_fraction": 0.875,
+        "mean_played_drum_gain": 0.8647148182521778,
+        "rms": 0.1793758054726419,
+        "stem_rms": {
+          "drum": 0.10103716113066319,
+          "bass": 0.14232760932215519,
+          "texture": 0.007059682918705462
+        }
+      }
+    },
+    "web/legacy/sample-4": {
+      "events": 128,
+      "wav_maximum_quantization_gap": 3.0516181141138077e-05,
+      "last_bar": {
+        "bar": 16,
+        "drum_fraction": 1.0,
+        "bass_fraction": 1.0,
+        "mean_played_drum_gain": 0.8862260546329415,
+        "rms": 0.18823277673415398,
+        "stem_rms": {
+          "drum": 0.09933184259404806,
+          "bass": 0.15513030971053446,
+          "texture": 0.006288647435515717
+        }
+      }
+    },
+    "web/pilot/argmax-0": {
+      "events": 128,
+      "wav_maximum_quantization_gap": 3.0517112463712692e-05,
+      "last_bar": {
+        "bar": 16,
+        "drum_fraction": 0.0,
+        "bass_fraction": 0.0,
+        "mean_played_drum_gain": 0.0,
+        "rms": 0.02167001843105612,
+        "stem_rms": {
+          "drum": 0.0,
+          "bass": 0.0,
+          "texture": 0.02167001843105612
+        }
+      }
+    },
+    "web/pilot/sample-1": {
+      "events": 128,
+      "wav_maximum_quantization_gap": 3.0516646802425385e-05,
+      "last_bar": {
+        "bar": 16,
+        "drum_fraction": 1.0,
+        "bass_fraction": 0.0,
+        "mean_played_drum_gain": 0.6266666679669866,
+        "rms": 0.0638930173873447,
+        "stem_rms": {
+          "drum": 0.06285483414432373,
+          "bass": 0.0,
+          "texture": 0.011663142784762973
+        }
+      }
+    },
+    "web/pilot/sample-2": {
+      "events": 128,
+      "wav_maximum_quantization_gap": 3.0517112463712692e-05,
+      "last_bar": {
+        "bar": 16,
+        "drum_fraction": 1.0,
+        "bass_fraction": 0.0,
+        "mean_played_drum_gain": 0.117065059393875,
+        "rms": 0.01862592891544732,
+        "stem_rms": {
+          "drum": 0.01636266577736383,
+          "bass": 0.0,
+          "texture": 0.008986374477494325
+        }
+      }
+    },
+    "web/pilot/sample-3": {
+      "events": 128,
+      "wav_maximum_quantization_gap": 3.0517287086695433e-05,
+      "last_bar": {
+        "bar": 16,
+        "drum_fraction": 1.0,
+        "bass_fraction": 0.0,
+        "mean_played_drum_gain": 0.7321212871791383,
+        "rms": 0.09994540255153818,
+        "stem_rms": {
+          "drum": 0.09915804130301584,
+          "bass": 0.0,
+          "texture": 0.012919533405517885
+        }
+      }
+    },
+    "web/pilot/sample-4": {
+      "events": 128,
+      "wav_maximum_quantization_gap": 3.0517112463712692e-05,
+      "last_bar": {
+        "bar": 16,
+        "drum_fraction": 1.0,
+        "bass_fraction": 0.0,
+        "mean_played_drum_gain": 0.4688159497005894,
+        "rms": 0.05612957446272533,
+        "stem_rms": {
+          "drum": 0.05513645745268488,
+          "bass": 0.0,
+          "texture": 0.010356950775328166
+        }
+      }
+    }
+  },
+  "scope": "Independently recheck saved event execution and every literal WAV; no learning.\n\nThe producer separately checks native engine parity and replays pilot web queries.\nThis verifier recomputes rendering, plain decoder execution, all descriptive\nmetrics and file custody. It does not claim to repeat historical training.\n"
+}

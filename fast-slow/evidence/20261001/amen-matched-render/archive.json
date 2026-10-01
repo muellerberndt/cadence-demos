@@ -1,0 +1,12 @@
+{
+  "schema": "amen-matched-render-archive-receipt/1",
+  "archive": "/home/ec2-user/cadence-060-amen-matched-render-20261001.tar.gz",
+  "sha256": "beacadfd71e4def13da614390502974ca4b835bb4bfc508f029e1952f807b140",
+  "bytes": 68139192,
+  "members": 185,
+  "source_bytes": 99049114,
+  "all_members_verified": true,
+  "verification_sha256": "679463efe183935835da2283ac3a2491a245f65638b1d1a39fc3bb32f23051f1",
+  "protocol_sha256": "a55a974fce4fe60a061a92fd1a6337c1f5beca26602a12d69048d61d28f80354",
+  "receipt_sha256": "50dc3f673a060c1c6786c30e4c5f296bb2a26eb999dbe533aae9ce8ddf9ad848"
+}
