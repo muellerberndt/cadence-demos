@@ -1,0 +1,797 @@
+{
+  "data_sha256": "ff9f4aa1cf24b12e0f49e85f4b10a1b91ce9778b0c1ae6cec0230010cc218f9e",
+  "excluded_cross_split_families": 43,
+  "family_separation": true,
+  "launch_sha256": "7b5dfd6da5d12570a9dbc8e214b0cc1946141fc5198cda14caee1d9fb433c6ee",
+  "outcomes_sha256": "00b1e66abea05d5bdd3c9ed791d4bfd0ce3598343a3605c1a2642f01dbcb80f5",
+  "qualified_repeat_queries": 32,
+  "results": [
+    {
+      "arm": "flat",
+      "beta": 0.1,
+      "counts": {
+        "edge_kinds": {
+          "input": 4400
+        },
+        "edges": 4400,
+        "inputs": 400,
+        "parameters": 4411,
+        "patches": 11
+      },
+      "exit_status": "complete",
+      "head_mae_change": {
+        "future64": -0.04695097851611635,
+        "next_event": -0.2899659629100084
+      },
+      "heads": {
+        "after": {
+          "future64": 0.24678448029135733,
+          "next_event": 0.22404693004369147
+        },
+        "before": {
+          "future64": 0.29373545880747365,
+          "next_event": 0.5140128929537
+        }
+      },
+      "layer_activity": {
+        "after": {
+          "base": {
+            "error_rms": 0.004606821046212293,
+            "state_rms": 0.4606821046212335
+          }
+        },
+        "before": {
+          "base": {
+            "error_rms": 0.0009916809498044224,
+            "state_rms": 0.09916809498044238
+          }
+        }
+      },
+      "name": "flat-beta0.1-seed2",
+      "query_seconds": {
+        "after": {
+          "max": 0.010781860999941273,
+          "median": 0.01058227999999417,
+          "p95": 0.010746216899906357,
+          "total": 0.677961685001037
+        },
+        "before": {
+          "max": 0.01804136999999173,
+          "median": 0.010404112500054907,
+          "p95": 0.010565189450130673,
+          "total": 0.6725913420002598
+        }
+      },
+      "reloads": [
+        {
+          "queries": [
+            {
+              "evaluation_index": 0,
+              "head_mae": {
+                "future64": 0.21988272273429654,
+                "next_event": 0.5294821786104597
+              },
+              "qualified": true,
+              "row": 4
+            },
+            {
+              "evaluation_index": 21,
+              "head_mae": {
+                "future64": 0.2575622819347304,
+                "next_event": 0.525671554859374
+              },
+              "qualified": true,
+              "row": 399
+            },
+            {
+              "evaluation_index": 42,
+              "head_mae": {
+                "future64": 0.32729794821021585,
+                "next_event": 0.539574020158996
+              },
+              "qualified": true,
+              "row": 1074
+            },
+            {
+              "evaluation_index": 63,
+              "head_mae": {
+                "future64": 0.23120705936220554,
+                "next_event": 0.449605473978086
+              },
+              "qualified": true,
+              "row": 1535
+            }
+          ],
+          "snapshot": "initial.json"
+        },
+        {
+          "queries": [
+            {
+              "evaluation_index": 0,
+              "head_mae": {
+                "future64": 0.4353804021475204,
+                "next_event": 0.18645050955237719
+              },
+              "qualified": true,
+              "row": 4
+            },
+            {
+              "evaluation_index": 21,
+              "head_mae": {
+                "future64": 0.20363758531675336,
+                "next_event": 0.12975201588763208
+              },
+              "qualified": true,
+              "row": 399
+            },
+            {
+              "evaluation_index": 42,
+              "head_mae": {
+                "future64": 0.2793552157188179,
+                "next_event": 0.15823626711056102
+              },
+              "qualified": true,
+              "row": 1074
+            },
+            {
+              "evaluation_index": 63,
+              "head_mae": {
+                "future64": 0.05595354487778642,
+                "next_event": 0.07205155662025962
+              },
+              "qualified": true,
+              "row": 1535
+            }
+          ],
+          "snapshot": "final.json"
+        }
+      ],
+      "report_sha256": "62821b640cf20c32efc7c1b8e024185a97ee6e2709a699430457cd901e3b247d",
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 2.3293341061828805,
+          "max_abs": 0.31953799855892256,
+          "parameters": 4411,
+          "rms": 0.03507222000726818
+        }
+      },
+      "seconds": 38.79473939600007,
+      "training": {
+        "accepted": 12,
+        "accepted_presentations": 384,
+        "attempted": 12,
+        "attempted_presentations": 384,
+        "seconds": 37.24149063800019,
+        "sweeps": 4003,
+        "work": {
+          "backtracks": 4583,
+          "edge_visits": 2431334400,
+          "evaluations": 8634,
+          "patch_visits": 6078336,
+          "proposals": 8586
+        }
+      },
+      "verified": true
+    },
+    {
+      "arm": "flat",
+      "beta": 0.01,
+      "counts": {
+        "edge_kinds": {
+          "input": 4400
+        },
+        "edges": 4400,
+        "inputs": 400,
+        "parameters": 4411,
+        "patches": 11
+      },
+      "exit_status": "complete",
+      "head_mae_change": {
+        "future64": -0.006261826620011179,
+        "next_event": -0.28000211971155586
+      },
+      "heads": {
+        "after": {
+          "future64": 0.2874736321874625,
+          "next_event": 0.2340107732421441
+        },
+        "before": {
+          "future64": 0.29373545880747365,
+          "next_event": 0.5140128929537
+        }
+      },
+      "layer_activity": {
+        "after": {
+          "base": {
+            "error_rms": 0.00490410316198593,
+            "state_rms": 0.49041031619859504
+          }
+        },
+        "before": {
+          "base": {
+            "error_rms": 0.0009916809498044224,
+            "state_rms": 0.09916809498044238
+          }
+        }
+      },
+      "name": "flat-beta0.01-seed2",
+      "query_seconds": {
+        "after": {
+          "max": 0.01088913099988531,
+          "median": 0.010596948499937753,
+          "p95": 0.01076676574988369,
+          "total": 0.6776653469985376
+        },
+        "before": {
+          "max": 0.018343423000033,
+          "median": 0.010327935999953297,
+          "p95": 0.010508423499891251,
+          "total": 0.6687598319986137
+        }
+      },
+      "reloads": [
+        {
+          "queries": [
+            {
+              "evaluation_index": 0,
+              "head_mae": {
+                "future64": 0.21988272273429654,
+                "next_event": 0.5294821786104597
+              },
+              "qualified": true,
+              "row": 4
+            },
+            {
+              "evaluation_index": 21,
+              "head_mae": {
+                "future64": 0.2575622819347304,
+                "next_event": 0.525671554859374
+              },
+              "qualified": true,
+              "row": 399
+            },
+            {
+              "evaluation_index": 42,
+              "head_mae": {
+                "future64": 0.32729794821021585,
+                "next_event": 0.539574020158996
+              },
+              "qualified": true,
+              "row": 1074
+            },
+            {
+              "evaluation_index": 63,
+              "head_mae": {
+                "future64": 0.23120705936220554,
+                "next_event": 0.449605473978086
+              },
+              "qualified": true,
+              "row": 1535
+            }
+          ],
+          "snapshot": "initial.json"
+        },
+        {
+          "queries": [
+            {
+              "evaluation_index": 0,
+              "head_mae": {
+                "future64": 0.606831816059827,
+                "next_event": 0.1413806517135627
+              },
+              "qualified": true,
+              "row": 4
+            },
+            {
+              "evaluation_index": 21,
+              "head_mae": {
+                "future64": 0.19212075142014803,
+                "next_event": 0.12439525281614748
+              },
+              "qualified": true,
+              "row": 399
+            },
+            {
+              "evaluation_index": 42,
+              "head_mae": {
+                "future64": 0.23901997503059996,
+                "next_event": 0.17602375710901383
+              },
+              "qualified": true,
+              "row": 1074
+            },
+            {
+              "evaluation_index": 63,
+              "head_mae": {
+                "future64": 0.07200645092935261,
+                "next_event": 0.07211910916362395
+              },
+              "qualified": true,
+              "row": 1535
+            }
+          ],
+          "snapshot": "final.json"
+        }
+      ],
+      "report_sha256": "7b0d94106d91f027725349fa0c70ba92ff9705c4b0fd87c362ed486b0b97fff3",
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 3.072190465921589,
+          "max_abs": 0.35792825398858885,
+          "parameters": 4411,
+          "rms": 0.04625722846672393
+        }
+      },
+      "seconds": 89.9289101469999,
+      "training": {
+        "accepted": 12,
+        "accepted_presentations": 384,
+        "attempted": 12,
+        "attempted_presentations": 384,
+        "seconds": 88.37560535700027,
+        "sweeps": 9562,
+        "work": {
+          "backtracks": 12092,
+          "edge_visits": 6111283200,
+          "evaluations": 21702,
+          "patch_visits": 15278208,
+          "proposals": 21654
+        }
+      },
+      "verified": true
+    },
+    {
+      "arm": "ordinary64",
+      "beta": 0.1,
+      "counts": {
+        "edge_kinds": {
+          "input": 25600,
+          "state": 1280
+        },
+        "edges": 26880,
+        "inputs": 400,
+        "parameters": 26944,
+        "patches": 64
+      },
+      "exit_status": "complete",
+      "head_mae_change": {
+        "future64": -0.02764272978553184,
+        "next_event": -0.30866237128225604
+      },
+      "heads": {
+        "after": {
+          "future64": 0.24714608961644702,
+          "next_event": 0.22603796025874834
+        },
+        "before": {
+          "future64": 0.27478881940197886,
+          "next_event": 0.5347003315410039
+        }
+      },
+      "layer_activity": {
+        "after": {
+          "base": {
+            "error_rms": 0.0024215173188192355,
+            "state_rms": 0.23884050007537655
+          },
+          "context": {
+            "error_rms": 0.0005128854363865401,
+            "state_rms": 0.045074140211927016
+          },
+          "reflection": {
+            "error_rms": 0.0018781706754856739,
+            "state_rms": 0.18781362758389364
+          }
+        },
+        "before": {
+          "base": {
+            "error_rms": 0.0010440736298241151,
+            "state_rms": 0.10480124367241835
+          },
+          "context": {
+            "error_rms": 0.0009650348697490022,
+            "state_rms": 0.09625243775776765
+          },
+          "reflection": {
+            "error_rms": 0.0008785453636057903,
+            "state_rms": 0.08785276992708171
+          }
+        }
+      },
+      "name": "ordinary64-beta0.1-seed2",
+      "query_seconds": {
+        "after": {
+          "max": 0.033758147999833454,
+          "median": 0.03199496999991425,
+          "p95": 0.03268775839992486,
+          "total": 2.051738801999363
+        },
+        "before": {
+          "max": 0.07058534900011182,
+          "median": 0.0577288330000556,
+          "p95": 0.05844559359992445,
+          "total": 3.706588384001634
+        }
+      },
+      "reloads": [
+        {
+          "queries": [
+            {
+              "evaluation_index": 0,
+              "head_mae": {
+                "future64": 0.214026257344509,
+                "next_event": 0.5954434854870602
+              },
+              "qualified": true,
+              "row": 4
+            },
+            {
+              "evaluation_index": 21,
+              "head_mae": {
+                "future64": 0.28030955331177565,
+                "next_event": 0.5517034961511954
+              },
+              "qualified": true,
+              "row": 399
+            },
+            {
+              "evaluation_index": 42,
+              "head_mae": {
+                "future64": 0.23273319017046296,
+                "next_event": 0.5588613375175604
+              },
+              "qualified": true,
+              "row": 1074
+            },
+            {
+              "evaluation_index": 63,
+              "head_mae": {
+                "future64": 0.25451694767954386,
+                "next_event": 0.49673375502062767
+              },
+              "qualified": true,
+              "row": 1535
+            }
+          ],
+          "snapshot": "initial.json"
+        },
+        {
+          "queries": [
+            {
+              "evaluation_index": 0,
+              "head_mae": {
+                "future64": 0.4463049933755504,
+                "next_event": 0.19999680047377807
+              },
+              "qualified": true,
+              "row": 4
+            },
+            {
+              "evaluation_index": 21,
+              "head_mae": {
+                "future64": 0.18256918398347896,
+                "next_event": 0.16171065703731136
+              },
+              "qualified": true,
+              "row": 399
+            },
+            {
+              "evaluation_index": 42,
+              "head_mae": {
+                "future64": 0.2732803120224818,
+                "next_event": 0.17081773636941358
+              },
+              "qualified": true,
+              "row": 1074
+            },
+            {
+              "evaluation_index": 63,
+              "head_mae": {
+                "future64": 0.06311439435484774,
+                "next_event": 0.07435100580751124
+              },
+              "qualified": true,
+              "row": 1535
+            }
+          ],
+          "snapshot": "final.json"
+        }
+      ],
+      "report_sha256": "83c96993244b97e0ffc25957b358c0d1cddf2506eb950eaf67513eeef9684593",
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 2.027959202933764,
+          "max_abs": 0.33959875361902025,
+          "parameters": 12832,
+          "rms": 0.01790243223307989
+        },
+        "context": {
+          "l2": 0.18620956121941162,
+          "max_abs": 0.013694095870080027,
+          "parameters": 6928,
+          "rms": 0.0022371651080719344
+        },
+        "reflection": {
+          "l2": 1.1659157340239017,
+          "max_abs": 0.18281959703023598,
+          "parameters": 7184,
+          "rms": 0.013755741354713484
+        }
+      },
+      "seconds": 542.9493074659999,
+      "training": {
+        "accepted": 12,
+        "accepted_presentations": 384,
+        "attempted": 12,
+        "attempted_presentations": 384,
+        "seconds": 536.909139846,
+        "sweeps": 9958,
+        "work": {
+          "backtracks": 12842,
+          "edge_visits": 39305871360,
+          "evaluations": 22848,
+          "patch_visits": 93585408,
+          "proposals": 22800
+        }
+      },
+      "verified": true
+    },
+    {
+      "arm": "ordinary64",
+      "beta": 0.01,
+      "completed_updates": 9,
+      "error": "AssertionError: timeout",
+      "exit_status": "timeout",
+      "name": "ordinary64-beta0.01-seed2",
+      "verified": false
+    },
+    {
+      "arm": "observer64",
+      "beta": 0.1,
+      "counts": {
+        "edge_kinds": {
+          "input": 25600,
+          "residual": 1280,
+          "state": 1280
+        },
+        "edges": 28160,
+        "inputs": 400,
+        "parameters": 28224,
+        "patches": 64
+      },
+      "exit_status": "complete",
+      "head_mae_change": {
+        "future64": -0.060284581694232175,
+        "next_event": -0.30303693573418533
+      },
+      "heads": {
+        "after": {
+          "future64": 0.24535688261848526,
+          "next_event": 0.22227417519148165
+        },
+        "before": {
+          "future64": 0.3056414643127175,
+          "next_event": 0.5253111109256672
+        }
+      },
+      "layer_activity": {
+        "after": {
+          "base": {
+            "error_rms": 0.0024397838393176,
+            "state_rms": 0.23914880370587865
+          },
+          "context": {
+            "error_rms": 0.0005052901554183274,
+            "state_rms": 0.04455854837080813
+          },
+          "reflection": {
+            "error_rms": 0.0018854734659070375,
+            "state_rms": 0.18854536704728309
+          }
+        },
+        "before": {
+          "base": {
+            "error_rms": 0.0010046878763589303,
+            "state_rms": 0.09991072104582129
+          },
+          "context": {
+            "error_rms": 0.0008911493432282034,
+            "state_rms": 0.08942390468665416
+          },
+          "reflection": {
+            "error_rms": 0.0010122357983248947,
+            "state_rms": 0.10121894716283907
+          }
+        }
+      },
+      "name": "observer64-beta0.1-seed2",
+      "query_seconds": {
+        "after": {
+          "max": 0.03834018299994568,
+          "median": 0.03668728649995501,
+          "p95": 0.03787498615017739,
+          "total": 2.349095886998839
+        },
+        "before": {
+          "max": 0.07694150299994362,
+          "median": 0.06289194799990128,
+          "p95": 0.06364990084999818,
+          "total": 4.040010225998913
+        }
+      },
+      "reloads": [
+        {
+          "queries": [
+            {
+              "evaluation_index": 0,
+              "head_mae": {
+                "future64": 0.3385703551694144,
+                "next_event": 0.5468407500586814
+              },
+              "qualified": true,
+              "row": 4
+            },
+            {
+              "evaluation_index": 21,
+              "head_mae": {
+                "future64": 0.2381633445082893,
+                "next_event": 0.5949419764248837
+              },
+              "qualified": true,
+              "row": 399
+            },
+            {
+              "evaluation_index": 42,
+              "head_mae": {
+                "future64": 0.22570712503997736,
+                "next_event": 0.5735775902834498
+              },
+              "qualified": true,
+              "row": 1074
+            },
+            {
+              "evaluation_index": 63,
+              "head_mae": {
+                "future64": 0.2831469904308682,
+                "next_event": 0.4810821067837836
+              },
+              "qualified": true,
+              "row": 1535
+            }
+          ],
+          "snapshot": "initial.json"
+        },
+        {
+          "queries": [
+            {
+              "evaluation_index": 0,
+              "head_mae": {
+                "future64": 0.4314427083516502,
+                "next_event": 0.1866015649803688
+              },
+              "qualified": true,
+              "row": 4
+            },
+            {
+              "evaluation_index": 21,
+              "head_mae": {
+                "future64": 0.20541471809844433,
+                "next_event": 0.16893916884190371
+              },
+              "qualified": true,
+              "row": 399
+            },
+            {
+              "evaluation_index": 42,
+              "head_mae": {
+                "future64": 0.26639233576455035,
+                "next_event": 0.17236046421018666
+              },
+              "qualified": true,
+              "row": 1074
+            },
+            {
+              "evaluation_index": 63,
+              "head_mae": {
+                "future64": 0.052919920426107894,
+                "next_event": 0.07378310661512005
+              },
+              "qualified": true,
+              "row": 1535
+            }
+          ],
+          "snapshot": "final.json"
+        }
+      ],
+      "report_sha256": "f5a6470c1fda7c8bc060b05af7703b09690e3ab3dabdb1844b18a654ebfcc861",
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 2.0219705365931397,
+          "max_abs": 0.32920254418085376,
+          "parameters": 12832,
+          "rms": 0.017849565443070283
+        },
+        "context": {
+          "l2": 0.16232479265869798,
+          "max_abs": 0.009652749841110767,
+          "parameters": 7440,
+          "rms": 0.0018819080025510718
+        },
+        "reflection": {
+          "l2": 1.1798316389889827,
+          "max_abs": 0.18642556384303988,
+          "parameters": 7952,
+          "rms": 0.013230670462613385
+        }
+      },
+      "seconds": 497.01258621099987,
+      "training": {
+        "accepted": 12,
+        "accepted_presentations": 384,
+        "attempted": 12,
+        "attempted_presentations": 384,
+        "seconds": 490.33057737800004,
+        "sweeps": 10671,
+        "work": {
+          "backtracks": 13730,
+          "edge_visits": 44062965760,
+          "evaluations": 24449,
+          "patch_visits": 100143104,
+          "proposals": 24401
+        }
+      },
+      "verified": true
+    },
+    {
+      "arm": "observer64",
+      "beta": 0.01,
+      "completed_updates": 10,
+      "error": "AssertionError: timeout",
+      "exit_status": "timeout",
+      "name": "observer64-beta0.01-seed2",
+      "verified": false
+    },
+    {
+      "arm": "ordinary128",
+      "beta": 0.1,
+      "completed_updates": 9,
+      "error": "AssertionError: timeout",
+      "exit_status": "timeout",
+      "name": "ordinary128-beta0.1-seed2",
+      "verified": false
+    },
+    {
+      "arm": "ordinary128",
+      "beta": 0.01,
+      "completed_updates": 3,
+      "error": "AssertionError: timeout",
+      "exit_status": "timeout",
+      "name": "ordinary128-beta0.01-seed2",
+      "verified": false
+    },
+    {
+      "arm": "observer128",
+      "beta": 0.1,
+      "completed_updates": 9,
+      "error": "AssertionError: timeout",
+      "exit_status": "timeout",
+      "name": "observer128-beta0.1-seed2",
+      "verified": false
+    },
+    {
+      "arm": "observer128",
+      "beta": 0.01,
+      "completed_updates": 3,
+      "error": "AssertionError: timeout",
+      "exit_status": "timeout",
+      "name": "observer128-beta0.01-seed2",
+      "verified": false
+    }
+  ],
+  "schema": "cadence.c64-joint-verification/1",
+  "seconds": 1.2597931119998975,
+  "snapshots_verified": 8,
+  "sources_unchanged": true,
+  "status": "incomplete",
+  "verifier_sha256": "dbc34829f866c6a392074b0d26ee5297ea8aa732d56667e17e1b1513642a6aff"
+}

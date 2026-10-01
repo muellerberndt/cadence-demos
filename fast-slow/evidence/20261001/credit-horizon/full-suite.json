@@ -1,0 +1,25 @@
+{
+  "command": "PYTHONPATH=<isolated-worktree>/src python3 -m pytest -q",
+  "passed": 855,
+  "skipped": 2,
+  "seconds": 263.45,
+  "scope": "isolated experimental credit candidate, not released 0.60",
+  "torch_available": false,
+  "concurrent_load": true,
+  "log_sha256": "813aa2a8f55ab6c6c34bdc5e2c62ddab70967ca20a956b46d1ca72fdef23174f",
+  "sources": {
+    "src/cadence/__init__.py": "de69e80ad2c1bdc5a30e432e5c0c70124e694d06a072e1d73a7b6fe2607ead26",
+    "src/cadence/_repair.py": "6635dfb8f5559638b3868b639af7e26c89acd4fa19f28d282e320e284692e79a",
+    "src/cadence/_tensor.py": "d5765b286c931863cf540d19133500f734b70270c1bf702d60476c8945d86ce9",
+    "src/cadence/_validation.py": "05d09fd56ec96ef9315cfe569fa818a718795d1aedefd12d5b02bb619808b0ab",
+    "src/cadence/bootstrap.py": "e7f5e0096e1ea3b6ac733805ab814acfd368824b86c7b52969d3936eba48868f",
+    "src/cadence/brain.py": "e87fc184b32a769d0840a14f900ecfd24da8b28c37da2d84c8b83c9df7d7f3fb",
+    "src/cadence/column.py": "d3752d27227ca34dfc03134d792cc046fc41d96ac181f19be852a193d1eee203",
+    "src/cadence/cortex.py": "270f963fa6ca1c91b0deb19ce0f440cd4881f79205fdd115f64ef23942463482",
+    "src/cadence/memory.py": "55eb67223932f54f3dd7a4a39f5f540f1af64eb6c9551b3144c7c74cda0b9e2a",
+    "src/cadence/ports.py": "f0ec46ba314ee20523ff603473256362ae84a1522e89d39751f082f278aa4dca",
+    "src/cadence/reinforcement.py": "8845ec160bfd6eae4183bbca329617f71e75cd147846898066b167f6f378c9a8",
+    "src/cadence/runtime.py": "85f0464c223578bc4fbd3607a175e7c932f125157b2ca25cd09bd2bb9e0ab428"
+  },
+  "interpretation": "Regression coverage only. Credit behavior comparison found no advantage; integrated architecture and capability gates remain open."
+}

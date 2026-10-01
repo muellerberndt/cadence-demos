@@ -1,0 +1,379 @@
+{
+  "models": [
+    {
+      "seed": 2,
+      "delay": 1,
+      "arm": "one_step",
+      "brain_sha256": "bfc4cfedf504eabecc5ae5fb655e178286007f6d6d9755bf5a600ec83fe07a51",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 2,
+      "delay": 1,
+      "arm": "greedy_cut",
+      "brain_sha256": "90a209c4b55ef45f9bd23d3d2d1187482a98fc5ee634f92776cdbd307b1e044c",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 2,
+      "delay": 8,
+      "arm": "one_step",
+      "brain_sha256": "0bd389ba9e318c0eba5c9975565c3da9cfbac5a6302ed5752d3429ffc5b18b07",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 2,
+      "delay": 8,
+      "arm": "greedy_cut",
+      "brain_sha256": "4438f8106a86697afa03af079358113cf3780fcee95c03af3a6cf91734e7dfff",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 2,
+      "delay": 32,
+      "arm": "one_step",
+      "brain_sha256": "dff620f1312755bdde4bbd2889da3fbf936f1752f6f161af373d8da93df54b94",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 2,
+      "delay": 32,
+      "arm": "greedy_cut",
+      "brain_sha256": "d4ffd9c930141a6e66d5569990f73c44ed23e369c4dcb0c552bcf24111664078",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 2,
+      "delay": 128,
+      "arm": "one_step",
+      "brain_sha256": "b0ae431720a423a47b70374966d00c9138f0ab4456c05259af8cfd70e6497757",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 2,
+      "delay": 128,
+      "arm": "greedy_cut",
+      "brain_sha256": "8cef8538b04566f6e572bf170dbe2759135aee94ffc5fb440a9896d2657521d5",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 7,
+      "delay": 1,
+      "arm": "one_step",
+      "brain_sha256": "60cef29367a4c508f4358c2679b1ff7bd0f14e54438477f5cd87e36391a77f10",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 7,
+      "delay": 1,
+      "arm": "greedy_cut",
+      "brain_sha256": "95767f074c53da26394b6d4b4948077bcc8e5342739e537701ee5f0240d797ee",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 7,
+      "delay": 8,
+      "arm": "one_step",
+      "brain_sha256": "4428a3eedfa5cc1e1657f8e4f64ded71a67fdb4d7f902679c449f3a2c4c3ef36",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 7,
+      "delay": 8,
+      "arm": "greedy_cut",
+      "brain_sha256": "24ea02183885fcca0ce2da3f9ff8576088d536e485376690f1983c53d44958fc",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 7,
+      "delay": 32,
+      "arm": "one_step",
+      "brain_sha256": "5e9b95d3f46f41ced5722033b3c01a5238883b7b29bcc456de963e45788b8db5",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 7,
+      "delay": 32,
+      "arm": "greedy_cut",
+      "brain_sha256": "715da17be7314b37d301c73268712038dd0dd8eb3cad86ff3bb846a73a828985",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 7,
+      "delay": 128,
+      "arm": "one_step",
+      "brain_sha256": "d498ed35c74b5f636de0bf50465f9c23c502542a02d38e068da6d9fb6c3e921f",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 7,
+      "delay": 128,
+      "arm": "greedy_cut",
+      "brain_sha256": "5d0f2b3c8d996218c68b892098a2399ff6fe7ac51cd65b5b86e15c4de7b6b473",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 11,
+      "delay": 1,
+      "arm": "one_step",
+      "brain_sha256": "de3ce726846bf53b6751b803561ecbc3fbf1ba350803aaae2a35cedf9ed3c738",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 11,
+      "delay": 1,
+      "arm": "greedy_cut",
+      "brain_sha256": "eaa0c6eacf17b4f926923be46f45271c877884d377d21dfbc7acbeef72e23901",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 11,
+      "delay": 8,
+      "arm": "one_step",
+      "brain_sha256": "25937aba73d8efbcf081cc7600d63302781c8c77b369faedc440357147ed7f69",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 11,
+      "delay": 8,
+      "arm": "greedy_cut",
+      "brain_sha256": "72b10222e76567de5bb0ec033eb61f66da68c6a9fa2b7923da8003c50283b083",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 11,
+      "delay": 32,
+      "arm": "one_step",
+      "brain_sha256": "8c1a2264c6869a668d1ecbda1b86e1ff94abf567298417e5986182368224c249",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 11,
+      "delay": 32,
+      "arm": "greedy_cut",
+      "brain_sha256": "d5dde4e3173777baddc70ff5be7f716dc1f6ba8ceca47eb51fbc813125880481",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 11,
+      "delay": 128,
+      "arm": "one_step",
+      "brain_sha256": "5aae1bf2617e401cd9df210cc3318fdfb9aded42ed557fb410391a872021cc0c",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 11,
+      "delay": 128,
+      "arm": "greedy_cut",
+      "brain_sha256": "97fe2ecd33891c81ae5211946937a15177fc0ca2a3cac0f4d7a27fb022b702ab",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 19,
+      "delay": 1,
+      "arm": "one_step",
+      "brain_sha256": "4aee0c35f79aaf2adb72f2f7354ccf4f5f73dfc8ce3833630df1b064c6fb52b2",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 19,
+      "delay": 1,
+      "arm": "greedy_cut",
+      "brain_sha256": "f84368351652a186729b332fd716c43d68055c3d27e4755757b3ca46867783e3",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 19,
+      "delay": 8,
+      "arm": "one_step",
+      "brain_sha256": "5f8e2a7f5e38775bebf069abad64a1353f64089257534cf3810dff6bcfc29d8f",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 19,
+      "delay": 8,
+      "arm": "greedy_cut",
+      "brain_sha256": "fe5a6706aa6c34138cce48721abc0d530a04ba5003b8abb9d7351184c205fe83",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 19,
+      "delay": 32,
+      "arm": "one_step",
+      "brain_sha256": "300a5ee8b7aaf5cbc60b691341c280f874dbb59b11206b137e39cf10d8fad883",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 19,
+      "delay": 32,
+      "arm": "greedy_cut",
+      "brain_sha256": "1d7862ac67367c8649b09ea19c3a0ac216f8e38984d7e9104b1a5de05d339b82",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 19,
+      "delay": 128,
+      "arm": "one_step",
+      "brain_sha256": "df6964c07981325c7b20ee0f12a07a890de1666072de4845d78eb0fbbf0428bf",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 19,
+      "delay": 128,
+      "arm": "greedy_cut",
+      "brain_sha256": "9d038f550f40bfb2508d51c274953276652e6034331510f5657db05edbbeddf1",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 29,
+      "delay": 1,
+      "arm": "one_step",
+      "brain_sha256": "535fa9954eb779787aecb2e1297d8ed477a67d99550227edd87a25cf09d50cc2",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 29,
+      "delay": 1,
+      "arm": "greedy_cut",
+      "brain_sha256": "b4246b91dacf5709dbbf1d22a5e53b0e3a7c6efa1d13d5026e61e883a998b0a1",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 29,
+      "delay": 8,
+      "arm": "one_step",
+      "brain_sha256": "ff85101c07582f032c63effabe9c0e223a6106fe7698cca2b9e909e58d06af27",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 29,
+      "delay": 8,
+      "arm": "greedy_cut",
+      "brain_sha256": "a3d0be9198159960e1b4cf6f1b8d3eebc7458b5586b2c0ac3ec695cc674e5cf9",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 29,
+      "delay": 32,
+      "arm": "one_step",
+      "brain_sha256": "f3cb44196cf77fe021b8a303a553876afa0419012f0dd083947cacbc7cea1bc4",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 29,
+      "delay": 32,
+      "arm": "greedy_cut",
+      "brain_sha256": "0541e81076924770dd5c5139467166f7962b495c6d244907759b08afc4233398",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 29,
+      "delay": 128,
+      "arm": "one_step",
+      "brain_sha256": "efac08082be42c4542c554c807f5be5b0e29cb358a08d3d8625b5474f087f278",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    },
+    {
+      "seed": 29,
+      "delay": 128,
+      "arm": "greedy_cut",
+      "brain_sha256": "0a82be72baefd0220fef5af0ba6fc0566a6e86b66250ff3be91a0a9cec50c35a",
+      "qualified": true,
+      "query_pure": true,
+      "first_action_agrees": true
+    }
+  ],
+  "source_archive_sha256": "4cc46973cbd7358c41b2832c97936ad30960ea40e742aa2a0f67f2a2ccd9fbef",
+  "source_archive_bytes": 43405,
+  "reports": {
+    "seed11.json": "49d62e5a4f242eaac13437a88c1d38e2cb656507d019cf9aff9be0fd2457b9c0",
+    "seed19.json": "938327e30f1a677d8fbf717452f5fa7cbc144c3602279fb14e668c4883e970f4",
+    "seed2.json": "8d67a33ac3eecee2de64778b291fe97aecffed2f5ad684c9c55446819eeae974",
+    "seed29.json": "fed0acbc744a70c5c96c46ceaefb24e962e5d157cd228381092210bf82fe9222",
+    "seed7.json": "1acc40dd1c030e52b8c1affc1a3abc8075d554ea43da3e6e3cbf5959c5644fab"
+  },
+  "admitted_updates": 1280,
+  "presentations": 20480,
+  "matched_cases": 20,
+  "conclusion": "No behavioral advantage in this fixed-experience screen; one delayed case regressed. Experimental candidate is not selected for release.",
+  "brain_archive_sha256": "43df138ad1e127da6b90d673d4bc624c26001902ef91c1f128a506f18d4daf7b",
+  "brain_archive_bytes": 131539
+}

@@ -1,0 +1,14 @@
+{
+  "instance": "i-0a57d4aaeffa98a7e",
+  "region": "us-east-1",
+  "state": "stopped",
+  "aws_state_transition_reason": "User initiated (2026-10-01 06:08:56 GMT)",
+  "checked_utc": "2026-10-01T06:10:17.903238+00:00",
+  "prior_scheduled_stop_confirmed_utc": "2026-10-01T06:05:51Z",
+  "evidence_only_restart_approx_utc": "2026-10-01T06:06:00Z",
+  "evidence_only_restart_auto_stop_utc": "2026-10-01T06:22:06Z",
+  "training_during_restart": false,
+  "existing_ebs_retained": true,
+  "local_archive_all_members_verified": 307,
+  "archive_sha256": "4354a1dddce97356cfa41718eaa96d6c7d119f16defdaab7db7601a4c47c02fd"
+}

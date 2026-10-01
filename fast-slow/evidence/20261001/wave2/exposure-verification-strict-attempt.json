@@ -1,0 +1,757 @@
+{
+  "verified": false,
+  "cases": [
+    {
+      "name": "seed11-preferred0-delay128",
+      "verified": false,
+      "error": "ValueError: Run incomplete or sources changed"
+    },
+    {
+      "name": "seed11-preferred1-delay128",
+      "verified": false,
+      "error": "ValueError: Run incomplete or sources changed"
+    },
+    {
+      "name": "seed19-preferred0-delay128",
+      "verified": false,
+      "error": "ValueError: Run incomplete or sources changed"
+    },
+    {
+      "name": "seed19-preferred1-delay128",
+      "verified": false,
+      "error": "ValueError: Run incomplete or sources changed"
+    },
+    {
+      "name": "seed2-preferred0-delay128",
+      "verified": true,
+      "seed": 2,
+      "delay": 128,
+      "preferred": 0,
+      "report_sha256": "0ebed6bb26d35a822c6ec8a13cafd2ddd262f95a811bd4cc60781425cac39b97",
+      "protocol_sha256": "46cee4eef1c249e83fc5483cf5372f013f03134d00a553e2acea1ce9edb2d8d2",
+      "collection_sha256": "ae441ccf0fa9084c2164b770ebf315d788f5f0699a7c2664cff4e125ab14b566",
+      "schedules_sha256": "ac6703f5df26c95404f14bcf452658c147ca868d2c574b9b738475db6650a9f2",
+      "arms": [
+        {
+          "name": "stratified",
+          "checkpoints": [
+            {
+              "update": 0,
+              "reward": -1,
+              "values": [
+                -0.0118417556025065,
+                -0.01055263536145467
+              ],
+              "preferred_margin": -0.0012891202410518308,
+              "calibration_cases": 511,
+              "observed_return_mae": 0.009732282245158177,
+              "free_decisions": 129
+            },
+            {
+              "update": 32,
+              "reward": 1,
+              "values": [
+                0.06003123273769208,
+                0.0520141033894307
+              ],
+              "preferred_margin": 0.008017129348261376,
+              "calibration_cases": 511,
+              "observed_return_mae": 0.04244687616038868,
+              "free_decisions": 129
+            },
+            {
+              "update": 128,
+              "reward": 1,
+              "values": [
+                0.05590192752217703,
+                0.040362506224555755
+              ],
+              "preferred_margin": 0.015539421297621273,
+              "calibration_cases": 511,
+              "observed_return_mae": 0.04407613523133534,
+              "free_decisions": 129
+            },
+            {
+              "update": 512,
+              "reward": 1,
+              "values": [
+                0.014030613959521118,
+                0.006312835635036664
+              ],
+              "preferred_margin": 0.007717778324484454,
+              "calibration_cases": 511,
+              "observed_return_mae": 0.008576852113876689,
+              "free_decisions": 129
+            }
+          ],
+          "seconds": 264.70102643199994,
+          "training_work": {
+            "evaluations": 74336,
+            "edge_visits": 1490188800,
+            "patch_visits": 5859328,
+            "proposals": 58080,
+            "backtracks": 18835
+          },
+          "total_work": {
+            "evaluations": 86652,
+            "edge_visits": 1509182128,
+            "patch_visits": 5957856,
+            "proposals": 64236,
+            "backtracks": 18835
+          },
+          "checkpoint_sha256": {
+            "stratified-32-brain.json": "eda074d887eb7a3f160f5c84aa443a84eba32c0d9e560aca0ea1f352a028077c",
+            "stratified-128-brain.json": "21c237bd356c18681de85ec130878b189f1e342fa8b3c892679944d0f5ae8df2",
+            "stratified-512-brain.json": "379a49d3ad76a04abee30e2dfdbbea9424a3efa99da4535a977b89ec207e4ee9",
+            "stratified-final-brain.json": "379a49d3ad76a04abee30e2dfdbbea9424a3efa99da4535a977b89ec207e4ee9"
+          }
+        },
+        {
+          "name": "reverse_stage",
+          "checkpoints": [
+            {
+              "update": 0,
+              "reward": -1,
+              "values": [
+                -0.0118417556025065,
+                -0.01055263536145467
+              ],
+              "preferred_margin": -0.0012891202410518308,
+              "calibration_cases": 511,
+              "observed_return_mae": 0.009732282245158177,
+              "free_decisions": 129
+            },
+            {
+              "update": 32,
+              "reward": 1,
+              "values": [
+                0.09787104044484836,
+                0.09272601930177456
+              ],
+              "preferred_margin": 0.005145021143073802,
+              "calibration_cases": 511,
+              "observed_return_mae": 0.08586474079275008,
+              "free_decisions": 129
+            },
+            {
+              "update": 128,
+              "reward": 1,
+              "values": [
+                0.06363807535568583,
+                0.044979902511234515
+              ],
+              "preferred_margin": 0.018658172844451315,
+              "calibration_cases": 511,
+              "observed_return_mae": 0.05461534526058853,
+              "free_decisions": 129
+            },
+            {
+              "update": 512,
+              "reward": 1,
+              "values": [
+                0.022781610505978385,
+                0.019856732198698754
+              ],
+              "preferred_margin": 0.002924878307279631,
+              "calibration_cases": 511,
+              "observed_return_mae": 0.01915722942164879,
+              "free_decisions": 129
+            }
+          ],
+          "seconds": 306.5564900249999,
+          "training_work": {
+            "evaluations": 77004,
+            "edge_visits": 1577955328,
+            "patch_visits": 6200832,
+            "proposals": 60748,
+            "backtracks": 20323
+          },
+          "total_work": {
+            "evaluations": 89320,
+            "edge_visits": 1596948656,
+            "patch_visits": 6299360,
+            "proposals": 66904,
+            "backtracks": 20323
+          },
+          "checkpoint_sha256": {
+            "reverse_stage-32-brain.json": "1953fa94f1343034e0ac27ffbdb5afa0b7ecd711e5e3b2a4f4fd8b71e1909679",
+            "reverse_stage-128-brain.json": "e8627b9124589e8a6ad95e7df3be9ad97b7db97baf94986a1f95edc05e1879e5",
+            "reverse_stage-512-brain.json": "585a84031b42606c2b1a173da7f08a3d2595e603bebff966d1839a044cd40e2d",
+            "reverse_stage-final-brain.json": "585a84031b42606c2b1a173da7f08a3d2595e603bebff966d1839a044cd40e2d"
+          }
+        }
+      ],
+      "td_targets_spot_checked": 96,
+      "total_work": {
+        "evaluations": 200740,
+        "edge_visits": 3144323040,
+        "patch_visits": 12455360,
+        "proposals": 143524,
+        "backtracks": 39158
+      }
+    },
+    {
+      "name": "seed2-preferred1-delay128",
+      "verified": true,
+      "seed": 2,
+      "delay": 128,
+      "preferred": 1,
+      "report_sha256": "8ca5f89d43f44db983416b7db3d259cec275a794d854270b8332f9cdbc2d861c",
+      "protocol_sha256": "044b92a9ec9079be75ce9500fa9c69ac0a65dfd4b2bd887b62c64815655e173f",
+      "collection_sha256": "4e6c0e4313f62b2790120331e800561ad7acd3f66fcb01ae803912cd29847641",
+      "schedules_sha256": "ac6703f5df26c95404f14bcf452658c147ca868d2c574b9b738475db6650a9f2",
+      "arms": [
+        {
+          "name": "stratified",
+          "checkpoints": [
+            {
+              "update": 0,
+              "reward": 1,
+              "values": [
+                -0.0118417556025065,
+                -0.01055263536145467
+              ],
+              "preferred_margin": 0.0012891202410518308,
+              "calibration_cases": 511,
+              "observed_return_mae": 0.009454437947970502,
+              "free_decisions": 129
+            },
+            {
+              "update": 32,
+              "reward": -1,
+              "values": [
+                0.05946567768357802,
+                0.05125251018620944
+              ],
+              "preferred_margin": -0.008213167497368584,
+              "calibration_cases": 511,
+              "observed_return_mae": 0.04150437114571169,
+              "free_decisions": 129
+            },
+            {
+              "update": 128,
+              "reward": -1,
+              "values": [
+                0.05660550064692406,
+                0.04091409256080182
+              ],
+              "preferred_margin": -0.015691408086122238,
+              "calibration_cases": 511,
+              "observed_return_mae": 0.04476506029266889,
+              "free_decisions": 129
+            },
+            {
+              "update": 512,
+              "reward": -1,
+              "values": [
+                0.015097996142379378,
+                0.0074178103964212105
+              ],
+              "preferred_margin": -0.007680185745958168,
+              "calibration_cases": 511,
+              "observed_return_mae": 0.00981839590838033,
+              "free_decisions": 129
+            }
+          ],
+          "seconds": 267.1038388630002,
+          "training_work": {
+            "evaluations": 74462,
+            "edge_visits": 1494333696,
+            "patch_visits": 5875456,
+            "proposals": 58206,
+            "backtracks": 18963
+          },
+          "total_work": {
+            "evaluations": 86778,
+            "edge_visits": 1513327024,
+            "patch_visits": 5973984,
+            "proposals": 64362,
+            "backtracks": 18963
+          },
+          "checkpoint_sha256": {
+            "stratified-32-brain.json": "c4497c49888fcc7cc8b539ef0eb9339a374e917d79f59006e0eb8127f62bf73b",
+            "stratified-128-brain.json": "551000dd8c8a41cfad860ad9c45847300d423d81217d240be134c42b443f4530",
+            "stratified-512-brain.json": "b600be17f06c74a33bb6d3b902e1f9ed22cb9bd7235b40719ae5d202ffa4d38b",
+            "stratified-final-brain.json": "b600be17f06c74a33bb6d3b902e1f9ed22cb9bd7235b40719ae5d202ffa4d38b"
+          }
+        },
+        {
+          "name": "reverse_stage",
+          "checkpoints": [
+            {
+              "update": 0,
+              "reward": 1,
+              "values": [
+                -0.0118417556025065,
+                -0.01055263536145467
+              ],
+              "preferred_margin": 0.0012891202410518308,
+              "calibration_cases": 511,
+              "observed_return_mae": 0.009454437947970502,
+              "free_decisions": 129
+            },
+            {
+              "update": 32,
+              "reward": -1,
+              "values": [
+                0.09825633638299922,
+                0.09311404944557042
+              ],
+              "preferred_margin": -0.005142286937428797,
+              "calibration_cases": 511,
+              "observed_return_mae": 0.08622383527443889,
+              "free_decisions": 129
+            },
+            {
+              "update": 128,
+              "reward": -1,
+              "values": [
+                0.06452648447999944,
+                0.04589518706087622
+              ],
+              "preferred_margin": -0.01863129741912322,
+              "calibration_cases": 511,
+              "observed_return_mae": 0.05553768486469954,
+              "free_decisions": 129
+            },
+            {
+              "update": 512,
+              "reward": -1,
+              "values": [
+                0.0237087959325563,
+                0.020876595626252336
+              ],
+              "preferred_margin": -0.002832200306303965,
+              "calibration_cases": 511,
+              "observed_return_mae": 0.020061086171093562,
+              "free_decisions": 129
+            }
+          ],
+          "seconds": 336.0068251540001,
+          "training_work": {
+            "evaluations": 77650,
+            "edge_visits": 1599206144,
+            "patch_visits": 6283520,
+            "proposals": 61394,
+            "backtracks": 20639
+          },
+          "total_work": {
+            "evaluations": 89966,
+            "edge_visits": 1618199472,
+            "patch_visits": 6382048,
+            "proposals": 67550,
+            "backtracks": 20639
+          },
+          "checkpoint_sha256": {
+            "reverse_stage-32-brain.json": "a9d4ccea265112734282df0ef03b5a70866a080287582b6df993b815dda06923",
+            "reverse_stage-128-brain.json": "8333f166a63c56721ecf64b25322e14de240d424fb25f87749af038d2923d502",
+            "reverse_stage-512-brain.json": "17568d100793b065bf6ef6f89d6cb5ab9329d46cbc86812c7c02c151da8069cb",
+            "reverse_stage-final-brain.json": "17568d100793b065bf6ef6f89d6cb5ab9329d46cbc86812c7c02c151da8069cb"
+          }
+        }
+      ],
+      "td_targets_spot_checked": 96,
+      "total_work": {
+        "evaluations": 201512,
+        "edge_visits": 3169718752,
+        "patch_visits": 12554176,
+        "proposals": 144296,
+        "backtracks": 39602
+      }
+    },
+    {
+      "name": "seed29-preferred0-delay128",
+      "verified": true,
+      "seed": 29,
+      "delay": 128,
+      "preferred": 0,
+      "report_sha256": "ccce78edd64132dd914b6f5c95f461dd7deb9c0a6467fa4e97d228305035dce6",
+      "protocol_sha256": "886a907dac91e11cb2173c923c2b04f5feb217efb5af6624a1b10d02489053f6",
+      "collection_sha256": "560cdf94b22f568e396d7748fb3feb073d9f0d27ab3c0ecd57b221ebea224736",
+      "schedules_sha256": "82fcc1eef39cfca8538efabeb20fde01f47b80c209c90fe86cd83b7ad6d150b9",
+      "arms": [
+        {
+          "name": "stratified",
+          "checkpoints": [
+            {
+              "update": 0,
+              "reward": -1,
+              "values": [
+                -0.005563365890102353,
+                0.006766338883683822
+              ],
+              "preferred_margin": -0.012329704773786174,
+              "calibration_cases": 513,
+              "observed_return_mae": 0.009851727554449578,
+              "free_decisions": 129
+            },
+            {
+              "update": 32,
+              "reward": 1,
+              "values": [
+                0.05842493194219484,
+                0.046989133896583365
+              ],
+              "preferred_margin": 0.011435798045611477,
+              "calibration_cases": 513,
+              "observed_return_mae": 0.05012155944806314,
+              "free_decisions": 129
+            },
+            {
+              "update": 128,
+              "reward": -1,
+              "values": [
+                0.04714934359027141,
+                0.047359855625660745
+              ],
+              "preferred_margin": -0.00021051203538933333,
+              "calibration_cases": 513,
+              "observed_return_mae": 0.0431387814008606,
+              "free_decisions": 129
+            },
+            {
+              "update": 512,
+              "reward": 1,
+              "values": [
+                0.01280270589358241,
+                0.01157260878967551
+              ],
+              "preferred_margin": 0.0012300971039068999,
+              "calibration_cases": 513,
+              "observed_return_mae": 0.010931590446540808,
+              "free_decisions": 129
+            }
+          ],
+          "seconds": 200.12125437200007,
+          "training_work": {
+            "evaluations": 63049,
+            "edge_visits": 1118013736,
+            "patch_visits": 4411232,
+            "proposals": 46779,
+            "backtracks": 13015
+          },
+          "total_work": {
+            "evaluations": 75397,
+            "edge_visits": 1137056408,
+            "patch_visits": 4510016,
+            "proposals": 52951,
+            "backtracks": 13015
+          },
+          "checkpoint_sha256": {
+            "stratified-32-brain.json": "cf7356c2bdcd9c81f017f2725410926d9d9d0a2108594e96e6fa8b5389a3f0e2",
+            "stratified-128-brain.json": "166f4263a30bcb5fed886a262088ac9425815c86e5678d03de238ac4b1cbc4ee",
+            "stratified-512-brain.json": "a12967b63d758339f2474a2a62f49ab74ed0327fe2935118a4f81da0991b5e85",
+            "stratified-final-brain.json": "a12967b63d758339f2474a2a62f49ab74ed0327fe2935118a4f81da0991b5e85"
+          }
+        },
+        {
+          "name": "reverse_stage",
+          "checkpoints": [
+            {
+              "update": 0,
+              "reward": -1,
+              "values": [
+                -0.005563365890102353,
+                0.006766338883683822
+              ],
+              "preferred_margin": -0.012329704773786174,
+              "calibration_cases": 513,
+              "observed_return_mae": 0.009851727554449578,
+              "free_decisions": 129
+            },
+            {
+              "update": 32,
+              "reward": 1,
+              "values": [
+                0.08423259429529262,
+                0.0715622316305782
+              ],
+              "preferred_margin": 0.012670362664714413,
+              "calibration_cases": 513,
+              "observed_return_mae": 0.072742307863129,
+              "free_decisions": 129
+            },
+            {
+              "update": 128,
+              "reward": 1,
+              "values": [
+                0.054826517987005954,
+                0.04640248606266238
+              ],
+              "preferred_margin": 0.008424031924343572,
+              "calibration_cases": 513,
+              "observed_return_mae": 0.04729763378330685,
+              "free_decisions": 129
+            },
+            {
+              "update": 512,
+              "reward": 1,
+              "values": [
+                0.022624443674650142,
+                0.02130899522602597
+              ],
+              "preferred_margin": 0.0013154484486241728,
+              "calibration_cases": 513,
+              "observed_return_mae": 0.021207827394294432,
+              "free_decisions": 129
+            }
+          ],
+          "seconds": 324.25896111500015,
+          "training_work": {
+            "evaluations": 66622,
+            "edge_visits": 1235551144,
+            "patch_visits": 4868576,
+            "proposals": 50352,
+            "backtracks": 15052
+          },
+          "total_work": {
+            "evaluations": 78970,
+            "edge_visits": 1254593816,
+            "patch_visits": 4967360,
+            "proposals": 56524,
+            "backtracks": 15052
+          },
+          "checkpoint_sha256": {
+            "reverse_stage-32-brain.json": "a2a9651ee79981a3de210b8afb848d71793b044bab700867d2d7ec8227e2296e",
+            "reverse_stage-128-brain.json": "e6680c2f90e33dec3f830e38de6d5834a3aebaa2e031c01572c80b770400838d",
+            "reverse_stage-512-brain.json": "4215dedca0282ec4445c2379bcf3f794e6af969b0152c2521855fe722bdba2f6",
+            "reverse_stage-final-brain.json": "4215dedca0282ec4445c2379bcf3f794e6af969b0152c2521855fe722bdba2f6"
+          }
+        }
+      ],
+      "td_targets_spot_checked": 96,
+      "total_work": {
+        "evaluations": 179135,
+        "edge_visits": 2429842480,
+        "patch_visits": 9675520,
+        "proposals": 121859,
+        "backtracks": 28067
+      }
+    },
+    {
+      "name": "seed29-preferred1-delay128",
+      "verified": true,
+      "seed": 29,
+      "delay": 128,
+      "preferred": 1,
+      "report_sha256": "02fa2df9764be62d700c7e4d7e9e8a2b1c37ef70935c6438ed041616a992c02c",
+      "protocol_sha256": "32a257ced3ae0f8430210ee1aa49253eb33433c69d0d24eb5a53169a4fcc233d",
+      "collection_sha256": "1f94579c10ae71a66c2caaa8cc8780584d3f38803d2eb3a438f71a0da9ceb0c8",
+      "schedules_sha256": "82fcc1eef39cfca8538efabeb20fde01f47b80c209c90fe86cd83b7ad6d150b9",
+      "arms": [
+        {
+          "name": "stratified",
+          "checkpoints": [
+            {
+              "update": 0,
+              "reward": 1,
+              "values": [
+                -0.005563365890102353,
+                0.006766338883683822
+              ],
+              "preferred_margin": 0.012329704773786174,
+              "calibration_cases": 513,
+              "observed_return_mae": 0.009881878448699248,
+              "free_decisions": 129
+            },
+            {
+              "update": 32,
+              "reward": -1,
+              "values": [
+                0.05879771205419907,
+                0.047254513820278295
+              ],
+              "preferred_margin": -0.011543198233920776,
+              "calibration_cases": 513,
+              "observed_return_mae": 0.050405913663831264,
+              "free_decisions": 129
+            },
+            {
+              "update": 128,
+              "reward": 1,
+              "values": [
+                0.04670533804423408,
+                0.04738883139717133
+              ],
+              "preferred_margin": 0.0006834933529372492,
+              "calibration_cases": 513,
+              "observed_return_mae": 0.0424809268923162,
+              "free_decisions": 129
+            },
+            {
+              "update": 512,
+              "reward": -1,
+              "values": [
+                0.012837963553310607,
+                0.010655835539347722
+              ],
+              "preferred_margin": -0.002182128013962885,
+              "calibration_cases": 513,
+              "observed_return_mae": 0.010259460434711548,
+              "free_decisions": 129
+            }
+          ],
+          "seconds": 202.97343266000007,
+          "training_work": {
+            "evaluations": 63522,
+            "edge_visits": 1133573544,
+            "patch_visits": 4471776,
+            "proposals": 47252,
+            "backtracks": 13175
+          },
+          "total_work": {
+            "evaluations": 75870,
+            "edge_visits": 1152616216,
+            "patch_visits": 4570560,
+            "proposals": 53424,
+            "backtracks": 13175
+          },
+          "checkpoint_sha256": {
+            "stratified-32-brain.json": "ee51f778936221af7177aa9a6a2b34fedfab10933224d092890702f3ad7a6caf",
+            "stratified-128-brain.json": "f2e60649dedb96e495422b1613bc09b3e7d1a4e44aaefed7c2c56a3eb8c5a198",
+            "stratified-512-brain.json": "2c25780a355dd0b3d77bde884570ae62e63706121953ed2b4f4c4fa872076656",
+            "stratified-final-brain.json": "2c25780a355dd0b3d77bde884570ae62e63706121953ed2b4f4c4fa872076656"
+          }
+        },
+        {
+          "name": "reverse_stage",
+          "checkpoints": [
+            {
+              "update": 0,
+              "reward": 1,
+              "values": [
+                -0.005563365890102353,
+                0.006766338883683822
+              ],
+              "preferred_margin": 0.012329704773786174,
+              "calibration_cases": 513,
+              "observed_return_mae": 0.009881878448699248,
+              "free_decisions": 129
+            },
+            {
+              "update": 32,
+              "reward": -1,
+              "values": [
+                0.08446258753259234,
+                0.07164002957813924
+              ],
+              "preferred_margin": -0.012822557954453098,
+              "calibration_cases": 513,
+              "observed_return_mae": 0.0728357026718617,
+              "free_decisions": 129
+            },
+            {
+              "update": 128,
+              "reward": -1,
+              "values": [
+                0.055013065624399046,
+                0.04671742770090513
+              ],
+              "preferred_margin": -0.008295637923493915,
+              "calibration_cases": 513,
+              "observed_return_mae": 0.04750245095607396,
+              "free_decisions": 129
+            },
+            {
+              "update": 512,
+              "reward": -1,
+              "values": [
+                0.023442093540328404,
+                0.022146945018024552
+              ],
+              "preferred_margin": -0.0012951485223038524,
+              "calibration_cases": 513,
+              "observed_return_mae": 0.022004954773831607,
+              "free_decisions": 129
+            }
+          ],
+          "seconds": 335.458650133,
+          "training_work": {
+            "evaluations": 66498,
+            "edge_visits": 1231472040,
+            "patch_visits": 4852704,
+            "proposals": 50228,
+            "backtracks": 14979
+          },
+          "total_work": {
+            "evaluations": 78846,
+            "edge_visits": 1250514712,
+            "patch_visits": 4951488,
+            "proposals": 56400,
+            "backtracks": 14979
+          },
+          "checkpoint_sha256": {
+            "reverse_stage-32-brain.json": "4cf8205bec8a2efcd999c45903e9f0670e01479b935dc53be81b84cac5bf2eb6",
+            "reverse_stage-128-brain.json": "a67303006086761cab0a7812838eb125d1d46f73e7c0c9256d07dd1a6ba064d9",
+            "reverse_stage-512-brain.json": "9a16e2f13f59d4104476f6951ff2a64d8520fca8dee2c2d82e7c9edaa9730147",
+            "reverse_stage-final-brain.json": "9a16e2f13f59d4104476f6951ff2a64d8520fca8dee2c2d82e7c9edaa9730147"
+          }
+        }
+      ],
+      "td_targets_spot_checked": 96,
+      "total_work": {
+        "evaluations": 179484,
+        "edge_visits": 2441323184,
+        "patch_visits": 9720192,
+        "proposals": 122208,
+        "backtracks": 28154
+      }
+    },
+    {
+      "name": "seed7-preferred0-delay128",
+      "verified": false,
+      "error": "ValueError: Run incomplete or sources changed"
+    },
+    {
+      "name": "seed7-preferred1-delay128",
+      "verified": false,
+      "error": "ValueError: Run incomplete or sources changed"
+    }
+  ],
+  "outcomes": {
+    "stratified": {
+      "0": {
+        "successes": 2,
+        "cases": 4
+      },
+      "32": {
+        "successes": 2,
+        "cases": 4
+      },
+      "128": {
+        "successes": 2,
+        "cases": 4
+      },
+      "512": {
+        "successes": 2,
+        "cases": 4
+      }
+    },
+    "reverse_stage": {
+      "0": {
+        "successes": 2,
+        "cases": 4
+      },
+      "32": {
+        "successes": 2,
+        "cases": 4
+      },
+      "128": {
+        "successes": 2,
+        "cases": 4
+      },
+      "512": {
+        "successes": 2,
+        "cases": 4
+      }
+    }
+  },
+  "execution_verified": false,
+  "admissions_verified": 4096,
+  "presentations_verified": 65536,
+  "brains_reloaded": 32,
+  "free_decisions_verified": 4128,
+  "td_targets_spot_checked": 384,
+  "verifier_sha256": "b8ffc264e4e3cf98942c2ead6539d8315341319b9bc77fdf61c59126ef951fa1",
+  "scope": "All checkpoints and receipt structure verified; intermediate TD histories were not retrained. Toy action-irrelevant continuation with explicit memory; no native, recursive or strategic claim."
+}

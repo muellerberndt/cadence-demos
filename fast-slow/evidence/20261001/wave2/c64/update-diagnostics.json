@@ -1,0 +1,4628 @@
+{
+  "execution_deduction": "For positive-sweep calls in this frozen tensor kernel, tensor evaluations=proposals+1, initial reference check adds1, final reference solve adds2. Any reference refinement/restart adds another2 beyond its own proposals. Thus evaluations-proposals=4 proves no extra reference call, reference_sweeps0 and reference_evaluations3. This is deduced from counters/source, not recorded execution metadata.",
+  "generated_utc": "2026-10-01T05:15:02.312320+00:00",
+  "rows": [
+    {
+      "name": "flat-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.051370051232997364,
+          "state_rms": 0.5009624893679201
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 0.9725803673688523,
+          "max_abs": 0.1282552702780138,
+          "parameters": 4411,
+          "rms": 0.014643907255970093
+        }
+      },
+      "seconds": 2.7469754930000363,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 301
+      },
+      "sweeps": 301,
+      "update": 0,
+      "work": {
+        "backtracks": 324,
+        "edge_visits": 177126400,
+        "evaluations": 629,
+        "patch_visits": 442816,
+        "proposals": 625
+      }
+    },
+    {
+      "name": "flat-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.04567719561743426,
+          "state_rms": 0.5048642881132817
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.2860623536437887,
+          "max_abs": 0.17652082654416346,
+          "parameters": 4411,
+          "rms": 0.019363929670001067
+        }
+      },
+      "seconds": 2.486965272999896,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 270
+      },
+      "sweeps": 270,
+      "update": 1,
+      "work": {
+        "backtracks": 290,
+        "edge_visits": 158822400,
+        "evaluations": 564,
+        "patch_visits": 397056,
+        "proposals": 560
+      }
+    },
+    {
+      "name": "flat-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.06441333778265669,
+          "state_rms": 0.5155552173558405
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.492433292522762,
+          "max_abs": 0.19034746242902678,
+          "parameters": 4411,
+          "rms": 0.022471206961076618
+        }
+      },
+      "seconds": 3.1295523670000875,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 331
+      },
+      "sweeps": 331,
+      "update": 2,
+      "work": {
+        "backtracks": 393,
+        "edge_visits": 205004800,
+        "evaluations": 728,
+        "patch_visits": 512512,
+        "proposals": 724
+      }
+    },
+    {
+      "name": "flat-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.03762578557360486,
+          "state_rms": 0.49553531578267757
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.5343451638978998,
+          "max_abs": 0.15530617958693246,
+          "parameters": 4411,
+          "rms": 0.023102263866946592
+        }
+      },
+      "seconds": 3.6381810929999574,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 390
+      },
+      "sweeps": 390,
+      "update": 3,
+      "work": {
+        "backtracks": 466,
+        "edge_visits": 242176000,
+        "evaluations": 860,
+        "patch_visits": 605440,
+        "proposals": 856
+      }
+    },
+    {
+      "name": "flat-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.03508493908552966,
+          "state_rms": 0.5094323374048925
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.5701106491813381,
+          "max_abs": 0.1971363832532031,
+          "parameters": 4411,
+          "rms": 0.023640776124676355
+        }
+      },
+      "seconds": 2.487084634999974,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 275
+      },
+      "sweeps": 275,
+      "update": 4,
+      "work": {
+        "backtracks": 283,
+        "edge_visits": 158259200,
+        "evaluations": 562,
+        "patch_visits": 395648,
+        "proposals": 558
+      }
+    },
+    {
+      "name": "flat-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.05096620219379475,
+          "state_rms": 0.49353221954095283
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.7696929110238409,
+          "max_abs": 0.26748844657239634,
+          "parameters": 4411,
+          "rms": 0.02664583794827156
+        }
+      },
+      "seconds": 2.9344687010000143,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 323
+      },
+      "sweeps": 323,
+      "update": 5,
+      "work": {
+        "backtracks": 348,
+        "edge_visits": 190080000,
+        "evaluations": 675,
+        "patch_visits": 475200,
+        "proposals": 671
+      }
+    },
+    {
+      "name": "flat-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.05346724259871618,
+          "state_rms": 0.5107114496151935
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.8648830566918237,
+          "max_abs": 0.23153371653103627,
+          "parameters": 4411,
+          "rms": 0.028079092938412202
+        }
+      },
+      "seconds": 2.8831089830000565,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 315
+      },
+      "sweeps": 315,
+      "update": 6,
+      "work": {
+        "backtracks": 341,
+        "edge_visits": 185856000,
+        "evaluations": 660,
+        "patch_visits": 464640,
+        "proposals": 656
+      }
+    },
+    {
+      "name": "flat-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.04677223805969701,
+          "state_rms": 0.5128991158862221
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.9559910873153095,
+          "max_abs": 0.26955176191021235,
+          "parameters": 4411,
+          "rms": 0.029450884510078195
+        }
+      },
+      "seconds": 3.73046384700001,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 398
+      },
+      "sweeps": 398,
+      "update": 7,
+      "work": {
+        "backtracks": 472,
+        "edge_visits": 246118400,
+        "evaluations": 874,
+        "patch_visits": 615296,
+        "proposals": 870
+      }
+    },
+    {
+      "name": "flat-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.06196707952725302,
+          "state_rms": 0.5153101070876235
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 2.0835064366928573,
+          "max_abs": 0.3150796005022159,
+          "parameters": 4411,
+          "rms": 0.03137085227073653
+        }
+      },
+      "seconds": 3.3838707920001525,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 360
+      },
+      "sweeps": 360,
+      "update": 8,
+      "work": {
+        "backtracks": 422,
+        "edge_visits": 221337600,
+        "evaluations": 786,
+        "patch_visits": 553344,
+        "proposals": 782
+      }
+    },
+    {
+      "name": "flat-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.05872093530982188,
+          "state_rms": 0.5121605689531815
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 2.163801987566741,
+          "max_abs": 0.309095830763164,
+          "parameters": 4411,
+          "rms": 0.03257984295111107
+        }
+      },
+      "seconds": 3.3382988719999958,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 354
+      },
+      "sweeps": 354,
+      "update": 9,
+      "work": {
+        "backtracks": 421,
+        "edge_visits": 219366400,
+        "evaluations": 779,
+        "patch_visits": 548416,
+        "proposals": 775
+      }
+    },
+    {
+      "name": "flat-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.0456648882926293,
+          "state_rms": 0.49677988528841155
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 2.255494132895638,
+          "max_abs": 0.3054094096938986,
+          "parameters": 4411,
+          "rms": 0.033960429396558064
+        }
+      },
+      "seconds": 3.4584822910001094,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 360
+      },
+      "sweeps": 360,
+      "update": 10,
+      "work": {
+        "backtracks": 450,
+        "edge_visits": 229222400,
+        "evaluations": 814,
+        "patch_visits": 573056,
+        "proposals": 810
+      }
+    },
+    {
+      "name": "flat-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.052125655439173676,
+          "state_rms": 0.49186739679508085
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 2.3293341061828805,
+          "max_abs": 0.31953799855892256,
+          "parameters": 4411,
+          "rms": 0.03507222000726818
+        }
+      },
+      "seconds": 3.024038290999897,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 326
+      },
+      "sweeps": 326,
+      "update": 11,
+      "work": {
+        "backtracks": 373,
+        "edge_visits": 197964800,
+        "evaluations": 703,
+        "patch_visits": 494912,
+        "proposals": 699
+      }
+    },
+    {
+      "name": "flat-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.01095855846560914,
+          "state_rms": 0.5009624893679201
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.269701761321307,
+          "max_abs": 0.1798665784722935,
+          "parameters": 4411,
+          "rms": 0.01911759219017787
+        }
+      },
+      "seconds": 8.495821399000079,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 911
+      },
+      "sweeps": 911,
+      "update": 0,
+      "work": {
+        "backtracks": 1189,
+        "edge_visits": 592486400,
+        "evaluations": 2104,
+        "patch_visits": 1481216,
+        "proposals": 2100
+      }
+    },
+    {
+      "name": "flat-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.00832930287589476,
+          "state_rms": 0.5048642881132817
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.6465437358598758,
+          "max_abs": 0.23102828753594637,
+          "parameters": 4411,
+          "rms": 0.02479161061626293
+        }
+      },
+      "seconds": 6.5004875170000105,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 715
+      },
+      "sweeps": 715,
+      "update": 1,
+      "work": {
+        "backtracks": 873,
+        "edge_visits": 448307200,
+        "evaluations": 1592,
+        "patch_visits": 1120768,
+        "proposals": 1588
+      }
+    },
+    {
+      "name": "flat-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.026203862080691243,
+          "state_rms": 0.5155552173558405
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 2.0486955237670457,
+          "max_abs": 0.23448194341731263,
+          "parameters": 4411,
+          "rms": 0.030846712778017465
+        }
+      },
+      "seconds": 6.305154584000093,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 711
+      },
+      "sweeps": 711,
+      "update": 2,
+      "work": {
+        "backtracks": 821,
+        "edge_visits": 432537600,
+        "evaluations": 1536,
+        "patch_visits": 1081344,
+        "proposals": 1532
+      }
+    },
+    {
+      "name": "flat-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.00705848758554631,
+          "state_rms": 0.49553531578267757
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 2.0787488317194014,
+          "max_abs": 0.21253725880422678,
+          "parameters": 4411,
+          "rms": 0.031299218163850014
+        }
+      },
+      "seconds": 6.8740927160001775,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 760
+      },
+      "sweeps": 760,
+      "update": 3,
+      "work": {
+        "backtracks": 919,
+        "edge_visits": 473932800,
+        "evaluations": 1683,
+        "patch_visits": 1184832,
+        "proposals": 1679
+      }
+    },
+    {
+      "name": "flat-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.006701990526997254,
+          "state_rms": 0.5094323374048925
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 2.0913066197736487,
+          "max_abs": 0.23224794030909718,
+          "parameters": 4411,
+          "rms": 0.03148829773997185
+        }
+      },
+      "seconds": 8.210370803999922,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 876
+      },
+      "sweeps": 876,
+      "update": 4,
+      "work": {
+        "backtracks": 1136,
+        "edge_visits": 567705600,
+        "evaluations": 2016,
+        "patch_visits": 1419264,
+        "proposals": 2012
+      }
+    },
+    {
+      "name": "flat-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.010776700488202194,
+          "state_rms": 0.49353221954095283
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 2.336213166818554,
+          "max_abs": 0.333469698143798,
+          "parameters": 4411,
+          "rms": 0.035175796358731574
+        }
+      },
+      "seconds": 6.825972427000124,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 721
+      },
+      "sweeps": 721,
+      "update": 5,
+      "work": {
+        "backtracks": 948,
+        "edge_visits": 471116800,
+        "evaluations": 1673,
+        "patch_visits": 1177792,
+        "proposals": 1669
+      }
+    },
+    {
+      "name": "flat-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.011670350887991206,
+          "state_rms": 0.5107114496151935
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 2.426046663151804,
+          "max_abs": 0.26274978207437655,
+          "parameters": 4411,
+          "rms": 0.036528397575988865
+        }
+      },
+      "seconds": 6.982519744000001,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 767
+      },
+      "sweeps": 767,
+      "update": 6,
+      "work": {
+        "backtracks": 936,
+        "edge_visits": 480691200,
+        "evaluations": 1707,
+        "patch_visits": 1201728,
+        "proposals": 1703
+      }
+    },
+    {
+      "name": "flat-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.008979260962082762,
+          "state_rms": 0.5128991158862221
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 2.527581984796125,
+          "max_abs": 0.3069887185308034,
+          "parameters": 4411,
+          "rms": 0.03805719034546148
+        }
+      },
+      "seconds": 6.5068903110000065,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 694
+      },
+      "sweeps": 694,
+      "update": 7,
+      "work": {
+        "backtracks": 892,
+        "edge_visits": 447744000,
+        "evaluations": 1590,
+        "patch_visits": 1119360,
+        "proposals": 1586
+      }
+    },
+    {
+      "name": "flat-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.01516446352152715,
+          "state_rms": 0.5153101070876235
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 2.7352150013595145,
+          "max_abs": 0.36753046768894865,
+          "parameters": 4411,
+          "rms": 0.04118347043484605
+        }
+      },
+      "seconds": 6.085364242999958,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 667
+      },
+      "sweeps": 667,
+      "update": 8,
+      "work": {
+        "backtracks": 810,
+        "edge_visits": 417049600,
+        "evaluations": 1481,
+        "patch_visits": 1042624,
+        "proposals": 1477
+      }
+    },
+    {
+      "name": "flat-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.017768159350025278,
+          "state_rms": 0.5121605689531815
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 2.8715227772311853,
+          "max_abs": 0.3640766169642569,
+          "parameters": 4411,
+          "rms": 0.043235823633720874
+        }
+      },
+      "seconds": 8.999512634999974,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 951
+      },
+      "sweeps": 951,
+      "update": 9,
+      "work": {
+        "backtracks": 1273,
+        "edge_visits": 627404800,
+        "evaluations": 2228,
+        "patch_visits": 1568512,
+        "proposals": 2224
+      }
+    },
+    {
+      "name": "flat-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.011018080680462198,
+          "state_rms": 0.49677988528841155
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 2.961916926668116,
+          "max_abs": 0.3628682949483366,
+          "parameters": 4411,
+          "rms": 0.044596866469098904
+        }
+      },
+      "seconds": 9.46040062599991,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 1009
+      },
+      "sweeps": 1009,
+      "update": 10,
+      "work": {
+        "backtracks": 1331,
+        "edge_visits": 660070400,
+        "evaluations": 2344,
+        "patch_visits": 1650176,
+        "proposals": 2340
+      }
+    },
+    {
+      "name": "flat-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.01347396626098468,
+          "state_rms": 0.49186739679508085
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 3.072190465921589,
+          "max_abs": 0.35792825398858885,
+          "parameters": 4411,
+          "rms": 0.04625722846672393
+        }
+      },
+      "seconds": 7.129018351000013,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 780
+      },
+      "sweeps": 780,
+      "update": 11,
+      "work": {
+        "backtracks": 964,
+        "edge_visits": 492236800,
+        "evaluations": 1748,
+        "patch_visits": 1230592,
+        "proposals": 1744
+      }
+    },
+    {
+      "name": "ordinary64-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.019750221719691003,
+          "state_rms": 0.2646411147819755
+        },
+        "context": {
+          "error_rms": 0.0012180545051434263,
+          "state_rms": 0.05134240282663564
+        },
+        "reflection": {
+          "error_rms": 0.030546010758617154,
+          "state_rms": 0.19696603173256572
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 0.7851975891165152,
+          "max_abs": 0.08619616370319157,
+          "parameters": 12832,
+          "rms": 0.006931572690614546
+        },
+        "context": {
+          "l2": 0.05411615519462411,
+          "max_abs": 0.004458191200183453,
+          "parameters": 6928,
+          "rms": 0.000650164112903769
+        },
+        "reflection": {
+          "l2": 0.5573196607317952,
+          "max_abs": 0.12228035632357546,
+          "parameters": 7184,
+          "rms": 0.006575385236859734
+        }
+      },
+      "seconds": 61.69262410300007,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 1004
+      },
+      "sweeps": 1004,
+      "update": 0,
+      "work": {
+        "backtracks": 1389,
+        "edge_visits": 4123607040,
+        "evaluations": 2397,
+        "patch_visits": 9818112,
+        "proposals": 2393
+      }
+    },
+    {
+      "name": "ordinary64-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.020847613340317053,
+          "state_rms": 0.2638683598901855
+        },
+        "context": {
+          "error_rms": 0.0011290175676557568,
+          "state_rms": 0.04571272689355591
+        },
+        "reflection": {
+          "error_rms": 0.024797961491863228,
+          "state_rms": 0.20348339150631173
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.0464743138103318,
+          "max_abs": 0.12635740566873357,
+          "parameters": 12832,
+          "rms": 0.009238073162194741
+        },
+        "context": {
+          "l2": 0.07467686541618804,
+          "max_abs": 0.004863918569064404,
+          "parameters": 6928,
+          "rms": 0.0008971852819760782
+        },
+        "reflection": {
+          "l2": 0.7578693102600017,
+          "max_abs": 0.1640633622256916,
+          "parameters": 7184,
+          "rms": 0.008941516019028156
+        }
+      },
+      "seconds": 60.62813689000018,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 897
+      },
+      "sweeps": 897,
+      "update": 1,
+      "work": {
+        "backtracks": 1102,
+        "edge_visits": 3445800960,
+        "evaluations": 2003,
+        "patch_visits": 8204288,
+        "proposals": 1999
+      }
+    },
+    {
+      "name": "ordinary64-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.022399819758949342,
+          "state_rms": 0.26934194842945824
+        },
+        "context": {
+          "error_rms": 0.0015489771547439963,
+          "state_rms": 0.04200613477815961
+        },
+        "reflection": {
+          "error_rms": 0.043019425962390535,
+          "state_rms": 0.20589594231608463
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.2639336787378093,
+          "max_abs": 0.19151582273061568,
+          "parameters": 12832,
+          "rms": 0.01115776244313828
+        },
+        "context": {
+          "l2": 0.08740023164074329,
+          "max_abs": 0.005164193704984272,
+          "parameters": 6928,
+          "rms": 0.0010500467719468127
+        },
+        "reflection": {
+          "l2": 0.8107031695751316,
+          "max_abs": 0.13180628043885073,
+          "parameters": 7184,
+          "rms": 0.009564862014198804
+        }
+      },
+      "seconds": 60.82902872799991,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 867
+      },
+      "sweeps": 867,
+      "update": 2,
+      "work": {
+        "backtracks": 1111,
+        "edge_visits": 3409674240,
+        "evaluations": 1982,
+        "patch_visits": 8118272,
+        "proposals": 1978
+      }
+    },
+    {
+      "name": "ordinary64-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.019210366023126275,
+          "state_rms": 0.2624006401322115
+        },
+        "context": {
+          "error_rms": 0.0008988060081112361,
+          "state_rms": 0.04522460987938296
+        },
+        "reflection": {
+          "error_rms": 0.01565238928456276,
+          "state_rms": 0.18971317014389733
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.2996708529528784,
+          "max_abs": 0.15756718586438836,
+          "parameters": 12832,
+          "rms": 0.011473243316057962
+        },
+        "context": {
+          "l2": 0.09765200649649781,
+          "max_abs": 0.005408569454475189,
+          "parameters": 6928,
+          "rms": 0.001173213986631771
+        },
+        "reflection": {
+          "l2": 0.8427817601461214,
+          "max_abs": 0.11020348514328544,
+          "parameters": 7184,
+          "rms": 0.009943332586334716
+        }
+      },
+      "seconds": 57.25165152799991,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 839
+      },
+      "sweeps": 839,
+      "update": 3,
+      "work": {
+        "backtracks": 1107,
+        "edge_visits": 3354624000,
+        "evaluations": 1950,
+        "patch_visits": 7987200,
+        "proposals": 1946
+      }
+    },
+    {
+      "name": "ordinary64-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.017032515574263035,
+          "state_rms": 0.2628575532790768
+        },
+        "context": {
+          "error_rms": 0.0008238541706060315,
+          "state_rms": 0.03702103060721625
+        },
+        "reflection": {
+          "error_rms": 0.016448793635762526,
+          "state_rms": 0.20933517303394208
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.3300730546811232,
+          "max_abs": 0.20903968326162609,
+          "parameters": 12832,
+          "rms": 0.011741628082077392
+        },
+        "context": {
+          "l2": 0.10711421441897533,
+          "max_abs": 0.005878377190777632,
+          "parameters": 6928,
+          "rms": 0.001286895159987556
+        },
+        "reflection": {
+          "l2": 0.8623543417881651,
+          "max_abs": 0.12154663620742952,
+          "parameters": 7184,
+          "rms": 0.010174254395565954
+        }
+      },
+      "seconds": 38.56927704200007,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 645
+      },
+      "sweeps": 645,
+      "update": 4,
+      "work": {
+        "backtracks": 802,
+        "edge_visits": 2496184320,
+        "evaluations": 1451,
+        "patch_visits": 5943296,
+        "proposals": 1447
+      }
+    },
+    {
+      "name": "ordinary64-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.027298954751611256,
+          "state_rms": 0.2620770750074519
+        },
+        "context": {
+          "error_rms": 0.001010245892764411,
+          "state_rms": 0.04056782952616568
+        },
+        "reflection": {
+          "error_rms": 0.016279179430828558,
+          "state_rms": 0.1839647019801306
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.5488132513661745,
+          "max_abs": 0.26565583970420753,
+          "parameters": 12832,
+          "rms": 0.01367262429844092
+        },
+        "context": {
+          "l2": 0.11501991213467001,
+          "max_abs": 0.006333487192164941,
+          "parameters": 6928,
+          "rms": 0.0013818760566112057
+        },
+        "reflection": {
+          "l2": 0.8839662493819134,
+          "max_abs": 0.12989557920801778,
+          "parameters": 7184,
+          "rms": 0.010429236640308074
+        }
+      },
+      "seconds": 36.66580776899991,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 821
+      },
+      "sweeps": 821,
+      "update": 5,
+      "work": {
+        "backtracks": 1010,
+        "edge_visits": 3156787200,
+        "evaluations": 1835,
+        "patch_visits": 7516160,
+        "proposals": 1831
+      }
+    },
+    {
+      "name": "ordinary64-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.027226685077505485,
+          "state_rms": 0.2634022016677915
+        },
+        "context": {
+          "error_rms": 0.0015208778495294528,
+          "state_rms": 0.03964219559843173
+        },
+        "reflection": {
+          "error_rms": 0.021311570026654944,
+          "state_rms": 0.20912012602659283
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.619379233785519,
+          "max_abs": 0.22560025524391816,
+          "parameters": 12832,
+          "rms": 0.014295567164547624
+        },
+        "context": {
+          "l2": 0.12335302143628146,
+          "max_abs": 0.007250762933290418,
+          "parameters": 6928,
+          "rms": 0.0014819919757360473
+        },
+        "reflection": {
+          "l2": 0.9393157905789881,
+          "max_abs": 0.12807559861747259,
+          "parameters": 7184,
+          "rms": 0.011082263227556623
+        }
+      },
+      "seconds": 26.40386856300006,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 727
+      },
+      "sweeps": 727,
+      "update": 6,
+      "work": {
+        "backtracks": 914,
+        "edge_visits": 2829926400,
+        "evaluations": 1645,
+        "patch_visits": 6737920,
+        "proposals": 1641
+      }
+    },
+    {
+      "name": "ordinary64-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.021054536632169135,
+          "state_rms": 0.26444380890045455
+        },
+        "context": {
+          "error_rms": 0.0022442756533734808,
+          "state_rms": 0.03938514571140622
+        },
+        "reflection": {
+          "error_rms": 0.02454865458221057,
+          "state_rms": 0.21147537560893762
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.6896677882809181,
+          "max_abs": 0.2863551649802997,
+          "parameters": 12832,
+          "rms": 0.01491606095051464
+        },
+        "context": {
+          "l2": 0.13380149458936244,
+          "max_abs": 0.008674964930419074,
+          "parameters": 6928,
+          "rms": 0.0016075223696515148
+        },
+        "reflection": {
+          "l2": 1.012163439563603,
+          "max_abs": 0.13362300626319262,
+          "parameters": 7184,
+          "rms": 0.011941736505503465
+        }
+      },
+      "seconds": 38.117441465999946,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 804
+      },
+      "sweeps": 804,
+      "update": 7,
+      "work": {
+        "backtracks": 1118,
+        "edge_visits": 3313336320,
+        "evaluations": 1926,
+        "patch_visits": 7888896,
+        "proposals": 1922
+      }
+    },
+    {
+      "name": "ordinary64-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.025995793724069557,
+          "state_rms": 0.2646022354258061
+        },
+        "context": {
+          "error_rms": 0.004276687771749204,
+          "state_rms": 0.039675574354579926
+        },
+        "reflection": {
+          "error_rms": 0.033988056318163956,
+          "state_rms": 0.21482439042655105
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.7839808396059085,
+          "max_abs": 0.33175943774711036,
+          "parameters": 12832,
+          "rms": 0.015748638355226743
+        },
+        "context": {
+          "l2": 0.15183557895088506,
+          "max_abs": 0.010834165108780729,
+          "parameters": 6928,
+          "rms": 0.0018241880662216556
+        },
+        "reflection": {
+          "l2": 1.0854896147055664,
+          "max_abs": 0.15048898882139494,
+          "parameters": 7184,
+          "rms": 0.012806855544854716
+        }
+      },
+      "seconds": 45.73749831400005,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 838
+      },
+      "sweeps": 838,
+      "update": 8,
+      "work": {
+        "backtracks": 1071,
+        "edge_visits": 3290972160,
+        "evaluations": 1913,
+        "patch_visits": 7835648,
+        "proposals": 1909
+      }
+    },
+    {
+      "name": "ordinary64-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.02612694598646726,
+          "state_rms": 0.26325296154337097
+        },
+        "context": {
+          "error_rms": 0.004458311713184175,
+          "state_rms": 0.03426800681616914
+        },
+        "reflection": {
+          "error_rms": 0.030887128325293337,
+          "state_rms": 0.21047633989819048
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.8593904808789326,
+          "max_abs": 0.32658163241919114,
+          "parameters": 12832,
+          "rms": 0.016414340106355747
+        },
+        "context": {
+          "l2": 0.16381135341742614,
+          "max_abs": 0.011677648168876153,
+          "parameters": 6928,
+          "rms": 0.0019680678144109315
+        },
+        "reflection": {
+          "l2": 1.122758569549614,
+          "max_abs": 0.19489097342125256,
+          "parameters": 7184,
+          "rms": 0.013246563225636996
+        }
+      },
+      "seconds": 43.9016890769999,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 947
+      },
+      "sweeps": 947,
+      "update": 9,
+      "work": {
+        "backtracks": 1222,
+        "edge_visits": 3738255360,
+        "evaluations": 2173,
+        "patch_visits": 8900608,
+        "proposals": 2169
+      }
+    },
+    {
+      "name": "ordinary64-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.022673657679145167,
+          "state_rms": 0.2585740706628358
+        },
+        "context": {
+          "error_rms": 0.002066953697395512,
+          "state_rms": 0.03440575813348333
+        },
+        "reflection": {
+          "error_rms": 0.01911903510605325,
+          "state_rms": 0.1969553059239985
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.9593935270783907,
+          "max_abs": 0.3219930498496173,
+          "parameters": 12832,
+          "rms": 0.01729714768704939
+        },
+        "context": {
+          "l2": 0.17446932344346863,
+          "max_abs": 0.012476717835425314,
+          "parameters": 6928,
+          "rms": 0.0020961151526302816
+        },
+        "reflection": {
+          "l2": 1.1324648639868065,
+          "max_abs": 0.18095860315938167,
+          "parameters": 7184,
+          "rms": 0.013361080314560656
+        }
+      },
+      "seconds": 35.27092377300005,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 792
+      },
+      "sweeps": 792,
+      "update": 10,
+      "work": {
+        "backtracks": 1006,
+        "edge_visits": 3100016640,
+        "evaluations": 1802,
+        "patch_visits": 7380992,
+        "proposals": 1798
+      }
+    },
+    {
+      "name": "ordinary64-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.02154379260498363,
+          "state_rms": 0.26392872787168487
+        },
+        "context": {
+          "error_rms": 0.004256210348219169,
+          "state_rms": 0.036173212614835804
+        },
+        "reflection": {
+          "error_rms": 0.02976539576327214,
+          "state_rms": 0.1733106686270553
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 2.027959202933764,
+          "max_abs": 0.33959875361902025,
+          "parameters": 12832,
+          "rms": 0.01790243223307989
+        },
+        "context": {
+          "l2": 0.18620956121941162,
+          "max_abs": 0.013694095870080027,
+          "parameters": 6928,
+          "rms": 0.0022371651080719344
+        },
+        "reflection": {
+          "l2": 1.1659157340239017,
+          "max_abs": 0.18281959703023598,
+          "parameters": 7184,
+          "rms": 0.013755741354713484
+        }
+      },
+      "seconds": 31.84119259299996,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 777
+      },
+      "sweeps": 777,
+      "update": 11,
+      "work": {
+        "backtracks": 990,
+        "edge_visits": 3046686720,
+        "evaluations": 1771,
+        "patch_visits": 7254016,
+        "proposals": 1767
+      }
+    },
+    {
+      "name": "ordinary64-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.003769754401783485,
+          "state_rms": 0.2607852159991454
+        },
+        "context": {
+          "error_rms": 0.00028973617746449706,
+          "state_rms": 0.019704545036279737
+        },
+        "reflection": {
+          "error_rms": 0.006956606424508226,
+          "state_rms": 0.19348843325941525
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 0.9547670050445964,
+          "max_abs": 0.10663261764003,
+          "parameters": 12832,
+          "rms": 0.008428498749612077
+        },
+        "context": {
+          "l2": 0.11901368644673964,
+          "max_abs": 0.006785170272221139,
+          "parameters": 6928,
+          "rms": 0.0014298581928772823
+        },
+        "reflection": {
+          "l2": 0.8190369440751604,
+          "max_abs": 0.1715235926755049,
+          "parameters": 7184,
+          "rms": 0.009663185797972831
+        }
+      },
+      "seconds": 71.87668941600009,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 900
+      },
+      "sweeps": 900,
+      "update": 0,
+      "work": {
+        "backtracks": 1175,
+        "edge_visits": 3576545280,
+        "evaluations": 2079,
+        "patch_visits": 8515584,
+        "proposals": 2075
+      }
+    },
+    {
+      "name": "ordinary64-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.003915819419674428,
+          "state_rms": 0.2607754208573089
+        },
+        "context": {
+          "error_rms": 0.00022828942973394408,
+          "state_rms": 0.01856527867662291
+        },
+        "reflection": {
+          "error_rms": 0.00431797196730575,
+          "state_rms": 0.2001049025910688
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.2792733944140924,
+          "max_abs": 0.152845783540529,
+          "parameters": 12832,
+          "rms": 0.011293178490942444
+        },
+        "context": {
+          "l2": 0.156342936409555,
+          "max_abs": 0.009894163623603063,
+          "parameters": 6928,
+          "rms": 0.0018783405102213624
+        },
+        "reflection": {
+          "l2": 1.062013300013885,
+          "max_abs": 0.2164277589562075,
+          "parameters": 7184,
+          "rms": 0.012529876597374447
+        }
+      },
+      "seconds": 82.67798418400002,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 1030
+      },
+      "sweeps": 1030,
+      "update": 1,
+      "work": {
+        "backtracks": 1333,
+        "edge_visits": 4071997440,
+        "evaluations": 2367,
+        "patch_visits": 9695232,
+        "proposals": 2363
+      }
+    },
+    {
+      "name": "ordinary64-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.005995130275334667,
+          "state_rms": 0.2667193371701376
+        },
+        "context": {
+          "error_rms": 0.0042087289567685595,
+          "state_rms": 0.020583597600452322
+        },
+        "reflection": {
+          "error_rms": 0.01749548401462936,
+          "state_rms": 0.20314507380142982
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.5651539142453224,
+          "max_abs": 0.23962396704584812,
+          "parameters": 12832,
+          "rms": 0.013816876514863394
+        },
+        "context": {
+          "l2": 0.287586959252225,
+          "max_abs": 0.024478409273552545,
+          "parameters": 6928,
+          "rms": 0.003455136817692652
+        },
+        "reflection": {
+          "l2": 1.3579075512271679,
+          "max_abs": 0.17707047207807905,
+          "parameters": 7184,
+          "rms": 0.016020904867478477
+        }
+      },
+      "seconds": 390.6240171029997,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 7165
+      },
+      "sweeps": 7165,
+      "update": 2,
+      "work": {
+        "backtracks": 10245,
+        "edge_visits": 29957652480,
+        "evaluations": 17414,
+        "patch_visits": 71327744,
+        "proposals": 17410
+      }
+    },
+    {
+      "name": "ordinary64-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.0032138139959905633,
+          "state_rms": 0.2594910344161738
+        },
+        "context": {
+          "error_rms": 0.000519678338702982,
+          "state_rms": 0.018059960637996298
+        },
+        "reflection": {
+          "error_rms": 0.0035416232225423706,
+          "state_rms": 0.1866151030086717
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.605962874151943,
+          "max_abs": 0.2179401493798118,
+          "parameters": 12832,
+          "rms": 0.01417713013247752
+        },
+        "context": {
+          "l2": 0.2978888407794811,
+          "max_abs": 0.021000519238851757,
+          "parameters": 6928,
+          "rms": 0.0035789060256180803
+        },
+        "reflection": {
+          "l2": 1.3732736032245756,
+          "max_abs": 0.1496501509478205,
+          "parameters": 7184,
+          "rms": 0.01620219707475483
+        }
+      },
+      "seconds": 29.407167499000025,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 889
+      },
+      "sweeps": 889,
+      "update": 3,
+      "work": {
+        "backtracks": 1122,
+        "edge_visits": 3466444800,
+        "evaluations": 2015,
+        "patch_visits": 8253440,
+        "proposals": 2011
+      }
+    },
+    {
+      "name": "ordinary64-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.003217578219859358,
+          "state_rms": 0.2608497535004801
+        },
+        "context": {
+          "error_rms": 0.0004021662464450307,
+          "state_rms": 0.016445718969866647
+        },
+        "reflection": {
+          "error_rms": 0.0029412780074532397,
+          "state_rms": 0.20710079195938272
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.6520333946401997,
+          "max_abs": 0.23854846084865666,
+          "parameters": 12832,
+          "rms": 0.014583831790869152
+        },
+        "context": {
+          "l2": 0.2987708677505243,
+          "max_abs": 0.015330915977386367,
+          "parameters": 6928,
+          "rms": 0.0035895029034103605
+        },
+        "reflection": {
+          "l2": 1.3563659064015794,
+          "max_abs": 0.16922444599302308,
+          "parameters": 7184,
+          "rms": 0.016002716188088725
+        }
+      },
+      "seconds": 46.169314063,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 1178
+      },
+      "sweeps": 1178,
+      "update": 4,
+      "work": {
+        "backtracks": 1571,
+        "edge_visits": 4736040960,
+        "evaluations": 2753,
+        "patch_visits": 11276288,
+        "proposals": 2749
+      }
+    },
+    {
+      "name": "ordinary64-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.005782218498464965,
+          "state_rms": 0.2598686324112455
+        },
+        "context": {
+          "error_rms": 0.00032715903717502195,
+          "state_rms": 0.015395295962106557
+        },
+        "reflection": {
+          "error_rms": 0.003069357658167374,
+          "state_rms": 0.18146683812404688
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.9542811058808987,
+          "max_abs": 0.3339686199561747,
+          "parameters": 12832,
+          "rms": 0.017252016219955445
+        },
+        "context": {
+          "l2": 0.30551826809899946,
+          "max_abs": 0.014679025728992124,
+          "parameters": 6928,
+          "rms": 0.003670567745252797
+        },
+        "reflection": {
+          "l2": 1.3595928271906348,
+          "max_abs": 0.17394251029062982,
+          "parameters": 7184,
+          "rms": 0.016040788139989742
+        }
+      },
+      "seconds": 37.60259275999988,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 733
+      },
+      "sweeps": 733,
+      "update": 5,
+      "work": {
+        "backtracks": 943,
+        "edge_visits": 2890137600,
+        "evaluations": 1680,
+        "patch_visits": 6881280,
+        "proposals": 1676
+      }
+    },
+    {
+      "name": "ordinary64-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.005976033659283861,
+          "state_rms": 0.26157501521743515
+        },
+        "context": {
+          "error_rms": 0.0005610862538402527,
+          "state_rms": 0.016861168995555634
+        },
+        "reflection": {
+          "error_rms": 0.004437382884154264,
+          "state_rms": 0.20732001641500433
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 2.021061419775546,
+          "max_abs": 0.2567465493805863,
+          "parameters": 12832,
+          "rms": 0.01784153993536017
+        },
+        "context": {
+          "l2": 0.3160883185527941,
+          "max_abs": 0.016368802817790958,
+          "parameters": 6928,
+          "rms": 0.003797558797220993
+        },
+        "reflection": {
+          "l2": 1.4135484654875692,
+          "max_abs": 0.1717953522701253,
+          "parameters": 7184,
+          "rms": 0.016677369140985037
+        }
+      },
+      "seconds": 67.67119919099969,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 1500
+      },
+      "sweeps": 1500,
+      "update": 6,
+      "work": {
+        "backtracks": 2008,
+        "edge_visits": 6041763840,
+        "evaluations": 3512,
+        "patch_visits": 14385152,
+        "proposals": 3508
+      }
+    },
+    {
+      "name": "ordinary64-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.004057031373620794,
+          "state_rms": 0.26235240962956513
+        },
+        "context": {
+          "error_rms": 0.0005518675479753506,
+          "state_rms": 0.018257118715572184
+        },
+        "reflection": {
+          "error_rms": 0.004599505425972047,
+          "state_rms": 0.2093258519787455
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 2.1032988256476304,
+          "max_abs": 0.3251361287027676,
+          "parameters": 12832,
+          "rms": 0.01856751587388962
+        },
+        "context": {
+          "l2": 0.3269172910454122,
+          "max_abs": 0.018695898935207855,
+          "parameters": 6928,
+          "rms": 0.003927660598965803
+        },
+        "reflection": {
+          "l2": 1.493917944375909,
+          "max_abs": 0.17852291743011667,
+          "parameters": 7184,
+          "rms": 0.017625586694054313
+        }
+      },
+      "seconds": 63.07861031699986,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 1592
+      },
+      "sweeps": 1592,
+      "update": 7,
+      "work": {
+        "backtracks": 2176,
+        "edge_visits": 6489047040,
+        "evaluations": 3772,
+        "patch_visits": 15450112,
+        "proposals": 3768
+      }
+    },
+    {
+      "name": "ordinary64-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.005790469859880719,
+          "state_rms": 0.2625436579400598
+        },
+        "context": {
+          "error_rms": 0.0014973238339443936,
+          "state_rms": 0.022913713217853862
+        },
+        "reflection": {
+          "error_rms": 0.008628951983359095,
+          "state_rms": 0.2131533586495674
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 2.248299321612121,
+          "max_abs": 0.3870710863962484,
+          "parameters": 12832,
+          "rms": 0.019847552251846316
+        },
+        "context": {
+          "l2": 0.36959735579516406,
+          "max_abs": 0.020318582269359915,
+          "parameters": 6928,
+          "rms": 0.004440428853415898
+        },
+        "reflection": {
+          "l2": 1.6382879917477151,
+          "max_abs": 0.21613924875988805,
+          "parameters": 7184,
+          "rms": 0.019328897639314776
+        }
+      },
+      "seconds": 60.44295207699997,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 1182
+      },
+      "sweeps": 1182,
+      "update": 8,
+      "work": {
+        "backtracks": 1524,
+        "edge_visits": 4662067200,
+        "evaluations": 2710,
+        "patch_visits": 11100160,
+        "proposals": 2706
+      }
+    },
+    {
+      "name": "observer64-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.020174632372194412,
+          "state_rms": 0.26451932733448585
+        },
+        "context": {
+          "error_rms": 0.0013141135661540963,
+          "state_rms": 0.04562707239657784
+        },
+        "reflection": {
+          "error_rms": 0.030794207733685828,
+          "state_rms": 0.1968665812977699
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 0.7752310584905303,
+          "max_abs": 0.08375148211505837,
+          "parameters": 12832,
+          "rms": 0.006843590082841918
+        },
+        "context": {
+          "l2": 0.048107799090010665,
+          "max_abs": 0.002866665760066958,
+          "parameters": 7440,
+          "rms": 0.0005577364406863393
+        },
+        "reflection": {
+          "l2": 0.5621586655413401,
+          "max_abs": 0.1243475268795555,
+          "parameters": 7952,
+          "rms": 0.006304065601981553
+        }
+      },
+      "seconds": 47.72321781599999,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 811
+      },
+      "sweeps": 811,
+      "update": 0,
+      "work": {
+        "backtracks": 1049,
+        "edge_visits": 3359375360,
+        "evaluations": 1864,
+        "patch_visits": 7634944,
+        "proposals": 1860
+      }
+    },
+    {
+      "name": "observer64-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.020747154209030037,
+          "state_rms": 0.26370876117724457
+        },
+        "context": {
+          "error_rms": 0.0010585987296659407,
+          "state_rms": 0.04414794696735185
+        },
+        "reflection": {
+          "error_rms": 0.024400610269249445,
+          "state_rms": 0.20329716161996078
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.0400139983412664,
+          "max_abs": 0.12517827918774782,
+          "parameters": 12832,
+          "rms": 0.009181042744757372
+        },
+        "context": {
+          "l2": 0.06771844246030842,
+          "max_abs": 0.004864488856644113,
+          "parameters": 7440,
+          "rms": 0.0007850918932285479
+        },
+        "reflection": {
+          "l2": 0.7606243038308245,
+          "max_abs": 0.17112409445212245,
+          "parameters": 7952,
+          "rms": 0.0085296657398203
+        }
+      },
+      "seconds": 54.62846432499987,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 937
+      },
+      "sweeps": 937,
+      "update": 1,
+      "work": {
+        "backtracks": 1197,
+        "edge_visits": 3853189120,
+        "evaluations": 2138,
+        "patch_visits": 8757248,
+        "proposals": 2134
+      }
+    },
+    {
+      "name": "observer64-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.022114475417760446,
+          "state_rms": 0.26906744704358404
+        },
+        "context": {
+          "error_rms": 0.002604546183330913,
+          "state_rms": 0.04285756015336158
+        },
+        "reflection": {
+          "error_rms": 0.04297237745407569,
+          "state_rms": 0.2051408452951514
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.2643194366029171,
+          "max_abs": 0.1896487258376282,
+          "parameters": 12832,
+          "rms": 0.011161167839079422
+        },
+        "context": {
+          "l2": 0.08002229358657724,
+          "max_abs": 0.00455695789558511,
+          "parameters": 7440,
+          "rms": 0.000927736251600883
+        },
+        "reflection": {
+          "l2": 0.8124704321542383,
+          "max_abs": 0.13697851481820658,
+          "parameters": 7952,
+          "rms": 0.009111069913043918
+        }
+      },
+      "seconds": 48.96097330400016,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 859
+      },
+      "sweeps": 859,
+      "update": 2,
+      "work": {
+        "backtracks": 1053,
+        "edge_visits": 3453091840,
+        "evaluations": 1916,
+        "patch_visits": 7847936,
+        "proposals": 1912
+      }
+    },
+    {
+      "name": "observer64-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.018877116003450378,
+          "state_rms": 0.2624909891421736
+        },
+        "context": {
+          "error_rms": 0.0009358409438797521,
+          "state_rms": 0.043357648905211835
+        },
+        "reflection": {
+          "error_rms": 0.015732472062662196,
+          "state_rms": 0.18943471080033988
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.3018337799117894,
+          "max_abs": 0.1508164618898918,
+          "parameters": 12832,
+          "rms": 0.011492337217577772
+        },
+        "context": {
+          "l2": 0.08994287799704938,
+          "max_abs": 0.0050688030490872215,
+          "parameters": 7440,
+          "rms": 0.0010427502730960803
+        },
+        "reflection": {
+          "l2": 0.8459692448518658,
+          "max_abs": 0.1156249158687124,
+          "parameters": 7952,
+          "rms": 0.009486726690710018
+        }
+      },
+      "seconds": 39.74028761399995,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 671
+      },
+      "sweeps": 671,
+      "update": 3,
+      "work": {
+        "backtracks": 864,
+        "edge_visits": 2773647360,
+        "evaluations": 1539,
+        "patch_visits": 6303744,
+        "proposals": 1535
+      }
+    },
+    {
+      "name": "observer64-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.016810677833558444,
+          "state_rms": 0.26305946113771334
+        },
+        "context": {
+          "error_rms": 0.0008700719697316192,
+          "state_rms": 0.037422194071092076
+        },
+        "reflection": {
+          "error_rms": 0.01670622070014636,
+          "state_rms": 0.2091657766114577
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.333601442917295,
+          "max_abs": 0.20173311770338156,
+          "parameters": 12832,
+          "rms": 0.011772776012074545
+        },
+        "context": {
+          "l2": 0.09974581675586727,
+          "max_abs": 0.005686633325408188,
+          "parameters": 7440,
+          "rms": 0.0011564003729765495
+        },
+        "reflection": {
+          "l2": 0.8679142529545449,
+          "max_abs": 0.114325946889539,
+          "parameters": 7952,
+          "rms": 0.009732818726989646
+        }
+      },
+      "seconds": 52.463014208000004,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 891
+      },
+      "sweeps": 891,
+      "update": 4,
+      "work": {
+        "backtracks": 1156,
+        "edge_visits": 3696394240,
+        "evaluations": 2051,
+        "patch_visits": 8400896,
+        "proposals": 2047
+      }
+    },
+    {
+      "name": "observer64-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.027288525447403265,
+          "state_rms": 0.26212531537867934
+        },
+        "context": {
+          "error_rms": 0.0009831288855232415,
+          "state_rms": 0.03788758446952988
+        },
+        "reflection": {
+          "error_rms": 0.016445629698173876,
+          "state_rms": 0.1835139691674344
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.5443844661435888,
+          "max_abs": 0.25325776731295024,
+          "parameters": 12832,
+          "rms": 0.01363352783771947
+        },
+        "context": {
+          "l2": 0.1081058151650555,
+          "max_abs": 0.006637333987492987,
+          "parameters": 7440,
+          "rms": 0.0012533217837473922
+        },
+        "reflection": {
+          "l2": 0.893663643440711,
+          "max_abs": 0.12430375451461984,
+          "parameters": 7952,
+          "rms": 0.010021573231342106
+        }
+      },
+      "seconds": 30.957730287000004,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 756
+      },
+      "sweeps": 756,
+      "update": 5,
+      "work": {
+        "backtracks": 962,
+        "edge_visits": 3103457280,
+        "evaluations": 1722,
+        "patch_visits": 7053312,
+        "proposals": 1718
+      }
+    },
+    {
+      "name": "observer64-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.027241538407933696,
+          "state_rms": 0.2636673927875126
+        },
+        "context": {
+          "error_rms": 0.0013440167195026681,
+          "state_rms": 0.03731383759911977
+        },
+        "reflection": {
+          "error_rms": 0.02160253723304241,
+          "state_rms": 0.20895797827715965
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.620648763958582,
+          "max_abs": 0.213626339020794,
+          "parameters": 12832,
+          "rms": 0.014306774331761949
+        },
+        "context": {
+          "l2": 0.11655637625121504,
+          "max_abs": 0.0072772093358315785,
+          "parameters": 7440,
+          "rms": 0.001351293130413629
+        },
+        "reflection": {
+          "l2": 0.9521965545346814,
+          "max_abs": 0.12441856347836452,
+          "parameters": 7952,
+          "rms": 0.010677963204546585
+        }
+      },
+      "seconds": 41.28007595999998,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 1113
+      },
+      "sweeps": 1113,
+      "update": 6,
+      "work": {
+        "backtracks": 1445,
+        "edge_visits": 4617338880,
+        "evaluations": 2562,
+        "patch_visits": 10493952,
+        "proposals": 2558
+      }
+    },
+    {
+      "name": "observer64-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.02105006635746747,
+          "state_rms": 0.26421075222619894
+        },
+        "context": {
+          "error_rms": 0.0020151215593999195,
+          "state_rms": 0.03618284970852458
+        },
+        "reflection": {
+          "error_rms": 0.02465102315346379,
+          "state_rms": 0.2106995003105971
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.688456861110273,
+          "max_abs": 0.28042378450991917,
+          "parameters": 12832,
+          "rms": 0.014905371119289088
+        },
+        "context": {
+          "l2": 0.12473875405642958,
+          "max_abs": 0.007553530806214025,
+          "parameters": 7440,
+          "rms": 0.0014461553016156964
+        },
+        "reflection": {
+          "l2": 1.0166271677556848,
+          "max_abs": 0.13736593079766776,
+          "parameters": 7952,
+          "rms": 0.011400490201671092
+        }
+      },
+      "seconds": 33.94084960500004,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 916
+      },
+      "sweeps": 916,
+      "update": 7,
+      "work": {
+        "backtracks": 1179,
+        "edge_visits": 3782901760,
+        "evaluations": 2099,
+        "patch_visits": 8597504,
+        "proposals": 2095
+      }
+    },
+    {
+      "name": "observer64-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.02664958996952036,
+          "state_rms": 0.26461534089150773
+        },
+        "context": {
+          "error_rms": 0.003899461384684884,
+          "state_rms": 0.04147724030230818
+        },
+        "reflection": {
+          "error_rms": 0.03403263120761231,
+          "state_rms": 0.21463602282599709
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.7866873108353611,
+          "max_abs": 0.32398116723836,
+          "parameters": 12832,
+          "rms": 0.015772530560605416
+        },
+        "context": {
+          "l2": 0.14084097245049257,
+          "max_abs": 0.008946143764637671,
+          "parameters": 7440,
+          "rms": 0.0016328359260494927
+        },
+        "reflection": {
+          "l2": 1.0930443158226004,
+          "max_abs": 0.1577232955640635,
+          "parameters": 7952,
+          "rms": 0.012257434591323568
+        }
+      },
+      "seconds": 34.921098366000024,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 922
+      },
+      "sweeps": 922,
+      "update": 8,
+      "work": {
+        "backtracks": 1193,
+        "edge_visits": 3818946560,
+        "evaluations": 2119,
+        "patch_visits": 8679424,
+        "proposals": 2115
+      }
+    },
+    {
+      "name": "observer64-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.02597895271236132,
+          "state_rms": 0.2633402140602318
+        },
+        "context": {
+          "error_rms": 0.004269110017034911,
+          "state_rms": 0.03262013011475163
+        },
+        "reflection": {
+          "error_rms": 0.03050250329620702,
+          "state_rms": 0.21009585923685054
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.8554298053998737,
+          "max_abs": 0.319149227309523,
+          "parameters": 12832,
+          "rms": 0.016379376028055503
+        },
+        "context": {
+          "l2": 0.14756718454386414,
+          "max_abs": 0.008785034022206185,
+          "parameters": 7440,
+          "rms": 0.0017108160802702132
+        },
+        "reflection": {
+          "l2": 1.13399034223176,
+          "max_abs": 0.19512324531188838,
+          "parameters": 7952,
+          "rms": 0.012716604666332988
+        }
+      },
+      "seconds": 35.35234443099989,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 960
+      },
+      "sweeps": 960,
+      "update": 9,
+      "work": {
+        "backtracks": 1183,
+        "edge_visits": 3869409280,
+        "evaluations": 2147,
+        "patch_visits": 8794112,
+        "proposals": 2143
+      }
+    },
+    {
+      "name": "observer64-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.023135317243859792,
+          "state_rms": 0.2586985210618426
+        },
+        "context": {
+          "error_rms": 0.0021464878456458835,
+          "state_rms": 0.035624551137313484
+        },
+        "reflection": {
+          "error_rms": 0.019006831918128304,
+          "state_rms": 0.19648448878625155
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.9557537013157709,
+          "max_abs": 0.31406724758293275,
+          "parameters": 12832,
+          "rms": 0.01726501600808797
+        },
+        "context": {
+          "l2": 0.1525198169059773,
+          "max_abs": 0.010618718167472034,
+          "parameters": 7440,
+          "rms": 0.0017682342868380236
+        },
+        "reflection": {
+          "l2": 1.1416579509961622,
+          "max_abs": 0.18286450714169403,
+          "parameters": 7952,
+          "rms": 0.012802589480984155
+        }
+      },
+      "seconds": 40.86042317500005,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 1069
+      },
+      "sweeps": 1069,
+      "update": 10,
+      "work": {
+        "backtracks": 1438,
+        "edge_visits": 4525424640,
+        "evaluations": 2511,
+        "patch_visits": 10285056,
+        "proposals": 2507
+      }
+    },
+    {
+      "name": "observer64-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.021702349222294994,
+          "state_rms": 0.26373967890645744
+        },
+        "context": {
+          "error_rms": 0.004144053267863498,
+          "state_rms": 0.035007585851424494
+        },
+        "reflection": {
+          "error_rms": 0.029183323888392523,
+          "state_rms": 0.1727335145048209
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 2.0219705365931397,
+          "max_abs": 0.32920254418085376,
+          "parameters": 12832,
+          "rms": 0.017849565443070283
+        },
+        "context": {
+          "l2": 0.16232479265869798,
+          "max_abs": 0.009652749841110767,
+          "parameters": 7440,
+          "rms": 0.0018819080025510718
+        },
+        "reflection": {
+          "l2": 1.1798316389889827,
+          "max_abs": 0.18642556384303988,
+          "parameters": 7952,
+          "rms": 0.013230670462613385
+        }
+      },
+      "seconds": 29.50209828700008,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 766
+      },
+      "sweeps": 766,
+      "update": 11,
+      "work": {
+        "backtracks": 1011,
+        "edge_visits": 3209789440,
+        "evaluations": 1781,
+        "patch_visits": 7294976,
+        "proposals": 1777
+      }
+    },
+    {
+      "name": "observer64-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.003869251011523265,
+          "state_rms": 0.26078727766862053
+        },
+        "context": {
+          "error_rms": 0.0002810195407263237,
+          "state_rms": 0.017612262478646085
+        },
+        "reflection": {
+          "error_rms": 0.007092309464857331,
+          "state_rms": 0.19338247382197585
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 0.9526679400967971,
+          "max_abs": 0.10291908911772385,
+          "parameters": 12832,
+          "rms": 0.008409968609594243
+        },
+        "context": {
+          "l2": 0.10585729784374845,
+          "max_abs": 0.006396119057065191,
+          "parameters": 7440,
+          "rms": 0.0012272536602553786
+        },
+        "reflection": {
+          "l2": 0.8270363750346159,
+          "max_abs": 0.17529755220837853,
+          "parameters": 7952,
+          "rms": 0.009274412871360129
+        }
+      },
+      "seconds": 112.0207034099999,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 1852
+      },
+      "sweeps": 1852,
+      "update": 0,
+      "work": {
+        "backtracks": 2606,
+        "edge_visits": 8041594880,
+        "evaluations": 4462,
+        "patch_visits": 18276352,
+        "proposals": 4458
+      }
+    },
+    {
+      "name": "observer64-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.003887726020411976,
+          "state_rms": 0.26076836149775395
+        },
+        "context": {
+          "error_rms": 0.00020893948339996128,
+          "state_rms": 0.01808683779337582
+        },
+        "reflection": {
+          "error_rms": 0.004288362972252846,
+          "state_rms": 0.2001124285768272
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.2788322194250599,
+          "max_abs": 0.1499788855365613,
+          "parameters": 12832,
+          "rms": 0.01128928388333266
+        },
+        "context": {
+          "l2": 0.14406591988727868,
+          "max_abs": 0.008751332311662693,
+          "parameters": 7440,
+          "rms": 0.0016702242651299873
+        },
+        "reflection": {
+          "l2": 1.0639178336856516,
+          "max_abs": 0.22559039376029932,
+          "parameters": 7952,
+          "rms": 0.011930809271104665
+        }
+      },
+      "seconds": 54.15353307100008,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 909
+      },
+      "sweeps": 909,
+      "update": 1,
+      "work": {
+        "backtracks": 1208,
+        "edge_visits": 3822551040,
+        "evaluations": 2121,
+        "patch_visits": 8687616,
+        "proposals": 2117
+      }
+    },
+    {
+      "name": "observer64-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.006910089437778082,
+          "state_rms": 0.2667597583791752
+        },
+        "context": {
+          "error_rms": 0.005549969771270353,
+          "state_rms": 0.020703224125556172
+        },
+        "reflection": {
+          "error_rms": 0.016471244641859104,
+          "state_rms": 0.20303048418948838
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.5616565942401006,
+          "max_abs": 0.2325742785191068,
+          "parameters": 12832,
+          "rms": 0.013786002849209616
+        },
+        "context": {
+          "l2": 0.2784014305511274,
+          "max_abs": 0.03166885019262493,
+          "parameters": 7440,
+          "rms": 0.003227639299545775
+        },
+        "reflection": {
+          "l2": 1.3513132743195684,
+          "max_abs": 0.17164500586723286,
+          "parameters": 7952,
+          "rms": 0.015153671111581576
+        }
+      },
+      "seconds": 304.85391792200016,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 7169
+      },
+      "sweeps": 7169,
+      "update": 2,
+      "work": {
+        "backtracks": 10105,
+        "edge_visits": 31139102720,
+        "evaluations": 17278,
+        "patch_visits": 70770688,
+        "proposals": 17274
+      }
+    },
+    {
+      "name": "observer64-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.0031768360229068125,
+          "state_rms": 0.25953899343617104
+        },
+        "context": {
+          "error_rms": 0.000645480569537859,
+          "state_rms": 0.016747582173575172
+        },
+        "reflection": {
+          "error_rms": 0.0034872968192637245,
+          "state_rms": 0.1865363604542856
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.5999571473262264,
+          "max_abs": 0.20639539309265,
+          "parameters": 12832,
+          "rms": 0.014124112735799993
+        },
+        "context": {
+          "l2": 0.29131213225737485,
+          "max_abs": 0.028828272618322777,
+          "parameters": 7440,
+          "rms": 0.0033773191633643773
+        },
+        "reflection": {
+          "l2": 1.3711282937091407,
+          "max_abs": 0.1522591270563761,
+          "parameters": 7952,
+          "rms": 0.015375877384993927
+        }
+      },
+      "seconds": 31.304052970000157,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 844
+      },
+      "sweeps": 844,
+      "update": 3,
+      "work": {
+        "backtracks": 1080,
+        "edge_visits": 3474718720,
+        "evaluations": 1928,
+        "patch_visits": 7897088,
+        "proposals": 1924
+      }
+    },
+    {
+      "name": "observer64-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.003221177711942517,
+          "state_rms": 0.2609159201282486
+        },
+        "context": {
+          "error_rms": 0.0004944560068923185,
+          "state_rms": 0.01567375459272297
+        },
+        "reflection": {
+          "error_rms": 0.002932181210129994,
+          "state_rms": 0.20704035641642785
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.6445210624689781,
+          "max_abs": 0.23182692850582085,
+          "parameters": 12832,
+          "rms": 0.014517514373135542
+        },
+        "context": {
+          "l2": 0.29373765030602056,
+          "max_abs": 0.02531280365068853,
+          "parameters": 7440,
+          "rms": 0.0034054393399025108
+        },
+        "reflection": {
+          "l2": 1.361108689923756,
+          "max_abs": 0.16174514211416396,
+          "parameters": 7952,
+          "rms": 0.015263517221501469
+        }
+      },
+      "seconds": 59.81253611300008,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 1620
+      },
+      "sweeps": 1620,
+      "update": 4,
+      "work": {
+        "backtracks": 2202,
+        "edge_visits": 6895370240,
+        "evaluations": 3826,
+        "patch_visits": 15671296,
+        "proposals": 3822
+      }
+    },
+    {
+      "name": "observer64-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.005863329274142861,
+          "state_rms": 0.25985688010134156
+        },
+        "context": {
+          "error_rms": 0.0003853900634620104,
+          "state_rms": 0.015039942829418163
+        },
+        "reflection": {
+          "error_rms": 0.0030521684311526054,
+          "state_rms": 0.1814142233385869
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.9406196852038629,
+          "max_abs": 0.3175956308742417,
+          "parameters": 12832,
+          "rms": 0.017131415836316357
+        },
+        "context": {
+          "l2": 0.29958886337521656,
+          "max_abs": 0.025409340278791326,
+          "parameters": 7440,
+          "rms": 0.003473275217091672
+        },
+        "reflection": {
+          "l2": 1.3706016135536256,
+          "max_abs": 0.16784093913735595,
+          "parameters": 7952,
+          "rms": 0.015369971176559992
+        }
+      },
+      "seconds": 39.06622781199985,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 1099
+      },
+      "sweeps": 1099,
+      "update": 5,
+      "work": {
+        "backtracks": 1362,
+        "edge_visits": 4442521600,
+        "evaluations": 2465,
+        "patch_visits": 10096640,
+        "proposals": 2461
+      }
+    },
+    {
+      "name": "observer64-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.006030718250636008,
+          "state_rms": 0.261627872691964
+        },
+        "context": {
+          "error_rms": 0.0006276651206319467,
+          "state_rms": 0.01555994226630472
+        },
+        "reflection": {
+          "error_rms": 0.0043503241520329635,
+          "state_rms": 0.20730970139321925
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 2.0116771295446685,
+          "max_abs": 0.24034839926961574,
+          "parameters": 12832,
+          "rms": 0.017758697233361632
+        },
+        "context": {
+          "l2": 0.31025512077872935,
+          "max_abs": 0.025627877584516675,
+          "parameters": 7440,
+          "rms": 0.0035969341778466393
+        },
+        "reflection": {
+          "l2": 1.4315531963224102,
+          "max_abs": 0.16728415904872163,
+          "parameters": 7952,
+          "rms": 0.016053484212775512
+        }
+      },
+      "seconds": 54.83319583899993,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 1532
+      },
+      "sweeps": 1532,
+      "update": 6,
+      "work": {
+        "backtracks": 1953,
+        "edge_visits": 6288015360,
+        "evaluations": 3489,
+        "patch_visits": 14290944,
+        "proposals": 3485
+      }
+    },
+    {
+      "name": "observer64-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.004062914129143545,
+          "state_rms": 0.2623346932872946
+        },
+        "context": {
+          "error_rms": 0.0005987158648600541,
+          "state_rms": 0.01636889166183215
+        },
+        "reflection": {
+          "error_rms": 0.004615071711080452,
+          "state_rms": 0.20926526524908898
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 2.0933201550475875,
+          "max_abs": 0.3162650865716971,
+          "parameters": 12832,
+          "rms": 0.018479426096770314
+        },
+        "context": {
+          "l2": 0.31722216584183877,
+          "max_abs": 0.025946117255318455,
+          "parameters": 7440,
+          "rms": 0.0036777064224535823
+        },
+        "reflection": {
+          "l2": 1.5052594412440863,
+          "max_abs": 0.17585464626508815,
+          "parameters": 7952,
+          "rms": 0.016880028446180726
+        }
+      },
+      "seconds": 81.20237374499993,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 2202
+      },
+      "sweeps": 2202,
+      "update": 7,
+      "work": {
+        "backtracks": 3018,
+        "edge_visits": 9414901760,
+        "evaluations": 5224,
+        "patch_visits": 21397504,
+        "proposals": 5220
+      }
+    },
+    {
+      "name": "observer64-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.005907670438341681,
+          "state_rms": 0.26265813768968926
+        },
+        "context": {
+          "error_rms": 0.0013535197002320712,
+          "state_rms": 0.020176931913837324
+        },
+        "reflection": {
+          "error_rms": 0.008735032867630561,
+          "state_rms": 0.2131373367909063
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 2.244303259629972,
+          "max_abs": 0.37468141864561716,
+          "parameters": 12832,
+          "rms": 0.019812275788330128
+        },
+        "context": {
+          "l2": 0.3538151567989773,
+          "max_abs": 0.02746759145737727,
+          "parameters": 7440,
+          "rms": 0.004101946252929214
+        },
+        "reflection": {
+          "l2": 1.6557609928672952,
+          "max_abs": 0.21427176848449522,
+          "parameters": 7952,
+          "rms": 0.01856775775249514
+        }
+      },
+      "seconds": 82.73100386199985,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 2263
+      },
+      "sweeps": 2263,
+      "update": 8,
+      "work": {
+        "backtracks": 3041,
+        "edge_visits": 9566289920,
+        "evaluations": 5308,
+        "patch_visits": 21741568,
+        "proposals": 5304
+      }
+    },
+    {
+      "name": "observer64-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.006850608258088519,
+          "state_rms": 0.2622481164789866
+        },
+        "context": {
+          "error_rms": 0.002405098656526004,
+          "state_rms": 0.021769316425253024
+        },
+        "reflection": {
+          "error_rms": 0.009161112409295112,
+          "state_rms": 0.2089703900367228
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 2.34676960534979,
+          "max_abs": 0.3730471003670525,
+          "parameters": 12832,
+          "rms": 0.020716828901512396
+        },
+        "context": {
+          "l2": 0.3951256519193605,
+          "max_abs": 0.03298349287645472,
+          "parameters": 7440,
+          "rms": 0.004580878337690022
+        },
+        "reflection": {
+          "l2": 1.7537582067394788,
+          "max_abs": 0.24848927983248423,
+          "parameters": 7952,
+          "rms": 0.01966670170360681
+        }
+      },
+      "seconds": 63.22598757299966,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 1710
+      },
+      "sweeps": 1710,
+      "update": 9,
+      "work": {
+        "backtracks": 2326,
+        "edge_visits": 7281049600,
+        "evaluations": 4040,
+        "patch_visits": 16547840,
+        "proposals": 4036
+      }
+    },
+    {
+      "name": "ordinary128-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.01424984534485838,
+          "state_rms": 0.19058557780923485
+        },
+        "context": {
+          "error_rms": 0.0010990660470538403,
+          "state_rms": 0.047581022232422755
+        },
+        "reflection": {
+          "error_rms": 0.021489287723423674,
+          "state_rms": 0.14407785986851518
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 0.7786763438765415,
+          "max_abs": 0.08385068900363879,
+          "parameters": 25664,
+          "rms": 0.004860655122972154
+        },
+        "context": {
+          "l2": 0.06942343980249602,
+          "max_abs": 0.004668615789444756,
+          "parameters": 14880,
+          "rms": 0.0005691210678933611
+        },
+        "reflection": {
+          "l2": 0.5614447738052741,
+          "max_abs": 0.12220933110713801,
+          "parameters": 15904,
+          "rms": 0.004451986718480597
+        }
+      },
+      "seconds": 119.29216282300013,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 753
+      },
+      "sweeps": 753,
+      "update": 0,
+      "work": {
+        "backtracks": 1018,
+        "edge_visits": 6397952000,
+        "evaluations": 1775,
+        "patch_visits": 14540800,
+        "proposals": 1771
+      }
+    },
+    {
+      "name": "ordinary128-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.014671099233656547,
+          "state_rms": 0.18954696926867845
+        },
+        "context": {
+          "error_rms": 0.0009630809537242253,
+          "state_rms": 0.04497341971524071
+        },
+        "reflection": {
+          "error_rms": 0.01770322848004819,
+          "state_rms": 0.1469180702745404
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.0448748558773358,
+          "max_abs": 0.12472807183661369,
+          "parameters": 25664,
+          "rms": 0.006522320038388375
+        },
+        "context": {
+          "l2": 0.09992932491917973,
+          "max_abs": 0.006153743262314592,
+          "parameters": 14880,
+          "rms": 0.0008192029129305906
+        },
+        "reflection": {
+          "l2": 0.7689653372914894,
+          "max_abs": 0.16749831486877131,
+          "parameters": 15904,
+          "rms": 0.006097524864985224
+        }
+      },
+      "seconds": 110.8938907050001,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 766
+      },
+      "sweeps": 766,
+      "update": 1,
+      "work": {
+        "backtracks": 956,
+        "edge_visits": 6221332480,
+        "evaluations": 1726,
+        "patch_visits": 14139392,
+        "proposals": 1722
+      }
+    },
+    {
+      "name": "ordinary128-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.015614798630256995,
+          "state_rms": 0.19266549684891374
+        },
+        "context": {
+          "error_rms": 0.0017831821458891117,
+          "state_rms": 0.04103145484471303
+        },
+        "reflection": {
+          "error_rms": 0.030348776048193006,
+          "state_rms": 0.14808396755604786
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.2702758869418027,
+          "max_abs": 0.18936336656626887,
+          "parameters": 25664,
+          "rms": 0.007929318831895339
+        },
+        "context": {
+          "l2": 0.12004172405799975,
+          "max_abs": 0.005854670802123989,
+          "parameters": 14880,
+          "rms": 0.0009840808001160542
+        },
+        "reflection": {
+          "l2": 0.8162723028494997,
+          "max_abs": 0.13306802969143944,
+          "parameters": 15904,
+          "rms": 0.006472646323376295
+        }
+      },
+      "seconds": 102.97165667200011,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 784
+      },
+      "sweeps": 784,
+      "update": 2,
+      "work": {
+        "backtracks": 988,
+        "edge_visits": 6401556480,
+        "evaluations": 1776,
+        "patch_visits": 14548992,
+        "proposals": 1772
+      }
+    },
+    {
+      "name": "ordinary128-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.013328154088117947,
+          "state_rms": 0.18836263643088458
+        },
+        "context": {
+          "error_rms": 0.0007460199166588842,
+          "state_rms": 0.04294880002645521
+        },
+        "reflection": {
+          "error_rms": 0.011028629603763215,
+          "state_rms": 0.13684979310996265
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.3094149381339582,
+          "max_abs": 0.15076141133337626,
+          "parameters": 25664,
+          "rms": 0.008173632700142994
+        },
+        "context": {
+          "l2": 0.13456252574869837,
+          "max_abs": 0.005592322857028247,
+          "parameters": 14880,
+          "rms": 0.0011031197614292474
+        },
+        "reflection": {
+          "l2": 0.8433044673836438,
+          "max_abs": 0.11168134437281779,
+          "parameters": 15904,
+          "rms": 0.006686998372041962
+        }
+      },
+      "seconds": 68.16554766099989,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 629
+      },
+      "sweeps": 629,
+      "update": 3,
+      "work": {
+        "backtracks": 843,
+        "edge_visits": 5320212480,
+        "evaluations": 1476,
+        "patch_visits": 12091392,
+        "proposals": 1472
+      }
+    },
+    {
+      "name": "ordinary128-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.01189656460098284,
+          "state_rms": 0.18801645919294988
+        },
+        "context": {
+          "error_rms": 0.0006801146617652196,
+          "state_rms": 0.037370902688006975
+        },
+        "reflection": {
+          "error_rms": 0.011647733892606694,
+          "state_rms": 0.14975240197045553
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.3421527636399124,
+          "max_abs": 0.20189783504020062,
+          "parameters": 25664,
+          "rms": 0.008377988823854536
+        },
+        "context": {
+          "l2": 0.1470657804931597,
+          "max_abs": 0.0059518941579904915,
+          "parameters": 14880,
+          "rms": 0.0012056192300893228
+        },
+        "reflection": {
+          "l2": 0.8617099389196692,
+          "max_abs": 0.11780131117296384,
+          "parameters": 15904,
+          "rms": 0.006832944899018055
+        }
+      },
+      "seconds": 94.73670731900006,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 1011
+      },
+      "sweeps": 1011,
+      "update": 4,
+      "work": {
+        "backtracks": 1257,
+        "edge_visits": 8189378560,
+        "evaluations": 2272,
+        "patch_visits": 18612224,
+        "proposals": 2268
+      }
+    },
+    {
+      "name": "ordinary128-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.019290854431465547,
+          "state_rms": 0.1874868958886275
+        },
+        "context": {
+          "error_rms": 0.0007905148737679297,
+          "state_rms": 0.0383401521307426
+        },
+        "reflection": {
+          "error_rms": 0.011064061942434032,
+          "state_rms": 0.1327972704051221
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.553160226836623,
+          "max_abs": 0.2532583125172955,
+          "parameters": 25664,
+          "rms": 0.009695140057532007
+        },
+        "context": {
+          "l2": 0.1599652879311907,
+          "max_abs": 0.006454381066749215,
+          "parameters": 14880,
+          "rms": 0.0013113671081736728
+        },
+        "reflection": {
+          "l2": 0.8836841599531445,
+          "max_abs": 0.12546035855514612,
+          "parameters": 15904,
+          "rms": 0.007007189891142462
+        }
+      },
+      "seconds": 72.91937667499997,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 744
+      },
+      "sweeps": 744,
+      "update": 5,
+      "work": {
+        "backtracks": 888,
+        "edge_visits": 5896929280,
+        "evaluations": 1636,
+        "patch_visits": 13402112,
+        "proposals": 1632
+      }
+    },
+    {
+      "name": "ordinary128-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.019255731060883064,
+          "state_rms": 0.18836478339760884
+        },
+        "context": {
+          "error_rms": 0.0012094720156371026,
+          "state_rms": 0.036164564836907324
+        },
+        "reflection": {
+          "error_rms": 0.015020161039846016,
+          "state_rms": 0.14972052461301652
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.6301466263342694,
+          "max_abs": 0.2135492637884369,
+          "parameters": 25664,
+          "rms": 0.010175704723532372
+        },
+        "context": {
+          "l2": 0.16967521922966136,
+          "max_abs": 0.00664806565457664,
+          "parameters": 14880,
+          "rms": 0.0013909674057889763
+        },
+        "reflection": {
+          "l2": 0.9503743105665838,
+          "max_abs": 0.12458655957084694,
+          "parameters": 15904,
+          "rms": 0.007536010673945719
+        }
+      },
+      "seconds": 142.99533184699976,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 1206
+      },
+      "sweeps": 1206,
+      "update": 6,
+      "work": {
+        "backtracks": 1609,
+        "edge_visits": 10161029120,
+        "evaluations": 2819,
+        "patch_visits": 23093248,
+        "proposals": 2815
+      }
+    },
+    {
+      "name": "ordinary128-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.014856277232081558,
+          "state_rms": 0.1886132001854913
+        },
+        "context": {
+          "error_rms": 0.0016333395236859084,
+          "state_rms": 0.03504280437364519
+        },
+        "reflection": {
+          "error_rms": 0.017312553718653718,
+          "state_rms": 0.15109602598759075
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.6991492394616752,
+          "max_abs": 0.2803675779176498,
+          "parameters": 25664,
+          "rms": 0.01060643298134287
+        },
+        "context": {
+          "l2": 0.1817640531983898,
+          "max_abs": 0.0073134467268812006,
+          "parameters": 14880,
+          "rms": 0.0014900695263039112
+        },
+        "reflection": {
+          "l2": 1.013845588525735,
+          "max_abs": 0.1301591003666466,
+          "parameters": 15904,
+          "rms": 0.0080393073464999
+        }
+      },
+      "seconds": 71.53610134500013,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 744
+      },
+      "sweeps": 744,
+      "update": 7,
+      "work": {
+        "backtracks": 945,
+        "edge_visits": 6102384640,
+        "evaluations": 1693,
+        "patch_visits": 13869056,
+        "proposals": 1689
+      }
+    },
+    {
+      "name": "ordinary128-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.018795152578369587,
+          "state_rms": 0.18909475496451958
+        },
+        "context": {
+          "error_rms": 0.0031843170698703143,
+          "state_rms": 0.03652371658688632
+        },
+        "reflection": {
+          "error_rms": 0.023858177180992146,
+          "state_rms": 0.1537448561101321
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.7987848864970926,
+          "max_abs": 0.3239711490939931,
+          "parameters": 25664,
+          "rms": 0.01122837882829431
+        },
+        "context": {
+          "l2": 0.20158472725977217,
+          "max_abs": 0.009258534510681149,
+          "parameters": 14880,
+          "rms": 0.0016525559029552535
+        },
+        "reflection": {
+          "l2": 1.0882864628031443,
+          "max_abs": 0.14521825206405553,
+          "parameters": 15904,
+          "rms": 0.0086295876359555
+        }
+      },
+      "seconds": 90.54935248599986,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 822
+      },
+      "sweeps": 822,
+      "update": 8,
+      "work": {
+        "backtracks": 1080,
+        "edge_visits": 6870138880,
+        "evaluations": 1906,
+        "patch_visits": 15613952,
+        "proposals": 1902
+      }
+    },
+    {
+      "name": "ordinary128-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.0027322243575071616,
+          "state_rms": 0.18493120743533972
+        },
+        "context": {
+          "error_rms": 0.0002613921024060283,
+          "state_rms": 0.018252101874741102
+        },
+        "reflection": {
+          "error_rms": 0.004921435399373805,
+          "state_rms": 0.13740357714267257
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 0.9674466951392637,
+          "max_abs": 0.10296833748606739,
+          "parameters": 25664,
+          "rms": 0.006038997809437381
+        },
+        "context": {
+          "l2": 0.15565444560029357,
+          "max_abs": 0.008808150254557511,
+          "parameters": 14880,
+          "rms": 0.0012760275859912543
+        },
+        "reflection": {
+          "l2": 0.8272557615094458,
+          "max_abs": 0.1711346976417813,
+          "parameters": 15904,
+          "rms": 0.006559739861972526
+        }
+      },
+      "seconds": 154.35593518099995,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 1011
+      },
+      "sweeps": 1011,
+      "update": 0,
+      "work": {
+        "backtracks": 1340,
+        "edge_visits": 8488550400,
+        "evaluations": 2355,
+        "patch_visits": 19292160,
+        "proposals": 2351
+      }
+    },
+    {
+      "name": "ordinary128-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.0027517326280393707,
+          "state_rms": 0.18490887801386563
+        },
+        "context": {
+          "error_rms": 0.00020997771779072638,
+          "state_rms": 0.01790715510098192
+        },
+        "reflection": {
+          "error_rms": 0.0031120603341689133,
+          "state_rms": 0.1420043775400019
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.298974606047605,
+          "max_abs": 0.15009584755927297,
+          "parameters": 25664,
+          "rms": 0.008108462037081078
+        },
+        "context": {
+          "l2": 0.21259418593070864,
+          "max_abs": 0.009501295310478775,
+          "parameters": 14880,
+          "rms": 0.0017428094958852013
+        },
+        "reflection": {
+          "l2": 1.0800045698548808,
+          "max_abs": 0.22125664599421607,
+          "parameters": 15904,
+          "rms": 0.008563916212638743
+        }
+      },
+      "seconds": 144.65307749500016,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 1047
+      },
+      "sweeps": 1047,
+      "update": 1,
+      "work": {
+        "backtracks": 1326,
+        "edge_visits": 8567848960,
+        "evaluations": 2377,
+        "patch_visits": 19472384,
+        "proposals": 2373
+      }
+    },
+    {
+      "name": "ordinary128-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.00425918857195997,
+          "state_rms": 0.1889342895951203
+        },
+        "context": {
+          "error_rms": 0.0032683502241997618,
+          "state_rms": 0.01792593546653188
+        },
+        "reflection": {
+          "error_rms": 0.01201740966176884,
+          "state_rms": 0.14389437972058308
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.5883727947997397,
+          "max_abs": 0.232466054920445,
+          "parameters": 25664,
+          "rms": 0.009914944023851117
+        },
+        "context": {
+          "l2": 0.353880881280932,
+          "max_abs": 0.027045444050265516,
+          "parameters": 14880,
+          "rms": 0.0029010528091753624
+        },
+        "reflection": {
+          "l2": 1.364443703175408,
+          "max_abs": 0.1733182874520805,
+          "parameters": 15904,
+          "rms": 0.010819381581345365
+        }
+      },
+      "seconds": 512.8908918679999,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 4339
+      },
+      "sweeps": 4339,
+      "update": 2,
+      "work": {
+        "backtracks": 6008,
+        "edge_visits": 37309972480,
+        "evaluations": 10351,
+        "patch_visits": 84795392,
+        "proposals": 10347
+      }
+    },
+    {
+      "name": "observer128-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.014184093946866854,
+          "state_rms": 0.19043651380011783
+        },
+        "context": {
+          "error_rms": 0.0013962107595258887,
+          "state_rms": 0.047804378075651
+        },
+        "reflection": {
+          "error_rms": 0.021643991839133125,
+          "state_rms": 0.1422255004703102
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 0.7957843043531053,
+          "max_abs": 0.08176170182824259,
+          "parameters": 25664,
+          "rms": 0.004967446470093391
+        },
+        "context": {
+          "l2": 0.07110520707296047,
+          "max_abs": 0.003700499130179803,
+          "parameters": 16928,
+          "rms": 0.0005465105880322175
+        },
+        "reflection": {
+          "l2": 0.552988953943255,
+          "max_abs": 0.1226056052695972,
+          "parameters": 18976,
+          "rms": 0.004014339700182324
+        }
+      },
+      "seconds": 190.93740593500002,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 1157
+      },
+      "sweeps": 1157,
+      "update": 0,
+      "work": {
+        "backtracks": 1561,
+        "edge_visits": 10703339520,
+        "evaluations": 2722,
+        "patch_visits": 22298624,
+        "proposals": 2718
+      }
+    },
+    {
+      "name": "observer128-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.014500027132015827,
+          "state_rms": 0.18993104758759388
+        },
+        "context": {
+          "error_rms": 0.001230767940793546,
+          "state_rms": 0.04384061840348952
+        },
+        "reflection": {
+          "error_rms": 0.01719191724951723,
+          "state_rms": 0.14541017637991124
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.0435281799190594,
+          "max_abs": 0.13004241655632506,
+          "parameters": 25664,
+          "rms": 0.00651391381486938
+        },
+        "context": {
+          "l2": 0.10233711862142084,
+          "max_abs": 0.004974219080870721,
+          "parameters": 16928,
+          "rms": 0.0007865572885249867
+        },
+        "reflection": {
+          "l2": 0.752527292523658,
+          "max_abs": 0.16835832906074788,
+          "parameters": 18976,
+          "rms": 0.005462858099256766
+        }
+      },
+      "seconds": 62.98663730400017,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 750
+      },
+      "sweeps": 750,
+      "update": 1,
+      "work": {
+        "backtracks": 987,
+        "edge_visits": 6845890560,
+        "evaluations": 1741,
+        "patch_visits": 14262272,
+        "proposals": 1737
+      }
+    },
+    {
+      "name": "observer128-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.0158838918223673,
+          "state_rms": 0.19275496099388548
+        },
+        "context": {
+          "error_rms": 0.002969407340566677,
+          "state_rms": 0.038915855746252795
+        },
+        "reflection": {
+          "error_rms": 0.02982107199151993,
+          "state_rms": 0.14754663424419412
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.2617120528840593,
+          "max_abs": 0.19330759630511346,
+          "parameters": 25664,
+          "rms": 0.007875861648802007
+        },
+        "context": {
+          "l2": 0.12041539755767816,
+          "max_abs": 0.005791301114597704,
+          "parameters": 16928,
+          "rms": 0.0009255059149163941
+        },
+        "reflection": {
+          "l2": 0.8074681804680397,
+          "max_abs": 0.13415140487312643,
+          "parameters": 18976,
+          "rms": 0.0058616931683222375
+        }
+      },
+      "seconds": 103.75690156699989,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 1244
+      },
+      "sweeps": 1244,
+      "update": 2,
+      "work": {
+        "backtracks": 1596,
+        "edge_visits": 11183063040,
+        "evaluations": 2844,
+        "patch_visits": 23298048,
+        "proposals": 2840
+      }
+    },
+    {
+      "name": "observer128-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.013119297242347987,
+          "state_rms": 0.18848373754515788
+        },
+        "context": {
+          "error_rms": 0.0010243069911916715,
+          "state_rms": 0.039333940855301286
+        },
+        "reflection": {
+          "error_rms": 0.011141088192933463,
+          "state_rms": 0.13612315356402693
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.2914053528053973,
+          "max_abs": 0.1538835817180572,
+          "parameters": 25664,
+          "rms": 0.008061213228460994
+        },
+        "context": {
+          "l2": 0.13522060714590065,
+          "max_abs": 0.005966056659329625,
+          "parameters": 16928,
+          "rms": 0.001039297915967701
+        },
+        "reflection": {
+          "l2": 0.8385169911064466,
+          "max_abs": 0.10887251472566195,
+          "parameters": 18976,
+          "rms": 0.006087087314625546
+        }
+      },
+      "seconds": 81.84059274899982,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 982
+      },
+      "sweeps": 982,
+      "update": 3,
+      "work": {
+        "backtracks": 1232,
+        "edge_visits": 8721530880,
+        "evaluations": 2218,
+        "patch_visits": 18169856,
+        "proposals": 2214
+      }
+    },
+    {
+      "name": "observer128-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.012143570980826725,
+          "state_rms": 0.1879312084548049
+        },
+        "context": {
+          "error_rms": 0.0008724309574161732,
+          "state_rms": 0.03531284390844006
+        },
+        "reflection": {
+          "error_rms": 0.011594090832373817,
+          "state_rms": 0.1489555493256838
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.3306855645479077,
+          "max_abs": 0.202676427671032,
+          "parameters": 25664,
+          "rms": 0.008306408249395051
+        },
+        "context": {
+          "l2": 0.14602686319225663,
+          "max_abs": 0.006398944853937107,
+          "parameters": 16928,
+          "rms": 0.0011223541869417927
+        },
+        "reflection": {
+          "l2": 0.852300042918349,
+          "max_abs": 0.11239669508836296,
+          "parameters": 18976,
+          "rms": 0.006187143295280573
+        }
+      },
+      "seconds": 69.08183116800001,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 817
+      },
+      "sweeps": 817,
+      "update": 4,
+      "work": {
+        "backtracks": 1079,
+        "edge_visits": 7471104000,
+        "evaluations": 1900,
+        "patch_visits": 15564800,
+        "proposals": 1896
+      }
+    },
+    {
+      "name": "observer128-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.019464698125758306,
+          "state_rms": 0.18758627336392028
+        },
+        "context": {
+          "error_rms": 0.000987601979156059,
+          "state_rms": 0.03559743641713398
+        },
+        "reflection": {
+          "error_rms": 0.011289671714738438,
+          "state_rms": 0.1316582869021961
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.5484906716086462,
+          "max_abs": 0.26568651898490664,
+          "parameters": 25664,
+          "rms": 0.009665991749997875
+        },
+        "context": {
+          "l2": 0.15670202609690267,
+          "max_abs": 0.006923894422250308,
+          "parameters": 16928,
+          "rms": 0.001204402883465122
+        },
+        "reflection": {
+          "l2": 0.8788858595900295,
+          "max_abs": 0.12213779596389518,
+          "parameters": 18976,
+          "rms": 0.006380139011679363
+        }
+      },
+      "seconds": 60.68098185300005,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 732
+      },
+      "sweeps": 732,
+      "update": 5,
+      "work": {
+        "backtracks": 956,
+        "edge_visits": 6653214720,
+        "evaluations": 1692,
+        "patch_visits": 13860864,
+        "proposals": 1688
+      }
+    },
+    {
+      "name": "observer128-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.019401241903122694,
+          "state_rms": 0.18825471516933887
+        },
+        "context": {
+          "error_rms": 0.0014776061052758796,
+          "state_rms": 0.03530006532131998
+        },
+        "reflection": {
+          "error_rms": 0.015056959922388403,
+          "state_rms": 0.14942929317378564
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.6289459369362658,
+          "max_abs": 0.2232940703585296,
+          "parameters": 25664,
+          "rms": 0.010168209777629111
+        },
+        "context": {
+          "l2": 0.16754656111442243,
+          "max_abs": 0.00788599930324108,
+          "parameters": 16928,
+          "rms": 0.0012877533644401566
+        },
+        "reflection": {
+          "l2": 0.9449487621035005,
+          "max_abs": 0.121947324894517,
+          "parameters": 18976,
+          "rms": 0.006859712663879864
+        }
+      },
+      "seconds": 95.34082683800034,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 1193
+      },
+      "sweeps": 1193,
+      "update": 6,
+      "work": {
+        "backtracks": 1546,
+        "edge_visits": 10785914880,
+        "evaluations": 2743,
+        "patch_visits": 22470656,
+        "proposals": 2739
+      }
+    },
+    {
+      "name": "observer128-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.015029065894004854,
+          "state_rms": 0.1890287156218236
+        },
+        "context": {
+          "error_rms": 0.002177392850597815,
+          "state_rms": 0.03408692120533841
+        },
+        "reflection": {
+          "error_rms": 0.017192050147964103,
+          "state_rms": 0.15056958696496836
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.696491931242819,
+          "max_abs": 0.27325608245318667,
+          "parameters": 25664,
+          "rms": 0.01058984552635098
+        },
+        "context": {
+          "l2": 0.17952802643641308,
+          "max_abs": 0.0078032961812322015,
+          "parameters": 16928,
+          "rms": 0.001379842227241581
+        },
+        "reflection": {
+          "l2": 1.0102199796601075,
+          "max_abs": 0.13118997831391407,
+          "parameters": 18976,
+          "rms": 0.0073335391988374014
+        }
+      },
+      "seconds": 65.43726275400013,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 813
+      },
+      "sweeps": 813,
+      "update": 7,
+      "work": {
+        "backtracks": 1035,
+        "edge_visits": 7282360320,
+        "evaluations": 1852,
+        "patch_visits": 15171584,
+        "proposals": 1848
+      }
+    },
+    {
+      "name": "observer128-beta0.1-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.018962897186115307,
+          "state_rms": 0.18921945743575544
+        },
+        "context": {
+          "error_rms": 0.004047179397747009,
+          "state_rms": 0.03537118440099461
+        },
+        "reflection": {
+          "error_rms": 0.02310795587727922,
+          "state_rms": 0.1535172184193353
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.7964738084651226,
+          "max_abs": 0.31928507381864674,
+          "parameters": 25664,
+          "rms": 0.011213952612108316
+        },
+        "context": {
+          "l2": 0.1986556762789902,
+          "max_abs": 0.008717399995472167,
+          "parameters": 16928,
+          "rms": 0.0015268562588921035
+        },
+        "reflection": {
+          "l2": 1.0929907325060368,
+          "max_abs": 0.14909463941739026,
+          "parameters": 18976,
+          "rms": 0.007934400964328448
+        }
+      },
+      "seconds": 89.89669934199992,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 1094
+      },
+      "sweeps": 1094,
+      "update": 8,
+      "work": {
+        "backtracks": 1462,
+        "edge_visits": 10066329600,
+        "evaluations": 2560,
+        "patch_visits": 20971520,
+        "proposals": 2556
+      }
+    },
+    {
+      "name": "observer128-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.002706657951453044,
+          "state_rms": 0.18493046602171923
+        },
+        "context": {
+          "error_rms": 0.00029495849072743997,
+          "state_rms": 0.017805540067435715
+        },
+        "reflection": {
+          "error_rms": 0.005013080502564284,
+          "state_rms": 0.1371927427415414
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 0.9777923713647989,
+          "max_abs": 0.10061347234243508,
+          "parameters": 25664,
+          "rms": 0.00610357761148442
+        },
+        "context": {
+          "l2": 0.15650543040957948,
+          "max_abs": 0.007308410882446363,
+          "parameters": 16928,
+          "rms": 0.0012028918601644887
+        },
+        "reflection": {
+          "l2": 0.8241016156976806,
+          "max_abs": 0.17294297438399106,
+          "parameters": 18976,
+          "rms": 0.005982441076425316
+        }
+      },
+      "seconds": 208.7320037510001,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 1580
+      },
+      "sweeps": 1580,
+      "update": 0,
+      "work": {
+        "backtracks": 2113,
+        "edge_visits": 14537195520,
+        "evaluations": 3697,
+        "patch_visits": 30285824,
+        "proposals": 3693
+      }
+    },
+    {
+      "name": "observer128-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.0027435093893839425,
+          "state_rms": 0.18493270540165269
+        },
+        "context": {
+          "error_rms": 0.0002187052244884435,
+          "state_rms": 0.01634926045552177
+        },
+        "reflection": {
+          "error_rms": 0.0029766551770037584,
+          "state_rms": 0.14177083398108464
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.2896619087923369,
+          "max_abs": 0.15171379049701167,
+          "parameters": 25664,
+          "rms": 0.008050330298550075
+        },
+        "context": {
+          "l2": 0.21128825909264093,
+          "max_abs": 0.009761345937574707,
+          "parameters": 16928,
+          "rms": 0.0016239495737989846
+        },
+        "reflection": {
+          "l2": 1.0625282577555861,
+          "max_abs": 0.22344114299755094,
+          "parameters": 18976,
+          "rms": 0.0077132632347507914
+        }
+      },
+      "seconds": 98.52580459699993,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 1110
+      },
+      "sweeps": 1110,
+      "update": 1,
+      "work": {
+        "backtracks": 1529,
+        "edge_visits": 10392698880,
+        "evaluations": 2643,
+        "patch_visits": 21651456,
+        "proposals": 2639
+      }
+    },
+    {
+      "name": "observer128-beta0.01-seed2",
+      "proposal_layer_activity": {
+        "base": {
+          "error_rms": 0.004973904011326326,
+          "state_rms": 0.18897255372651256
+        },
+        "context": {
+          "error_rms": 0.004104565274099399,
+          "state_rms": 0.01784512471164154
+        },
+        "reflection": {
+          "error_rms": 0.011281921157078045,
+          "state_rms": 0.14387028837175866
+        }
+      },
+      "retained_parameter_displacement": {
+        "base": {
+          "l2": 1.572345901258158,
+          "max_abs": 0.23581462685969695,
+          "parameters": 25664,
+          "rms": 0.009814900915041114
+        },
+        "context": {
+          "l2": 0.3341334791774777,
+          "max_abs": 0.029128294793848382,
+          "parameters": 16928,
+          "rms": 0.002568130966824441
+        },
+        "reflection": {
+          "l2": 1.3431422731272311,
+          "max_abs": 0.16930165417413165,
+          "parameters": 18976,
+          "rms": 0.009750338250989836
+        }
+      },
+      "seconds": 479.8010377640003,
+      "source_derived_execution": {
+        "reference_evaluations": 3,
+        "reference_restart": false,
+        "reference_sweeps": 0,
+        "tensor_sweeps": 5617
+      },
+      "sweeps": 5617,
+      "update": 2,
+      "work": {
+        "backtracks": 7921,
+        "edge_visits": 53249310720,
+        "evaluations": 13542,
+        "patch_visits": 110936064,
+        "proposals": 13538
+      }
+    }
+  ],
+  "schema": "cadence.c64-joint-update-diagnostics/1",
+  "source_sha256": {
+    "/home/ec2-user/cadence-060-20261001/c64/diagnostics.py": "ce4fe99d1178dd7c14d4240c37262a73a82e45910fd4746a2555b652863f928a",
+    "/home/ec2-user/cadence-060-20261001/code/src/cadence/_repair.py": "76f57fcdffad1e39b65e327af8a2ae26f89467dafa11520e96ac07a8ea67595a",
+    "/home/ec2-user/cadence-060-20261001/code/src/cadence/_tensor.py": "d5765b286c931863cf540d19133500f734b70270c1bf702d60476c8945d86ce9"
+  },
+  "summaries": [
+    {
+      "accepted": 12,
+      "attempted": 12,
+      "backtracks": 4583,
+      "evaluations": 8634,
+      "ledger_prefix_bytes": 8508,
+      "ledger_prefix_sha256": "a05217ccc8d6e1763b65901ff33de54c7bd613ba26cb35d353210a09d487f575",
+      "median_seconds_per_update": 3.0767953289999923,
+      "min_max_sweeps": [
+        270,
+        398
+      ],
+      "name": "flat-beta0.1-seed2",
+      "seconds": 37.24149063800019,
+      "source_deduced_no_refinement_updates": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "sweeps": 4003
+    },
+    {
+      "accepted": 12,
+      "attempted": 12,
+      "backtracks": 12092,
+      "evaluations": 21702,
+      "ledger_prefix_bytes": 8546,
+      "ledger_prefix_sha256": "e01e00104258ade011ec8293db2bdf0393f3961998060790a2d16fedab65f85a",
+      "median_seconds_per_update": 6.928306230000089,
+      "min_max_sweeps": [
+        667,
+        1009
+      ],
+      "name": "flat-beta0.01-seed2",
+      "seconds": 88.37560535700027,
+      "source_deduced_no_refinement_updates": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "sweeps": 9562
+    },
+    {
+      "accepted": 12,
+      "attempted": 12,
+      "backtracks": 12842,
+      "evaluations": 22848,
+      "ledger_prefix_bytes": 13536,
+      "ledger_prefix_sha256": "0ff8ad3085342d3481626bbb4faadb723ce8a16e54dddb8aae13c08fbe3cfa23",
+      "median_seconds_per_update": 41.235483059499984,
+      "min_max_sweeps": [
+        645,
+        1004
+      ],
+      "name": "ordinary64-beta0.1-seed2",
+      "seconds": 536.909139846,
+      "source_deduced_no_refinement_updates": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "sweeps": 9958
+    },
+    {
+      "accepted": 9,
+      "attempted": 9,
+      "backtracks": 22097,
+      "evaluations": 38302,
+      "ledger_prefix_bytes": 10152,
+      "ledger_prefix_sha256": "301e7c349e286de211d1412e27869aa63204f3a75ecfbf3c3bd08fd4523f2dc7",
+      "median_seconds_per_update": 63.07861031699986,
+      "min_max_sweeps": [
+        733,
+        7165
+      ],
+      "name": "ordinary64-beta0.01-seed2",
+      "seconds": 849.5505266099992,
+      "source_deduced_no_refinement_updates": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "sweeps": 16169
+    },
+    {
+      "accepted": 12,
+      "attempted": 12,
+      "backtracks": 13730,
+      "evaluations": 24449,
+      "ledger_prefix_bytes": 13534,
+      "ledger_prefix_sha256": "c51f1d4dbbe5725711cd5dc7741535b5996e548fa67a0d50d73b4ec0281d7807",
+      "median_seconds_per_update": 40.3003553945,
+      "min_max_sweeps": [
+        671,
+        1113
+      ],
+      "name": "observer64-beta0.1-seed2",
+      "seconds": 490.33057737800004,
+      "source_deduced_no_refinement_updates": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "sweeps": 10671
+    },
+    {
+      "accepted": 10,
+      "attempted": 10,
+      "backtracks": 28901,
+      "evaluations": 50141,
+      "ledger_prefix_bytes": 11301,
+      "ledger_prefix_sha256": "e49a68376662e7f34d9332e19e62d86501c795253f9d3d56a9452d3861caadb4",
+      "median_seconds_per_update": 61.51926184299987,
+      "min_max_sweeps": [
+        844,
+        7169
+      ],
+      "name": "observer64-beta0.01-seed2",
+      "seconds": 883.2035323169996,
+      "source_deduced_no_refinement_updates": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "sweeps": 21200
+    },
+    {
+      "accepted": 9,
+      "attempted": 9,
+      "backtracks": 9584,
+      "evaluations": 17079,
+      "ledger_prefix_bytes": 10187,
+      "ledger_prefix_sha256": "aa52ff1255669efabad8bba378cce815243fe19dcdfac45b5b18361654b8e378",
+      "median_seconds_per_update": 94.73670731900006,
+      "min_max_sweeps": [
+        629,
+        1206
+      ],
+      "name": "ordinary128-beta0.1-seed2",
+      "seconds": 874.060127533,
+      "source_deduced_no_refinement_updates": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "sweeps": 7459
+    },
+    {
+      "accepted": 3,
+      "attempted": 3,
+      "backtracks": 8674,
+      "evaluations": 15083,
+      "ledger_prefix_bytes": 3402,
+      "ledger_prefix_sha256": "274800f9802ba8fb71530e3ea0eff4940da622eecacc4a75323499e4b0c7efa5",
+      "median_seconds_per_update": 154.35593518099995,
+      "min_max_sweeps": [
+        1011,
+        4339
+      ],
+      "name": "ordinary128-beta0.01-seed2",
+      "seconds": 811.899904544,
+      "source_deduced_no_refinement_updates": [
+        0,
+        1,
+        2
+      ],
+      "sweeps": 6397
+    },
+    {
+      "accepted": 9,
+      "attempted": 9,
+      "backtracks": 11454,
+      "evaluations": 20272,
+      "ledger_prefix_bytes": 10184,
+      "ledger_prefix_sha256": "eb6f32ec0397d6a1cab59b44b02e4fc1909d0274b9ba7ce8cd8629322149140c",
+      "median_seconds_per_update": 81.84059274899982,
+      "min_max_sweeps": [
+        732,
+        1244
+      ],
+      "name": "observer128-beta0.1-seed2",
+      "seconds": 819.9591395100003,
+      "source_deduced_no_refinement_updates": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "sweeps": 8782
+    },
+    {
+      "accepted": 3,
+      "attempted": 3,
+      "backtracks": 11563,
+      "evaluations": 19882,
+      "ledger_prefix_bytes": 3408,
+      "ledger_prefix_sha256": "b096904c2474c1ee01d2b2a2aed55e1e216e5eb690e752e98d466d792afca887",
+      "median_seconds_per_update": 208.7320037510001,
+      "min_max_sweeps": [
+        1110,
+        5617
+      ],
+      "name": "observer128-beta0.01-seed2",
+      "seconds": 787.0588461120003,
+      "source_deduced_no_refinement_updates": [
+        0,
+        1,
+        2
+      ],
+      "sweeps": 8307
+    }
+  ]
+}

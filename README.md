@@ -42,6 +42,11 @@ explains their costs.
 Rover Lab is the place to compare the three patterns on the same body and the
 same data.
 
+The [fast/slow experiment](fast-slow/) combines a fast learned response with
+delayed recursive feedback behind one application interface. It includes
+Amen, C64 Maestro and native Atari training, plus a surprise-scheduling control.
+Its measured limits and reproduction instructions are recorded with the experiment.
+
 ## [Rover Lab](rover-lab/): three patterns on a changed body
 
 A differential-drive rover learns motion consequences from executed wheel

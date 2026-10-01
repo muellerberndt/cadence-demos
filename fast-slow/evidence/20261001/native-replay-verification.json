@@ -1,0 +1,344 @@
+{
+  "schema": "cadence.fast-slow-native-replay/1",
+  "source_sha256": "d364ef107650ce5c99348adecccdf8ef0f84186bc5fd178261b7fdc31979d4b5",
+  "ale_version": "0.12.1",
+  "episodes": [
+    {
+      "run": "native-wave1-Freeway-seed2",
+      "episode": "510102-untrained",
+      "decisions": 512,
+      "return": 0.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-Freeway-seed2",
+      "episode": "510102-fast_only",
+      "decisions": 512,
+      "return": 7.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-Freeway-seed2",
+      "episode": "510102-conditioned",
+      "decisions": 512,
+      "return": 7.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-Freeway-seed2",
+      "episode": "510102-conditioned_disabled",
+      "decisions": 512,
+      "return": 7.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-Freeway-seed2",
+      "episode": "510102-conditioned_surprise",
+      "decisions": 512,
+      "return": 7.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-Freeway-seed2",
+      "episode": "510102-teacher",
+      "decisions": 512,
+      "return": 7.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-Freeway-seed2",
+      "episode": "510107-untrained",
+      "decisions": 512,
+      "return": 0.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-Freeway-seed2",
+      "episode": "510107-fast_only",
+      "decisions": 512,
+      "return": 5.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-Freeway-seed2",
+      "episode": "510107-conditioned",
+      "decisions": 512,
+      "return": 5.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-Freeway-seed2",
+      "episode": "510107-conditioned_disabled",
+      "decisions": 512,
+      "return": 5.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-Freeway-seed2",
+      "episode": "510107-conditioned_surprise",
+      "decisions": 512,
+      "return": 5.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-Freeway-seed2",
+      "episode": "510107-teacher",
+      "decisions": 512,
+      "return": 5.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-Freeway-seed7",
+      "episode": "510102-untrained",
+      "decisions": 512,
+      "return": 0.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-Freeway-seed7",
+      "episode": "510102-fast_only",
+      "decisions": 512,
+      "return": 7.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-Freeway-seed7",
+      "episode": "510102-conditioned",
+      "decisions": 512,
+      "return": 7.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-Freeway-seed7",
+      "episode": "510102-conditioned_disabled",
+      "decisions": 512,
+      "return": 7.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-Freeway-seed7",
+      "episode": "510102-conditioned_surprise",
+      "decisions": 512,
+      "return": 7.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-Freeway-seed7",
+      "episode": "510102-teacher",
+      "decisions": 512,
+      "return": 7.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-Freeway-seed7",
+      "episode": "510107-untrained",
+      "decisions": 512,
+      "return": 0.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-Freeway-seed7",
+      "episode": "510107-fast_only",
+      "decisions": 512,
+      "return": 5.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-Freeway-seed7",
+      "episode": "510107-conditioned",
+      "decisions": 512,
+      "return": 5.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-Freeway-seed7",
+      "episode": "510107-conditioned_disabled",
+      "decisions": 512,
+      "return": 5.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-Freeway-seed7",
+      "episode": "510107-conditioned_surprise",
+      "decisions": 512,
+      "return": 5.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-Freeway-seed7",
+      "episode": "510107-teacher",
+      "decisions": 512,
+      "return": 5.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-SpaceInvaders-seed2",
+      "episode": "510102-untrained",
+      "decisions": 512,
+      "return": 270.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-SpaceInvaders-seed2",
+      "episode": "510102-fast_only",
+      "decisions": 476,
+      "return": 225.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-SpaceInvaders-seed2",
+      "episode": "510102-conditioned",
+      "decisions": 476,
+      "return": 225.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-SpaceInvaders-seed2",
+      "episode": "510102-conditioned_disabled",
+      "decisions": 476,
+      "return": 225.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-SpaceInvaders-seed2",
+      "episode": "510102-conditioned_surprise",
+      "decisions": 476,
+      "return": 225.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-SpaceInvaders-seed2",
+      "episode": "510102-teacher",
+      "decisions": 512,
+      "return": 185.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-SpaceInvaders-seed2",
+      "episode": "510107-untrained",
+      "decisions": 512,
+      "return": 270.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-SpaceInvaders-seed2",
+      "episode": "510107-fast_only",
+      "decisions": 471,
+      "return": 225.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-SpaceInvaders-seed2",
+      "episode": "510107-conditioned",
+      "decisions": 471,
+      "return": 225.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-SpaceInvaders-seed2",
+      "episode": "510107-conditioned_disabled",
+      "decisions": 471,
+      "return": 225.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-SpaceInvaders-seed2",
+      "episode": "510107-conditioned_surprise",
+      "decisions": 471,
+      "return": 225.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-SpaceInvaders-seed2",
+      "episode": "510107-teacher",
+      "decisions": 512,
+      "return": 185.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-SpaceInvaders-seed7",
+      "episode": "510102-untrained",
+      "decisions": 512,
+      "return": 105.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-SpaceInvaders-seed7",
+      "episode": "510102-fast_only",
+      "decisions": 512,
+      "return": 170.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-SpaceInvaders-seed7",
+      "episode": "510102-conditioned",
+      "decisions": 512,
+      "return": 170.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-SpaceInvaders-seed7",
+      "episode": "510102-conditioned_disabled",
+      "decisions": 512,
+      "return": 170.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-SpaceInvaders-seed7",
+      "episode": "510102-conditioned_surprise",
+      "decisions": 512,
+      "return": 170.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-SpaceInvaders-seed7",
+      "episode": "510102-teacher",
+      "decisions": 512,
+      "return": 185.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-SpaceInvaders-seed7",
+      "episode": "510107-untrained",
+      "decisions": 512,
+      "return": 105.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-SpaceInvaders-seed7",
+      "episode": "510107-fast_only",
+      "decisions": 512,
+      "return": 200.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-SpaceInvaders-seed7",
+      "episode": "510107-conditioned",
+      "decisions": 512,
+      "return": 200.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-SpaceInvaders-seed7",
+      "episode": "510107-conditioned_disabled",
+      "decisions": 512,
+      "return": 200.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-SpaceInvaders-seed7",
+      "episode": "510107-conditioned_surprise",
+      "decisions": 512,
+      "return": 200.0,
+      "verified": true
+    },
+    {
+      "run": "native-wave1-SpaceInvaders-seed7",
+      "episode": "510107-teacher",
+      "decisions": 512,
+      "return": 185.0,
+      "verified": true
+    }
+  ],
+  "verified": true
+}

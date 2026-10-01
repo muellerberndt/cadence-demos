@@ -1,0 +1,72 @@
+[
+  {
+    "case": 0,
+    "command": [
+      "/home/ec2-user/venv-atari/bin/python",
+      "/home/ec2-user/cadence-060-self-correction-20261001/self_correction.py",
+      "--seed",
+      "2",
+      "--out",
+      "/home/ec2-user/cadence-060-self-correction-20261001/runs/seed2"
+    ],
+    "status": "exited",
+    "returncode": 0,
+    "seconds": 4.322049865999816
+  },
+  {
+    "case": 1,
+    "command": [
+      "/home/ec2-user/venv-atari/bin/python",
+      "/home/ec2-user/cadence-060-self-correction-20261001/self_correction.py",
+      "--seed",
+      "7",
+      "--out",
+      "/home/ec2-user/cadence-060-self-correction-20261001/runs/seed7"
+    ],
+    "status": "exited",
+    "returncode": 0,
+    "seconds": 4.523144056999627
+  },
+  {
+    "case": 2,
+    "command": [
+      "/home/ec2-user/venv-atari/bin/python",
+      "/home/ec2-user/cadence-060-self-correction-20261001/self_correction.py",
+      "--seed",
+      "11",
+      "--out",
+      "/home/ec2-user/cadence-060-self-correction-20261001/runs/seed11"
+    ],
+    "status": "exited",
+    "returncode": 0,
+    "seconds": 4.373672200999863
+  },
+  {
+    "case": 3,
+    "command": [
+      "/home/ec2-user/venv-atari/bin/python",
+      "/home/ec2-user/cadence-060-self-correction-20261001/self_correction.py",
+      "--seed",
+      "19",
+      "--out",
+      "/home/ec2-user/cadence-060-self-correction-20261001/runs/seed19"
+    ],
+    "status": "exited",
+    "returncode": 0,
+    "seconds": 4.422252959999696
+  },
+  {
+    "case": 4,
+    "command": [
+      "/home/ec2-user/venv-atari/bin/python",
+      "/home/ec2-user/cadence-060-self-correction-20261001/self_correction.py",
+      "--seed",
+      "29",
+      "--out",
+      "/home/ec2-user/cadence-060-self-correction-20261001/runs/seed29"
+    ],
+    "status": "exited",
+    "returncode": 0,
+    "seconds": 4.621660874000099
+  }
+]

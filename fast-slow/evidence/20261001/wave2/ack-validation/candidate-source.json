@@ -1,0 +1,19 @@
+{
+  "archive_sha256": "390b2bc7281cd930576774f87216290feaa53f6b3ac778f97030072739765acf",
+  "bytes": 1478317,
+  "base_commit": "9c746057105c7b68d482f67d1e4241abb08c1f34",
+  "implementation": {
+    "__init__.py": "de69e80ad2c1bdc5a30e432e5c0c70124e694d06a072e1d73a7b6fe2607ead26",
+    "_repair.py": "76f57fcdffad1e39b65e327af8a2ae26f89467dafa11520e96ac07a8ea67595a",
+    "_tensor.py": "d5765b286c931863cf540d19133500f734b70270c1bf702d60476c8945d86ce9",
+    "_validation.py": "05d09fd56ec96ef9315cfe569fa818a718795d1aedefd12d5b02bb619808b0ab",
+    "bootstrap.py": "e7f5e0096e1ea3b6ac733805ab814acfd368824b86c7b52969d3936eba48868f",
+    "brain.py": "e87fc184b32a769d0840a14f900ecfd24da8b28c37da2d84c8b83c9df7d7f3fb",
+    "column.py": "d3752d27227ca34dfc03134d792cc046fc41d96ac181f19be852a193d1eee203",
+    "cortex.py": "270f963fa6ca1c91b0deb19ce0f440cd4881f79205fdd115f64ef23942463482",
+    "memory.py": "55eb67223932f54f3dd7a4a39f5f540f1af64eb6c9551b3144c7c74cda0b9e2a",
+    "ports.py": "f0ec46ba314ee20523ff603473256362ae84a1522e89d39751f082f278aa4dca",
+    "reinforcement.py": "de0aea848b3fccddd4de790defc8844326dc29e07311cd5c617fde3dc6201676",
+    "runtime.py": "85f0464c223578bc4fbd3607a175e7c932f125157b2ca25cd09bd2bb9e0ab428"
+  }
+}

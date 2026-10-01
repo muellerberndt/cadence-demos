@@ -1,0 +1,47 @@
+{
+  "kind": "public-data-inspection-only",
+  "training_runs": 0,
+  "data_location": "/home/ec2-user/cadence-060-occlusion-data-20261001",
+  "host": "i-0a57d4aaeffa98a7e",
+  "files": {
+    "dependency-install.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "preparation.log": {
+      "bytes": 165,
+      "sha256": "a48d2749c4886de7eb6b3d65d964f9a9ae18f143f8db9a68b13f94c410efeb6c"
+    },
+    "preparation-attempt2.log": {
+      "bytes": 10037,
+      "sha256": "4b5435bab66788b6dbeafe0951b922c278fe7eef90d660303e486864d6309c00"
+    },
+    "manifest.json": {
+      "bytes": 31913,
+      "sha256": "1e72a2756c5b712c5af8cb1db55d22b0137f7f7a6fa599c9333268301ca98fb5"
+    },
+    "verify.py": {
+      "bytes": 5320,
+      "sha256": "2ade782e3d4ffbfeb3851d0e7fb12d094b078c29388b6657885871f710420b1d"
+    },
+    "verification.log": {
+      "bytes": 1701,
+      "sha256": "ac14e1b19c1cad06513b726b68786d763dad7915f1dbe2b1e77465fec45e32a8"
+    },
+    "prepare.py": {
+      "bytes": 6212,
+      "sha256": "81d92a5af1c2472af6a9f4d2c6aa8ea07b6650fa102852b728040dc1b7924c30"
+    }
+  },
+  "source_manifest_sha256": "1e72a2756c5b712c5af8cb1db55d22b0137f7f7a6fa599c9333268301ca98fb5",
+  "bulk_data_downloaded_to_mac": false,
+  "initial_inspection_local_small_files_bytes": 3083891,
+  "original_data_modified": false,
+  "baseline_reproduced": false,
+  "native_cadence_result": false,
+  "protocol": {
+    "path": "fast-slow/occlusion_protocol.json",
+    "sha256": "4c5c6804e61c07ec15f7322b1a850232a33a95d24ca1341c2791f87435957dcb",
+    "status": "preregistered_candidate_design_pending_fidelity_gates_and_runner_implementation"
+  }
+}

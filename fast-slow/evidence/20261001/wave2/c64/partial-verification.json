@@ -1,0 +1,63 @@
+{
+  "boundary": "Timeout arms retain source-valid initial brains, baseline query receipts and accepted-update ledgers. Trained in-memory parameters and after-training quality are unavailable. This does not convert a timeout into a completed arm.",
+  "initial_snapshots_verified": 6,
+  "qualified_repeat_queries": 24,
+  "results": [
+    {
+      "accepted_updates_verified": 9,
+      "after_training_quality_available": false,
+      "initial_snapshot_sha256": "59db3e7116604c7e4a22a5f672a9102d21b7937ce9a8bb64a51dd012398aa3d3",
+      "initial_snapshot_verified": true,
+      "learned_continuation_available": false,
+      "name": "ordinary64-beta0.01-seed2",
+      "qualified_repeats": 4
+    },
+    {
+      "accepted_updates_verified": 10,
+      "after_training_quality_available": false,
+      "initial_snapshot_sha256": "85356494c6ffc015377b7518d5606cc667086f4e1c4826be4a2410e600226faf",
+      "initial_snapshot_verified": true,
+      "learned_continuation_available": false,
+      "name": "observer64-beta0.01-seed2",
+      "qualified_repeats": 4
+    },
+    {
+      "accepted_updates_verified": 9,
+      "after_training_quality_available": false,
+      "initial_snapshot_sha256": "1b31220a98076e31d98bd89ac88fdd47eebe9c694934e2cc36aee1c0e7f92e3b",
+      "initial_snapshot_verified": true,
+      "learned_continuation_available": false,
+      "name": "ordinary128-beta0.1-seed2",
+      "qualified_repeats": 4
+    },
+    {
+      "accepted_updates_verified": 3,
+      "after_training_quality_available": false,
+      "initial_snapshot_sha256": "e22bf1475989cc2e762ebf4f6c94d5003b8fd15a6d5db84d23007f64460dbece",
+      "initial_snapshot_verified": true,
+      "learned_continuation_available": false,
+      "name": "ordinary128-beta0.01-seed2",
+      "qualified_repeats": 4
+    },
+    {
+      "accepted_updates_verified": 9,
+      "after_training_quality_available": false,
+      "initial_snapshot_sha256": "e2b2ad08bf73fe52e3db9eb1de664979f7926c9d6657917e46a09d4a02865c76",
+      "initial_snapshot_verified": true,
+      "learned_continuation_available": false,
+      "name": "observer128-beta0.1-seed2",
+      "qualified_repeats": 4
+    },
+    {
+      "accepted_updates_verified": 3,
+      "after_training_quality_available": false,
+      "initial_snapshot_sha256": "590a87364718e2889005db7e5480a181e533a400e6cf42ee4eb53894fe7be8e3",
+      "initial_snapshot_verified": true,
+      "learned_continuation_available": false,
+      "name": "observer128-beta0.01-seed2",
+      "qualified_repeats": 4
+    }
+  ],
+  "schema": "cadence.c64-joint-partial-evidence/1",
+  "status": "partial_evidence_verified"
+}

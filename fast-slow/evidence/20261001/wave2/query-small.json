@@ -1,0 +1,518 @@
+{
+  "cases": [
+    {
+      "name": "bias_only",
+      "summary": {
+        "all": {
+          "arms": {
+            "baseline": {
+              "calls": 2000,
+              "exceptions": 0,
+              "qualified": 2000,
+              "refused": 0,
+              "seconds": {
+                "max": 0.0007838520000404969,
+                "median": 3.872150000461261e-05,
+                "p95": 4.8375600010786e-05,
+                "p99": 5.393335991129788e-05,
+                "total": 0.06472003100020629
+              },
+              "sweeps": 2000,
+              "work": {
+                "backtracks": 0,
+                "edge_visits": 0,
+                "evaluations": 6000,
+                "patch_visits": 12000,
+                "proposals": 2000
+              }
+            },
+            "candidate": {
+              "calls": 2000,
+              "exceptions": 0,
+              "qualified": 2000,
+              "refused": 0,
+              "seconds": {
+                "max": 0.00011152799993396911,
+                "median": 4.221199992571201e-05,
+                "p95": 5.2632600011293106e-05,
+                "p99": 6.295376981370282e-05,
+                "total": 0.06857989300442568
+              },
+              "sweeps": 2000,
+              "work": {
+                "backtracks": 0,
+                "edge_visits": 0,
+                "evaluations": 6000,
+                "patch_visits": 12000,
+                "proposals": 2000
+              }
+            }
+          },
+          "baseline_over_candidate": {
+            "max": 7.028297831079026,
+            "median": 0.9173102452562718,
+            "p95": 0.9191185691074789,
+            "p99": 0.856713745195899,
+            "total": 0.9437172932892983
+          },
+          "exact_pairs": 2000,
+          "pairs": 2000
+        },
+        "cold": {
+          "arms": {
+            "baseline": {
+              "calls": 1000,
+              "exceptions": 0,
+              "qualified": 1000,
+              "refused": 0,
+              "seconds": {
+                "max": 0.0007838520000404969,
+                "median": 4.207949996271054e-05,
+                "p95": 5.023985008847375e-05,
+                "p99": 5.85641600900999e-05,
+                "total": 0.0438509809948755
+              },
+              "sweeps": 2000,
+              "work": {
+                "backtracks": 0,
+                "edge_visits": 0,
+                "evaluations": 4000,
+                "patch_visits": 8000,
+                "proposals": 2000
+              }
+            },
+            "candidate": {
+              "calls": 1000,
+              "exceptions": 0,
+              "qualified": 1000,
+              "refused": 0,
+              "seconds": {
+                "max": 0.00011152799993396911,
+                "median": 4.602199999226286e-05,
+                "p95": 5.598159989403938e-05,
+                "p99": 6.717016015272746e-05,
+                "total": 0.047421848004660205
+              },
+              "sweeps": 2000,
+              "work": {
+                "backtracks": 0,
+                "edge_visits": 0,
+                "evaluations": 4000,
+                "patch_visits": 8000,
+                "proposals": 2000
+              }
+            }
+          },
+          "baseline_over_candidate": {
+            "max": 7.028297831079026,
+            "median": 0.9143344480853695,
+            "p95": 0.8974350533669371,
+            "p99": 0.8718776307357351,
+            "total": 0.9246999608822964
+          },
+          "exact_pairs": 1000,
+          "pairs": 1000
+        },
+        "live": {
+          "arms": {
+            "baseline": {
+              "calls": 1000,
+              "exceptions": 0,
+              "qualified": 1000,
+              "refused": 0,
+              "seconds": {
+                "max": 0.0004836299999624316,
+                "median": 1.9815499967990036e-05,
+                "p95": 2.3740350002299234e-05,
+                "p99": 2.9822290091487947e-05,
+                "total": 0.02086905000533079
+              },
+              "sweeps": 0,
+              "work": {
+                "backtracks": 0,
+                "edge_visits": 0,
+                "evaluations": 2000,
+                "patch_visits": 4000,
+                "proposals": 0
+              }
+            },
+            "candidate": {
+              "calls": 1000,
+              "exceptions": 0,
+              "qualified": 1000,
+              "refused": 0,
+              "seconds": {
+                "max": 0.0001038420000440965,
+                "median": 2.049299996542686e-05,
+                "p95": 2.482470009681492e-05,
+                "p99": 3.0100340077296998e-05,
+                "total": 0.02115804499976548
+              },
+              "sweeps": 0,
+              "work": {
+                "backtracks": 0,
+                "edge_visits": 0,
+                "evaluations": 2000,
+                "patch_visits": 4000,
+                "proposals": 0
+              }
+            }
+          },
+          "baseline_over_candidate": {
+            "max": 4.6573640700011385,
+            "median": 0.9669399307773476,
+            "p95": 0.956319710196426,
+            "p99": 0.9907625633100814,
+            "total": 0.9863411296063558
+          },
+          "exact_pairs": 1000,
+          "pairs": 1000
+        }
+      }
+    },
+    {
+      "name": "one_edge",
+      "summary": {
+        "all": {
+          "arms": {
+            "baseline": {
+              "calls": 2000,
+              "exceptions": 0,
+              "qualified": 2000,
+              "refused": 0,
+              "seconds": {
+                "max": 0.00041939099992305273,
+                "median": 4.07140000788786e-05,
+                "p95": 4.973529999006132e-05,
+                "p99": 5.564670020021367e-05,
+                "total": 0.06762045600248712
+              },
+              "sweeps": 2000,
+              "work": {
+                "backtracks": 0,
+                "edge_visits": 12000,
+                "evaluations": 6000,
+                "patch_visits": 12000,
+                "proposals": 2000
+              }
+            },
+            "candidate": {
+              "calls": 2000,
+              "exceptions": 0,
+              "qualified": 2000,
+              "refused": 0,
+              "seconds": {
+                "max": 8.842299985190039e-05,
+                "median": 4.4593500092560134e-05,
+                "p95": 5.488520007475017e-05,
+                "p99": 6.117371997106602e-05,
+                "total": 0.07213748299864164
+              },
+              "sweeps": 2000,
+              "work": {
+                "backtracks": 0,
+                "edge_visits": 10000,
+                "evaluations": 6000,
+                "patch_visits": 12000,
+                "proposals": 2000
+              }
+            }
+          },
+          "baseline_over_candidate": {
+            "max": 4.74300804796818,
+            "median": 0.9130030160084074,
+            "p95": 0.9061696035055896,
+            "p99": 0.9096504222161653,
+            "total": 0.9373830800800247
+          },
+          "exact_pairs": 2000,
+          "pairs": 2000
+        },
+        "cold": {
+          "arms": {
+            "baseline": {
+              "calls": 1000,
+              "exceptions": 0,
+              "qualified": 1000,
+              "refused": 0,
+              "seconds": {
+                "max": 7.354699982897728e-05,
+                "median": 4.394799998408416e-05,
+                "p95": 5.219784985683873e-05,
+                "p99": 6.101534004528728e-05,
+                "total": 0.045073792001176116
+              },
+              "sweeps": 2000,
+              "work": {
+                "backtracks": 0,
+                "edge_visits": 8000,
+                "evaluations": 4000,
+                "patch_visits": 8000,
+                "proposals": 2000
+              }
+            },
+            "candidate": {
+              "calls": 1000,
+              "exceptions": 0,
+              "qualified": 1000,
+              "refused": 0,
+              "seconds": {
+                "max": 8.842299985190039e-05,
+                "median": 4.8047500058601145e-05,
+                "p95": 5.722229993807559e-05,
+                "p99": 6.875984990983851e-05,
+                "total": 0.04928914999754852
+              },
+              "sweeps": 2000,
+              "work": {
+                "backtracks": 0,
+                "edge_visits": 6000,
+                "evaluations": 4000,
+                "patch_visits": 8000,
+                "proposals": 2000
+              }
+            }
+          },
+          "baseline_over_candidate": {
+            "max": 0.8317632284830994,
+            "median": 0.9146781816011857,
+            "p95": 0.9121941955029038,
+            "p99": 0.887368720631208,
+            "total": 0.9144769589943819
+          },
+          "exact_pairs": 1000,
+          "pairs": 1000
+        },
+        "live": {
+          "arms": {
+            "baseline": {
+              "calls": 1000,
+              "exceptions": 0,
+              "qualified": 1000,
+              "refused": 0,
+              "seconds": {
+                "max": 0.00041939099992305273,
+                "median": 2.1548999939113855e-05,
+                "p95": 2.5711650039283995e-05,
+                "p99": 2.9787869905248954e-05,
+                "total": 0.022546664001311
+              },
+              "sweeps": 0,
+              "work": {
+                "backtracks": 0,
+                "edge_visits": 4000,
+                "evaluations": 2000,
+                "patch_visits": 4000,
+                "proposals": 0
+              }
+            },
+            "candidate": {
+              "calls": 1000,
+              "exceptions": 0,
+              "qualified": 1000,
+              "refused": 0,
+              "seconds": {
+                "max": 4.852000006394519e-05,
+                "median": 2.2140999931252736e-05,
+                "p95": 2.6470399984646064e-05,
+                "p99": 3.621683013989239e-05,
+                "total": 0.022848333001093124
+              },
+              "sweeps": 0,
+              "work": {
+                "backtracks": 0,
+                "edge_visits": 4000,
+                "evaluations": 2000,
+                "patch_visits": 4000,
+                "proposals": 0
+              }
+            }
+          },
+          "baseline_over_candidate": {
+            "max": 8.643672699306089,
+            "median": 0.9732622738820728,
+            "p95": 0.9713359093250508,
+            "p99": 0.8224869429541264,
+            "total": 0.9867968923698858
+          },
+          "exact_pairs": 1000,
+          "pairs": 1000
+        }
+      }
+    },
+    {
+      "name": "tiny_recursive",
+      "summary": {
+        "all": {
+          "arms": {
+            "baseline": {
+              "calls": 2000,
+              "exceptions": 0,
+              "qualified": 2000,
+              "refused": 0,
+              "seconds": {
+                "max": 0.000516133000019181,
+                "median": 0.00013160900005004805,
+                "p95": 0.00016054809995011965,
+                "p99": 0.0001701868901227499,
+                "total": 0.1731624660055786
+              },
+              "sweeps": 9000,
+              "work": {
+                "backtracks": 1000,
+                "edge_visits": 84000,
+                "evaluations": 14000,
+                "patch_visits": 56000,
+                "proposals": 10000
+              }
+            },
+            "candidate": {
+              "calls": 2000,
+              "exceptions": 0,
+              "qualified": 2000,
+              "refused": 0,
+              "seconds": {
+                "max": 0.00019841499988615396,
+                "median": 9.768749998784187e-05,
+                "p95": 0.00016753854995386064,
+                "p99": 0.00017843036980139004,
+                "total": 0.17923523899958127
+              },
+              "sweeps": 9000,
+              "work": {
+                "backtracks": 1000,
+                "edge_visits": 74000,
+                "evaluations": 14000,
+                "patch_visits": 56000,
+                "proposals": 10000
+              }
+            }
+          },
+          "baseline_over_candidate": {
+            "max": 2.601280146739543,
+            "median": 1.3472450422666977,
+            "p95": 0.9582755729611715,
+            "p99": 0.9538000190897103,
+            "total": 0.9661184205299224
+          },
+          "exact_pairs": 2000,
+          "pairs": 2000
+        },
+        "cold": {
+          "arms": {
+            "baseline": {
+              "calls": 1000,
+              "exceptions": 0,
+              "qualified": 1000,
+              "refused": 0,
+              "seconds": {
+                "max": 0.00021982800012665393,
+                "median": 0.00014019699995060364,
+                "p95": 0.00016497389983669564,
+                "p99": 0.0001737851100165244,
+                "total": 0.14349350800080174
+              },
+              "sweeps": 9000,
+              "work": {
+                "backtracks": 1000,
+                "edge_visits": 72000,
+                "evaluations": 12000,
+                "patch_visits": 48000,
+                "proposals": 10000
+              }
+            },
+            "candidate": {
+              "calls": 1000,
+              "exceptions": 0,
+              "qualified": 1000,
+              "refused": 0,
+              "seconds": {
+                "max": 0.00019841499988615396,
+                "median": 0.00014576300009139231,
+                "p95": 0.00017224749996103128,
+                "p99": 0.00018050887992330898,
+                "total": 0.14942359400197347
+              },
+              "sweeps": 9000,
+              "work": {
+                "backtracks": 1000,
+                "edge_visits": 62000,
+                "evaluations": 12000,
+                "patch_visits": 48000,
+                "proposals": 10000
+              }
+            }
+          },
+          "baseline_over_candidate": {
+            "max": 1.1079202693989176,
+            "median": 0.9618147257033758,
+            "p95": 0.957772390740178,
+            "p99": 0.9627510297020222,
+            "total": 0.9603135900941225
+          },
+          "exact_pairs": 1000,
+          "pairs": 1000
+        },
+        "live": {
+          "arms": {
+            "baseline": {
+              "calls": 1000,
+              "exceptions": 0,
+              "qualified": 1000,
+              "refused": 0,
+              "seconds": {
+                "max": 0.000516133000019181,
+                "median": 2.8470999950513942e-05,
+                "p95": 3.411044990571099e-05,
+                "p99": 4.0992210167587465e-05,
+                "total": 0.02966895800477687
+              },
+              "sweeps": 0,
+              "work": {
+                "backtracks": 0,
+                "edge_visits": 12000,
+                "evaluations": 2000,
+                "patch_visits": 8000,
+                "proposals": 0
+              }
+            },
+            "candidate": {
+              "calls": 1000,
+              "exceptions": 0,
+              "qualified": 1000,
+              "refused": 0,
+              "seconds": {
+                "max": 5.930199995418661e-05,
+                "median": 2.8902999929414364e-05,
+                "p95": 3.462314991793391e-05,
+                "p99": 4.4543979936406675e-05,
+                "total": 0.0298116449976078
+              },
+              "sweeps": 0,
+              "work": {
+                "backtracks": 0,
+                "edge_visits": 12000,
+                "evaluations": 2000,
+                "patch_visits": 8000,
+                "proposals": 0
+              }
+            }
+          },
+          "baseline_over_candidate": {
+            "max": 8.70346700647392,
+            "median": 0.9850534553521976,
+            "p95": 0.9851919882090984,
+            "p99": 0.9202637533985535,
+            "total": 0.9952137162225573
+          },
+          "exact_pairs": 1000,
+          "pairs": 1000
+        }
+      }
+    }
+  ],
+  "ledger_sha256": "bfebbf254755ce0f1055adb62571a3a5a9daf399b80f5026b3543b441b0006b4",
+  "protocol_sha256": "552ed063be55f0d3b10301e3472d2caa04d6da4f66438265d2018522170a4ebb",
+  "sources_unchanged": true,
+  "status": "complete"
+}

@@ -1,0 +1,103 @@
+[
+  {
+    "run": "cadence-fast-slow-music-amen-seed2",
+    "status": "preserved_error",
+    "error": "ModuleNotFoundError: scipy absent in C64-only environment at Amen render"
+  },
+  {
+    "run": "cadence-fast-slow-music-amen-seed2-retry",
+    "arm": "fast_only",
+    "verified": true,
+    "events": 128,
+    "trace_sha256": "18e06c007f63248dad40b036083c0221fadcd0068c04391496f67f224e0dfa53",
+    "wav_sha256": "29eb6786c61a17b080f0ad6687ec8ccf7a748004c040d5fa4b61353767b033de"
+  },
+  {
+    "run": "cadence-fast-slow-music-amen-seed2-retry",
+    "arm": "conditioned",
+    "verified": true,
+    "events": 128,
+    "trace_sha256": "ab269dcd7a5b5e4601f0629b77b2c3b63bf2e5966df9768c64667f202bfea208",
+    "wav_sha256": "aa24295941baa223785a5e65270d439bc486421866737f2a01a2bd4f282bb538"
+  },
+  {
+    "run": "cadence-fast-slow-music-amen-seed2-retry",
+    "arm": "conditioned_disabled",
+    "verified": true,
+    "events": 128,
+    "trace_sha256": "695d107021d090daeeae914181a71eb958cf875b38f8dd5c790294575d423276",
+    "wav_sha256": "1ca33581c30ab07b20e1cc23f87cba158287177391712fbae1b20062eede46e5"
+  },
+  {
+    "run": "cadence-fast-slow-music-amen-seed7-retry",
+    "arm": "fast_only",
+    "verified": true,
+    "events": 128,
+    "trace_sha256": "dbeb4183673cd5e7cd1b43dfe32a09b05065bca0c74f3541faccb80fc8595d4b",
+    "wav_sha256": "768fa51a302228351075fa73b2dc1c6175d3b8b7b527074a4aedd8c0a7066cb9"
+  },
+  {
+    "run": "cadence-fast-slow-music-amen-seed7-retry",
+    "arm": "conditioned",
+    "verified": true,
+    "events": 128,
+    "trace_sha256": "518422214feb5b7fe356c13f6f448587dff88403527558f083b83b6da6d0f425",
+    "wav_sha256": "623e0e298b26dccc153354b2e98e71398a64bab5172b3d71a4351b91e4561c2e"
+  },
+  {
+    "run": "cadence-fast-slow-music-amen-seed7-retry",
+    "arm": "conditioned_disabled",
+    "verified": true,
+    "events": 128,
+    "trace_sha256": "f29fbd5be5fd3aeac360933ac8a40ad750b436127743103b32ee7c49f32e9630",
+    "wav_sha256": "74b562305ff7b5f78d4bf8d0308b0e35f864ba853aa1e13d6806fa1a7e641509"
+  },
+  {
+    "run": "cadence-fast-slow-music-c64-seed2",
+    "arm": "fast_only",
+    "verified": true,
+    "events": 128,
+    "trace_sha256": "b9924ffc466ba1a4703952b6e45b4b456a65842f054755ab3c9acd0f3cb08148",
+    "wav_sha256": "13236a62b61e6fff2eae5f18ffb1eeac757f250969f1e176c006dcf3a329d406"
+  },
+  {
+    "run": "cadence-fast-slow-music-c64-seed2",
+    "arm": "conditioned",
+    "verified": true,
+    "events": 128,
+    "trace_sha256": "0c59f564fae237e5edaa115432c5f9e143654ded6d767492ca7cff7852c15050",
+    "wav_sha256": "00f3f98a14727495d40b57fa2519fef684a40620b1523b6d4cd74daceb3669da"
+  },
+  {
+    "run": "cadence-fast-slow-music-c64-seed2",
+    "arm": "conditioned_disabled",
+    "verified": true,
+    "events": 128,
+    "trace_sha256": "f85cc2c9354fe6ab7ac3bc237eb5c083ad4f4c0c9dd5dedbf5c7410c35e88d47",
+    "wav_sha256": "4f0b4758e83f44fa75b32b2da54077a085c6829b81a7dec019de94ac55362297"
+  },
+  {
+    "run": "cadence-fast-slow-music-c64-seed7",
+    "arm": "fast_only",
+    "verified": true,
+    "events": 128,
+    "trace_sha256": "c545d3de2a6cf47eada1e1c14078398b32ba444d787cb870933b708a53bbc453",
+    "wav_sha256": "fc8663f6a30e19340ecf9ec636e7476ec9e8988868ade5100b7b52606c6f2e5a"
+  },
+  {
+    "run": "cadence-fast-slow-music-c64-seed7",
+    "arm": "conditioned",
+    "verified": true,
+    "events": 128,
+    "trace_sha256": "9c8306f4707b36856dc6796d8b3ae2b9eaf6809bea13258a31e5466990507e66",
+    "wav_sha256": "47e8fd759a3e6a812c425b2681b26ac7cd4a1cbc8d4d0832b95cecc55a8ecfc0"
+  },
+  {
+    "run": "cadence-fast-slow-music-c64-seed7",
+    "arm": "conditioned_disabled",
+    "verified": true,
+    "events": 128,
+    "trace_sha256": "61e7f74c4b878f85dba148769a433b06c6ee5e6dfdc61fc7fe74819362d70d95",
+    "wav_sha256": "5ebebadc397e1d2a059f7225ebeb3fab9b2849e9368fab52244ffab67f83fa2f"
+  }
+]

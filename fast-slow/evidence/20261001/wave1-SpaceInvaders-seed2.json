@@ -1,0 +1,197 @@
+{
+  "artifacts": {
+    "conditioned.json": "42c710a940843bb949e85274cdc188b40006fccf4dd68792892bc59d2581174c",
+    "fast_only.json": "e3d85e9c525a2cc859de98821abacd1fc8fe108d645152caa94afd1b1adc7c23",
+    "founder.json": "1281969bdae3425668eb70f3e791716b033c8585287dabe740bab17bf7390a54",
+    "protocol.json": "029616f53e2038f1316fab9378eac2f95fa02107422783c78ef53bfed02ca825",
+    "slow.json": "dbd9e6df5e801cd2c3c458e2d40a7dbb160fb16584e77441e20339052fde2884",
+    "untrained.json": "0a4d90a4a65ef340114f66d7dd30364fca27d0fe62024ae2eeab5167bce5bb76"
+  },
+  "evaluation": {
+    "conditioned_delayed": {
+      "balanced_agreement": 0.9416058394160585,
+      "cases": 256,
+      "mae": 0.05893377940336938,
+      "mae_with_refusal_penalty_2": 0.05893377940336937,
+      "median_sweeps": 2.0,
+      "qualified": 256,
+      "query_median_ms": 4.602115499949377,
+      "query_p95_ms": 4.698236250021637,
+      "refused": 0,
+      "teacher_agreement": 0.9375
+    },
+    "conditioned_disabled": {
+      "balanced_agreement": 0.9416058394160585,
+      "cases": 256,
+      "mae": 0.05911262086238026,
+      "mae_with_refusal_penalty_2": 0.059112620862380255,
+      "median_sweeps": 2.0,
+      "qualified": 256,
+      "query_median_ms": 4.603292500007683,
+      "query_p95_ms": 4.70608525003513,
+      "refused": 0,
+      "teacher_agreement": 0.9375
+    },
+    "conditioned_scrambled": {
+      "balanced_agreement": 0.9416058394160585,
+      "cases": 256,
+      "mae": 0.05900577540499837,
+      "mae_with_refusal_penalty_2": 0.059005775404998365,
+      "median_sweeps": 2.0,
+      "qualified": 256,
+      "query_median_ms": 4.58813550000059,
+      "query_p95_ms": 4.6874509999668135,
+      "refused": 0,
+      "teacher_agreement": 0.9375
+    },
+    "fast_only": {
+      "balanced_agreement": 0.9416058394160585,
+      "cases": 256,
+      "mae": 0.0591966285189883,
+      "mae_with_refusal_penalty_2": 0.059196628518988284,
+      "median_sweeps": 2.0,
+      "qualified": 256,
+      "query_median_ms": 4.594233499972233,
+      "query_p95_ms": 4.705487749987469,
+      "refused": 0,
+      "teacher_agreement": 0.9375
+    },
+    "founder_0": {
+      "balanced_agreement": 0.9379562043795621,
+      "cases": 256,
+      "mae": 0.07311947029878896,
+      "mae_with_refusal_penalty_2": 0.07311947029878894,
+      "median_sweeps": 2.0,
+      "qualified": 256,
+      "query_median_ms": 4.578839999965112,
+      "query_p95_ms": 4.661937999969723,
+      "refused": 0,
+      "teacher_agreement": 0.93359375
+    },
+    "founder_1": {
+      "balanced_agreement": 0.9416058394160585,
+      "cases": 256,
+      "mae": 0.06870532880059159,
+      "mae_with_refusal_penalty_2": 0.0687053288005916,
+      "median_sweeps": 2.0,
+      "qualified": 256,
+      "query_median_ms": 4.588290500066705,
+      "query_p95_ms": 4.691449500029421,
+      "refused": 0,
+      "teacher_agreement": 0.9375
+    },
+    "untrained": {
+      "balanced_agreement": 0.14297981966509232,
+      "cases": 256,
+      "mae": 0.6002312230299909,
+      "mae_with_refusal_penalty_2": 0.600231223029991,
+      "median_sweeps": 2.0,
+      "qualified": 256,
+      "query_median_ms": 4.583082000010563,
+      "query_p95_ms": 4.699463999969566,
+      "refused": 0,
+      "teacher_agreement": 0.140625
+    }
+  },
+  "implementation": {
+    "_repair.py": "6635dfb8f5559638b3868b639af7e26c89acd4fa19f28d282e320e284692e79a",
+    "_tensor.py": "d5765b286c931863cf540d19133500f734b70270c1bf702d60476c8945d86ce9",
+    "_validation.py": "05d09fd56ec96ef9315cfe569fa818a718795d1aedefd12d5b02bb619808b0ab",
+    "brain.py": "e87fc184b32a769d0840a14f900ecfd24da8b28c37da2d84c8b83c9df7d7f3fb",
+    "column.py": "d3752d27227ca34dfc03134d792cc046fc41d96ac181f19be852a193d1eee203",
+    "cortex.py": "270f963fa6ca1c91b0deb19ce0f440cd4881f79205fdd115f64ef23942463482",
+    "ports.py": "f0ec46ba314ee20523ff603473256362ae84a1522e89d39751f082f278aa4dca"
+  },
+  "ledger_sha256": "13ea32c20abeaebbef5869e075073a3acf3920e284b4d75e2bbfa61a47a1a117",
+  "phases": [
+    {
+      "accepted": 32,
+      "attempted": 32,
+      "phase": "founder_0",
+      "planned_updates": 32,
+      "presentations": 512,
+      "seconds": 3.872596509999994,
+      "status": "complete"
+    },
+    {
+      "accepted": 32,
+      "attempted": 32,
+      "phase": "founder_1",
+      "planned_updates": 32,
+      "presentations": 512,
+      "seconds": 3.711212674999956,
+      "status": "complete"
+    },
+    {
+      "accepted": 24,
+      "attempted": 24,
+      "phase": "slow",
+      "planned_updates": 24,
+      "presentations": 384,
+      "seconds": 8.490571252999985,
+      "status": "complete"
+    },
+    {
+      "accepted": 32,
+      "attempted": 32,
+      "phase": "fast_only",
+      "planned_updates": 32,
+      "presentations": 512,
+      "seconds": 3.6915779739999834,
+      "status": "complete"
+    },
+    {
+      "accepted": 32,
+      "attempted": 32,
+      "phase": "conditioned",
+      "planned_updates": 32,
+      "presentations": 512,
+      "seconds": 3.6870443059999616,
+      "status": "complete"
+    }
+  ],
+  "protocol_sha256": "029616f53e2038f1316fab9378eac2f95fa02107422783c78ef53bfed02ca825",
+  "seconds": 69.54769351300001,
+  "sequential": {
+    "disabled": {
+      "balanced_agreement": 0.9347014925373134,
+      "cases": 1024,
+      "delivered_blocks": 124,
+      "fast_query_median_ms": 4.647010500036686,
+      "fast_query_p95_ms": 4.7651851500688736,
+      "fast_query_seconds": 4.765001313998823,
+      "feedback_enabled": false,
+      "mae": 0.06159567442049262,
+      "mae_with_refusal_penalty_2": 0.061595674420492616,
+      "median_fast_sweeps": 2.0,
+      "qualified": 1024,
+      "refused": 0,
+      "schedule": "slow query every block; deliver one block later; teacher-context sequence",
+      "slow_query_median_ms": 22.89826499998071,
+      "slow_query_seconds": 2.812037833000204,
+      "slow_refused": 0,
+      "teacher_agreement": 0.931640625
+    },
+    "enabled": {
+      "balanced_agreement": 0.9347014925373134,
+      "cases": 1024,
+      "delivered_blocks": 124,
+      "fast_query_median_ms": 4.632533999995303,
+      "fast_query_p95_ms": 4.759892449936842,
+      "fast_query_seconds": 4.750952244000132,
+      "feedback_enabled": true,
+      "mae": 0.06144063860566038,
+      "mae_with_refusal_penalty_2": 0.061440638605660375,
+      "median_fast_sweeps": 2.0,
+      "qualified": 1024,
+      "refused": 0,
+      "schedule": "slow query every block; deliver one block later; teacher-context sequence",
+      "slow_query_median_ms": 22.826371000064682,
+      "slow_query_seconds": 2.8163883279996753,
+      "slow_refused": 0,
+      "teacher_agreement": 0.931640625
+    }
+  },
+  "sources_unchanged": true,
+  "status": "complete"
+}

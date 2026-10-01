@@ -1,0 +1,149 @@
+{
+  "arms": [
+    {
+      "arm": "fast_only",
+      "audio_seconds": 21.942857142857143,
+      "event_median_ms": 29.1592285502702,
+      "event_p95_ms": 72.55533528514195,
+      "feedback_events": 0,
+      "generated": 128,
+      "metrics": {
+        "bass_density": 0.828125,
+        "distinct_bass_notes": 2,
+        "distinct_drum_crops": 20,
+        "drum_density": 1.0
+      },
+      "qualified": 128,
+      "runtime": {
+        "busy": false,
+        "closed": true,
+        "completed": 16,
+        "dropped": 0,
+        "errors": 0,
+        "last_error": null,
+        "last_latency_seconds": 0.06186266697477549,
+        "last_result_id": 16,
+        "last_solve_seconds": 0.06168033403810114,
+        "pending": false,
+        "qualified": 16,
+        "refused": 0,
+        "result_age": 1.0041825419757515,
+        "started": 16,
+        "status": "closed",
+        "submitted": 16,
+        "worker_alive": false
+      },
+      "start": {
+        "decoder": "fixed argmax; no procedural variety",
+        "start": "count-in only"
+      },
+      "trace_sha256": "18e06c007f63248dad40b036083c0221fadcd0068c04391496f67f224e0dfa53",
+      "wav_sha256": "29eb6786c61a17b080f0ad6687ec8ccf7a748004c040d5fa4b61353767b033de"
+    },
+    {
+      "arm": "conditioned",
+      "audio_seconds": 21.942857142857143,
+      "event_median_ms": 26.8765835207887,
+      "event_p95_ms": 38.39240858214905,
+      "feedback_events": 120,
+      "generated": 128,
+      "metrics": {
+        "bass_density": 1.0,
+        "distinct_bass_notes": 1,
+        "distinct_drum_crops": 7,
+        "drum_density": 1.0
+      },
+      "qualified": 128,
+      "runtime": {
+        "busy": false,
+        "closed": true,
+        "completed": 16,
+        "dropped": 0,
+        "errors": 0,
+        "last_error": null,
+        "last_latency_seconds": 0.09985787502955645,
+        "last_result_id": 16,
+        "last_solve_seconds": 0.09919995802920312,
+        "pending": false,
+        "qualified": 16,
+        "refused": 0,
+        "result_age": 1.0049964999780059,
+        "started": 16,
+        "status": "closed",
+        "submitted": 16,
+        "worker_alive": false
+      },
+      "start": {
+        "decoder": "fixed argmax; no procedural variety",
+        "start": "count-in only"
+      },
+      "trace_sha256": "ab269dcd7a5b5e4601f0629b77b2c3b63bf2e5966df9768c64667f202bfea208",
+      "wav_sha256": "aa24295941baa223785a5e65270d439bc486421866737f2a01a2bd4f282bb538"
+    },
+    {
+      "arm": "conditioned_disabled",
+      "audio_seconds": 21.942857142857143,
+      "event_median_ms": 27.10970857879147,
+      "event_p95_ms": 44.957352295750745,
+      "feedback_events": 0,
+      "generated": 128,
+      "metrics": {
+        "bass_density": 0.8671875,
+        "distinct_bass_notes": 2,
+        "distinct_drum_crops": 20,
+        "drum_density": 1.0
+      },
+      "qualified": 128,
+      "runtime": {
+        "busy": false,
+        "closed": true,
+        "completed": 16,
+        "dropped": 0,
+        "errors": 0,
+        "last_error": null,
+        "last_latency_seconds": 0.061452999943867326,
+        "last_result_id": 16,
+        "last_solve_seconds": 0.06130691699218005,
+        "pending": false,
+        "qualified": 16,
+        "refused": 0,
+        "result_age": 1.0039484999142587,
+        "started": 16,
+        "status": "closed",
+        "submitted": 16,
+        "worker_alive": false
+      },
+      "start": {
+        "decoder": "fixed argmax; no procedural variety",
+        "start": "count-in only"
+      },
+      "trace_sha256": "695d107021d090daeeae914181a71eb958cf875b38f8dd5c790294575d423276",
+      "wav_sha256": "1ca33581c30ab07b20e1cc23f87cba158287177391712fbae1b20062eede46e5"
+    }
+  ],
+  "data_sha256": "256ee32ea77bf3b154f1b949b141200868f708d87cd06a91222144d51cd1cbfa",
+  "domain": "amen",
+  "frames": 128,
+  "nonclaims": [
+    "These are development continuations, not unseen-track tests",
+    "Instrument rendering and diversity do not establish musical quality",
+    "No listening assessment recorded"
+  ],
+  "schema": "cadence.fast-slow-music/1",
+  "sources": {
+    "actor.py": "5493b8039e3f0b3003a09dad96c15829f0ed661c0a9f0624523f5bd76092f676",
+    "attention.py": "67dd902e93796458ee2ea3ac53db618740ec0b939a2c59160fbf3a52c7725681",
+    "data.py": "20334dda16f52c656935831523375f043c37bd07292b47d64f64d70352471f46",
+    "music_play.py": "134994f86270efe9b909c1873c25fb6bea6406a7ff2442164d39e11db3845d16",
+    "native_play.py": "48eadaf197c0227ae4de17fc4f668f8c76f28d2aa0f0200fbc683a0d99621bee",
+    "run_batch.py": "6cd3d4b20a634a3fb50d13848c2c32f4b6939dd4ab5145cf1cc44563490435d8",
+    "run_native_batch.py": "0f8b52999a3cfe3602e2d07585478a31265069ce99c957c7ae935163c5f8d48d",
+    "test_actor.py": "9b0d74d10362f42fc6ed1bd6ca95220330c569a8423a65196f015083729fa889",
+    "test_attention.py": "aad5fb25c8369eefeb4d2e89af5469f787bb5979768c31084cc8a04918ca534c",
+    "test_training.py": "76fbcb89e47648b102cbbc2dbd06f81e88d9c0d7ef64ee31044373f4aac08e6a",
+    "train.py": "3c31002ae09c44e245a2c74eef538050c2756143ef1157ec9ebda83f46be400e"
+  },
+  "sources_unchanged": true,
+  "status": "complete",
+  "training_report_sha256": "d5c7c29a40134dd0cac2822cca23d45634e9cf895023e9131dd31324626a89b5"
+}

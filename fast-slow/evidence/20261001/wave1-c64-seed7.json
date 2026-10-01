@@ -1,0 +1,197 @@
+{
+  "artifacts": {
+    "conditioned.json": "a344b36eb48d44bb41c1452a83e7ce0459c115365ee998310ff148f92c4d7b00",
+    "fast_only.json": "3787b16c93ea372758c834066770cb8c48d04dd331205598ae4283350ccf0552",
+    "founder.json": "81fff753c313693420b8671643704e74d6755e3447d8f60a38a76d6f3c6e60f8",
+    "protocol.json": "a960ae97537ee60c76a8d910007052657f11a03dacb503ba6799966376b7f659",
+    "slow.json": "f564694e2b0d52ad4b1fbbd4fec8d19b7c395c43ad672fb2e43190b3fc34fd3f",
+    "untrained.json": "766e415bc4e599a14541f17eba80e53910af8e856bb816b565873315a06aa3c8"
+  },
+  "evaluation": {
+    "conditioned_delayed": {
+      "cases": 256,
+      "mae": 0.15778385838215445,
+      "mae_with_refusal_penalty_2": 0.15778385838215447,
+      "median_sweeps": 2.0,
+      "pitch_mae_semitones": 5.5209562629279585,
+      "qualified": 256,
+      "query_median_ms": 0.5167685000060374,
+      "query_p95_ms": 0.5877947500039227,
+      "refused": 0,
+      "sounding_accuracy": 0.9049479166666666
+    },
+    "conditioned_disabled": {
+      "cases": 256,
+      "mae": 0.15781292851145054,
+      "mae_with_refusal_penalty_2": 0.15781292851145054,
+      "median_sweeps": 2.0,
+      "pitch_mae_semitones": 5.513363537912572,
+      "qualified": 256,
+      "query_median_ms": 0.516666000009991,
+      "query_p95_ms": 0.5846332500425433,
+      "refused": 0,
+      "sounding_accuracy": 0.9049479166666666
+    },
+    "conditioned_scrambled": {
+      "cases": 256,
+      "mae": 0.15779152319898224,
+      "mae_with_refusal_penalty_2": 0.15779152319898224,
+      "median_sweeps": 2.0,
+      "pitch_mae_semitones": 5.521921097702099,
+      "qualified": 256,
+      "query_median_ms": 0.5168365000258746,
+      "query_p95_ms": 0.5928944999595842,
+      "refused": 0,
+      "sounding_accuracy": 0.9049479166666666
+    },
+    "fast_only": {
+      "cases": 256,
+      "mae": 0.1577512489018972,
+      "mae_with_refusal_penalty_2": 0.1577512489018972,
+      "median_sweeps": 2.0,
+      "pitch_mae_semitones": 5.514709604736311,
+      "qualified": 256,
+      "query_median_ms": 0.5149805000428387,
+      "query_p95_ms": 0.5893617500305481,
+      "refused": 0,
+      "sounding_accuracy": 0.90625
+    },
+    "founder_0": {
+      "cases": 256,
+      "mae": 0.1692417851367074,
+      "mae_with_refusal_penalty_2": 0.1692417851367074,
+      "median_sweeps": 2.0,
+      "pitch_mae_semitones": 5.10845681351007,
+      "qualified": 256,
+      "query_median_ms": 0.5158554999411535,
+      "query_p95_ms": 0.5820522500243897,
+      "refused": 0,
+      "sounding_accuracy": 0.890625
+    },
+    "founder_1": {
+      "cases": 256,
+      "mae": 0.14999244324364208,
+      "mae_with_refusal_penalty_2": 0.14999244324364208,
+      "median_sweeps": 2.0,
+      "pitch_mae_semitones": 5.310131235195083,
+      "qualified": 256,
+      "query_median_ms": 0.5160064999927272,
+      "query_p95_ms": 0.5817719999470228,
+      "refused": 0,
+      "sounding_accuracy": 0.9114583333333334
+    },
+    "untrained": {
+      "cases": 256,
+      "mae": 0.5265225462564618,
+      "mae_with_refusal_penalty_2": 0.5265225462564618,
+      "median_sweeps": 2.0,
+      "pitch_mae_semitones": 14.782092053440566,
+      "qualified": 256,
+      "query_median_ms": 0.5153349999886814,
+      "query_p95_ms": 0.5869104999476349,
+      "refused": 0,
+      "sounding_accuracy": 0.4088541666666667
+    }
+  },
+  "implementation": {
+    "_repair.py": "6635dfb8f5559638b3868b639af7e26c89acd4fa19f28d282e320e284692e79a",
+    "_tensor.py": "d5765b286c931863cf540d19133500f734b70270c1bf702d60476c8945d86ce9",
+    "_validation.py": "05d09fd56ec96ef9315cfe569fa818a718795d1aedefd12d5b02bb619808b0ab",
+    "brain.py": "e87fc184b32a769d0840a14f900ecfd24da8b28c37da2d84c8b83c9df7d7f3fb",
+    "column.py": "d3752d27227ca34dfc03134d792cc046fc41d96ac181f19be852a193d1eee203",
+    "cortex.py": "270f963fa6ca1c91b0deb19ce0f440cd4881f79205fdd115f64ef23942463482",
+    "ports.py": "f0ec46ba314ee20523ff603473256362ae84a1522e89d39751f082f278aa4dca"
+  },
+  "ledger_sha256": "ecc2b28fdd002d9274160f679e86022547cdaac6c293dda8367545515d04c153",
+  "phases": [
+    {
+      "accepted": 32,
+      "attempted": 32,
+      "phase": "founder_0",
+      "planned_updates": 32,
+      "presentations": 512,
+      "seconds": 0.5276706619999914,
+      "status": "complete"
+    },
+    {
+      "accepted": 32,
+      "attempted": 32,
+      "phase": "founder_1",
+      "planned_updates": 32,
+      "presentations": 512,
+      "seconds": 0.5198545450000438,
+      "status": "complete"
+    },
+    {
+      "accepted": 24,
+      "attempted": 24,
+      "phase": "slow",
+      "planned_updates": 24,
+      "presentations": 384,
+      "seconds": 1.553643844000021,
+      "status": "complete"
+    },
+    {
+      "accepted": 32,
+      "attempted": 32,
+      "phase": "fast_only",
+      "planned_updates": 32,
+      "presentations": 512,
+      "seconds": 0.525219323999977,
+      "status": "complete"
+    },
+    {
+      "accepted": 32,
+      "attempted": 32,
+      "phase": "conditioned",
+      "planned_updates": 32,
+      "presentations": 512,
+      "seconds": 0.532336391000058,
+      "status": "complete"
+    }
+  ],
+  "protocol_sha256": "a960ae97537ee60c76a8d910007052657f11a03dacb503ba6799966376b7f659",
+  "seconds": 10.605428942000003,
+  "sequential": {
+    "disabled": {
+      "cases": 1024,
+      "delivered_blocks": 120,
+      "fast_query_median_ms": 0.5241000000637541,
+      "fast_query_p95_ms": 0.5922289999887197,
+      "fast_query_seconds": 0.546904839999911,
+      "feedback_enabled": false,
+      "mae": 0.1626155885133133,
+      "mae_with_refusal_penalty_2": 0.1626155885133133,
+      "median_fast_sweeps": 2.0,
+      "pitch_mae_semitones": 5.652944529985012,
+      "qualified": 1024,
+      "refused": 0,
+      "schedule": "slow query every block; deliver one block later; teacher-context sequence",
+      "slow_query_median_ms": 3.568240499987496,
+      "slow_query_seconds": 0.4567136219994836,
+      "slow_refused": 0,
+      "sounding_accuracy": 0.9010416666666666
+    },
+    "enabled": {
+      "cases": 1024,
+      "delivered_blocks": 120,
+      "fast_query_median_ms": 0.5246799999554241,
+      "fast_query_p95_ms": 0.591844299992772,
+      "fast_query_seconds": 0.5469569730003059,
+      "feedback_enabled": true,
+      "mae": 0.16259612781430913,
+      "mae_with_refusal_penalty_2": 0.16259612781430915,
+      "median_fast_sweeps": 2.0,
+      "pitch_mae_semitones": 5.659374661867836,
+      "qualified": 1024,
+      "refused": 0,
+      "schedule": "slow query every block; deliver one block later; teacher-context sequence",
+      "slow_query_median_ms": 3.530142499982958,
+      "slow_query_seconds": 0.4564269589994865,
+      "slow_refused": 0,
+      "sounding_accuracy": 0.9010416666666666
+    }
+  },
+  "sources_unchanged": true,
+  "status": "complete"
+}

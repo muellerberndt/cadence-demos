@@ -1,0 +1,55 @@
+{
+  "started_utc": "2026-10-01T05:37:50Z",
+  "commands": [
+    [
+      "/home/ec2-user/venv-atari/bin/python",
+      "/home/ec2-user/cadence-060-self-correction-20261001/self_correction.py",
+      "--seed",
+      "2",
+      "--out",
+      "/home/ec2-user/cadence-060-self-correction-20261001/runs/seed2"
+    ],
+    [
+      "/home/ec2-user/venv-atari/bin/python",
+      "/home/ec2-user/cadence-060-self-correction-20261001/self_correction.py",
+      "--seed",
+      "7",
+      "--out",
+      "/home/ec2-user/cadence-060-self-correction-20261001/runs/seed7"
+    ],
+    [
+      "/home/ec2-user/venv-atari/bin/python",
+      "/home/ec2-user/cadence-060-self-correction-20261001/self_correction.py",
+      "--seed",
+      "11",
+      "--out",
+      "/home/ec2-user/cadence-060-self-correction-20261001/runs/seed11"
+    ],
+    [
+      "/home/ec2-user/venv-atari/bin/python",
+      "/home/ec2-user/cadence-060-self-correction-20261001/self_correction.py",
+      "--seed",
+      "19",
+      "--out",
+      "/home/ec2-user/cadence-060-self-correction-20261001/runs/seed19"
+    ],
+    [
+      "/home/ec2-user/venv-atari/bin/python",
+      "/home/ec2-user/cadence-060-self-correction-20261001/self_correction.py",
+      "--seed",
+      "29",
+      "--out",
+      "/home/ec2-user/cadence-060-self-correction-20261001/runs/seed29"
+    ]
+  ],
+  "cpus": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "outer_timeout_seconds": 400,
+  "workers": 5,
+  "scope": "prediction and correction, not autonomous action selection"
+}
