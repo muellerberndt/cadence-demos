@@ -185,6 +185,22 @@ energy derivatives directly. This is a signal diagnostic, not a learned
 advantage. Shared-innovation experiments use independent synthetic body targets
 to test whether those signals can support useful correction.
 
+`shared_innovation.py freeze ROOT` and `launch ROOT` compare three-patch,
+nine-parameter ordinary and error-reading brains on the same observed
+disturbance. Both clean prediction heads must pass free-query acquisition and
+retention gates before interpreting correction. `verify_shared_innovation.py`
+replays saved queries independently and retains every scheduled outcome.
+`innovation_confirmation.py` uses fresh seeds and data to test the early
+exposure hypothesis suggested by development, while retaining the later
+accuracy and counted-work comparisons. Equal exposure is not equal compute.
+
+`delayed_bandit.py` tests one outstanding executed decision with immediate or
+delayed actual outcomes. It retains the original forecasts and teaches only
+the executed action's witnessed outcome through the common patch law. Its
+four-patch, 14-parameter comparison uses explicit collector memory; it does
+not demonstrate learned temporal memory or planning. Run the full campaign
+on AWS because its complete outcome journals exceed the local data limit.
+
 Use the sibling Cadence checkout through `PYTHONPATH=../../cadence/src` from this
 directory. Training needs NumPy and CPU Torch. Native play/replay additionally
 needs Gymnasium/ALE and available ROMs. Music rendering uses the existing Amen

@@ -1,0 +1,9 @@
+{
+  "archive": "/Users/muellerberndt/Projects/oph-meta/cadence-demos/fast-slow/evidence/20261001/innovation-confirmation/run-archive.tar.gz",
+  "bytes": 3511082,
+  "sha256": "1735acaaf47bc5fcbe664a8768cac2f63da6fa293e04da12dd951a87a8921362",
+  "source_files": 228,
+  "source_bytes": 18165250,
+  "manifest_sha256": "6f1280b4c1e2d06e2cd27ff77e01a895266238dfae790e5482642d2576637d10",
+  "every_member_verified": true
+}
