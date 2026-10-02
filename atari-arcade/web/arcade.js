@@ -1,28 +1,27 @@
-// The arcade's loop, shared by the browser workers and the headless runner: the perception of the screen, the
-// scripted teachers, the brain side (watching, admission, takeover, living) and the game side (episodes, scores,
-// the skill badge). It follows atari-arcade/server.py line by line; the Python server remains the reference.
-import { Cortex, PyRandom, Reinforcement } from './cadence.js';
+// The arcade's loop, shared by the browser workers and the headless runner: the retina, the scripted teachers, the
+// brain side (watching, the takeover, living on reward) and the game side (episodes, scores, the skill badge). It
+// follows atari-arcade/server.py; the Python server remains the reference.
+import { Brain, Generator, Refusal } from './cadence.js';
 
-export const TILE = 28, GRID = 3, N_SCREEN = 84 * 84;
-export const BATCH = 24;
-export const WATCH_MIN_WITNESSES = 240;
-export const WATCH_MAX_WITNESSES = 720;
+export const N_SCREEN = 84 * 84;
+export const RETINA_FRAMES = 300;       // screens of random play averaged into the background
+export const RETINA_GAIN = 2.0;
+export const MIN_LESSONS = 500;
+export const MAX_LESSONS = 2000;
+export const AGREE_WINDOW = 120;
 export const AGREE_TO_PLAY = {};
-export const AGREE_DEFAULT = 0.6;
-export const REPLAY_EVERY = 6;
-export const BUDGET = 256;
-// The server's torch brain needed about half a second per decision, so each lived transition spanned some
-// forty environment steps at its full speed; the JavaScript brain decides in tens of milliseconds and would otherwise
-// split the same experience into one-step transitions with rare rewards. It keeps the server's cadence.
-export const DECISION_EVERY = 40;
-export const NORM_FRAMES = 300;
+export const AGREE_DEFAULT = 0.9;
+// The server's settings: Brain.compose defaults, with each synapse stepping on its own running mean over its own
+// running size.
+export const LEARNING = { beta: 0.1, temperature: 0.2, tolerance: 3e-3, free_steps: 1024, nudged_steps: 12,
+                          eta_bias: 0.02, eta: 0.003, momentum: 0.9, normalize: 0.99, normalize_floor: 1e-4 };
+export const REWARD = { gamma: 0.97, lam: 0.9, eta: 0.001, eta_critic: 0.3, momentum: 0.9, normalize: 0.99 };
 
 export const AGENT_HINTS = {
   Atlantis: 'the brain fires the three gun bases',
   Freeway: 'the brain is the chicken crossing the road',
 };
 export const TEACHER = { Freeway: 'UP', Atlantis: 'FIRE' };
-export const REWARD_SCALE = { Atlantis: 500.0, Freeway: 1.0 };
 
 export function teacherAction(game, meanings) {
   const name = TEACHER[game];
@@ -31,30 +30,18 @@ export function teacherAction(game, meanings) {
 }
 
 export function buildBrain(nActions, seed = 0) {
-  const c = new Cortex({ seed, settle_budget: 4096, parameter_prior: 0.4 });
-  const tiles = [];
-  for (let i = 0; i < GRID * GRID; i++) tiles.push(c.input(`tile${i}`, { shape: [TILE, TILE] }));
-  const act = c.input('action', { shape: [nActions] });
-  const cols = tiles.map((tile, i) => c.column(`t${i}`, { patches: 8, inputs: [tile] }));
-  const r = c.observer('r', { patches: 12, observes: cols });
-  const p = c.observer('p', { patches: 16, observes: [...cols, r] });
-  const v = c.observer('v', { patches: 8, inputs: [act], observes: [r, p] });
-  c.output('motor', { shape: [nActions], reads: p });
-  c.output('value', { shape: [1], reads: v });
-  return c.build();
+  return Brain.compose(N_SCREEN, nActions, { seed, learning: LEARNING, reward: REWARD });
 }
 
-// 210 x 160 RGBA pixels to the 84 x 84 grey retina, the running normalization and the nine 28 x 28 tiles.
+// 210 x 160 RGBA pixels to the 84 x 84 luminance retina; the brain's input is what differs from a fixed background.
 export class Perception {
   constructor() {
     this.rowEdges = new Int32Array(85);
     this.colEdges = new Int32Array(85);
     for (let i = 0; i < 84; i++) { this.rowEdges[i] = Math.trunc(i * 2.5); this.colEdges[i] = Math.trunc(i * (160 / 84)); }
     this.rowEdges[84] = 210; this.colEdges[84] = 160;
-    this.normBuffer = [];
-    this.normMean = null;
-    this.normStd = null;
     this.rows = new Float64Array(84 * 160);
+    this.background = new Float64Array(N_SCREEN);
   }
 
   grey84(rgba) {
@@ -79,33 +66,22 @@ export class Perception {
     return small;
   }
 
-  // The first NORM_FRAMES retinas fix a per-pixel mean and deviation, as the server does.
-  observe(small) {
-    if (this.normMean !== null) return;
-    this.normBuffer.push(small);
-    if (this.normBuffer.length < NORM_FRAMES) return;
-    const n = this.normBuffer.length, mean = new Float64Array(N_SCREEN), std = new Float64Array(N_SCREEN);
-    for (const frame of this.normBuffer) for (let i = 0; i < N_SCREEN; i++) mean[i] += frame[i];
-    for (let i = 0; i < N_SCREEN; i++) mean[i] /= n;
-    for (const frame of this.normBuffer) for (let i = 0; i < N_SCREEN; i++) { const d = frame[i] - mean[i]; std[i] += d * d; }
-    for (let i = 0; i < N_SCREEN; i++) std[i] = Math.sqrt(std[i] / n) + 1e-6;
-    this.normMean = mean; this.normStd = std;
-    this.normBuffer = [];
+  // The mean screen of random play, taken once before the brain is born and never updated.
+  learnBackground(env, seed) {
+    const rng = new Generator(10000 + seed), total = new Float64Array(N_SCREEN);
+    env.reset();
+    for (let f = 0; f < RETINA_FRAMES; f++) {
+      const small = this.grey84(env.screen());
+      for (let i = 0; i < N_SCREEN; i++) total[i] += small[i];
+      const r = env.step(rng.integers(env.actions.length));
+      if (r.terminal || r.truncated) env.reset();
+    }
+    for (let i = 0; i < N_SCREEN; i++) this.background[i] = total[i] / RETINA_FRAMES;
   }
 
-  // The nine tiles in tile order (tile0 top-left, row-major), each 28 x 28 row-major.
-  tiles(small) {
-    const flat = new Float64Array(N_SCREEN);
-    if (this.normMean !== null) {
-      for (let i = 0; i < N_SCREEN; i++) flat[i] = Math.min(3, Math.max(-3, (small[i] - this.normMean[i]) / this.normStd[i])) * 0.2;
-    } else {
-      for (let i = 0; i < N_SCREEN; i++) flat[i] = (small[i] - 0.35) * 0.5;
-    }
-    const out = new Float64Array(N_SCREEN);
-    for (let t = 0; t < GRID * GRID; t++) {
-      const r0 = Math.floor(t / GRID) * TILE, c0 = (t % GRID) * TILE, base = t * TILE * TILE;
-      for (let y = 0; y < TILE; y++) for (let x = 0; x < TILE; x++) out[base + y * TILE + x] = flat[(r0 + y) * 84 + c0 + x];
-    }
+  drive(small) {
+    const out = new Float64Array(N_SCREEN), background = this.background;
+    for (let i = 0; i < N_SCREEN; i++) out[i] = (small[i] - background[i]) * RETINA_GAIN;
     return out;
   }
 
@@ -121,9 +97,11 @@ export class Perception {
 }
 
 const mean = values => values.reduce((a, b) => a + b, 0) / values.length;
+const round = (value, digits) => Math.round(value * 10 ** digits) / 10 ** digits;
 
-// The brain's side of a runner: witnesses, probes, the takeover gate, then acting and feedback through
-// Reinforcement. One serial owner calls iterate(); the game side never waits for it.
+// The brain's side of a runner: a lesson per watched screen, the takeover gate, then one decision per screen it gets
+// to see, learning from the reward since its last decision. One serial owner calls iterate(); the game side never
+// waits for it.
 export class BrainSide {
   constructor(game, meanings, { seed = 0, lifeLearn = true } = {}) {
     this.game = game;
@@ -131,223 +109,198 @@ export class BrainSide {
     this.nActions = meanings.length;
     this.seed = seed;
     this.lifeLearn = lifeLearn;
-    this.zeroAct = new Float64Array(this.nActions);
     this.brain = buildBrain(this.nActions, seed);
-    this.rf = null;
     this.phase = 'watching';
-    this.witnesses = 0;
-    this.batches = 0;
-    this.admissions = 0;
-    this.lastSweeps = null;
-    this.sweepsHist = [];
-    this.agreeHist = [];
-    this.coherence = 0.0;
-    this.firstSweeps = null;
+    this.lessons = 0;
     this.agreement = [];
-    this.transitions = 0;
-    this.lifeAdmissions = 0;
-    this.scoreSums = new Float64Array(this.nActions);
-    this.scoreN = 0;
-    this.batchBuf = [];
-    this.pending = false;
+    this.agreeHist = [];
+    this.sweepsHist = [];
+    this.lastSweeps = null;
+    this.decisions = 0;
+    this.outcomes = 0;       // outcomes of its own actions learned from
+    this.rewarded = 0;       // those with a reward in them
+    this.refused = 0;
+    this.value = 0;
+    this.dopamine = 0;
+    this.pending = false;    // an own executed action awaits its outcome
     this.currentAction = 0;
     this.faults = 0;
     this.lastError = null;
     this.beat = Date.now();
+    this.thinkMs = [];
     this.prevState = null;
     this.viz = null;
     this.vizT = 0;
     this.takeoverAt = null;
-    this.lastDecisionSeq = -Infinity;
+    this.born = Date.now();
   }
 
+  // The page's nodes: association cortex, working trace, motor cortex, memory, value.
   populations() {
-    return this.brain.inspect().populations.map(p => ({ name: p.name, count: p.patches, start: p.indices[0] }));
+    const n = this.brain.nH, a = this.nActions;
+    return [{ name: 'association', count: n, start: 0 }, { name: 'trace', count: n, start: n },
+            { name: 'motor', count: a, start: 2 * n }, { name: 'memory', count: a, start: 2 * n + a },
+            { name: 'value', count: 1, start: 2 * n + 2 * a }];
   }
 
-  // A sample of the wiring for the visualization, drawn as the server draws it.
-  graphSample(maxEdges = 520) {
-    const rng = new PyRandom(7), g = this.brain.graph, byKind = new Map();
-    for (let e = 0; e < g.nEdges; e++) {
-      const kind = ['input', 'state', 'residual'][g.kinds[e]];
-      if (!byKind.has(kind)) byKind.set(kind, []);
-      byKind.get(kind).push(e);
+  // Synapses as [kind, source, target, weight]; kind 0 starts at a retina pixel, kind 1 at another node. The
+  // strongest of a random tenth, with their current weights.
+  graphSample(perKind = 260) {
+    const brain = this.brain, nH = brain.nH, nA = this.nActions, rng = new Generator(7);
+    const trim = e => [e[0], e[1], e[2], round(e[3], 3)];
+    const fromPixels = [];
+    for (let k = 0; k < 10 * perKind; k++) {
+      const i = rng.integers(brain.nS), h = rng.integers(nH);
+      fromPixels.push([0, i, h, brain.w.sa[i * nH + h]]);
     }
-    const picked = [];
-    for (const [kind, members] of byKind) {
-      if (kind === 'input') for (const i of rng.sample(members.length, Math.min(members.length, 260))) picked.push(members[i]);
-      else if (members.length <= 300) picked.push(...members);
-      else for (const i of rng.sample(members.length, 300)) picked.push(members[i]);
-    }
-    picked.sort((a, b) => a - b);
-    return picked.slice(0, maxEdges).map(e => [g.kinds[e] === 0 ? 0 : g.kinds[e] === 1 ? 1 : 2, g.sources[e], g.targets[e], Math.round(this.brain.weights[e] * 1000) / 1000]);
+    fromPixels.sort((x, y) => Math.abs(y[3]) - Math.abs(x[3]));
+    const inner = [];
+    for (let p = 0; p < nH; p++) for (let h = 0; h < nH; h++) inner.push([1, nH + p, h, brain.w.pa[p * nH + h]]);
+    for (let h = 0; h < nH; h++) for (let m = 0; m < nA; m++) inner.push([1, h, 2 * nH + m, brain.w.am[h * nA + m]]);
+    for (let m = 0; m < nA; m++) for (let h = 0; h < nH; h++) inner.push([1, 2 * nH + m, h, brain.w.ma[m * nH + h]]);
+    for (let i = 0; i < nA; i++) for (let j = 0; j < nA; j++) if (i !== j) inner.push([1, 2 * nH + i, 2 * nH + j, brain.w.mm[i * nA + j]]);
+    inner.sort((x, y) => Math.abs(y[3]) - Math.abs(x[3]));
+    return [...fromPixels.slice(0, perKind).map(trim), ...inner.slice(0, 2 * perKind).map(trim)];
   }
 
-  inputsFor(tiles, action = this.zeroAct) {
-    const flat = new Float64Array(this.brain.graph.nInputs);
-    flat.set(tiles, 0);
-    flat.set(action, N_SCREEN);
-    return flat;
-  }
-
-  _admit() {
-    const size = Math.min(this.batchBuf.length, this.batches === 0 ? 8 : this.batches === 1 ? 16 : BATCH);
-    const batch = this.batchBuf.slice(-size);
-    this.batchBuf = [];
-    let res;
-    try {
-      res = this.brain.observeBatch(batch);
-    } catch (error) {
-      console.log(`${this.game}: admission refused: ${error.message}`);
-      return;
-    }
-    this.batches++;
-    this.lastSweeps = res.sweeps;
-    this.sweepsHist.push(res.sweeps);
-    this.sweepsHist = this.sweepsHist.slice(-48);
-    if (res.accepted) {
-      const perWitness = res.sweeps / Math.max(1, batch.length);
-      if (this.firstSweeps === null) this.firstSweeps = Math.max(0.01, perWitness);
-      this.coherence = Math.round(Math.max(0, Math.min(1, 1 - perWitness / this.firstSweeps)) * 1000) / 1000;
-      this.admissions++;
-      this.witnesses += batch.length;
-    }
-  }
-
-  // One real settle; the visualization gets the new equilibrium and how far every patch moved to reach it.
-  _settleViz(flat) {
-    const result = this.brain.settleFlat(flat, { budget: 64 });
-    const state = Array.from(result.state, x => Math.round(x * 1000) / 1000);
+  // What the page sees of one settled state.
+  _show(state, sweeps, x, wrongAction = null) {
+    const brain = this.brain, memory = brain.recall(x);
+    const vec = [...state.sH, ...state.sP, ...state.sM, ...memory, this.value];
     const prev = this.prevState;
-    const delta = prev && prev.length === state.length ? state.map((a, i) => Math.round(Math.abs(a - prev[i]) * 1000) / 1000) : state.map(() => 0);
-    this.prevState = state;
-    this.viz = { state, errors: Array.from(result.errors, e => Math.round(e * 1000) / 1000), delta,
-                 energy: Math.round(result.energy * 100000) / 100000, q: !!result.qualified };
+    const delta = prev && prev.length === vec.length ? vec.map((v, i) => Math.abs(v - prev[i])) : vec.map(() => 0);
+    this.prevState = vec;
+    const errors = vec.map(() => 0);
+    errors[errors.length - 1] = Math.min(1, Math.abs(this.dopamine));
+    if (wrongAction !== null) errors[2 * brain.nH + wrongAction] = 1;
+    this.lastSweeps = sweeps;
+    this.sweepsHist.push(sweeps);
+    this.sweepsHist = this.sweepsHist.slice(-48);
+    this.viz = { state: vec.map(v => round(v, 3)), errors: errors.map(v => round(v, 3)), delta: delta.map(v => round(v, 3)), q: true };
     this.vizT = Date.now();
-    return result;
   }
 
-  _probe(tiles, teacher) {
-    const result = this._settleViz(this.inputsFor(tiles));
-    const motor = result.outputs.motor;
-    for (let j = 0; j < this.nActions; j++) this.scoreSums[j] += motor[j];
-    this.scoreN++;
-    const decoded = this._decode(motor);
-    this.agreement.push(decoded === teacher ? 1 : 0);
-    this.agreement = this.agreement.slice(-120);
-    if (this.agreement.length >= 10) {
-      this.agreeHist.push(Math.round(mean(this.agreement) * 1000) / 1000);
+  // One watched screen. First the brain's own answer, read greedily from its settled state: the teacher is at the
+  // controls, so that answer is not executed and carries no eligibility. Then the lesson: the teacher's action as
+  // the label of this screen.
+  _watch(snap) {
+    const brain = this.brain, x = snap.drive;
+    const drive = brain.stimulus(x);
+    let own = null;
+    try {
+      own = brain.act(x, { greedy: true });
+    } catch (error) {
+      if (!(error instanceof Refusal)) throw error;
+      this.refused++;
+      this.lastError = `refused: ${error.message}`;
+    }
+    this.agreement.push(own === snap.teacher ? 1 : 0);
+    this.agreement = this.agreement.slice(-AGREE_WINDOW);
+    if (own !== null && this.lessons % 3 === 0) {
+      this.value = brain.value(brain.free);
+      this._show(brain.free, brain.free.steps, x, own === snap.teacher ? null : snap.teacher);
+    }
+    brain.teach(drive, snap.teacher);
+    this.lessons++;
+    if (this.lessons % 10 === 0) {
+      this.agreeHist.push(round(mean(this.agreement), 3));
       this.agreeHist = this.agreeHist.slice(-60);
     }
-    return decoded;
-  }
-
-  _decode(motor) {
-    let best = 0, bestValue = -Infinity;
-    const n = Math.max(1, this.scoreN);
-    for (let j = 0; j < this.nActions; j++) {
-      const v = motor[j] - this.scoreSums[j] / n;
-      if (v > bestValue) { bestValue = v; best = j; }
+    const agree = mean(this.agreement), gate = AGREE_TO_PLAY[this.game] ?? AGREE_DEFAULT;
+    // The badge measures the brain against the teacher's own games, so it watches at least one whole game.
+    const ready = (this.lessons >= MIN_LESSONS && this.agreement.length >= AGREE_WINDOW && agree >= gate) || this.lessons >= MAX_LESSONS;
+    if (ready && (snap.teacherGames ?? 1) >= 1) {
+      console.log(`${this.game}: TAKEOVER at ${this.lessons} lessons, agreement ${agree.toFixed(2)}`);
+      this.takeoverAt = { lessons: this.lessons, agreement: round(agree, 3), seconds: round((Date.now() - this.born) / 1000, 1), time: Date.now() };
+      this.currentAction = snap.teacher;
+      this.pending = false;
+      this.phase = 'playing';
+      return { takeover: true, action: this.currentAction, consumed: true };
     }
-    return best;
+    return {};
   }
 
-  agree() {
-    return this.agreement.length >= 30 ? mean(this.agreement) : 0.0;
+  // One decision of the brain at the controls: the outcome of its last action (the reward since then, whether an
+  // episode ended), then the next action.
+  _play(snap) {
+    const brain = this.brain, x = snap.drive;
+    try {
+      let action;
+      if (!this.lifeLearn) {          // the frozen twin: no outcome reaches it
+        if (snap.done) brain.reset();
+        action = brain.act(x);
+      } else if (this.pending) {
+        const signal = Math.sign(snap.reward);
+        action = brain.step(x, { reward: signal, done: !!snap.done });
+        this.outcomes++;
+        if (signal !== 0) this.rewarded++;
+        this.dopamine = brain.lastLearning.dopamine ?? 0;
+      } else {
+        action = brain.step(x);
+      }
+      this.currentAction = action;
+    } catch (error) {
+      if (!(error instanceof Refusal)) throw error;
+      // The brain did not settle: no action was issued. The body keeps holding its last action and that stretch
+      // is never credited.
+      this.refused++;
+      this.lastError = `refused: ${error.message}`;
+      this.pending = false;
+      if (snap.done) brain.reset();
+      return { consumed: true };
+    }
+    this.pending = true;
+    this.decisions++;
+    this.agreement.push(this.currentAction === snap.teacher ? 1 : 0);
+    this.agreement = this.agreement.slice(-AGREE_WINDOW);
+    this.value = brain.value(brain.free);
+    if (this.decisions % 3 === 0) this._show(brain.free, brain.free.steps + (brain.lastLearning.free_steps ?? 0), x);
+    if (this.decisions % 10 === 0) {
+      this.agreeHist.push(round(mean(this.agreement), 3));
+      this.agreeHist = this.agreeHist.slice(-60);
+    }
+    return { action: this.currentAction, consumed: true };
   }
 
-  // One brain iteration over the latest snapshot {tiles, teacher, reward, done, seq}; `reward` is the reward
-  // accumulated since the last consumed feedback, `done` whether an episode ended since the last consumed
-  // snapshot, `seq` the environment step count. Returns what the game side must know: a phase change or a
-  // chosen action. The caller keeps `reward` accumulating until `consumedReward` is reported and keeps `done`
-  // raised while `skipped` is reported (the held action continues until the next decision is due).
+  // One brain iteration over the latest snapshot {drive, teacher, reward, done, teacherGames}; `reward` is the
+  // reward since the brain's last decision and `done` whether an episode ended since then. The caller clears both
+  // when `consumed` is reported.
   iterate(snap) {
     this.beat = Date.now();
-    const out = {};
-    if (this.phase === 'playing' && this.pending && snap.seq !== undefined && snap.seq - this.lastDecisionSeq < DECISION_EVERY) {
-      return { skipped: true };
-    }
-    if (this.phase === 'watching') {
-      const target = new Array(this.nActions).fill(-0.6);
-      target[snap.teacher] = 0.6;
-      this.batchBuf.push({ inputs: this.inputsFor(snap.tiles), targets: { motor: target } });
-      if (this.batchBuf.length >= BATCH) this._admit();
-      if (this.batchBuf.length % 5 === 0) this._probe(snap.tiles, snap.teacher);
-      const agree = this.agree();
-      const gate = AGREE_TO_PLAY[this.game] ?? AGREE_DEFAULT;
-      if ((this.witnesses >= WATCH_MIN_WITNESSES && agree >= gate) || this.witnesses >= WATCH_MAX_WITNESSES) {
-        console.log(`${this.game}: TAKEOVER at ${this.witnesses} witnesses, agreement ${agree.toFixed(2)}`);
-        this.rf = new Reinforcement(this.brain, { actions: this.nActions, action_input: 'action', value_output: 'value',
-                                                   discount: 0.95, exploration: 0.05, reward_scale: 1.0, capacity: 2048, batch_size: 16, seed: 0 });
-        this.phase = 'playing';
-        this.takeoverAt = { witnesses: this.witnesses, agreement: agree, time: Date.now() };
-        out.takeover = true;
-      }
-      return out;
-    }
-    if (this.pending) {
-      const reward = Math.max(-1, Math.min(1, snap.reward / REWARD_SCALE[this.game]));
-      out.consumedReward = true;
-      try {
-        const fb = this.rf.feedback(reward, snap.done ? null : snap.tiles, { terminal: !!snap.done, learn: false });
-        this.transitions = fb.transitions ?? this.transitions;
-        if (this.lifeLearn && this.transitions % REPLAY_EVERY === 0) {
-          const rp = this.rf.replay({ budget: 2048 });
-          if (rp.accepted) this.lifeAdmissions++;
-        }
-      } catch (error) {
-        if (error instanceof RangeError || /must|exceeds|requires|pending/.test(error.message)) this.rf.reset();
-        else throw error;
-      }
-      this.pending = false;
-      if (snap.done) return out;
-    }
-    let picked;
-    try {
-      picked = this.rf.act(snap.tiles, { budget: BUDGET });
-    } catch (error) {
-      if (error instanceof RangeError || /must|exceeds|requires|pending/.test(error.message)) { this.rf.reset(); return out; }
-      throw error;
-    }
-    if (picked.action !== null) {
-      this.currentAction = picked.action;
-      this.pending = true;
-      if (this.transitions % 4 === 0) this._settleViz(this.inputsFor(snap.tiles));
-    } else {
-      const result = this._settleViz(this.inputsFor(snap.tiles));
-      this.currentAction = this._decode(result.outputs.motor);
-    }
-    if (snap.seq !== undefined) this.lastDecisionSeq = snap.seq;
-    out.action = this.currentAction;
+    const started = performance.now();
+    const out = this.phase === 'watching' ? this._watch(snap) : this._play(snap);
+    this.thinkMs.push(performance.now() - started);
+    if (this.thinkMs.length > 20000) this.thinkMs = this.thinkMs.slice(-20000);
     return out;
   }
 
   // The server's /state view of the brain side.
   state() {
-    const agree = this.agreement.length ? Math.round(mean(this.agreement) * 100) / 100 : null;
+    const agree = this.agreement.length ? round(mean(this.agreement), 2) : null;
     const gate = AGREE_TO_PLAY[this.game] ?? AGREE_DEFAULT;
-    const toTakeover = Math.min(1, Math.min(1, this.witnesses / WATCH_MIN_WITNESSES)
-      * (this.agreement.length >= 30 ? Math.min(1, (agree || 0) / gate) : this.agreement.length / 60));
+    const recent = this.thinkMs.slice(-200).sort((a, b) => a - b);
     return {
       phase: this.phase,
-      watch: { witnesses: this.witnesses, batches: this.batches, to_takeover: Math.round(toTakeover * 100) / 100,
-               admissions: this.admissions, sweeps: this.lastSweeps, agreement: agree,
-               sweeps_hist: this.sweepsHist, agree_hist: this.agreeHist, coherence: this.coherence },
+      watch: { lessons: this.lessons, to_takeover: round(Math.min(1, this.lessons / MIN_LESSONS) * Math.min(1, (agree || 0) / gate), 2),
+               sweeps: this.lastSweeps, agreement: agree, sweeps_hist: this.sweepsHist, agree_hist: this.agreeHist,
+               takeover: this.takeoverAt },
       brain: { beat_age: Math.round((Date.now() - this.beat) / 100) / 10, faults: this.faults, last_error: this.lastError },
-      life: { transitions: this.transitions, admissions: this.lifeAdmissions },
-      takeover: this.takeoverAt,
+      life: { decisions: this.decisions, outcomes: this.outcomes, refused: this.refused, rewarded: this.rewarded,
+              think_ms: recent.length ? round(recent[Math.floor(recent.length / 2)], 1) : null,
+              value: round(this.value, 3), dopamine: round(this.dopamine, 3) },
     };
   }
 }
 
 // The game's side of a runner: the emulator loop that never waits for the brain, the scores and the badge.
 export class GameSide {
-  constructor(env, game) {
+  constructor(env, game, { seed = 0 } = {}) {
     this.env = env;
     this.game = game;
     this.meanings = env.actions;
     this.teacher = teacherAction(game, this.meanings);
     this.perception = new Perception();
+    this.perception.learnBackground(env, seed);
     this.phase = 'watching';
     this.currentAction = 0;
     this.execAction = 0;
@@ -359,6 +312,7 @@ export class GameSide {
     this.teacherReturns = [];
     this.badge = 'hatchling';
     this.done = true;
+    this.watched = true;       // the running episode began with the teacher at the controls
   }
 
   updateBadge() {
@@ -376,11 +330,11 @@ export class GameSide {
       this.episode++;
       this.score = 0;
       this.done = false;
+      this.watched = this.phase === 'watching';
     }
     const small = this.perception.grey84(this.env.screen());
-    this.perception.observe(small);
     this.tick++;
-    const tiles = this.perception.tiles(small);
+    const drive = this.perception.drive(small);
     const retina = this.tick % 3 === 0 ? this.perception.retina(small) : null;
     const action = this.phase === 'watching' ? this.teacher : this.currentAction;
     this.execAction = action;
@@ -391,14 +345,15 @@ export class GameSide {
       if (this.phase === 'watching') {
         this.teacherReturns.push(this.score);
         this.teacherReturns = this.teacherReturns.slice(-20);
-      } else {
+      } else if (!this.watched) {       // a whole episode at the brain's controls
         this.returns.push(this.score);
         this.returns = this.returns.slice(-60);
         if (this.best === null || this.score > this.best) this.best = this.score;
         this.updateBadge();
       }
     }
-    return { tiles, teacher: this.teacher, reward: r.reward, done: this.done, score: this.score, episode: this.episode, retina };
+    return { drive, teacher: this.teacher, reward: r.reward, done: this.done, score: this.score, episode: this.episode,
+             retina, teacherGames: this.teacherReturns.length };
   }
 
   metaAction() {

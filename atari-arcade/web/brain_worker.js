@@ -1,6 +1,6 @@
-// The brain's thread: one serial owner of the brain and its learner. It consumes the latest observation the game
-// sent, admits witnesses, probes, takes over, acts and feeds rewards back; the page receives equilibria and numbers.
-import { BrainSide, GRID, N_SCREEN, TILE } from './arcade.js';
+// The brain's thread: one serial owner of the brain. It takes the latest screen the game sent, each screen at most
+// once: a lesson while the teacher plays, a decision after the takeover. The page receives settled states and numbers.
+import { BrainSide, N_SCREEN } from './arcade.js';
 
 let side = null, port = null;
 const inbox = { latest: null, seq: 0, consumed: 0, rewardAcc: 0, done: false };
@@ -20,7 +20,7 @@ self.onmessage = event => {
       inbox.done = inbox.done || d.done;
     };
     side = new BrainSide(m.game, m.meanings, { seed: m.seed ?? 0 });
-    self.postMessage({ type: 'ready', graph: { populations: side.populations(), n_screen: N_SCREEN, grid: GRID, tile: TILE,
+    self.postMessage({ type: 'ready', graph: { populations: side.populations(), n_screen: N_SCREEN,
                                                 n_action: side.nActions, meanings: m.meanings, edges: side.graphSample() } });
     run();
   } catch (error) {
@@ -31,27 +31,27 @@ self.onmessage = event => {
 async function run() {
   let lastState = 0;
   for (;;) {
-    // Every iteration sees a fresh observation: the brain never decides twice on one frame.
-    if (!inbox.latest || inbox.consumed === inbox.seq) { await sleep(4); continue; }
-    const snap = { tiles: inbox.latest.tiles, teacher: inbox.latest.teacher, reward: inbox.rewardAcc, done: inbox.done, seq: inbox.seq };
+    // Every iteration sees a fresh screen: the brain never decides twice on one frame.
+    if (!inbox.latest || inbox.consumed === inbox.seq) { await sleep(2); continue; }
+    const snap = { drive: inbox.latest.drive, teacher: inbox.latest.teacher, reward: inbox.rewardAcc, done: inbox.done,
+                   teacherGames: inbox.latest.teacherGames };
     inbox.consumed = inbox.seq;
-    const vizBefore = side.vizT, admittedBefore = side.admissions + side.lifeAdmissions;
+    const vizBefore = side.vizT;
     let out = {};
     try {
       out = side.iterate(snap);
     } catch (error) {
       side.faults++;
       side.lastError = `${error.name}: ${error.message}`;
+      side.pending = false;
       console.error(error);
       await sleep(500);
     }
-    if (!out.skipped) inbox.done = false;
-    if (out.consumedReward) inbox.rewardAcc = 0;
+    if (out.consumed) { inbox.rewardAcc = 0; inbox.done = false; }
     if (out.takeover) port.postMessage({ type: 'phase', phase: 'playing' });
     if (out.action !== undefined) port.postMessage({ type: 'action', action: out.action });
-    const admitted = side.admissions + side.lifeAdmissions;
-    if (side.vizT !== vizBefore || admitted !== admittedBefore) {
-      self.postMessage({ type: 'brain', traj: side.viz ? [side.viz] : [], t: side.vizT, admissions: admitted });
+    if (side.vizT !== vizBefore) {
+      self.postMessage({ type: 'brain', traj: side.viz ? [side.viz] : [], t: side.vizT, rewarded: side.rewarded });
     }
     const now = performance.now();
     if (now - lastState > 300 || out.takeover) {

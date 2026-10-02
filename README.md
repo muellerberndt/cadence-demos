@@ -45,12 +45,11 @@ settle one joint energy and observers read prediction errors.
 | --- | --- | --- |
 | [Rover Lab](rover-lab/) | A live model that adapts when its body changes, with no difference between training and inference | Cadence 0.70.0, population solver |
 | [Patch World](patch-world/) | Brains that learn in the browser and evolve across generations | JavaScript version of the 0.70.0 population solver |
-| [Atari Arcade](atari-arcade/) | Brains that learn Atari games from pixels: a teacher first, then reward | Cadence 0.70.0, `Brain.compose` (System 1) |
+| [Atari Arcade](atari-arcade/) | Brains that learn Atari games from pixels: a teacher first, then reward | Cadence 0.70.0, `Brain.compose` (System 1); in the browser, a JavaScript version of it |
 | [Amen](amen/) | A record patch composing jungle tracks in the browser | A brain trained on Cadence 0.11.0 |
 
-Rover Lab, Patch World and Atari Arcade run on Cadence 0.70.0. Atari Arcade's
-separate browser edition and Amen run the earlier engines they were built and
-recorded on.
+Rover Lab, Patch World and Atari Arcade run on Cadence 0.70.0. Amen runs the
+earlier engine it was built and recorded on.
 
 ## [Rover Lab](rover-lab/): a body model that keeps learning
 
@@ -90,15 +89,15 @@ Brains born at server start learn Atari games from the raw screen while you
 watch. Each one is a System 1 brain built with `Brain.compose`. It watches a
 scripted teacher play, takes the controls once its own answers agree often
 enough, and then keeps learning from the reward of its own actions. The page
-shows the game beside the settled brain. An earlier browser
-edition of Freeway and Atlantis, on a JavaScript port of the 0.50.0 engine, is at
-[floatingpragma.io/demos/atari-arcade](https://floatingpragma.io/demos/atari-arcade/).
+shows the game beside the settled brain. Freeway and Atlantis
+also run entirely in the browser, on a JavaScript version of the same brain
+(`atari-arcade/web/`).
 
 ```sh
 cd atari-arcade
 python3 -m venv .venv && .venv/bin/python -m pip install -r requirements.txt
 .venv/bin/python server.py        # http://localhost:8668
-python3 -m http.server 8080 --directory web   # the earlier browser edition at http://localhost:8080/
+python3 -m http.server 8080 --directory web   # the browser edition at http://localhost:8080/
 ```
 
 See the [Atari Arcade README](atari-arcade/README.md).

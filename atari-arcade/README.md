@@ -35,6 +35,9 @@ expects, and the score of every life with a skill badge from noob to legend.
   strongest current synapses, the teacher agreement and the score curve. The
   brain itself runs in the local Python server on the released `cadence-net`
   package.
+- **The same brain in the browser.** `web/` runs Freeway and Atlantis with
+  nothing behind the page, on a JavaScript version of the brain that is checked
+  against the Python library value for value.
 - **A living brain beside a frozen twin.** `headless_control.py` runs two
   brains per game from one seed. One keeps learning after the takeover; the
   other receives no outcome at all. The report compares them.
@@ -222,8 +225,8 @@ What they do not show:
 
 Against the 0.50.0 demo this replaces: its recorded Freeway lives were 17, 21,
 16, 26, 21, 21 against a teacher of 21 after a takeover at 174 s, and its
-Atlantis lives were 2000 five times after 288 s (the browser edition's receipts
-below). Carnival and Space Invaders fell into holding one action after the
+Atlantis lives were 2000 five times after 288 s (the receipts of its browser
+edition). Carnival and Space Invaders fell into holding one action after the
 takeover and scored far below their teachers
 ([#1](https://github.com/muellerberndt/cadence-demos/issues/1)).
 
@@ -233,30 +236,56 @@ takeover and scored far below their teachers
 
 ## The browser edition
 
-[floatingpragma.io/demos/atari-arcade](https://floatingpragma.io/demos/atari-arcade/)
-and `web/` are the earlier browser edition. It runs Freeway and Atlantis with
-nothing behind the page, on a JavaScript port of the **Cadence 0.50.0**
-population engine, and it is unchanged by this update. `web/` holds an Atari
-2600 core ([6502.ts](https://github.com/6502ts/6502.ts)) behind an ALE-style
-game interface (`emulator/ale.js`, bundled into `emulator.js`), the engine port
-(`cadence.js`) and that edition's own loop (`arcade.js`): nine tile columns
-under observers, batches of witnessed frames while the teacher plays, then a
-replayed reinforcement helper.
+`web/` runs Freeway and Atlantis with nothing behind the page: the same brain and
+the same loop, in JavaScript.
 
 ```sh
 cd web && python3 -m http.server 8080      # open http://localhost:8080/
 ```
 
-`node parity.mjs` checks the port against fixtures recorded with the 0.50.0
-source (commit `5d830d1bbb590c1837832b3bc9b6e1f811a4cd46`;
-`tools/make_parity_fixture.py` regenerates them with that source on
-`PYTHONPATH`). `node headless.mjs --game Freeway --episodes 5 --out receipts/freeway_living.json`
-runs the browser pipeline without a browser. Its recorded receipts are in
-`web/receipts/`: Freeway took the controls after 174 s and lived 17, 21, 16,
-26, 21, 21 against its teacher's 21; Atlantis took over after 288 s and lived
-2000 five times against 2000. `emulator/` rebuilds `emulator.js`
-(`npm install && npm run build`). The ROM images are the ones shipped with
-`ale-py` 0.12.1; see `web/THIRD_PARTY.md`.
+- `cadence.js` is a JavaScript version of the 0.70.0 System 1 brain that
+  `Brain.compose` builds with its default processing region: settling with the
+  qualified answer and its refusal, lessons, acting, learning from reward, the
+  working trace and the associative memory, for one stream. It includes NumPy's
+  seeding and generator, so a brain is born with exactly the weights the library
+  gives the same seed and samples its actions from the same draws.
+- `arcade.js` is the server's loop: the retina, the teachers, watching, the
+  takeover gate, living on reward, the scores and the badge.
+- Each game gets two web workers: the emulator, which never waits for the brain,
+  and the brain, one serial owner. The emulator is an Atari 2600 core
+  ([6502.ts](https://github.com/6502ts/6502.ts)) behind an ALE-style game
+  interface (`emulator/ale.js`, bundled into `emulator.js`).
 
-The browser edition has no JavaScript version of the 0.70.0 brain yet. The
-server edition above is the one that runs Cadence 0.70.0.
+Two things differ from the server edition. The page has no teacher games played
+before birth, so the brain takes the controls only after it has also watched one
+whole game of the teacher; the badge needs that score. And a JavaScript decision
+takes about 30 ms, so the browser brain sees more of the game's screens than the
+Python one does.
+
+`node parity.mjs` checks `cadence.js` against values recorded with the released
+package (`tools/make_parity_fixture.py` regenerates `fixtures/parity_system1.json`
+in the demo's venv). Newborn efficacies are identical bit for bit for three and
+four actions. On two recorded tapes of watched lessons, decisions with rewards,
+an episode end, a frozen stretch and a reset, every answer, sampled action and
+sweep count is identical, and activations, values, dopamine and every parameter
+agree within 1e-9 (observed: 1e-10 on a small brain whose every parameter is
+compared, 3e-12 on a brain of the arcade's size). The two engines add the same
+products in a different order, so the last digits differ.
+
+`node headless.mjs --game Freeway --episodes 6 --out receipts/freeway_living.json`
+runs the browser pipeline without a browser, the game advancing by the brain's
+own time. The receipts in `web/receipts/`:
+
+| Game | Takeover | Teacher's game | Lives at the controls | Refused / faults | Decision ms: p50 / p95 |
+| --- | --- | --- | --- | --- | --- |
+| Freeway | 1,005 lessons, agreement 1.00, 118 s after birth | 21 | 23, 25, 23, 19, 23, 19 | 0 / 0 | 30 / 49 |
+| Atlantis | 500 lessons, agreement 1.00, 45 s after birth | 2000, 2000 | 2000 eight times | 0 / 0 | 27 / 39 |
+
+The 0.50.0 browser edition this replaces recorded 17, 21, 16, 26, 21, 21 for
+Freeway after a takeover at 174 s and 2000 five times for Atlantis after 288 s.
+
+`emulator/` rebuilds `emulator.js` (`npm install && npm run build`). The ROM
+images are the ones shipped with `ale-py` 0.12.1; see `web/THIRD_PARTY.md`.
+[floatingpragma.io/demos/atari-arcade](https://floatingpragma.io/demos/atari-arcade/)
+serves a pinned copy of this folder; it shows the earlier 0.50.0 edition until
+the site is synced to this commit.

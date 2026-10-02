@@ -1,5 +1,5 @@
-// The game's thread: the Atari 2600 core and the perception, stepping at the chosen pace and never waiting for
-// the brain. Every observation goes to the brain worker over a direct channel; frames and the score go to the page.
+// The game's thread: the Atari 2600 core and the retina, stepping at the chosen pace and never waiting for the
+// brain. Every screen goes to the brain worker over a direct channel; frames and the score go to the page.
 import { Environment, GAMES } from './emulator.js';
 import { GameSide } from './arcade.js';
 
@@ -22,7 +22,7 @@ self.onmessage = async event => {
       const response = await fetch(new URL(GAMES[m.game].rom, m.base).href);
       if (!response.ok) throw new Error(`cannot load ${GAMES[m.game].rom}: ${response.status}`);
       env = new Environment(m.game, new Uint8Array(await response.arrayBuffer()), { seed: m.seed ?? 0 });
-      side = new GameSide(env, m.game);
+      side = new GameSide(env, m.game, { seed: m.seed ?? 0 });
       self.postMessage({ type: 'ready', meanings: env.actions, teacher: side.teacher });
       running = true;
       loop();
@@ -43,7 +43,8 @@ function loop() {
   const started = performance.now();
   const snap = side.step();
   if (snap.retina) lastRetina = snap.retina;
-  port.postMessage({ type: 'step', tiles: snap.tiles, teacher: snap.teacher, reward: snap.reward, done: snap.done }, [snap.tiles.buffer]);
+  port.postMessage({ type: 'step', drive: snap.drive, teacher: snap.teacher, reward: snap.reward, done: snap.done,
+                     teacherGames: snap.teacherGames }, [snap.drive.buffer]);
   const now = performance.now();
   if (now - lastFrameAt >= FRAME_EVERY_MS || snap.done) {
     lastFrameAt = now;

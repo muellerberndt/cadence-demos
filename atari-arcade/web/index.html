@@ -69,8 +69,8 @@
 </head>
 <body>
 <header><h1>CADENCE ARCADE</h1>
-  <span>two cortical-column brains born in your browser, converging live ·
-  an Atari 2600 core and the Cadence engine run in web workers ·
+  <span>two Cadence 0.70.0 System 1 brains born in your browser, learning live ·
+  an Atari 2600 core and the brain run in web workers ·
   every fiber and number is measured, nothing is staged</span>
   <span class="pace">speed
     <input id="pace" type="range" min="0" max="0.4" step="0.05" value="0"
@@ -79,11 +79,13 @@
 <div id="rows"></div>
 <section class="about" id="about">
   <p><b>What runs here.</b> Each game is an Atari 2600 emulated in a worker. Its brain is born in a second worker with
-  a fixed seed: nine cortical columns over the 84 × 84 retina, a reflection ring, a policy ring and a value nucleus,
-  61,000 relations in one settling organ. It watches a scripted teacher (Freeway: always up; Atlantis: always fire),
-  admits what it sees in batches, takes the controls once its own decoded actions agree with the teacher often enough,
-  and then learns from every reward. The brain's engine is a JavaScript port of the Cadence 0.50.0 reference engine,
-  checked against the library on recorded fixtures; the emulator is the 6502.ts core.
+  a fixed seed: a Cadence 0.70.0 System 1 brain, 7,056 sensory neurons for the 84 × 84 screen, an association cortex
+  with a working trace, a motor cortex with one neuron per action, a critic and an associative memory, 456,000
+  synapses that settle together for every answer. It watches a scripted teacher play (Freeway: always up; Atlantis:
+  always fire) and takes each watched screen as a lesson. Once its own answers agree with the teacher's often enough
+  and it has watched one whole game, it takes the controls, and from then on it learns from the reward of its own
+  actions. The brain is a JavaScript version of <code>Brain.compose</code>, checked against the Python library on
+  recorded fixtures; the emulator is the 6502.ts core.
   <a href="https://github.com/muellerberndt/cadence-demos/tree/main/atari-arcade">Source, parity harness and receipts.</a></p>
 </section>
 <script type="module">
@@ -117,34 +119,31 @@ function spark(vals, w, h, color) {
 
 function cortex(canvas, graph) {
   const W = canvas.width = 900, H = canvas.height = 470;
-  const tsz = graph.tile * graph.tile;
   const retina = {x: 20, y: 118, w: 96, h: 214};
   const nodes3 = [];
-  const columns = [];
+  const pops = {};
   for (const p of graph.populations) {
-    if (/^t\d+$/.test(p.name)) {
-      const t = parseInt(p.name.slice(1));
-      const gx = (t % graph.grid) - 1, gz = Math.floor(t / graph.grid) - 1;
-      const sheetY = 34 - (gx * gx + gz * gz) * 12;
-      columns[t] = {pop: p, gx, gz};
-      for (let i = 0; i < p.count; i++) {
-        nodes3[p.start + i] = [gx * 128, sheetY - i * 22, gz * 112];
-      }
-    } else if (p.name === "r") {
-      for (let i = 0; i < p.count; i++) {
+    pops[p.name] = p;
+    for (let i = 0; i < p.count; i++) {
+      if (p.name === "association") {
+        // the association cortex: a curved sheet
+        const side = Math.ceil(Math.sqrt(p.count));
+        const gx = (i % side) - (side - 1) / 2;
+        const gz = Math.floor(i / side) - (side - 1) / 2;
+        nodes3[p.start + i] = [gx * 46, -8 + gz * 17 - (gx * gx + gz * gz) * 1.2,
+                               gz * 40];
+      } else if (p.name === "trace") {
+        // the working trace: what the cortex held a moment ago
         const a = (i / p.count) * 6.283;
-        nodes3[p.start + i] = [Math.cos(a) * 170, 130, Math.sin(a) * 146];
-      }
-    } else if (p.name === "p") {
-      for (let i = 0; i < p.count; i++) {
+        nodes3[p.start + i] = [Math.cos(a) * 205, 118, Math.sin(a) * 170];
+      } else if (p.name === "motor") {
         const a = (i / p.count) * 6.283 + 0.35;
-        nodes3[p.start + i] = [Math.cos(a) * 100, 178, Math.sin(a) * 84];
-      }
-    } else if (p.name === "v") {
-      for (let i = 0; i < p.count; i++) {
-        const a = (i / p.count) * 6.283;
-        nodes3[p.start + i] = [Math.cos(a) * 40, -92 + Math.sin(a) * 22,
-                              Math.sin(a) * 36];
+        nodes3[p.start + i] = [Math.cos(a) * 96, 178, Math.sin(a) * 80];
+      } else if (p.name === "memory") {
+        const a = (i / p.count) * 6.283 + 0.35;
+        nodes3[p.start + i] = [Math.cos(a) * 58, -86, Math.sin(a) * 48];
+      } else if (p.name === "value") {
+        nodes3[p.start + i] = [0, -128, 0];
       }
     }
   }
@@ -162,20 +161,13 @@ function cortex(canvas, graph) {
     return pos;
   };
   const srcPos = (k, s, pos) => {
-    if (k === 0) {
-      if (s < graph.n_screen) {
-        const t = Math.floor(s / tsz), local = s % tsz;
-        const gx2 = (t % graph.grid) * graph.tile + (local % graph.tile);
-        const gy2 = Math.floor(t / graph.grid) * graph.tile
-          + Math.floor(local / graph.tile);
-        return [retina.x + gx2 / (graph.grid * graph.tile) * retina.w,
-                retina.y + gy2 / (graph.grid * graph.tile) * retina.h];
-      }
-      return [retina.x + 48, retina.y + retina.h + 28];
+    if (k === 0) {   // a retina pixel, row by row over the 84x84 screen
+      return [retina.x + ((s % 84) + 0.5) / 84 * retina.w,
+              retina.y + (Math.floor(s / 84) + 0.5) / 84 * retina.h];
     }
     return pos[s] || [cx, cy];
   };
-  return {W, H, columns, retina, project, srcPos, cx, cy};
+  return {W, H, pops, retina, project, srcPos, cx, cy};
 }
 
 function netRenderer(canvas, graph) {
@@ -183,7 +175,7 @@ function netRenderer(canvas, graph) {
   const A = cortex(canvas, graph);
   let ripple = 0;
   return (fs, meta) => {
-    const {W, H, columns, retina, project, srcPos, cx, cy} = A;
+    const {W, H, pops, retina, project, srcPos, cx, cy} = A;
     const st = fs.state || [], er = fs.errors || [], dl = fs.delta || [];
     const t = performance.now() / 1000;
     const rot = Math.sin(t * 0.21) * 0.42;
@@ -220,8 +212,8 @@ function netRenderer(canvas, graph) {
     ctx.stroke();
     ctx.restore();
     ctx.fillStyle = "#6f6353";
-    ctx.fillText("ONE ORGAN · GLOBAL SETTLING · OVERLAP REPAIR",
-                 cx - 126, 24);
+    ctx.fillText("ONE BRAIN · ONE SETTLEMENT · LEARNING FROM EVERY OUTCOME",
+                 cx - 158, 24);
 
     ctx.fillText("R E T I N A", retina.x, retina.y - 9);
     if (meta.retina && meta.retina.length === 1764) {
@@ -240,22 +232,14 @@ function netRenderer(canvas, graph) {
       ctx.imageSmoothingEnabled = false;
       ctx.drawImage(rc, retina.x, retina.y, retina.w, retina.h);
     }
-    ctx.strokeStyle = "#3a2d24";
-    for (let g = 1; g < 3; g++) {
-      ctx.beginPath();
-      ctx.moveTo(retina.x + g * retina.w / 3, retina.y);
-      ctx.lineTo(retina.x + g * retina.w / 3, retina.y + retina.h);
-      ctx.moveTo(retina.x, retina.y + g * retina.h / 3);
-      ctx.lineTo(retina.x + retina.w, retina.y + g * retina.h / 3);
-      ctx.stroke();
-    }
     ctx.strokeStyle = "#2a201b";
     ctx.strokeRect(retina.x, retina.y, retina.w, retina.h);
     ctx.fillStyle = "#6f6353";
-    ctx.fillText("MINICOLUMNS", cx - 34, H - 18);
-    ctx.fillText("REFLECTION RING", cx + 118, 52);
-    ctx.fillText("POLICY RING", cx - 34, 74);
-    ctx.fillText("VALUE NUCLEUS", cx - 40, H - 44);
+    ctx.fillText("ASSOCIATION CORTEX", cx - 52, cy + 96);
+    ctx.fillText("WORKING TRACE", cx + 196, 150);
+    ctx.fillText("MOTOR CORTEX", cx - 36, 58);
+    ctx.fillText("MEMORY · REWARD RECALLED PER ACTION", cx + 70, H - 106);
+    ctx.fillText("VALUE · DOPAMINE", cx - 46, H - 44);
     // atari gamepad under the retina, lit by the executed action
     const act = (meta.action || "NOOP").toUpperCase();
     const jx = retina.x + 34, jy = retina.y + retina.h + 56;
@@ -347,24 +331,19 @@ function netRenderer(canvas, graph) {
     ctx.stroke();
     ctx.setLineDash([]);
 
-    columns.forEach((c, i) => {
-      if (!c) return;
-      const top = pos[c.pop.start], bot = pos[c.pop.start + c.pop.count - 1];
-      if (!top || !bot) return;
-      let esum = 0;
-      for (let k2 = 0; k2 < c.pop.count; k2++)
-        esum += Math.abs(er[c.pop.start + k2] ?? 0);
-      const coh = 1 - Math.min(1, (esum / c.pop.count) * 4);
-      const sc = top[2];
-      ctx.strokeStyle = coh > 0.7
-        ? `rgba(79, 192, 106, ${0.15 + 0.35 * coh * sc})`
-        : `rgba(220, 91, 91, ${0.5 - 0.35 * coh})`;
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.roundRect(top[0] - 13 * sc, top[1] - 12 * sc, 26 * sc,
-                    (bot[1] - top[1]) + 24 * sc, 11 * sc);
-      ctx.stroke();
-    });
+    // the motor cortex: one neuron per action, named
+    const motor = pops.motor;
+    if (motor && graph.meanings) {
+      ctx.globalCompositeOperation = "source-over";
+      for (let i = 0; i < motor.count; i++) {
+        const P = pos[motor.start + i];
+        if (!P) continue;
+        const on = (graph.meanings[i] || "") === act;
+        ctx.fillStyle = on ? "#e8901c" : "#6f6353";
+        ctx.fillText(graph.meanings[i] || "", P[0] + 12 * P[2], P[1] - 9 * P[2]);
+      }
+      ctx.globalCompositeOperation = "lighter";
+    }
 
     if (!netRenderer._glow) {
       netRenderer._glow = {};
@@ -415,8 +394,8 @@ function netRenderer(canvas, graph) {
                   (76 + (1 - ripple) * 250) * 0.72, 0, 0, 7);
       ctx.stroke();
       ctx.fillStyle = `rgba(79, 192, 106, ${ripple})`;
-      ctx.fillText("EXPERIENCE ADMITTED — RELATIONS REPAIRED",
-                   cx - 116, 40);
+      ctx.fillText("REWARD — DOPAMINE MOVES THE SYNAPSES",
+                   cx - 106, 40);
       ripple *= 0.94;
     }
     ctx.fillStyle = "#9b8a72";
@@ -446,11 +425,11 @@ function makeRow(name, game) {
     <div class="hud">
       <div class="stat"><small>teacher agreement</small>
         <b id="h1-${name}" class="up">0</b><span id="h1s-${name}"></span></div>
-      <div class="stat"><small>understanding · repair effort fallen</small>
+      <div class="stat"><small>value · return the critic expects</small>
         <b id="h2-${name}" class="up">0</b></div>
-      <div class="stat"><small>witnesses absorbed</small>
+      <div class="stat"><small>lessons from the teacher</small>
         <b id="h3-${name}">0</b></div>
-      <div class="stat"><small>sweeps to settle · falls with mastery</small>
+      <div class="stat"><small>sweeps to settle the last screen</small>
         <b id="h4-${name}" class="down">–</b><span id="h4s-${name}"></span></div>
       <div class="stat"><small>score this life</small>
         <b id="h5-${name}">0</b></div>
@@ -522,7 +501,7 @@ function startGame(name, game, row) {
     if (m.type === "ready") {
       graph = m.graph;
       render = netRenderer(document.getElementById(`n-${name}`), graph);
-      life.textContent = "born · watching the teacher";
+      life.textContent = "born · watching the teacher play";
       anim();
     } else if (m.type === "brain") {
       if (m.t !== trajT && (m.traj || []).length) {
@@ -530,8 +509,8 @@ function startGame(name, game, row) {
         lastDelta = (target.delta || [])
           .reduce((a, v) => a + v, 0) / Math.max(1, target.delta.length);
       }
-      admitted = admitted || (m.admissions || 0) > lastAdm;
-      lastAdm = Math.max(lastAdm, m.admissions || 0);
+      admitted = admitted || (m.rewarded || 0) > lastAdm;
+      lastAdm = Math.max(lastAdm, m.rewarded || 0);
     } else if (m.type === "state") {
       brainState = m.state;
       hud();
@@ -551,7 +530,7 @@ function startGame(name, game, row) {
         (v, i) => v + ((target.state[i] ?? 0) - v) * 0.35);
       shown.errors = target.errors;
       shown.delta = target.delta;
-      caption = `EQUILIBRIUM TRACKING THE GAME · MEAN PATCH SHIFT `
+      caption = `SETTLED STATE TRACKING THE GAME · MEAN SHIFT `
         + `${lastDelta.toFixed(3)}`;
     }
     render(shown || {}, {caption, admitted, retina: latestRetina,
@@ -576,14 +555,13 @@ function startGame(name, game, row) {
     }
     const ph = document.getElementById(`p-${name}`);
     if (ph) ph.textContent = phase === "watching"
-      ? "watching the teacher" : "playing for itself";
+      ? "watching the teacher play" : "playing for itself";
     tween(document.getElementById(`h1-${name}`),
           (W2.agreement ?? 0) * 100, 0, "%");
     const h1s = document.getElementById(`h1s-${name}`);
     if (h1s) h1s.innerHTML = spark(W2.agree_hist, 60, 20, "#4fc06a");
-    tween(document.getElementById(`h2-${name}`),
-          (W2.coherence ?? 0) * 100, 0, "%");
-    tween(document.getElementById(`h3-${name}`), W2.witnesses ?? 0, 0);
+    tween(document.getElementById(`h2-${name}`), L.value ?? 0, 2);
+    tween(document.getElementById(`h3-${name}`), W2.lessons ?? 0, 0);
     if (W2.sweeps != null)
       tween(document.getElementById(`h4-${name}`), W2.sweeps, 0);
     const h4s = document.getElementById(`h4s-${name}`);
@@ -597,19 +575,21 @@ function startGame(name, game, row) {
       return;
     }
     if ((B.beat_age ?? 0) > 25) {
-      life.innerHTML = `<span style="color:#e0d24f">deep in repair —
-        admitting experience (${Math.round(B.beat_age)}s)</span>`;
+      life.innerHTML = `<span style="color:#e0d24f">still settling
+        (${Math.round(B.beat_age)}s)</span>`;
       return;
     }
     if (phase === "watching") {
       const tt = Math.round((W2.to_takeover ?? 0) * 100);
       life.innerHTML = `<b>learning by watching:</b> `
-        + `${W2.admissions ?? 0} batches admitted · `
-        + `<b>${tt}%</b> of the way to taking the controls`;
+        + `${W2.lessons ?? 0} lessons · `
+        + (tt < 100 ? `<b>${tt}%</b> of the way to taking the controls`
+                    : `ready · finishing the teacher's first whole game`);
     } else {
       life.innerHTML = spark(r.returns || [], 140, 22, "#4fc06a")
-        + ` <b>living:</b> ${L.transitions ?? 0} experiences · `
-        + `${L.admissions ?? 0} admitted`;
+        + ` <b>living:</b> ${L.decisions ?? 0} decisions · `
+        + `${L.outcomes ?? 0} outcomes learned · ${L.refused ?? 0} refused · `
+        + `${L.think_ms ?? "–"} ms per decision`;
     }
   };
   // The brain reports every 300 ms while it thinks; between its reports the game's own numbers keep moving.
