@@ -100,7 +100,7 @@ described below. The page does not run the Python package. Cadence's main
 different engine and is not part of this page. See the
 [population solver guide](https://github.com/muellerberndt/cadence/blob/v0.70.0/docs/equilibrium/README.md).
 
-## Run it
+## Run
 
 ```sh
 python3 -m http.server 8080
@@ -187,7 +187,7 @@ event custody and there are no checkpoints. No observer or depth advantage is
 claimed from this page; it shows what selection does with the price of depth
 and of observation, and the lifetime tables are the only evidence it offers.
 
-## Measure it
+## Measurement and evidence
 
 ```sh
 node test.js

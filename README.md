@@ -46,10 +46,10 @@ settle one joint energy and observers read prediction errors.
 | [Rover Lab](rover-lab/) | A live model that adapts when its body changes, with no difference between training and inference | Cadence 0.70.0, population solver |
 | [Patch World](patch-world/) | Brains that learn in the browser and evolve across generations | JavaScript version of the 0.70.0 population solver |
 | [Atari Arcade](atari-arcade/) | Brains that learn Atari games from pixels: a teacher first, then reward | Cadence 0.70.0, `Brain.compose` (System 1); in the browser, a JavaScript version of it |
-| [Amen](amen/) | A record patch composing jungle tracks in the browser | A brain trained on Cadence 0.11.0 |
+| [Amen](amen/) | A record patch composing jungle tracks in the browser | A brain trained on Cadence 0.70.0 with `RecordPatchNet`; the page runs a JavaScript version of its forward pass |
 
-Rover Lab, Patch World and Atari Arcade run on Cadence 0.70.0. Amen runs the
-earlier engine it was built and recorded on.
+All four demos run on Cadence 0.70.0: Rover Lab and Patch World on the
+population solver, Atari Arcade on `Brain.compose`, and Amen on a record patch.
 
 ## [Rover Lab](rover-lab/): a body model that keeps learning
 
@@ -108,7 +108,10 @@ One record patch learned jungle tracks as events per half-beat: a slice of a
 drum break, a sub-bass note, a change flag and a texture. Nothing on the page is
 recorded. Press the button and the brain computes a track from silence in the
 browser, hearing each half-beat it plays, then renders it through the
-instrument.
+instrument. The brain was trained from random parameters on Cadence 0.70.0 in
+78 CPU minutes on a laptop. Its slow parameters learn by a gradient step over
+32 half-beats that is kept only when a replay confirms it, and its records are
+written in one shot.
 
 ```sh
 python -m http.server -d amen/web 8803   # open http://localhost:8803 and press CUT A DUB

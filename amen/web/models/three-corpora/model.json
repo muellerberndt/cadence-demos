@@ -1,7 +1,7 @@
 {
  "schema": "cadence-examples.amen.live-model/v1",
- "run_receipt_sha256": "3d922b65884a39dc247804032a9734480df96c6ed94124a7ffd3ac088a3c700c",
- "library_commit": "02fec624648d421e02ecb00f52f3d3072e9fe9ae",
+ "run_receipt_sha256": "33f9c90fe9b77066d47478448e40d603c41b221a9014e2d76c727ffe7a640e3e",
+ "library_commit": "be854bd23e4339921fd40969dbe9ff01d1e0227d",
  "inputs": 80,
  "hidden": 128,
  "outputs": 71,
