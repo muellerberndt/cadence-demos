@@ -27,7 +27,7 @@ that gives a brain that has to run a body:
   available activity while the brain runs, so the learning can happen on the
   device that carries the brain.
 
-## The brain in Cadence 0.70.0
+## The brain in Cadence
 
 Cadence builds one continuing brain. **System 1** is the default: an
 animal-like brain with perception, plastic connections, memory, action and
@@ -43,13 +43,14 @@ settle one joint energy and observers read prediction errors.
 
 | Demo | What it shows | Runs on |
 | --- | --- | --- |
-| [Rover Lab](rover-lab/) | A live model that adapts when its body changes, with no difference between training and inference | Cadence 0.70.0, population solver |
-| [Patch World](patch-world/) | Brains that learn in the browser and evolve across generations | JavaScript version of the 0.70.0 population solver |
-| [Atari Arcade](atari-arcade/) | Brains that learn Atari games from pixels: a teacher first, then reward | Cadence 0.70.0, `Brain.compose` (System 1); in the browser, a JavaScript version of it |
-| [Amen](amen/) | A record patch composing jungle tracks in the browser | A brain trained on Cadence 0.70.0 with `RecordPatchNet`; the page runs a JavaScript version of its forward pass |
+| [Rover Lab](rover-lab/) | A live model that adapts when its body changes, with no difference between training and inference | The population solver |
+| [Patch World](patch-world/) | Brains that learn in the browser and evolve across generations | A JavaScript version of the population solver |
+| [Atari Arcade](atari-arcade/) | Brains that learn Atari games from pixels: a teacher first, then reward | `Brain.compose` (System 1); in the browser, a JavaScript version of it |
+| [Amen](amen/) | A record patch composing jungle tracks in the browser | A brain trained with `RecordPatchNet`; the page runs a JavaScript version of its forward pass |
 
-All four demos run on Cadence 0.70.0: Rover Lab and Patch World on the
-population solver, Atari Arcade on `Brain.compose`, and Amen on a record patch.
+Rover Lab and Patch World run on the population solver, Atari Arcade on
+`Brain.compose`, and Amen on a record patch. Each demo's README names the
+Cadence version it was built with.
 
 ## [Rover Lab](rover-lab/): a body model that keeps learning
 
@@ -108,8 +109,8 @@ One record patch learned jungle tracks as events per half-beat: a slice of a
 drum break, a sub-bass note, a change flag and a texture. Nothing on the page is
 recorded. Press the button and the brain computes a track from silence in the
 browser, hearing each half-beat it plays, then renders it through the
-instrument. The brain was trained from random parameters on Cadence 0.70.0 in
-78 CPU minutes on a laptop. Its slow parameters learn by a gradient step over
+instrument. The brain was trained from random parameters in 78 CPU minutes on a
+laptop. Its slow parameters learn by a gradient step over
 32 half-beats that is kept only when a replay confirms it, and its records are
 written in one shot.
 
