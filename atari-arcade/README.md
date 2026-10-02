@@ -287,5 +287,4 @@ Freeway after a takeover at 174 s and 2000 five times for Atlantis after 288 s.
 `emulator/` rebuilds `emulator.js` (`npm install && npm run build`). The ROM
 images are the ones shipped with `ale-py` 0.12.1; see `web/THIRD_PARTY.md`.
 [floatingpragma.io/demos/atari-arcade](https://floatingpragma.io/demos/atari-arcade/)
-serves a pinned copy of this folder; it shows the earlier 0.50.0 edition until
-the site is synced to this commit.
+serves a pinned copy of this folder.

@@ -148,8 +148,7 @@ node amen/parity.mjs        # the browser engine against the archived run
 ```
 
 [floatingpragma.io/demos/amen](https://floatingpragma.io/demos/amen/) serves a
-pinned copy of `web/`. The model files there are the same bytes; its brain
-selector shows the earlier label until the site is synced to this commit.
+pinned copy of `web/` with the same model files.
 
 ## What the brain receives
 
