@@ -1,0 +1,572 @@
+{
+ "schema": "rover-evidence-js-v1",
+ "engine": "JavaScript edition of the cadence-net 0.70.0 population solver",
+ "seed": 17,
+ "weak_gain": 0.35,
+ "steps": 960,
+ "auto": true,
+ "protocol": {
+  "schema": "rover-protocol-v1",
+  "development_seeds": [
+   17,
+   29
+  ],
+  "confirmation_seeds": [
+   101,
+   211,
+   307
+  ],
+  "weak_gain": 0.35,
+  "declared_gain_range": [
+   0.25,
+   0.5
+  ],
+  "dt": 0.1,
+  "wheel_base": 0.7,
+  "max_speed": 1.5,
+  "action_levels": [
+   0,
+   0.4,
+   0.8
+  ],
+  "bootstrap_epochs": 12,
+  "bootstrap_experiences": 9,
+  "online_presentations_per_transition": 2,
+  "replay_window": 12,
+  "episode_steps": 80,
+  "target_radius": 0.22,
+  "phases": [
+   [
+    "normal",
+    160
+   ],
+   [
+    "weakened",
+    400
+   ],
+   [
+    "restored_probe",
+    160
+   ],
+   [
+    "restored_learning",
+    240
+   ]
+  ],
+  "controller": {
+   "forward_speed": 0.72,
+   "minimum_speed": 0.28,
+   "heading_gain": 1.8,
+   "turn_weight": 12
+  },
+  "demonstration_gate": {
+   "normal_success_rate_min": 0.75,
+   "weak_distance_integral_ratio_max": 0.9,
+   "weak_success_rate_min": 0.6,
+   "control_p95_ms_max": 100,
+   "deadline_miss_fraction_max": 0.05
+  },
+  "comparison_boundary": "Equal information and transition budgets; each controller produces its own executed witnesses. No commercial advantage or useful-depth claim follows from a frozen-control gain.",
+  "selection_boundary": "Development seeds may diagnose settings. Protocol and implementation hashes are recorded before reserved runs. All scheduled outcomes are retained."
+ },
+ "bootstrap": {
+  "cadence": {
+   "experiences": 9,
+   "presentations": 108,
+   "seconds": 0.15929999999888242,
+   "training_grid_rmse": 0.027913168025390598,
+   "parameters": 17
+  },
+  "adaptive": {
+   "experiences": 9,
+   "presentations": 108,
+   "seconds": 0.001099999999627471,
+   "training_grid_rmse": 2.531051910847441e-05,
+   "parameters": 6
+  },
+  "mlp": {
+   "experiences": 9,
+   "presentations": 108,
+   "seconds": 0.019300000000745058,
+   "training_grid_rmse": 0.04036892992644842,
+   "parameters": 722
+  },
+  "frozen": {
+   "experiences": 9,
+   "presentations": 108,
+   "seconds": 0.15929999999888242,
+   "training_grid_rmse": 0.027913168025390598,
+   "parameters": 17
+  }
+ },
+ "bootstrap_witnesses": [
+  [
+   [
+    0,
+    0
+   ],
+   [
+    0,
+    0
+   ]
+  ],
+  [
+   [
+    0,
+    0.4
+   ],
+   [
+    0.2,
+    0.2
+   ]
+  ],
+  [
+   [
+    0,
+    0.8
+   ],
+   [
+    0.4,
+    0.4
+   ]
+  ],
+  [
+   [
+    0.4,
+    0
+   ],
+   [
+    0.2,
+    -0.2
+   ]
+  ],
+  [
+   [
+    0.4,
+    0.4
+   ],
+   [
+    0.4,
+    0
+   ]
+  ],
+  [
+   [
+    0.4,
+    0.8
+   ],
+   [
+    0.6000000000000001,
+    0.2
+   ]
+  ],
+  [
+   [
+    0.8,
+    0
+   ],
+   [
+    0.4,
+    -0.4
+   ]
+  ],
+  [
+   [
+    0.8,
+    0.4
+   ],
+   [
+    0.6000000000000001,
+    -0.2
+   ]
+  ],
+  [
+   [
+    0.8,
+    0.8
+   ],
+   [
+    0.8,
+    0
+   ]
+  ]
+ ],
+ "bootstrap_schedule": [
+  7,
+  2,
+  3,
+  1,
+  0,
+  5,
+  6,
+  4,
+  8,
+  7,
+  1,
+  2,
+  5,
+  0,
+  6,
+  3,
+  4,
+  8,
+  8,
+  4,
+  2,
+  1,
+  5,
+  3,
+  7,
+  6,
+  0,
+  8,
+  2,
+  0,
+  7,
+  4,
+  1,
+  6,
+  5,
+  3,
+  1,
+  3,
+  6,
+  2,
+  4,
+  7,
+  5,
+  0,
+  8,
+  1,
+  2,
+  4,
+  7,
+  0,
+  3,
+  6,
+  5,
+  8,
+  8,
+  6,
+  2,
+  1,
+  5,
+  4,
+  7,
+  3,
+  0,
+  5,
+  4,
+  2,
+  0,
+  6,
+  8,
+  1,
+  3,
+  7,
+  1,
+  7,
+  5,
+  3,
+  8,
+  4,
+  2,
+  0,
+  6,
+  2,
+  0,
+  7,
+  4,
+  5,
+  8,
+  1,
+  3,
+  6,
+  0,
+  3,
+  5,
+  7,
+  6,
+  1,
+  8,
+  2,
+  4,
+  0,
+  7,
+  6,
+  8,
+  2,
+  5,
+  1,
+  3,
+  4
+ ],
+ "metrics": {
+  "cadence": {
+   "normal": {
+    "steps": 160,
+    "targets": 2,
+    "attempts": 2,
+    "distance_integral": 6.018787182096016,
+    "squared_prediction_error": 0.09391367992972281,
+    "learning_presentations": 317,
+    "deadline_misses": 0,
+    "success_rate": 1,
+    "prediction_rmse": 0.024227267686653557,
+    "latencies_p95_ms": 3.699999999254942,
+    "command_ages_p95_ms": 7.400000000372529,
+    "queue_delays_p95_ms": 5.099999999627471
+   },
+   "weakened": {
+    "steps": 400,
+    "targets": 5,
+    "attempts": 5,
+    "distance_integral": 36.52896930847514,
+    "squared_prediction_error": 0.10579363377981772,
+    "learning_presentations": 800,
+    "deadline_misses": 0,
+    "success_rate": 1,
+    "prediction_rmse": 0.01626296665585785,
+    "latencies_p95_ms": 2.800000000745058,
+    "command_ages_p95_ms": 6.800000000745058,
+    "queue_delays_p95_ms": 4.900000000372529
+   },
+   "restored_probe": {
+    "steps": 160,
+    "targets": 2,
+    "attempts": 2,
+    "distance_integral": 9.935164200576548,
+    "squared_prediction_error": 2.692085027387118,
+    "learning_presentations": 0,
+    "deadline_misses": 0,
+    "success_rate": 1,
+    "prediction_rmse": 0.12971326617262202,
+    "latencies_p95_ms": 0.599999999627471,
+    "command_ages_p95_ms": 5.199999999254942,
+    "queue_delays_p95_ms": 5
+   },
+   "restored_learning": {
+    "steps": 240,
+    "targets": 3,
+    "attempts": 3,
+    "distance_integral": 10.216467851155512,
+    "squared_prediction_error": 0.29357804230155,
+    "learning_presentations": 478,
+    "deadline_misses": 0,
+    "success_rate": 1,
+    "prediction_rmse": 0.03497487445185651,
+    "latencies_p95_ms": 3,
+    "command_ages_p95_ms": 7.299999998882413,
+    "queue_delays_p95_ms": 5
+   }
+  },
+  "frozen": {
+   "normal": {
+    "steps": 160,
+    "targets": 2,
+    "attempts": 2,
+    "distance_integral": 5.863503584603526,
+    "squared_prediction_error": 0.3499678969764603,
+    "learning_presentations": 0,
+    "deadline_misses": 0,
+    "success_rate": 1,
+    "prediction_rmse": 0.046768572312001114,
+    "latencies_p95_ms": 0.6000000014901161,
+    "command_ages_p95_ms": 7.699999999254942,
+    "queue_delays_p95_ms": 7.400000000372529
+   },
+   "weakened": {
+    "steps": 400,
+    "targets": 2,
+    "attempts": 5,
+    "distance_integral": 42.70670692702661,
+    "squared_prediction_error": 18.640157233101952,
+    "learning_presentations": 0,
+    "deadline_misses": 0,
+    "success_rate": 0.4,
+    "prediction_rmse": 0.21587124190765866,
+    "latencies_p95_ms": 0.6999999992549419,
+    "command_ages_p95_ms": 7.299999998882413,
+    "queue_delays_p95_ms": 6.900000000372529
+   },
+   "restored_probe": {
+    "steps": 160,
+    "targets": 2,
+    "attempts": 2,
+    "distance_integral": 9.023198281446001,
+    "squared_prediction_error": 0.30628135971178916,
+    "learning_presentations": 0,
+    "deadline_misses": 0,
+    "success_rate": 1,
+    "prediction_rmse": 0.0437522399220735,
+    "latencies_p95_ms": 0.40000000037252903,
+    "command_ages_p95_ms": 5.599999999627471,
+    "queue_delays_p95_ms": 5.299999998882413
+   },
+   "restored_learning": {
+    "steps": 240,
+    "targets": 3,
+    "attempts": 3,
+    "distance_integral": 10.191324142746629,
+    "squared_prediction_error": 0.4982264076551187,
+    "learning_presentations": 0,
+    "deadline_misses": 0,
+    "success_rate": 1,
+    "prediction_rmse": 0.04556252149771412,
+    "latencies_p95_ms": 0.5,
+    "command_ages_p95_ms": 7.699999999254942,
+    "queue_delays_p95_ms": 7.299999998882413
+   }
+  },
+  "adaptive": {
+   "normal": {
+    "steps": 160,
+    "targets": 2,
+    "attempts": 2,
+    "distance_integral": 5.972863549172485,
+    "squared_prediction_error": 4.9493842641354374e-09,
+    "learning_presentations": 317,
+    "deadline_misses": 0,
+    "success_rate": 1,
+    "prediction_rmse": 5.5618029137004206e-06,
+    "latencies_p95_ms": 0.10000000149011612,
+    "command_ages_p95_ms": 7.800000000745058,
+    "queue_delays_p95_ms": 7.699999999254942
+   },
+   "weakened": {
+    "steps": 400,
+    "targets": 5,
+    "attempts": 5,
+    "distance_integral": 36.70639578386737,
+    "squared_prediction_error": 0.33790423381943374,
+    "learning_presentations": 800,
+    "deadline_misses": 0,
+    "success_rate": 1,
+    "prediction_rmse": 0.029064765344805114,
+    "latencies_p95_ms": 0.10000000149011612,
+    "command_ages_p95_ms": 7.400000000372529,
+    "queue_delays_p95_ms": 7.299999998882413
+   },
+   "restored_probe": {
+    "steps": 160,
+    "targets": 2,
+    "attempts": 2,
+    "distance_integral": 10.155088703001827,
+    "squared_prediction_error": 2.518099999938605,
+    "learning_presentations": 0,
+    "deadline_misses": 0,
+    "success_rate": 1,
+    "prediction_rmse": 0.12545168392499273,
+    "latencies_p95_ms": 0.09999999962747097,
+    "command_ages_p95_ms": 5.599999999627471,
+    "queue_delays_p95_ms": 5.599999999627471
+   },
+   "restored_learning": {
+    "steps": 240,
+    "targets": 3,
+    "attempts": 3,
+    "distance_integral": 10.204420013464233,
+    "squared_prediction_error": 0.15873446276952694,
+    "learning_presentations": 478,
+    "deadline_misses": 0,
+    "success_rate": 1,
+    "prediction_rmse": 0.025717573658357216,
+    "latencies_p95_ms": 0.10000000149011612,
+    "command_ages_p95_ms": 7.799999998882413,
+    "queue_delays_p95_ms": 7.699999999254942
+   }
+  },
+  "mlp": {
+   "normal": {
+    "steps": 160,
+    "targets": 2,
+    "attempts": 2,
+    "distance_integral": 5.954234260952904,
+    "squared_prediction_error": 0.1572164604539796,
+    "learning_presentations": 317,
+    "deadline_misses": 0,
+    "success_rate": 1,
+    "prediction_rmse": 0.031346497058481235,
+    "latencies_p95_ms": 0.900000000372529,
+    "command_ages_p95_ms": 8.5,
+    "queue_delays_p95_ms": 7.800000000745058
+   },
+   "weakened": {
+    "steps": 400,
+    "targets": 0,
+    "attempts": 5,
+    "distance_integral": 78.30806868060233,
+    "squared_prediction_error": 0.09055046768922984,
+    "learning_presentations": 800,
+    "deadline_misses": 0,
+    "success_rate": 0,
+    "prediction_rmse": 0.01504580237883891,
+    "latencies_p95_ms": 0.8000000007450581,
+    "command_ages_p95_ms": 8.099999999627471,
+    "queue_delays_p95_ms": 7.400000000372529
+   },
+   "restored_probe": {
+    "steps": 160,
+    "targets": 1,
+    "attempts": 2,
+    "distance_integral": 28.003449785923873,
+    "squared_prediction_error": 4.033669683387317,
+    "learning_presentations": 0,
+    "deadline_misses": 0,
+    "success_rate": 0.5,
+    "prediction_rmse": 0.15877794406393708,
+    "latencies_p95_ms": 0.30000000074505806,
+    "command_ages_p95_ms": 5.699999999254942,
+    "queue_delays_p95_ms": 5.599999999627471
+   },
+   "restored_learning": {
+    "steps": 240,
+    "targets": 3,
+    "attempts": 3,
+    "distance_integral": 10.479438880352262,
+    "squared_prediction_error": 0.8257234492841784,
+    "learning_presentations": 478,
+    "deadline_misses": 0,
+    "success_rate": 1,
+    "prediction_rmse": 0.05865589801560803,
+    "latencies_p95_ms": 0.7000000011175871,
+    "command_ages_p95_ms": 8.299999998882413,
+    "queue_delays_p95_ms": 7.799999998882413
+   }
+  }
+ },
+ "events": [
+  {
+   "step": 0,
+   "text": "Identical Cadence checkpoint. Normal wheels. Shared target schedule."
+  },
+  {
+   "step": 160,
+   "text": "Right wheel weakened; learners receive motion only"
+  },
+  {
+   "step": 560,
+   "text": "Wheels restored; learning paused for immediate retention probe"
+  },
+  {
+   "step": 720,
+   "text": "Original wheels; learning resumed"
+  }
+ ],
+ "gate": {
+  "complete": true,
+  "passed": true,
+  "checks": {
+   "normal_targets": true,
+   "recovery_distance": true,
+   "weak_targets": true,
+   "latency": true,
+   "deadlines": true
+  },
+  "weak_distance_ratio": 0.8553450251009184,
+  "scope": "Demonstration versus frozen Cadence only"
+ },
+ "boundary": "Simulated odometry, learned dynamics, supplied heading controller. No superiority, retention, physical-robot or useful-observer claim.",
+ "transition_count": 3840,
+ "runtime": "headless Chromium (Playwright 1.63.0), page served from web/, real-time pace"
+}

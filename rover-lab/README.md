@@ -22,8 +22,9 @@ consequence predictions change, then restore the body and test the learned state
   measured against a 100 ms deadline, and misses are reported.
 - **Learning you can watch in the browser.** The page shows the live brain's
   patch states and prediction errors, its forecasts against what the body then
-  did, and both rovers' paths. The brain itself runs in the local Python server
-  on the real `cadence-net` package.
+  did, and both rovers' paths. In the Python edition the brain runs in a local
+  server on the real `cadence-net` package. In the [browser edition](#browser-edition)
+  the whole lab runs in the page.
 - **Settling and refusal.** A forecast is the settled state of the whole brain.
   A solve that does not settle raises an error; it is never replaced by a guess.
 - **Observers as an option.** The default brain couples its populations through
@@ -72,6 +73,8 @@ body, the shared heading controller and the step loop for all models,
 [server.py](server.py) serves the viewer in `static/`, [evaluate.py](evaluate.py)
 runs headless screens, [verify.py](verify.py) recomputes a receipt without
 importing the app, and [checkpoint.py](checkpoint.py) validates saved lives.
+[web/](web/) holds the browser edition: the same brain, models, body and step
+loop in JavaScript.
 
 ## Brain layout
 
@@ -122,6 +125,85 @@ If the port is occupied, use `server.py --port 8672` and open
 version. Receipts and checkpoints bind the hashes of the installed solver files
 and of the app sources; a checkpoint loads only under matching sources. The
 server binds only to `127.0.0.1`.
+
+## Browser edition
+
+[web/](web/) is the same lab as static files. The rover body, the four models,
+the controller and the step loop run in a worker beside the page at ten control
+steps per second, and the page draws the state the worker publishes. This is
+the edition at <https://floatingpragma.io/demos/rover-lab/>.
+
+```sh
+python3 -m http.server 8080 --directory web     # http://localhost:8080/
+```
+
+| File | What it holds |
+| --- | --- |
+| [web/cadence.js](web/cadence.js) | The population solver: `Cortex`, `Brain`, the joint repair of `_repair.settle` and Python's `random.Random`, following the released 0.70.0 sources line by line |
+| [web/models.js](web/models.js) | The motion models of `models.py`: both Cadence layouts, the adaptive estimator and the MLP |
+| [web/rover.js](web/rover.js) | The body, the heading controller, the step loop and the protocol of `rover.py` |
+| [web/worker.js](web/worker.js), [web/app.js](web/app.js) | The real-time loop and the viewer |
+
+The brain is declared as in Python:
+
+```js
+const cortex = new Cortex({ seed, parameter_prior: 0.1 });
+const motors = cortex.input('motors', { shape: 2 });
+const body = cortex.column('body', { patches: 1, inputs: motors });
+const middle = cortex.column('integration', { patches: 1, inputs: [motors, body] });
+const motion = cortex.column('motion', { patches: 2, inputs: [motors, body, middle] });
+cortex.output('motion_readout', { shape: 2, reads: motion });
+const brain = cortex.build();
+```
+
+and a step of the rover's life makes the same three calls, `brain.observe`,
+`brain.settle` and `brain.step`.
+
+The Python package is the reference. `node web/parity.mjs` checks the
+JavaScript against values recorded with it by
+[web/tools/make_parity_fixture.py](web/tools/make_parity_fixture.py):
+
+- **Brains are born identical.** Both layouts receive the same wiring and the
+  same weights for a seed, bit for bit.
+- **The solver is the same computation.** The library takes two operations from
+  the platform's C library, `tanh` and `pow`, whose last bit differs between
+  platforms. With both replaced by plain arithmetic on both sides, all 720
+  recorded solver calls return identical bits: states, errors, parameters,
+  energy, stationarity and sweep counts.
+- **Whole lives agree.** With each side's own `tanh`, a solve stops inside the
+  solver's tolerance of the same stationary point. Over two automatic lives,
+  every model issued the same command at all 960 steps and reached the same
+  targets. Forecasts differed by at most 5e-6 and final parameters by at most
+  8e-5.
+
+`node web/test.mjs` checks behaviour that needs no reference: a life is a
+function of its seed, a saved life continues exactly, the frozen copy never
+changes, the return probe teaches no model, a forecast changes nothing, a
+refused solve raises and commits nothing, and an uncoupled layout is refused.
+
+`node web/headless.mjs` runs the automatic demonstration without a browser.
+[web/receipts/automatic.json](web/receipts/automatic.json) holds the two
+development seeds:
+
+| Seed | Gate | Weakened-body targets, learning | Weakened-body targets, frozen | Target distance against frozen |
+| --- | --- | --- | --- | --- |
+| 17 | pass | 5/5 | 2/5 | 0.855 |
+| 29 | pass | 5/5 | 3/5 | 0.868 |
+
+These are the outcomes of the Python screen for the same seeds.
+In a browser, one automatic run of seed 17 at the page's real-time pace
+([web/receipts/browser-seed-17.json](web/receipts/browser-seed-17.json),
+headless Chromium on an Apple M4) passed the complete gate with the same
+targets and the same distance ratio. The learning arm's 95th-percentile command
+age stayed between 5 and 8 ms per phase, with no deadline miss in 960 steps.
+
+The browser edition differs from the Python edition in three ways. Its
+checkpoints and receipts have their own formats (`rover-life-js-v1`,
+`rover-evidence-js-v1`), carry no source hashes, and are not inputs to
+`verify.py` or to the Python server. The page shows the four default models;
+the observer arm exists in `rover.js` and is covered by the parity check. And
+while the tab is hidden the life waits, because browsers slow the timers of
+hidden tabs and the wait would be recorded as missed deadlines.
 
 ## What the models receive
 

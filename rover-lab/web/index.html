@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#171a19">
+<title>Rover Lab · Cadence</title>
+<meta name="description" content="A simulated rover learns how its wheel commands turn into motion. Weaken one wheel and watch the live Cadence brain relearn its body beside a frozen copy. Everything runs in this page.">
+<link rel="stylesheet" href="style.css">
+<script type="module" src="app.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="masthead">
+      <div class="brand"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 17h5l4-10 6 18 4-10h5"/></svg><span>CADENCE<span class="brand-divider">/</span><span class="brand-sub">ROVER LAB</span></span></div>
+      <div class="connection"><span id="connection-dot" class="status-dot"></span><span id="connection-status">Starting simulator</span><span class="local-tag">RUNS IN THIS PAGE</span></div>
+    </header>
+
+    <main>
+      <section class="introduction" aria-labelledby="page-title">
+        <div><div class="eyebrow">BODY ADAPTATION <span>EXPERIMENT 01</span></div><h1 id="page-title">One wheel changes.<br><span>Learning continues.</span></h1><p>A simulated rover follows targets. Weaken its right wheel and watch how learning changes its motion predictions and control.</p></div>
+        <div class="run-summary"><div class="clock" id="simulation-clock">00:00.0</div><div class="clock-label">SIMULATED TIME <span id="step-count">STEP 0</span></div><div class="phase-badge" id="phase-badge">Waiting for simulator</div></div>
+      </section>
+
+      <section class="control-bar" aria-label="Simulation controls">
+        <div class="play-controls"><button id="auto-button" class="button primary" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 6 5-6 5Z"/></svg>Run automatic demo</button><button id="play-button" class="button" disabled>Start</button><button id="reset-button" class="button icon-button" title="Restart this seed" aria-label="Restart this seed" disabled><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M4.2 5A6 6 0 1 1 3 10M4.2 1.5V5H.7"/></svg></button></div>
+        <div class="body-controls"><label for="wheel-gain">Weak wheel</label><select id="wheel-gain" aria-label="Weakened right wheel strength"><option value="0.25">25% strength</option><option value="0.35" selected>35% strength</option><option value="0.5">50% strength</option></select><button id="weaken-button" class="button warm" disabled>Weaken wheel</button><button id="restore-button" class="button" disabled>Restore</button><button id="relearn-button" class="button" disabled hidden>Resume learning</button></div>
+      </section>
+
+      <div id="notice" class="notice" role="status">Preparing the learned body models. The first checkpoint may take a moment.</div>
+      <div id="error-banner" class="error-banner" role="alert" hidden></div>
+
+      <section class="experiment-strip" aria-label="Experiment sequence">
+        <div class="phase" data-phase="normal"><span class="phase-number">01</span><div><strong>Normal motion</strong><span>Shared target schedule</span></div><span class="phase-line"></span></div>
+        <div class="phase" data-phase="weak"><span class="phase-number">02</span><div><strong>Weaken one wheel</strong><span>Learn from measured motion</span></div><span class="phase-line"></span></div>
+        <div class="phase" data-phase="restore"><span class="phase-number">03</span><div><strong>Restore the body</strong><span id="restore-phase-detail">Probe first, then relearn</span></div></div>
+        <div class="gain-readout"><span>RIGHT WHEEL</span><strong id="gain-readout">—</strong></div>
+      </section>
+      <p id="return-note" class="return-note" hidden>Return probe: learning is disabled for every model. These measurements test the state retained after the weak wheel. Resume learning to measure relearning separately.</p>
+
+      <div class="section-heading"><h2>The same controller. Two learning conditions.</h2><span class="legend"><i></i> rover path <b>⊕</b> target</span></div>
+      <section class="arena-grid" aria-label="Cadence comparison">
+        <article class="arena-panel live" id="live-panel">
+          <header class="panel-heading"><div><span class="model-dot"></span><h3>Cadence <span>live</span></h3></div><span class="model-mode" id="live-learning">LEARNING ENABLED</span></header>
+          <div class="arena-wrap"><canvas id="live-arena" aria-label="Cadence live rover position, path and target"></canvas><div class="arena-corner">TOP VIEW <span>METRES</span></div><div class="arena-empty" id="live-empty">Waiting for model state</div></div>
+          <div class="arena-metrics"><div><span>Targets reached</span><strong id="live-targets">—<small> / —</small></strong></div><div><span>Motion prediction error</span><strong id="live-error">—</strong></div><div><span>Compute / step</span><strong id="live-latency">—<small> ms</small></strong></div></div>
+          <div class="motor-strip"><span>WHEEL COMMAND</span><div class="motor"><span>L</span><div class="motor-track"><i id="live-left-bar"></i></div><b id="live-left">—</b></div><div class="motor"><span>R</span><div class="motor-track"><i id="live-right-bar"></i></div><b id="live-right">—</b></div></div>
+        </article>
+        <article class="arena-panel frozen" id="frozen-panel">
+          <header class="panel-heading"><div><span class="model-dot"></span><h3>Cadence <span>frozen</span></h3></div><span class="model-mode">BOOTSTRAP CHECKPOINT</span></header>
+          <div class="arena-wrap"><canvas id="frozen-arena" aria-label="Frozen Cadence rover position, path and target"></canvas><div class="arena-corner">TOP VIEW <span>METRES</span></div><div class="arena-empty" id="frozen-empty">Waiting for model state</div></div>
+          <div class="arena-metrics"><div><span>Targets reached</span><strong id="frozen-targets">—<small> / —</small></strong></div><div><span>Motion prediction error</span><strong id="frozen-error">—</strong></div><div><span>Compute / step</span><strong id="frozen-latency">—<small> ms</small></strong></div></div>
+          <div class="motor-strip"><span>WHEEL COMMAND</span><div class="motor"><span>L</span><div class="motor-track"><i id="frozen-left-bar"></i></div><b id="frozen-left">—</b></div><div class="motor"><span>R</span><div class="motor-track"><i id="frozen-right-bar"></i></div><b id="frozen-right">—</b></div></div>
+        </article>
+      </section>
+      <p class="comparison-note">Cadence learns motion; the shared controller chooses actions. Every model receives commands and odometry. The wheel strength and change signal are hidden from the models.</p>
+
+      <section class="telemetry-grid" aria-label="Measured activity and prediction errors">
+        <article class="data-panel activity-panel"><header class="data-heading"><h2>Inside the live model</h2><span class="eyebrow">PATCH READBACK</span></header><p class="panel-description">Local settled states and prediction errors from the running Cadence patches.</p><div id="patches" class="patches"><div class="empty-data">Patch readback appears after initialization.</div></div><div class="mechanism-note"><span class="tiny-icon">↻</span><span>Bounded software patches read local state through ports, record motion, and use feedback to update the same patch rule.</span></div></article>
+        <article class="data-panel forecast-panel"><header class="data-heading"><h2>Motion prediction error</h2><span class="eyebrow">RECORDED SAMPLES</span></header><div class="chart-wrap"><canvas id="error-chart" aria-label="Recorded motion prediction error history for all models"></canvas></div><div id="chart-legend" class="chart-legend"><span><i style="--legend-color:var(--mint)"></i>Cadence live</span><span><i style="--legend-color:var(--sand)"></i>Cadence frozen</span></div><p class="chart-note">Lower is better. Error scale and history come from the simulator.</p></article>
+      </section>
+
+      <div class="section-heading baseline-heading"><h2>Technical comparisons</h2><span>Same sensors · same action selection · separate experience</span></div>
+      <section class="baseline-grid" id="baselines" aria-label="Adaptive and neural baseline models"><article class="baseline-placeholder">The adaptive dynamics estimator and small neural model appear after initialization.</article></section>
+
+      <section class="data-panel outcome-panel" aria-labelledby="outcome-title"><header class="data-heading"><h2 id="outcome-title">Targets reached by phase</h2><span class="eyebrow">REACHED / ATTEMPTED</span></header><p class="panel-description">The return probe disables learning. Relearning starts from that same life. A dash means this phase has no recorded attempts.</p><div class="table-scroll"><table class="outcome-table"><thead><tr><th scope="col">Model</th><th scope="col">Normal wheels</th><th scope="col">Weakened wheel</th><th scope="col">Return probe <span>learning off</span></th><th scope="col">Return learning <span>learning enabled</span></th></tr></thead><tbody id="phase-outcomes"><tr><td colspan="5">Waiting for measured trajectories.</td></tr></tbody></table></div><p class="outcome-note">Totals include the active target attempt. Each target has the same time budget. Frozen Cadence keeps its bootstrap state throughout.</p></section>
+
+      <section class="evidence-grid">
+        <article class="data-panel"><header class="data-heading"><h2>Run record</h2><span class="eyebrow" id="seed-label">SEED —</span></header><ol class="event-list" id="events"><li><span>—</span><p>No recorded events.</p></li></ol></article>
+        <article class="data-panel evidence-panel"><header class="data-heading"><h2>Keep the evidence</h2><span class="eyebrow">REPRODUCIBLE LIFE</span></header><p>Save the full simulation state to resume the same life in this page, or export the measurements and experiment settings.</p><div class="export-controls"><button class="button" id="checkpoint-link" type="button">Save checkpoint <span>↓</span></button><button class="button" id="load-button">Load checkpoint <span>↑</span></button><button class="button text-button" id="receipt-link" type="button">Export receipt <span>↗</span></button><input id="checkpoint-file" type="file" accept="application/json,.json" hidden></div><p class="evidence-note">Restoring a checkpoint tests continuation. Return to normal mechanics measures performance with the learned state kept in place.</p></article>
+      </section>
+
+      <details class="protocol-details"><summary>Experiment scope &amp; measurement details <span>+</span></summary><div><p>This is a differential-drive simulation of a learned body model inside a supplied target controller. A single displayed run does not establish an advantage over adaptive or neural baselines, physical robot performance, or protected memory.</p><p>Targets reached count completed targets; attempts include target timeouts. Compute time includes model prediction, action selection and learning. The run record and receipt identify the protocol and phase measurements.</p><p>Every model and the rover body run in this page, in a worker beside the display. The Cadence brains use a JavaScript edition of the population solver of cadence-net 0.70.0, checked against the Python library. While the tab is hidden the life waits.</p><dl id="protocol-data"><div><dt>Protocol</dt><dd>Waiting for simulator</dd></div></dl></div></details>
+    </main>
+    <footer><span>CADENCE <span class="footer-muted">/ A SELF-READING BODY MODEL</span></span><span id="footer-status">Live data from the simulator running in this page</span></footer>
+  </div>
+</body>
+</html>

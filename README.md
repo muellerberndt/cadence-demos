@@ -78,7 +78,7 @@ section below. The library README has
 
 | Demo | What it shows | Runs on |
 | --- | --- | --- |
-| [Rover Lab](rover-lab/) | A live model that adapts when its body changes, with no difference between training and inference | The population solver |
+| [Rover Lab](rover-lab/) | A live model that adapts when its body changes, with no difference between training and inference | The population solver; in the browser, a JavaScript version of it |
 | [Patch World](patch-world/) | Brains that learn in the browser and evolve across generations | A JavaScript version of the population solver |
 | [Atari Arcade](atari-arcade/) | Brains that learn Atari games from pixels: a teacher first, then reward | `Brain.compose` (System 1); in the browser, a JavaScript version of it |
 | [Amen](amen/) | A record patch composing jungle tracks in the browser | A brain trained with `RecordPatchNet`; the page runs a JavaScript version of its forward pass |
@@ -94,12 +94,14 @@ right wheel and watch a learning Cadence brain adjust its predictions and keep
 reaching targets, beside a frozen copy, an adaptive estimator and a small neural
 network. The brain is three small populations of patches that read the motor
 commands and one another's states and settle together. Error-reading observers
-are an optional extra arm.
+are an optional extra arm. The whole lab also runs in the browser, on a
+JavaScript version of the same solver (`rover-lab/web/`).
 
 ```sh
 cd rover-lab
 python3 -m venv .venv && .venv/bin/python -m pip install -r requirements.txt
 .venv/bin/python server.py        # http://localhost:8670
+python3 -m http.server 8080 --directory web   # the browser edition at http://localhost:8080/
 ```
 
 See the [Rover Lab README](rover-lab/README.md).
