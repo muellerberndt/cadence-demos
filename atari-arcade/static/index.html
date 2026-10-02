@@ -489,8 +489,8 @@ async function boot() {
         badge.style.borderColor = BADGE_COLORS[r.badge] || "#2a201b";
       }
       const ph = document.getElementById(`p-${name}`);
-      if (ph) ph.textContent = r.phase === "apprentice"
-        ? "apprentice · the teacher names each action" : "on its own";
+      if (ph) ph.textContent = r.phase === "watching"
+        ? "watching the teacher play" : "playing for itself";
       tween(document.getElementById(`h1-${name}`),
             (W2.agreement ?? 0) * 100, 0, "%");
       const h1s = document.getElementById(`h1s-${name}`);
@@ -516,11 +516,11 @@ async function boot() {
           (${Math.round(B.beat_age)}s)</span>`;
         continue;
       }
-      if (r.phase === "apprentice") {
+      if (r.phase === "watching") {
         const tt = Math.round((W2.to_takeover ?? 0) * 100);
-        life.innerHTML = `<b>apprentice:</b> `
+        life.innerHTML = `<b>learning by watching:</b> `
           + `${W2.lessons} lessons · `
-          + `<b>${tt}%</b> of the way to playing without the teacher`;
+          + `<b>${tt}%</b> of the way to taking the controls`;
       } else {
         life.innerHTML = spark(L.returns || [], 140, 22, "#4fc06a")
           + ` <b>living:</b> ${L.decisions} decisions · `

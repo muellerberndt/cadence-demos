@@ -47,7 +47,6 @@ def run_pass(seed: int, games, minutes: float, episodes_target: int):
                 round(float(np.mean(r.agreement)), 3)
                 if r.agreement else None),
             "teacher_returns": list(r.teacher_returns),
-            "apprentice_returns": list(r.apprentice_returns),
             "teacher_mean": (round(float(np.mean(r.teacher_returns)), 1)
                              if r.teacher_returns else None),
             "episodes_lived": len(rets),
@@ -59,6 +58,7 @@ def run_pass(seed: int, games, minutes: float, episodes_target: int):
             "refused": r.refused,
             "last_error": r.last_error,
             "decisions": r.decisions,
+            "env_steps": r.tick,
             "outcomes_learned": r.outcomes,
             "seconds": round(time.time() - r.born, 1),
             "think_seconds": {
