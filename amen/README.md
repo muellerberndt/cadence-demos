@@ -22,8 +22,13 @@ The browser retains temporal context and keeps record writes off. It computes
 the sequence before rendering and playing the audio; playback displays the
 stored activity trace.
 
-For a Cadence **0.60.0** application, start with an ordinary flat network
-and add ordinary deep layers when needed. Recursive observers are experimental:
+For a current Cadence application, start with the smallest settling brain: a
+representation column over the sensors feeding a response column, both
+settling together, then deepen when the task needs it. On `main`
+(`0.61.0.dev0`) the builder refuses a layout whose populations do not settle
+against each other; the published `0.60.0` still accepts a single population
+reading sensors only, which is not a brain in this sense. Recursive observers
+are experimental:
 they participate in every synchronous solve and can slow routine responses.
 The library does not yet supply automatic surprise-only activation or establish
 a useful recursive advantage. See the [layout guide](https://github.com/muellerberndt/cadence/blob/main/docs/VARIANTS.md)
