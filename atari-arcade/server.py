@@ -9,7 +9,7 @@ every reward feeds the same brain through the library's Reinforcement
 learner. The page streams the game, the live wiring, the learning
 stats and a skill badge. /pace trades speed for watchability.
 
-    ../doom/.venv/bin/python server.py   ->  http://localhost:8668
+    python server.py   ->  http://localhost:8668
 """
 
 from __future__ import annotations

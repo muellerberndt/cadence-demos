@@ -22,24 +22,20 @@ The browser retains temporal context and keeps record writes off. It computes
 the sequence before rendering and playing the audio; playback displays the
 stored activity trace.
 
-For a current Cadence application, start with the smallest settling brain: a
-representation column over the sensors feeding a response column, both
-settling together, then deepen when the task needs it. On `main`
-(`0.61.0.dev0`) the builder refuses a layout whose populations do not settle
-against each other; the published `0.60.0` still accepts a single population
-reading sensors only, which is not a brain in this sense. Recursive observers
-are experimental:
-they participate in every synchronous solve and can slow routine responses.
-The library does not yet supply automatic surprise-only activation or establish
-a useful recursive advantage. See the [layout guide](https://github.com/muellerberndt/cadence/blob/main/docs/VARIANTS.md)
-and [experimental-feature boundary](https://github.com/muellerberndt/cadence/blob/main/docs/EXPERIMENTAL.md).
+For a current Cadence application, start with `Brain.compose` in Cadence
+0.70.0: a continuing brain with a working trace and associative memory, and
+observers as an option. `RecordPatchNet` is one of that release's advanced
+interfaces, with event records and consolidation under its own contract. See the
+[brain guide](https://github.com/muellerberndt/cadence/blob/v0.70.0/docs/brain.md)
+and the [record patch guide](https://github.com/muellerberndt/cadence/blob/v0.70.0/docs/record-patch.md).
 
-The brain on this page remains the historical record model. Its musical quality
-has **not** been reproduced with the current ordinary network; the page and its
-checkpoint are preserved as the required comparison. The old model has 128
-gated temporal channels and 8,192 record cells, not one ordinary output layer.
-The configurable playing rules and instrument below are also part of the demo
-and must remain identical when comparing a replacement.
+The brain on this page is the record model trained on Cadence 0.11.0. A composer
+on Cadence 0.70.0 is work in progress in
+[issue 95](https://github.com/muellerberndt/cadence/issues/95); this page and
+its checkpoint are the required comparison for it. The model has 128 gated
+temporal channels and 8,192 record cells, not one ordinary output layer. The
+configurable playing rules and instrument below are also part of the demo and
+must remain identical when comparing a replacement.
 
 ## Card
 
