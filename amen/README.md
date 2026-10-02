@@ -22,7 +22,7 @@ The browser retains temporal context and keeps record writes off. It computes
 the sequence before rendering and playing the audio; playback displays the
 stored activity trace.
 
-For a Cadence **0.60.0.dev1** application, start with an ordinary flat network
+For a Cadence **0.60.0** application, start with an ordinary flat network
 and add ordinary deep layers when needed. Recursive observers are experimental:
 they participate in every synchronous solve and can slow routine responses.
 The library does not yet supply automatic surprise-only activation or establish
