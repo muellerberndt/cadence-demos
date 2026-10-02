@@ -10,7 +10,9 @@ Cadence features it demonstrates and how it is built.
 
 ## What the demos show
 
-The demos pick out what matters when a brain has to run a body:
+Animal and human brains learn from experience and not by backpropagation with
+gradient descent. Cadence is designed the same way, and the demos pick out what
+that gives a brain that has to run a body:
 
 - **Live learning.** A brain learns while it runs. There is no training phase
   followed by a frozen deployment, and no difference between training and
@@ -21,6 +23,9 @@ The demos pick out what matters when a brain has to run a body:
   selected, so its size and shape are earned by what they cost and return.
 - **Answers that settle.** An action is the settled state of the whole brain,
   and a brain that does not settle refuses to answer.
+- **Learning without backpropagation.** Connections change from locally
+  available activity while the brain runs, so the learning can happen on the
+  device that carries the brain.
 
 ## The brain in Cadence 0.70.0
 
