@@ -39,6 +39,41 @@ Beside the main `Brain.compose` interface, the library keeps advanced engines
 such as record patches and the population solver, where populations of patches
 settle one joint energy and observers read prediction errors.
 
+## How a Cadence brain differs from a feed-forward network
+
+A feed-forward deep network computes its answer in one pass from input to
+output. Every layer is evaluated once and nothing travels back while the answer
+forms. It is trained by backpropagation, which sends an error measured at the
+output backwards through every layer.
+
+A Cadence brain reaches its answer by settling. Its patches are connected in
+both directions. Each patch repairs its own disagreement with the patches it
+reads, and the repairs repeat until the whole brain agrees within a tolerance.
+That equilibrium is the answer: a consensus among local patches, reached through
+local repair alone.
+
+Learning is the same process. A measured outcome disturbs the equilibrium, the
+patches repair the new disagreement, and the connections change so that the
+brain settles into a new equilibrium when the situation returns. No error is
+sent backwards through a stack of layers.
+
+A Cadence brain can be deep. Depth adds populations or regions to the one
+settlement, and the learning stays local at every depth.
+
+| | Feed-forward deep network | Cadence brain |
+| --- | --- | --- |
+| An answer | The output of one pass through the layers | The settled state of the whole brain, a consensus among its patches |
+| Influence while answering | Input to output only | Both ways: patches read one another and settle together |
+| Learning | An output error sent backwards through every layer | An outcome disturbs the equilibrium, local repair settles a new one |
+| Depth | More layers in the forward and the backward pass | More patches in the same settlement |
+| Training and use | Separate phases | One running brain that acts and learns |
+
+Rover Lab and Patch World draw the patches and their prediction errors while
+they settle, and Atari Arcade shows the settled state behind every action. Amen
+runs a record patch, an advanced engine whose learning rule is stated in its
+section below. The library README has
+[the full comparison](https://github.com/muellerberndt/cadence#how-a-cadence-brain-differs-from-a-feed-forward-network).
+
 ## The demos
 
 | Demo | What it shows | Runs on |
