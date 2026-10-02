@@ -52,16 +52,16 @@ def validate_life_data(data):
         raise ValueError("Invalid rover checkpoint: finite JSON data required") from error
     _fields(data, {"schema", "protocol_hash", "sources", "seed", "weak_gain", "step",
                   "phase", "auto", "phase_start", "targets", "events", "rows", "bootstrap",
-                  "variants", "initial_brain_digest", "arms", "bootstrap_witnesses",
+                  "observers", "initial_brain_digest", "arms", "bootstrap_witnesses",
                   "bootstrap_schedule"}, "life")
-    _require(data["schema"] == "rover-life-v1", "schema")
+    _require(data["schema"] == "rover-life-v2", "schema")
     _number(data["seed"], "seed", 0, integer=True)
     _number(data["weak_gain"], "wheel gain", 0.25, 0.5)
     _number(data["step"], "step", 0, 3600, integer=True)
     _number(data["phase_start"], "phase start", 0, data["step"], integer=True)
     _require(isinstance(data["phase"], str) and data["phase"] in PHASES, "phase")
-    _require(type(data["auto"]) is bool and type(data["variants"]) is bool, "mode flags")
-    arms = BASE_ARMS | ({"flat", "composed"} if data["variants"] else set())
+    _require(type(data["auto"]) is bool and type(data["observers"]) is bool, "mode flags")
+    arms = BASE_ARMS | ({"observer"} if data["observers"] else set())
     _require(isinstance(data["arms"], dict) and set(data["arms"]) == arms, "arm set")
     _require(isinstance(data["bootstrap"], dict) and set(data["bootstrap"]) == arms, "bootstrap set")
     witnesses = data["bootstrap_witnesses"]
@@ -93,9 +93,8 @@ def validate_life_data(data):
                       "prediction_error", "error_history", "command", "motion", "latency_ms",
                       "deadline_misses", "metrics", "replay", "pending", "learning"}, "arm")
         _require(isinstance(arm["model"], dict), "model state")
-        expected_kind = "recursive" if kind in {"cadence", "frozen"} else kind
-        model_kind = arm["model"].get("kind")
-        _require(isinstance(model_kind, str) and model_kind in ({"frozen", "recursive"} if kind == "frozen" else {expected_kind}), "model kind")
+        expected_kind = "coupled" if kind in {"cadence", "frozen"} else kind
+        _require(arm["model"].get("kind") == expected_kind, "model kind")
         _vector(arm["pose"], 3, "pose")
         _vector(arm["target"], 2, "target")
         _vector(arm["command"], 2, "command", 0.8)

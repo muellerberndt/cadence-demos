@@ -9,14 +9,15 @@ from pathlib import Path
 
 import numpy as np
 
-from rover import Life, PROTOCOL, digest, source_hashes
+from rover import CADENCE_VERSION, Life, PROTOCOL, digest, source_hashes
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--seeds", type=int, nargs="+")
     parser.add_argument("--confirmation", action="store_true")
-    parser.add_argument("--variants", action="store_true")
+    parser.add_argument("--observers", action="store_true",
+                        help="add the optional error-reading observer layout as a fifth arm")
     parser.add_argument("--steps", type=int, default=sum(n for _, n in PROTOCOL["phases"]))
     parser.add_argument("--out", type=Path, default=Path("evidence/development"))
     args = parser.parse_args()
@@ -29,7 +30,8 @@ def main():
     if any(args.out.iterdir()):
         parser.error("Output directory must be empty; preserve earlier outcomes")
     freeze = {"protocol": PROTOCOL, "protocol_hash": digest(PROTOCOL), "sources": source_hashes(),
-              "seeds": seeds, "steps": args.steps, "variants": args.variants,
+              "seeds": seeds, "steps": args.steps, "observers": args.observers,
+              "cadence": CADENCE_VERSION,
               "kind": "reserved_confirmation" if args.confirmation else "development",
               "python": platform.python_version(), "platform": platform.platform(),
               "numpy": np.__version__,
@@ -40,7 +42,7 @@ def main():
         started = time.perf_counter()
         life = None
         try:
-            life = Life(seed, variants=args.variants)
+            life = Life(seed, observers=args.observers)
             for _ in range(args.steps):
                 life.tick()
             receipt = life.receipt()

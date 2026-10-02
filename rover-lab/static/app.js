@@ -293,7 +293,7 @@ function updateEvents(state) {
 }
 function updateProtocol(state) {
   const protocol = state.protocol || {};
-  const entries = Object.entries(protocol).filter(([, value]) => value === null || ["string", "number", "boolean"].includes(typeof value));
+  const entries = Object.entries({ engine: state.engine, ...protocol }).filter(([, value]) => value === null || ["string", "number", "boolean"].includes(typeof value));
   $("protocol-data").replaceChildren(...entries.map(([key, value]) => {
     const item = node("div"); item.append(node("dt", "", key.replaceAll("_", " ")), node("dd", "", String(value))); return item;
   }));

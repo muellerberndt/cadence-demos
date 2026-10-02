@@ -3,6 +3,10 @@
 The body alone receives wheel gain. Models see executed commands and measured
 motion. Supplied controller coefficients are hand-set controls/candidate genes;
 there is no evolution experiment or settled motor-policy claim in this app.
+
+The Cadence arms run on the population solver of cadence-net 0.70.0. The
+default brain couples its populations through live states. The optional
+observer arm adds exact prediction-error readback inside the same settlement.
 """
 from __future__ import annotations
 
@@ -15,7 +19,7 @@ import time
 from itertools import product
 from pathlib import Path
 
-from models import make_model, model_from_snapshot
+from models import CADENCE_VERSION, make_model, model_from_snapshot
 from checkpoint import validate_life_data
 
 HERE = Path(__file__).resolve().parent
@@ -23,9 +27,9 @@ PROTOCOL = json.loads((HERE / "protocol.json").read_text())
 ACTIONS = [list(a) for a in product(PROTOCOL["action_levels"], repeat=2)]
 LABELS = {"cadence": "Cadence · learning", "frozen": "Cadence · frozen",
           "adaptive": "Adaptive estimator", "mlp": "Small MLP",
-          "flat": "Cadence · flat", "composed": "Cadence · state reading"}
+          "observer": "Cadence · with observers"}
 COLORS = {"cadence": "#8de0c6", "frozen": "#efae85", "adaptive": "#9bbdf3",
-          "mlp": "#ccb0e9", "flat": "#e6c46a", "composed": "#90b6b4"}
+          "mlp": "#ccb0e9", "observer": "#90b6b4"}
 
 
 def digest(value):
@@ -34,9 +38,11 @@ def digest(value):
 
 
 def source_hashes():
-    import cadence
+    from cadence.experimental import equilibrium
     paths = [(name, HERE / name) for name in ("models.py", "rover.py", "evaluate.py", "protocol.json", "checkpoint.py")]
-    paths += [("cadence/" + p.name, p) for p in sorted(Path(cadence.__file__).parent.glob("*.py"))]
+    solver = Path(equilibrium.__file__).parent
+    paths += [(f"cadence-net=={CADENCE_VERSION}/experimental/equilibrium/{p.name}", p)
+              for p in sorted(solver.glob("*.py"))]
     return {name: hashlib.sha256(path.read_bytes()).hexdigest() for name, path in paths}
 
 
@@ -122,7 +128,7 @@ def summarize(metrics):
 
 class Life:
     """One serial owner for all models, bodies, witnesses and counters."""
-    def __init__(self, seed=17, weak_gain=None, variants=False, progress=None):
+    def __init__(self, seed=17, weak_gain=None, observers=False, progress=None):
         self.seed = int(seed)
         self.weak_gain = PROTOCOL["weak_gain"] if weak_gain is None else float(weak_gain)
         if not .25 <= self.weak_gain <= .5:
@@ -136,7 +142,7 @@ class Life:
         self.rows = []
         self.arms = {}
         self.bootstrap = {}
-        self.variants = variants
+        self.observers = observers
         rng = random.Random(self.seed + 20000)
         experiences = [(a[:], body_motion(a)) for a in ACTIONS]
         # Only measured transitions teach: these commands were executed in the body.
@@ -147,12 +153,12 @@ class Life:
             schedule.extend(order)
         self.bootstrap_witnesses = copy.deepcopy(experiences)
         self.bootstrap_schedule = schedule[:]
-        kinds = ["cadence", "adaptive", "mlp"] + (["flat", "composed"] if variants else [])
+        kinds = ["cadence", "adaptive", "mlp"] + (["observer"] if observers else [])
         for index, kind in enumerate(kinds):
             if progress:
                 progress(f"Bootstrapping {LABELS[kind]}")
             started = time.perf_counter()
-            model = make_model("recursive" if kind == "cadence" else kind, self.seed)
+            model = make_model("coupled" if kind == "cadence" else kind, self.seed)
             for witness in schedule:
                 if not model.learn(*experiences[witness]):
                     raise RuntimeError(f"{kind} refused a bootstrap motion witness")
@@ -292,21 +298,24 @@ class Life:
         return {"ready": True, "error": None, "step": self.step, "sim_time": round(self.step*PROTOCOL["dt"], 2),
                 "phase": self.phase, "phase_label": labels[self.phase], "wheel_gain": self.wheel_gain,
                 "weak_gain": self.weak_gain, "seed": self.seed, "auto": self.auto,
+                "engine": f"cadence-net {CADENCE_VERSION}, population solver, "
+                          + ("state-coupled populations and an observer arm" if self.observers
+                             else "state-coupled populations"),
                 "models": models, "events": self.events[-12:], "protocol": PROTOCOL}
 
     def snapshot(self):
         require_current_sources()
         arms = {kind: {**copy.deepcopy({k: v for k, v in arm.items() if k != "model"}),
                        "model": arm["model"].snapshot()} for kind, arm in self.arms.items()}
-        return {"schema": "rover-life-v1", "protocol_hash": digest(PROTOCOL), "sources": source_hashes(),
+        return {"schema": "rover-life-v2", "protocol_hash": digest(PROTOCOL), "sources": source_hashes(),
                 **{k: copy.deepcopy(getattr(self, k)) for k in ("seed", "weak_gain", "step", "phase", "auto",
-                   "phase_start", "targets", "events", "rows", "bootstrap", "bootstrap_witnesses", "bootstrap_schedule", "variants", "initial_brain_digest")},
+                   "phase_start", "targets", "events", "rows", "bootstrap", "bootstrap_witnesses", "bootstrap_schedule", "observers", "initial_brain_digest")},
                 "arms": arms}
 
     @classmethod
     def from_snapshot(cls, data):
         require_current_sources()
-        if data.get("schema") != "rover-life-v1" or data.get("protocol_hash") != digest(PROTOCOL):
+        if data.get("schema") != "rover-life-v2" or data.get("protocol_hash") != digest(PROTOCOL):
             raise ValueError("Checkpoint schema or protocol differs from this demo")
         if data.get("sources") != source_hashes():
             raise ValueError("Checkpoint belongs to different rover source files")
@@ -315,13 +324,13 @@ class Life:
         validate_life_data(data)
         obj = cls.__new__(cls)
         for key in ("seed", "weak_gain", "step", "phase", "auto", "phase_start", "targets", "events", "rows",
-                    "bootstrap", "bootstrap_witnesses", "bootstrap_schedule", "variants", "initial_brain_digest"):
+                    "bootstrap", "bootstrap_witnesses", "bootstrap_schedule", "observers", "initial_brain_digest"):
             setattr(obj, key, data[key])
         # JSON member order has no meaning; execution order is part of the runtime.
-        order = ("cadence", "frozen", "adaptive", "mlp", "flat", "composed")
+        order = ("cadence", "frozen", "adaptive", "mlp", "observer")
         obj.arms = {key: data["arms"][key] for key in order if key in data["arms"]}
-        if set(obj.arms) != ({"cadence", "frozen", "adaptive", "mlp", "flat", "composed"}
-                            if obj.variants else {"cadence", "frozen", "adaptive", "mlp"}):
+        if set(obj.arms) != ({"cadence", "frozen", "adaptive", "mlp", "observer"}
+                            if obj.observers else {"cadence", "frozen", "adaptive", "mlp"}):
             raise ValueError("Checkpoint model set is incomplete")
         for arm in obj.arms.values():
             arm["model"] = model_from_snapshot(arm["model"])
@@ -330,14 +339,14 @@ class Life:
     def receipt(self):
         require_current_sources()
         metrics = {kind: summarize(arm["metrics"]) for kind, arm in self.arms.items()}
-        return {"schema": "rover-evidence-v1", "seed": self.seed, "weak_gain": self.weak_gain,
+        return {"schema": "rover-evidence-v2", "cadence": CADENCE_VERSION, "seed": self.seed, "weak_gain": self.weak_gain,
                 "steps": self.step, "auto": self.auto, "protocol": PROTOCOL, "protocol_hash": digest(PROTOCOL),
                 "sources": source_hashes(), "bootstrap": self.bootstrap,
                 "bootstrap_witnesses": self.bootstrap_witnesses, "bootstrap_schedule": self.bootstrap_schedule,
                 "initial_brain_digest": self.initial_brain_digest,
                 "metrics": metrics, "events": self.events, "transitions": self.rows,
                 "transition_hash": digest(self.rows), "gate": demonstration_gate(metrics, auto=self.auto),
-                "boundary": "Simulated odometry, learned dynamics, supplied heading controller. No superiority, retention, physical-robot or useful-recursion claim."}
+                "boundary": "Simulated odometry, learned dynamics, supplied heading controller. No superiority, retention, physical-robot or useful-observer claim."}
 
 
 def demonstration_gate(metrics, *, auto=True):

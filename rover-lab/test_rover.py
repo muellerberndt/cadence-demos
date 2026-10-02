@@ -103,8 +103,54 @@ def test_model_ports_exclude_teacher_gain_and_task_state():
         assert list(inspect.signature(cls.learn).parameters) == ["self", "action", "motion"]
         assert list(inspect.signature(cls.query).parameters) == ["self", "actions"]
         assert list(inspect.signature(cls.activate).parameters) == ["self", "action"]
-    model = models.make_model("recursive", 17)
-    assert model.brain.inspect()["inputs"] == [{"name": "motors", "shape": [2]}]
+    for kind in ("coupled", "observer"):
+        model = models.make_model(kind, 17)
+        assert model.brain.inspect()["inputs"] == [{"name": "motors", "shape": [2]}]
+
+
+def test_bound_to_the_released_population_solver():
+    import cadence
+    from cadence.experimental import equilibrium
+
+    assert cadence.__version__ == models.CADENCE_VERSION == "0.70.0"
+    names = [name for name in rover.source_hashes() if name.startswith("cadence-net==")]
+    solver = Path(equilibrium.__file__).parent
+    assert sorted(names) == sorted(
+        f"cadence-net==0.70.0/experimental/equilibrium/{path.name}" for path in solver.glob("*.py"))
+
+
+def test_default_brain_couples_states_and_observers_add_error_readback():
+    coupled = models.make_model("coupled", 17).brain
+    observer = models.make_model("observer", 17).brain
+    assert {kind for kind, _, _ in coupled.graph.edges} == {"input", "state"}
+    assert {kind for kind, _, _ in observer.graph.edges} == {"input", "state", "residual"}
+    assert coupled.graph.n_patches == observer.graph.n_patches == 4
+    for brain in (coupled, observer):
+        assert [row["name"] for row in brain.inspect()["populations"]] == ["body", "integration", "motion"]
+        assert brain.settle({"motors": [0.4, 0.8]})["qualified"]
+
+
+def test_uncoupled_layout_is_refused_by_the_library():
+    cortex = models.Cortex(seed=17)
+    motors = cortex.input("motors", shape=2)
+    motion = cortex.column("motion", patches=4, inputs=motors)
+    cortex.output("motion_readout", shape=2, reads=motion)
+    with pytest.raises(ValueError, match="settles with no other population"):
+        cortex.build()
+
+
+def test_optional_observer_arm_shares_the_schedule(prepared):
+    life = rover.Life(seed=17, observers=True)
+    assert list(life.arms) == ["cadence", "frozen", "adaptive", "mlp", "observer"]
+    assert life.arms["observer"]["model"].kind == "observer"
+    assert life.arms["cadence"]["model"].kind == life.arms["frozen"]["model"].kind == "coupled"
+    assert life.bootstrap_schedule == prepared["bootstrap_schedule"]
+    for _ in range(2):
+        life.tick()
+    receipt = life.receipt()
+    assert verify(receipt)["arms"] == 5
+    resumed = rover.Life.from_snapshot(json.loads(json.dumps(life.snapshot())))
+    assert list(resumed.arms) == list(life.arms)
 
 
 def test_forecast_precedes_its_consequence_and_only_past_motion_teaches(life, monkeypatch):

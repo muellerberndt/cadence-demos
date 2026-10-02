@@ -1,0 +1,25 @@
+[
+  {
+    "file": "evidence/live-01/seed-17.json",
+    "verified": true,
+    "steps": 960,
+    "arms": 4,
+    "transitions": 3840,
+    "protocol_hash": "03272c3b394592da49244fcc0313daec6e5a61b7d0add13557f2f482297ce0be",
+    "transition_hash": "7811a046d2c145fd86efffe8e764291e0d8b8d5fc6495861b99f5bc5ff6ae7cb",
+    "gate": {
+      "complete": true,
+      "passed": false,
+      "checks": {
+        "normal_targets": true,
+        "recovery_distance": true,
+        "weak_targets": true,
+        "latency": false,
+        "deadlines": true
+      },
+      "weak_distance_ratio": 0.8553450251009186,
+      "scope": "Demonstration versus frozen Cadence only"
+    },
+    "boundary": "Recomputed witness integrity, physics, error, targets, timing and gate. No authenticity or superiority claim."
+  }
+]

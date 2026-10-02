@@ -17,7 +17,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 PROTOCOL = json.loads((HERE / "protocol.json").read_text())
 REQUIRED_ARMS = {"cadence", "frozen", "adaptive", "mlp"}
-OPTIONAL_ARMS = {"flat", "composed"}
+OPTIONAL_ARMS = {"observer"}
 
 
 def digest(value):
@@ -154,7 +154,7 @@ def verify(receipt):
 
 
 def _verify(receipt):
-    _require(isinstance(receipt, dict) and receipt.get("schema") == "rover-evidence-v1", "Unknown receipt schema")
+    _require(isinstance(receipt, dict) and receipt.get("schema") == "rover-evidence-v2", "Unknown receipt schema")
     _require(receipt["protocol"] == PROTOCOL and receipt["protocol_hash"] == digest(PROTOCOL), "Protocol differs from declared protocol")
     rows = receipt["transitions"]
     _require(isinstance(rows, list) and receipt["transition_hash"] == digest(rows), "Transition hash mismatch")
@@ -310,7 +310,7 @@ def main():
                 for field in ("protocol", "protocol_hash", "sources", "steps"):
                     _equal(data[field], freeze[field], f"frozen {field}")
                 _require(data["seed"] in freeze["seeds"], "Receipt seed was not scheduled")
-                _require(result["arms"] == (6 if freeze["variants"] else 4), "Comparison arms differ from freeze")
+                _require(result["arms"] == (5 if freeze["observers"] else 4), "Comparison arms differ from freeze")
                 archive = path.parent / "source"
                 if archive.is_dir():
                     for name, expected_hash in freeze["sources"].items():

@@ -9,20 +9,22 @@ from __future__ import annotations
 
 import hashlib
 import math
-import sys
 from pathlib import Path
 
+import cadence
 import numpy as np
+from cadence.experimental.equilibrium import Brain, Cortex, SettlementError
 
-_CADENCE_SOURCE = Path(__file__).resolve().parents[2] / "cadence" / "src"
-if _CADENCE_SOURCE.is_dir():
-    sys.path.insert(0, str(_CADENCE_SOURCE))
-
-from cadence import Brain, Cortex, SettlementError  # noqa: E402
+CADENCE_VERSION = "0.70.0"
+if cadence.__version__ != CADENCE_VERSION:
+    raise ImportError(
+        f"Rover Lab is bound to cadence-net=={CADENCE_VERSION}; found {cadence.__version__}. "
+        "Install the pinned release with: python3 -m pip install -r requirements.txt"
+    )
 
 
 SCHEMA = "pragma.rover.model/1"
-KINDS = ("recursive", "flat", "composed", "frozen", "adaptive", "mlp")
+KINDS = ("coupled", "observer", "adaptive", "mlp")
 IMPLEMENTATION_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 
 
@@ -60,30 +62,25 @@ def _base_snapshot(model):
 
 
 class CadenceModel:
-    """Four processing patches; all candidate forecasts are unclamped solves."""
+    """Four processing patches in three populations, settled as one equilibrium.
+
+    ``coupled`` is the default brain: populations read the motors and one
+    another's live states. ``observer`` is the optional addition: the same
+    populations also read exact prediction errors. Candidate forecasts are
+    unclamped solves in both layouts.
+    """
 
     def __init__(self, kind, seed):
         self.kind = kind
         cortex = Cortex(seed=seed, parameter_prior=0.1)
         motors = cortex.input("motors", shape=2)
-        if kind == "flat":
-            output = cortex.column("motion", patches=4, inputs=motors)
+        body = cortex.column("body", patches=1, inputs=motors)
+        if kind == "coupled":
+            middle = cortex.column("integration", patches=1, inputs=(motors, body))
+            output = cortex.column("motion", patches=2, inputs=(motors, body, middle))
         else:
-            body = cortex.column("body", patches=1, inputs=motors)
-            if kind == "composed":
-                middle = cortex.column(
-                    "integration", patches=1, inputs=(motors, body)
-                )
-                output = cortex.column(
-                    "motion", patches=2, inputs=(motors, body, middle)
-                )
-            else:
-                middle = cortex.observer(
-                    "integration", patches=1, inputs=motors, observes=body
-                )
-                output = cortex.observer(
-                    "motion", patches=2, inputs=motors, observes=(body, middle)
-                )
+            middle = cortex.observer("integration", patches=1, inputs=motors, observes=body)
+            output = cortex.observer("motion", patches=2, inputs=motors, observes=(body, middle))
         cortex.output("motion_readout", shape=2, reads=output)
         self.brain = cortex.build()
         self.accepted = self.presentations = 0
