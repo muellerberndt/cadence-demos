@@ -1,22 +1,8 @@
 __pycache__/
 *.pyc
 .venv/
-wads/
 data/sessions/
 runs/
 data/live_brain*
 data/current_model.json
 server.log
-
-# Local Doom engine cache and mutable v1 runtime state. Immutable models and
-# compact evidence under doom-lab/models, runtime, evidence and inventory remain visible.
-doom-lab/wads
-doom-lab/_vizdoom/
-doom-lab/_vizdoom.ini
-doom-lab/data/
-doom-lab/data_v1_stage/
-doom-lab/inventory/*.log
-doom-lab/history/legacy/runtime_data/
-
-# Bulky local data and nested repositories stay out of git
-/doom-lab/models/rejected-promotions/7613231af59eab636afd49751e8d1f489d5cef568f9ee7f21e8f3dc73573e9ea/bundle.json

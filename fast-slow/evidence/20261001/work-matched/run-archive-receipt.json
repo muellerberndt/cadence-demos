@@ -1,9 +1,0 @@
-{
-  "archive": "/Users/muellerberndt/Projects/oph-meta/cadence-demos/fast-slow/evidence/20261001/work-matched/run-archive.tar.gz",
-  "bytes": 1571877,
-  "sha256": "079da64ec2026f6bb9e1887b86ecb7a828440219ed775496dda6664aeb3483ef",
-  "source_files": 160,
-  "source_bytes": 8681939,
-  "manifest_sha256": "bbddd906417af21acbfcceacfd32e411630c87c3626591fa42670ef55ac75fcf",
-  "every_member_verified": true
-}

@@ -1,9 +1,0 @@
-{
-  "schema": "doom-v3-ui-only-update/1",
-  "unix": 1790690905.5146651,
-  "file": "static/index.html",
-  "old_sha256": "97c30c9f7d7c74757ca32d5ef7308fafb74aa9bf6988096d37d949e778de8b17",
-  "new_sha256": "a9acb3c7005ecbafa199c711545b76ee006ee79a81c8f17782c4fab18eb30f32",
-  "reason": "Experimental GPU capacity progress; no runtime or controls modified",
-  "application_restarted": false
-}

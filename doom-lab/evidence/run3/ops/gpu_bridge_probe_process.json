@@ -1,1 +1,0 @@
-{"schema":"doom-v3-gpu-bridge-process/1","pid":32631,"started_unix":1790690868.919177,"expires_unix":1790784468.919177,"gpu_host":"54.91.64.176","cpu_host":"100.31.68.116","state":"once_complete","interval_seconds":15,"credentials_transferred":false,"gpu_access":"read_only_metadata","cpu_write":"runs/gpu_capacity_monitor/status.json","finished_unix":1790690875.377759}

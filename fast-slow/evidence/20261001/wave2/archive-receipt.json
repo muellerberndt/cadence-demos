@@ -1,9 +1,0 @@
-{
-  "archive": "/home/ec2-user/cadence-060-20261001-complete.tar.gz",
-  "bytes": 25626030,
-  "sha256": "3f4547dc74331693dc1215a10a06aa61ba39d609ce2df777cbf04512ec1f6bd4",
-  "source_files": 810,
-  "source_bytes": 634183077,
-  "manifest_sha256": "013e929330508c475179c86b00d5d24126c5c37937529ae814c49099e8cfefe7",
-  "every_member_verified": true
-}

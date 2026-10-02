@@ -1,1 +1,0 @@
-{"command":["/home/ec2-user/venv/bin/python","-m","v3.retention_margin_campaign","run","--source","/home/ec2-user/doom-v3-20260929/runs/navigation_novelty_01","--out","/home/ec2-user/doom-v3-20260929/runs/retention_margin_01"],"declared_cap_seconds":900,"external_cutoff":false,"pid":543340,"returncode":0,"seconds":116.6389139870007}

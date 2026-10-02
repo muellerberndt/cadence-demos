@@ -1,8 +1,0 @@
-{
-  "status": "pre_query_refusal",
-  "reason": "The immutable browser record uses a complete task object, not the task-name string; the strict string filter found zero rows.",
-  "parameter_admissions": 0,
-  "score_queries": 0,
-  "fresh_native_reconstructions": 0,
-  "source_sha256": "0a75cf05dc7a4ad9547a7bd6a3f6110e5ef235cd529d4aa9522156ab7f5c66f4"
-}

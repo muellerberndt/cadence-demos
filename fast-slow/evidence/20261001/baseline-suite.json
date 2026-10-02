@@ -1,9 +1,0 @@
-{
-  "core_commit": "dc32ea4650e20089f9904eb82b1eeb1b621b8255",
-  "passed": 846,
-  "skipped": 2,
-  "failed": 0,
-  "seconds": 89.93,
-  "command": "PYTHONPATH=/Users/muellerberndt/Projects/oph-meta/cadence/src python3 -m pytest -q cadence/tests",
-  "scope": "0.50 baseline with the fast/slow example tests; not 0.60 release validation"
-}

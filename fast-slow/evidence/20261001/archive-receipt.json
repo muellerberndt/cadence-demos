@@ -1,9 +1,0 @@
-{
-  "archive": "/home/ec2-user/fast-slow-20261001-complete.tar.gz",
-  "bytes": 28548059,
-  "sha256": "c09ee5cefcaa804ffa55e6a41047e848a150b4edc8de4d71c75c797777d64234",
-  "source_files": 329,
-  "source_bytes": 57207440,
-  "manifest_sha256": "d1bab916bbdc6af48f55ee93e220493d3b728dbe46a9ef95216ae094d5ea47e2",
-  "every_member_verified": true
-}

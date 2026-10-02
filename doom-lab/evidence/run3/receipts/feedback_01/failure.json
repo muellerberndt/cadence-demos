@@ -1,7 +1,0 @@
-{
-  "status": "error",
-  "error": "RuntimeError: Feedback refused at context0 contractutility_hold36_v1",
-  "completed_arms": [],
-  "completed_feedback_contexts": 1,
-  "seconds": 9.392219210000007
-}

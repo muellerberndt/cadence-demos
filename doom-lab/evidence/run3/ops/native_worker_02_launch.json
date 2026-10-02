@@ -1,7 +1,0 @@
-{
-    "InstanceId": "i-0509b78c0f89f7542",
-    "Type": "c7i.16xlarge",
-    "State": "pending",
-    "LaunchTime": "2026-09-29T15:48:04+00:00",
-    "ImageId": "ami-0fef201115eefe936"
-}
