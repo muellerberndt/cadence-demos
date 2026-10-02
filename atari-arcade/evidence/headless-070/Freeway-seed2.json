@@ -1,0 +1,121 @@
+{
+ "seed": 2,
+ "identity": {
+  "cadence_net": "0.70.0",
+  "python": "3.11.16",
+  "numpy": "2.4.6",
+  "machine": "x86_64",
+  "sources_sha256": {
+   "server.py": "ccb22a0ea12a2a27ae3c381fbccba8f3fee288bdd4ef39313673aadc5a488462",
+   "headless_control.py": "d3e96893cc0996cb01d982e4770db0d9617f97e766a96e6d1d49f2db42efc3a1"
+  }
+ },
+ "report": {
+  "Freeway:living": {
+   "phase": "playing",
+   "lessons": 500,
+   "takeover": {
+    "lessons": 500,
+    "agreement": 1.0,
+    "seconds": 39.8
+   },
+   "agreement_with_teacher_now": 0.992,
+   "teacher_returns": [
+    21.0,
+    21.0,
+    23.0,
+    21.0
+   ],
+   "teacher_mean": 21.5,
+   "episodes_lived": 12,
+   "returns": [
+    21.0,
+    22.0,
+    23.0,
+    22.0,
+    24.0,
+    23.0,
+    20.0,
+    25.0,
+    23.0,
+    23.0,
+    24.0,
+    22.0
+   ],
+   "late_mean": 23.4,
+   "best": 25.0,
+   "faults": 0,
+   "refused": 0,
+   "last_error": null,
+   "decisions": 9327,
+   "env_steps": 29460,
+   "outcomes_learned": 9326,
+   "seconds": 500.2,
+   "think_seconds": {
+    "p50": 0.0456,
+    "p95": 0.0846,
+    "p99": 0.1014,
+    "max": 3.437
+   }
+  },
+  "Freeway:frozen": {
+   "phase": "playing",
+   "lessons": 500,
+   "takeover": {
+    "lessons": 500,
+    "agreement": 1.0,
+    "seconds": 36.6
+   },
+   "agreement_with_teacher_now": 0.983,
+   "teacher_returns": [
+    21.0,
+    21.0,
+    23.0,
+    21.0
+   ],
+   "teacher_mean": 21.5,
+   "episodes_lived": 12,
+   "returns": [
+    24.0,
+    23.0,
+    22.0,
+    20.0,
+    23.0,
+    23.0,
+    21.0,
+    23.0,
+    23.0,
+    22.0,
+    25.0,
+    25.0
+   ],
+   "late_mean": 23.6,
+   "best": 25.0,
+   "faults": 0,
+   "refused": 0,
+   "last_error": null,
+   "decisions": 26880,
+   "env_steps": 29345,
+   "outcomes_learned": 0,
+   "seconds": 495.0,
+   "think_seconds": {
+    "p50": 0.008,
+    "p95": 0.0127,
+    "p99": 0.018,
+    "max": 0.0284
+   }
+  }
+ },
+ "verdicts": {
+  "Freeway": {
+   "takeover_living": true,
+   "takeover_frozen": true,
+   "no_faults": true,
+   "lived_episodes": true,
+   "no_collapse": true,
+   "expert_via_selfplay": true,
+   "living_holds_or_beats_frozen": true,
+   "PASS": true
+  }
+ }
+}

@@ -1,0 +1,129 @@
+{
+ "seed": 2,
+ "identity": {
+  "cadence_net": "0.70.0",
+  "python": "3.11.16",
+  "numpy": "2.4.6",
+  "machine": "x86_64",
+  "sources_sha256": {
+   "server.py": "ccb22a0ea12a2a27ae3c381fbccba8f3fee288bdd4ef39313673aadc5a488462",
+   "headless_control.py": "d3e96893cc0996cb01d982e4770db0d9617f97e766a96e6d1d49f2db42efc3a1"
+  }
+ },
+ "report": {
+  "Atlantis:living": {
+   "phase": "playing",
+   "lessons": 500,
+   "takeover": {
+    "lessons": 500,
+    "agreement": 1.0,
+    "seconds": 33.5
+   },
+   "agreement_with_teacher_now": 0.967,
+   "teacher_returns": [
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0
+   ],
+   "teacher_mean": 2000.0,
+   "episodes_lived": 13,
+   "returns": [
+    2000.0,
+    1600.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0
+   ],
+   "late_mean": 2000.0,
+   "best": 2000.0,
+   "faults": 0,
+   "refused": 0,
+   "last_error": null,
+   "decisions": 1258,
+   "env_steps": 7999,
+   "outcomes_learned": 1257,
+   "seconds": 136.4,
+   "think_seconds": {
+    "p50": 0.0745,
+    "p95": 0.1096,
+    "p99": 0.1266,
+    "max": 0.5746
+   }
+  },
+  "Atlantis:frozen": {
+   "phase": "playing",
+   "lessons": 500,
+   "takeover": {
+    "lessons": 500,
+    "agreement": 1.0,
+    "seconds": 34.3
+   },
+   "agreement_with_teacher_now": 0.975,
+   "teacher_returns": [
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0
+   ],
+   "teacher_mean": 2000.0,
+   "episodes_lived": 13,
+   "returns": [
+    1600.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    1600.0
+   ],
+   "late_mean": 1920.0,
+   "best": 2000.0,
+   "faults": 0,
+   "refused": 0,
+   "last_error": null,
+   "decisions": 5649,
+   "env_steps": 7969,
+   "outcomes_learned": 0,
+   "seconds": 135.0,
+   "think_seconds": {
+    "p50": 0.0146,
+    "p95": 0.0574,
+    "p99": 0.0909,
+    "max": 0.4056
+   }
+  }
+ },
+ "verdicts": {
+  "Atlantis": {
+   "takeover_living": true,
+   "takeover_frozen": true,
+   "no_faults": true,
+   "lived_episodes": true,
+   "no_collapse": true,
+   "expert_via_selfplay": true,
+   "living_holds_or_beats_frozen": true,
+   "PASS": true
+  }
+ }
+}

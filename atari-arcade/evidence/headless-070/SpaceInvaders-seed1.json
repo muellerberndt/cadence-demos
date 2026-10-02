@@ -1,0 +1,145 @@
+{
+ "seed": 1,
+ "identity": {
+  "cadence_net": "0.70.0",
+  "python": "3.11.16",
+  "numpy": "2.4.6",
+  "machine": "x86_64",
+  "sources_sha256": {
+   "server.py": "ccb22a0ea12a2a27ae3c381fbccba8f3fee288bdd4ef39313673aadc5a488462",
+   "headless_control.py": "d3e96893cc0996cb01d982e4770db0d9617f97e766a96e6d1d49f2db42efc3a1"
+  }
+ },
+ "report": {
+  "SpaceInvaders:living": {
+   "phase": "playing",
+   "lessons": 1519,
+   "takeover": {
+    "lessons": 1519,
+    "agreement": 0.9,
+    "seconds": 97.3
+   },
+   "agreement_with_teacher_now": 0.15,
+   "teacher_returns": [
+    225.0,
+    225.0,
+    225.0,
+    225.0,
+    225.0,
+    225.0,
+    225.0,
+    225.0,
+    225.0,
+    225.0,
+    225.0,
+    225.0
+   ],
+   "teacher_mean": 225.0,
+   "episodes_lived": 17,
+   "returns": [
+    220.0,
+    270.0,
+    235.0,
+    270.0,
+    270.0,
+    185.0,
+    270.0,
+    270.0,
+    210.0,
+    185.0,
+    270.0,
+    270.0,
+    270.0,
+    270.0,
+    270.0,
+    315.0,
+    185.0
+   ],
+   "late_mean": 262.0,
+   "best": 315.0,
+   "faults": 0,
+   "refused": 0,
+   "last_error": null,
+   "decisions": 3069,
+   "env_steps": 16911,
+   "outcomes_learned": 3068,
+   "seconds": 286.6,
+   "think_seconds": {
+    "p50": 0.0602,
+    "p95": 0.0865,
+    "p99": 0.1035,
+    "max": 0.5148
+   }
+  },
+  "SpaceInvaders:frozen": {
+   "phase": "playing",
+   "lessons": 1878,
+   "takeover": {
+    "lessons": 1878,
+    "agreement": 0.9,
+    "seconds": 117.7
+   },
+   "agreement_with_teacher_now": 0.642,
+   "teacher_returns": [
+    225.0,
+    225.0,
+    225.0,
+    225.0,
+    225.0,
+    225.0,
+    225.0,
+    225.0,
+    225.0,
+    225.0,
+    225.0,
+    225.0,
+    225.0,
+    225.0
+   ],
+   "teacher_mean": 225.0,
+   "episodes_lived": 13,
+   "returns": [
+    160.0,
+    420.0,
+    80.0,
+    215.0,
+    240.0,
+    260.0,
+    210.0,
+    170.0,
+    210.0,
+    315.0,
+    290.0,
+    225.0,
+    470.0
+   ],
+   "late_mean": 302.0,
+   "best": 470.0,
+   "faults": 0,
+   "refused": 0,
+   "last_error": null,
+   "decisions": 9850,
+   "env_steps": 16877,
+   "outcomes_learned": 0,
+   "seconds": 285.0,
+   "think_seconds": {
+    "p50": 0.0105,
+    "p95": 0.065,
+    "p99": 0.0866,
+    "max": 0.4905
+   }
+  }
+ },
+ "verdicts": {
+  "SpaceInvaders": {
+   "takeover_living": true,
+   "takeover_frozen": true,
+   "no_faults": true,
+   "lived_episodes": true,
+   "no_collapse": true,
+   "expert_via_selfplay": true,
+   "living_holds_or_beats_frozen": false,
+   "PASS": false
+  }
+ }
+}

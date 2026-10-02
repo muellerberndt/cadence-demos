@@ -1,0 +1,156 @@
+{
+ "seed": 1,
+ "identity": {
+  "cadence_net": "0.70.0",
+  "python": "3.11.16",
+  "numpy": "2.4.6",
+  "machine": "x86_64",
+  "sources_sha256": {
+   "server.py": "ccb22a0ea12a2a27ae3c381fbccba8f3fee288bdd4ef39313673aadc5a488462",
+   "headless_control.py": "d3e96893cc0996cb01d982e4770db0d9617f97e766a96e6d1d49f2db42efc3a1"
+  }
+ },
+ "report": {
+  "Carnival:living": {
+   "phase": "playing",
+   "lessons": 2000,
+   "takeover": {
+    "lessons": 2000,
+    "agreement": 0.733,
+    "seconds": 124.0
+   },
+   "agreement_with_teacher_now": 0.367,
+   "teacher_returns": [
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0
+   ],
+   "teacher_mean": 540.0,
+   "episodes_lived": 12,
+   "returns": [
+    360.0,
+    620.0,
+    860.0,
+    700.0,
+    420.0,
+    200.0,
+    540.0,
+    480.0,
+    480.0,
+    420.0,
+    400.0,
+    340.0
+   ],
+   "late_mean": 424.0,
+   "best": 860.0,
+   "faults": 0,
+   "refused": 0,
+   "last_error": null,
+   "decisions": 2295,
+   "env_steps": 16003,
+   "outcomes_learned": 2294,
+   "seconds": 271.3,
+   "think_seconds": {
+    "p50": 0.0617,
+    "p95": 0.0826,
+    "p99": 0.0974,
+    "max": 0.6829
+   }
+  },
+  "Carnival:frozen": {
+   "phase": "playing",
+   "lessons": 2000,
+   "takeover": {
+    "lessons": 2000,
+    "agreement": 0.783,
+    "seconds": 129.3
+   },
+   "agreement_with_teacher_now": 0.692,
+   "teacher_returns": [
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0,
+    540.0
+   ],
+   "teacher_mean": 540.0,
+   "episodes_lived": 15,
+   "returns": [
+    900.0,
+    680.0,
+    740.0,
+    340.0,
+    480.0,
+    320.0,
+    1800.0,
+    400.0,
+    620.0,
+    780.0,
+    460.0,
+    620.0,
+    620.0,
+    880.0,
+    960.0
+   ],
+   "late_mean": 708.0,
+   "best": 1800.0,
+   "faults": 0,
+   "refused": 0,
+   "last_error": null,
+   "decisions": 8304,
+   "env_steps": 15980,
+   "outcomes_learned": 0,
+   "seconds": 270.0,
+   "think_seconds": {
+    "p50": 0.0119,
+    "p95": 0.07,
+    "p99": 0.0939,
+    "max": 0.3803
+   }
+  }
+ },
+ "verdicts": {
+  "Carnival": {
+   "takeover_living": true,
+   "takeover_frozen": true,
+   "no_faults": true,
+   "lived_episodes": true,
+   "no_collapse": true,
+   "expert_via_selfplay": false,
+   "living_holds_or_beats_frozen": false,
+   "PASS": false
+  }
+ }
+}
