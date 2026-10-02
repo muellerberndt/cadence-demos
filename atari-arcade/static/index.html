@@ -104,7 +104,8 @@ function cortex(canvas, graph) {
         const side = Math.ceil(Math.sqrt(p.count));
         const gx = (i % side) - (side - 1) / 2;
         const gz = Math.floor(i / side) - (side - 1) / 2;
-        nodes3[p.start + i] = [gx * 46, 8 - (gx * gx + gz * gz) * 2.2, gz * 40];
+        nodes3[p.start + i] = [gx * 46, -8 + gz * 17 - (gx * gx + gz * gz) * 1.2,
+                               gz * 40];
       } else if (p.name === "trace") {
         // the working trace: what the cortex held a moment ago
         const a = (i / p.count) * 6.283;
@@ -208,7 +209,7 @@ function netRenderer(canvas, graph) {
     ctx.strokeStyle = "#2a201b";
     ctx.strokeRect(retina.x, retina.y, retina.w, retina.h);
     ctx.fillStyle = "#6f6353";
-    ctx.fillText("ASSOCIATION CORTEX", cx - 52, cy + 62);
+    ctx.fillText("ASSOCIATION CORTEX", cx - 52, cy + 96);
     ctx.fillText("WORKING TRACE", cx + 196, 150);
     ctx.fillText("MOTOR CORTEX", cx - 36, 58);
     ctx.fillText("MEMORY · REWARD RECALLED PER ACTION", cx + 70, H - 106);
@@ -406,7 +407,7 @@ async function boot() {
           <b id="h2-${name}" class="up">0</b></div>
         <div class="stat"><small>lessons from the teacher</small>
           <b id="h3-${name}">0</b></div>
-        <div class="stat"><small>sweeps to settle the last decision</small>
+        <div class="stat"><small>sweeps to settle the last screen</small>
           <b id="h4-${name}" class="down">–</b><span id="h4s-${name}"></span></div>
         <div class="stat"><small>score this life</small>
           <b id="h5-${name}">0</b></div>

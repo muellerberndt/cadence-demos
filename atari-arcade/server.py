@@ -318,8 +318,11 @@ class Runner:
         self.decisions += 1
         state = brain.basal_ganglia.state
         self.value = float(brain.basal_ganglia.value(state)[0])
+        # sweeps of this screen: settling it after the last outcome was
+        # learned, plus any further sweeps the action needed to qualify
+        sweeps = state.steps + int(brain.last_learning.get("free_steps", 0))
         if self.decisions % 3 == 0:
-            self._show(state, state.steps, x, wrong_action=self._wrong)
+            self._show(state, sweeps, x, wrong_action=self._wrong)
         if apprentice:
             self.lessons += 1
             agree = float(np.mean(self.agreement))
