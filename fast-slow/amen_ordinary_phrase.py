@@ -1,6 +1,6 @@
 """Freeze one actual Amen phrase, then run three discarded runtime preflights.
 
-Only public dev1 Brain/Cortex calls are used. This is not the 1,024-admission
+Only public 0.60.0 Brain/Cortex calls are used. This is not the 1,024-admission
 study, a model-selection command, a musical-quality gate, or a new learning law.
 Run with the released core on PYTHONPATH and cadence/.venv/bin/python. The
 supervisor caps each fresh worker at 60 seconds, including imports and receipts.
@@ -36,7 +36,7 @@ CORE = {
     "column.py": "d3752d27227ca34dfc03134d792cc046fc41d96ac181f19be852a193d1eee203",
     "cortex.py": "270f963fa6ca1c91b0deb19ce0f440cd4881f79205fdd115f64ef23942463482",
     "ports.py": "f0ec46ba314ee20523ff603473256362ae84a1522e89d39751f082f278aa4dca",
-    "__init__.py": "35f4f6e66da65c68cb3fbbb7c2004211088df1e3b17ffc9e907bf0523e6b0c81",
+    "__init__.py": "cb80eb15c793db390a4bc2497a7c46745c46091c7327478e341e6cd0bd86ddbb",
 }
 FINAL_GOAL = (
     "A patch-net equilibrium brain that is more scalable, more capable and more "
@@ -98,8 +98,8 @@ def public_core():
     import cadence
 
     directory = Path(cadence.__file__).resolve().parent
-    if cadence.__version__ != "0.60.0.dev1":
-        raise ValueError("exact public cadence 0.60.0.dev1 required")
+    if cadence.__version__ != "0.60.0":
+        raise ValueError("exact public cadence 0.60.0 required")
     if {name: sha(directory / name) for name in CORE} != CORE:
         raise ValueError("released core source mismatch")
     return directory
