@@ -1,129 +1,147 @@
 """Record the library's answers for parity.mjs.
 
-A miniature of the arcade layout (two 4x4 tiles, two columns, three observers,
-motor and value outputs) is built, queried, taught in batches and driven through
-the Reinforcement helper with the reference engine. Every number the browser
-engine must reproduce is written to fixtures/parity_small.json. The full arcade
-brains (seed 0, three and four actions) are built too, and their edges and
-newborn weights are digested into fixtures/parity_arcade.json.
+Brains are composed with the released ``cadence-net==0.70.0`` exactly as ``server.py``
+composes them. Their newborn efficacies are digested (three and four actions), and two
+tapes are driven through the calls the arcade makes: watched lessons (a greedy answer,
+then ``learner.step`` with the teacher's label), decisions with rewards and an episode
+end through ``brain.step``, a frozen stretch of ``brain.act`` and a reset. One tape is a
+small brain whose every parameter is recorded; the other is the arcade's size, recorded
+as sums and a sample. Screens come from an integer formula both sides can compute.
 
-    PYTHONPATH=<cadence>/src python3 tools/make_parity_fixture.py
+    python tools/make_parity_fixture.py        (from atari-arcade/web, in the demo's venv)
 """
 
 from __future__ import annotations
 
 import hashlib
 import json
-import random
-import struct
-import sys
+from importlib import metadata
 from pathlib import Path
 
-from cadence import Cortex, Reinforcement
+import numpy as np
+
+from cadence import ActorCriticConfig, Brain, LearnerConfig
 
 ROOT = Path(__file__).resolve().parents[1]
-TILE, GRID = 28, 3
+LEARNING = dict(beta=0.1, temperature=0.2, tolerance=3e-3, free_steps=1024, nudged_steps=12,
+                eta_bias=0.02, eta=0.003, momentum=0.9, normalize=0.99, normalize_floor=1e-4)
+REWARD = dict(gamma=0.97, lam=0.9, eta=0.001, eta_critic=0.3, momentum=0.9, normalize=0.99)
 
 
-def digest(values):
-    return hashlib.sha256(struct.pack(f"<{len(values)}d", *values)).hexdigest()
+def compose(inputs: int, actions: int, seed: int = 0) -> Brain:
+    return Brain.compose(inputs, actions, seed=seed, learning=LearnerConfig(**LEARNING),
+                         reward=ActorCriticConfig(**REWARD))
 
 
-def small_brain():
-    c = Cortex(seed=0, settle_budget=4096, parameter_prior=0.4)
-    t0 = c.input("tile0", shape=(4, 4))
-    t1 = c.input("tile1", shape=(4, 4))
-    act = c.input("action", shape=(3,))
-    c0 = c.column("t0", patches=4, inputs=t0)
-    c1 = c.column("t1", patches=4, inputs=t1)
-    r = c.observer("r", patches=3, observes=(c0, c1))
-    p = c.observer("p", patches=4, observes=(c0, c1, r))
-    v = c.observer("v", patches=2, inputs=(act,), observes=(r, p))
-    c.output("motor", shape=(3,), reads=p)
-    c.output("value", shape=(1,), reads=v)
-    return c.build()
+def screen(t: int, n: int) -> np.ndarray:
+    """A sparse picture with a few bright and a few dim pixels that move with ``t``."""
+    x = np.zeros(n)
+    for i in range(n):
+        h = (i * 73 + t * 151) % 997
+        if h < 9:
+            x[i] = 0.2 + 0.09 * h
+        elif h > 990:
+            x[i] = -0.04
+    return x[None, :]
 
 
-def arcade_brain(n_actions, seed=0):
-    c = Cortex(seed=seed, settle_budget=4096, parameter_prior=0.4)
-    tiles = [c.input(f"tile{i}", shape=(TILE, TILE)) for i in range(GRID * GRID)]
-    act = c.input("action", shape=(n_actions,))
-    cols = [c.column(f"t{i}", patches=8, inputs=tiles[i]) for i in range(GRID * GRID)]
-    r = c.observer("r", patches=12, observes=tuple(cols))
-    p = c.observer("p", patches=16, observes=tuple(cols) + (r,))
-    v = c.observer("v", patches=8, inputs=(act,), observes=(r, p))
-    c.output("motor", shape=(n_actions,), reads=p)
-    c.output("value", shape=(1,), reads=v)
-    return c.build()
+def blocks(brain: Brain) -> dict[str, list[float]]:
+    """Efficacies by projection, in the order the browser engine keeps them."""
+    graph, weights = brain.connectome, np.asarray(brain.brain.efficacy)
+    pop = {k: np.asarray(v) for k, v in graph.populations.items()}
+    dense = np.zeros((graph.n, graph.n))
+    dense[graph.pre, graph.post] = weights
+    s, h, p, m = pop["sensory"], pop["association"], pop["prefrontal"], pop["motor"]
+    return {"sa": dense[np.ix_(s, h)].ravel().tolist(), "am": dense[np.ix_(h, m)].ravel().tolist(),
+            "ma": dense[np.ix_(m, h)].ravel().tolist(), "pa": dense[np.ix_(p, h)].ravel().tolist(),
+            "mm": dense[np.ix_(m, m)].ravel().tolist()}
 
 
-def solve_record(res):
-    return {
-        "sweeps": res["sweeps"], "qualified": res["qualified"], "reason": res["reason"],
-        "energy": res["energy"], "stationarity": res["stationarity"],
-        "evaluations": res["work"]["evaluations"],
+def summary(brain: Brain, full: bool) -> dict:
+    graph = brain.connectome
+    pop = {k: np.asarray(v) for k, v in graph.populations.items()}
+    bias = np.asarray(brain.brain.bias)
+    efficacy = np.asarray(brain.brain.efficacy)
+    out = {
+        "bias_association": bias[pop["association"]].tolist(),
+        "bias_motor": bias[pop["motor"]].tolist(),
+        "critic": brain.basal_ganglia.w_critic.tolist() + [float(brain.basal_ganglia.b_critic)],
+        "working_trace": brain.working_memory.trace.ravel().tolist(),
+        "memory_sum": float(brain.hippocampus.consolidated.sum()),
+        "memory_abs": float(np.abs(brain.hippocampus.consolidated).sum()),
+        "efficacy_sum": float(efficacy.sum()),
+        "efficacy_abs": float(np.abs(efficacy).sum()),
+        "efficacy_sample": efficacy[::max(1, len(efficacy) // 1500)].tolist(),
     }
+    if full:
+        out["blocks"] = blocks(brain)
+        out["memory"] = brain.hippocampus.consolidated.ravel().tolist()
+    return out
 
 
-def main():
-    rng = random.Random(123)
-    tiles = lambda: {"tile0": [rng.uniform(-0.6, 0.6) for _ in range(16)],
-                     "tile1": [rng.uniform(-0.6, 0.6) for _ in range(16)]}
-    zero = [0.0, 0.0, 0.0]
-    b = small_brain()
-    out = {"layout": b.inspect()["populations"], "edges": [list(e) for e in b.graph.edges],
-           "residual_order": list(b.graph.residual_order), "weights0": list(b.weights)}
-    # 1. a query
-    q0 = tiles()
-    res = b.settle({**q0, "action": zero}, budget=64)
-    out["query0"] = {"inputs": q0, **solve_record(res), "state": list(res["state"]), "outputs": res["outputs"]}
-    # 2. two witness batches
-    batches = []
-    for size in (3, 8):
-        examples = []
-        for _ in range(size):
-            tt = tiles(); a = rng.randrange(3)
-            examples.append(({**tt, "action": zero}, {"motor": [0.6 if j == a else -0.6 for j in range(3)]}))
-        res = b.observe_batch(examples)
-        batches.append({"examples": [[ex[0], ex[1]] for ex in examples], **solve_record(res),
-                        "accepted": res["accepted"], "weights": list(b.weights), "biases": list(b.biases),
-                        "outputs": [dict(o) for o in res["outputs"]]})
-    out["batches"] = batches
-    # 3. a query after learning
-    q1 = tiles()
-    res = b.settle({**q1, "action": zero}, budget=64)
-    out["query1"] = {"inputs": q1, **solve_record(res), "state": list(res["state"]), "outputs": res["outputs"]}
-    # 4. reinforcement
-    rf = Reinforcement(b, actions=3, action_input="action", value_output="value", discount=0.95,
-                       exploration=0.05, reward_scale=1.0, capacity=2048, batch_size=16, seed=0)
-    steps = []
-    situation = tiles()
-    for k in range(8):
-        picked = rf.act(situation, budget=256)
-        reward = round(rng.uniform(-1, 1), 3)
-        terminal = k == 7
-        following = None if terminal else tiles()
-        fb = rf.feedback(reward, following, terminal=terminal, learn=False)
-        steps.append({"inputs": situation, "action": picked["action"], "values": list(picked["values"]),
-                      "exploratory": picked.get("exploratory"), "reward": reward, "terminal": terminal,
-                      "next": following, "transitions": fb["transitions"]})
-        situation = following if following is not None else tiles()
-    rp = rf.replay(budget=2048)
-    out["reinforcement"] = {"steps": steps, "replay": {"indices": list(rp["indices"]), "targets": list(rp["targets"]),
-                                                       "accepted": rp["accepted"], "sweeps": rp["sweeps"],
-                                                       "updates": rp["updates"], "weights": list(b.weights)}}
-    (ROOT / "fixtures/parity_small.json").write_text(json.dumps(out) + "\n")
-    arcade = {}
-    for n in (3, 4):
-        brain = arcade_brain(n)
-        g = brain.graph
-        arcade[str(n)] = {"n_inputs": g.n_inputs, "n_patches": g.n_patches, "edges": len(g.edges),
-                          "edge_digest": hashlib.sha256(json.dumps(g.edges).encode()).hexdigest(),
-                          "residual_order_digest": hashlib.sha256(json.dumps(g.residual_order).encode()).hexdigest(),
-                          "weights_digest": digest(brain.weights), "weights_head": list(brain.weights[:8]),
-                          "populations": [{"name": p["name"], "indices": list(p["indices"])} for p in brain.inspect()["populations"]]}
-    (ROOT / "fixtures/parity_arcade.json").write_text(json.dumps(arcade, indent=1) + "\n")
-    print("wrote", ROOT / "fixtures/parity_small.json", ROOT / "fixtures/parity_arcade.json")
+def tape(inputs: int, actions: int, full: bool, watch: int, play: int, frozen: int) -> dict:
+    brain = compose(inputs, actions)
+    motor = np.asarray(brain.motor_index)
+    events, t = [], 0
+    for _ in range(watch):
+        x, label = screen(t, inputs), (t * 2 + 1) % actions
+        drive = brain.stimulus(x)
+        own = int(brain.act(x, greedy=True)[0])
+        state = brain.basal_ganglia.state
+        _, report = brain.learner.step(drive, np.array([label]))
+        events.append({"kind": "watch", "t": t, "label": label, "own": own,
+                       "motor": state.activation[0, motor].tolist(),
+                       "free_steps": int(report["free_steps"]), "nudged_steps": int(report["nudged_steps"])})
+        t += 1
+    pending = False
+    for k in range(play):
+        x = screen(t, inputs)
+        reward, done = float([0, 1, 0, 0, -1, 0, 1, 0][k % 8]), k == play // 2
+        if pending:
+            action = int(brain.step(x, reward=np.array([reward]), done=np.array([done]))[0])
+        else:
+            action = int(brain.step(x)[0])
+        state = brain.basal_ganglia.state
+        events.append({"kind": "play", "t": t, "reward": reward if pending else None, "done": done if pending else None,
+                       "action": action, "motor": state.activation[0, motor].tolist(),
+                       "value": float(brain.basal_ganglia.value(state)[0]),
+                       "dopamine": brain.last_learning.get("dopamine"),
+                       "td_error": brain.last_learning.get("td_error"),
+                       "free_steps": brain.last_learning.get("free_steps")})
+        pending = True
+        t += 1
+    middle = summary(brain, full)
+    brain.reset()
+    for _ in range(frozen):
+        x = screen(t, inputs)
+        action = int(brain.act(x)[0])
+        events.append({"kind": "frozen", "t": t, "action": action,
+                       "motor": brain.basal_ganglia.state.activation[0, motor].tolist()})
+        t += 1
+    return {"inputs": inputs, "actions": actions, "watch": watch, "play": play, "frozen": frozen,
+            "events": events, "after_play": middle, "after_frozen": summary(brain, False)}
+
+
+def main() -> None:
+    births = {}
+    for actions in (3, 4):
+        brain = compose(84 * 84, actions)
+        efficacy = np.ascontiguousarray(brain.brain.efficacy, dtype="<f8")
+        births[str(actions)] = {"neurons": int(brain.connectome.n), "synapses": int(brain.connectome.synapses),
+                                "efficacy_sha256": hashlib.sha256(efficacy.tobytes()).hexdigest()}
+    rng = np.random.default_rng(0)
+    fixture = {
+        "library": metadata.version("cadence-net"),
+        "numpy": np.__version__,
+        "learning": LEARNING, "reward": REWARD,
+        "generator": {"seed": 0, "first": [rng.random() for _ in range(4)]},
+        "births": births,
+        "small": tape(48, 3, True, 10, 24, 4),
+        "arcade": tape(84 * 84, 3, False, 6, 12, 2),
+    }
+    out = ROOT / "fixtures" / "parity_system1.json"
+    out.write_text(json.dumps(fixture))
+    print(out, out.stat().st_size, "bytes", births)
 
 
 if __name__ == "__main__":
