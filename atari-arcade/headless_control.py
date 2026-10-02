@@ -11,8 +11,12 @@ the teacher, and the living arm holding or beating the frozen arm.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import platform
 import time
+from importlib import metadata
+from pathlib import Path
 
 import numpy as np
 
@@ -37,20 +41,32 @@ def run_pass(seed: int, games, minutes: float, episodes_target: int):
         rets = list(r.returns)
         report[key] = {
             "phase": r.phase,
-            "witnesses": r.witnesses,
-            "agreement": (round(float(np.mean(r.agreement)), 3)
-                          if r.agreement else None),
+            "lessons": r.lessons,
+            "takeover": r.takeover,
+            "agreement_with_teacher_now": (
+                round(float(np.mean(r.agreement)), 3)
+                if r.agreement else None),
+            "teacher_returns": list(r.teacher_returns),
+            "apprentice_returns": list(r.apprentice_returns),
             "teacher_mean": (round(float(np.mean(r.teacher_returns)), 1)
                              if r.teacher_returns else None),
             "episodes_lived": len(rets),
             "returns": rets,
             "late_mean": (round(float(np.mean(rets[-5:])), 1)
                           if len(rets) >= 3 else None),
+            "best": r.best_score,
             "faults": r.faults,
+            "refused": r.refused,
             "last_error": r.last_error,
-            "understanding": r.coherence,
-            "transitions": r.transitions,
-            "life_admissions": r.life_admissions,
+            "decisions": r.decisions,
+            "outcomes_learned": r.outcomes,
+            "seconds": round(time.time() - r.born, 1),
+            "think_seconds": {
+                name: round(float(value), 4) for name, value in zip(
+                    ("p50", "p95", "p99", "max"),
+                    (*np.percentile(r.think_seconds, [50, 95, 99]),
+                     max(r.think_seconds)), strict=True)
+            } if r.think_seconds else None,
         }
         r.stop()
     time.sleep(2)
@@ -71,17 +87,31 @@ def verdicts(report, games):
                           and frozen.get("faults", 1) == 0),
             "lived_episodes": (living.get("episodes_lived", 0) >= 3
                                and frozen.get("episodes_lived", 0) >= 3),
-            "no_collapse": (lm is not None and teacher
-                            and lm >= 0.25 * teacher),
-            "expert_via_selfplay": (lm is not None and teacher
-                                    and lm >= 0.8 * teacher),
-            "living_holds_or_beats_frozen": (
+            "no_collapse": bool(lm is not None and teacher
+                                and lm >= 0.25 * teacher),
+            "expert_via_selfplay": bool(lm is not None and teacher
+                                        and lm >= 0.8 * teacher),
+            "living_holds_or_beats_frozen": bool(
                 lm is not None and fm is not None
                 and lm >= fm * 0.9 - 1e-9),
         }
         checks["PASS"] = all(checks.values())
         out[game] = checks
     return out
+
+
+def identity():
+    """What ran: the library release and the hashes of this demo's sources."""
+    here = Path(__file__).parent
+    return {
+        "cadence_net": metadata.version("cadence-net"),
+        "python": platform.python_version(),
+        "numpy": np.__version__,
+        "machine": platform.machine(),
+        "sources_sha256": {
+            name: hashlib.sha256((here / name).read_bytes()).hexdigest()
+            for name in ("server.py", "headless_control.py")},
+    }
 
 
 def main():
@@ -94,7 +124,7 @@ def main():
     args = parser.parse_args()
     games = args.games.split(",")
     report = run_pass(args.seed, games, args.minutes, args.episodes)
-    result = {"seed": args.seed, "report": report,
+    result = {"seed": args.seed, "identity": identity(), "report": report,
               "verdicts": verdicts(report, games)}
     with open(args.out, "w") as f:
         json.dump(result, f, indent=1)
