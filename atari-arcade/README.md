@@ -68,17 +68,19 @@ Atari Arcade uses **recursive observer settlement**. Sensory columns read image
 tiles; successive observers read the columns' live states and exact prediction
 errors, with motor and value outputs taken from observer populations. Those
 bounded patches and their readback settle together in the server's Cadence
-engine. `requirements.txt` installs the library from its Git branch without a
-commit pin, so record the installed source when comparing runs. The browser
-edition carries its own port of the engine and states its agreement with the
-library above.
+engine. `requirements.txt` pins Cadence 0.50.0 source
+`5d830d1bbb590c1837832b3bc9b6e1f811a4cd46`: the archived small-query, batch,
+reward and arcade-wiring fixtures replay exactly against it. This preserves
+the server's original API across changes to the library's default brain.
+The browser carries its separate recorded engine; this dependency pin neither
+ports that engine nor establishes a fresh gameplay result.
 
 This layout explores learned perception and action with internal error feedback.
 Flat settlement is a useful baseline for direct sensory relations; ordinary
 state-coupled settlement tests learned intermediate representations without
 error readback. All three share the library's settlement rule. See the
-[layout guide](https://github.com/muellerberndt/cadence/blob/main/docs/VARIANTS.md)
-and [performance guide](https://github.com/muellerberndt/cadence/blob/main/docs/PERFORMANCE.md).
+[layout guide](https://github.com/muellerberndt/cadence/blob/5d830d1bbb590c1837832b3bc9b6e1f811a4cd46/docs/VARIANTS.md)
+and [interaction guide](https://github.com/muellerberndt/cadence/blob/5d830d1bbb590c1837832b3bc9b6e1f811a4cd46/docs/LIVE.md).
 
 ## Run it
 

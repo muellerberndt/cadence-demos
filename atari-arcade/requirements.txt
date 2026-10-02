@@ -4,4 +4,5 @@ numpy
 torch
 ale-py>=0.10
 gymnasium
-cadence-net @ git+https://github.com/muellerberndt/cadence.git
+# Recorded browser fixtures replay exactly on this 0.50.0 source.
+cadence-net @ git+https://github.com/muellerberndt/cadence.git@5d830d1bbb590c1837832b3bc9b6e1f811a4cd46
