@@ -8,6 +8,20 @@ Cadence features it demonstrates and how it is built.
 > **Early research.** Cadence is under heavy early research. These demos are
 > imperfect and change as the library changes.
 
+## What the demos show
+
+The demos pick out what matters when a brain has to run a body:
+
+- **Live learning.** A brain learns while it runs. There is no training phase
+  followed by a frozen deployment, and no difference between training and
+  inference.
+- **Adapting to new conditions.** When the body or the world changes, the live
+  brain adjusts from what it measures, without being told what changed.
+- **Evolving brains.** The layout of a brain can be inherited, mutated and
+  selected, so its size and shape are earned by what they cost and return.
+- **Answers that settle.** An action is the settled state of the whole brain,
+  and a brain that does not settle refuses to answer.
+
 ## The brain in Cadence 0.70.0
 
 Cadence builds one continuing brain. **System 1** is the default: an

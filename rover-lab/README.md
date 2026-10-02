@@ -15,6 +15,11 @@ consequence predictions change, then restore the body and test the learned state
   The short motor curriculum at the start and the whole life afterwards use the
   same call, `brain.observe`, on the same brain. Forecasting and learning
   alternate every step.
+- **Learning from what the body did.** Only executed commands and measured
+  motion teach the brain. Wheel strength, the phase of the experiment and the
+  change itself are hidden from it.
+- **Control-loop timing on the record.** Every step's sensing-to-command time is
+  measured against a 100 ms deadline, and misses are reported.
 - **Learning you can watch in the browser.** The page shows the live brain's
   patch states and prediction errors, its forecasts against what the body then
   did, and both rovers' paths. The brain itself runs in the local Python server
