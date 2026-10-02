@@ -22,12 +22,19 @@ The browser retains temporal context and keeps record writes off. It computes
 the sequence before rendering and playing the audio; playback displays the
 stored activity trace.
 
-For a Cadence 0.50.0 application, choose among flat settlement, ordinary
-state-coupled settlement and recursive observer settlement. All three use the
-library's common settlement engine. AMEN's direct record-patch computation is
-a separate historical mechanism. See the [layout guide](https://github.com/muellerberndt/cadence/blob/main/docs/VARIANTS.md)
-for task choices and the [performance guide](https://github.com/muellerberndt/cadence/blob/main/docs/PERFORMANCE.md)
-for the execution and timing distinction.
+For a Cadence **0.60.0.dev1** application, start with an ordinary flat network
+and add ordinary deep layers when needed. Recursive observers are experimental:
+they participate in every synchronous solve and can slow routine responses.
+The library does not yet supply automatic surprise-only activation or establish
+a useful recursive advantage. See the [layout guide](https://github.com/muellerberndt/cadence/blob/main/docs/VARIANTS.md)
+and [experimental-feature boundary](https://github.com/muellerberndt/cadence/blob/main/docs/EXPERIMENTAL.md).
+
+The brain on this page remains the historical record model. Its musical quality
+has **not** been reproduced with the current ordinary network; the page and its
+checkpoint are preserved as the required comparison. The old model has 128
+gated temporal channels and 8,192 record cells, not one ordinary output layer.
+The configurable playing rules and instrument below are also part of the demo
+and must remain identical when comparing a replacement.
 
 ## Card
 
@@ -35,7 +42,7 @@ for the execution and timing distinction.
 - **Author:** Bernhard Mueller
 - **Description:** One record patch learned jungle tracks as events per half-beat: a slice of a drum break, a sub-bass note, a change flag and a texture. The page ships the trained brain, starts from silence, computes a track in the browser while hearing each half-beat it plays, and renders it through the instrument.
 - **Cadence version:** The brain on the page was trained on 0.11.0 (library commit `02fec624`, as its receipt records). The browser engine is checked under the examples' 0.12.0 pin against the archived run of that brain.
-- **Hardware for initial training:** 1,559 CPU seconds on a laptop, no GPU, over 71 tracks and windows (6.2 hours of audio), with Python 3.13 and NumPy 2.5.
+- **Training:** about 2,956 CPU seconds across two laptop stages, no GPU, with Python 3.13 and NumPy 2.5. Six epochs on 26 regions were followed by three epochs on 71 tracks and windows (about 6.15 hours of training audio), continuing the same brain. The second stage alone took 1,559 CPU seconds. Both stages used hard crop targets; together they supplied 596,232 row presentations and 18,753 chunk updates.
 - **Cadence features showcased:** `cadence.RecordPatchNet` with 128 context channels and 8,192 record cells, 48 of which fire per reading; slow parameters that carry the corpus and records that carry particular readings; held-out prediction measured with the records writing online; a loop through the world, where the patch hears what it played; the record writes reproduced in the browser to 4e-8 (`memorize`, `forget`) and kept off on the page.
 - **Problems encountered during development:**
   - Every dub sounded the same. From silence the highest score at every port gives one track, the bass settled on one note, and the transcription reads every repeating bar as the break in order, so a track's own chop is absent from the training data. The pad sat 18 to 30 dB under the mix. Each dub draws its bass, its opening pattern and its instrument settings from its seed.
