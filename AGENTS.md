@@ -1,5 +1,13 @@
 # Cadence demo guidance
 
+**What Cadence is, and is not (owner, 2026-10-03).** We are building an animal brain.
+Cadence is not a classifier, not any kind of traditional naive neural network, not an
+MLP, and not a transformer with an attention matrix that scales badly with context. A
+demo whose brain is a window of input pressed into one observation, one processing
+region and a readout taught on every presentation shows a layered network, not Cadence;
+such a setup is a control. A demo shows a creature: a stream, retained state, lessons on
+mismatch, free behaviour over a life, retention and recovery.
+
 Read this repository's `README.md` and the affected demo's README first. Follow
 the current Cadence README/AGENTS and
 [world-model guide](https://github.com/muellerberndt/cadence/blob/main/docs/world-model.md)
