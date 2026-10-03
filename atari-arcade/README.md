@@ -1,7 +1,7 @@
 # Atari Arcade
 
 Brains born at server start learn Atari games while you watch. Each brain is a
-Cadence 0.70.0 **System 1** brain on raw screen pixels. It begins as a
+Cadence 0.71.0 **System 1** brain on raw screen pixels in the Python edition. It begins as a
 hatchling and watches a scripted teacher play. Once its own answers agree with
 the teacher's actions often enough it takes the controls, and from then on it
 keeps learning from the reward of its own actions. The page shows the game
@@ -26,8 +26,8 @@ expects, and the score of every life with a skill badge from noob to legend.
   the next one.
 - **The main `Brain.compose` interface.** The brain is the library's default
   System 1: plastic cortex, a working trace, a motor cortex, basal ganglia with
-  a critic and dopamine, and an associative memory of rewarded actions. Only
-  step sizes are set by the demo.
+  a critic and dopamine, and an associative memory of rewarded actions. The
+  demo sets step sizes, adaptive-update settings and reward-credit timescales.
 - **Settling and refusal.** An action is read from the settled state of the
   whole brain. A solve that does not settle raises an error; the body then
   holds its last action and nothing is credited to the brain for that step.
@@ -95,8 +95,10 @@ without a browser.
 
 ## Brain layout
 
-Atari Arcade runs on the main brain of **Cadence 0.70.0**, `Brain.compose`,
-installed as the released package `cadence-net==0.70.0`.
+The Python edition runs on the main brain of **Cadence 0.71.0**, `Brain.compose`,
+installed as `cadence-net==0.71.0`. Its teacher and reward eligibility phases
+retain the demo's finite budgets; upgrading the package does not enable
+qualified teaching. Whole-brain actions still require equation qualification.
 
 | Part | Size | Role |
 | --- | --- | --- |
@@ -118,10 +120,12 @@ synapse steps on a running mean of its own contrasts divided by their running
 size (`momentum` and `normalize`), because most pixels are quiet most of the
 time. The constructor's default step sizes suit small inputs: on these 7,056
 pixels they did not get a brain past the most frequent label of a
-screen-dependent teacher in our trials, so the step sizes above are part of the
-demo. See the
-[brain guide](https://github.com/muellerberndt/cadence/blob/v0.70.0/docs/brain.md)
-and [continuous interaction](https://github.com/muellerberndt/cadence/blob/v0.70.0/docs/continuous.md).
+screen-dependent teacher in our trials, so the learning configuration above is
+part of the demo. Reward uses discount `gamma=0.97` and eligibility decay
+`lam=0.9`, rather than `Brain.compose`'s default `0.9` and `0.8`; both teacher
+and reward updates use `momentum=0.9` and `normalize=0.99`. See the
+[brain guide](https://github.com/muellerberndt/cadence/blob/v0.71.0/docs/brain.md)
+and [continuous interaction](https://github.com/muellerberndt/cadence/blob/v0.71.0/docs/continuous.md).
 
 ## Run
 
@@ -137,7 +141,7 @@ python3 -m venv .venv
 Open **http://localhost:8668**. `ARCADE_GAMES` selects the games (default
 `Atlantis,Freeway,Carnival,SpaceInvaders`), `ARCADE_PUBLIC=1` locks the speed
 control, `ARCADE_HOST` and `ARCADE_PORT` bind the server. Each game needs about
-one processor core. `requirements.txt` pins `cadence-net==0.70.0`.
+one processor core. `requirements.txt` pins `cadence-net==0.71.0`.
 
 ## What the brain receives
 
@@ -174,7 +178,7 @@ all (the frozen twin). Each lived at least twelve whole games at the controls.
 The reports are in [evidence/headless-070/](evidence/headless-070/); each one
 binds the hashes of `server.py` and `headless_control.py` it ran.
 
-| Game | Seed | Teacher alone | Takeover: lessons / agreement / time | Living: mean (lives) | Living: last five | Living: best | Frozen twin: mean (lives) | Faults / refused | Decision ms: p50 / p95 | Checks |
+| Game | Seed | Teacher alone | Takeover: lessons / agreement / time | Living: mean (lives) | Living: last five | Living: best | Frozen twin: mean (lives) | Faults / refused | Brain ms per screen: p50 / p95 | Checks |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Atlantis | 0 | 2,000 | 500 / 1.0 / 33.0 s | 2,000 (13) | 2,000 | 2,000 | 2,008 (13) | 0 / 0 | 74 / 117 | pass |
 | Atlantis | 1 | 2,000 | 500 / 1.0 / 33.9 s | 2,000 (13) | 2,000 | 2,000 | 2,000 (13) | 0 / 0 | 70 / 102 | pass |
@@ -194,6 +198,19 @@ both brains took the controls, neither faulted, the living brain's last five
 lives average at least 80% of the teacher, and the living brain's last five are
 no lower than 90% of the frozen twin's last five.
 
+The timing columns summarize the living brain's retained `think_seconds`
+samples (at most 20,000). Each sample times one complete brain-loop handler:
+either a watched screen's greedy answer and teacher lesson, or a screen at the
+controls with feedback and the next action. It also includes that handler's
+bookkeeping and visualization work, handled refusals, and any caught fault's
+0.5-second backoff. It excludes the body's emulator stepping and pixel
+preprocessing, waiting for a fresh screen, and HTTP/browser rendering. These
+receipts do not separate watching from play, so they cannot establish a
+post-takeover decision-only latency. The live page shows the median of the
+latest 200 samples from that same stream. Its rolling window may eventually
+contain only play; the phase of each retained sample is not recorded. These
+are elapsed wall times under the host's load, not operation counts.
+
 What the runs show:
 
 - **Freeway and Atlantis reach the teacher's level in every seed.** Freeway
@@ -207,10 +224,10 @@ What the runs show:
   agreement there (0.90 for Space Invaders at the gate, 0.73 to 0.78 for
   Carnival at the 2,000-lesson limit) is read from the pixels. They do not pass
   every check, and they stay out of the published pair.
-- **No brain faulted and no decision was refused** in any of the 24 brains. A
-  learning decision took 46 to 74 ms at the median and 81 to 117 ms at the 95th
-  percentile on that shared host; on an Apple M4 laptop with the page open it
-  took about 100 ms.
+- **No brain faulted and no decision was refused** in any of the 24 brains.
+  Brain processing per screen, collected during watching and play, took 46 to 74 ms
+  at the median and 81 to 117 ms at the 95th percentile on that shared host;
+  the live page showed about 100 ms on an Apple M4 laptop.
 
 What they do not show:
 
@@ -236,8 +253,9 @@ takeover and scored far below their teachers
 
 ## The browser edition
 
-`web/` runs Freeway and Atlantis with nothing behind the page: the same brain and
-the same loop, in JavaScript.
+`web/` runs Freeway and Atlantis with nothing behind the page, using the
+retained JavaScript implementation of the 0.70.0 brain and its loop. Its
+browser fixtures and measurements keep that version identity.
 
 ```sh
 cd web && python3 -m http.server 8080      # open http://localhost:8080/
@@ -258,13 +276,15 @@ cd web && python3 -m http.server 8080      # open http://localhost:8080/
 
 Two things differ from the server edition. The page has no teacher games played
 before birth, so the brain takes the controls only after it has also watched one
-whole game of the teacher; the badge needs that score. And a JavaScript decision
-takes about 30 ms, so the browser brain sees more of the game's screens than the
-Python one does.
+whole game of the teacher; the badge needs that score. And JavaScript brain
+processing takes about 30 ms per screen at the median of its unseparated timing
+samples, so the browser brain sees more of the game's screens than the Python
+one does.
 
 `node parity.mjs` checks `cadence.js` against values recorded with the released
-package (`tools/make_parity_fixture.py` regenerates `fixtures/parity_system1.json`
-in the demo's venv). Newborn efficacies are identical bit for bit for three and
+0.70.0 package. To regenerate `fixtures/parity_system1.json`, run
+`tools/make_parity_fixture.py` in a separate environment pinned to 0.70.0.
+Newborn efficacies are identical bit for bit for three and
 four actions. On two recorded tapes of watched lessons, decisions with rewards,
 an episode end, a frozen stretch and a reset, every answer, sampled action and
 sweep count is identical, and activations, values, dopamine and every parameter
@@ -276,10 +296,16 @@ products in a different order, so the last digits differ.
 runs the browser pipeline without a browser, the game advancing by the brain's
 own time. The receipts in `web/receipts/`:
 
-| Game | Takeover | Teacher's game | Lives at the controls | Refused / faults | Decision ms: p50 / p95 |
+| Game | Takeover | Teacher's game | Lives at the controls | Refused / faults | Brain ms per screen: p50 / p95 |
 | --- | --- | --- | --- | --- | --- |
 | Freeway | 1,005 lessons, agreement 1.00, 118 s after birth | 21 | 23, 25, 23, 19, 23, 19 | 0 / 0 | 30 / 49 |
 | Atlantis | 500 lessons, agreement 1.00, 45 s after birth | 2000, 2000 | 2000 eight times | 0 / 0 | 27 / 39 |
+
+Browser `think_ms` similarly combines watched lessons and play, retaining at
+most 20,000 samples. It times the brain's handler and its bookkeeping and
+visualization work, including handled refusals, but excludes uncaught faults,
+emulator/retina work and rendering. The page shows the median of the latest
+200 samples. These timings also do not isolate post-takeover decisions.
 
 The 0.50.0 browser edition this replaces recorded 17, 21, 16, 26, 21, 21 for
 Freeway after a takeover at 174 s and 2000 five times for Atlantis after 288 s.

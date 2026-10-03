@@ -287,6 +287,7 @@ export class BrainSide {
       brain: { beat_age: Math.round((Date.now() - this.beat) / 100) / 10, faults: this.faults, last_error: this.lastError },
       life: { decisions: this.decisions, outcomes: this.outcomes, refused: this.refused, rewarded: this.rewarded,
               think_ms: recent.length ? round(recent[Math.floor(recent.length / 2)], 1) : null,
+              think_ms_scope: 'median of latest 200 brain handlers; watching and play, including handled refusals; excludes uncaught faults',
               value: round(this.value, 3), dopamine: round(this.dopamine, 3) },
     };
   }

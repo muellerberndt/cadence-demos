@@ -589,7 +589,7 @@ function startGame(name, game, row) {
       life.innerHTML = spark(r.returns || [], 140, 22, "#4fc06a")
         + ` <b>living:</b> ${L.decisions ?? 0} decisions · `
         + `${L.outcomes ?? 0} outcomes learned · ${L.refused ?? 0} refused · `
-        + `${L.think_ms ?? "–"} ms per decision`;
+        + `${L.think_ms ?? "–"} ms per screen (median)`;
     }
   };
   // The brain reports every 300 ms while it thinks; between its reports the game's own numbers keep moving.

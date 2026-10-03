@@ -71,6 +71,7 @@ const receipt = {
   returns: side.returns, best: side.best, badge: side.badge, lessons: brain.lessons, decisions: brain.decisions,
   outcomes_learned: brain.outcomes, refused: brain.refused, faults: brain.faults, last_error: brain.lastError,
   think_ms: { p50: at(0.5), p95: at(0.95), p99: at(0.99), max: think.length ? Math.round(think[think.length - 1] * 10) / 10 : null },
+  think_ms_scope: 'last 20000 whole brain handlers; watching and play, including handled refusals; excludes uncaught faults, emulator, retina and rendering',
   agree_hist: brain.agreeHist, log,
 };
 if (args.out) { mkdirSync(dirname(join(root, args.out)), { recursive: true }); writeFileSync(join(root, args.out), JSON.stringify(receipt, null, 1) + '\n'); }

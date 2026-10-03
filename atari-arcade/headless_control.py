@@ -67,6 +67,10 @@ def run_pass(seed: int, games, minutes: float, episodes_target: int):
                     (*np.percentile(r.think_seconds, [50, 95, 99]),
                      max(r.think_seconds)), strict=True)
             } if r.think_seconds else None,
+            "think_seconds_scope": (
+                "last 20000 whole brain handlers; watching and play, "
+                "including refusals/fault backoff; "
+                "excludes emulator, retina, waiting and rendering"),
         }
         r.stop()
     time.sleep(2)

@@ -1,4 +1,4 @@
-"""Cadence Arcade: System 1 brains of Cadence 0.70.0 learning Atari while you watch.
+"""Cadence Arcade: System 1 brains of Cadence 0.71.0 learning Atari while you watch.
 
 Every runner composes a fresh brain with ``Brain.compose``: 7,056 sensory
 neurons (the 84x84 screen), an association cortex with a working trace, a
@@ -70,7 +70,7 @@ def teacher_action(game, ram, meanings, tick):
 
 
 def build_brain(n_actions, seed=0):
-    """The default System 1 brain on raw pixels; only step sizes are set."""
+    """System 1 on raw pixels with demo learning rates, adaptivity and reward timescales."""
     from cadence import ActorCriticConfig, Brain, LearnerConfig
 
     learning = LearnerConfig(
@@ -179,7 +179,9 @@ class Runner:
         self.outcomes = 0          # outcomes of its own actions learned from
         self.rewarded = 0          # those with a reward in them
         self.refused = 0
-        self.think_seconds: list[float] = []   # per screen, the whole call
+        # Whole watching/play handlers, including caught faults and backoff;
+        # excludes body preprocessing, emulator steps and waiting for input.
+        self.think_seconds: list[float] = []
         self.value = 0.0
         self.dopamine = 0.0
         self.score = 0.0
@@ -509,6 +511,9 @@ async def state(_):
                       "last_error": r.last_error},
             "life": {"decisions": r.decisions, "outcomes": r.outcomes,
                      "refused": r.refused,
+                     "think_ms_scope": (
+                         "median of latest 200 brain handlers; watching and play, "
+                         "including refusals/fault backoff"),
                      "think_ms": (round(1000 * float(np.median(
                          r.think_seconds[-200:])), 1)
                                   if r.think_seconds else None),

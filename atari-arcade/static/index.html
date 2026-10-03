@@ -54,7 +54,7 @@
 </head>
 <body>
 <header><h1>CADENCE ARCADE</h1>
-  <span>Cadence 0.70.0 System 1 brains, born at server start, learning live ·
+  <span>Cadence 0.71.0 System 1 brains, born at server start, learning live ·
   every fiber and number is measured, nothing is staged</span>
   <span style="margin-left:auto">speed
     <input id="pace" type="range" min="0" max="0.4" step="0.05" value="0"
@@ -525,7 +525,7 @@ async function boot() {
         life.innerHTML = spark(L.returns || [], 140, 22, "#4fc06a")
           + ` <b>living:</b> ${L.decisions} decisions · `
           + `${L.outcomes} outcomes learned · ${L.refused} refused · `
-          + `${L.think_ms ?? "–"} ms per decision`;
+          + `${L.think_ms ?? "–"} ms per screen (median)`;
       }
     }
   }, 900);
