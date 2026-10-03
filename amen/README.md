@@ -8,6 +8,24 @@ computes a track one half-beat at a time, hearing each half-beat it plays. The
 page then renders the track through its instrument and plays it, with every
 note and the brain's activity in time with the sound.
 
+This retained `RecordPatchNet` example demonstrates acquired musical relations,
+running context and record memory. It uses the separate learning and readout
+rule documented below; it is not a complete implementation of the common
+`Brain.compose` world-model protocol. For new integrated brains, follow the
+[world-model guide](https://github.com/muellerberndt/cadence/blob/main/docs/world-model.md):
+bootstrap reusable knowledge, continue from retained state, read durable memory
+for normal settled behavior, and repair witnessed mismatches through the common
+local patch law. Deep System 1 is the foundation; System 2 is optional.
+
+The page reads trained records while playing and does not write new ones.
+Future live-learning claims must identify the played/heard event each correction
+belongs to, declare memory writes and reads, and test saved continuation and
+old/new retention. Measure familiar continuation, novelty and repair costs
+against reset and memory controls. The target is low recurring work after
+acquisition; neither mathematical settlement nor pleasant output establishes
+low physical energy or superiority to a competent comparison model. The
+archived recipe and its measured results below remain unchanged.
+
 [![A dub playing: the studio and the waveform on the left, the brain on the right with its context channels, record cells and the loop through the world](screenshot.png)](https://floatingpragma.io/demos/amen/)
 
 ## What it demonstrates
@@ -121,8 +139,10 @@ the linear readout of the context plus the record read. On the page the brain
 keeps its trained records and does not write new ones while it plays.
 
 This is not the System 1 brain of `Brain.compose`, and it has no observers.
-`Brain.compose` builds a continuing brain that chooses actions and learns from
-reward; a record patch learns to predict the next event of a stream. See the
+`Brain.compose` is the primary public entry for the intended continuing brain;
+this separate record patch learns to predict the next event of a stream. Its
+specialized success does not replace the common brain's sequence and memory
+integration tests. See the
 [record patch guide](https://github.com/muellerberndt/cadence/blob/v0.70.0/docs/record-patch.md)
 and the [brain guide](https://github.com/muellerberndt/cadence/blob/v0.70.0/docs/brain.md).
 

@@ -6,7 +6,25 @@ inhabited by creatures whose brains follow the population solver of
 from an inherited body plan, settles jointly every tick, learns within one life,
 and pays mass for every patch, every relation and every repair sweep. Nothing
 tells the creatures to graze, hunt, hoard or speak; whatever you see them doing,
-they found.
+they found within the supplied world, action set and reward/selection rules.
+
+This population experiment starts each new creature with fresh relations. It
+is a specific evolutionary control, not a requirement to recreate a Cadence
+brain for every observation or application session. New applications should
+follow the [world-model guide](https://github.com/muellerberndt/cadence/blob/main/docs/world-model.md):
+a bootstrapped continuing reciprocal patch brain, useful short-term context,
+durable knowledge with declared writes and reads, normal settled behavior and
+local repair of witnessed mismatches or failures. Deep System 1 can provide
+that foundation; System 2 is optional.
+
+The current page has no event custody or saved continuation, as disclosed
+below. It therefore does not demonstrate exactly-once correction identity or
+the full memory contract. A future continuation experiment must add and test
+those mechanisms, retaining fresh-start, memory-intervention and repair-schedule
+controls. Count routine and repair work separately. The world's metabolic mass
+price is a declared simulation resource model, not measured physical energy;
+qualified settlement and survival here do not guarantee general intelligence
+or an efficiency advantage.
 
 ## What it demonstrates
 
@@ -37,8 +55,10 @@ The page is `page.html` plus `core.js`, joined into the single file
 brain and the population with no page code in it, so the same file runs
 headless under Node in `probe.js` and `test.js`.
 
-A founder's brain, written with the Cadence library, is three populations that
-settle together, with one policy patch per action:
+The retained population-solver example writes a founder as three populations
+that settle together, with one policy patch per action. This demonstrates that
+engine's contract; use `Brain.compose` as the primary entry for new integrated
+brains:
 
 ```python
 from cadence.experimental.equilibrium import Cortex, Reinforcement

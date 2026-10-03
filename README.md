@@ -2,38 +2,59 @@
 
 Small example applications for [Cadence](https://github.com/muellerberndt/cadence):
 brains that learn from experience through bounded patches, local relations,
-readback and settlement. Each demo shows one simple use of the library. Its own README says which
-Cadence features it demonstrates and how it is built.
+readback and settlement. Each demo demonstrates a specific mechanism and names
+its implementation and evidence. These are bounded examples, not complete
+recipes for the intended continuing brain.
 
 > **Early research.** Cadence is under heavy early research. These demos are
 > imperfect and change as the library changes.
 
 ## What the demos show
 
-Animal and human brains learn from experience and not by backpropagation with
-gradient descent. Cadence is designed the same way, and the demos pick out what
-that gives a brain that has to run a body:
+Cadence's functional target is an animal-like continuing brain that acquires
+reusable knowledge, retains context and adapts to witnessed outcomes. This is
+a software design goal, not a claim that these demos reproduce biological
+learning or can learn every human task. The demos expose parts of that goal:
 
-- **Live learning.** A brain learns while it runs. There is no training phase
-  followed by a frozen deployment, and no difference between training and
-  inference.
+- **Live learning.** Acquired knowledge can remain useful while the same brain
+  continues acting and learning. Bootstrap, ordinary settled behavior and
+  evidence-driven repair have distinct roles and costs. A new observation
+  need not trigger a supervised update.
 - **Adapting to new conditions.** When the body or the world changes, the live
   brain adjusts from what it measures, without being told what changed.
 - **Evolving brains.** The layout of a brain can be inherited, mutated and
   selected, so its size and shape are earned by what they cost and return.
 - **Answers that settle.** An action is the settled state of the whole brain,
   and a brain that does not settle refuses to answer.
-- **Learning without backpropagation.** Connections change from locally
-  available activity while the brain runs, so the learning can happen on the
-  device that carries the brain.
+- **Declared learning mechanisms.** The equilibrium candidates repair from
+  local relations and measured outcomes. Amen retains a separate record-patch
+  engine with the adjoint learning rule disclosed in its README; its results
+  do not certify the common brain's learning rule.
 
 ## The brain in Cadence
 
-Cadence builds one continuing brain. **System 1** is the default: an
+The intended application builds one continuing brain through `Brain.compose`.
+**System 1** is the default and may be deep and modular: an
 animal-like brain with perception, plastic connections, memory, action and
 private imagination. **System 2** is optional: observing regions add recursive
-feedback inside the same brain. Every brain is one settlement, in which patches
-repair their disagreement together.
+feedback inside the same brain. Its reciprocal patches settle together, using
+short-term context and durable acquired knowledge. The canonical
+[world-model guide](https://github.com/muellerberndt/cadence/blob/main/docs/world-model.md)
+specifies the operating model for new applications.
+
+Bootstrap should acquire reusable regularities of the task's world. Normal
+behavior continues from useful retained state and reads that knowledge. A
+witnessed mismatch or failure can admit local repair, attached to the actual
+observation or executed action. Declare what each memory writes, retains,
+reads and clears, and preserve correction identity across delay, retry and
+save/load. A memory object that never affects behavior is insufficient.
+
+The goal is competent repeated behavior with low recurring work after
+acquisition. Test it against cold-reset and independent-input controls, memory
+interventions, novel events and an explicit repair schedule control. Account
+for initial acquisition, memory, sensing, all solves, replay and refused work.
+Neither a small residual nor a demo's `pass` or `WIN` label proves correct
+behavior, low physical energy or a performance advantage.
 
 Beside the main `Brain.compose` interface, the library keeps advanced engines
 such as record patches and the population solver, where populations of patches
@@ -41,21 +62,22 @@ settle one joint energy and observers read prediction errors.
 
 ## How a Cadence brain differs from a feed-forward network
 
-A feed-forward deep network computes its answer in one pass from input to
-output. Every layer is evaluated once and nothing travels back while the answer
-forms. It is trained by backpropagation, which sends an error measured at the
-output backwards through every layer.
+A conventional independent-input MLP control computes its answer in one pass
+and uses a separate supervised update. Such a control is useful for comparison;
+the ongoing state, memory and repair contract must be tested separately.
 
 A Cadence brain reaches its answer by settling. Its patches are connected in
 both directions. Each patch repairs its own disagreement with the patches it
 reads, and the repairs repeat until the whole brain agrees within a tolerance.
-That equilibrium is the answer: a consensus among local patches, reached through
-local repair alone.
+That equilibrium supplies the candidate answer. Agreement with the equations
+does not establish agreement with the world; behavior must be checked against
+what actually happens.
 
-Learning is the same process. A measured outcome disturbs the equilibrium, the
-patches repair the new disagreement, and the connections change so that the
-brain settles into a new equilibrium when the situation returns. No error is
-sent backwards through a stack of layers.
+When observed evidence calls for learning, the declared local rule repairs the
+relevant relations so that later free behavior can improve. Continuing state
+and acquired knowledge should make familiar situations cheaper to handle.
+Whether that works is measured; replacing every independent classification
+update with an iterative solve does not establish this operating model.
 
 A Cadence brain can be deep. Depth adds populations or regions to the one
 settlement, and the learning stays local at every depth.
@@ -66,7 +88,7 @@ settlement, and the learning stays local at every depth.
 | Influence while answering | Input to output only | Both ways: patches read one another and settle together |
 | Learning | An output error sent backwards through every layer | An outcome disturbs the equilibrium, local repair settles a new one |
 | Depth | More layers in the forward and the backward pass | More patches in the same settlement |
-| Training and use | Separate phases | One running brain that acts and learns |
+| Lifetime in this comparison | Independent inputs and explicit supervised updates | Bootstrap, continuing settled behavior and witnessed local repair |
 
 Rover Lab and Patch World draw the patches and their prediction errors while
 they settle, and Atari Arcade shows the settled state behind every action. Amen
@@ -78,7 +100,7 @@ section below. The library README has
 
 | Demo | What it shows | Runs on |
 | --- | --- | --- |
-| [Rover Lab](rover-lab/) | A live model that adapts when its body changes, with no difference between training and inference | The population solver; in the browser, a JavaScript version of it |
+| [Rover Lab](rover-lab/) | A live body model that adapts from measured motion after a motor bootstrap | The population solver; in the browser, a JavaScript version of it |
 | [Patch World](patch-world/) | Brains that learn in the browser and evolve across generations | A JavaScript version of the population solver |
 | [Atari Arcade](atari-arcade/) | Brains that learn Atari games from pixels: a teacher first, then reward | `Brain.compose` (System 1); in the browser, a JavaScript version of it |
 | [Amen](amen/) | A record patch composing jungle tracks in the browser | A brain trained with `RecordPatchNet`; the page runs a JavaScript version of its forward pass |

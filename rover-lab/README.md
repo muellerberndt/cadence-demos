@@ -5,13 +5,30 @@ motion. The browser shows its path beside frozen Cadence, an adaptive dynamics
 estimator and a small neural baseline. Weaken the right wheel, watch the
 consequence predictions change, then restore the body and test the learned state.
 
+This is a bounded example of an acquired world model: learned relations predict
+the consequences of wheel commands. The current demo teaches from each executed
+transition and uses an application controller; it does not implement or prove
+the complete continuing `Brain.compose` memory/repair protocol. For new work,
+follow the [world-model guide](https://github.com/muellerberndt/cadence/blob/main/docs/world-model.md):
+bootstrap reusable knowledge, retain relevant context, read durable knowledge
+for normal settled behavior, and admit local repair from identified witnessed
+mismatches or failures. Deep System 1 is the foundation; observers are optional.
+
+Future comparisons must separate ordinary continuation from repair cost and
+test memory writes, reads and retention. Bind each correction to its executed
+command and measured consequence across delay and save/load. Compare continuing
+and reset controls and preserve the existing adaptive and neural baselines.
+Lower recurring work is a target, not an inference from a low solver residual
+or a passed demonstration gate. The protocols and results below retain their
+recorded implementation identity.
+
 ## What it demonstrates
 
 - **A live model that adapts.** The rover's brain keeps learning from every
   executed command and its measured motion. When the wheel weakens, its
   forecasts follow the new body within a few seconds of driving. The frozen copy beside it
   shows what happens without that.
-- **No difference between training and inference.** There is no mode switch.
+- **One life through bootstrap and adaptation.** There is no mode switch.
   The short motor curriculum at the start and the whole life afterwards use the
   same call, `brain.observe`, on the same brain. Forecasting and learning
   alternate every step.
@@ -34,7 +51,8 @@ consequence predictions change, then restore the body and test the learned state
 
 ## How it is built
 
-The whole Cadence part is in [models.py](models.py). The brain is declared once:
+The whole Cadence part is in [models.py](models.py). This retained population
+solver example declares the brain once:
 
 ```python
 from cadence.experimental.equilibrium import Cortex
@@ -96,8 +114,10 @@ improves adaptation enough to pay for that cost.
 
 Cadence 0.70.0 refuses to build a layout whose patches only read sensors, and
 `test_rover.py` checks that refusal. Cadence's
-main `Brain.compose` interface chooses discrete actions from reward. This lab
-learns a continuous body model, which is the population solver's job. See the
+main public entry for new integrated brains is `Brain.compose`. This lab's
+continuous body model uses the separate population solver and keeps its own
+equations and evidence; this choice does not limit the intended common brain
+to discrete reward policies. See the
 [brain guide](https://github.com/muellerberndt/cadence/blob/v0.70.0/docs/brain.md)
 and the [population solver guide](https://github.com/muellerberndt/cadence/blob/v0.70.0/docs/equilibrium/README.md).
 

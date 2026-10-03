@@ -9,6 +9,23 @@ beside the settled brain: the retina, the association cortex and its working
 trace, the motor cortex with one neuron per action, the value the critic
 expects, and the score of every life with a skill badge from noob to legend.
 
+This is a bounded teacher/reward demo. Its per-screen lessons are a bootstrap
+control, not the general Cadence operating recipe. New work follows the
+[world-model guide](https://github.com/muellerberndt/cadence/blob/main/docs/world-model.md):
+acquire reusable relationships between perceptions, actions and consequences,
+retain context and durable knowledge, and continue normal settled behavior.
+Witnessed mismatches or failures may admit local repair tied to the actual
+event. Deep System 1 is the foundation, with recursive System 2 optional.
+
+The trace and associative store used here are specific mechanisms whose
+participation must be measured; their presence alone does not establish an
+acquired general world model. For a future candidate, specify memory write/read
+ports, episode/reset boundaries and delayed correction identity. Never credit
+the brain for an unexecuted proposed action. Compare continuing state with
+reset and memory interventions and separate familiar-action cost from learning
+and refusal costs. Low recurring work is the target; the scores, settlement
+residuals and badges below do not guarantee it.
+
 ## What it demonstrates
 
 - **Learning from pixels.** The brain's only input is the screen: 7,056
@@ -18,7 +35,7 @@ expects, and the score of every life with a skill badge from noob to legend.
   screen is one lesson with the teacher's action as its label. After the
   takeover the only teaching signal is the game's reward for the actions the
   brain itself took.
-- **No difference between training and inference.** There is no mode switch.
+- **A continuing brain through teacher and reward phases.** There is no model swap.
   The same brain answers and learns on every screen, before and after the
   takeover. After the takeover every decision is one call, `brain.step`.
 - **A brain that takes its time beside a body that does not.** The game runs
@@ -44,7 +61,9 @@ expects, and the score of every life with a skill badge from noob to legend.
 
 ## How it is built
 
-The whole Cadence part is in [server.py](server.py). The brain is composed once:
+The whole Cadence part is in [server.py](server.py). The following is this
+demo's recorded teacher/reward configuration, not a prescription to reduce
+new applications to independent screen classification. The brain is composed once:
 
 ```python
 from cadence import ActorCriticConfig, Brain, LearnerConfig
