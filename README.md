@@ -106,11 +106,13 @@ section below. The library README has
 | [Atari Arcade](atari-arcade/) | Brains that learn Atari games from pixels: a teacher first, then reward | `Brain.compose` (System 1); in the browser, a JavaScript version of it |
 | [Amen](amen/) | A record patch composing jungle tracks in the browser | A brain trained with `RecordPatchNet`; the page runs a JavaScript version of its forward pass |
 | [Eyes](eyes/) | One brain that follows every shape you drag with its own eye, from the page's pixels only | A hand-wired connectome run by `cadence.Brain`; in the browser, the released library itself, in Pyodide |
+| [Key door](keydoor/) | One continuing creature, fed and calm, that starves, rouses and searches when you move its key, and settles again | `Brain.compose` through `Brain.live`; in the browser, the released library itself, in Pyodide |
 
 Rover Lab and Patch World run on the population solver, Atari Arcade on
-`Brain.compose`, Amen on a record patch, and Eyes on a hand-wired connectome
-run by `cadence.Brain`. Each demo's README names the Cadence version it was
-built with.
+`Brain.compose`, Amen on a record patch, Eyes on a hand-wired connectome
+run by `cadence.Brain`, and Key door on `Brain.compose` through `Brain.live`, the
+routine-and-repair loop of one continuing life. Each demo's README names the
+Cadence version it was built with.
 
 ## [Rover Lab](rover-lab/): a body model that keeps learning
 

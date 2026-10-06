@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cadence Key Door</title>
+<link rel="stylesheet" href="keydoor.css">
+</head>
+<body>
+<header>
+  <div>
+    <h1>Cadence key door</h1>
+    <p class="about" id="about">One continuing Cadence creature walks a corridor in this page: floor, a
+      chest, a lamp, a few levers, a door. The key is in the chest; the door pays when it is
+      opened with the key, and touching anything without one costs. The creature was raised through
+      500 trips and arrives mid-life, fed and calm: it answers from one settle and learns nothing.
+      Move the key to the lamp and watch it starve, rouse, search at a cost, and settle again. The
+      brain learns here, in your browser.</p>
+  </div>
+  <div class="loading" id="loading">starting</div>
+</header>
+<main>
+  <section class="left">
+    <div class="toolbar">
+      <span class="group">
+        <button id="movekey" class="big" title="move the key between the chest and the lamp; the creature is not told">Move the key</button>
+        <button id="cut" title="end this trip before the door: the key is lost and the forecast carries over">Cut this trip</button>
+      </span>
+      <span class="group">
+        <button id="pause">Pause</button>
+        <button id="ff" title="live 25 trips without drawing them">Fast forward 25 trips</button>
+        <label>moments per second <input type="range" id="rate" min="1" max="30" value="8"><span id="ratev">8</span></label>
+      </span>
+      <span class="group">
+        <button id="save" title="save the brain as it is, with the outcome it awaits">Save</button>
+        <button id="restore" disabled title="return the brain to the saved moment; the world goes on">Restore</button>
+      </span>
+      <span class="group">
+        <button id="raised" title="the shipped creature, raised through rule A">Raised creature</button>
+        <button id="newborn" title="a newborn brain at the same point: watch it acquire the task from nothing">Newborn</button>
+        <select id="delay" title="levers between the lamp and the door for a newborn"><option value="2">delay 2</option><option value="5" selected>delay 5</option><option value="10">delay 10</option></select>
+      </span>
+    </div>
+    <canvas id="corridor" aria-label="the corridor and the creature"></canvas>
+    <div class="status">
+      <span class="pill" id="mode">loading</span>
+      <span><span class="k">trip</span> <b id="trip">-</b></span>
+      <span><span class="k">fed, last 20 trips</span> <b id="fed">-</b></span>
+      <span><span class="k">wrong per trip</span> <b id="wrong">-</b></span>
+      <span><span class="k">sweeps</span> <b id="sweeps">-</b></span>
+      <span><span class="k">brain</span> <b id="ms">-</b> ms</span>
+      <span><span class="k">key in the</span> <b id="keyed">chest</b></span>
+    </div>
+    <canvas id="strip" aria-label="per trip: fed, wrong interactions, share of aroused moments"></canvas>
+    <canvas id="policy" aria-label="probability of interacting per cell, with and without the key"></canvas>
+    <p class="hint">Green dots are fed trips, red bars wrong interactions, the orange line the share of
+      aroused moments per trip; the band at the top shows where the key is. The lower chart is the
+      probability that the creature interacts at each kind of cell, over its last 300 moments: solid
+      with the key in its pouch, hollow without; the thin marks are its base policy, the bars what it
+      did under its arousal.</p>
+  </section>
+  <section class="right">
+    <div id="brainname"></div>
+    <div class="gauges">
+      <div class="gauge"><span class="k">want</span><b id="want">-</b><div class="bar want"><i id="wantbar"></i></div></div>
+      <div class="gauge"><span class="k">arousal level</span><b id="level">-</b><div class="bar"><i id="levelbar"></i></div></div>
+      <div class="gauge"><span class="k">heat</span><b id="heat">-</b><div class="bar"><i id="heatbar"></i></div></div>
+    </div>
+    <table class="ledger" id="ledger"></table>
+    <div id="log" aria-label="events"></div>
+    <p class="legend">Routine: a calm creature answers with the greedy choice of one qualified settle
+      and changes nothing. Aroused: a want (its need unmet) or a surprise (a contradicted forecast)
+      makes it sample, keep eligibility, learn from every outcome and write memory. The need, the
+      threshold, the heat and every other constant of that law are genes; this page runs the
+      founders with the chamber's need of 0.03 reward per moment.</p>
+  </section>
+</main>
+<script type="module" src="keydoor.js"></script>
+</body>
+</html>
