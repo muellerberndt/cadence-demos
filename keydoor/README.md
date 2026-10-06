@@ -78,3 +78,8 @@ constants, the same operating point and need as the frozen protocol.
   the check's own run; a visitor's run has its own chance.
 - Pyodide's numpy is 32-bit; the host applies the same `np.repeat` shim as the Eyes demo. The
   brain is otherwise the released library, unmodified.
+- The corridor's sequence and its chance (the levers' number, the cut trips, the door's pay)
+  are drawn from the pack's seed, so every page load meets the same trips; the brain's
+  sampling is its own. The shipped creature, in the page's check, missed one trip after the
+  key moved, was roused for 16% of the next ten trips' moments, touched six cells wrongly,
+  and was fed on 8 of those 9 trips: it tried the lamp as soon as the chest was empty.
