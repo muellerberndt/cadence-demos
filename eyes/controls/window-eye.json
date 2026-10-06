@@ -1,0 +1,22 @@
+{
+ "cadence": "0.74.0",
+ "run": "visual4-wide-s2",
+ "phase": "live",
+ "window": 26,
+ "bins": 13,
+ "tolerance": 0.03,
+ "raised_tolerance": 0.003,
+ "neurons": 1355,
+ "synapses": 29600,
+ "trained_shapes": [
+  "disc",
+  "ring",
+  "square",
+  "frame",
+  "triangle",
+  "diamond",
+  "cross",
+  "bar"
+ ],
+ "what": "The window eye: a 26x26 window at full resolution, 13 bins of 2 px, V1 4x5/2, raised on eight shapes (faces held out); the control for the foveated eye."
+}

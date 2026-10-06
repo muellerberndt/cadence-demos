@@ -91,7 +91,8 @@ settlement, and the learning stays local at every depth.
 | Lifetime in this comparison | Independent inputs and explicit supervised updates | Bootstrap, continuing settled behavior and witnessed local repair |
 
 Rover Lab and Patch World draw the patches and their prediction errors while
-they settle, and Atari Arcade shows the settled state behind every action. Amen
+they settle, Atari Arcade shows the settled state behind every action, and Eyes
+shows the whole brain settling for one eye's stream. Amen
 runs a record patch, an advanced engine whose learning rule is stated in its
 section below. The library README has
 [the full comparison](https://github.com/muellerberndt/cadence#how-a-cadence-brain-differs-from-a-feed-forward-network).
@@ -104,10 +105,12 @@ section below. The library README has
 | [Patch World](patch-world/) | Brains that learn in the browser and evolve across generations | A JavaScript version of the population solver |
 | [Atari Arcade](atari-arcade/) | Brains that learn Atari games from pixels: a teacher first, then reward | `Brain.compose` (System 1); in the browser, a JavaScript version of it |
 | [Amen](amen/) | A record patch composing jungle tracks in the browser | A brain trained with `RecordPatchNet`; the page runs a JavaScript version of its forward pass |
+| [Eyes](eyes/) | One brain that follows every shape you drag with its own eye, from the page's pixels only | A hand-wired connectome run by `cadence.Brain`; in the browser, the released library itself, in Pyodide |
 
 Rover Lab and Patch World run on the population solver, Atari Arcade on
-`Brain.compose`, and Amen on a record patch. Each demo's README names the
-Cadence version it was built with.
+`Brain.compose`, Amen on a record patch, and Eyes on a hand-wired connectome
+run by `cadence.Brain`. Each demo's README names the Cadence version it was
+built with.
 
 ## [Rover Lab](rover-lab/): a body model that keeps learning
 
@@ -178,3 +181,18 @@ python -m http.server -d amen/web 8803   # open http://localhost:8803 and press 
 ```
 
 See the [Amen README](amen/README.md).
+
+## [Eyes](eyes/): one brain, an eye on every shape
+
+Shapes on a large surface, each followed by its own eye, by one Cadence brain
+that runs in the browser tab and sees only the page's pixels. Each eye sees
+sharply at its centre and coarsely around it, and sees what changed since the
+last frame, so when you drag a shape away one saccade can bring it back. When
+nothing moves, the brain settles nothing. The brain was raised offline and runs
+frozen in the page, on the released Cadence wheel in Pyodide.
+
+```sh
+python -m http.server -d eyes/web 8797   # open http://localhost:8797/
+```
+
+See the [Eyes README](eyes/README.md).

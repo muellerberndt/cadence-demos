@@ -1,0 +1,66 @@
+{
+ "schema": "cadence-eyes-pack/1",
+ "created": "2026-10-05",
+ "pyodide": "314.0.7",
+ "cadence": "0.74.0",
+ "wheel": "cadence_net-0.74.0-py3-none-any.whl",
+ "wheel_sha256": "146333a017048450580bdb8557e647b943092bc917ee6308770bc9586b74f766",
+ "sources": [
+  "__init__.py",
+  "world.py",
+  "shapes.py",
+  "life.py",
+  "eyes.py",
+  "fovea.py",
+  "eye_host.py"
+ ],
+ "sources_sha256": {
+  "__init__.py": "9bbbd7d7287fc60f6b4a3d11569e308e1486733fbf18a8b3d3aa33dcad3757d9",
+  "world.py": "c64e2fccde70e02c2b45d73ab0ca773041b2b6b6bf5d0f460c54e6a361df78eb",
+  "shapes.py": "a1c7f61b01e9d1adb84279aace4f9c09c71ad972125fc84aed5e3b941af61a3a",
+  "life.py": "327f8a1a313019b78ec4329e92ade2dc14b5ad24317dcfa1901f8b3d4d0cd79e",
+  "eyes.py": "f7e530cb3103dafc623f03d9bfa5721ae0507ec6e0ebfdc828d1c4877fd65e79",
+  "fovea.py": "a39a0a137b3fa543962ebd58056445e1be4dc75295441f0cb7e35de6fb431d46",
+  "eye_host.py": "e7e5132f2febb8e88897a630ccb0431491a934e70a120987a96a063406fefa27"
+ },
+ "brain": "brain.npz",
+ "brain_sha256": "ae8954dfccacfe795add55867ef9e5ba18fa2c9c656856d15fae485729afc13b",
+ "atlas": "atlas.json",
+ "run": "v1x8-s1",
+ "phase": "bootstrap",
+ "eye": "fovea",
+ "window": 0,
+ "bins": 13,
+ "fovea": {
+  "receptors": 25,
+  "inner": 6,
+  "reach": 40.0,
+  "bins": 13,
+  "change_gain": 1.0
+ },
+ "width": 160,
+ "height": 100,
+ "tolerance": 0.03,
+ "raised_tolerance": 0.003,
+ "neurons": 2413,
+ "synapses": 74612,
+ "trained_shapes": [
+  "disc",
+  "ring",
+  "square",
+  "frame",
+  "triangle",
+  "diamond",
+  "cross",
+  "bar",
+  "face"
+ ],
+ "glance": {
+  "trials": 300,
+  "hit": 0.8333,
+  "exact": 0.4067,
+  "err_px_median": 2.17,
+  "centre": 0.3733,
+  "random": 0.07
+ }
+}

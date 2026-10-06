@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cadence Eyes</title>
+<link rel="stylesheet" href="eyes.css">
+</head>
+<body>
+<header>
+  <div>
+    <h1>Cadence eyes</h1>
+    <p class="about" id="about">One Cadence brain runs in this page and follows every tracked shape.
+      Each tracked shape has an eye on the pixels below. Every frame the brain answers, for each
+      eye, where its shape is, and the eye jumps there. The pixels are all the brain gets. While
+      nothing moves it stays in equilibrium and does no settling at all.</p>
+  </div>
+  <div class="loading" id="loading">starting</div>
+</header>
+<main>
+  <section class="left">
+    <div class="toolbar">
+      <span class="group" id="palette" aria-label="add a shape"></span>
+      <span class="group">
+        <button data-preset="three">Three</button>
+        <button data-preset="six">Six</button>
+        <button data-preset="crowd">Crowd</button>
+        <button data-preset="unseen" title="shapes the brain never saw while learning">Unseen</button>
+        <button id="clear">Clear</button>
+      </span>
+    </div>
+    <div class="surface-wrap"><canvas id="surface" tabindex="0" aria-label="the pixels the brain sees; drag the shapes"></canvas></div>
+    <div class="status">
+      <span class="pill" id="state">loading</span>
+      <span><span class="k">sweeps</span> <b id="sweeps">-</b></span>
+      <span><span class="k">brain</span> <b id="ms">-</b> ms</span>
+      <span><span class="k">frames</span> <b id="fps">-</b>/s</span>
+      <span><span class="k">eyes on their shape</span> <b id="own">-</b></span>
+    </div>
+    <canvas id="strip" width="900" height="70" aria-label="settling sweeps per frame"></canvas>
+    <div class="controls">
+      <label title="shapes freeze, walk and dart on their own; a shape you hold waits"><input type="checkbox" id="animate" checked> shapes move on their own</label>
+      <label><input type="checkbox" id="windows" checked> show the eyes' windows</label>
+      <label><input type="checkbox" id="pause"> pause</label>
+      <label>frames per second <input type="range" id="rate" min="2" max="40" value="30"><span id="ratev">30</span></label>
+    </div>
+    <p class="hint">Drag shapes with the mouse. Double-click a shape to give it an eye or take
+      the eye away; right-click or Delete removes it. Click a shape with an eye to see that eye's
+      stream in the brain view. <span id="legend-eye">Coloured squares are the eyes' windows; the
+      small box is the eye's answer, solid on its own shape and dashed off it.</span></p>
+  </section>
+  <section class="right">
+    <div class="viewbar"><span id="brainname"></span><span id="streams"></span></div>
+    <div class="stage">
+      <canvas id="scan" aria-label="every neuron and synapse of the brain, live"></canvas>
+      <div id="labels"></div>
+      <div id="inspector">drag to rotate · scroll to zoom · hover a neuron</div>
+    </div>
+    <canvas id="montage" aria-label="activity of every module over the last frames"></canvas>
+    <div class="eyeviews" id="eyeviews"></div>
+    <p class="legend" id="legend"></p>
+  </section>
+</main>
+<script type="module" src="eyes.js"></script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+{
+ "argv": [
+  "--out",
+  "runs/fovea2/v1x8-s1",
+  "--bootstrap",
+  "20000",
+  "--live",
+  "3000",
+  "--live-eta",
+  "0.02",
+  "--seed",
+  "1",
+  "--stages",
+  "8x5/2"
+ ],
+ "fovea": {
+  "receptors": 25,
+  "inner": 6,
+  "reach": 40.0,
+  "bins": 13,
+  "surface": 128,
+  "kinds": [
+   "disc",
+   "ring",
+   "square",
+   "frame",
+   "triangle",
+   "diamond",
+   "cross",
+   "bar",
+   "face"
+  ],
+  "count": [
+   3,
+   12
+  ],
+  "sizes": [
+   6.0,
+   10.0
+  ],
+  "levels": [
+   0.4,
+   1.0
+  ],
+  "background": 0.1,
+  "texture": 0.03,
+  "change_gain": 1.0,
+  "placement": [
+   0.2,
+   0.3
+  ],
+  "near": 3.0,
+  "mid": 12.0,
+  "far": 34.0,
+  "scene_ticks": [
+   10,
+   30
+  ],
+  "stay": 0.3,
+  "step": 0.7,
+  "dart": 0.06,
+  "own_dart": 0.1,
+  "dart_px": [
+   8.0,
+   34.0
+  ],
+  "slip": 0.3
+ },
+ "anatomy": {
+  "size": 25,
+  "bins": 13,
+  "channels": 2,
+  "stages": [
+   {
+    "features": 8,
+    "field": 5,
+    "stride": 2
+   }
+  ],
+  "kernels": "tied",
+  "sheet": 13,
+  "hidden": 64,
+  "sheet_input": "topographic",
+  "reach": 1.5,
+  "lateral": null,
+  "memory": null,
+  "memory_scale": 12.0,
+  "memory_sigma": 1.0,
+  "readout": "topographic",
+  "readout_weight": 0.5,
+  "motor_lateral": null,
+  "init": 1.0,
+  "density": 1.0,
+  "tie_rate": "sum",
+  "trace": null,
+  "learning": {
+   "eta": 0.1,
+   "eta_bias": 0.01,
+   "momentum": 0.0,
+   "beta": 0.1,
+   "temperature": 0.2,
+   "free_steps": 1024,
+   "decay": 0.0,
+   "nudge": "quadratic",
+   "nudged_steps": 12,
+   "tolerance": 0.003,
+   "normalize": 0.0
+  },
+  "neurons": 2413,
+  "synapses": 74612,
+  "populations": {
+   "visual/input": 1250,
+   "visual/v1": 968,
+   "association": 169,
+   "motor": 26,
+   "visual": 2218
+  }
+ },
+ "cadence": "0.74.0",
+ "numpy": "2.4.6",
+ "python": "3.11.16"
+}

@@ -1,0 +1,402 @@
+{
+  "phases": {
+    "bootstrap": {
+      "ticks": 20000,
+      "refused": 0,
+      "hit": 0.8627,
+      "exact": 0.5986,
+      "by_event": {
+        "step": {
+          "ticks": 11344,
+          "hit": 0.978,
+          "exact": 0.7802,
+          "sweeps": 48.95,
+          "zero_sweep_share": 0.0002
+        },
+        "jump": {
+          "ticks": 996,
+          "hit": 0.7068,
+          "exact": 0.3414,
+          "sweeps": 77.27,
+          "zero_sweep_share": 0.0
+        }
+      },
+      "after_jump": {
+        "0": 0.7068,
+        "1": 0.8685,
+        "2": 0.8583,
+        "3": 0.8673
+      },
+      "sweeps": 61.59,
+      "lessons": 20000,
+      "lesson_sweeps": 9.23,
+      "lesson_exhausted": 0,
+      "ms": 28.04,
+      "baselines": {
+        "random": {
+          "hit": 0.05375,
+          "exact": 0.0061
+        },
+        "centre": {
+          "hit": 0.6373,
+          "exact": 0.4194
+        },
+        "persistence": {
+          "hit": 0.48955,
+          "exact": 0.23465
+        }
+      },
+      "seconds": 631.9,
+      "world": {
+        "scenes": 996,
+        "lost": 0,
+        "darts": 2975
+      }
+    },
+    "live": {
+      "ticks": 3000,
+      "refused": 0,
+      "hit": 0.4807,
+      "exact": 0.319,
+      "by_event": {
+        "step": {
+          "ticks": 2274,
+          "hit": 0.493,
+          "exact": 0.3417,
+          "sweeps": 40.8,
+          "zero_sweep_share": 0.0026
+        },
+        "jump": {
+          "ticks": 148,
+          "hit": 0.4459,
+          "exact": 0.277,
+          "sweeps": 45.41,
+          "zero_sweep_share": 0.0
+        }
+      },
+      "after_jump": {
+        "0": 0.4459,
+        "1": 0.4189,
+        "2": 0.4662,
+        "3": 0.4189
+      },
+      "sweeps": 41.51,
+      "lessons": 1558,
+      "lesson_sweeps": 14.97,
+      "lesson_exhausted": 0,
+      "ms": 18.1,
+      "baselines": {
+        "random": {
+          "hit": 0.05533333333333333,
+          "exact": 0.006
+        },
+        "centre": {
+          "hit": 0.37433333333333335,
+          "exact": 0.212
+        },
+        "persistence": {
+          "hit": 0.407,
+          "exact": 0.23633333333333334
+        }
+      },
+      "seconds": 65.2,
+      "world": {
+        "scenes": 1144,
+        "lost": 126,
+        "darts": 3454
+      }
+    }
+  },
+  "assays": {
+    "bootstrap": {
+      "glance": {
+        "trials": 300,
+        "all": {
+          "trials": 300,
+          "hit": 0.8333,
+          "exact": 0.4067,
+          "err_px_median": 2.17,
+          "centre": 0.3733,
+          "random": 0.07
+        },
+        "near": {
+          "trials": 100,
+          "hit": 1.0,
+          "exact": 0.55,
+          "err_px_median": 1.38,
+          "centre": 1.0,
+          "random": 0.04
+        },
+        "mid": {
+          "trials": 100,
+          "hit": 0.85,
+          "exact": 0.37,
+          "err_px_median": 2.23,
+          "centre": 0.07,
+          "random": 0.07
+        },
+        "far": {
+          "trials": 100,
+          "hit": 0.65,
+          "exact": 0.3,
+          "err_px_median": 6.16,
+          "centre": 0.05,
+          "random": 0.1
+        },
+        "by_kind": {
+          "bar": 0.8214,
+          "cross": 0.7188,
+          "diamond": 0.7576,
+          "disc": 0.9512,
+          "face": 0.9062,
+          "frame": 0.7907,
+          "ring": 0.7692,
+          "square": 0.875,
+          "triangle": 0.9286
+        },
+        "still_zero_share": 1.0
+      },
+      "glance_unseen": {
+        "trials": 300,
+        "all": {
+          "trials": 300,
+          "hit": 0.78,
+          "exact": 0.33,
+          "err_px_median": 2.62,
+          "centre": 0.3767,
+          "random": 0.0533
+        },
+        "near": {
+          "trials": 100,
+          "hit": 0.92,
+          "exact": 0.46,
+          "err_px_median": 1.55,
+          "centre": 1.0,
+          "random": 0.06
+        },
+        "mid": {
+          "trials": 100,
+          "hit": 0.81,
+          "exact": 0.24,
+          "err_px_median": 2.81,
+          "centre": 0.12,
+          "random": 0.04
+        },
+        "far": {
+          "trials": 100,
+          "hit": 0.61,
+          "exact": 0.29,
+          "err_px_median": 4.5,
+          "centre": 0.01,
+          "random": 0.06
+        },
+        "by_kind": {
+          "ell": 0.7158,
+          "star": 0.8454,
+          "tee": 0.7778
+        },
+        "still_zero_share": 1.0
+      },
+      "dart": {
+        "10.0": {
+          "1": 0.8167,
+          "2": 0.95,
+          "3": 0.95
+        },
+        "20.0": {
+          "1": 0.0833,
+          "2": 0.3167,
+          "3": 0.55
+        },
+        "30.0": {
+          "1": 0.0,
+          "2": 0.1667,
+          "3": 0.3167
+        }
+      },
+      "dart_distractor": {
+        "10.0": {
+          "1": 1.0,
+          "2": 1.0,
+          "3": 1.0
+        },
+        "20.0": {
+          "1": 1.0,
+          "2": 1.0,
+          "3": 1.0
+        },
+        "30.0": {
+          "1": 1.0,
+          "2": 1.0,
+          "3": 1.0
+        }
+      },
+      "scene": {
+        "4": {
+          "objects": 4,
+          "frames": 600,
+          "on_own_shape": 0.67,
+          "hit": 0.6721,
+          "in_reach": 0.99,
+          "losses_per_eye_minute": 3.5,
+          "sweeps_mean": 44.69
+        },
+        "8": {
+          "objects": 8,
+          "frames": 600,
+          "on_own_shape": 0.7954,
+          "hit": 0.8006,
+          "in_reach": 1.0,
+          "losses_per_eye_minute": 7.75,
+          "sweeps_mean": 60.59
+        }
+      },
+      "seconds": 78.2
+    },
+    "live": {
+      "glance": {
+        "trials": 300,
+        "all": {
+          "trials": 300,
+          "hit": 0.6033,
+          "exact": 0.33,
+          "err_px_median": 3.21,
+          "centre": 0.3733,
+          "random": 0.07
+        },
+        "near": {
+          "trials": 100,
+          "hit": 0.66,
+          "exact": 0.35,
+          "err_px_median": 1.94,
+          "centre": 1.0,
+          "random": 0.04
+        },
+        "mid": {
+          "trials": 100,
+          "hit": 0.63,
+          "exact": 0.35,
+          "err_px_median": 3.11,
+          "centre": 0.07,
+          "random": 0.07
+        },
+        "far": {
+          "trials": 100,
+          "hit": 0.52,
+          "exact": 0.29,
+          "err_px_median": 9.8,
+          "centre": 0.05,
+          "random": 0.1
+        },
+        "by_kind": {
+          "bar": 0.6429,
+          "cross": 0.5938,
+          "diamond": 0.4242,
+          "disc": 0.8049,
+          "face": 0.75,
+          "frame": 0.4884,
+          "ring": 0.4359,
+          "square": 0.6667,
+          "triangle": 0.6786
+        },
+        "still_zero_share": 1.0
+      },
+      "glance_unseen": {
+        "trials": 300,
+        "all": {
+          "trials": 300,
+          "hit": 0.53,
+          "exact": 0.2033,
+          "err_px_median": 4.88,
+          "centre": 0.3767,
+          "random": 0.0533
+        },
+        "near": {
+          "trials": 100,
+          "hit": 0.59,
+          "exact": 0.26,
+          "err_px_median": 2.62,
+          "centre": 1.0,
+          "random": 0.06
+        },
+        "mid": {
+          "trials": 100,
+          "hit": 0.55,
+          "exact": 0.19,
+          "err_px_median": 4.18,
+          "centre": 0.12,
+          "random": 0.04
+        },
+        "far": {
+          "trials": 100,
+          "hit": 0.45,
+          "exact": 0.16,
+          "err_px_median": 11.43,
+          "centre": 0.01,
+          "random": 0.06
+        },
+        "by_kind": {
+          "ell": 0.4947,
+          "star": 0.5361,
+          "tee": 0.5556
+        },
+        "still_zero_share": 1.0
+      },
+      "dart": {
+        "10.0": {
+          "1": 0.6333,
+          "2": 0.65,
+          "3": 0.6333
+        },
+        "20.0": {
+          "1": 0.05,
+          "2": 0.5333,
+          "3": 0.5667
+        },
+        "30.0": {
+          "1": 0.0167,
+          "2": 0.2667,
+          "3": 0.35
+        }
+      },
+      "dart_distractor": {
+        "10.0": {
+          "1": 0.7667,
+          "2": 0.8167,
+          "3": 0.7667
+        },
+        "20.0": {
+          "1": 0.8333,
+          "2": 0.8667,
+          "3": 0.85
+        },
+        "30.0": {
+          "1": 0.7667,
+          "2": 0.7833,
+          "3": 0.7667
+        }
+      },
+      "scene": {
+        "4": {
+          "objects": 4,
+          "frames": 600,
+          "on_own_shape": 0.4667,
+          "hit": 0.4746,
+          "in_reach": 0.9921,
+          "losses_per_eye_minute": 21.0,
+          "sweeps_mean": 34.13
+        },
+        "8": {
+          "objects": 8,
+          "frames": 600,
+          "on_own_shape": 0.3327,
+          "hit": 0.3402,
+          "in_reach": 0.7712,
+          "losses_per_eye_minute": 20.75,
+          "sweeps_mean": 42.99
+        }
+      },
+      "seconds": 62.2
+    }
+  }
+}
