@@ -50,7 +50,7 @@ function fish1Tables(frag, probe) {
       ["share of a cell's outputs that land on a proofread cell", pct(probe.outputs_onto_proofread)],
       ["share that land on any cell with a cell body", pct(probe.outputs_onto_soma_cells)],
     ]));
-    parts.push(el("p", { class: "note" }, "data/fish1_probe.json, the compiler's receipts/fish1_proofread_probe.json."));
+    parts.push(el("p", { class: "note" }, "data/fish1_probe.json."));
   }
   return parts;
 }

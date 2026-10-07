@@ -53,7 +53,7 @@ try {
   }
   $("appendix-title").textContent = EXPLAIN.appendix.title;
   $("appendix").replaceChildren(...EXPLAIN.appendix.items.map(([href, text]) => el("a", { href: `./${href}` }, text)));
-  shell.card([`<b>Sources.</b> <a href="https://doi.org/10.1038/s41593-024-01784-3">Vishwanathan et al. 2024</a>; the <a href="https://github.com/muellerberndt/cadence-connectome-compiler">connectome compiler</a>; <a href="https://github.com/muellerberndt/cadence">Cadence</a>.`]);
+  shell.card([`<b>Sources.</b> <a href="https://doi.org/10.1038/s41593-024-01784-3">Vishwanathan et al. 2024</a>; the connectome compiler, whose receipts ship with this site; <a href="https://github.com/muellerberndt/cadence">Cadence</a>.`]);
 } catch (e) {
   app.errors.push(String(e.message || e));
   shell.status(`could not load the receipts: ${e.message || e}`);

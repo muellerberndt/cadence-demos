@@ -201,9 +201,8 @@ See the [Eyes README](eyes/README.md).
 ## [Connectome](connectome/): compiled biological wiring, in the browser
 
 A connectome is a wiring diagram measured in an animal: every cell, every synapse,
-how many contacts each connection carries. The
-[connectome compiler](https://github.com/muellerberndt/cadence-connectome-compiler)
-turns such a table into a Cadence rate patch net without changing a number in it:
+how many contacts each connection carries. A connectome compiler, not published
+itself, turns such a table into a Cadence rate patch net without changing a number in it:
 one patch per cell, one relation per recorded connection, the synapse count as the
 weight. Signs, gain, the neuron's response law, the senses and the body are declared,
 and the pages say so. The larva is the three-day Platynereis dumerilii of Verasztó
@@ -214,7 +213,9 @@ hindbrain (Vishwanathan et al. 2024) that holds its gaze after a saccade. The br
 view lights every cell by its activity and flashes it gold by the repair it made in
 its last step, so a stimulus shows as a wave of local repairs before the net rests.
 This demo has no learning: it is the compiled, frozen wiring, and its receipts
-report which circuit checks the measured wiring passes against shuffled controls.
+report which circuit checks the measured wiring passes against shuffled controls. The
+demo's README describes the compilation step by step, and every compiled net and receipt
+ships in its data folder.
 
 ```
 python -m http.server -d connectome/web 8800   # open http://localhost:8800/

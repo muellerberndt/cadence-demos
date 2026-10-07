@@ -1,8 +1,6 @@
 // Shared, receipt-backed evidence for the explanation and the live comparison.
 import { el, num, int, PAPERS, RECEIPT_URL } from "./site.js";
 
-export const PROTOCOL_URL = "https://github.com/muellerberndt/cadence-connectome-compiler/blob/67cf9b81ad88e1f454eae3c27e5dcfa1ef2d7a4b/src/connectome_compiler/verify/brainstem.py";
-const COMPILER = "https://github.com/muellerberndt/cadence-connectome-compiler";
 
 export function paperCards() {
   const descriptions = [
@@ -48,10 +46,10 @@ export function spikingEvidence(receipt) {
     el("p", {}, `Recipe: the 343-neuron oculomotor circuit; integrator drive; six 1-second LIF trials at ${sp.static_weight_mv} mV per synapse, averaging rates over the final 500 ms. Compare with 3,000 rate-model steps at drive level 0.3 and gain ${receipt.wirings.measured.selected_gain}. Cosine measures vector direction and Spearman measures rank; neither measures equality of rates in physical units.`),
     el("p", {}, "The live page uses one evolving trial and a 500 ms rolling window, with independently adjustable parameters. It is an illustration, not a replay of the stored experiment. Its rate payload rounds the gain to 0.3224; releasing a live burst also restores ordinary refractory behavior in previously driven cells."),
     el("p", { class: "evidence-links" }, el("a", { href: RECEIPT_URL }, "Download comparison receipt (JSON)"), " · ",
-      el("a", { href: PROTOCOL_URL }, "Inspect protocol source"), " · ",
-      el("a", { href: `${COMPILER}/blob/67cf9b81ad88e1f454eae3c27e5dcfa1ef2d7a4b/src/connectome_compiler/verify_lif.py` }, "Inspect spiking reference")),
+      el("a", { href: "./match.html" }, "Every predicate, result and exploratory disclosure"), " · ",
+      el("a", { href: "./why.html" }, "The spiking model live beside the patch net")),
     el("details", {}, el("summary", {}, "Provenance and reproduction limits"),
-      el("p", {}, "The historical receipt contains table, connectome and protocol digests. Its protocol-file digest differs from the current repository version, and the matching historical source was not located during this audit. The linked source is pinned for inspection; it is not asserted to match that historical digest. tests/evidence.mjs recomputes the stored correlations from the archived rate vector and a fresh rate-model run."),
+      el("p", {}, "The receipt carries the digests of the source tables, the compiled net and the protocol file, and the protocol's predicates, sources and exploratory history in its own facts and explored fields, which the match page shows in full. tests/evidence.mjs rebuilds the rate run at the receipt's exact gain and recomputes both stored correlations from its archived rate vector; it does not rerun the six spiking trials."),
       el("p", { class: "digest" }, `Recorded protocol SHA-256: ${receipt.protocol_digest}`)));
 }
 
@@ -61,6 +59,5 @@ export function chargeBalance() {
     el("pre", { class: "equation" }, "τₘ θ νᵢ = τₛ Σⱼ wᵢⱼ νⱼ − ūᵢ + O(1/T)"),
     el("p", {}, "For the preprint's bounded integrate-and-fire system with reset to zero, ν is firing rate over a window T, ū is mean membrane potential, θ is spike threshold, and τₘ and τₛ are membrane and synaptic time constants. External spike sources are included in the sum. The finite-window term comes from the endpoint potentials and currents."),
     el("p", {}, "Mean potential remains unknown. Refractory holds and discarded current add terms; both occur in the comparison model. Closing this balance with a valid stationary response curve is the extra step needed to derive rate equivalence. The demo's sigmoid has not been proved to be that curve."),
-    el("p", { class: "evidence-links" }, el("a", { href: PAPERS[0].url }, "Agreement and Surprise: “Charge balance” and “Rate law”"), " · ",
-      el("a", { href: "https://github.com/muellerberndt/everything-settles/blob/main/paper/sections/theorems.tex" }, "Read the theorem source")));
+    el("p", { class: "evidence-links" }, el("a", { href: PAPERS[0].url }, "Agreement and Surprise: “Charge balance” and “Rate law”")));
 }

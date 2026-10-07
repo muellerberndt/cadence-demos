@@ -1,0 +1,398 @@
+{
+ "package": "0.1.0.dev0",
+ "request": "Cadence Deep Review coupling factorial, 2026-10-07",
+ "measured_gain": 0.322445,
+ "facts": [
+  {
+   "id": "T1",
+   "role": "training",
+   "name": "persistence",
+   "source": "the integrator holds eye position for seconds after a saccadic burst (Vishwanathan et al. 2024, Nat Neurosci 27:2340 (doi 10.1038/s41593-024-01784-3), refs 15-20 therein)",
+   "predicate": "after a burst to every integrator neuron, the integrator's mean activity 600 steps on is at least a quarter of its value 200 steps on"
+  },
+  {
+   "id": "H1",
+   "role": "held-out",
+   "name": "graded",
+   "source": "position-encoding: persistent rates scale with eye position (Vishwanathan et al. 2024, Nat Neurosci 27:2340 (doi 10.1038/s41593-024-01784-3), Fig. 5)",
+   "predicate": "held levels for bursts 0.01, 0.03, 0.1 increase strictly; held(0.03)/held(0.1) in [0.2, 0.8]; held(0.01)/held(0.1) in [0.05, 0.5]"
+  },
+  {
+   "id": "H2",
+   "role": "held-out",
+   "name": "two slow modes",
+   "source": "two weakly coupled three-block cycles give two leading real eigenvalues; a shuffled module gives one plus a disk (Vishwanathan et al. 2024, Nat Neurosci 27:2340 (doi 10.1038/s41593-024-01784-3), Fig. 4)",
+   "predicate": "the compiled settlement operator's second-largest real eigenvalue is at least half its largest"
+  },
+  {
+   "id": "S1",
+   "role": "structural",
+   "name": "submodules read out to different abducens groups",
+   "source": "one submodule connects preferentially to ABD_M, the other to ABD_I (Vishwanathan et al. 2024, Nat Neurosci 27:2340 (doi 10.1038/s41593-024-01784-3), Fig. 3)",
+   "predicate": "synapses per target from submodule 1 are larger onto ABD_m than onto ABD_i, and from submodule 2 larger onto ABD_i than onto ABD_m (a fact about the wiring, not a settlement prediction; not counted)"
+  },
+  {
+   "id": "H4",
+   "role": "held-out",
+   "name": "vestibular push",
+   "source": "Ve2 neurons are inhibitory and carry primary vestibular input into the integrator (Vishwanathan et al. 2024, Nat Neurosci 27:2340 (doi 10.1038/s41593-024-01784-3), Methods)",
+   "predicate": "driving the Ve2 neurons at the burst level for 100 steps during a held state leaves the integrator's mean 200 steps later at most 0.9 of the undisturbed hold"
+  },
+  {
+   "id": "H5",
+   "role": "held-out",
+   "name": "concentration of sensitivity",
+   "source": "imaged eye-position sensitivities of 605 generic integrator cells: the top decile carries 0.36 of the total (slopesThresh_09102020.csv of goldman-lab/Connectome-Model)",
+   "predicate": "in the held state after a burst to every integrator neuron, the top decile of integrator neurons carries between 0.30 and 0.42 of the integrator's total activity"
+  },
+  {
+   "id": "H6",
+   "role": "held-out",
+   "name": "abducens participation",
+   "source": "imaged ABD cells have higher sensitivities than generic cells (median 7.8 against 5.1, same table)",
+   "predicate": "in the held state after a burst to every integrator neuron, the mean activity of ABD_m and of ABD_i each exceeds the integrator mean"
+  }
+ ],
+ "unit": {
+  "slope": 0.25,
+  "threshold": 0.0
+ },
+ "tables_digest": "bad4abb95a5beea1c5f9c345ef104f93be7f4c16d8d4fe58fea2ad710f6419c8",
+ "connectome_digest": "03a2fd634cb302d849f57f1197406eb8ef4ea2114f59f336c9b9780281fa433b",
+ "arms": {
+  "coupled": {
+   "synapse_classes": 6292,
+   "synapses": 12380.0,
+   "own_gain": 0.322445,
+   "rows_at_own_gain": {
+    "H1": true,
+    "H2": true,
+    "S1": true,
+    "H4": true,
+    "H5": true,
+    "H6": true
+   },
+   "passed_at_own_gain": 5,
+   "rows_at_measured_gain": {
+    "H1": true,
+    "H2": true,
+    "S1": true,
+    "H4": true,
+    "H5": true,
+    "H6": true
+   },
+   "passed_at_measured_gain": 5,
+   "training_at_measured_gain": {
+    "gain": 0.2,
+    "passed": false,
+    "runaway": false,
+    "int_200": 1.5165420109251298e-09,
+    "int_600": 0.0,
+    "active_600": 0.0
+   },
+   "offset_profile_at_measured_gain": {
+    "burst_end": {
+     "_Int_": 0.033487324323572217,
+     "_DOs_": 0.011129382242791063,
+     "ABD_m": 0.09897482971838548,
+     "ABD_i": 0.22554250534833267
+    },
+    "+1": {
+     "_Int_": 0.03263704122740924,
+     "_DOs_": 0.011620987022669135,
+     "ABD_m": 0.10451430446525617,
+     "ABD_i": 0.2398109577213768
+    },
+    "+50": {
+     "_Int_": 0.024640859115659927,
+     "_DOs_": 0.006845780058927168,
+     "ABD_m": 0.09038526671658556,
+     "ABD_i": 0.2799549672873774
+    },
+    "+200": {
+     "_Int_": 0.017062308156562633,
+     "_DOs_": 0.004698339611450667,
+     "ABD_m": 0.06221613073898139,
+     "ABD_i": 0.19810199068087941
+    },
+    "+600": {
+     "_Int_": 0.006831520301163474,
+     "_DOs_": 0.0018783273218453281,
+     "ABD_m": 0.024921237771787376,
+     "ABD_i": 0.08055161997162659
+    }
+   },
+   "held_detail": {
+    "H1": {
+     "held": {
+      "0.01": 0.0024487406280886597,
+      "0.03": 0.006831520301163474,
+      "0.1": 0.01435119593089845
+     },
+     "ratios": [
+      0.17062972590433845,
+      0.47602446054374165
+     ]
+    },
+    "H2": {
+     "eigenvalues": [
+      24.535956375447846,
+      15.506842272105848,
+      9.915321390076208
+     ],
+     "ratio": 0.6320048028624198
+    },
+    "S1": {
+     "counted": false,
+     "block1_to": {
+      "abd_m": 72.9375,
+      "abd_i": 16.545454545454547
+     },
+     "block2_to": {
+      "abd_m": 5.78125,
+      "abd_i": 122.45454545454545
+     }
+    },
+    "H4": {
+     "undisturbed": 0.013500017632049778,
+     "pushed": 0.007683952543307808
+    },
+    "H5": {
+     "top_decile_share": 0.34351590289895434
+    },
+    "H6": {
+     "abd_m": 0.024921237771787376,
+     "abd_i": 0.08055161997162659,
+     "int": 0.006831520301163474
+    }
+   }
+  },
+  "no_motor_feedback": {
+   "synapse_classes": 6284,
+   "synapses": 12370.0,
+   "own_gain": 0.322445,
+   "rows_at_own_gain": {
+    "H1": true,
+    "H2": true,
+    "S1": true,
+    "H4": true,
+    "H5": true,
+    "H6": true
+   },
+   "passed_at_own_gain": 5,
+   "rows_at_measured_gain": {
+    "H1": true,
+    "H2": true,
+    "S1": true,
+    "H4": true,
+    "H5": true,
+    "H6": true
+   },
+   "passed_at_measured_gain": 5,
+   "training_at_measured_gain": {
+    "gain": 0.322445,
+    "passed": true,
+    "runaway": false,
+    "int_200": 0.01474413407008314,
+    "int_600": 0.004495923318337318,
+    "active_600": 0.0
+   },
+   "offset_profile_at_measured_gain": {
+    "burst_end": {
+     "_Int_": 0.03332082656793635,
+     "_DOs_": 0.011076246803135478,
+     "ABD_m": 0.097725282364516,
+     "ABD_i": 0.22426559537306884
+    },
+    "+1": {
+     "_Int_": 0.03244969191776864,
+     "_DOs_": 0.01155903919164069,
+     "ABD_m": 0.10309749271289521,
+     "ABD_i": 0.23840064130491365
+    },
+    "+50": {
+     "_Int_": 0.023557179253777014,
+     "_DOs_": 0.006405903054882971,
+     "ABD_m": 0.08386256969674552,
+     "ABD_i": 0.2707497185992334
+    },
+    "+200": {
+     "_Int_": 0.01474413407008314,
+     "_DOs_": 0.003972079643664646,
+     "ABD_m": 0.052157046655020106,
+     "ABD_i": 0.173483745050938
+    },
+    "+600": {
+     "_Int_": 0.004495923318337318,
+     "_DOs_": 0.0012096361988687197,
+     "ABD_m": 0.015906891331195702,
+     "ABD_i": 0.05358134944118653
+    }
+   },
+   "held_detail": {
+    "H1": {
+     "held": {
+      "0.01": 0.001588975745012372,
+      "0.03": 0.004495923318337318,
+      "0.1": 0.010016308212607152
+     },
+     "ratios": [
+      0.15863886287089166,
+      0.4488603208793503
+     ]
+    },
+    "H2": {
+     "eigenvalues": [
+      24.448645498947595,
+      14.97689704114697,
+      10.006451481245806
+     ],
+     "ratio": 0.6125859627598452
+    },
+    "S1": {
+     "counted": false,
+     "block1_to": {
+      "abd_m": 72.9375,
+      "abd_i": 16.545454545454547
+     },
+     "block2_to": {
+      "abd_m": 5.78125,
+      "abd_i": 122.45454545454545
+     }
+    },
+    "H4": {
+     "undisturbed": 0.010908208708845193,
+     "pushed": 0.00601803648834677
+    },
+    "H5": {
+     "top_decile_share": 0.34768649224088094
+    },
+    "H6": {
+     "abd_m": 0.015906891331195702,
+     "abd_i": 0.05358134944118653,
+     "int": 0.004495923318337318
+    }
+   }
+  },
+  "no_interneuron_recurrence": {
+   "synapse_classes": 2867,
+   "synapses": 6781.0,
+   "own_gain": null,
+   "rows_at_own_gain": {
+    "H1": false,
+    "H2": false,
+    "S1": false,
+    "H4": false,
+    "H5": false,
+    "H6": false
+   },
+   "passed_at_own_gain": null,
+   "rows_at_measured_gain": {
+    "H1": false,
+    "H2": false,
+    "S1": false,
+    "H4": false,
+    "H5": false,
+    "H6": false
+   },
+   "passed_at_measured_gain": null,
+   "training_at_measured_gain": {
+    "gain": 0.322445,
+    "passed": false,
+    "runaway": false,
+    "int_200": 0.0,
+    "int_600": 0.0,
+    "active_600": 0.0
+   },
+   "offset_profile_at_measured_gain": {
+    "burst_end": {
+     "_Int_": 0.011146835273036901,
+     "_DOs_": 0.0,
+     "ABD_m": 0.03765705197588863,
+     "ABD_i": 0.06452864693131356
+    },
+    "+1": {
+     "_Int_": 0.008923949479914588,
+     "_DOs_": 0.0,
+     "ABD_m": 0.038146301423314405,
+     "ABD_i": 0.06533469661254813
+    },
+    "+50": {
+     "_Int_": 2.1253535192954168e-07,
+     "_DOs_": 0.0,
+     "ABD_m": 1.1894435976850248e-05,
+     "ABD_i": 1.40270979742371e-05
+    },
+    "+200": {
+     "_Int_": 0.0,
+     "_DOs_": 0.0,
+     "ABD_m": 0.0,
+     "ABD_i": 0.0
+    },
+    "+600": {
+     "_Int_": 0.0,
+     "_DOs_": 0.0,
+     "ABD_m": 0.0,
+     "ABD_i": 0.0
+    }
+   },
+   "held_detail": {
+    "H1": {
+     "reason": "no admissible gain passed training"
+    },
+    "H2": {
+     "reason": "no admissible gain passed training"
+    },
+    "S1": {
+     "reason": "no admissible gain passed training"
+    },
+    "H4": {
+     "reason": "no admissible gain passed training"
+    },
+    "H5": {
+     "reason": "no admissible gain passed training"
+    },
+    "H6": {
+     "reason": "no admissible gain passed training"
+    }
+   }
+  },
+  "feedforward_reading": {
+   "synapse_classes": 6292,
+   "offset_profile_at_measured_gain": {
+    "burst_end": {
+     "_Int_": 0.026885950615279416,
+     "_DOs_": 0.009527447944938832,
+     "ABD_m": 0.07396732712196896,
+     "ABD_i": 0.15058330080028182
+    },
+    "+1": {
+     "_Int_": 0.0,
+     "_DOs_": 0.0,
+     "ABD_m": 0.0,
+     "ABD_i": 0.0
+    },
+    "+50": {
+     "_Int_": 0.0,
+     "_DOs_": 0.0,
+     "ABD_m": 0.0,
+     "ABD_i": 0.0
+    },
+    "+200": {
+     "_Int_": 0.0,
+     "_DOs_": 0.0,
+     "ABD_m": 0.0,
+     "ABD_i": 0.0
+    },
+    "+600": {
+     "_Int_": 0.0,
+     "_DOs_": 0.0,
+     "ABD_m": 0.0,
+     "ABD_i": 0.0
+    }
+   },
+   "rows": "every held-state row fails by construction: the reading keeps no state after the burst (receipt feedforward.json)"
+  }
+ },
+ "nulls": "receipts/zebrafish_brainstem_oculomotor.json holds six permuted and six matched rewires with their own gains and rows"
+}

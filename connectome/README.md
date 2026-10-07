@@ -1,10 +1,10 @@
 # From connectome to Cadence
 
-A bounded example for the Cadence demos: two measured connectomes compiled into rate patch nets that run in the browser. The nets are frozen, one patch per cell with the recorded synapse counts as weights; nothing here learns, and every part the data cannot give is declared on the disclaimers page. The compiled wiring comes from the public [connectome compiler](https://github.com/muellerberndt/cadence-connectome-compiler), whose receipts bind the source tables and the compiled nets by digest.
+A bounded example for the Cadence demos: two measured connectomes compiled into rate patch nets that run in the browser. The nets are frozen, one patch per cell with the recorded synapse counts as weights; nothing here learns, and every part the data cannot give is declared on the disclaimers page. The compiled wiring comes from a connectome compiler that is not published; its receipts, which bind the source tables and the compiled nets by digest, ship here.
 
 Explore how an animal's measured wiring can become a running Cadence rate patch net.
 Two browser scenes connect imported anatomy to declared senses, neuron dynamics and
-body models. The [connectome compiler](https://github.com/muellerberndt/cadence-connectome-compiler)
+body models. The connectome compiler
 preserves recorded connection partners and synapse counts; signs, gains and the neuron
 response law turn those counts into a dynamical model.
 
@@ -73,7 +73,7 @@ the module imports.
 
 ## Check it
 
-Node for the engine checks; a Python with `playwright` (and its Chromium) for the page checks; the export tools under `tools/` need the connectome compiler and its data and are kept for reproducibility.
+Node for the engine checks; a Python with `playwright` (and its Chromium) for the page checks. The export tools under `tools/` are kept for reproducibility; they need the compiler, which is not published.
 
 ```
 sh tests/run_all.sh                 # node: engine parity, the two halves, spike-event parity, receipt metrics, body and closed loop
@@ -82,25 +82,25 @@ python tools/scenario_fish.py       # the fish page's promises: the hold, the pu
 python tools/scenario_larva.py      # the larva page's promises: the lamp, the tap, the switch (receipts/scenario_larva.json)
 ```
 
-## Rebuild the data
+## How the compilation works
 
-From this folder, with the compiler installed and the brainstem data in
-`../connectome-research/data` (see the compiler's source adapter for the two public
-repositories):
+The compiler is not published; the nets it produced and every receipt ship in `web/data`.
+What it does, step by step:
 
-```
-CONNECTOME_DATA=../connectome-research/data python tools/export_brain.py            # web/data/brain.json (the fish)
-CONNECTOME_DATA=../connectome-research/data python tools/export_skeletons.py        # web/data/skeletons.json
-CONNECTOME_DATA=../connectome-research/data python tools/export_larva_brain.py      # web/data/larva_brain.json (the larva)
-CONNECTOME_DATA=../connectome-research/data python tools/export_larva_skeletons.py  # web/data/larva_skeletons.json
-CONNECTOME_DATA=../connectome-research/data python tools/parity_cases.py && node tests/parity.mjs
-node tests/twin.mjs
-node tests/body.mjs
-```
-
-`receipts/brain_export.json` records the gain the protocol selected, the axial module's
-attenuation and the digests of the tables and the connectome the payload was built from.
-
+1. Read the source release's own tables: cells (identity, type, position) and synapses
+   (sender, receiver, contact count), recording the files' SHA-256 digests.
+2. Make one patch per cell and one relation per listed connection, weighted by the
+   synapse count times the sender's declared sign. Nothing is added, moved or guessed;
+   where the data lack a connection, the net lacks it too.
+3. Declare the unit, the graded rate neuron (threshold 0, slope 0.25), and the time step.
+   Select the one free number, the gain, by a frozen protocol: scan from the least excitable
+   gain upward, stop at the first ignition, keep the gain at which one training fact holds.
+4. Score the held-out facts from the papers once, on the measured wiring and on shuffled
+   wirings that keep each cell's degrees, or also its input strengths, each with its own gain.
+5. Write a receipt that binds the source tables, the compiled net and the protocol by digest
+   and discloses every exploratory look; export the net for the browser engine (synapses by
+   receiving cell, weights folded), whose arithmetic matches the Cadence library to machine
+   precision (`tests/parity.mjs`).
 ## What is compiled and what is declared
 
 The larva: the imported graph supplies the connections between its sensory and effector
