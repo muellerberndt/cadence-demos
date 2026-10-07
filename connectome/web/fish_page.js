@@ -173,13 +173,12 @@ function practiceLesson() {
   if (S.paused) togglePause();
   setLearning(true); setSpontaneous(true);
   $("auto-saccades").textContent = "Automatic glances on"; $("auto-saccades").setAttribute("aria-pressed", "true");
-  S.speed = 8; $("life-speed").textContent = "Time: 8×";
   S.practiceStart = life.time;
   S.practiceEnd = life.time + (life.learning.world === "still" ? 600 : life.learning.world === "back" ? 150 : 120);
   status();
 }
 function finishPractice() {
-  setLearning(false); S.speed = 1; $("life-speed").textContent = "Time: 1×";
+  setLearning(false);
   measureLearning(); status(); toast("practice complete · learning paused · acquired weights retained");
 }
 function restoreCompiled() { life.brain.restoreCompiled(); life.learning.on = false; life._clearFixations(); $("learning-toggle").textContent = "resume learning"; status(); }
@@ -211,6 +210,9 @@ $("fit").onclick = () => { if (brainView) brainView.fit(); };
 $("spin").onclick = () => { if (!brainView) return; brainView.options.spin = !brainView.options.spin; $("spin").classList.toggle("on", brainView.options.spin); };
 addEventListener("keydown", (e) => { if (e.key === " " && e.target === document.body) { e.preventDefault(); togglePause(); } });
 addEventListener("resize", () => { if (brainView) brainView.resize(); });
+// Disclosure and result changes resize the canvases without changing the window.
+const viewSizes = new ResizeObserver(() => { aquarium.resize(); brainView?.resize(); });
+viewSizes.observe($("tank-host")); viewSizes.observe($("view-host"));
 tooltips($("tank")); tooltips($("brain")); tooltips($("lesson-panel"));  // the hover explanations of the buttons, drawn inside their pane
 setStripes({}); moveLight({ on: false, x: TANK[0] / 2, y: TANK[1] / 2, z: TANK[2] + 4 });
 setFollow(true);  // the camera follows the fish by default

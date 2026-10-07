@@ -1,7 +1,7 @@
 """Exercise the visible fish teaching controls in Chromium; preserve historical receipts.
 
 python3 tools/check_learning_ui.py [--url http://127.0.0.1:8000/]
-The practice button runs its ordinary visible 8x schedule, without injecting lessons.
+The test selects 8x with the visible speed control, then teaches without injecting lessons.
 """
 import argparse
 import hashlib
@@ -33,7 +33,13 @@ def main():
         page.on("console", lambda message: errors.append(message.text) if message.type == "error" else None)
         page.goto(url + "fish.html?noscan=1&nobloom=1")
         page.wait_for_function("window.__app?.ready", timeout=90000)
+        assert not page.locator("#teaching-controls").evaluate("e => e.open")
+        assert page.locator("#life-speed").is_visible()
         page.locator("#pause").click()
+        page.locator("#life-speed").click()
+        page.locator("#life-speed").click()
+        assert page.evaluate("window.__app.S.speed") == 8
+        page.locator("#teaching-controls > summary").click()
         page.locator("#more-controls").evaluate("e => e.open = true")
         page.locator("#reset-synapses").click()
         page.locator("#measure-learning").click()
@@ -43,6 +49,7 @@ def main():
         page.locator("#practice-lesson").click()
         print("visible hold practice started (600 fish seconds at 8x)", flush=True)
         page.wait_for_function("window.__app.S.practiceEnd === null && !window.__app.learning().on", timeout=300000)
+        assert page.evaluate("window.__app.S.speed") == 8, "finishing a lesson changed the selected speed"
         held = page.evaluate("window.__app.lastProbe")
         for side in ("left", "right"):
             assert .45 < held[side]["ratio"] <= 1.05, held

@@ -20,10 +20,13 @@ site. No application server is required.
 
 ## Teach the fish
 
-1. Choose **hold your gaze** and press **Teach this lesson**. Automatic eye movements provide
-   lessons; practice runs faster than real time, then pauses learning and tests the response.
+1. Expand **Teach this fish**, choose **hold your gaze**, and press **Teach this lesson**.
+   Automatic eye movements provide lessons; practice ends by pausing learning and testing the response.
 2. Choose **let it return** and teach again on the same brain.
 3. Switch back to **hold your gaze** and compare the response after another practice.
+
+**Time: 1×** is always visible beside the teaching panel. Click to choose 1×, 4× or 8×;
+teaching keeps your chosen speed. Use 8× for faster practice.
 
 **Pause learning** retains acquired weights. **Reset learning** restores the starting
 weights and clears activity. **Test its gaze** compares copies of current and starting

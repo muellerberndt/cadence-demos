@@ -24,7 +24,9 @@
   #toast.show{opacity:1}
   #noscan{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
   #lesson-panel{flex-shrink:0;border:1px solid var(--line);border-radius:7px;padding:10px 12px;margin-bottom:12px;background:rgba(2,14,7,.9)}
-  .lesson-heading,.lesson-controls{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center}
+  .lesson-controls{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center}
+  #teaching-controls>summary{cursor:pointer;padding-right:105px;min-height:26px;line-height:26px}
+  #life-speed{position:absolute;top:10px;right:12px;font-size:11px}
   #lesson-panel{position:relative}.lesson-heading span,.lesson-scope{color:var(--dim);font-size:10px}
   .lesson-controls{margin:8px 0}.lesson-controls button{font-size:11px}
   #lesson-guide{font-size:11px;color:var(--soft);margin:6px 0}
@@ -47,13 +49,15 @@
   <header id="mast"></header>
   <nav id="nav" aria-label="Pages"></nav>
   <section id="lesson-panel" aria-label="Teach the compiled brain">
-    <div class="lesson-heading"><b>Teach this fish</b><span>Real connectome. Changing connections. A new way to look.</span></div>
+    <button id="life-speed" type="button" data-tip="Your chosen speed: 1×, 4× or 8×. Teaching uses this speed too; choose 8× for a quicker lesson.">Time: 1×</button>
+    <details id="teaching-controls">
+    <summary class="lesson-heading"><b>Teach this fish</b></summary>
     <div class="lesson-controls">
       <span id="world" class="seg" aria-label="What to teach">
         <button type="button" data-world="still" class="on" aria-pressed="true" data-tip="Teach the eyes to keep looking to the side after a glance.">Hold your gaze</button>
         <button type="button" data-world="back" aria-pressed="false" data-tip="Teach the eyes to drift back after a glance. The same brain keeps learning; nothing is reset.">Let it return</button>
       </span>
-      <button id="practice-lesson" type="button" class="teach-primary" data-tip="Practise with automatic glances at 8× speed. The fish gets 10 minutes of hold practice, or 2½ minutes of return practice. Learning then pauses so you can see the result.">Teach this lesson</button>
+      <button id="practice-lesson" type="button" class="teach-primary" data-tip="Practise at your chosen Time speed. The fish gets 10 fish minutes of hold practice, or 2½ fish minutes of return practice. Learning then pauses so you can see the result.">Teach this lesson</button>
       <button id="measure-learning" type="button" data-tip="Compare the starting and learned brains after the same glance. The test runs on copies, so it does not disturb or teach the fish.">Test its gaze</button>
       <button id="learning-toggle" type="button" data-tip="Pause changes to the connections while the fish keeps living. Resume continues with everything it has learned.">Pause learning</button>
     </div>
@@ -72,9 +76,9 @@
     <details id="more-controls"><summary>More controls</summary><div class="lesson-controls">
       <button id="reset-synapses" type="button" data-tip="Forget the lessons and restore the starting connections. The fish stays in the same tank.">Reset learning</button>
       <button id="auto-saccades" type="button" aria-pressed="true" data-tip="Let the fish glance around on its own. Each undisturbed glance can provide a lesson.">Automatic glances on</button>
-      <button id="life-speed" type="button" data-tip="Change the pace of fish time: normal, 4× or 8×. Faster time uses the same brain steps.">Time: 1×</button>
     </div></details>
     <p class="lesson-scope">The gaze circuit learns. Swimming uses a fixed pilot. <a href="./explain.html">How it works →</a></p>
+    </details>
   </section>
   <main id="main" class="two">
     <section class="view" id="tank" aria-label="Aquarium">
