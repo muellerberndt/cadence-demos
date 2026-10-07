@@ -17,8 +17,8 @@ export const PAPERS = [
 ];
 export const CLASS_NAMES = { _Int_: "integrator", _Axl_: "axial", _DOs_: "DO", ABD_m: "abducens motor", ABD_i: "abducens internuclear", vSPNs: "vSPN", periphery: "periphery" };
 
-// Inside another page's frame, a link to another site leaves the frame; the demo's own pages stay in it.
-addEventListener("click", (e) => { const a = e.target.closest && e.target.closest("a[href]"); if (a && /^https?:/.test(a.href) && new URL(a.href).origin !== location.origin) a.target = "_top"; });
+// A link to another site opens in a new tab (inside an embedding frame the demo stays put); the demo's own pages open in place.
+addEventListener("click", (e) => { const a = e.target.closest && e.target.closest("a[href]"); if (a && /^https?:/.test(a.href) && new URL(a.href).origin !== location.origin) { a.target = "_blank"; a.rel = "noopener"; } });
 
 /** What the headless check reads: ready once the page has drawn, and every uncaught error. */
 export const app = { ready: false, errors: [] };
