@@ -75,7 +75,7 @@ try {
   }
   $("receipts-title").textContent = DISCLAIMERS.receipts.title;
   $("receipts").replaceChildren(...DISCLAIMERS.receipts.items.map(([href, text]) => el("a", { href }, text)));
-  shell.card([`<b>Sources.</b> Verasztó et al. 2025, eLife 13:RP97964; Vishwanathan et al. 2024, Nature Neuroscience 27:2340; Petkova et al. 2025, bioRxiv 10.1101/2025.06.10.658982; the compiler at github.com/muellerberndt/cadence-connectome-compiler with its receipts; Cadence at github.com/muellerberndt/cadence.`]);
+  shell.card([`<b>Sources.</b> Verasztó et al. 2025, eLife 13:RP97964; Vishwanathan et al. 2024, Nature Neuroscience 27:2340; Petkova et al. 2025, bioRxiv 10.1101/2025.06.10.658982; the connectome compiler, whose receipts ship in this site's data folder; Cadence at github.com/muellerberndt/cadence.`]);
 } catch (e) {
   app.errors.push(String(e.message || e));
   shell.status(`could not load the receipts: ${e.message || e}`);
