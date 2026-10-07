@@ -15,7 +15,6 @@ import { TANK, WATER, DEG, SPEED } from "./larva_body.js";
 import { Aquarium } from "./aquarium.js";
 import { LarvaMesh } from "./larva.js";
 import { LarvaLife } from "./larva_life.js";
-import { EXPLAIN } from "./content/explain.js";
 import { STEP_MS, LIGHT_LEVEL, SENSE_SATURATION, TAP_LEVEL, CPRC_LEVEL, BEAT_GAIN, ARREST_GAIN, SEROTONIN_GAIN, MUSCLE_GAIN, PARAPODIA_GAIN, BASELINE_BEAT } from "./larva_dictionary.js";
 
 const params = new URLSearchParams(location.search);
@@ -118,19 +117,11 @@ setUv(0);        // the ultraviolet off until asked for: on, the ciliary photore
 setFollow(true); // the camera follows the larva by default
 
 // ---- the card ---------------------------------------------------------------------------------
-const section = EXPLAIN.sections.find((s) => s.id === "larva");
-const pops = payload.populations, m = payload.model;
 shell.card([
-  ...section.paragraphs.map((text) => el("p", {}, text)),
-  `<b>The data.</b> ${payload.source}: ${int(payload.n)} cells, ${int(payload.edges)} synapse classes carrying ${int(payload.synapses)} synapses; ${int(pops.neurons.length)} neurons, ${int(pops.sensory.length)} of them sensory, and ${int(pops.effectors.length)} effector cells.`,
-  `<b>The brain.</b> The Cadence ${payload.library?.version ?? ""} rate model in the browser engine (brain.js): every cell holds one activity in [0, 1]; a step moves its potential by dt ${m.dt} toward its synaptic input, and a rectified sigmoid of slope ${m.slope} at threshold ${m.threshold} reads the activity. A synapse class weighs gain ${payload.gain} times its synapse count, negative from an inhibitory sender. One step is dt ${m.dt} of the unit's time constant, declared as 0.2 s, so a step is ${STEP_MS} ms of larva time and the net takes ${1000 / STEP_MS} steps per larva second, on the main thread.`,
-  `<b>The dictionary</b> (larva_dictionary.js), its constants in one line: light ${LIGHT_LEVEL} on a lit photoreceptor, saturating at ${SENSE_SATURATION} of the sense scale; a tap ${TAP_LEVEL} on the collar receptors; ultraviolet or pressure ${CPRC_LEVEL} on the ciliary photoreceptors; the ciliary beat ${BASELINE_BEAT} on its own plus ${BEAT_GAIN} per unit of prototroch activation plus ${SEROTONIN_GAIN} per unit of Ser-h1 and Loop, times one minus the arrest; the arrest ${ARREST_GAIN} per unit of MC; the longitudinal muscles ${MUSCLE_GAIN} per unit of their activation; the parapodia ${PARAPODIA_GAIN} per unit of parapodial muscle activation.`,
-  `<b>This page.</b> The lamp lands on the adult eyes and the larval eyespots of the side that sees it, the ultraviolet (off until switched on) on the ciliary photoreceptors, a tap on the glass on the collar receptors. The net settles, and the prototroch cells of each side set that side's ciliary beat, the ciliomotor neuron MC arrests it, the longitudinal muscles bend the body and the parapodial muscles raise the parapodia. A stronger beat on one side turns the course toward it; an arrest stops the swim and the larva sinks. "Off" rests the net: the cilia beat at their baseline of ${BASELINE_BEAT} and nothing steers; the checks use it as the control.`,
-  `<b>The brain view.</b> Every traced cell is lit by its own activity, scaled to the brightest cell of the moment, and flashed gold by the repair it made in its last step: how far it moved its potential toward what its synapses told it. Tap the glass and watch the wave: the collar receptors flash first, then the interneurons they reach, then the ciliomotor neuron and the muscles, and the flashes die out as the net comes to rest on its new state. That wave is the settlement; the state it leaves behind is the answer.`,
-  el("ul", {},
-    el("li", { html: `<a href="${PAPER_URL}">Verasztó et al. 2025, eLife 13:RP97964</a>: the whole-body connectome of the three-day larva, every cell and every synapse.` }),
-    el("li", { html: `CATMAID project 11: the reconstruction's skeletons, cell names and synapses, exported by tools/export_larva_brain.py and tools/export_larva_skeletons.py.` }),
-    el("li", { html: `<a href="https://github.com/muellerberndt/cadence">Cadence</a>: the library whose rate model the browser engine reproduces.` })),
+  "<b>A whole-body connectome.</b> This model uses the published wiring of a three-day Platynereis larva, including sensory neurons, muscles and ciliated cells.",
+  "<b>Try light and touch.</b> The lamp drives identified photoreceptors; a tap drives touch receptors. Activity travels through the compiled circuit to the modeled muscles and cilia.",
+  "<b>Fixed connections.</b> These flashes show activity settling, not learning. Switch to the fish to teach a circuit whose connection strengths change.",
+  el("p", {}, el("a", { href: PAPER_URL }, "Verasztó et al. 2025 · whole-body connectome")),
 ]);
 
 // ---- the view's two channels: the activity, and the repair since the last reading, fading ----

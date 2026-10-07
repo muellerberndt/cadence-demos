@@ -18,6 +18,16 @@ node tests/parity.mjs
 node tests/twin.mjs
 node tests/spiking_parity.mjs
 node tests/evidence.mjs
+node tests/learning_parity.mjs
+node tests/learning_contract.mjs
+node tests/lesson_life_contract.mjs
+node tests/learning_probe.mjs
+node tests/learning_view.mjs
+node tests/learning_shuffle.mjs
+# The old learning_life assay inferred a hold from lesson samples and required
+# instability. The release assay tests frozen learned weights independently.
+node tests/learning_release.mjs
+node tests/learning_reteach.mjs
 summary tests/body.mjs
 summary tests/life.mjs
 summary tests/larva.mjs

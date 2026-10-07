@@ -7,8 +7,8 @@
 //   s_i = rectified sigmoid(v_i), exactly zero at rest (or, with a leak, negative below rest)
 //
 // The payload (export.py) stores the synapses by receiving neuron (CSR by post, senders in the
-// library's order) and every population by name. The nudged settle is the learner's phase:
-// a cross-entropy push on the output neurons toward a one-hot target, as cadence.Nudge.
+// library's order) and every population by name. The generic nudged settle supports
+// cadence.Nudge; the fish lesson separately nudges a declared activity pattern.
 import { createSettlementTrace } from "./settlement-trace.js";
 import { createNeuralReplay } from "./neural-replay.js";
 
@@ -49,6 +49,7 @@ export class SettlingBrain {
       for (let k = 0; k < idx.length; k++) this.efficacy0[idx[k]] = val[k];
     }
     this.bias = payload.arrays.bias ? decodeArray(payload.arrays.bias, Float64Array) : new Float64Array(this.n);
+    this.bias0 = this.bias.slice();
     this.members = payload.arrays.members ? decodeArray(payload.arrays.members, Int32Array) : null;  // indices into a larger brain, when this is a sub-net
     this.sets = payload.populations || {};
     this.v = new Float64Array(this.n); this.s = new Float64Array(this.n);
@@ -358,6 +359,186 @@ export class SettlingBrain {
       if (tolerance !== undefined && tolerance !== null && movement < tolerance) break;
     }
     return { s, taken };
+  }
+
+  // ---- learning: the library's free/nudged rule (cadence docs/learning.md), in its order of operations ----
+
+  /** Give every synapse its own efficacy and every neuron a plastic bias. Reverse contacts
+   *  receive the mean of their proposed updates, as in the library. This does not make an
+   *  asymmetric measured graph reciprocal, nor make unequal initial efficacies equal. */
+  enableLearning() {
+    if (this.efficacy) return;
+    const n = this.n, pre = this.pre, rowPtr = this.rowPtr;
+    this.efficacy = Float64Array.from(this.efficacy0 || this.sign);
+    if (!this.gainPre) { this.gainPre = new Float64Array(this.edges); for (let e = 0; e < this.edges; e++) this.gainPre[e] = this.gain * (this.count ? this.count[e] : 1); }
+    const post = new Int32Array(this.edges);
+    for (let i = 0; i < n; i++) for (let e = rowPtr[i], end = rowPtr[i + 1]; e < end; e++) post[e] = i;
+    this.post = post;
+    const key = new Map();
+    for (let e = 0; e < this.edges; e++) key.set(post[e] * n + pre[e], e);
+    this.reverse = new Int32Array(this.edges).fill(-1);
+    for (let e = 0; e < this.edges; e++) { const r = key.get(pre[e] * n + post[e]); if (r !== undefined) this.reverse[e] = r; }
+    this.lessons = 0;
+    this.mass0 = null;  // each neuron's total input weight when learning began, for the mass cap
+  }
+
+  /** Restore exported parameters and clear learning history, preserving the live neural state. */
+  resetLearning(gain = this.gain) {
+    if (!Number.isFinite(gain) || gain < 0) throw new RangeError("gain must be finite and nonnegative");
+    this.enableLearning();
+    this.efficacy.set(this.efficacy0 || this.sign);
+    this.bias.set(this.bias0);
+    this.mass0 = null;
+    this.lessons = 0;
+    delete this.secondMoment; delete this.secondMomentBias; delete this.contrastUpdates;
+    this.setGain(gain);
+  }
+
+  /** Set the gain the whole net runs at: every synapse's factor becomes gain * count * exp(log_gain[pre]),
+   *  as the library composes it, and the weights follow from the current efficacies. */
+  setGain(gain) {
+    if (!Number.isFinite(gain) || gain < 0) throw new RangeError("gain must be finite and nonnegative");
+    this.enableLearning();
+    this.gain = gain;
+    for (let e = 0; e < this.edges; e++) {
+      this.gainPre[e] = gain * (this.count ? this.count[e] : 1) * (this.logGain ? Math.exp(this.logGain[this.pre[e]]) : 1);
+      this.w[e] = this.gainPre[e] * this.efficacy[e];
+    }
+  }
+
+  /** A nudged phase (a copy of the live state): settle under the current drive with the extra drive
+   *  beta * (target[i] - s[i]) on the output neurons, up to `steps` steps or until no activation moves by
+   *  `tolerance`, in the library's order: synaptic input, standing drive, nudge, minus v, times dt. */
+  nudgedPhase(outputs, target, beta, steps, tolerance) {
+    const n = this.n, rowPtr = this.rowPtr, pre = this.pre, w = this.w, dt = this.dt, drive = this.drive, bias = this.bias;
+    const v = Float64Array.from(this.v), s = Float64Array.from(this.s), total = new Float64Array(n), prev = new Float64Array(n);
+    const mask = new Float64Array(n); for (const i of outputs) mask[i] = 1.0;
+    let taken = 0;
+    for (let k = 0; k < steps; k++) {
+      for (let i = 0; i < n; i++) { let sum = 0.0; for (let e = rowPtr[i], end = rowPtr[i + 1]; e < end; e++) sum += s[pre[e]] * w[e]; total[i] = sum; }
+      for (let i = 0; i < n; i++) {
+        let t = total[i];
+        t += drive[i] + bias[i];
+        t += beta * (target[i] - s[i]) * mask[i];
+        t -= v[i];
+        t *= dt;
+        v[i] += t;
+      }
+      prev.set(s);
+      let movement = 0.0;
+      for (let i = 0; i < n; i++) { s[i] = this.activation(v[i]); const d = Math.abs(s[i] - prev[i]); if (d > movement) movement = d; }
+      taken = k + 1;
+      if (tolerance !== undefined && tolerance !== null && movement < tolerance) break;
+    }
+    return { s, v, taken };
+  }
+
+  /** Finite-phase contrast update. Defaults reproduce the library's centered arithmetic; one-sided
+   *  matched-duration continuation and relative/mass/sign constraints are experimental adapters.
+   *  The live state is untouched. scaleStep/biasStep retain the library's proposed-step convention;
+   *  appliedScaleStep/appliedBiasStep measure the parameter change after every constraint. These
+   *  finite phases on a directed measured graph carry no equilibrium-gradient guarantee. */
+  lesson(outputs, target, { beta = 0.1, eta = 0.2, etaBias = eta / 10, steps = 50, tolerance = 1e-4, cap = 8.0, normalize = 0.0, normalizeFloor = 1e-3, decay = 0.0, centered = true, keepSign = false, massCap = 0, relative = false } = {}) {
+    // Refuse malformed lessons before any parameters or optimizer history can change.
+    if (!outputs || !Number.isInteger(outputs.length) || outputs.length === 0) throw new RangeError("outputs must be a nonempty index vector");
+    const seen = new Set();
+    for (const i of outputs) {
+      if (!Number.isInteger(i) || i < 0 || i >= this.n || seen.has(i)) throw new RangeError("outputs must contain distinct valid neuron indices");
+      seen.add(i);
+    }
+    if (!target || target.length !== this.n || !Array.from(target).every(Number.isFinite)) throw new RangeError("target must be a finite value per neuron");
+    if (!Number.isFinite(beta) || beta <= 0 || !Number.isFinite(eta) || eta < 0 || !Number.isFinite(etaBias) || etaBias < 0) throw new RangeError("beta must be positive and learning rates nonnegative and finite");
+    if (!Number.isSafeInteger(steps) || steps < 0 || (tolerance != null && (!Number.isFinite(tolerance) || tolerance < 0))) throw new RangeError("phase budget and tolerance must be nonnegative and finite");
+    if (!Number.isFinite(cap) || cap <= 0 || !Number.isFinite(normalizeFloor) || normalizeFloor <= 0 || !Number.isFinite(normalize) || normalize < 0 || normalize >= 1 || !Number.isFinite(decay) || decay < 0 || decay >= 1) throw new RangeError("invalid learning bounds or normalization");
+    if (!Number.isFinite(massCap) || (massCap !== 0 && massCap < 1)) throw new RangeError("massCap must be zero or at least one");
+    if (typeof centered !== "boolean" || typeof relative !== "boolean" || typeof keepSign !== "boolean") throw new TypeError("learning switches must be boolean");
+    for (const values of [this.v, this.s, this.drive, this.bias, this.w]) if (!values.every(Number.isFinite)) throw new RangeError("learning requires a finite live state and weights");
+    this.enableLearning();
+    let mass0 = this.mass0;
+    if (massCap > 0 && !mass0) { mass0 = new Float64Array(this.n); for (let i = 0; i < this.n; i++) { let m = 0; for (let e = this.rowPtr[i], end = this.rowPtr[i + 1]; e < end; e++) m += Math.abs(this.w[e]); mass0[i] = m; } }
+    if (mass0 && !mass0.every(Number.isFinite)) throw new RangeError("reference input masses must be finite");
+    // centred (the library's default): the +beta phase against the -beta phase over 2 beta. One-sided: the +beta phase
+    // against a free continuation over beta. Run that continuation for exactly the plus phase's
+    // actual step count, without its own early stop: both trajectories start from the same state
+    // and cover the same elapsed time. This finite-continuation adapter differs from library s0.
+    const plus = this.nudgedPhase(outputs, target, beta, steps, tolerance);
+    const minus = this.nudgedPhase(outputs, target, centered ? -beta : 0.0, centered ? steps : plus.taken, centered ? tolerance : null);
+    for (const phase of [plus, minus]) if (!phase.s.every(Number.isFinite) || !phase.v.every(Number.isFinite)) throw new RangeError("learning phase became nonfinite; no update applied");
+    const sp = plus.s, sm = minus.s, span = centered ? 2.0 * beta : beta, n = this.n, E = this.edges, pre = this.pre, post = this.post;
+    const contrast = new Float64Array(E), neuron = new Float64Array(n);
+    for (let e = 0; e < E; e++) {
+      const ap = sp[pre[e]], am = sm[pre[e]], bp = sp[post[e]], bm = sm[post[e]];
+      contrast[e] = (ap * (bp - bm) + (ap - am) * bm) / span;
+    }
+    for (let i = 0; i < n; i++) neuron[i] = (sp[i] - sm[i]) / span;
+    const delta = new Float64Array(E), deltaBias = new Float64Array(n);
+    let secondMoment = null, secondMomentBias = null, contrastUpdates = null;
+    if (relative) {  // Contact-local scale: only this contact's two phase products enter its step.
+      // For the displayed nonnegative activations, the proposed one-sided step is at most eta
+      // in magnitude (centered: eta/2). Subsequent row-mass adjustments have a separate contract.
+      const floor2 = normalizeFloor * normalizeFloor;
+      for (let e = 0; e < E; e++) {
+        const scale = Math.max(Math.abs(sp[pre[e]] * sp[post[e]]), Math.abs(sm[pre[e]] * sm[post[e]])) + floor2;
+        delta[e] = eta * (contrast[e] * beta / scale);
+      }
+      for (let i = 0; i < n; i++) {
+        const scale = Math.max(Math.abs(sp[i]), Math.abs(sm[i])) + normalizeFloor;
+        deltaBias[i] = etaBias * (neuron[i] * beta / scale);
+      }
+    } else if (normalize > 0) {  // the library's RMS normalization: each synapse's step divided by the running RMS of its own contrast, bias-corrected
+      secondMoment = this.secondMoment ? this.secondMoment.slice() : new Float64Array(E);
+      secondMomentBias = this.secondMomentBias ? this.secondMomentBias.slice() : new Float64Array(n);
+      const rho = normalize, count = (this.contrastUpdates || 0) + 1, correction = 1.0 - Math.pow(rho, count);
+      for (let e = 0; e < E; e++) { secondMoment[e] = rho * secondMoment[e] + (1 - rho) * contrast[e] * contrast[e]; delta[e] = eta * (contrast[e] / (Math.sqrt(secondMoment[e] / correction) + normalizeFloor)); }
+      for (let i = 0; i < n; i++) { secondMomentBias[i] = rho * secondMomentBias[i] + (1 - rho) * neuron[i] * neuron[i]; deltaBias[i] = etaBias * (neuron[i] / (Math.sqrt(secondMomentBias[i] / correction) + normalizeFloor)); }
+      contrastUpdates = count;
+    } else {
+      for (let e = 0; e < E; e++) delta[e] = eta * contrast[e];
+      for (let i = 0; i < n; i++) deltaBias[i] = etaBias * neuron[i];
+    }
+    for (const values of [contrast, neuron, delta, deltaBias, secondMoment, secondMomentBias]) if (values && !values.every(Number.isFinite)) throw new RangeError("learning update became nonfinite; no update applied");
+    const paired = this.reverse, mean = new Float64Array(E);
+    for (let e = 0; e < E; e++) mean[e] = paired[e] >= 0 ? 0.5 * (delta[e] + delta[paired[e]]) : delta[e];
+    let scaleStep = 0.0, biasStep = 0.0;
+    const sign = this.sign, efficacy = this.efficacy.slice(), weight = new Float64Array(E), bias = this.bias.slice();
+    for (let e = 0; e < E; e++) {
+      let scale = this.efficacy[e] + mean[e];
+      if (decay > 0) scale *= 1.0 - decay;
+      if (scale > cap) scale = cap; else if (scale < -cap) scale = -cap;
+      if (keepSign && sign && scale * sign[e] < 0) scale = 0;  // Dale's law, declared: a synapse keeps its measured sign and weakens at most to nothing
+      efficacy[e] = scale; weight[e] = this.gainPre[e] * scale;
+      scaleStep += Math.abs(mean[e]);
+    }
+    let massLowerUnmetRows = 0;
+    if (massCap > 0) {  // Receiver-local input-mass adjustment after the proposed reciprocal-pair average.
+      // The hard efficacy cap takes precedence over restoring the lower mass target; a zero row
+      // cannot be revived by scaling. These constraints need not preserve paired update equality.
+      const rowPtr = this.rowPtr;
+      for (let i = 0; i < n; i++) {
+        let m = 0; for (let e = rowPtr[i], end = rowPtr[i + 1]; e < end; e++) m += Math.abs(weight[e]);
+        const upper = massCap * mass0[i], lower = mass0[i] / massCap;
+        const f = m > upper ? upper / m : m < lower && m > 0 ? lower / m : 1;
+        let after = 0;
+        for (let e = rowPtr[i], end = rowPtr[i + 1]; e < end; e++) {
+          efficacy[e] = Math.max(-cap, Math.min(cap, efficacy[e] * f));
+          weight[e] = this.gainPre[e] * efficacy[e];
+          after += Math.abs(weight[e]);
+        }
+        if (lower > after * (1 + 8 * Number.EPSILON)) massLowerUnmetRows++;
+      }
+    }
+    for (let i = 0; i < n; i++) { let b = this.bias[i] + deltaBias[i]; if (decay > 0) b *= 1.0 - decay; bias[i] = b; biasStep += Math.abs(deltaBias[i]); }
+    for (const values of [efficacy, weight, bias]) if (!values.every(Number.isFinite)) throw new RangeError("learning parameters became nonfinite; no update applied");
+    let appliedScaleStep = 0, appliedBiasStep = 0;
+    for (let e = 0; e < E; e++) appliedScaleStep += Math.abs(efficacy[e] - this.efficacy[e]);
+    for (let i = 0; i < n; i++) appliedBiasStep += Math.abs(bias[i] - this.bias[i]);
+    this.efficacy.set(efficacy); this.w.set(weight); this.bias.set(bias); this.mass0 = mass0;
+    if (secondMoment) { this.secondMoment = secondMoment; this.secondMomentBias = secondMomentBias; this.contrastUpdates = contrastUpdates; }
+    this.lessons++;
+    return { scaleStep: E ? scaleStep / E : 0, biasStep: n ? biasStep / n : 0,
+      appliedScaleStep: E ? appliedScaleStep / E : 0, appliedBiasStep: n ? appliedBiasStep / n : 0,
+      massLowerUnmetRows,
+      plusSteps: plus.taken, minusSteps: minus.taken, plus: sp, minus: sm };
   }
 
   mean(name) { const idx = this.sets[name]; if (!idx || !idx.length) return 0; let t = 0; for (const i of idx) t += this.s[i]; return t / idx.length; }

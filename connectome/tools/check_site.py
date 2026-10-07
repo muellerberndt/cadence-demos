@@ -49,6 +49,8 @@ def main():
     ap.add_argument("--pages", default=",".join(DEFAULT_PAGES))
     ap.add_argument("--seconds", type=float, default=4.0)
     ap.add_argument("--query", default="?nobloom=1")
+    ap.add_argument("--receipt", type=Path, default=ROOT / "receipts/site_check.json")
+    ap.add_argument("--screenshot-prefix", default="check")
     args = ap.parse_args()
     from playwright.sync_api import sync_playwright
     server, url = serve(WEB)
@@ -72,7 +74,7 @@ def main():
                 pass
             page.wait_for_timeout(int(args.seconds * 1000))
             app_errors = page.evaluate("(window.__app && window.__app.errors) || []")
-            shot = ROOT / "docs" / "screenshots" / f"check_{name}.png"
+            shot = ROOT / "docs" / "screenshots" / f"{args.screenshot_prefix}_{name}.png"
             page.screenshot(path=str(shot))
             out["pages"][name] = {"ready": ready, "seconds_to_ready": round(time.time() - t0, 1), "console_errors": errors, "app_errors": app_errors, "failed_requests": [f for f in failed if "127.0.0.1" in f], "screenshot": str(shot.relative_to(ROOT))}
             print(f"{name:8s} ready {ready} in {out['pages'][name]['seconds_to_ready']} s, errors {len(errors) + len(app_errors)}, failed requests {len(out['pages'][name]['failed_requests'])}", flush=True)
@@ -82,7 +84,7 @@ def main():
     server.shutdown()
     out["clean"] = all(v["ready"] and not v["console_errors"] and not v["app_errors"] and not v["failed_requests"] for v in out["pages"].values())
     (ROOT / "receipts").mkdir(exist_ok=True)
-    (ROOT / "receipts" / "site_check.json").write_text(json.dumps(out, indent=1))
+    args.receipt.write_text(json.dumps(out, indent=1))
     print("clean" if out["clean"] else "NOT clean")
     raise SystemExit(0 if out["clean"] else 1)
 

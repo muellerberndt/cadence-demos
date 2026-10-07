@@ -14,7 +14,9 @@ import { Aquarium } from "./aquarium.js";
 import { FishMesh } from "./fish.js";
 import { TwinBrain } from "./twin.js";
 import { Life } from "./life.js";
-import { Saccades, STEP_MS, SACCADE_STEPS, SACCADE_LEVEL, GAZE_DEGREES_PER_UNIT, GAZE_MAX, PULSE_DEGREES, VESTIBULAR_SATURATION, VESTIBULAR_LEVEL } from "./dictionary.js";
+import { probeLearning } from "./learning_probe.js";
+import { learningView } from "./learning_view.js";
+import { Saccades, STEP_MS, SACCADE_STEPS, SACCADE_LEVEL, SACCADE_INHIBITION, SACCADE_SIZES, GAZE_DEGREES_PER_UNIT, GAZE_MAX, PULSE_DEGREES, VESTIBULAR_SATURATION, VESTIBULAR_LEVEL, LEARN, WORLDS } from "./dictionary.js";
 
 const params = new URLSearchParams(location.search);
 const NOSCAN = params.get("noscan") === "1";  // no brain view: the headless checks
@@ -25,39 +27,35 @@ const LIT_MS = 50;                            // the view reads the brain twenty
 const REPAIR_FLOOR = 0.004;                   // a repair (|Δv| in one step) below this is the net's resting drift and does not flash
 const REPAIR_GAIN = 10;                       // a neuron's flash is sqrt(min(1, (|Δv| - floor) × this))
 const FLASH_DECAY = 0.9;                      // per reading: a flash halves in about a third of a second of wall time
-const LABEL = "compiled: gaze holding and the vestibular push · declared pilot: bouts, hunt, escape, pulse";
+const LABEL = "compiled graph: gaze and vestibular response · learned synapses · fixed pilot: swimming, hunting, escape";
+const WORLD_SHORT = { still: "hold gaze", back: "let gaze return", against: "amplified correction experiment" };
+const WORLD_LABEL = { still: "lessons favor retaining the gaze activity", back: "lessons favor a return toward rest", against: "experimental amplified feedback: may destabilize the response; recovery is not guaranteed" };
 
 const shell = mountShell("fish", { status: LABEL });
 $("tank-title").textContent = shell.page.title;
-const S = { paused: false, seed: Number(params.get("seed") || 1), frames: 0, totalFrames: 0, fps: 0, fpsClock: 0, lastHud: -Infinity, lastLit: -Infinity, captures: 0, brainMs: 0, brainSteps: 0, repairFloor: REPAIR_FLOOR, repairGain: REPAIR_GAIN };
+const S = { paused: false, speed: 1, practiceEnd: null, practiceStart: 0, viewSide: "left", seed: Number(params.get("seed") || 1), frames: 0, totalFrames: 0, fps: 0, fpsClock: 0, lastHud: -Infinity, lastLit: -Infinity, captures: 0, brainMs: 0, brainSteps: 0, repairFloor: REPAIR_FLOOR, repairGain: REPAIR_GAIN };
 
-/** The page's scheduler: a saccade requested through Life.requestSaccade (which sets `pending`)
- *  goes in its own direction and restarts the spontaneous schedule; Saccades.tick itself does
- *  not read `pending`. `spontaneous` false keeps the schedule quiet, for the checks. */
-class PageSaccades extends Saccades {
-  constructor(seed) { super(seed); this.spontaneous = true; }
-  tick(time, wish = 0) {
-    if (!this.spontaneous) this.next = Infinity;
-    if (this.pending && this.stepsLeft <= 0) {
-      const want = this.pending;
-      this.pending = 0;
-      if (this.spontaneous) { this.rng = (this.rng * 9301 + 49297) % 233280; const u = this.rng / 233280; this.next = time + 3 + 5 * (u * 7.3 - Math.floor(u * 7.3)); }
-      return super.tick(time, want);
-    }
-    return super.tick(time, wish);
-  }
-}
-
-/** The twin with the cost of its steps measured and, per neuron of the left half, the largest
- *  repair (|Δv| of one step) since the view last read it: the view's second channel. */
+/** Observe applied synaptic changes for the display; the lesson itself stays in TwinBrain. */
 class TimedTwin extends TwinBrain {
-  constructor(payload) { super(payload); this.vPrev = new Float64Array(this.n); this.burst = new Float32Array(this.n); }
+  constructor(payload, options) {
+    super(payload, options);
+    this.learningFlash = { left: new Float32Array(this.n), right: new Float32Array(this.n) };
+    this.visualLessons = 0; this.lastVisualLesson = null;
+  }
   run(stimuli, steps) {
-    const left = this.halves.left; this.vPrev.set(left.v);
-    const t0 = performance.now(); const out = super.run(stimuli, steps); S.brainMs += performance.now() - t0; S.brainSteps += steps;
-    const v = left.v, p = this.vPrev, b = this.burst;
-    for (let i = 0; i < this.n; i++) { const d = Math.abs(v[i] - p[i]); if (d > b[i]) b[i] = d; }
+    const t0 = performance.now(), out = super.run(stimuli, steps);
+    S.brainMs += performance.now() - t0; S.brainSteps += steps;
     return out;
+  }
+  lesson(side, target) {
+    const b = this.halves[side], before = b.w.slice();
+    const report = super.lesson(side, target);
+    const view = learningView(b.rowPtr, before, b.w), flash = this.learningFlash[side];
+    for (let i = 0; i < this.n; i++) flash[i] = Math.max(flash[i], view.levels[i]);
+    this.visualLessons++;
+    this.lastVisualLesson = { side, changedEdges: view.changedEdges, changedCells: view.changedCells };
+    S.viewSide = side;
+    return report;
   }
 }
 
@@ -68,9 +66,8 @@ const fish = new FishMesh().addTo(aquarium.world);
 const skeletonLoad = NOSCAN ? Promise.resolve(null) : loadPayload(SKELETONS_URL).catch(() => loadPayload(SKELETONS_FALLBACK));
 function fail(reason) { app.errors.push(String(reason)); shell.status(`brain unavailable: ${reason}`); $("loading").textContent = `brain unavailable: ${reason}`; }
 const brain = await fetchJSON(BRAIN_URL).catch((e) => { fail(e.message || e); throw e; });
-const twin = new TimedTwin(brain);
+const twin = new TimedTwin(brain, { learning: true });
 const life = new Life(twin, S.seed);
-life.saccades = new PageSaccades(S.seed);
 const world = life.world;
 let brainView = null, stripeSpeed = 1;
 
@@ -125,6 +122,68 @@ function setSpontaneous(flag) {
   if (life.saccades.spontaneous) life.saccades.next = life.time + 3;
   return life.saccades.spontaneous;
 }
+/** Pause or resume plasticity without changing the acquired weights. */
+function setLearning(on) { if (!on) S.practiceEnd = null; life.setLearning(on); $("learning-toggle").textContent = on ? "Pause learning" : "Resume learning"; status(); return life.learning.on; }
+/** Select the declared activity-feedback lesson. */
+function setWorld(name) {
+  S.practiceEnd = null;
+  life.setWorld(name);
+  $("lesson-guide").textContent = name === "still" ? "Teach it to keep looking to the side after a glance. Gold flashes mark connections changing as it learns." : "Teach its gaze to drift back after a glance. This same brain keeps what it learned and adapts again.";
+  for (const b of $("world").querySelectorAll("button")) { b.classList.toggle("on", b.dataset.world === name); b.setAttribute("aria-pressed", String(b.dataset.world === name)); }
+  toast(WORLD_LABEL[name]);
+  status();
+  return name;
+}
+function resetSynapses() { S.practiceEnd = null; life.resetLearning(); $("learning-toggle").textContent = "Pause learning"; $("response-bars").hidden = true; $("probe-result").textContent = "Learning reset. Test its gaze to see the starting response."; twin.learningFlash.left.fill(0); twin.learningFlash.right.fill(0); twin.lastVisualLesson = null; toast("learning reset: starting weights and activity restored"); status(); return true; }
+/** The status strip: the label, and the learning's count and last lesson. */
+let shownLessons = 0;
+function status() {
+  const L = life.learning, last = L.last;
+  let changed = 0, total = 0;
+  for (const side of ["left", "right"]) { const b = twin.halves[side], original = b.efficacy0 || b.sign; if (b.efficacy) for (let e = 0; e < b.edges; e++) { total++; if (Math.abs(b.efficacy[e] - original[e]) > 1e-10) changed++; } }
+  const clock = `${Math.floor(life.time / 60)}:${String(Math.floor(life.time % 60)).padStart(2, "0")}`;
+  const remaining = Math.max(0, Math.ceil((S.practiceEnd ?? life.time) - life.time));
+  const progress = S.practiceEnd !== null
+    ? `Teaching · ${remaining} fish seconds left · ${L.lessons} lessons`
+    : `${L.lessons} lessons · ${changed.toLocaleString()} connections changed · ${L.on ? "learning" : "learning paused"}`;
+  if ($("learning-progress").textContent !== progress) $("learning-progress").textContent = progress;
+  $("practice-progress").hidden = S.practiceEnd === null;
+  $("practice-progress").value = S.practiceEnd === null ? 0 : (life.time - S.practiceStart) / (S.practiceEnd - S.practiceStart);
+  $("practice-lesson").disabled = S.practiceEnd !== null;
+  $("practice-lesson").textContent = S.practiceEnd !== null ? "Teaching…" : "Teach this lesson";
+  const lastChange = twin.lastVisualLesson;
+  $("brain-learning").textContent = lastChange ? `${lastChange.side} half · ${lastChange.changedEdges.toLocaleString()} connections changed in the last lesson` : "Gold marks cells receiving changed connections";
+  const observation = last ? (last.drift < 0 ? `last fixation: activity fell ${Math.abs(100 * last.drift).toFixed(0)}% in ${last.fixation.toFixed(1)} s` : `last fixation: activity grew ${Math.abs(100 * last.drift).toFixed(0)}% in ${last.fixation.toFixed(1)} s`) : "waiting for an undisturbed fixation";
+  shell.status(`${WORLD_SHORT[L.world]} · ${observation} · ${L.on ? "learning on" : "learning paused"}`);
+  if (L.lessons !== shownLessons && last) { shownLessons = L.lessons; toast(`lesson ${L.lessons}: ${last.side} half · measured drift ${Math.abs(100 * last.drift).toFixed(0)}%`); }
+}
+function measureLearning() {
+  const result = { ...probeLearning(twin), lessons: life.learning.lessons, fishTime: life.time }; app.lastProbe = result;
+  $("response-bars").hidden = false;
+  for (const [name, sample] of [["before", result.baseline], ["left", result.left], ["right", result.right]]) {
+    const value = sample.ratio === null ? 0 : 100 * sample.ratio;
+    $("response-" + name).value = Math.max(0, Math.min(100, value));
+    $("value-" + name).textContent = sample.ratio === null ? "—" : `${value.toFixed(1)}%`;
+  }
+  const growing = result.left.ratio > 1 || result.right.ratio > 1;
+  $("probe-result").textContent = `Gaze held after 5 seconds${growing ? " · above 100% means growing" : ""}`;
+  return result;
+}
+function practiceLesson() {
+  if (S.paused) togglePause();
+  setLearning(true); setSpontaneous(true);
+  $("auto-saccades").textContent = "Automatic glances on"; $("auto-saccades").setAttribute("aria-pressed", "true");
+  S.speed = 8; $("life-speed").textContent = "Time: 8×";
+  S.practiceStart = life.time;
+  S.practiceEnd = life.time + (life.learning.world === "still" ? 600 : life.learning.world === "back" ? 150 : 120);
+  status();
+}
+function finishPractice() {
+  setLearning(false); S.speed = 1; $("life-speed").textContent = "Time: 1×";
+  measureLearning(); status(); toast("practice complete · learning paused · acquired weights retained");
+}
+function restoreCompiled() { life.brain.restoreCompiled(); life.learning.on = false; life._clearFixations(); $("learning-toggle").textContent = "resume learning"; status(); }
+
 function requestSaccade(direction) {
   life.requestSaccade(direction);
   toast(direction > 0 ? "a leftward saccade: a burst to the left half's integrator" : "a rightward saccade: a burst to the right half's integrator");
@@ -139,23 +198,31 @@ $("light-move").onclick = () => moveLight();
 $("light-on").onclick = () => moveLight({ on: !world.light.on });
 $("follow").onclick = () => setFollow(!aquarium.following);
 $("pause").onclick = togglePause;
+for (const b of $("world").querySelectorAll("button")) b.onclick = () => setWorld(b.dataset.world);
+$("reset-synapses").onclick = () => resetSynapses();
+$("learning-toggle").onclick = () => setLearning(!life.learning.on);
+$("practice-lesson").onclick = () => practiceLesson();
+$("measure-learning").onclick = () => measureLearning();
+$("auto-saccades").onclick = () => { const on = setSpontaneous(!life.saccades.spontaneous); $("auto-saccades").textContent = `Automatic glances ${on ? "on" : "off"}`; $("auto-saccades").setAttribute("aria-pressed", String(on)); };
+$("life-speed").onclick = () => { const speeds = [1, 4, 8]; S.speed = speeds[(speeds.indexOf(S.speed) + 1) % speeds.length]; $("life-speed").textContent = `Time: ${S.speed}×`; };
 $("saccade-left").onclick = () => requestSaccade(1);
 $("saccade-right").onclick = () => requestSaccade(-1);
 $("fit").onclick = () => { if (brainView) brainView.fit(); };
 $("spin").onclick = () => { if (!brainView) return; brainView.options.spin = !brainView.options.spin; $("spin").classList.toggle("on", brainView.options.spin); };
 addEventListener("keydown", (e) => { if (e.key === " " && e.target === document.body) { e.preventDefault(); togglePause(); } });
 addEventListener("resize", () => { if (brainView) brainView.resize(); });
-tooltips($("tank")); tooltips($("brain"));  // the hover explanations of the buttons, drawn inside their pane
-setStripes({}); moveLight({});
+tooltips($("tank")); tooltips($("brain")); tooltips($("lesson-panel"));  // the hover explanations of the buttons, drawn inside their pane
+setStripes({}); moveLight({ on: false, x: TANK[0] / 2, y: TANK[1] / 2, z: TANK[2] + 4 });
 setFollow(true);  // the camera follows the fish by default
-for (let k = 0; k < 3; k++) dropPrey();
+// Start without random prey so the default lesson follows the seeded life checked in Node.
+// Feeding and lighting are optional disturbances, with their fixed pilot declared.
 
 // ---- the card ---------------------------------------------------------------------------------
 shell.card([
-  ...shell.page.paragraphs.map((text) => el("p", {}, text)),
-  ...describePayload(brain),
-  `<b>This page.</b> The dictionary (dictionary.js) between the fish and the compiled brainstem: one brain step is a fifth of the unit's time constant, declared as 0.2 s, so a step is ${STEP_MS} ms of fish time and the brain takes ${1000 / STEP_MS} steps per fish second, on the main thread (twin.js, two copies of the compiled half; the left copy lights the view). A saccade is a burst of ${SACCADE_STEPS} steps at level ${SACCADE_LEVEL} to one half's integrator, leftward to the left half. The yaw rate drives the Ve2 vestibular cells of the half the head turns toward, level ${VESTIBULAR_LEVEL} at ${VESTIBULAR_SATURATION} rad/s, so the eyes move against the turn. The conjugate gaze is ${GAZE_DEGREES_PER_UNIT} degrees per unit of the two halves' abducens readout difference, within ${GAZE_MAX} degrees, plus a declared pulse of ${PULSE_DEGREES} degrees while a burst is on. Compiled: the gaze holding and the vestibular push. Declared: the swim bouts, the hunt, the escape from a tap, the pulse, the mirror half, the eye geometry, the senses on the panel, the saccade schedule. The checks rest the brain as the control: the eyes then follow the pilot alone.`,
-  `<b>The brain view.</b> Every neuron of the measured half is lit by its own activity, scaled to the brightest cell of the moment, and flashed gold by the repair it made in its last step: how far it moved its potential toward what its synapses told it. Ask for a saccade and watch the wave: the integrator neurons flash as the burst arrives, the abducens cells follow, and the flashes die out while the integrator keeps holding its new level. That wave is the settlement; the held level is the answer, and the eye reads it.`,
+  "<b>A brain that keeps learning.</b> The fish's gaze circuit uses wiring compiled from a measured zebrafish connectome. Lessons change connection strengths on that same graph.",
+  "<b>What you teach.</b> Hold your gaze targets a nearly retained activity pattern; let it return asks for a smaller one. These are declared teaching signals, not learning from camera pixels. Swimming and hunting use a fixed pilot.",
+  "<b>What the colours mean.</b> Green shows neural activity. Gold marks cells whose incoming connections actually changed in a lesson. The view follows the half that just learned; brightness reflects the size of its changes.",
+  "<b>What stays.</b> Pausing learning or choosing another lesson keeps the learned connections. Reset learning forgets them. Test its gaze compares starting and current weights without changing the live fish.",
   sourcesList(),
 ]);
 
@@ -172,32 +239,30 @@ function captures(state) {
   world.prey = aquarium.preyList();
 }
 
-// ---- the view's two channels: the activity of the left half, and its repair since the last reading, fading ----
-const flash = new Float32Array(twin.n);
+// Green follows activity; gold follows only measured changes to effective weights.
 function lit() {
-  const b = twin.burst;
-  const floor = S.repairFloor, gain = S.repairGain;
-  for (let i = 0; i < twin.n; i++) { const x = (b[i] - floor) * gain, f = x <= 0 ? 0 : Math.sqrt(Math.min(1, x)), old = flash[i] * FLASH_DECAY; flash[i] = f > old ? f : old; b[i] = 0; }
-  brainView.setActivity(life.brain.activity("left"), flash);
+  const side = S.viewSide;
+  brainView.setActivity(life.brain.activity(side), twin.learningFlash[side]);
+  for (const f of Object.values(twin.learningFlash)) for (let i = 0; i < f.length; i++) f[i] *= 0.96;
 }
 // ---- the brain view, when the skeletons arrive ------------------------------------------------
 skeletonLoad.then((payload) => {
   if (!payload) { $("view-host").append(el("div", { id: "noscan" }, "brain view skipped (noscan)")); return; }
-  brainView = new BrainView($("view-host"), payload, { spin: true, controls: "legend", scale: "auto", gamma: 0.5, floor: 0.05 });
+  brainView = new BrainView($("view-host"), payload, { spin: true, controls: false, scale: "auto", gamma: 0.5, floor: 0.05, rest: [0.005, 0.045, 0.012], lit: [0.08, 0.55, 0.16], flash: [3, 1.1, 0.05] });
   app.brainView = brainView;
 }).catch((e) => { app.errors.push(String(e.message || e)); shell.status(`brain view unavailable: ${e.message || e}`); });
 
 // ---- the loop ---------------------------------------------------------------------------------
-let last = performance.now();
+let last = performance.now(), accumulated = 0;
 function frame(now) {
   requestAnimationFrame(frame);
   const dtWall = Math.min(0.05, Math.max(0, (now - last) / 1000)); last = now;
-  const dt = S.paused ? 0 : dtWall;
+  const dt = S.paused ? 0 : dtWall * S.speed;  // S.speed: fish seconds per wall second, 1 on the page; the checks raise it
   if (dt > 0) {
     world.prey = aquarium.preyList();
     if (world.tapSide !== 0 && world.tapAge > 0.3) world.tapSide = 0;
-    const n = Math.max(1, Math.ceil(dt / SUBSTEP)), h = dt / n;
-    for (let i = 0; i < n; i++) life.step(h);
+    accumulated += dt;
+    while (accumulated + 1e-12 >= SUBSTEP) { life.step(SUBSTEP); accumulated -= SUBSTEP; if (S.practiceEnd !== null && life.time + 1e-9 >= S.practiceEnd) { finishPractice(); accumulated = 0; break; } }
   }
   const state = life.body.state();
   if (dt > 0) captures(state);
@@ -209,6 +274,7 @@ function frame(now) {
   }
   S.frames++; S.totalFrames++; S.fpsClock += dtWall;
   if (S.fpsClock >= 1) { S.fps = S.frames / S.fpsClock; S.frames = 0; S.fpsClock = 0; }
+  if (now - S.lastHud >= 500) { status(); S.lastHud = now; }
   if (!app.ready && S.totalFrames >= 3) app.ready = true;
 }
 $("loading").classList.add("gone");
@@ -216,6 +282,7 @@ requestAnimationFrame(frame);
 
 Object.assign(app, {
   S, life, aquarium, fish, brainView, world, brain: twin,
+  learningVisual: () => ({ lessons: twin.visualLessons, last: twin.lastVisualLesson, side: S.viewSide, peak: Math.max(...twin.learningFlash[S.viewSide]) }),
   state: () => life.body.state(), senses: () => ({ ...(life.senses || {}) }), decision: () => life.lastDecision,
-  tap, setStripes, dropPrey, clearPrey, moveLight, setFollow, togglePause, setBrain, setSpontaneous, requestSaccade,
+  tap, setStripes, dropPrey, clearPrey, moveLight, setFollow, togglePause, setBrain, setSpontaneous, requestSaccade, setLearning, setWorld, resetSynapses, restoreCompiled, measureLearning, practiceLesson, learning: () => ({ ...life.learning, sides: undefined, log: life.learning.log.slice(-10) }),
 });

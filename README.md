@@ -106,7 +106,7 @@ section below. The library README has
 | [Atari Arcade](atari-arcade/) | Brains that learn Atari games from pixels: a teacher first, then reward | `Brain.compose` (System 1); in the browser, a JavaScript version of it |
 | [Amen](amen/) | A record patch composing jungle tracks in the browser | A brain trained with `RecordPatchNet`; the page runs a JavaScript version of its forward pass |
 | [Eyes](eyes/) | One brain that follows every shape you drag with its own eye, from the page's pixels only | A hand-wired connectome run by `cadence.Brain`; in the browser, the released library itself, in Pyodide |
-| [Connectome](connectome/) | Two animals' measured wiring compiled into patch nets that run in your browser: a Platynereis larva with its whole-body connectome in the loop, and a zebrafish brainstem that holds its gaze | A frozen Cadence rate patch net in JavaScript, one patch per cell and the synapse counts as weights; no learning; compiled by the public connectome compiler |
+| [Connectome](connectome/) | Teach a fish gaze circuit to hold, return and hold again on measured wiring; explore a larva with fixed connections | Cadence rate patches in JavaScript, with plastic fish connections and declared body models |
 
 Rover Lab and Patch World run on the population solver, Atari Arcade on
 `Brain.compose`, Amen on a record patch, and Eyes on a hand-wired connectome
@@ -198,27 +198,20 @@ python -m http.server -d eyes/web 8797   # open http://localhost:8797/
 
 See the [Eyes README](eyes/README.md).
 
-## [Connectome](connectome/): compiled biological wiring, in the browser
+## [Connectome](connectome/): teach a compiled circuit
 
-A connectome is a wiring diagram measured in an animal: every cell, every synapse,
-how many contacts each connection carries. A connectome compiler, not published
-itself, turns such a table into a Cadence rate patch net without changing a number in it:
-one patch per cell, one relation per recorded connection, the synapse count as the
-weight. Signs, gain, the neuron's response law, the senses and the body are declared,
-and the pages say so. The larva is the three-day Platynereis dumerilii of Verasztó
-et al. 2025 with every traced cell in the loop: the lamp lands on its real
-photoreceptors, a tap on its collar receptors, and its cilia and muscles are read
-from the real effector cells. The fish carries one side of a larval zebrafish
-hindbrain (Vishwanathan et al. 2024) that holds its gaze after a saccade. The brain
-view lights every cell by its activity and flashes it gold by the repair it made in
-its last step, so a stimulus shows as a wave of local repairs before the net rests.
-This demo has no learning: it is the compiled, frozen wiring, and its receipts
-report which circuit checks the measured wiring passes against shuffled controls. The
-demo's README describes the compilation step by step, and every compiled net and receipt
-ships in its data folder.
+Measured animal wiring becomes a running Cadence patch net. Teach the fish **hold your
+gaze**, then **let it return**, then hold again on the same brain. Its connection strengths
+change through practice. Pausing learning retains them; reset starts them over.
 
-```
+The fish learns its gaze response from declared activity feedback. A fixed pilot supplies
+swimming, hunting and escape. The Platynereis larva demonstrates a whole-body connectome
+with fixed weights. The two preprints behind the construction are
+[Agreement and Surprise](https://philpapers.org/rec/MUEAAS-2) and
+[Cadence: Learning Through Local Patch Settlement](https://philpapers.org/rec/MUECAP-2).
+
+```sh
 python -m http.server -d connectome/web 8800   # open http://localhost:8800/
 ```
 
-See the [Connectome README](connectome/README.md).
+See the [Connectome README](connectome/README.md) to run, teach and check the demo.

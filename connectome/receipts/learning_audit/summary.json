@@ -1,0 +1,237 @@
+{
+  "schema": "cadence-learning-audit/1",
+  "created_utc": "2026-10-07T10:16:13.608391+00:00",
+  "purpose": "Repository audit record for the declared connectome teaching demo; not page copy.",
+  "final_evidence": {
+    "receipts/learning_release.json": {
+      "sha256": "8ef4853b58d0ac4c260291732fa4881a2c24f5ec0b12ea2dd846b40283a0d9ac",
+      "command": "node tests/learning_release.mjs --out receipts/learning_release.json",
+      "verdict": {
+        "simple_hold_and_return_supported": true,
+        "failures": [],
+        "recovery_all_probes": true,
+        "scope": "Declared population-rate model and teacher. No biological learning claim, general intelligence claim, uniform-random policy comparison, or proof of long-run stability."
+      },
+      "phase_ranges": {
+        "hold": {
+          "retention_12s_range": [
+            0.7730155322460964,
+            0.8702320392335786
+          ],
+          "retention_24s_range": [
+            0.6127953883634573,
+            0.7597944219515785
+          ],
+          "small_to_large_readout_12s_range": [
+            0.32507638426139074,
+            0.32716667810822814
+          ],
+          "lessons_by_seed": [
+            70,
+            66,
+            70
+          ]
+        },
+        "return": {
+          "retention_12s_range": [
+            0.01256425699892278,
+            0.037435126668990806
+          ],
+          "retention_24s_range": [
+            0.00015797326971410633,
+            0.0013945919368327341
+          ],
+          "small_to_large_readout_12s_range": [
+            0.302288146808728,
+            0.30321321976884186
+          ],
+          "lessons_by_seed": [
+            24,
+            25,
+            23
+          ]
+        },
+        "stress": {
+          "retention_12s_range": [
+            0.4671785173863677,
+            1.0186497311736216
+          ],
+          "retention_24s_range": [
+            0.2226362277645495,
+            1.0387374850152586
+          ],
+          "small_to_large_readout_12s_range": [
+            0.31414037432288006,
+            0.3330093887382924
+          ],
+          "lessons_by_seed": [
+            21,
+            21,
+            23
+          ]
+        },
+        "recovery": {
+          "retention_12s_range": [
+            0.7417611761923424,
+            1.0186497311736216
+          ],
+          "retention_24s_range": [
+            0.5645790964862482,
+            1.0387374850152586
+          ],
+          "small_to_large_readout_12s_range": [
+            0.3237891690528771,
+            0.3330093887382924
+          ],
+          "lessons_by_seed": [
+            7,
+            4,
+            0
+          ]
+        }
+      }
+    },
+    "receipts/learning_reteach.json": {
+      "sha256": "9fc08e2bb604dc5e14c4ecc8b1467eda1d660776e18aa3dd3a46d892ab6368ca",
+      "command": "node tests/learning_reteach.mjs --out receipts/learning_reteach.json",
+      "verdict": {
+        "simple_hold_and_return_supported": true,
+        "direct_reteach_supported": true,
+        "failures": [],
+        "recovery_all_probes": true,
+        "scope": "Declared population-rate model and teacher. No biological learning claim, general intelligence claim, uniform-random policy comparison, or proof of long-run stability."
+      },
+      "phase_ranges": {
+        "hold": {
+          "retention_12s_range": [
+            0.7730155322460964,
+            0.8702320392335786
+          ],
+          "retention_24s_range": [
+            0.6127953883634573,
+            0.7597944219515785
+          ],
+          "small_to_large_readout_12s_range": [
+            0.32507638426139074,
+            0.32716667810822814
+          ],
+          "lessons_by_seed": [
+            70,
+            66,
+            70
+          ]
+        },
+        "return": {
+          "retention_12s_range": [
+            0.01256425699892278,
+            0.037435126668990806
+          ],
+          "retention_24s_range": [
+            0.00015797326971410633,
+            0.0013945919368327341
+          ],
+          "small_to_large_readout_12s_range": [
+            0.302288146808728,
+            0.30321321976884186
+          ],
+          "lessons_by_seed": [
+            24,
+            25,
+            23
+          ]
+        },
+        "recovery": {
+          "retention_12s_range": [
+            0.7893383905510192,
+            0.8941309235469128
+          ],
+          "retention_24s_range": [
+            0.6382735265490808,
+            0.8017173745219697
+          ],
+          "small_to_large_readout_12s_range": [
+            0.3257481946385467,
+            0.3280078543655948
+          ],
+          "lessons_by_seed": [
+            34,
+            36,
+            35
+          ]
+        }
+      }
+    }
+  },
+  "controls_and_assessment": {
+    "matched_control": "Identical starting gain, weights, seed, body/pilot and schedule; only plasticity frozen. Subsequent actions may differ through gaze feedback.",
+    "assessment": "Both halves, two pulse amplitudes, 12- and 24-second unclipped motor readouts from separate fresh copies of the acquired weights. Probes never alter the continuing life.",
+    "prospective_seeds": [
+      10,
+      11,
+      12
+    ],
+    "development_seeds": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "initial_hold_and_return_replicate_between_final_assays": true
+  },
+  "findings_and_repairs": [
+    {
+      "finding": "Learning-off restored a higher gain; reset did not reliably reset learned relations.",
+      "repair": "Separate freeze/resume, explicit fresh learner and compiled baseline operations; matched gain control."
+    },
+    {
+      "finding": "The first half cleared references before the second half decided whether to learn; unfinished fixations could cross feedback conditions.",
+      "repair": "Both decisions read one reference snapshot; condition switches discard pending teaching evidence."
+    },
+    {
+      "finding": "Early stopping gave free and nudged one-sided phases different elapsed durations.",
+      "repair": "The free continuation uses exactly the nudged phase actual step count."
+    },
+    {
+      "finding": "Global relative scaling depended on disconnected contacts and did not bound individual proposals.",
+      "repair": "Normalize each contact proposal by its own endpoint products; retain local receiving-row input-mass and sign constraints."
+    },
+    {
+      "finding": "Training-derived hold estimates and discarded growing responses hid unstable motor readouts.",
+      "repair": "Independent fresh-state weight-copy probes record actual readout retention, including growth; retain all failures."
+    },
+    {
+      "finding": "A 100% reference target with a 5% dead zone permitted slow growth after reteaching.",
+      "repair": "Use the existing target-fraction gene at 0.95. In integrator reference units the nominal no-update band becomes 90\u2013100%, rather than 95\u2013105%; this motivates the change but is not a stability proof."
+    }
+  ],
+  "protocol_changes": [
+    "Select contact-local proposal scaling with eta 0.01 after development comparisons; no extra learner or optimizer was added.",
+    "The fixed 420-second initial lesson failed the unchanged minimum-retention gate in two halves. Increase fixed exposure to 600 seconds; preserve the failure.",
+    "Direct return-to-hold reteaching exposed growth at target fraction 1. Preserve that failure, select target fraction 0.95 on development seeds, then freeze source and gates before seeds 10\u201312."
+  ],
+  "preserved_records": [
+    "receipts/learning_audit/before_audit/receipt.json and its complete runnable source closure",
+    "receipts/learning_audit/hold420_seeds4-6.json and hold420_protocol.mjs",
+    "receipts/learning_audit/target100/receipts/learning_reteach.json and source closure",
+    "receipts/learning_audit/target95_development/seed1.json and seeds7-9.json with source closure",
+    "The original receipts/learning.json and historical library parity fixtures were not rewritten."
+  ],
+  "manifesto_alignment": [
+    "Retain the existing sparse population brain, anatomy payload and free/nudged local contrast. No additional prediction network, policy optimizer, global corrective controller or new brain module.",
+    "Replace a nonlocal normalization with endpoint-local information; tune existing step-size and target-fraction genes rather than adding mechanisms.",
+    "Preserve earlier evidence, disclose failures and use matched controls with independent behavior assessment. This remains the declared population-solver demonstration, not evidence that an integrated Brain.compose learner has been validated."
+  ],
+  "limits": [
+    "Three seeded lives are not three independent anatomical reconstructions or biological experiments.",
+    "The teacher uses saved integrator activity, not measured retinal slip or rendered visual input; swimming and saccade scheduling include a declared application pilot.",
+    "Passing these finite pulse tests does not establish asymptotic stability, a continuum of stationary memories, spiking-learning equivalence or unlimited repeatability.",
+    "Amplified feedback remains an experimental condition; no reliable oscillation or universal recovery claim follows.",
+    "The evidence compares plastic and frozen circuits, not learned policy intelligence or a uniform-random policy benchmark.",
+    "The browser must also pass its interaction and regression checks; these receipts certify the headless protocols they name."
+  ]
+}

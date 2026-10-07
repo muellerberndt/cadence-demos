@@ -1,0 +1,20 @@
+{
+  "scope": "Actual applied weight changes shown as gold on receiver cells; separate green activity channel; keyboard tooltip works",
+  "stats": {
+    "visual": {
+      "lessons": 1,
+      "last": {
+        "side": "left",
+        "changedEdges": 14129,
+        "changedCells": 930
+      },
+      "side": "left",
+      "peak": 0.4133422374725342
+    },
+    "renderedGoldCells": 731,
+    "renderedActivity": 0.004681955557316542
+  },
+  "browser": "153.0.8010.12",
+  "errors": [],
+  "passed": true
+}

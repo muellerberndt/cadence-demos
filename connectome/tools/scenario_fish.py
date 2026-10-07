@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """The fish page in headless Chromium: the closed loop that tests/life.mjs checks in node,
-checked again on the page itself, then a screenshot with the brain view on.
+checked again at the original compiled weights, then a screenshot with the brain view on.
+Learning is tested separately by check_learning_ui.py and tests/learning_release.mjs.
 
     python3 tools/scenario_fish.py --out docs/screenshots/fish.png --receipt receipts/scenario_fish.json
 
@@ -88,7 +89,7 @@ def checks(page) -> dict:
     page.wait_for_function("window.__app.life.steps > 50", timeout=120000)
 
     # (a) a requested leftward saccade in a quiet fish: the gaze holds, then decays slowly
-    page.evaluate("() => { window.__app.setSpontaneous(false); window.__app.clearPrey(); }")
+    page.evaluate("() => { window.__app.setSpontaneous(false); window.__app.clearPrey(); window.__app.restoreCompiled(); }")
     page.wait_for_function("window.__app.life.saccades.stepsLeft <= 0 && window.__app.life.burst === 0", timeout=30000)
     page.evaluate("window.__app.life.brain.reset()")
     t0 = page.evaluate("window.__app.life.time")
@@ -105,7 +106,7 @@ def checks(page) -> dict:
         "gaze_2s_deg": g2, "gaze_12s_deg": g12, "ratio_12s_to_2s": ratio, "hot_fraction_left": hot,
         "bouts_in_window": page.evaluate("window.__app.state().bouts") - bouts0,
         "saccades_in_window": page.evaluate("window.__app.life.saccades.count") - saccades0,
-        "conditions": {"spontaneous_saccades": False, "prey": 0, "brain_reset_before_request": True, "pilot_swimming": True},
+        "conditions": {"spontaneous_saccades": False, "prey": 0, "brain_reset_before_request": True, "compiled_weights_restored": True, "pilot_swimming": True},
         "pass": bool(g2 > 5 and g12 > 0.4 * g2 and hot <= 0.05),
     }
 
@@ -208,7 +209,7 @@ def main() -> None:
         threading.Thread(target=server.serve_forever, daemon=True).start()
         url = f"http://127.0.0.1:{server.server_address[1]}/web/fish.html"
     t0 = time.time()
-    receipt: dict = {"page": "web/index.html", "query": CHECK_QUERY, "date": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")}
+    receipt: dict = {"page": "web/fish.html", "query": CHECK_QUERY, "date": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")}
     try:
         with sync_playwright() as p:
             browser, how = launch(p, args.executable)

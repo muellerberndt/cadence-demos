@@ -1,0 +1,80 @@
+{
+ "pages": {
+  "index": {
+   "ready": true,
+   "seconds_to_ready": 20.5,
+   "console_errors": [],
+   "app_errors": [],
+   "failed_requests": [],
+   "screenshot": "docs/screenshots/learning_check_index.png"
+  },
+  "explain": {
+   "ready": true,
+   "seconds_to_ready": 6.9,
+   "console_errors": [],
+   "app_errors": [],
+   "failed_requests": [],
+   "screenshot": "docs/screenshots/learning_check_explain.png"
+  },
+  "disclaimers": {
+   "ready": true,
+   "seconds_to_ready": 2.3,
+   "console_errors": [],
+   "app_errors": [],
+   "failed_requests": [],
+   "screenshot": "docs/screenshots/learning_check_disclaimers.png"
+  },
+  "copy": {
+   "ready": true,
+   "seconds_to_ready": 17.3,
+   "console_errors": [],
+   "app_errors": [],
+   "failed_requests": [],
+   "screenshot": "docs/screenshots/learning_check_copy.png"
+  },
+  "paste": {
+   "ready": true,
+   "seconds_to_ready": 6.1,
+   "console_errors": [],
+   "app_errors": [],
+   "failed_requests": [],
+   "screenshot": "docs/screenshots/learning_check_paste.png"
+  },
+  "match": {
+   "ready": true,
+   "seconds_to_ready": 3.7,
+   "console_errors": [],
+   "app_errors": [],
+   "failed_requests": [],
+   "screenshot": "docs/screenshots/learning_check_match.png"
+  },
+  "limits": {
+   "ready": true,
+   "seconds_to_ready": 7.5,
+   "console_errors": [],
+   "app_errors": [],
+   "failed_requests": [],
+   "screenshot": "docs/screenshots/learning_check_limits.png"
+  },
+  "why": {
+   "ready": true,
+   "seconds_to_ready": 10.7,
+   "console_errors": [],
+   "app_errors": [],
+   "failed_requests": [],
+   "screenshot": "docs/screenshots/learning_check_why.png"
+  },
+  "fish": {
+   "ready": true,
+   "seconds_to_ready": 10.7,
+   "console_errors": [],
+   "app_errors": [],
+   "failed_requests": [],
+   "screenshot": "docs/screenshots/learning_check_fish.png"
+  }
+ },
+ "date": "2026-10-07",
+ "renderer": "swiftshader",
+ "browser": "153.0.8010.12",
+ "clean": true
+}

@@ -90,7 +90,7 @@ export function mountShell(pageId, options = {}) {
 /** Hover explanations: every element with a data-tip inside `root` shows it in one shared box above
  *  itself (below, with data-tip-side="below"), kept inside root's box so nothing clips at an edge. */
 export function tooltips(root) {
-  const box = el("div", { class: "tip", role: "tooltip" });
+  const box = el("div", { class: "tip", role: "tooltip", id: `${root.id || "controls"}-tooltip` });
   root.append(box);
   const show = (e) => {
     const t = e.currentTarget;
@@ -101,7 +101,7 @@ export function tooltips(root) {
     box.style.left = `${x}px`; box.style.top = `${Math.max(4, y)}px`; box.style.visibility = "";
   };
   const hide = () => box.classList.remove("show");
-  for (const t of root.querySelectorAll("[data-tip]")) { t.addEventListener("pointerenter", show); t.addEventListener("focus", show); t.addEventListener("pointerleave", hide); t.addEventListener("blur", hide); t.addEventListener("click", hide); }
+  for (const t of root.querySelectorAll("[data-tip]")) { t.setAttribute("aria-describedby", box.id); t.addEventListener("pointerenter", show); t.addEventListener("focus", show); t.addEventListener("pointerleave", hide); t.addEventListener("blur", hide); t.addEventListener("click", (e) => e.pointerType === "touch" ? show(e) : hide()); }
   return box;
 }
 
@@ -120,7 +120,7 @@ export function describePayload(p) {
 /** The sources, for the card. */
 export function sourcesList() {
   return el("ul", {},
-    el("li", { html: `<a href="${PAPER_URL}">Vishwanathan et al. 2024, Nat Neurosci 27:2340</a>: the reconstruction, the classes, the imaging.` }),
+    el("li", { html: `<a href="${PAPER_URL}">Vishwanathan et al. 2024, Nat Neurosci 27:2443–2454</a>: the reconstruction, the classes, the imaging.` }),
     el("li", { html: `<a href="${SOURCES.Zfish_recon}">Zfish_recon</a> (skeletons and classes) and <a href="${SOURCES["Connectome-Model"]}">Connectome-Model</a> (the matrix and the imaged sensitivities).` }),
     el("li", { html: `<a href="https://github.com/muellerberndt/cadence">Cadence</a>: the library whose rate model the browser engine reproduces.` }));
 }

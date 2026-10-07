@@ -1,0 +1,78 @@
+{
+  "page": "web/fish.html",
+  "query": "?noscan=1&nobloom=1",
+  "date": "2026-10-07T10:04:03+00:00",
+  "browser": "153.0.8010.12",
+  "launch": {
+    "executable_path": "/Users/muellerberndt/Library/Caches/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-mac-arm64/chrome-headless-shell"
+  },
+  "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+  "checks": {
+    "saccade_hold": {
+      "gaze_2s_deg": 22.462378433421545,
+      "gaze_12s_deg": 18.218760678562976,
+      "ratio_12s_to_2s": 0.8110788771796075,
+      "hot_fraction_left": 0,
+      "bouts_in_window": 9,
+      "saccades_in_window": 1,
+      "conditions": {
+        "spontaneous_saccades": false,
+        "prey": 0,
+        "brain_reset_before_request": true,
+        "compiled_weights_restored": true,
+        "pilot_swimming": true
+      },
+      "pass": true
+    },
+    "brain_off": {
+      "gaze_after_1s_deg": 0,
+      "pass": true
+    },
+    "tap": {
+      "pane": "left",
+      "last_bout": "cstart",
+      "latency_s": 0.0,
+      "acoustic_seen": 0.4895416595569531,
+      "pass": true
+    },
+    "fps": {
+      "frames": 66,
+      "seconds": 5.02,
+      "fps": 13.147331732107268,
+      "page_fps": 22.86149742808163
+    },
+    "summary": {
+      "fish_seconds": 18.29000000000006,
+      "life_steps": 457,
+      "brain_steps": 381,
+      "ms_per_brain_step": 0.4606481474582796,
+      "page_fps": 22.86149742808163,
+      "frames": 391,
+      "bouts": 17,
+      "saccades": 2,
+      "gaze_deg": 23.421883961191288,
+      "brain_on": true,
+      "prey": 3,
+      "captures": 0
+    }
+  },
+  "errors": [],
+  "screenshot": {
+    "path": "docs/screenshots/fish_preservation.png",
+    "launch": "swiftshader",
+    "browser": "153.0.8010.12",
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+    "fps": 3.3128623180535937,
+    "active_skeletons": 0,
+    "skeletons": 1328,
+    "gaze_deg": 1.3871325020597278,
+    "fish_seconds": 6.8899999999998975,
+    "errors": [],
+    "bytes": 340395,
+    "notes": [
+      "hardware: BrowserType.launch: Executable doesn't exist at /Users/muellerberndt/Library/Caches/ms-playwright/chromium-1223/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing"
+    ]
+  },
+  "passed": true,
+  "seconds": 118.3
+}
