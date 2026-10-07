@@ -33,7 +33,7 @@ const WORLD_LABEL = { still: "lessons favor retaining the gaze activity", back: 
 
 const shell = mountShell("fish", { status: LABEL });
 $("tank-title").textContent = shell.page.title;
-const S = { paused: false, speed: 1, practiceEnd: null, practiceStart: 0, viewSide: "left", seed: Number(params.get("seed") || 1), frames: 0, totalFrames: 0, fps: 0, fpsClock: 0, lastHud: -Infinity, lastLit: -Infinity, captures: 0, brainMs: 0, brainSteps: 0, repairFloor: REPAIR_FLOOR, repairGain: REPAIR_GAIN };
+const S = { paused: false, speed: 1, practiceEnd: null, practiceStart: 0, practiceSpeedBefore: null, viewSide: "left", seed: Number(params.get("seed") || 1), frames: 0, totalFrames: 0, fps: 0, fpsClock: 0, lastHud: -Infinity, lastLit: -Infinity, captures: 0, brainMs: 0, brainSteps: 0, repairFloor: REPAIR_FLOOR, repairGain: REPAIR_GAIN };
 
 /** Observe applied synaptic changes for the display; the lesson itself stays in TwinBrain. */
 class TimedTwin extends TwinBrain {
@@ -122,11 +122,18 @@ function setSpontaneous(flag) {
   if (life.saccades.spontaneous) life.saccades.next = life.time + 3;
   return life.saccades.spontaneous;
 }
+function setSpeed(speed) { S.speed = speed; $("life-speed").textContent = `Time: ${speed}×`; }
+/** End automatic practice, preserving any speed the user chose during it. */
+function endPractice() {
+  S.practiceEnd = null;
+  if (S.practiceSpeedBefore !== null) setSpeed(S.practiceSpeedBefore);
+  S.practiceSpeedBefore = null;
+}
 /** Pause or resume plasticity without changing the acquired weights. */
-function setLearning(on) { if (!on) S.practiceEnd = null; life.setLearning(on); $("learning-toggle").textContent = on ? "Pause learning" : "Resume learning"; status(); return life.learning.on; }
+function setLearning(on) { if (!on) endPractice(); life.setLearning(on); $("learning-toggle").textContent = on ? "Pause learning" : "Resume learning"; status(); return life.learning.on; }
 /** Select the declared activity-feedback lesson. */
 function setWorld(name) {
-  S.practiceEnd = null;
+  endPractice();
   life.setWorld(name);
   $("lesson-guide").textContent = name === "still" ? "Teach it to keep looking to the side after a glance. Gold flashes mark connections changing as it learns." : "Teach its gaze to drift back after a glance. This same brain keeps what it learned and adapts again.";
   for (const b of $("world").querySelectorAll("button")) { b.classList.toggle("on", b.dataset.world === name); b.setAttribute("aria-pressed", String(b.dataset.world === name)); }
@@ -134,7 +141,7 @@ function setWorld(name) {
   status();
   return name;
 }
-function resetSynapses() { S.practiceEnd = null; life.resetLearning(); $("learning-toggle").textContent = "Pause learning"; $("response-bars").hidden = true; $("probe-result").textContent = "Learning reset. Test its gaze to see the starting response."; twin.learningFlash.left.fill(0); twin.learningFlash.right.fill(0); twin.lastVisualLesson = null; toast("learning reset: starting weights and activity restored"); status(); return true; }
+function resetSynapses() { endPractice(); life.resetLearning(); $("learning-toggle").textContent = "Pause learning"; $("response-bars").hidden = true; $("probe-result").textContent = "Learning reset. Test its gaze to see the starting response."; twin.learningFlash.left.fill(0); twin.learningFlash.right.fill(0); twin.lastVisualLesson = null; toast("learning reset: starting weights and activity restored"); status(); return true; }
 /** The status strip: the label, and the learning's count and last lesson. */
 let shownLessons = 0;
 function status() {
@@ -170,6 +177,8 @@ function measureLearning() {
   return result;
 }
 function practiceLesson() {
+  if (S.practiceEnd !== null) return;
+  S.practiceSpeedBefore = S.speed; setSpeed(8);
   if (S.paused) togglePause();
   setLearning(true); setSpontaneous(true);
   $("auto-saccades").textContent = "Automatic glances on"; $("auto-saccades").setAttribute("aria-pressed", "true");
@@ -181,7 +190,7 @@ function finishPractice() {
   setLearning(false);
   measureLearning(); status(); toast("practice complete · learning paused · acquired weights retained");
 }
-function restoreCompiled() { life.brain.restoreCompiled(); life.learning.on = false; life._clearFixations(); $("learning-toggle").textContent = "resume learning"; status(); }
+function restoreCompiled() { endPractice(); life.brain.restoreCompiled(); life.learning.on = false; life._clearFixations(); $("learning-toggle").textContent = "resume learning"; status(); }
 
 function requestSaccade(direction) {
   life.requestSaccade(direction);
@@ -203,7 +212,7 @@ $("learning-toggle").onclick = () => setLearning(!life.learning.on);
 $("practice-lesson").onclick = () => practiceLesson();
 $("measure-learning").onclick = () => measureLearning();
 $("auto-saccades").onclick = () => { const on = setSpontaneous(!life.saccades.spontaneous); $("auto-saccades").textContent = `Automatic glances ${on ? "on" : "off"}`; $("auto-saccades").setAttribute("aria-pressed", String(on)); };
-$("life-speed").onclick = () => { const speeds = [1, 4, 8]; S.speed = speeds[(speeds.indexOf(S.speed) + 1) % speeds.length]; $("life-speed").textContent = `Time: ${S.speed}×`; };
+$("life-speed").onclick = () => { const speeds = [1, 4, 8]; S.practiceSpeedBefore = null; setSpeed(speeds[(speeds.indexOf(S.speed) + 1) % speeds.length]); };
 $("saccade-left").onclick = () => requestSaccade(1);
 $("saccade-right").onclick = () => requestSaccade(-1);
 $("fit").onclick = () => { if (brainView) brainView.fit(); };

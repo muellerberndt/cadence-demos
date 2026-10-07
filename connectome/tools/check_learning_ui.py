@@ -1,7 +1,7 @@
 """Exercise the visible fish teaching controls in Chromium; preserve historical receipts.
 
 python3 tools/check_learning_ui.py [--url http://127.0.0.1:8000/]
-The test selects 8x with the visible speed control, then teaches without injecting lessons.
+Teaching automatically selects 8x on the visible speed control, without injecting lessons.
 """
 import argparse
 import hashlib
@@ -36,9 +36,7 @@ def main():
         assert not page.locator("#teaching-controls").evaluate("e => e.open")
         assert page.locator("#life-speed").is_visible()
         page.locator("#pause").click()
-        page.locator("#life-speed").click()
-        page.locator("#life-speed").click()
-        assert page.evaluate("window.__app.S.speed") == 8
+        assert page.evaluate("window.__app.S.speed") == 1
         page.locator("#teaching-controls > summary").click()
         page.locator("#more-controls").evaluate("e => e.open = true")
         page.locator("#reset-synapses").click()
@@ -47,9 +45,11 @@ def main():
         assert initial["left"]["ratio"] == initial["baseline"]["ratio"] == initial["right"]["ratio"]
         out["initial"] = initial
         page.locator("#practice-lesson").click()
+        assert page.evaluate("window.__app.S.speed") == 8
+        assert page.locator("#life-speed").inner_text() == "Time: 8×"
         print("visible hold practice started (600 fish seconds at 8x)", flush=True)
         page.wait_for_function("window.__app.S.practiceEnd === null && !window.__app.learning().on", timeout=300000)
-        assert page.evaluate("window.__app.S.speed") == 8, "finishing a lesson changed the selected speed"
+        assert page.evaluate("window.__app.S.speed") == 1, "finishing a lesson did not restore the previous speed"
         held = page.evaluate("window.__app.lastProbe")
         for side in ("left", "right"):
             assert .45 < held[side]["ratio"] <= 1.05, held
@@ -69,6 +69,8 @@ def main():
         page.locator("#world [data-world=back]").click()
         assert page.evaluate(digest) == acquired, "selecting feedback erased learning"
         page.locator("#practice-lesson").click()
+        assert page.evaluate("window.__app.S.speed") == 8
+        assert page.locator("#life-speed").inner_text() == "Time: 8×"
         print("visible return practice started (150 fish seconds at 8x)", flush=True)
         page.wait_for_function("window.__app.S.practiceEnd === null && !window.__app.learning().on", timeout=180000)
         returned = page.evaluate("window.__app.lastProbe")
@@ -77,6 +79,8 @@ def main():
         out["return"] = returned
         page.locator("#world [data-world=still]").click()
         page.locator("#practice-lesson").click()
+        assert page.evaluate("window.__app.S.speed") == 8
+        assert page.locator("#life-speed").inner_text() == "Time: 8×"
         print("visible reteach practice started (600 fish seconds at 8x)", flush=True)
         page.wait_for_function("window.__app.S.practiceEnd === null && !window.__app.learning().on", timeout=300000)
         retaught = page.evaluate("window.__app.lastProbe")

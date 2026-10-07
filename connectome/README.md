@@ -25,8 +25,9 @@ site. No application server is required.
 2. Choose **let it return** and teach again on the same brain.
 3. Switch back to **hold your gaze** and compare the response after another practice.
 
-**Time: 1×** is always visible beside the teaching panel. Click to choose 1×, 4× or 8×;
-teaching keeps your chosen speed. Use 8× for faster practice.
+**Time** stays visible beside the teaching panel. Lessons automatically run at 8×, then
+restore the previous speed when they finish or stop. Click Time to choose 1×, 4× or 8×
+during a lesson; that manual choice stays afterward.
 
 **Pause learning** retains acquired weights. **Reset learning** restores the starting
 weights and clears activity. **Test its gaze** compares copies of current and starting
