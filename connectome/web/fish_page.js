@@ -24,6 +24,7 @@ const CAPTURE_RADIUS = 0.4;                   // mm from the snout
 const STRIPE_SPEEDS = [2, 5, 10];
 const SUBSTEP = 0.01;                         // s, the life advances in pieces this long at most, as tests/life.mjs does
 const LIT_MS = 50;                            // the view reads the brain twenty times a second
+const PROBE_MS = 1000;                        // refresh the teaching bars at most once per wall second
 const REPAIR_FLOOR = 0.004;                   // a repair (|Δv| in one step) below this is the net's resting drift and does not flash
 const REPAIR_GAIN = 10;                       // a neuron's flash is sqrt(min(1, (|Δv| - floor) × this))
 const FLASH_DECAY = 0.9;                      // per reading: a flash halves in about a third of a second of wall time
@@ -33,7 +34,7 @@ const WORLD_LABEL = { still: "lessons favor retaining the gaze activity", back: 
 
 const shell = mountShell("fish", { status: LABEL });
 $("tank-title").textContent = shell.page.title;
-const S = { paused: false, speed: 1, practiceEnd: null, practiceStart: 0, practiceSpeedBefore: null, viewSide: "left", seed: Number(params.get("seed") || 1), frames: 0, totalFrames: 0, fps: 0, fpsClock: 0, lastHud: -Infinity, lastLit: -Infinity, captures: 0, brainMs: 0, brainSteps: 0, repairFloor: REPAIR_FLOOR, repairGain: REPAIR_GAIN };
+const S = { paused: false, speed: 1, practiceEnd: null, practiceStart: 0, practiceSpeedBefore: null, viewSide: "left", seed: Number(params.get("seed") || 1), frames: 0, totalFrames: 0, fps: 0, fpsClock: 0, lastHud: -Infinity, lastLit: -Infinity, lastProbeAt: -Infinity, captures: 0, brainMs: 0, brainSteps: 0, repairFloor: REPAIR_FLOOR, repairGain: REPAIR_GAIN };
 
 /** Observe applied synaptic changes for the display; the lesson itself stays in TwinBrain. */
 class TimedTwin extends TwinBrain {
@@ -141,11 +142,14 @@ function setWorld(name) {
   status();
   return name;
 }
-function resetSynapses() { endPractice(); life.resetLearning(); $("learning-toggle").textContent = "Pause learning"; $("response-bars").hidden = true; $("probe-result").textContent = "Learning reset. Test its gaze to see the starting response."; twin.learningFlash.left.fill(0); twin.learningFlash.right.fill(0); twin.lastVisualLesson = null; toast("learning reset: starting weights and activity restored"); status(); return true; }
+function resetSynapses() { endPractice(); life.resetLearning(); app.lastProbe = null; $("learning-toggle").textContent = "Pause learning"; $("response-bars").hidden = true; $("probe-result").textContent = "Learning reset. Teach a lesson or test its gaze."; twin.learningFlash.left.fill(0); twin.learningFlash.right.fill(0); twin.lastVisualLesson = null; toast("learning reset: starting weights and activity restored"); status(); return true; }
 /** The status strip: the label, and the learning's count and last lesson. */
 let shownLessons = 0;
 function status() {
   const L = life.learning, last = L.last;
+  // Read new weights on copies, after the live steps have finished. Unchanged
+  // weights need no new test, even while the fish continues moving.
+  if (S.practiceEnd !== null && L.lessons !== app.lastProbe?.lessons && performance.now() - S.lastProbeAt >= PROBE_MS) measureLearning();
   let changed = 0, total = 0;
   for (const side of ["left", "right"]) { const b = twin.halves[side], original = b.efficacy0 || b.sign; if (b.efficacy) for (let e = 0; e < b.edges; e++) { total++; if (Math.abs(b.efficacy[e] - original[e]) > 1e-10) changed++; } }
   const clock = `${Math.floor(life.time / 60)}:${String(Math.floor(life.time % 60)).padStart(2, "0")}`;
@@ -166,6 +170,7 @@ function status() {
 }
 function measureLearning() {
   const result = { ...probeLearning(twin), lessons: life.learning.lessons, fishTime: life.time }; app.lastProbe = result;
+  S.lastProbeAt = performance.now();
   $("response-bars").hidden = false;
   for (const [name, sample] of [["before", result.baseline], ["left", result.left], ["right", result.right]]) {
     const value = sample.ratio === null ? 0 : 100 * sample.ratio;
@@ -184,6 +189,7 @@ function practiceLesson() {
   $("auto-saccades").textContent = "Automatic glances on"; $("auto-saccades").setAttribute("aria-pressed", "true");
   S.practiceStart = life.time;
   S.practiceEnd = life.time + (life.learning.world === "still" ? 600 : life.learning.world === "back" ? 150 : 120);
+  measureLearning();
   status();
 }
 function finishPractice() {

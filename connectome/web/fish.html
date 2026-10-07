@@ -25,8 +25,7 @@
   #noscan{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
   #lesson-panel{flex-shrink:0;border:1px solid var(--line);border-radius:7px;padding:10px 12px;margin-bottom:12px;background:rgba(2,14,7,.9)}
   .lesson-controls{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center}
-  #teaching-controls>summary{cursor:pointer;padding-right:105px;min-height:26px;line-height:26px}
-  #life-speed{position:absolute;top:10px;right:12px;font-size:11px}
+  #teaching-controls>summary{cursor:pointer;min-height:26px;line-height:26px}
   #lesson-panel{position:relative}.lesson-heading span,.lesson-scope{color:var(--dim);font-size:10px}
   .lesson-controls{margin:8px 0}.lesson-controls button{font-size:11px}
   #lesson-guide{font-size:11px;color:var(--soft);margin:6px 0}
@@ -49,7 +48,6 @@
   <header id="mast"></header>
   <nav id="nav" aria-label="Pages"></nav>
   <section id="lesson-panel" aria-label="Teach the compiled brain">
-    <button id="life-speed" type="button" data-tip="Choose 1×, 4× or 8×. Teaching starts at 8× and restores your previous speed afterward. If you change Time during a lesson, your choice stays.">Time: 1×</button>
     <details id="teaching-controls">
     <summary class="lesson-heading"><b>Teach this fish</b></summary>
     <div class="lesson-controls">
@@ -64,8 +62,8 @@
     <p id="lesson-guide">Teach it to keep looking to the side after a glance. Gold flashes mark connections changing as it learns.</p>
     <div class="lesson-readout">
       <div><p id="learning-progress" role="status"></p><progress id="practice-progress" max="1" value="0" aria-label="Lesson progress" hidden></progress></div>
-      <div id="gaze-test" data-tip="The bars show how much of the initial gaze response remains five seconds later. A longer bar means a stronger hold. Values over 100% mean the response is growing." tabindex="0">
-        <p id="probe-result" aria-live="polite">Gaze held after 5 seconds · test before and after teaching.</p>
+      <div id="gaze-test" data-tip="The bars update as the fish learns during a lesson. They show how much of a glance it can hold five seconds later. A longer bar means a stronger hold. Values over 100% mean the response is growing." tabindex="0">
+        <p id="probe-result" aria-live="polite">Gaze held after 5 seconds · updates during teaching.</p>
         <div id="response-bars" hidden>
           <div><span>Before learning</span><meter id="response-before" min="0" max="100" value="0"></meter><output id="value-before"></output></div>
           <div><span>Now · left</span><meter id="response-left" min="0" max="100" value="0"></meter><output id="value-left"></output></div>
@@ -100,6 +98,7 @@
         <span class="g">camera</span>
         <button id="follow" type="button" data-tip="The camera follows the fish. Off, it stays where you left it; drag to orbit, wheel to zoom.">follow fish</button>
         <button id="pause" type="button" data-tip="Pauses the fish, its brain and the tank. The space bar does the same.">pause</button>
+        <button id="life-speed" type="button" data-tip="Choose 1×, 4× or 8×. Teaching starts at 8× and restores your previous speed afterward. If you change Time during a lesson, your choice stays.">Time: 1×</button>
         <span class="g">saccades</span>
         <button id="saccade-left" type="button" data-tip="Ask the fish to glance left. For manual teaching, wait at least four fish seconds between glances.">look left</button>
         <button id="saccade-right" type="button" data-tip="Ask the fish to glance right. For manual teaching, wait at least four fish seconds between glances.">look right</button>

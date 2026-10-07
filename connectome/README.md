@@ -21,11 +21,11 @@ site. No application server is required.
 ## Teach the fish
 
 1. Expand **Teach this fish**, choose **hold your gaze**, and press **Teach this lesson**.
-   Automatic eye movements provide lessons; practice ends by pausing learning and testing the response.
+   Watch the gaze bars update as it learns. Practice ends by pausing learning and testing the response.
 2. Choose **let it return** and teach again on the same brain.
 3. Switch back to **hold your gaze** and compare the response after another practice.
 
-**Time** stays visible beside the teaching panel. Lessons automatically run at 8×, then
+**Time** sits beside **pause** in the tank controls. Lessons automatically run at 8×, then
 restore the previous speed when they finish or stop. Click Time to choose 1×, 4× or 8×
 during a lesson; that manual choice stays afterward.
 

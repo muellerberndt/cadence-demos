@@ -48,6 +48,15 @@ def main():
         assert page.evaluate("window.__app.S.speed") == 8
         assert page.locator("#life-speed").inner_text() == "Time: 8×"
         print("visible hold practice started (600 fish seconds at 8x)", flush=True)
+        page.wait_for_function("window.__app.S.practiceEnd !== null && window.__app.lastProbe?.lessons > 0", timeout=30000)
+        snapshot = page.evaluate("""() => ({probe: window.__app.lastProbe, end: window.__app.S.practiceEnd,
+            values: ['left', 'right'].map(side => document.getElementById('value-' + side).textContent)})""")
+        live = snapshot["probe"]
+        assert live["fishTime"] < snapshot["end"], "gaze bars only updated at the end"
+        assert any(live[side]["ratio"] != initial[side]["ratio"] for side in ("left", "right")), "live gaze test missed changed weights"
+        for side, value in zip(("left", "right"), snapshot["values"]):
+            assert value == f'{100 * live[side]["ratio"]:.1f}%'
+        out["live_hold"] = live
         page.wait_for_function("window.__app.S.practiceEnd === null && !window.__app.learning().on", timeout=300000)
         assert page.evaluate("window.__app.S.speed") == 1, "finishing a lesson did not restore the previous speed"
         held = page.evaluate("window.__app.lastProbe")
