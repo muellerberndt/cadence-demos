@@ -1,0 +1,112 @@
+/* The shell of the explainer pages: the Matrix palette of the fly pages, a masthead, a nav,
+   a main area beside a brain view, a status strip with the credit, and a collapsed info card. */
+:root{--ink:#c8ffd8;--soft:#7fe39a;--dim:#679774;--line:rgba(97,186,121,.25);--glass:rgba(2,14,7,.84);--cold:#7fe39a;--hot:#ff7583;--matrix:#67e78e;--pass:#9df5b4;--fail:#ff7583;--int:#67e78e;--abdm:#d2ff78;--abdi:#4cc9bb;--burst:#ffd166;--strip:30px}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#000;color:var(--ink);font:12px/1.5 "IBM Plex Mono",ui-monospace,Menlo,monospace;overflow:hidden}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:8;background:repeating-linear-gradient(0deg,rgba(0,0,0,.14) 0 1px,transparent 1px 3px);opacity:.45}
+a{color:var(--matrix);text-underline-offset:3px}
+b{color:var(--ink);font-weight:500}
+button,input,select{font:inherit}
+button{appearance:none;border:1px solid var(--line);background:transparent;color:var(--soft);padding:4px 8px;border-radius:4px;cursor:pointer}
+button:hover,button.on{background:rgba(99,223,136,.1);color:var(--ink)}
+button.on{border-color:rgba(103,231,142,.6)}
+button:disabled{opacity:.4;cursor:default}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid #91d8a3;outline-offset:3px}
+.glass{background:var(--glass);border:1px solid var(--line);border-radius:8px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.h{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:0 0 8px}
+
+#page{position:fixed;inset:0 0 var(--strip) 0;display:flex;flex-direction:column;padding:18px 24px 12px}
+#mast{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;flex-shrink:0}
+#mast h1{font:400 20px/1.15 "Share Tech Mono",ui-monospace,monospace;margin:0;letter-spacing:.12em;text-transform:uppercase;color:var(--matrix)}
+#mast h1 a{color:inherit;text-decoration:none}
+#mast .sub{margin:0;color:var(--dim);font-size:10px;letter-spacing:.04em}
+#mast .papers{flex-basis:100%;margin:3px 0 0;color:var(--dim);font-size:10px;letter-spacing:.04em}
+#mast .papers a{color:var(--matrix);text-decoration-color:rgba(103,231,142,.5)}
+#nav{display:flex;gap:4px;flex-wrap:wrap;margin:10px 0 12px;flex-shrink:0}
+#nav a{display:inline-block;padding:4px 10px;border:1px solid var(--line);border-radius:4px;color:var(--soft);text-decoration:none;font-size:10px;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+#nav a:hover{background:rgba(99,223,136,.1);color:var(--ink)}
+#nav a[aria-current="page"]{background:rgba(99,223,136,.16);color:var(--ink);border-color:rgba(103,231,142,.6)}
+#main{flex:1;min-height:0;display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+#main.two{grid-template-columns:minmax(0,1fr) minmax(360px,440px)}
+#main.two.wide-right{grid-template-columns:minmax(0,1fr) minmax(380px,44%)}
+.col{min-height:0;overflow:auto;overscroll-behavior:contain;padding:14px 16px;scrollbar-color:#2c5940 transparent}
+.col.narrow{max-width:900px}
+.view{position:relative;min-height:0;overflow:hidden;background:#000;border:1px solid var(--line);border-radius:8px;display:flex;flex-direction:column}
+.view .top{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 12px 6px;flex-shrink:0;background:rgba(2,14,7,.96);border-bottom:1px solid var(--line)}
+.view .top .h{margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.view .tools{display:flex;gap:4px;flex-shrink:0}
+.view .tools button{font-size:11px;padding:3px 7px;white-space:nowrap}
+.view .host{position:relative;flex:1;min-height:0}
+.view .foot{display:flex;justify-content:space-between;gap:10px;padding:5px 12px;color:var(--dim);font-size:10px;flex-shrink:0;background:rgba(2,14,7,.96);border-top:1px solid var(--line);font-variant-numeric:tabular-nums}
+.page-title{font:400 15px/1.35 "Share Tech Mono",ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--matrix);margin:0 0 10px}
+.prose p{color:var(--soft);font-size:12px;line-height:1.6;margin:0 0 10px}
+hr{border:0;border-top:1px solid var(--line);margin:12px 0 10px}
+table{border-collapse:collapse;width:100%;font-size:11px;font-variant-numeric:tabular-nums}
+th{text-align:left;font-weight:400;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);padding:4px 6px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(2,14,7,.98);z-index:1}
+td{padding:3px 6px;border-bottom:1px solid rgba(97,186,121,.1);vertical-align:top;color:var(--soft)}
+td.num,th.num{text-align:right;white-space:nowrap}
+td.id{color:var(--ink);white-space:nowrap}
+tr.pick{cursor:pointer}tr.pick:hover td{background:rgba(99,223,136,.08);color:var(--ink)}
+tr.dim td{color:var(--dim)}
+.pass{color:var(--pass)}.fail{color:var(--fail)}.muted{color:var(--dim)}.warm{color:var(--burst)}
+.kv{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:3px 0}
+.kv span{color:var(--dim)}.kv b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.tip{position:absolute;display:none;width:320px;max-width:calc(100% - 16px);padding:8px 10px;border:1px solid rgba(103,231,142,.5);border-radius:6px;background:rgba(2,14,7,.97);color:var(--ink);font:11px/1.5 "IBM Plex Mono",ui-monospace,Menlo,monospace;text-transform:none;letter-spacing:0;white-space:normal;text-align:left;pointer-events:none;z-index:30;box-shadow:0 4px 18px rgba(0,0,0,.5)}
+.tip.show{display:block}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:4px;overflow:hidden;vertical-align:middle}
+.seg button{border:0;border-radius:0;border-right:1px solid var(--line);padding:3px 8px;font-size:11px}
+.seg button:last-child{border-right:0}
+.controls{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin:8px 0}
+.controls label{display:flex;align-items:center;gap:6px;white-space:nowrap;color:var(--soft);font-size:11px}
+.controls em{font-style:normal;color:var(--ink);font-variant-numeric:tabular-nums;min-width:44px}
+input[type=range]{accent-color:var(--matrix);width:170px}
+input[type=text],input[type=number]{background:#000;color:var(--ink);border:1px solid var(--line);border-radius:4px;padding:3px 6px;width:110px}
+.digest{font-size:10px;color:var(--soft);overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.scroll{max-height:300px;overflow:auto;border:1px solid var(--line);border-radius:5px;margin:6px 0 10px}
+.panels{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;align-items:start}
+.panel{border:1px solid var(--line);border-radius:6px;padding:10px 12px;background:rgba(2,14,7,.5)}
+.panel .h{margin-bottom:6px}
+
+#status{position:fixed;left:0;right:0;bottom:0;height:var(--strip);display:flex;align-items:center;gap:14px;padding:0 24px;background:rgba(0,12,5,.92);border-top:1px solid var(--line);font-size:10px;z-index:20}
+#status-text{flex:1;min-width:0;color:#a1d5b0;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#card-toggle{font-size:10px;padding:2px 8px;letter-spacing:.08em;text-transform:uppercase;flex-shrink:0}
+#credit{margin:0;color:#50745b;font-size:9px;white-space:nowrap;flex-shrink:0}
+#credit b{color:#6c9b7b;font-weight:500}#credit a{color:inherit}
+#card{position:fixed;left:24px;bottom:calc(var(--strip) + 10px);width:min(480px,calc(100vw - 48px));max-height:calc(100vh - 120px);overflow:auto;padding:14px 16px;display:none;z-index:22;background:rgba(2,14,7,.96)}
+body.card-open #card{display:block}
+#card h3{font:400 14px/1.4 "Share Tech Mono",ui-monospace,monospace;margin:0 0 8px;letter-spacing:.08em;text-transform:uppercase;color:var(--matrix)}
+#card p,#card li{color:var(--soft);font-size:11px;line-height:1.55;margin:6px 0}
+#card ul{padding-left:16px;margin:4px 0}
+#card .close{float:right;padding:1px 7px;font-size:14px;line-height:18px}
+#loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:#000;z-index:40;color:var(--soft);transition:opacity .5s;letter-spacing:.12em;text-transform:uppercase;font-size:11px}
+#loading.gone{opacity:0;pointer-events:none}
+@media(max-width:760px){
+  html,body{height:auto;min-height:100%;overflow:visible}
+  #page{position:static;padding:14px 12px calc(var(--strip) + 16px);display:block}
+  #main,#main.two,#main.two.wide-right{display:block}
+  .col{overflow:visible;margin-bottom:12px}
+  .view{height:62vh;margin-bottom:12px}
+  #status{padding:0 12px}#credit{display:none}
+  #card{left:12px}
+  input[type=range]{width:120px}
+}
+@media(prefers-reduced-motion:reduce){#loading{transition:none}}
+
+/* Visible mathematical sources and evidence shared by the reading pages. */
+#mast .papers{font-size:12px;line-height:1.65;color:var(--ink);letter-spacing:0}
+.paper-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0}
+.paper-cards a{font-size:14px;line-height:1.6}
+.paper-cards p{color:var(--soft);font-size:12px}
+.compile-flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:0;margin:20px 0;list-style:none;counter-reset:compile}
+.compile-flow li{counter-increment:compile;border-top:2px solid var(--matrix);padding:8px 0}
+.compile-flow li::before{content:counter(compile) " / ";color:var(--matrix)}
+.compile-flow span{display:block;color:var(--soft);font-size:11px;margin-top:5px}
+.evidence-box{border:1px solid var(--line);border-left:3px solid var(--matrix);padding:14px;margin:16px 0;background:rgba(99,223,136,.04);max-width:100%}
+.evidence-box p{font-size:12px;line-height:1.7;color:var(--soft)}
+.evidence-box th,.evidence-box td{text-align:left!important;min-width:120px}
+.evidence-box summary{cursor:pointer;color:var(--ink);font-size:12px}
+.equation{font:13px/1.8 "IBM Plex Mono",monospace;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--ink)}
+.table-scroll{max-width:100%;overflow-x:auto}
+.evidence-links{font-size:12px;line-height:1.8}
+.comparison-scope{color:var(--ink);font-size:12px;max-width:1000px;margin:0 0 14px}
+@media(max-width:760px){.paper-cards{grid-template-columns:1fr}.compile-flow{grid-template-columns:1fr 1fr}#mast .papers{font-size:11px}.equation{font-size:11px}}

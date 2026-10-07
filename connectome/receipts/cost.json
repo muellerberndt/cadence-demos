@@ -1,0 +1,88 @@
+{
+ "payloads": {
+  "brain.json": {
+   "neurons": 2884,
+   "classes": 44969,
+   "settling": {
+    "ms_per_step": 0.04718602052330971,
+    "steps_per_fish_second_declared": 25,
+    "ms_per_fish_second_declared": 1.1796505130827426,
+    "steps_per_fish_second_tau20ms": 250,
+    "ms_per_fish_second_tau20ms": 11.796505130827427
+   },
+   "spiking": {
+    "w_0.35_mV": {
+     "ms_per_sim_ms": 0.030251207947731017,
+     "ms_per_fish_second": 30.251207947731018,
+     "steps_per_fish_second": 10000,
+     "mean_rate_hz": 15.64493758668516
+    },
+    "w_2.7_mV": {
+     "ms_per_sim_ms": 0.04282441699504852,
+     "ms_per_fish_second": 42.82441699504852,
+     "steps_per_fish_second": 10000,
+     "mean_rate_hz": 47.54507628294036
+    }
+   },
+   "ratio_declared": 25.644212088440085,
+   "ratio_tau20ms": 2.5644212088440086
+  },
+  "brain_oculomotor.json": {
+   "neurons": 343,
+   "classes": 6292,
+   "settling": {
+    "ms_per_step": 0.006332833498716354,
+    "steps_per_fish_second_declared": 25,
+    "ms_per_fish_second_declared": 0.15832083746790887,
+    "steps_per_fish_second_tau20ms": 250,
+    "ms_per_fish_second_tau20ms": 1.5832083746790886
+   },
+   "spiking": {
+    "w_0.35_mV": {
+     "ms_per_sim_ms": 0.017492042005062103,
+     "ms_per_fish_second": 17.492042005062103,
+     "steps_per_fish_second": 10000,
+     "mean_rate_hz": 124.61224489795919
+    },
+    "w_2.7_mV": {
+     "ms_per_sim_ms": 0.019437125027179716,
+     "ms_per_fish_second": 19.437125027179718,
+     "steps_per_fish_second": 10000,
+     "mean_rate_hz": 227.87755102040816
+    }
+   },
+   "ratio_declared": 110.48477436589914,
+   "ratio_tau20ms": 11.048477436589916
+  },
+  "larva_brain.json": {
+   "neurons": 25609,
+   "classes": 18970,
+   "settling": {
+    "ms_per_step": 0.20513020849227906,
+    "steps_per_fish_second_declared": 25,
+    "ms_per_fish_second_declared": 5.128255212306977,
+    "steps_per_fish_second_tau20ms": 250,
+    "ms_per_fish_second_tau20ms": 51.28255212306976
+   },
+   "spiking": {
+    "w_0.35_mV": {
+     "ms_per_sim_ms": 0.0012475420236587524,
+     "ms_per_fish_second": 1.2475420236587524,
+     "steps_per_fish_second": 10000,
+     "mean_rate_hz": 0.07591081260494358
+    },
+    "w_2.7_mV": {
+     "ms_per_sim_ms": 0.00258712500333786,
+     "ms_per_fish_second": 2.58712500333786,
+     "steps_per_fish_second": 10000,
+     "mean_rate_hz": 0.13167245890116755
+    }
+   },
+   "ratio_declared": 0.24326831875778235,
+   "ratio_tau20ms": 0.02432683187577824
+  }
+ },
+ "note": "ms of wall time on one core of this machine; a second of fish time at the declared step of 40 ms (one fifth of the unit's time constant of 0.2 s) and at a 20 ms time constant (4 ms steps)",
+ "node": "v25.8.1",
+ "date": "2026-10-06"
+}

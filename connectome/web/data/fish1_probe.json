@@ -1,0 +1,12 @@
+{
+ "materialization": 720,
+ "edited_segments": 47288,
+ "edited_with_soma": 2709,
+ "sample": 40,
+ "inputs_per_cell_median": 162.5,
+ "outputs_per_cell_median": 15.0,
+ "inputs_from_proofread": 0.028687967369136643,
+ "inputs_from_soma_cells": 0.023929299796057103,
+ "outputs_onto_proofread": 0.08067456700091158,
+ "outputs_onto_soma_cells": 0.43710118505013673
+}

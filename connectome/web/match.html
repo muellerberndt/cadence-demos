@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Match · From connectome to Cadence</title>
+<meta name="description" content="Does the compiled brain match the fish? Six facts written before scoring, the measured wiring against degree-matched and strength-matched shuffles, and the spiking twin's numbers, from the receipt.">
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./site.css">
+<style>
+  #wirings{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin:8px 0}
+  #wirings .group{display:flex;align-items:center;gap:6px}
+  #wirings .group > span{color:var(--dim);font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+  #totals{color:var(--ink);margin:6px 0 10px;font-variant-numeric:tabular-nums}
+  #totals .null{display:block;color:var(--dim);font-size:11px}
+  #facts td.pred{min-width:220px}
+  #facts td.src{color:var(--dim);font-size:10px;min-width:180px}
+  #facts td.res{min-width:200px;white-space:normal}
+  #facts td.res .numbers{display:block;color:var(--dim);font-size:10px;margin-top:2px}
+  #glance td,#glance th{text-align:center;padding:2px 5px}
+  #glance td:first-child,#glance th:first-child{text-align:left}
+  #glance tr.on td{background:rgba(99,223,136,.1);color:var(--ink)}
+  #scan{display:block;width:100%;height:120px;margin-top:8px}
+</style>
+</head>
+<body>
+<div id="page">
+  <header id="mast"></header>
+  <nav id="nav" aria-label="Pages"></nav>
+  <main id="main">
+    <section class="col glass">
+      <h2 class="page-title" id="page-title"></h2>
+      <div class="prose" id="prose"></div>
+      <hr>
+      <p class="h">The wiring</p>
+      <div id="wirings"></div>
+      <p id="totals"></p>
+      <div class="scroll" style="max-height:none"><table id="facts"><thead><tr><th>id</th><th>name</th><th>role</th><th>predicate</th><th>source</th><th>result</th></tr></thead><tbody></tbody></table></div>
+      <div class="panels">
+        <div class="panel">
+          <p class="h">Every wiring at a glance</p>
+          <table id="glance"><thead></thead><tbody></tbody></table>
+          <p class="muted" style="margin:6px 0 0">Click a row to read its numbers above. S1 is a fact about the wiring, not a settlement prediction; it is shown and not counted.</p>
+        </div>
+        <div class="panel" id="spiking">
+          <p class="h">The spiking twin on the same wiring</p>
+          <div id="spiking-kv"></div>
+          <svg id="scan" viewBox="0 0 400 120" preserveAspectRatio="none" aria-label="Integrator firing rate against the synaptic weight in the spiking scan"></svg>
+          <p class="muted" id="scan-note" style="margin:4px 0 0"></p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+<script type="module" src="./match_page.js"></script>
+</body>
+</html>

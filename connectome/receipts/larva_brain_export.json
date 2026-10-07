@@ -1,0 +1,29 @@
+{
+ "gain": 0.20250880000000004,
+ "selected_gain": 0.253136,
+ "demo_gain_factor": 0.8,
+ "why": "at the selected gain a startle releases in 12.9 s and at 0.8 of it in 2.2 s (receipts/larva_gain_scan.json)",
+ "neurons": 25609,
+ "classes": 18970,
+ "payload": "web/data/larva_brain.json",
+ "bytes": 2712175,
+ "populations": {
+  "PRC:left": 12,
+  "PRC:right": 12,
+  "eyespot:left": 2,
+  "eyespot:right": 2,
+  "prototroch:left": 10,
+  "prototroch:right": 9,
+  "MUSlong:left": 73,
+  "MUSlong:right": 76,
+  "collar": 45,
+  "parapodial": 264,
+  "muscles": 840,
+  "sensory": 1018,
+  "effectors": 933,
+  "neurons": 2664
+ },
+ "tables_digest": "cc9703b2906e786f2d12a8d1981c6c373d1bbc6b69d21024e6fb052c207d29af",
+ "connectome_digest": "677b97623352a4408f562d0e0be76893a8c3e8345e162e1b39db9c095ad0b57d",
+ "protocol_digest": "81656e09c528d0fc216da3930e037bad81bc9d8b3ba54d9fbca8ded64fd8ad83"
+}

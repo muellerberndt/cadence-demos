@@ -1,0 +1,251 @@
+{
+  "page": "web/index.html",
+  "query": "?noscan=1&nobloom=1",
+  "date": "2026-10-07T05:59:14+00:00",
+  "browser": "151.0.7922.34",
+  "launch": "the default build",
+  "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+  "checks": {
+    "constants": {
+      "baseline_beat": 0.3,
+      "step_ms": 40,
+      "water": 9,
+      "tank": [
+        20,
+        10,
+        10
+      ]
+    },
+    "lamp": {
+      "left": {
+        "lamp": {
+          "on": true,
+          "x": 4.001,
+          "y": 9.5,
+          "z": 10.2
+        },
+        "seconds": 3.03189999999996,
+        "samples": 85,
+        "turn_deg": 21.566943153272845,
+        "turned_left_deg": 21.566943153272845,
+        "turned_right_deg": 0.0,
+        "one_sign": true,
+        "reflections": 0,
+        "eye_left_mean": 0.11197433583013308,
+        "eye_right_mean": 0.0,
+        "arrest_peak": 0.16066216496273533,
+        "command_end": {
+          "ciliaLeft": 0.4511262566170179,
+          "ciliaRight": 0.36553017799903337,
+          "arrest": 0.16066216496273533,
+          "muscleLeft": 0.014775744553588838,
+          "muscleRight": 0.015045998712168426,
+          "parapodia": 0.0003940025527917107
+        },
+        "z_end": 8.4,
+        "hot_fraction": 0
+      },
+      "right": {
+        "lamp": {
+          "on": true,
+          "x": 4.001,
+          "y": 0.5,
+          "z": 10.2
+        },
+        "seconds": 3.0141999999999642,
+        "samples": 87,
+        "turn_deg": -34.46849596169599,
+        "turned_left_deg": 0.0,
+        "turned_right_deg": 34.46849596169599,
+        "one_sign": true,
+        "reflections": 0,
+        "eye_left_mean": 0.0,
+        "eye_right_mean": 0.15596788578353993,
+        "arrest_peak": 0.16066216496273533,
+        "command_end": {
+          "ciliaLeft": 0.3196176167446824,
+          "ciliaRight": 0.456811629225741,
+          "arrest": 0.07782629143407505,
+          "muscleLeft": 0.006215854068307945,
+          "muscleRight": 0.012964177626281086,
+          "parapodia": 0.0001224174069233747
+        },
+        "z_end": 8.4,
+        "hot_fraction": 0
+      },
+      "lit_eye_left_lamp": "left",
+      "lit_eye_right_lamp": "right",
+      "conditions": {
+        "body_placed": {
+          "position": [
+            4.0,
+            5.0,
+            8.2
+          ],
+          "heading": 0.0
+        },
+        "brain_rested": true,
+        "uv": 0,
+        "lamp_offset_mm": {
+          "side": 4.5,
+          "ahead": 0.001,
+          "above": 2.0
+        },
+        "seconds": 3.0
+      },
+      "pass": true
+    },
+    "tap": {
+      "control": {
+        "tap": false,
+        "pane": null,
+        "arrest_before": 0.0853477592270675,
+        "arrest_peak_0_5s": 0.13845861450546515,
+        "arrest_above_0_3_after_s": null,
+        "arrest_1s": 0.16233236009059304,
+        "parapodia_peak_0_5s": 0.0003254062566648185,
+        "z_before_mm": 5.335952670019769,
+        "z_1s_mm": 4.972313695208253,
+        "z_change_1s_mm": -0.36363897481151586,
+        "on_floor_1s": false,
+        "seconds": 1.0146999999999693
+      },
+      "tap": {
+        "tap": true,
+        "pane": "left",
+        "arrest_before": 0.08556188967746614,
+        "arrest_peak_0_5s": 0.36727556178307985,
+        "arrest_above_0_3_after_s": 0.43369999999999287,
+        "arrest_1s": 0.4399578725750679,
+        "parapodia_peak_0_5s": 0.002427212295305817,
+        "z_before_mm": 5.349293887122134,
+        "z_1s_mm": 4.918196143346456,
+        "z_change_1s_mm": -0.43109774377567867,
+        "on_floor_1s": false,
+        "seconds": 1.0339999999999776
+      },
+      "tap_effect": {
+        "arrest_peak_0_5s": 0.2288169472776147,
+        "arrest_1s": 0.27762551248447487,
+        "z_change_1s_mm": -0.06745876896416281
+      },
+      "conditions": {
+        "body_placed": {
+          "position": [
+            10.0,
+            5.0,
+            5.0
+          ],
+          "heading": 0.5
+        },
+        "brain_rested": true,
+        "seconds_before_tap": 1.0,
+        "uv": 0
+      },
+      "pass": true
+    },
+    "brain_off": {
+      "command_1s": {
+        "ciliaLeft": 0.3,
+        "ciliaRight": 0.3,
+        "arrest": 0,
+        "muscleLeft": 0,
+        "muscleRight": 0,
+        "parapodia": 0
+      },
+      "command_3s": {
+        "ciliaLeft": 0.3,
+        "ciliaRight": 0.3,
+        "arrest": 0,
+        "muscleLeft": 0,
+        "muscleRight": 0,
+        "parapodia": 0
+      },
+      "baseline_beat": 0.3,
+      "turn_deg_1s_to_3s": 0.0,
+      "reflections": 0,
+      "brain_steps_while_off": 0,
+      "activity_max": 0,
+      "pass": true
+    },
+    "fps": {
+      "frames": 103,
+      "seconds": 5.004,
+      "fps": 20.582319331990917,
+      "page_fps": 23.28740539491545
+    },
+    "summary": {
+      "larva_seconds": 19.426100000000023,
+      "life_steps": 485,
+      "brain_steps": 106,
+      "ms_per_brain_step": 0.82414634314979,
+      "page_fps": 23.28740539491545,
+      "frames": 479,
+      "position": [
+        12.34303650867938,
+        4.405025713302634,
+        8.182694841019977
+      ],
+      "on_floor": false,
+      "command": {
+        "ciliaLeft": 0.4400142542936449,
+        "ciliaRight": 0.4758888938171655,
+        "arrest": 0.23442111353893402,
+        "muscleLeft": 0.020528055580813373,
+        "muscleRight": 0.027117209260399195,
+        "parapodia": 0.0005029412944639423
+      },
+      "senses": {
+        "eye_left": 0.012492052262837233,
+        "eye_right": 0.022770584889280625,
+        "eyespot_left": 0.18751240323519583,
+        "eyespot_right": 0.21070706731443006,
+        "cprc": 0,
+        "pressure": 0.08864711392365601,
+        "mechanical": 1.9033717494003956e-15
+      },
+      "brain_on": true,
+      "light": {
+        "on": true,
+        "x": 10,
+        "y": 5,
+        "z": 13
+      },
+      "uv": 0,
+      "reflections": 1,
+      "hot_fraction": 0.00011714631574836972
+    }
+  },
+  "errors": [],
+  "screenshot": {
+    "path": "/Users/muellerberndt/Projects/oph-meta/cadence-zebrafish/docs/screenshots/larva.png",
+    "launch": "hardware",
+    "browser": "151.0.7922.34",
+    "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+    "fps": 59.91719721616174,
+    "lamp": {
+      "on": true,
+      "x": 4.001,
+      "y": 9.5,
+      "z": 13.0
+    },
+    "active_skeletons": 13,
+    "active_cells": 13,
+    "skeletons": 25609,
+    "heading_deg": 27.62689313131077,
+    "command": {
+      "ciliaLeft": 0.44958024917776535,
+      "ciliaRight": 0.36624075136822953,
+      "arrest": 0.16919469165274137,
+      "muscleLeft": 0.014026279559527271,
+      "muscleRight": 0.014794564633154381,
+      "parapodia": 0.0004009209012441617
+    },
+    "larva_seconds": 6.634099999999976,
+    "errors": [],
+    "bytes": 375535,
+    "notes": []
+  },
+  "passed": true,
+  "seconds": 43.1
+}

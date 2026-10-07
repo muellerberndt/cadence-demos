@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Copy · From connectome to Cadence</title>
+<meta name="description" content="Copy: the wiring of a living brain, cell by cell. Click a neuron of the reconstructed zebrafish hindbrain and read its ledger: who it listens to, who it talks to, how many synapses each connection carries.">
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<link rel="stylesheet" href="./site.css">
+<style>
+  #pick-head{color:var(--ink);font-size:12px;margin:4px 0 6px}
+  #pick-head b{color:var(--matrix)}
+  #relation{color:var(--soft);margin:8px 0;padding:6px 8px;border-left:2px solid var(--matrix);background:rgba(99,223,136,.06)}
+  #ledger .h span{color:var(--soft);letter-spacing:0;text-transform:none}
+</style>
+</head>
+<body>
+<div id="page">
+  <header id="mast"></header>
+  <nav id="nav" aria-label="Pages"></nav>
+  <main id="main" class="two">
+    <section class="view" id="brain" aria-label="Nervous system">
+      <div class="top"><p class="h" id="view-title">Nervous system</p><div class="tools"><button id="fit" type="button" title="back to the resting view">fit</button><button id="spin" type="button" class="on" title="slow spin until a drag">spin</button></div></div>
+      <div class="host" id="view-host"></div>
+      <div class="foot"><span id="view-foot">loading the skeletons</span><span id="fps"></span></div>
+    </section>
+    <section class="col glass">
+      <h2 class="page-title" id="page-title"></h2>
+      <div class="prose" id="prose"></div>
+      <hr>
+      <div id="ledger">
+        <div class="controls"><p class="h" style="margin:0">Ledger</p><label>cell id <input id="find" type="text" inputmode="numeric" placeholder="76181" aria-label="cell id"><button id="find-go" type="button">read</button></label></div>
+        <p id="pick-empty" class="muted">Click a soma in the view.</p>
+        <div id="pick-body" hidden>
+          <div id="pick-head"></div>
+          <div class="kv"><span>listens to</span><b id="in-sum"></b></div>
+          <div class="kv"><span>talks to</span><b id="out-sum"></b></div>
+          <div class="controls"><label>light <span class="seg" id="light-mode"><button type="button" data-mode="both" class="on">both</button><button type="button" data-mode="in">listens to</button><button type="button" data-mode="out">talks to</button></span></label></div>
+          <p id="relation">same partners, same counts: the patch's relations</p>
+          <p class="h">listens to <span id="in-count"></span></p>
+          <div class="scroll"><table id="in-table"><thead><tr><th>cell</th><th>class</th><th class="num">synapses</th><th class="num">sign</th></tr></thead><tbody></tbody></table></div>
+          <p class="h">talks to <span id="out-count"></span></p>
+          <div class="scroll"><table id="out-table"><thead><tr><th>cell</th><th>class</th><th class="num">synapses</th><th class="num">sign</th></tr></thead><tbody></tbody></table></div>
+          <p class="muted">Dimmed rows: partners without a reconstructed skeleton, in the matrix but not drawn. Click a row to read that cell.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+<div id="loading">loading the nervous system</div>
+<script type="module" src="./copy_page.js"></script>
+</body>
+</html>

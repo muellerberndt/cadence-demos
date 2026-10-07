@@ -1,0 +1,56 @@
+{
+ "payload": "web/data/larva_brain.json",
+ "source": "Veraszt\u00f3 et al. 2025 eLife 13:RP97964, CATMAID project 11",
+ "format": "cadence.brain-payload/1",
+ "tables_digest": "cc9703b2906e786f2d12a8d1981c6c373d1bbc6b69d21024e6fb052c207d29af",
+ "connectome_digest": "677b97623352a4408f562d0e0be76893a8c3e8345e162e1b39db9c095ad0b57d",
+ "protocol_digest": "81656e09c528d0fc216da3930e037bad81bc9d8b3ba54d9fbca8ded64fd8ad83",
+ "cells": 25609,
+ "connections": 18970,
+ "synapses": 32202,
+ "by_role": {
+  "effector": 933,
+  "inter": 1393,
+  "motor": 253,
+  "sensory": 1018,
+  "unknown": 22012
+ },
+ "typed_cells": 4156,
+ "untyped_cells": 21453,
+ "cells_with_a_synapse": 6712,
+ "cells_without_a_synapse": 18897,
+ "without_a_synapse_by_role": {
+  "effector": 309,
+  "inter": 120,
+  "motor": 1,
+  "sensory": 367,
+  "unknown": 18100
+ },
+ "signs": {
+  "1": 18970
+ },
+ "weight_is_gain_times_count": true,
+ "unit": {
+  "slope": 0.25,
+  "threshold": 0.0
+ },
+ "model": {
+  "dt": 0.2,
+  "slope": 0.25,
+  "threshold": 0.0,
+  "gain": 0.20250880000000004,
+  "stimulus_amplitude": 3.0,
+  "adaptation": null,
+  "leak": 0.0
+ },
+ "largest_eigenvalue": 30.82463801873554,
+ "power_iterations": 78,
+ "power_residual": 0.0,
+ "critical_gain": 0.2595326503149044,
+ "selected_gain": 0.253136,
+ "gain": 0.20250880000000004,
+ "demo_gain_factor": 0.8,
+ "selected_over_critical": 0.9753531961888302,
+ "gain_over_critical": 0.7802825569510643,
+ "critical_gain_rule": "1 / (largest eigenvalue of the signed synapse-count matrix x slope / 2); below it a push decays, above it the net ignites"
+}

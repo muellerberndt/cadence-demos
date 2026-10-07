@@ -1,0 +1,7 @@
+{"what": "startle release and eyespot lateralisation of the compiled larva net at fractions of the protocol's selected gain 0.2531 (collar receptors at 1.0 for 10 steps, then free; left eyespots at 1.0 for 150 steps)",
+ "rows": [
+  {"factor": 1.0, "gain": 0.2531, "mc_peak": 0.218, "peak_step": 33, "release_step": 322, "release_s": 12.9, "band_left": 0.1507, "band_right": 0.1235},
+  {"factor": 0.9, "gain": 0.2278, "mc_peak": 0.126, "peak_step": 17, "release_step": 86, "release_s": 3.4, "band_left": 0.0716, "band_right": 0.0430},
+  {"factor": 0.8, "gain": 0.2025, "mc_peak": 0.084, "peak_step": 10, "release_step": 54, "release_s": 2.2, "band_left": 0.0472, "band_right": 0.0206},
+  {"factor": 0.7, "gain": 0.1772, "mc_peak": 0.060, "peak_step": 6, "release_step": 40, "release_s": 1.6, "band_left": 0.0347, "band_right": 0.0113}],
+ "release": "first step after the peak at which MC falls below a quarter of its peak; one step is 40 ms of larva time", "chosen": 0.8}

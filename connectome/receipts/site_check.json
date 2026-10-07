@@ -1,0 +1,40 @@
+{
+ "pages": {
+  "index": {
+   "ready": true,
+   "seconds_to_ready": 30.8,
+   "console_errors": [],
+   "app_errors": [],
+   "failed_requests": [],
+   "screenshot": "docs/screenshots/check_index.png"
+  },
+  "fish": {
+   "ready": true,
+   "seconds_to_ready": 12.2,
+   "console_errors": [],
+   "app_errors": [],
+   "failed_requests": [],
+   "screenshot": "docs/screenshots/check_fish.png"
+  },
+  "explain": {
+   "ready": true,
+   "seconds_to_ready": 8.7,
+   "console_errors": [],
+   "app_errors": [],
+   "failed_requests": [],
+   "screenshot": "docs/screenshots/check_explain.png"
+  },
+  "disclaimers": {
+   "ready": true,
+   "seconds_to_ready": 5.1,
+   "console_errors": [],
+   "app_errors": [],
+   "failed_requests": [],
+   "screenshot": "docs/screenshots/check_disclaimers.png"
+  }
+ },
+ "date": "2026-10-07",
+ "renderer": "swiftshader",
+ "browser": "151.0.7922.34",
+ "clean": true
+}

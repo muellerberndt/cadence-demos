@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paste · From connectome to Cadence</title>
+<meta name="description" content="Paste: the connectome becomes a patch net. The compiled zebrafish brainstem settles in the browser; slide the gain, burst the integrator, watch the held level.">
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<link rel="stylesheet" href="./site.css">
+<style>
+  #chart{display:block;width:100%;height:200px;border:1px solid var(--line);border-radius:5px;background:#000}
+  #legend{display:flex;flex-wrap:wrap;gap:4px 14px;margin:6px 0 2px;font-size:11px;font-variant-numeric:tabular-nums}
+  #legend i{display:inline-block;width:10px;height:2px;vertical-align:middle;margin-right:5px}
+  #burst{border-color:rgba(255,209,102,.6);color:var(--burst)}
+  #burst:hover{background:rgba(255,209,102,.1)}
+  #readouts{margin-top:8px}
+  #r-persist{white-space:normal;text-align:right}
+</style>
+</head>
+<body>
+<div id="page">
+  <header id="mast"></header>
+  <nav id="nav" aria-label="Pages"></nav>
+  <main id="main" class="two wide-right">
+    <section class="col glass">
+      <h2 class="page-title" id="page-title"></h2>
+      <div class="prose" id="prose"></div>
+      <hr>
+      <p class="h">The gain</p>
+      <div class="controls">
+        <label>gain <input id="gain" type="range" min="0.10" max="0.60" step="0.001" value="0.322" aria-label="gain"><em id="gain-v">0.322</em></label>
+        <span class="seg" id="presets"><button type="button" data-preset="low">too low 0.22</button><button type="button" data-preset="critical">critical</button><button type="button" data-preset="high">too high 0.45</button></span>
+      </div>
+      <p class="h">The burst</p>
+      <div class="controls">
+        <button id="burst" type="button" title="the integrator at level 0.03 for 20 steps, then free">burst</button>
+        <button id="pause" type="button">pause</button>
+        <button id="reset" type="button" title="every neuron back to rest">reset</button>
+        <label>speed <span class="seg" id="speed"><button type="button" data-speed="5">5</button><button type="button" data-speed="25" class="on">25</button><button type="button" data-speed="100">100</button><button type="button" data-speed="400">400</button></span> steps/s</label>
+        <label>view light <span class="seg" id="light"><button type="button" data-light="1">1</button><button type="button" data-light="10">10</button><button type="button" data-light="20" class="on">20</button><button type="button" data-light="50">50</button></span></label>
+      </div>
+      <p class="h">The left half's means over the last 800 steps</p>
+      <canvas id="chart" aria-label="Strip chart of the integrator, abducens motor and abducens internuclear means over the last 800 steps"></canvas>
+      <div id="legend"></div>
+      <div id="readouts">
+        <div class="kv"><span>step</span><b id="r-step">0</b></div>
+        <div class="kv"><span id="l-int">integrator mean</span><b id="r-int" style="color:var(--int)">0</b></div>
+        <div class="kv"><span id="l-m">abducens motor mean</span><b id="r-m" style="color:var(--abdm)">0</b></div>
+        <div class="kv"><span id="l-i">abducens internuclear mean</span><b id="r-i" style="color:var(--abdi)">0</b></div>
+        <div class="kv"><span>active cells (at or above 0.05)</span><b id="r-active">0</b></div>
+        <div class="kv"><span>persistence after the last burst</span><b id="r-persist" class="muted">no burst yet</b></div>
+      </div>
+    </section>
+    <section class="view" id="brain" aria-label="Nervous system">
+      <div class="top"><p class="h">Nervous system · the left half's activity</p><div class="tools"><button id="fit" type="button" title="back to the resting view">fit</button><button id="spin" type="button" class="on" title="slow spin until a drag">spin</button></div></div>
+      <div class="host" id="view-host"></div>
+      <div class="foot"><span id="view-foot">loading the skeletons</span><span id="fps"></span></div>
+    </section>
+  </main>
+</div>
+<div id="loading">loading the nervous system</div>
+<script type="module" src="./paste_page.js"></script>
+</body>
+</html>

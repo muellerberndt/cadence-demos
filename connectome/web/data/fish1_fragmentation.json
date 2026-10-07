@@ -1,0 +1,31 @@
+{
+ "datastack": "fish1_full",
+ "server": "https://global.brain-wire-test.org/",
+ "somas": 179930,
+ "cached": {
+  "synapses": 92803,
+  "pre_roots": 61592,
+  "post_roots": 4941,
+  "pre_with_soma": 0.043662381604042975,
+  "post_with_soma": 1.0,
+  "both_with_soma": 0.043662381604042975,
+  "soma_to_soma_synapses": 4052,
+  "soma_to_soma_connections": 2592,
+  "batches": 23,
+  "what": "every synapse onto the soma roots of the cached batches (postsynaptic side has a cell body by construction)"
+ },
+ "date": "2026-10-07",
+ "sample": {
+  "synapses": 102419,
+  "pre_roots": 88140,
+  "post_roots": 80108,
+  "pre_with_soma": 0.01817045665355061,
+  "post_with_soma": 0.32705845595055605,
+  "both_with_soma": 0.007820814497310069,
+  "soma_to_soma_synapses": 801,
+  "soma_to_soma_connections": 778,
+  "how": "random_sample",
+  "materialization": 720,
+  "table": "synapses_axde"
+ }
+}

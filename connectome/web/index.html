@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>From connectome to Cadence · a Platynereis larva with its complete compiled connectome</title>
+<meta name="description" content="The three-day Platynereis larva swims in a Matrix-styled tank with its complete compiled connectome in the loop: the lamp lands on its real photoreceptors, a tap on its collar receptors, and its cilia and muscles are read from the real effector cells.">
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<link rel="stylesheet" href="./site.css">
+<style>
+  #toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:4px 5px;padding:6px 12px;flex-shrink:0;background:rgba(2,14,7,.96);border-top:1px solid var(--line)}
+  #toolbar button{font-size:11px;padding:3px 7px;white-space:nowrap}
+  #toolbar .g{color:var(--dim);font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin:0 2px 0 8px}
+  #toolbar .g:first-child{margin-left:0}
+  #tap-left,#tap-right{border-color:rgba(255,209,102,.6);color:var(--burst)}
+  #tap-left:hover,#tap-right:hover{background:rgba(255,209,102,.1)}
+  #hint{position:absolute;right:10px;bottom:8px;color:var(--dim);font-size:10px;text-align:right;pointer-events:none;z-index:3;text-shadow:0 0 4px #000}
+  #toast{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);color:var(--ink);font-size:12px;opacity:0;transition:opacity .4s;pointer-events:none;z-index:3;text-shadow:0 0 6px #000;white-space:nowrap}
+  #toast.show{opacity:1}
+  #noscan{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+  @media(max-width:760px){#hint{display:none}}
+</style>
+</head>
+<body>
+<div id="page">
+  <header id="mast"></header>
+  <nav id="nav" aria-label="Pages"></nav>
+  <main id="main" class="two">
+    <section class="view" id="tank" aria-label="Aquarium">
+      <div class="top"><p class="h" id="tank-title">Platynereis larva · compiled whole-body wiring, declared dynamics</p></div>
+      <div class="host" id="tank-host">
+        <div id="hint">drag to orbit · wheel to zoom · space pauses</div>
+        <div id="toast"></div>
+      </div>
+      <div id="toolbar">
+        <span class="g">tank</span>
+        <button id="light-on" type="button" class="on" data-tip="The lamp over the tank, on or off. On, its light reaches the adult eyes and the larval eyespots on the side that faces it; through the compiled visual circuit the cilia on that side beat harder and the larva turns toward the light. Off, the photoreceptors see nothing.">light on</button>
+        <button id="light-move" type="button" data-tip="Moves the lamp to a random place over the tank, so the light hits the other eye and the compiled net turns the larva again.">move light</button>
+        <button id="tap-left" type="button" data-tip="Taps the left pane. The jolt reaches the larva's collar receptor neurons; the compiled startle circuit answers through the ciliomotor neuron MC, which arrests the cilia, and the longitudinal muscles, which contract, so the larva stops and sinks for a moment.">tap left</button>
+        <button id="tap-right" type="button" data-tip="Taps the right pane. The jolt reaches the larva's collar receptor neurons; the compiled startle circuit answers through the ciliomotor neuron MC, which arrests the cilia, and the longitudinal muscles, which contract, so the larva stops and sinks for a moment.">tap right</button>
+        <button id="uv" type="button" data-tip="Ultraviolet from above, strongest at the surface. The larva's ciliary photoreceptors answer it, and through the compiled circuit the cilia arrest, so the larva stops swimming up and sinks away from the light. Click again to switch it off.">UV off</button>
+        <span class="g">camera</span>
+        <button id="follow" type="button" data-tip="The camera follows the larva. Off, it stays where you left it; drag to orbit, wheel to zoom.">follow</button>
+        <button id="pause" type="button" data-tip="Pauses the larva, its brain and the tank. The space bar does the same.">pause</button>
+      </div>
+    </section>
+    <section class="view" id="brain" aria-label="Cadence patch net, compiled from the whole-body connectome">
+      <div class="top"><p class="h">Cadence patch net · every cell lit by its activity · gold while it repairs</p><div class="tools"><button id="fit" type="button" data-tip="The brain view back to its resting frame." data-tip-side="below">fit</button><button id="spin" type="button" class="on" data-tip="A slow spin of the brain view until you drag it." data-tip-side="below">spin</button></div></div>
+      <div class="host" id="view-host"></div>
+    </section>
+  </main>
+</div>
+<div id="loading">loading the Cadence patch net</div>
+<script type="module" src="./index_page.js"></script>
+</body>
+</html>

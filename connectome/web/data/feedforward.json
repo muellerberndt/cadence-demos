@@ -1,0 +1,37 @@
+{
+ "scope": "oculomotor",
+ "gain": 0.322445,
+ "unit": {
+  "slope": 0.25,
+  "threshold": 0.0
+ },
+ "burst": {
+  "population": "_Int_",
+  "level": 0.03,
+  "steps": 20
+ },
+ "readout": "mean over ABD_m and ABD_i",
+ "settling": {
+  "burst_end": 0.15053943830836397,
+  "one_step_after": 0.15963516319923127,
+  "steps_300_after": 0.09347195977214097
+ },
+ "feed_forward": {
+  "depth_2": {
+   "burst_on": 0.05175868110462934,
+   "burst_off": 0.0
+  },
+  "depth_3": {
+   "burst_on": 0.10518124232424458,
+   "burst_off": 0.0
+  },
+  "depth_5": {
+   "burst_on": 0.1960641218300896,
+   "burst_off": 0.0
+  }
+ },
+ "method": "feed-forward: the same neurons and weights swept k times from rest with a full step (dt 1), the wiring unrolled k layers deep; the answer at a moment depends on that moment's input only",
+ "tables_digest": "bad4abb95a5beea1c5f9c345ef104f93be7f4c16d8d4fe58fea2ad710f6419c8",
+ "connectome_digest": "03a2fd634cb302d849f57f1197406eb8ef4ea2114f59f336c9b9780281fa433b",
+ "protocol_digest": "354d0004c4613041d64706f6bbd5a8f4b9b26f26ba21c87cefc2a7e780b06042"
+}

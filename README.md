@@ -106,6 +106,7 @@ section below. The library README has
 | [Atari Arcade](atari-arcade/) | Brains that learn Atari games from pixels: a teacher first, then reward | `Brain.compose` (System 1); in the browser, a JavaScript version of it |
 | [Amen](amen/) | A record patch composing jungle tracks in the browser | A brain trained with `RecordPatchNet`; the page runs a JavaScript version of its forward pass |
 | [Eyes](eyes/) | One brain that follows every shape you drag with its own eye, from the page's pixels only | A hand-wired connectome run by `cadence.Brain`; in the browser, the released library itself, in Pyodide |
+| [Connectome](connectome/) | Two animals' measured wiring compiled into patch nets that run in your browser: a Platynereis larva with its whole-body connectome in the loop, and a zebrafish brainstem that holds its gaze | A frozen Cadence rate patch net in JavaScript, one patch per cell and the synapse counts as weights; no learning; compiled by the public connectome compiler |
 
 Rover Lab and Patch World run on the population solver, Atari Arcade on
 `Brain.compose`, Amen on a record patch, and Eyes on a hand-wired connectome
@@ -196,3 +197,27 @@ python -m http.server -d eyes/web 8797   # open http://localhost:8797/
 ```
 
 See the [Eyes README](eyes/README.md).
+
+## [Connectome](connectome/): compiled biological wiring, in the browser
+
+A connectome is a wiring diagram measured in an animal: every cell, every synapse,
+how many contacts each connection carries. The
+[connectome compiler](https://github.com/muellerberndt/cadence-connectome-compiler)
+turns such a table into a Cadence rate patch net without changing a number in it:
+one patch per cell, one relation per recorded connection, the synapse count as the
+weight. Signs, gain, the neuron's response law, the senses and the body are declared,
+and the pages say so. The larva is the three-day Platynereis dumerilii of Verasztó
+et al. 2025 with every traced cell in the loop: the lamp lands on its real
+photoreceptors, a tap on its collar receptors, and its cilia and muscles are read
+from the real effector cells. The fish carries one side of a larval zebrafish
+hindbrain (Vishwanathan et al. 2024) that holds its gaze after a saccade. The brain
+view lights every cell by its activity and flashes it gold by the repair it made in
+its last step, so a stimulus shows as a wave of local repairs before the net rests.
+This demo has no learning: it is the compiled, frozen wiring, and its receipts
+report which circuit checks the measured wiring passes against shuffled controls.
+
+```
+python -m http.server -d connectome/web 8800   # open http://localhost:8800/
+```
+
+See the [Connectome README](connectome/README.md).
