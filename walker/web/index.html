@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cadence Walkers</title>
+<link rel="stylesheet" href="walker.css">
+</head>
+<body>
+<header>
+  <div>
+    <h1>Cadence walkers</h1>
+    <p class="about" id="about">Three walkers on three treadmills, the same drive every moment. A step on the
+      other foot than the last one earns a step forward; a repeated foot is a stumble. Nobody tells the
+      walkers what to do: the world pays, that is all. Two of them are Cadence brains born in this page
+      and learning here, from the same founder weights. One carries a copy of its own last command; the
+      other does not, and nothing in what it sees says which foot moved last. The third flips a coin.</p>
+  </div>
+  <div class="loading" id="loading">starting</div>
+</header>
+<main>
+  <section class="left">
+    <div class="toolbar">
+      <span class="group">
+        <button id="start" class="big">Start</button>
+        <label>moments per second <input type="range" id="rate" min="2" max="40" value="12"><span id="ratev">12</span></label>
+        <button id="ff" title="live 100 moments without drawing them">Fast forward 100</button>
+      </span>
+      <span class="group">
+        <button id="freeze" title="three silent moments: the floor goes dark and nothing drives the walkers">Freeze the floor</button>
+        <button id="flash" title="one moment of a distractor instead of the drive">Flash</button>
+        <button id="forget" title="erase the first walker's copy of its last step; its learned relations stay">Forget the last step</button>
+      </span>
+      <span class="group">
+        <button id="newborn" title="three new walkers from a new seed">Newborns</button>
+        <label>seed <input type="number" id="seed" min="0" max="99999" value="3"></label>
+        <button id="sound" title="a tick and a tock for the first walker's feet, a thud for a stumble">Sound off</button>
+      </span>
+    </div>
+    <canvas id="track" aria-label="three walkers on three treadmills"></canvas>
+    <div class="lanes" id="lanes"></div>
+    <canvas id="strip" aria-label="the beat of each walker over its life, and the first walker's arousal"></canvas>
+    <p class="hint">Lines: the share of steps that changed foot, per 25 moments, for each walker. The orange
+      area is the share of moments the first walker was aroused. Marks: the floor frozen (grey), a flash
+      (yellow), the last step forgotten (red).</p>
+  </section>
+  <section class="right">
+    <div id="brainname"></div>
+    <h2>Inside the first walker</h2>
+    <div class="cells">
+      <div class="cell"><span class="k">copy of its last command</span>
+        <div class="pair"><div class="box" id="copyL">L</div><div class="box" id="copyR">R</div></div></div>
+      <div class="cell"><span class="k">motor neurons</span>
+        <div class="pair"><div class="box motor" id="motorL">L</div><div class="box motor" id="motorR">R</div></div></div>
+    </div>
+    <div class="gauges">
+      <div class="gauge"><span class="k">belief in the beat</span><b id="belief">-</b><div class="bar belief"><i id="beliefbar"></i></div></div>
+      <div class="gauge"><span class="k">arousal level</span><b id="level">-</b><div class="bar"><i id="levelbar"></i></div></div>
+      <div class="gauge"><span class="k">want</span><b id="want">-</b><div class="bar want"><i id="wantbar"></i></div></div>
+    </div>
+    <table class="ledger" id="ledger"></table>
+    <div id="log" aria-label="events"></div>
+    <p class="legend">Routine: a calm walker answers with the greedy choice of one settle of the whole
+      brain and changes nothing. Aroused: a want (its need unmet) or a surprise (a contradicted
+      forecast) makes it sample, keep eligibility over its own steps and learn from every outcome.
+      The copy is one neuron per motor neuron carrying the one-hot of the last command, read by the
+      association region through a plastic projection; what to do after what it did is learned. Every
+      constant here is a gene of the released library at the reward-rhythm chamber's declared point;
+      the copy's founder value, zero, is the second walker.</p>
+  </section>
+</main>
+<script type="module" src="walker.js"></script>
+</body>
+</html>

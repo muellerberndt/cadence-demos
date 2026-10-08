@@ -1,0 +1,8 @@
+cadence walkers page check, 2026-10-08 10:49
+ok   the walkers loaded in Pyodide after 3 s
+     Cadence 0.76.0 in Pyodide 314.0.7: Brain.compose(4, 2, modules=(32,)) at the reward-rhythm chamber's point; 72 neurons and 1346 synapses with the copy, 70 and 1282 without.
+ok   300 moments: the first walker's beat over its last 50 steps is 1.00 (found the beat at moment 119), aroused in 0% of its last 50 moments, 1.5 ms per moment in the worker; the second's beat is 0.51 (aroused 78%); the coin's is 0.47; steps forward 256 / 136 / 149
+ok   the copy erased at moment 300: the next 20 steps changed foot 1.00 of the time (0 stumbles)
+ok   the floor frozen for three moments (beat through them 1.00): the next 20 steps changed foot 1.00 of the time (0 stumbles)
+ok   no console errors
+PASSED

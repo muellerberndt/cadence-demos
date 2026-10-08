@@ -107,6 +107,7 @@ section below. The library README has
 | [Amen](amen/) | A record patch composing jungle tracks in the browser | A brain trained with `RecordPatchNet`; the page runs a JavaScript version of its forward pass |
 | [Eyes](eyes/) | One brain that follows every shape you drag with its own eye, from the page's pixels only | A hand-wired connectome run by `cadence.Brain`; in the browser, the released library itself, in Pyodide |
 | [Connectome](connectome/) | Teach a fish gaze circuit to hold, return and hold again on measured wiring; explore a larva with fixed connections | Cadence rate patches in JavaScript, with plastic fish connections and declared body models |
+| [Walkers](walker/) | Two brains born in the page learn a walking beat from the world's pay alone; the one that carries a copy of its own last step finds it, the one without does not | `Brain.compose` with the efference copy, learning through `Brain.live`; in the browser, the released library itself, in Pyodide |
 
 Rover Lab and Patch World run on the population solver, Atari Arcade on
 `Brain.compose`, Amen on a record patch, and Eyes on a hand-wired connectome
@@ -215,3 +216,21 @@ python -m http.server -d connectome/web 8800   # open http://localhost:8800/
 ```
 
 See the [Connectome README](connectome/README.md) to run, teach and check the demo.
+
+## [Walkers](walker/): the beat paid by the world
+
+Three walkers on three treadmills see the same drive every moment. A step on
+the other foot than the last one earns a step forward, a repeated foot is a
+stumble, and nobody tells them what to do. Two are Cadence brains born in the
+page from the same founder weights and learning there, from that pay alone,
+through `Brain.live`: aroused through a youth, then routine on the beat. One
+carries a copy of its own last command, the efference copy of Cadence 0.76.0;
+the other does not, and nothing in what it sees says which foot moved last. The
+third flips a coin. Freeze the floor, flash a distractor, or erase the first
+walker's copy and watch it keep the beat.
+
+```sh
+python -m http.server -d walker/web 8799   # open http://localhost:8799/
+```
+
+See the [Walkers README](walker/README.md) for what the chamber measured and the limits.

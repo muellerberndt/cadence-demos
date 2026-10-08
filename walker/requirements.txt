@@ -1,0 +1,4 @@
+cadence-net>=0.76.0
+numpy
+pytest
+aiohttp

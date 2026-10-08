@@ -1,0 +1,46 @@
+{
+ "schema": "cadence-walker-pack/1",
+ "created": "2026-10-08",
+ "pyodide": "314.0.7",
+ "cadence": "0.76.0",
+ "wheel": "cadence_net-0.76.0-py3-none-any.whl",
+ "wheel_sha256": "32c16240e038732591bc62ec4b2ab893af4cedefcaca950fb08fd72c4d22d018",
+ "wheel_source": "PyPI",
+ "sources": [
+  "__init__.py",
+  "world.py",
+  "host.py"
+ ],
+ "sources_sha256": {
+  "__init__.py": "181b87de11048b78ec1a4dc1b0710feb34bcc6c52c845ceb93b2d0e907febbbd",
+  "world.py": "7d38c4b526f4fa839e032f7da542b42c19bd35fb0b162fb5f57a3e9f37550812",
+  "host.py": "084f7d0f7408b028e30d3beab0c2c41be08b3df1e55c50fd32e53d0c3fde846c"
+ },
+ "point": {
+  "modules": [
+   32
+  ],
+  "trace_amplitude": 0.3,
+  "trace_decay": 0.1,
+  "efference_amplitude": 3.0,
+  "efference_decay": 0.0,
+  "eta": 0.1,
+  "lam": 0.0,
+  "gamma": 0.95,
+  "eta_critic": 5.0
+ },
+ "arousal": {
+  "threshold": 0.2,
+  "decay": 0.9,
+  "tolerance": 2.0,
+  "floor": 0.1,
+  "fast": 0.05,
+  "slow": 0.005,
+  "heat": 2.0,
+  "youth": 100,
+  "value_surprise": 1.0,
+  "record_surprise": 0.0,
+  "need": 0.5
+ },
+ "protocol": "cadence benchmarks/rhythm/protocol-reward-2.json, the live and nocopy arms"
+}
