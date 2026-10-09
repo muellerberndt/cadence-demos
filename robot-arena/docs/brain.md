@@ -4,7 +4,9 @@ Every robot is one `Brain.compose` life of cadence-net 0.79.0: System 1, two rec
 coupled regions, the working trace as short-term memory, an associative memory, one reward
 channel, and the actor-critic of the basal ganglia with TD eligibility over its own recent
 commands. Every constant below is a gene of the robot's blueprint (`arena/brain.py:FOUNDER`),
-so evolution can move it; the values are the founders.
+so evolution can move it; the values are the founders. They are suggestions: one working
+point, measured on these bodies in this ring, and the same goes for the bodies, the brain
+layout, the nursery, the driving test and the stage. Start from them and change what you like.
 
 ## Senses and motors
 

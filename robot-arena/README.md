@@ -45,7 +45,10 @@ placement pays at the end. In the ring the brain runs on a stage: calm unless su
 sharp sampling temperature, and an actor step a thirtieth of the nursery's, so a fight
 refines what the nursery built instead of overwriting it.
 
-The settings behind this are in [docs/brain.md](docs/brain.md).
+The settings behind this are in [docs/brain.md](docs/brain.md). The bodies in the parts
+catalogue, the brain layout, the nursery, the driving test, the ring and every value are one
+working set of choices, measured here, and nothing more: change any of them. Every brain
+constant is a gene, so evolution changes them too.
 
 ## Train your own league
 
