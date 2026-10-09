@@ -1,0 +1,2349 @@
+{
+ "schema": "cadence-showcase-pack/1",
+ "created": "2026-10-09",
+ "pyodide": "314.0.7",
+ "cadence": "0.79.0",
+ "wheel": "cadence_net-0.79.0-py3-none-any.whl",
+ "wheel_sha256": "43de165e419573273f0195f28bab68d6d7a7087162a1e701023ebb01705dd9b3",
+ "sources": [
+  "__init__.py",
+  "parts.py",
+  "world.py",
+  "senses.py",
+  "brain.py",
+  "controls.py",
+  "pool.py",
+  "royale.py",
+  "nursery.py",
+  "probe.py"
+ ],
+ "sources_sha256": {
+  "__init__.py": "6abe3d47c115a17354afc005a5a54508a5c157b3f8e48bc63798c8f9a0719716",
+  "parts.py": "6b858e460cde02302b484bdbc7767a273e38b6f6fa1940d42cccff42a9c5c370",
+  "world.py": "698d59cf38bb5877d5887f6dadaf098062f8fd162953c464c256739679b65215",
+  "senses.py": "ebc2428688c411937c7a865b3a8e976fc06a493a891e49e01a86ecd39d1022cd",
+  "brain.py": "9aa1de6af1c2fb91f4364e8e170babd51378d19c6691d172e460638efffc2eee",
+  "controls.py": "5dfde56f3d5cb17908c22003fc8e5dbb610f91701f963a58b7b4fd5070dac48b",
+  "pool.py": "268b924a6d87963d7cf7930fc1d6b3cdd7411318ac3d787449ec0b82de79fe9f",
+  "royale.py": "949fe7b78822249d31ae3817863df49ca66b8d00eee93d4a51003a80f849a43c",
+  "nursery.py": "adf91a4ea4b87f5325b43acd3a89338250ca18e3237f28256f5b357c7ab14b65",
+  "probe.py": "4ebbfa5134a8e1ee1d73c3ca06e5d36c5751866dca420b6374503e6ddd35e0d7"
+ },
+ "host_sha256": "fa2f6df913738d87c13a95248547c1ce79b09acf105da668f796cd5983bafac1",
+ "roster": [
+  {
+   "name": "Dozer-1.110",
+   "blueprint": {
+    "name": "Dozer-1.110",
+    "chassis": "heavy",
+    "parts": [
+     {
+      "kind": "wheel",
+      "mount": 70.0
+     },
+     {
+      "kind": "wheel",
+      "mount": -70.0
+     },
+     {
+      "kind": "wheel",
+      "mount": 110.0
+     },
+     {
+      "kind": "wheel",
+      "mount": -110.0
+     },
+     {
+      "kind": "arm",
+      "mount": 15.0,
+      "weapon": "hammer"
+     },
+     {
+      "kind": "arm",
+      "mount": -15.0,
+      "weapon": "spike"
+     },
+     {
+      "kind": "arm",
+      "mount": 0.0,
+      "weapon": "hammer"
+     },
+     {
+      "kind": "wheel",
+      "mount": 115.9
+     }
+    ],
+    "seed": 831542,
+    "genes": {},
+    "policy": "brain"
+   },
+   "elo": 1296.3,
+   "fights": 72,
+   "wins": 34,
+   "lineage": "Dozer",
+   "parent": "Dozer-013",
+   "generation": 1,
+   "mutations": [
+    "re-armed arm 4 with a hammer"
+   ],
+   "moments": 154850,
+   "owed": [
+    -0.17263419988846396,
+    true
+   ],
+   "brain_sha256": "d49e6012a23ffbff378f15752e16b2194c5ebca593662f02182bd8adbc1276df",
+   "history": [
+    {
+     "fight": 1841,
+     "place": 1,
+     "dealt": 342.6,
+     "taken": 143.6,
+     "elo_after": 1192.7,
+     "aroused_share": 0.511,
+     "learning_sweeps": 8913
+    },
+    {
+     "fight": 1875,
+     "place": 3,
+     "dealt": 227.9,
+     "taken": 175.4,
+     "elo_after": 1190.1,
+     "aroused_share": 0.663,
+     "learning_sweeps": 17675
+    },
+    {
+     "fight": 1902,
+     "place": 1,
+     "dealt": 223.1,
+     "taken": 159.5,
+     "elo_after": 1198.8,
+     "aroused_share": 0.424,
+     "learning_sweeps": 5491
+    },
+    {
+     "fight": 1935,
+     "place": 4,
+     "dealt": 169.9,
+     "taken": 160.0,
+     "elo_after": 1191.0,
+     "aroused_share": 0.928,
+     "learning_sweeps": 15248
+    },
+    {
+     "fight": 1971,
+     "place": 1,
+     "dealt": 265.9,
+     "taken": 119.4,
+     "elo_after": 1201.1,
+     "aroused_share": 0.5,
+     "learning_sweeps": 6937
+    },
+    {
+     "fight": 1999,
+     "place": 1,
+     "dealt": 332.6,
+     "taken": 132.4,
+     "elo_after": 1209.6,
+     "aroused_share": 0.633,
+     "learning_sweeps": 9367
+    },
+    {
+     "fight": 2033,
+     "place": 4,
+     "dealt": 165.5,
+     "taken": 162.9,
+     "elo_after": 1202.4,
+     "aroused_share": 0.63,
+     "learning_sweeps": 7300
+    },
+    {
+     "fight": 2066,
+     "place": 2,
+     "dealt": 439.9,
+     "taken": 161.1,
+     "elo_after": 1205.7,
+     "aroused_share": 0.342,
+     "learning_sweeps": 5896
+    },
+    {
+     "fight": 2096,
+     "place": 3,
+     "dealt": 363.8,
+     "taken": 160.2,
+     "elo_after": 1203.5,
+     "aroused_share": 0.418,
+     "learning_sweeps": 6824
+    },
+    {
+     "fight": 2131,
+     "place": 1,
+     "dealt": 301.5,
+     "taken": 128.2,
+     "elo_after": 1212.1,
+     "aroused_share": 0.6,
+     "learning_sweeps": 9116
+    },
+    {
+     "fight": 2161,
+     "place": 2,
+     "dealt": 215.7,
+     "taken": 173.9,
+     "elo_after": 1214.0,
+     "aroused_share": 0.833,
+     "learning_sweeps": 14794
+    },
+    {
+     "fight": 2196,
+     "place": 1,
+     "dealt": 221.6,
+     "taken": 77.1,
+     "elo_after": 1223.6,
+     "aroused_share": 0.572,
+     "learning_sweeps": 8956
+    },
+    {
+     "fight": 2228,
+     "place": 1,
+     "dealt": 112.1,
+     "taken": 75.2,
+     "elo_after": 1235.9,
+     "aroused_share": 0.789,
+     "learning_sweeps": 14309
+    },
+    {
+     "fight": 2255,
+     "place": 1,
+     "dealt": 181.5,
+     "taken": 154.4,
+     "elo_after": 1244.1,
+     "aroused_share": 0.572,
+     "learning_sweeps": 8888
+    },
+    {
+     "fight": 2287,
+     "place": 2,
+     "dealt": 325.9,
+     "taken": 160.1,
+     "elo_after": 1245.0,
+     "aroused_share": 0.658,
+     "learning_sweeps": 7836
+    },
+    {
+     "fight": 2321,
+     "place": 1,
+     "dealt": 216.8,
+     "taken": 103.8,
+     "elo_after": 1252.5,
+     "aroused_share": 0.697,
+     "learning_sweeps": 5581
+    },
+    {
+     "fight": 2358,
+     "place": 1,
+     "dealt": 335.4,
+     "taken": 75.1,
+     "elo_after": 1264.4,
+     "aroused_share": 0.616,
+     "learning_sweeps": 13278
+    },
+    {
+     "fight": 2389,
+     "place": 1,
+     "dealt": 185.4,
+     "taken": 53.8,
+     "elo_after": 1275.1,
+     "aroused_share": 0.57,
+     "learning_sweeps": 5813
+    },
+    {
+     "fight": 2422,
+     "place": 2,
+     "dealt": 289.6,
+     "taken": 160.1,
+     "elo_after": 1278.1,
+     "aroused_share": 0.563,
+     "learning_sweeps": 9159
+    },
+    {
+     "fight": 2454,
+     "place": 1,
+     "dealt": 162.1,
+     "taken": 148.5,
+     "elo_after": 1288.5,
+     "aroused_share": 0.864,
+     "learning_sweeps": 12769
+    },
+    {
+     "fight": 2485,
+     "place": 1,
+     "dealt": 280.7,
+     "taken": 51.3,
+     "elo_after": 1296.8,
+     "aroused_share": 0.447,
+     "learning_sweeps": 7906
+    },
+    {
+     "fight": 2518,
+     "place": 3,
+     "dealt": 201.1,
+     "taken": 160.2,
+     "elo_after": 1292.8,
+     "aroused_share": 0.453,
+     "learning_sweeps": 6971
+    },
+    {
+     "fight": 2550,
+     "place": 4,
+     "dealt": 176.1,
+     "taken": 161.6,
+     "elo_after": 1283.6,
+     "aroused_share": 0.605,
+     "learning_sweeps": 11383
+    },
+    {
+     "fight": 2582,
+     "place": 5,
+     "dealt": 154.1,
+     "taken": 165.5,
+     "elo_after": 1268.6,
+     "aroused_share": 0.569,
+     "learning_sweeps": 4653
+    },
+    {
+     "fight": 2615,
+     "place": 1,
+     "dealt": 100.9,
+     "taken": 57.9,
+     "elo_after": 1280.3,
+     "aroused_share": 0.818,
+     "learning_sweeps": 11493
+    },
+    {
+     "fight": 2646,
+     "place": 2,
+     "dealt": 171.4,
+     "taken": 160.1,
+     "elo_after": 1284.3,
+     "aroused_share": 0.742,
+     "learning_sweeps": 11542
+    },
+    {
+     "fight": 2679,
+     "place": 1,
+     "dealt": 204.6,
+     "taken": 102.4,
+     "elo_after": 1296.0,
+     "aroused_share": 0.579,
+     "learning_sweeps": 11859
+    },
+    {
+     "fight": 2711,
+     "place": 2,
+     "dealt": 207.6,
+     "taken": 160.2,
+     "elo_after": 1301.4,
+     "aroused_share": 0.603,
+     "learning_sweeps": 9259
+    },
+    {
+     "fight": 2742,
+     "place": 1,
+     "dealt": 176.6,
+     "taken": 67.9,
+     "elo_after": 1309.7,
+     "aroused_share": 0.641,
+     "learning_sweeps": 14630
+    },
+    {
+     "fight": 2774,
+     "place": 1,
+     "dealt": 276.0,
+     "taken": 98.6,
+     "elo_after": 1317.7,
+     "aroused_share": 0.575,
+     "learning_sweeps": 11483
+    },
+    {
+     "fight": 2806,
+     "place": 5,
+     "dealt": 267.6,
+     "taken": 160.2,
+     "elo_after": 1300.6,
+     "aroused_share": 0.468,
+     "learning_sweeps": 4084
+    },
+    {
+     "fight": 2838,
+     "place": 3,
+     "dealt": 144.8,
+     "taken": 175.2,
+     "elo_after": 1298.2,
+     "aroused_share": 0.761,
+     "learning_sweeps": 14982
+    },
+    {
+     "fight": 2869,
+     "place": 1,
+     "dealt": 300.6,
+     "taken": 111.0,
+     "elo_after": 1305.4,
+     "aroused_share": 0.422,
+     "learning_sweeps": 5295
+    },
+    {
+     "fight": 2903,
+     "place": 4,
+     "dealt": 286.5,
+     "taken": 168.5,
+     "elo_after": 1298.1,
+     "aroused_share": 0.421,
+     "learning_sweeps": 3325
+    },
+    {
+     "fight": 2933,
+     "place": 1,
+     "dealt": 244.4,
+     "taken": 134.2,
+     "elo_after": 1306.7,
+     "aroused_share": 0.663,
+     "learning_sweeps": 13637
+    },
+    {
+     "fight": 2966,
+     "place": 2,
+     "dealt": 378.9,
+     "taken": 166.1,
+     "elo_after": 1308.6,
+     "aroused_share": 0.451,
+     "learning_sweeps": 8376
+    },
+    {
+     "fight": 2997,
+     "place": 6,
+     "dealt": 84.3,
+     "taken": 162.2,
+     "elo_after": 1286.5,
+     "aroused_share": 0.711,
+     "learning_sweeps": 3758
+    },
+    {
+     "fight": 3030,
+     "place": 1,
+     "dealt": 175.0,
+     "taken": 106.3,
+     "elo_after": 1296.6,
+     "aroused_share": 0.719,
+     "learning_sweeps": 11898
+    },
+    {
+     "fight": 3063,
+     "place": 1,
+     "dealt": 316.5,
+     "taken": 82.6,
+     "elo_after": 1307.0,
+     "aroused_share": 0.622,
+     "learning_sweeps": 13172
+    },
+    {
+     "fight": 3093,
+     "place": 4,
+     "dealt": 125.9,
+     "taken": 160.2,
+     "elo_after": 1296.3,
+     "aroused_share": 0.508,
+     "learning_sweeps": 3466
+    }
+   ]
+  },
+  {
+   "name": "Dozer-2.8",
+   "blueprint": {
+    "name": "Dozer-2.8",
+    "chassis": "heavy",
+    "parts": [
+     {
+      "kind": "wheel",
+      "mount": 70.0
+     },
+     {
+      "kind": "wheel",
+      "mount": -70.0
+     },
+     {
+      "kind": "wheel",
+      "mount": -110.0
+     },
+     {
+      "kind": "arm",
+      "mount": 15.0,
+      "weapon": "spike"
+     },
+     {
+      "kind": "arm",
+      "mount": -15.0,
+      "weapon": "hammer"
+     },
+     {
+      "kind": "arm",
+      "mount": 0.0,
+      "weapon": "hammer"
+     },
+     {
+      "kind": "arm",
+      "mount": 28.6,
+      "weapon": "hammer"
+     }
+    ],
+    "seed": 719691,
+    "genes": {
+     "arousal": {
+      "heat": 2.1667,
+      "youth": 289
+     }
+    },
+    "policy": "brain"
+   },
+   "elo": 1237.5,
+   "fights": 48,
+   "wins": 29,
+   "lineage": "Dozer",
+   "parent": "Dozer-1.1",
+   "generation": 2,
+   "mutations": [
+    "arousal.youth 300 -> 289",
+    "removed wheel"
+   ],
+   "moments": 133462,
+   "owed": [
+    -1.442840241086093,
+    true
+   ],
+   "brain_sha256": "9f27923735514fb663fc79056b2bc378817a10a594e5461bee7c21b8a2dda7df",
+   "history": [
+    {
+     "fight": 1832,
+     "place": 1,
+     "dealt": 214.9,
+     "taken": 149.7,
+     "elo_after": 1098.5,
+     "aroused_share": 0.69,
+     "learning_sweeps": 11814
+    },
+    {
+     "fight": 1869,
+     "place": 1,
+     "dealt": 335.0,
+     "taken": 151.0,
+     "elo_after": 1110.3,
+     "aroused_share": 0.684,
+     "learning_sweeps": 12845
+    },
+    {
+     "fight": 1891,
+     "place": 1,
+     "dealt": 95.1,
+     "taken": 33.7,
+     "elo_after": 1121.1,
+     "aroused_share": 0.596,
+     "learning_sweeps": 12069
+    },
+    {
+     "fight": 1918,
+     "place": 4,
+     "dealt": 221.8,
+     "taken": 161.3,
+     "elo_after": 1113.2,
+     "aroused_share": 0.593,
+     "learning_sweeps": 7139
+    },
+    {
+     "fight": 1962,
+     "place": 1,
+     "dealt": 175.5,
+     "taken": 59.0,
+     "elo_after": 1123.6,
+     "aroused_share": 0.599,
+     "learning_sweeps": 6301
+    },
+    {
+     "fight": 1996,
+     "place": 1,
+     "dealt": 614.3,
+     "taken": 147.1,
+     "elo_after": 1133.8,
+     "aroused_share": 0.597,
+     "learning_sweeps": 12215
+    },
+    {
+     "fight": 2015,
+     "place": 1,
+     "dealt": 243.9,
+     "taken": 44.4,
+     "elo_after": 1145.2,
+     "aroused_share": 0.69,
+     "learning_sweeps": 12800
+    },
+    {
+     "fight": 2058,
+     "place": 2,
+     "dealt": 354.1,
+     "taken": 164.3,
+     "elo_after": 1148.5,
+     "aroused_share": 0.749,
+     "learning_sweeps": 20421
+    },
+    {
+     "fight": 2087,
+     "place": 1,
+     "dealt": 236.0,
+     "taken": 159.2,
+     "elo_after": 1158.4,
+     "aroused_share": 0.618,
+     "learning_sweeps": 7608
+    },
+    {
+     "fight": 2108,
+     "place": 1,
+     "dealt": 245.3,
+     "taken": 28.5,
+     "elo_after": 1168.6,
+     "aroused_share": 0.69,
+     "learning_sweeps": 13169
+    },
+    {
+     "fight": 2141,
+     "place": 1,
+     "dealt": 151.0,
+     "taken": 75.7,
+     "elo_after": 1177.5,
+     "aroused_share": 0.588,
+     "learning_sweeps": 10640
+    },
+    {
+     "fight": 2171,
+     "place": 3,
+     "dealt": 228.4,
+     "taken": 160.2,
+     "elo_after": 1173.3,
+     "aroused_share": 0.617,
+     "learning_sweeps": 8796
+    },
+    {
+     "fight": 2208,
+     "place": 2,
+     "dealt": 336.2,
+     "taken": 176.5,
+     "elo_after": 1176.0,
+     "aroused_share": 0.541,
+     "learning_sweeps": 10597
+    },
+    {
+     "fight": 2243,
+     "place": 1,
+     "dealt": 397.9,
+     "taken": 109.1,
+     "elo_after": 1185.1,
+     "aroused_share": 0.529,
+     "learning_sweeps": 8911
+    },
+    {
+     "fight": 2273,
+     "place": 1,
+     "dealt": 178.0,
+     "taken": 73.6,
+     "elo_after": 1192.2,
+     "aroused_share": 0.592,
+     "learning_sweeps": 8982
+    },
+    {
+     "fight": 2303,
+     "place": 2,
+     "dealt": 211.4,
+     "taken": 177.3,
+     "elo_after": 1194.4,
+     "aroused_share": 0.718,
+     "learning_sweeps": 16579
+    },
+    {
+     "fight": 2351,
+     "place": 1,
+     "dealt": 339.9,
+     "taken": 61.5,
+     "elo_after": 1205.3,
+     "aroused_share": 0.582,
+     "learning_sweeps": 7790
+    },
+    {
+     "fight": 2388,
+     "place": 1,
+     "dealt": 277.0,
+     "taken": 157.9,
+     "elo_after": 1214.0,
+     "aroused_share": 0.783,
+     "learning_sweeps": 19080
+    },
+    {
+     "fight": 2418,
+     "place": 1,
+     "dealt": 283.3,
+     "taken": 117.5,
+     "elo_after": 1223.2,
+     "aroused_share": 0.743,
+     "learning_sweeps": 10530
+    },
+    {
+     "fight": 2450,
+     "place": 3,
+     "dealt": 406.3,
+     "taken": 168.7,
+     "elo_after": 1219.5,
+     "aroused_share": 0.605,
+     "learning_sweeps": 11406
+    },
+    {
+     "fight": 2480,
+     "place": 1,
+     "dealt": 254.7,
+     "taken": 46.5,
+     "elo_after": 1229.1,
+     "aroused_share": 0.65,
+     "learning_sweeps": 7556
+    },
+    {
+     "fight": 2511,
+     "place": 3,
+     "dealt": 388.6,
+     "taken": 175.5,
+     "elo_after": 1225.0,
+     "aroused_share": 0.539,
+     "learning_sweeps": 5917
+    },
+    {
+     "fight": 2549,
+     "place": 4,
+     "dealt": 168.7,
+     "taken": 174.7,
+     "elo_after": 1218.0,
+     "aroused_share": 0.327,
+     "learning_sweeps": 1851
+    },
+    {
+     "fight": 2580,
+     "place": 1,
+     "dealt": 171.4,
+     "taken": 99.6,
+     "elo_after": 1227.1,
+     "aroused_share": 0.643,
+     "learning_sweeps": 6926
+    },
+    {
+     "fight": 2608,
+     "place": 4,
+     "dealt": 174.1,
+     "taken": 160.1,
+     "elo_after": 1216.8,
+     "aroused_share": 0.683,
+     "learning_sweeps": 6802
+    },
+    {
+     "fight": 2642,
+     "place": 1,
+     "dealt": 210.7,
+     "taken": 145.2,
+     "elo_after": 1225.7,
+     "aroused_share": 0.73,
+     "learning_sweeps": 10215
+    },
+    {
+     "fight": 2673,
+     "place": 2,
+     "dealt": 350.1,
+     "taken": 167.6,
+     "elo_after": 1227.8,
+     "aroused_share": 0.621,
+     "learning_sweeps": 11043
+    },
+    {
+     "fight": 2705,
+     "place": 1,
+     "dealt": 182.8,
+     "taken": 133.4,
+     "elo_after": 1236.5,
+     "aroused_share": 0.618,
+     "learning_sweeps": 9913
+    },
+    {
+     "fight": 2738,
+     "place": 2,
+     "dealt": 324.8,
+     "taken": 164.3,
+     "elo_after": 1240.8,
+     "aroused_share": 0.687,
+     "learning_sweeps": 12967
+    },
+    {
+     "fight": 2773,
+     "place": 6,
+     "dealt": 157.7,
+     "taken": 163.9,
+     "elo_after": 1221.0,
+     "aroused_share": 0.507,
+     "learning_sweeps": 1793
+    },
+    {
+     "fight": 2798,
+     "place": 2,
+     "dealt": 200.5,
+     "taken": 164.5,
+     "elo_after": 1223.5,
+     "aroused_share": 0.544,
+     "learning_sweeps": 7021
+    },
+    {
+     "fight": 2832,
+     "place": 3,
+     "dealt": 175.3,
+     "taken": 162.6,
+     "elo_after": 1220.2,
+     "aroused_share": 0.56,
+     "learning_sweeps": 5518
+    },
+    {
+     "fight": 2865,
+     "place": 1,
+     "dealt": 494.1,
+     "taken": 75.3,
+     "elo_after": 1231.1,
+     "aroused_share": 0.538,
+     "learning_sweeps": 11373
+    },
+    {
+     "fight": 2900,
+     "place": 1,
+     "dealt": 38.7,
+     "taken": 7.4,
+     "elo_after": 1241.6,
+     "aroused_share": 0.804,
+     "learning_sweeps": 11657
+    },
+    {
+     "fight": 2931,
+     "place": 1,
+     "dealt": 350.2,
+     "taken": 54.2,
+     "elo_after": 1249.4,
+     "aroused_share": 0.584,
+     "learning_sweeps": 12183
+    },
+    {
+     "fight": 2963,
+     "place": 5,
+     "dealt": 172.8,
+     "taken": 160.5,
+     "elo_after": 1231.0,
+     "aroused_share": 0.397,
+     "learning_sweeps": 2075
+    },
+    {
+     "fight": 2997,
+     "place": 1,
+     "dealt": 332.9,
+     "taken": 113.1,
+     "elo_after": 1244.8,
+     "aroused_share": 0.375,
+     "learning_sweeps": 5249
+    },
+    {
+     "fight": 3028,
+     "place": 2,
+     "dealt": 295.8,
+     "taken": 170.2,
+     "elo_after": 1246.2,
+     "aroused_share": 0.645,
+     "learning_sweeps": 10816
+    },
+    {
+     "fight": 3055,
+     "place": 1,
+     "dealt": 353.3,
+     "taken": 130.8,
+     "elo_after": 1255.1,
+     "aroused_share": 0.479,
+     "learning_sweeps": 8534
+    },
+    {
+     "fight": 3090,
+     "place": 5,
+     "dealt": 146.6,
+     "taken": 162.8,
+     "elo_after": 1237.5,
+     "aroused_share": 0.77,
+     "learning_sweeps": 3459
+    }
+   ]
+  },
+  {
+   "name": "Dozer-2.59",
+   "blueprint": {
+    "name": "Dozer-2.59",
+    "chassis": "heavy",
+    "parts": [
+     {
+      "kind": "wheel",
+      "mount": 70.0
+     },
+     {
+      "kind": "wheel",
+      "mount": -70.0
+     },
+     {
+      "kind": "wheel",
+      "mount": 110.0
+     },
+     {
+      "kind": "arm",
+      "mount": 15.0,
+      "weapon": "spike"
+     },
+     {
+      "kind": "arm",
+      "mount": -18.8,
+      "weapon": "spike"
+     },
+     {
+      "kind": "arm",
+      "mount": 0.0,
+      "weapon": "hammer"
+     },
+     {
+      "kind": "arm",
+      "mount": 83.7,
+      "weapon": "hammer"
+     }
+    ],
+    "seed": 588721,
+    "genes": {
+     "efference_amplitude": 0.19
+    },
+    "policy": "brain"
+   },
+   "elo": 1213.0,
+   "fights": 48,
+   "wins": 20,
+   "lineage": "Dozer",
+   "parent": "Dozer-1.98",
+   "generation": 2,
+   "mutations": [
+    "efference_amplitude 0 -> 0.19",
+    "moved arm 4 to -19 deg"
+   ],
+   "moments": 131278,
+   "owed": [
+    1.748923835611047,
+    true
+   ],
+   "brain_sha256": "162dd0be05d9204772c957dc10bb43c37ad0b7d8d353590819d931062f3d25e3",
+   "history": [
+    {
+     "fight": 1826,
+     "place": 5,
+     "dealt": 181.1,
+     "taken": 160.4,
+     "elo_after": 1070.7,
+     "aroused_share": 0.692,
+     "learning_sweeps": 6045
+    },
+    {
+     "fight": 1849,
+     "place": 4,
+     "dealt": 127.9,
+     "taken": 160.0,
+     "elo_after": 1064.8,
+     "aroused_share": 0.765,
+     "learning_sweeps": 6332
+    },
+    {
+     "fight": 1889,
+     "place": 5,
+     "dealt": 167.2,
+     "taken": 160.9,
+     "elo_after": 1053.0,
+     "aroused_share": 0.459,
+     "learning_sweeps": 1115
+    },
+    {
+     "fight": 1927,
+     "place": 2,
+     "dealt": 0.0,
+     "taken": 160.2,
+     "elo_after": 1060.1,
+     "aroused_share": 0.927,
+     "learning_sweeps": 11376
+    },
+    {
+     "fight": 1948,
+     "place": 4,
+     "dealt": 264.2,
+     "taken": 160.1,
+     "elo_after": 1054.9,
+     "aroused_share": 0.752,
+     "learning_sweeps": 9764
+    },
+    {
+     "fight": 1977,
+     "place": 1,
+     "dealt": 163.8,
+     "taken": 146.1,
+     "elo_after": 1069.0,
+     "aroused_share": 0.465,
+     "learning_sweeps": 4438
+    },
+    {
+     "fight": 2017,
+     "place": 1,
+     "dealt": 313.4,
+     "taken": 70.3,
+     "elo_after": 1082.1,
+     "aroused_share": 0.711,
+     "learning_sweeps": 14030
+    },
+    {
+     "fight": 2056,
+     "place": 2,
+     "dealt": 160.9,
+     "taken": 160.0,
+     "elo_after": 1088.5,
+     "aroused_share": 0.792,
+     "learning_sweeps": 14307
+    },
+    {
+     "fight": 2079,
+     "place": 5,
+     "dealt": 111.7,
+     "taken": 173.7,
+     "elo_after": 1075.2,
+     "aroused_share": 0.654,
+     "learning_sweeps": 2370
+    },
+    {
+     "fight": 2108,
+     "place": 3,
+     "dealt": 158.4,
+     "taken": 160.0,
+     "elo_after": 1076.9,
+     "aroused_share": 0.814,
+     "learning_sweeps": 11917
+    },
+    {
+     "fight": 2137,
+     "place": 5,
+     "dealt": 85.0,
+     "taken": 160.2,
+     "elo_after": 1065.6,
+     "aroused_share": 0.824,
+     "learning_sweeps": 11687
+    },
+    {
+     "fight": 2189,
+     "place": 6,
+     "dealt": 36.6,
+     "taken": 160.1,
+     "elo_after": 1047.9,
+     "aroused_share": 0.809,
+     "learning_sweeps": 4392
+    },
+    {
+     "fight": 2221,
+     "place": 2,
+     "dealt": 97.8,
+     "taken": 160.0,
+     "elo_after": 1055.0,
+     "aroused_share": 0.711,
+     "learning_sweeps": 10452
+    },
+    {
+     "fight": 2241,
+     "place": 1,
+     "dealt": 313.3,
+     "taken": 70.5,
+     "elo_after": 1068.8,
+     "aroused_share": 0.529,
+     "learning_sweeps": 9677
+    },
+    {
+     "fight": 2274,
+     "place": 2,
+     "dealt": 138.8,
+     "taken": 160.1,
+     "elo_after": 1075.0,
+     "aroused_share": 0.748,
+     "learning_sweeps": 15791
+    },
+    {
+     "fight": 2300,
+     "place": 1,
+     "dealt": 349.8,
+     "taken": 112.0,
+     "elo_after": 1088.1,
+     "aroused_share": 0.615,
+     "learning_sweeps": 7393
+    },
+    {
+     "fight": 2352,
+     "place": 2,
+     "dealt": 135.8,
+     "taken": 160.2,
+     "elo_after": 1096.5,
+     "aroused_share": 0.784,
+     "learning_sweeps": 15844
+    },
+    {
+     "fight": 2389,
+     "place": 4,
+     "dealt": 112.5,
+     "taken": 170.5,
+     "elo_after": 1096.6,
+     "aroused_share": 0.601,
+     "learning_sweeps": 3034
+    },
+    {
+     "fight": 2417,
+     "place": 2,
+     "dealt": 132.0,
+     "taken": 160.6,
+     "elo_after": 1104.1,
+     "aroused_share": 0.711,
+     "learning_sweeps": 15849
+    },
+    {
+     "fight": 2448,
+     "place": 1,
+     "dealt": 143.9,
+     "taken": 97.9,
+     "elo_after": 1117.9,
+     "aroused_share": 0.545,
+     "learning_sweeps": 7775
+    },
+    {
+     "fight": 2482,
+     "place": 1,
+     "dealt": 253.9,
+     "taken": 120.1,
+     "elo_after": 1131.7,
+     "aroused_share": 0.732,
+     "learning_sweeps": 15336
+    },
+    {
+     "fight": 2515,
+     "place": 5,
+     "dealt": 120.9,
+     "taken": 174.8,
+     "elo_after": 1120.2,
+     "aroused_share": 0.707,
+     "learning_sweeps": 6628
+    },
+    {
+     "fight": 2545,
+     "place": 3,
+     "dealt": 302.2,
+     "taken": 161.7,
+     "elo_after": 1120.7,
+     "aroused_share": 0.471,
+     "learning_sweeps": 4809
+    },
+    {
+     "fight": 2579,
+     "place": 2,
+     "dealt": 353.0,
+     "taken": 160.2,
+     "elo_after": 1128.9,
+     "aroused_share": 0.73,
+     "learning_sweeps": 12801
+    },
+    {
+     "fight": 2607,
+     "place": 1,
+     "dealt": 37.5,
+     "taken": 80.5,
+     "elo_after": 1142.8,
+     "aroused_share": 0.81,
+     "learning_sweeps": 16020
+    },
+    {
+     "fight": 2645,
+     "place": 3,
+     "dealt": 359.1,
+     "taken": 170.4,
+     "elo_after": 1146.0,
+     "aroused_share": 0.535,
+     "learning_sweeps": 7342
+    },
+    {
+     "fight": 2676,
+     "place": 1,
+     "dealt": 138.7,
+     "taken": 114.1,
+     "elo_after": 1158.9,
+     "aroused_share": 0.848,
+     "learning_sweeps": 13706
+    },
+    {
+     "fight": 2707,
+     "place": 4,
+     "dealt": 0.0,
+     "taken": 160.2,
+     "elo_after": 1152.2,
+     "aroused_share": 0.918,
+     "learning_sweeps": 17321
+    },
+    {
+     "fight": 2738,
+     "place": 1,
+     "dealt": 183.7,
+     "taken": 118.3,
+     "elo_after": 1167.3,
+     "aroused_share": 0.643,
+     "learning_sweeps": 10735
+    },
+    {
+     "fight": 2772,
+     "place": 1,
+     "dealt": 153.9,
+     "taken": 62.7,
+     "elo_after": 1179.1,
+     "aroused_share": 0.588,
+     "learning_sweeps": 11173
+    },
+    {
+     "fight": 2803,
+     "place": 4,
+     "dealt": 187.5,
+     "taken": 160.3,
+     "elo_after": 1170.7,
+     "aroused_share": 0.614,
+     "learning_sweeps": 7002
+    },
+    {
+     "fight": 2836,
+     "place": 3,
+     "dealt": 308.1,
+     "taken": 160.0,
+     "elo_after": 1169.4,
+     "aroused_share": 0.629,
+     "learning_sweeps": 11929
+    },
+    {
+     "fight": 2865,
+     "place": 6,
+     "dealt": 0.0,
+     "taken": 161.7,
+     "elo_after": 1150.9,
+     "aroused_share": 0.667,
+     "learning_sweeps": 4169
+    },
+    {
+     "fight": 2896,
+     "place": 1,
+     "dealt": 101.1,
+     "taken": 41.7,
+     "elo_after": 1162.0,
+     "aroused_share": 0.798,
+     "learning_sweeps": 8283
+    },
+    {
+     "fight": 2929,
+     "place": 3,
+     "dealt": 179.3,
+     "taken": 161.0,
+     "elo_after": 1161.9,
+     "aroused_share": 0.683,
+     "learning_sweeps": 8202
+    },
+    {
+     "fight": 2960,
+     "place": 1,
+     "dealt": 23.1,
+     "taken": 6.3,
+     "elo_after": 1173.5,
+     "aroused_share": 0.632,
+     "learning_sweeps": 7686
+    },
+    {
+     "fight": 2993,
+     "place": 1,
+     "dealt": 205.4,
+     "taken": 101.0,
+     "elo_after": 1184.3,
+     "aroused_share": 0.695,
+     "learning_sweeps": 12453
+    },
+    {
+     "fight": 3027,
+     "place": 2,
+     "dealt": 225.6,
+     "taken": 160.2,
+     "elo_after": 1189.9,
+     "aroused_share": 0.577,
+     "learning_sweeps": 10357
+    },
+    {
+     "fight": 3057,
+     "place": 1,
+     "dealt": 425.2,
+     "taken": 75.8,
+     "elo_after": 1199.5,
+     "aroused_share": 0.606,
+     "learning_sweeps": 19960
+    },
+    {
+     "fight": 3093,
+     "place": 1,
+     "dealt": 93.4,
+     "taken": 54.4,
+     "elo_after": 1213.0,
+     "aroused_share": 0.674,
+     "learning_sweeps": 14103
+    }
+   ]
+  },
+  {
+   "name": "Dozer-3.128",
+   "blueprint": {
+    "name": "Dozer-3.128",
+    "chassis": "heavy",
+    "parts": [
+     {
+      "kind": "wheel",
+      "mount": 70.0
+     },
+     {
+      "kind": "wheel",
+      "mount": 174.5
+     },
+     {
+      "kind": "wheel",
+      "mount": -110.0
+     },
+     {
+      "kind": "arm",
+      "mount": 15.0,
+      "weapon": "spike"
+     },
+     {
+      "kind": "arm",
+      "mount": -15.0,
+      "weapon": "hammer"
+     },
+     {
+      "kind": "arm",
+      "mount": 0.0,
+      "weapon": "hammer"
+     }
+    ],
+    "seed": 673185,
+    "genes": {
+     "sensory_scale": 5.3235,
+     "eta_critic": 4.2606,
+     "temperature": 0.2935,
+     "arousal": {
+      "decay": 0.99
+     }
+    },
+    "policy": "brain"
+   },
+   "elo": 1204.6,
+   "fights": 29,
+   "wins": 15,
+   "lineage": "Dozer",
+   "parent": "Dozer-2.54",
+   "generation": 3,
+   "mutations": [
+    "eta_critic 5 -> 4.2606",
+    "temperature 0.5 -> 0.2935"
+   ],
+   "moments": 120669,
+   "owed": [
+    1.3445401218935016,
+    true
+   ],
+   "brain_sha256": "0670378394f19d65bc88ea411490fc1c22a96784576fc37b313f0e144c0a1373",
+   "history": [
+    {
+     "fight": 2342,
+     "place": 2,
+     "dealt": 323.6,
+     "taken": 160.1,
+     "elo_after": 1009.6,
+     "aroused_share": 1.0,
+     "learning_sweeps": 12177
+    },
+    {
+     "fight": 2371,
+     "place": 3,
+     "dealt": 81.2,
+     "taken": 160.3,
+     "elo_after": 1012.6,
+     "aroused_share": 0.982,
+     "learning_sweeps": 8582
+    },
+    {
+     "fight": 2402,
+     "place": 3,
+     "dealt": 111.9,
+     "taken": 160.1,
+     "elo_after": 1015.4,
+     "aroused_share": 1.0,
+     "learning_sweeps": 8780
+    },
+    {
+     "fight": 2441,
+     "place": 1,
+     "dealt": 287.1,
+     "taken": 92.6,
+     "elo_after": 1030.6,
+     "aroused_share": 0.969,
+     "learning_sweeps": 19013
+    },
+    {
+     "fight": 2466,
+     "place": 2,
+     "dealt": 81.0,
+     "taken": 166.9,
+     "elo_after": 1038.9,
+     "aroused_share": 1.0,
+     "learning_sweeps": 13173
+    },
+    {
+     "fight": 2501,
+     "place": 1,
+     "dealt": 141.1,
+     "taken": 111.3,
+     "elo_after": 1053.0,
+     "aroused_share": 1.0,
+     "learning_sweeps": 15696
+    },
+    {
+     "fight": 2532,
+     "place": 1,
+     "dealt": 180.7,
+     "taken": 17.7,
+     "elo_after": 1067.8,
+     "aroused_share": 1.0,
+     "learning_sweeps": 12445
+    },
+    {
+     "fight": 2555,
+     "place": 2,
+     "dealt": 19.5,
+     "taken": 161.5,
+     "elo_after": 1073.6,
+     "aroused_share": 1.0,
+     "learning_sweeps": 13790
+    },
+    {
+     "fight": 2593,
+     "place": 1,
+     "dealt": 168.4,
+     "taken": 50.4,
+     "elo_after": 1085.7,
+     "aroused_share": 0.968,
+     "learning_sweeps": 10209
+    },
+    {
+     "fight": 2634,
+     "place": 4,
+     "dealt": 279.8,
+     "taken": 160.1,
+     "elo_after": 1079.2,
+     "aroused_share": 0.97,
+     "learning_sweeps": 6815
+    },
+    {
+     "fight": 2659,
+     "place": 2,
+     "dealt": 0.0,
+     "taken": 160.2,
+     "elo_after": 1086.2,
+     "aroused_share": 0.988,
+     "learning_sweeps": 8574
+    },
+    {
+     "fight": 2693,
+     "place": 1,
+     "dealt": 86.5,
+     "taken": 130.5,
+     "elo_after": 1097.9,
+     "aroused_share": 1.0,
+     "learning_sweeps": 5750
+    },
+    {
+     "fight": 2733,
+     "place": 3,
+     "dealt": 166.9,
+     "taken": 160.0,
+     "elo_after": 1095.9,
+     "aroused_share": 1.0,
+     "learning_sweeps": 8492
+    },
+    {
+     "fight": 2751,
+     "place": 1,
+     "dealt": 98.2,
+     "taken": 87.8,
+     "elo_after": 1109.0,
+     "aroused_share": 0.917,
+     "learning_sweeps": 6899
+    },
+    {
+     "fight": 2786,
+     "place": 1,
+     "dealt": 132.1,
+     "taken": 107.0,
+     "elo_after": 1120.4,
+     "aroused_share": 0.906,
+     "learning_sweeps": 11934
+    },
+    {
+     "fight": 2826,
+     "place": 2,
+     "dealt": 227.9,
+     "taken": 160.3,
+     "elo_after": 1124.6,
+     "aroused_share": 0.936,
+     "learning_sweeps": 11559
+    },
+    {
+     "fight": 2855,
+     "place": 1,
+     "dealt": 250.6,
+     "taken": 120.0,
+     "elo_after": 1134.6,
+     "aroused_share": 0.963,
+     "learning_sweeps": 10909
+    },
+    {
+     "fight": 2874,
+     "place": 1,
+     "dealt": 130.3,
+     "taken": 18.2,
+     "elo_after": 1145.9,
+     "aroused_share": 1.0,
+     "learning_sweeps": 13474
+    },
+    {
+     "fight": 2922,
+     "place": 1,
+     "dealt": 199.4,
+     "taken": 74.1,
+     "elo_after": 1155.1,
+     "aroused_share": 0.975,
+     "learning_sweeps": 14357
+    },
+    {
+     "fight": 2942,
+     "place": 3,
+     "dealt": 265.1,
+     "taken": 173.2,
+     "elo_after": 1150.9,
+     "aroused_share": 0.892,
+     "learning_sweeps": 14546
+    },
+    {
+     "fight": 2978,
+     "place": 2,
+     "dealt": 257.6,
+     "taken": 175.9,
+     "elo_after": 1151.7,
+     "aroused_share": 0.88,
+     "learning_sweeps": 18845
+    },
+    {
+     "fight": 3004,
+     "place": 1,
+     "dealt": 141.3,
+     "taken": 143.4,
+     "elo_after": 1162.0,
+     "aroused_share": 0.975,
+     "learning_sweeps": 21133
+    },
+    {
+     "fight": 3040,
+     "place": 1,
+     "dealt": 131.0,
+     "taken": 0.0,
+     "elo_after": 1169.3,
+     "aroused_share": 1.0,
+     "learning_sweeps": 11802
+    },
+    {
+     "fight": 3076,
+     "place": 1,
+     "dealt": 193.8,
+     "taken": 145.6,
+     "elo_after": 1179.0,
+     "aroused_share": 1.0,
+     "learning_sweeps": 15835
+    },
+    {
+     "fight": 3098,
+     "place": 5,
+     "dealt": 143.9,
+     "taken": 176.2,
+     "elo_after": 1166.6,
+     "aroused_share": 1.0,
+     "learning_sweeps": 5650
+    },
+    {
+     "fight": 3099,
+     "place": 1,
+     "dealt": 0.0,
+     "taken": 0.0,
+     "elo_after": 1180.0,
+     "aroused_share": 1.0,
+     "learning_sweeps": 16329
+    },
+    {
+     "fight": 3100,
+     "place": 2,
+     "dealt": 183.2,
+     "taken": 160.0,
+     "elo_after": 1186.4,
+     "aroused_share": 0.991,
+     "learning_sweeps": 16260
+    },
+    {
+     "fight": 3101,
+     "place": 2,
+     "dealt": 81.1,
+     "taken": 162.4,
+     "elo_after": 1192.4,
+     "aroused_share": 0.996,
+     "learning_sweeps": 21514
+    },
+    {
+     "fight": 3102,
+     "place": 1,
+     "dealt": 279.4,
+     "taken": 147.2,
+     "elo_after": 1204.6,
+     "aroused_share": 0.804,
+     "learning_sweeps": 7156
+    }
+   ]
+  },
+  {
+   "name": "Dozer-3.38",
+   "blueprint": {
+    "name": "Dozer-3.38",
+    "chassis": "heavy",
+    "parts": [
+     {
+      "kind": "wheel",
+      "mount": 70.0
+     },
+     {
+      "kind": "wheel",
+      "mount": -70.0
+     },
+     {
+      "kind": "wheel",
+      "mount": 110.0
+     },
+     {
+      "kind": "wheel",
+      "mount": -110.0
+     },
+     {
+      "kind": "arm",
+      "mount": 33.3,
+      "weapon": "spike"
+     },
+     {
+      "kind": "arm",
+      "mount": -15.0,
+      "weapon": "spike"
+     },
+     {
+      "kind": "arm",
+      "mount": 0.0,
+      "weapon": "hammer"
+     },
+     {
+      "kind": "leg",
+      "mount": -106.8
+     }
+    ],
+    "seed": 692435,
+    "genes": {
+     "efference_amplitude": 0.1347,
+     "eta_critic": 3.4368,
+     "lam": 0.99
+    },
+    "policy": "brain"
+   },
+   "elo": 1156.6,
+   "fights": 28,
+   "wins": 11,
+   "lineage": "Dozer",
+   "parent": "Dozer-2.108",
+   "generation": 3,
+   "mutations": [
+    "added a leg"
+   ],
+   "moments": 114485,
+   "owed": [
+    -0.34792960928876093,
+    true
+   ],
+   "brain_sha256": "0a782adc1712aece2b15e3db16b91563dfdb320963dfeadc8bb0a3e233227e38",
+   "history": [
+    {
+     "fight": 2338,
+     "place": 2,
+     "dealt": 0.0,
+     "taken": 160.2,
+     "elo_after": 1009.6,
+     "aroused_share": 0.781,
+     "learning_sweeps": 9909
+    },
+    {
+     "fight": 2375,
+     "place": 2,
+     "dealt": 0.0,
+     "taken": 160.0,
+     "elo_after": 1018.9,
+     "aroused_share": 0.802,
+     "learning_sweeps": 10035
+    },
+    {
+     "fight": 2400,
+     "place": 2,
+     "dealt": 122.5,
+     "taken": 160.3,
+     "elo_after": 1027.4,
+     "aroused_share": 0.638,
+     "learning_sweeps": 6597
+    },
+    {
+     "fight": 2445,
+     "place": 5,
+     "dealt": 125.2,
+     "taken": 160.3,
+     "elo_after": 1016.9,
+     "aroused_share": 0.723,
+     "learning_sweeps": 4076
+    },
+    {
+     "fight": 2458,
+     "place": 2,
+     "dealt": 51.3,
+     "taken": 160.2,
+     "elo_after": 1025.7,
+     "aroused_share": 0.713,
+     "learning_sweeps": 5087
+    },
+    {
+     "fight": 2489,
+     "place": 3,
+     "dealt": 160.9,
+     "taken": 160.2,
+     "elo_after": 1027.1,
+     "aroused_share": 0.57,
+     "learning_sweeps": 3991
+    },
+    {
+     "fight": 2528,
+     "place": 3,
+     "dealt": 50.7,
+     "taken": 160.2,
+     "elo_after": 1028.8,
+     "aroused_share": 0.755,
+     "learning_sweeps": 6868
+    },
+    {
+     "fight": 2559,
+     "place": 1,
+     "dealt": 166.0,
+     "taken": 140.6,
+     "elo_after": 1042.9,
+     "aroused_share": 0.627,
+     "learning_sweeps": 8425
+    },
+    {
+     "fight": 2592,
+     "place": 1,
+     "dealt": 53.7,
+     "taken": 120.7,
+     "elo_after": 1056.0,
+     "aroused_share": 0.77,
+     "learning_sweeps": 5695
+    },
+    {
+     "fight": 2619,
+     "place": 1,
+     "dealt": 0.0,
+     "taken": 160.2,
+     "elo_after": 1070.7,
+     "aroused_share": 0.904,
+     "learning_sweeps": 9745
+    },
+    {
+     "fight": 2660,
+     "place": 1,
+     "dealt": 0.0,
+     "taken": 80.7,
+     "elo_after": 1083.1,
+     "aroused_share": 0.847,
+     "learning_sweeps": 8646
+    },
+    {
+     "fight": 2690,
+     "place": 3,
+     "dealt": 131.8,
+     "taken": 168.5,
+     "elo_after": 1083.8,
+     "aroused_share": 0.707,
+     "learning_sweeps": 7010
+    },
+    {
+     "fight": 2718,
+     "place": 2,
+     "dealt": 184.9,
+     "taken": 160.2,
+     "elo_after": 1089.0,
+     "aroused_share": 0.582,
+     "learning_sweeps": 7376
+    },
+    {
+     "fight": 2747,
+     "place": 5,
+     "dealt": 175.1,
+     "taken": 160.1,
+     "elo_after": 1074.8,
+     "aroused_share": 0.76,
+     "learning_sweeps": 4057
+    },
+    {
+     "fight": 2784,
+     "place": 3,
+     "dealt": 281.6,
+     "taken": 160.1,
+     "elo_after": 1074.2,
+     "aroused_share": 0.719,
+     "learning_sweeps": 6789
+    },
+    {
+     "fight": 2825,
+     "place": 1,
+     "dealt": 238.5,
+     "taken": 142.1,
+     "elo_after": 1086.2,
+     "aroused_share": 0.769,
+     "learning_sweeps": 8178
+    },
+    {
+     "fight": 2847,
+     "place": 1,
+     "dealt": 270.1,
+     "taken": 113.9,
+     "elo_after": 1097.6,
+     "aroused_share": 0.662,
+     "learning_sweeps": 7521
+    },
+    {
+     "fight": 2887,
+     "place": 2,
+     "dealt": 112.8,
+     "taken": 160.1,
+     "elo_after": 1102.4,
+     "aroused_share": 0.788,
+     "learning_sweeps": 6926
+    },
+    {
+     "fight": 2924,
+     "place": 1,
+     "dealt": 0.0,
+     "taken": 6.3,
+     "elo_after": 1113.4,
+     "aroused_share": 0.805,
+     "learning_sweeps": 11131
+    },
+    {
+     "fight": 2950,
+     "place": 5,
+     "dealt": 102.9,
+     "taken": 161.1,
+     "elo_after": 1100.1,
+     "aroused_share": 0.697,
+     "learning_sweeps": 4147
+    },
+    {
+     "fight": 2974,
+     "place": 4,
+     "dealt": 58.1,
+     "taken": 161.8,
+     "elo_after": 1093.0,
+     "aroused_share": 0.866,
+     "learning_sweeps": 7588
+    },
+    {
+     "fight": 3019,
+     "place": 1,
+     "dealt": 0.0,
+     "taken": 74.4,
+     "elo_after": 1104.7,
+     "aroused_share": 0.939,
+     "learning_sweeps": 8463
+    },
+    {
+     "fight": 3047,
+     "place": 2,
+     "dealt": 150.3,
+     "taken": 160.0,
+     "elo_after": 1111.0,
+     "aroused_share": 0.755,
+     "learning_sweeps": 5715
+    },
+    {
+     "fight": 3077,
+     "place": 1,
+     "dealt": 0.0,
+     "taken": 4.5,
+     "elo_after": 1122.1,
+     "aroused_share": 0.83,
+     "learning_sweeps": 6656
+    },
+    {
+     "fight": 3097,
+     "place": 1,
+     "dealt": 277.0,
+     "taken": 55.0,
+     "elo_after": 1137.7,
+     "aroused_share": 0.718,
+     "learning_sweeps": 11548
+    },
+    {
+     "fight": 3098,
+     "place": 3,
+     "dealt": 20.2,
+     "taken": 160.1,
+     "elo_after": 1140.3,
+     "aroused_share": 0.85,
+     "learning_sweeps": 6289
+    },
+    {
+     "fight": 3100,
+     "place": 1,
+     "dealt": 57.5,
+     "taken": 34.0,
+     "elo_after": 1155.3,
+     "aroused_share": 0.768,
+     "learning_sweeps": 6967
+    },
+    {
+     "fight": 3101,
+     "place": 3,
+     "dealt": 101.9,
+     "taken": 161.2,
+     "elo_after": 1156.6,
+     "aroused_share": 0.765,
+     "learning_sweeps": 3977
+    }
+   ]
+  },
+  {
+   "name": "Crab-3.40",
+   "blueprint": {
+    "name": "Crab-3.40",
+    "chassis": "medium",
+    "parts": [
+     {
+      "kind": "leg",
+      "mount": 83.2
+     },
+     {
+      "kind": "leg",
+      "mount": 120.0
+     },
+     {
+      "kind": "leg",
+      "mount": -120.0
+     },
+     {
+      "kind": "arm",
+      "mount": 20.0,
+      "weapon": "hammer"
+     },
+     {
+      "kind": "arm",
+      "mount": -20.0,
+      "weapon": "hammer"
+     },
+     {
+      "kind": "arm",
+      "mount": -15.0,
+      "weapon": "hammer"
+     }
+    ],
+    "seed": 722888,
+    "genes": {
+     "efference_amplitude": 0.0863,
+     "sensory_scale": 4.7607,
+     "trace_amplitude": 0.4017
+    },
+    "policy": "brain"
+   },
+   "elo": 1104.1,
+   "fights": 28,
+   "wins": 10,
+   "lineage": "Crab",
+   "parent": "Crab-2.48",
+   "generation": 3,
+   "mutations": [
+    "sensory_scale 4 -> 4.7607",
+    "trace_amplitude 0.3 -> 0.4017"
+   ],
+   "moments": 110309,
+   "owed": [
+    -0.549730469595282,
+    true
+   ],
+   "brain_sha256": "9c8fea6c724bc7de0aaf16d45dcdf79e20a4f9d6a270d5928d01a9727c5041a2",
+   "history": [
+    {
+     "fight": 2350,
+     "place": 3,
+     "dealt": 161.9,
+     "taken": 110.2,
+     "elo_after": 1005.6,
+     "aroused_share": 0.659,
+     "learning_sweeps": 8650
+    },
+    {
+     "fight": 2363,
+     "place": 3,
+     "dealt": 235.4,
+     "taken": 110.2,
+     "elo_after": 1008.9,
+     "aroused_share": 0.612,
+     "learning_sweeps": 11346
+    },
+    {
+     "fight": 2402,
+     "place": 5,
+     "dealt": 58.1,
+     "taken": 111.9,
+     "elo_after": 999.1,
+     "aroused_share": 0.694,
+     "learning_sweeps": 5825
+    },
+    {
+     "fight": 2433,
+     "place": 2,
+     "dealt": 277.4,
+     "taken": 115.9,
+     "elo_after": 1008.2,
+     "aroused_share": 0.506,
+     "learning_sweeps": 7075
+    },
+    {
+     "fight": 2476,
+     "place": 2,
+     "dealt": 221.8,
+     "taken": 110.1,
+     "elo_after": 1017.9,
+     "aroused_share": 0.834,
+     "learning_sweeps": 29070
+    },
+    {
+     "fight": 2499,
+     "place": 1,
+     "dealt": 214.0,
+     "taken": 102.9,
+     "elo_after": 1032.5,
+     "aroused_share": 0.691,
+     "learning_sweeps": 16727
+    },
+    {
+     "fight": 2532,
+     "place": 4,
+     "dealt": 167.6,
+     "taken": 113.9,
+     "elo_after": 1029.2,
+     "aroused_share": 0.613,
+     "learning_sweeps": 6461
+    },
+    {
+     "fight": 2561,
+     "place": 1,
+     "dealt": 114.8,
+     "taken": 98.2,
+     "elo_after": 1043.8,
+     "aroused_share": 0.743,
+     "learning_sweeps": 12621
+    },
+    {
+     "fight": 2601,
+     "place": 1,
+     "dealt": 263.9,
+     "taken": 58.9,
+     "elo_after": 1058.8,
+     "aroused_share": 0.586,
+     "learning_sweeps": 14075
+    },
+    {
+     "fight": 2633,
+     "place": 3,
+     "dealt": 248.5,
+     "taken": 121.3,
+     "elo_after": 1059.1,
+     "aroused_share": 0.647,
+     "learning_sweeps": 9256
+    },
+    {
+     "fight": 2660,
+     "place": 3,
+     "dealt": 157.3,
+     "taken": 110.1,
+     "elo_after": 1059.3,
+     "aroused_share": 0.528,
+     "learning_sweeps": 7746
+    },
+    {
+     "fight": 2692,
+     "place": 1,
+     "dealt": 421.0,
+     "taken": 39.0,
+     "elo_after": 1072.2,
+     "aroused_share": 0.598,
+     "learning_sweeps": 16373
+    },
+    {
+     "fight": 2730,
+     "place": 1,
+     "dealt": 219.0,
+     "taken": 57.6,
+     "elo_after": 1086.0,
+     "aroused_share": 0.541,
+     "learning_sweeps": 9789
+    },
+    {
+     "fight": 2751,
+     "place": 4,
+     "dealt": 231.4,
+     "taken": 125.1,
+     "elo_after": 1080.4,
+     "aroused_share": 0.452,
+     "learning_sweeps": 4614
+    },
+    {
+     "fight": 2785,
+     "place": 1,
+     "dealt": 254.9,
+     "taken": 63.3,
+     "elo_after": 1092.3,
+     "aroused_share": 0.602,
+     "learning_sweeps": 9511
+    },
+    {
+     "fight": 2821,
+     "place": 2,
+     "dealt": 83.5,
+     "taken": 115.8,
+     "elo_after": 1097.4,
+     "aroused_share": 0.649,
+     "learning_sweeps": 9916
+    },
+    {
+     "fight": 2856,
+     "place": 1,
+     "dealt": 126.5,
+     "taken": 84.0,
+     "elo_after": 1108.2,
+     "aroused_share": 0.686,
+     "learning_sweeps": 17298
+    },
+    {
+     "fight": 2875,
+     "place": 1,
+     "dealt": 26.4,
+     "taken": 18.0,
+     "elo_after": 1120.0,
+     "aroused_share": 0.782,
+     "learning_sweeps": 8587
+    },
+    {
+     "fight": 2924,
+     "place": 2,
+     "dealt": 251.8,
+     "taken": 110.2,
+     "elo_after": 1123.7,
+     "aroused_share": 0.753,
+     "learning_sweeps": 19038
+    },
+    {
+     "fight": 2941,
+     "place": 2,
+     "dealt": 119.1,
+     "taken": 110.2,
+     "elo_after": 1128.0,
+     "aroused_share": 0.845,
+     "learning_sweeps": 15689
+    },
+    {
+     "fight": 2981,
+     "place": 6,
+     "dealt": 37.5,
+     "taken": 126.0,
+     "elo_after": 1105.5,
+     "aroused_share": 0.624,
+     "learning_sweeps": 2914
+    },
+    {
+     "fight": 3020,
+     "place": 2,
+     "dealt": 357.7,
+     "taken": 110.9,
+     "elo_after": 1108.6,
+     "aroused_share": 0.553,
+     "learning_sweeps": 11415
+    },
+    {
+     "fight": 3046,
+     "place": 1,
+     "dealt": 334.3,
+     "taken": 40.1,
+     "elo_after": 1119.8,
+     "aroused_share": 0.673,
+     "learning_sweeps": 18147
+    },
+    {
+     "fight": 3080,
+     "place": 1,
+     "dealt": 335.1,
+     "taken": 0.0,
+     "elo_after": 1128.6,
+     "aroused_share": 0.496,
+     "learning_sweeps": 9702
+    },
+    {
+     "fight": 3097,
+     "place": 6,
+     "dealt": 101.0,
+     "taken": 111.1,
+     "elo_after": 1111.8,
+     "aroused_share": 0.695,
+     "learning_sweeps": 6745
+    },
+    {
+     "fight": 3099,
+     "place": 4,
+     "dealt": 223.6,
+     "taken": 124.7,
+     "elo_after": 1109.0,
+     "aroused_share": 0.583,
+     "learning_sweeps": 8179
+    },
+    {
+     "fight": 3100,
+     "place": 4,
+     "dealt": 88.1,
+     "taken": 112.4,
+     "elo_after": 1106.5,
+     "aroused_share": 0.732,
+     "learning_sweeps": 5454
+    },
+    {
+     "fight": 3102,
+     "place": 4,
+     "dealt": 192.2,
+     "taken": 112.0,
+     "elo_after": 1104.1,
+     "aroused_share": 0.445,
+     "learning_sweeps": 3984
+    }
+   ]
+  }
+ ],
+ "stage": {
+  "need": 0.0,
+  "heat": 0.0,
+  "temperature": 0.2,
+  "reset": true
+ },
+ "league": {
+  "fights": 235,
+  "generations": 4,
+  "retired": 0,
+  "evolution": [
+   {
+    "generation": 1,
+    "lineages": {
+     "Hexapod": 15,
+     "Crab": 34,
+     "Dozer": 66,
+     "Cart": 22,
+     "Mantis": 28,
+     "Roller": 23,
+     "Tumbler": 3,
+     "Scorpion": 1
+    },
+    "podium": [
+     "Dozer-013",
+     "Dozer-017",
+     "Dozer"
+    ],
+    "seconds": 943.3
+   },
+   {
+    "generation": 2,
+    "lineages": {
+     "Crab": 27,
+     "Dozer": 122,
+     "Cart": 12,
+     "Roller": 15,
+     "Tumbler": 3,
+     "Mantis": 13
+    },
+    "podium": [
+     "Dozer-017",
+     "Dozer-1.1",
+     "Dozer-1.73"
+    ],
+    "seconds": 798.0
+   },
+   {
+    "generation": 3,
+    "lineages": {
+     "Dozer": 140,
+     "Cart": 20,
+     "Crab": 14,
+     "Roller": 14,
+     "Tumbler": 4
+    },
+    "podium": [
+     "Dozer-2.8",
+     "Dozer-1.110",
+     "Dozer-1.75"
+    ],
+    "seconds": 751.5
+   },
+   {
+    "generation": 4,
+    "lineages": {
+     "Dozer": 144,
+     "Crab": 26,
+     "Cart": 8,
+     "Roller": 10,
+     "Tumbler": 4
+    },
+    "podium": [
+     "Dozer-3.128",
+     "Dozer-2.8",
+     "Crab-3.40"
+    ],
+    "seconds": 785.5
+   }
+  ]
+ }
+}

@@ -215,3 +215,26 @@ python -m http.server -d connectome/web 8800   # open http://localhost:8800/
 ```
 
 See the [Connectome README](connectome/README.md) to run, teach and check the demo.
+| [Robot Arena](robot-arena/) | Robots assembled from parts, each with one continuing brain wired to every motor, raised in a nursery, evolved on a big machine and fighting live in the browser with a brain inspector | `Brain.compose` with one motor slot per motor, learning through `Brain.live`; in the browser, the released library itself, in Pyodide |
+
+## [Robot Arena](robot-arena/): the Cadence Showcase League
+
+Robots are built from a parts catalogue: a chassis, wheels or legs, arms with a spike, a
+hammer or a spinner. Each robot is one continuing `Brain.compose` life whose motor cortex
+has one slot per motor, so every motor is commanded by the same settled state; nothing
+sits between the brain and the body. A newborn is raised in a nursery against a dummy
+(progress and damage pay, ramming and the burn hurt), then fights ranked royales in a ring
+that closes. Uniform random with the same body is the baseline of every count; a frozen
+newborn is the control for learning. The leagues in the folder were raised on a laptop and
+evolved for an hour on 192 vCPUs: lineages of mutants of the best bodies and genes, the
+weakest third retired each generation.
+
+The page (`robot-arena/showcase-app/`) runs the best six live in a web worker, the released
+library in Pyodide, saves each brain in the browser after every fight and restores it on
+the next visit; click a robot to watch its senses, its association cortex settling, the
+motor slots and the arousal law deciding between routine and learning. The limits are
+measured in `robot-arena/STATUS.md`: the brains learn to find and hit, the ranking moves
+with what they learn, and their tactics are coarse.
+
+See the [Robot Arena README](robot-arena/README.md) to run the league, the page and the
+scripted check of the page's promise.
