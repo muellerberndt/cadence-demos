@@ -1,13 +1,21 @@
 # Atari Arcade
 
 Brains born at server start learn Atari games while you watch. Each brain is a
-Cadence 0.71.0 **System 1** brain on raw screen pixels in the Python edition. It begins as a
+Cadence 0.80.0 **System 1** brain on raw screen pixels in the Python edition. It begins as a
 hatchling and watches a scripted teacher play. Once its own answers agree with
 the teacher's actions often enough it takes the controls, and from then on it
 keeps learning from the reward of its own actions. The page shows the game
 beside the settled brain: the retina, the association cortex and its working
 trace, the motor cortex with one neuron per action, the value the critic
 expects, and the score of every life with a skill badge from noob to legend.
+
+The current Python adapter uses named learning and actor overrides in `Brain.compose`.
+The interface migration preserves the previous explicit configuration on the candidate
+0.80.0 runtime, including short teacher/reward tapes and saved continuation. It adds no
+new Atari skill claim or numerical parity claim with 0.71.0. For the former Python
+installation, use [the source at 2a32c3e](https://github.com/muellerberndt/cadence-demos/tree/2a32c3e/atari-arcade)
+and its `cadence-net==0.71.0` requirements. The browser engine, fixtures and measured
+receipts below retain their historical versions.
 
 This is a bounded teacher/reward demo. Its per-screen lessons are a bootstrap
 control, not the general Cadence operating recipe. New work follows the
@@ -66,17 +74,25 @@ demo's recorded teacher/reward configuration, not a prescription to reduce
 new applications to independent screen classification. The brain is composed once:
 
 ```python
-from cadence import ActorCriticConfig, Brain, LearnerConfig
+from cadence import Brain
 
 brain = Brain.compose(
     7056, n_actions, seed=seed,                 # 84 x 84 screen, one motor neuron per action
-    learning=LearnerConfig(                     # the teacher's lessons
-        beta=0.1, temperature=0.2, tolerance=3e-3, free_steps=1024, nudged_steps=12,
-        eta_bias=0.02, eta=0.003, momentum=0.9, normalize=0.99, normalize_floor=1e-4),
-    reward=ActorCriticConfig(                   # learning from reward
-        gamma=0.97, lam=0.9, eta=0.001, eta_critic=0.3, momentum=0.9, normalize=0.99),
+    learning_beta=0.1, temperature=0.2, learning_tolerance=3e-3,
+    learning_free_steps=1024, learning_nudged_steps=12,
+    learning_eta_bias=0.02, learning_eta=0.003, learning_momentum=0.9,
+    learning_normalize=0.99, learning_normalize_floor=1e-4,
+    actor_gamma=0.97, actor_lam=0.9, actor_eta=0.001, actor_eta_bias=0.0001,
+    actor_eta_critic=0.3, actor_momentum=0.9, actor_normalize=0.99,
+    actor_eligibility_steps=None,
 )
 ```
+
+`learning_eta` and `learning_eta_bias` govern the supplied teacher's lessons;
+`actor_eta` and `actor_eta_bias` govern actual reward through `step`.
+`actor_eligibility_steps=None` retains this demo's inheritance of the learner's
+12-step nudged budget. These measured pixel settings are application choices,
+not new library defaults.
 
 While the teacher plays, each screen the brain gets to see is one lesson. The
 brain first gives its own answer, read greedily from its settled state, and
@@ -114,8 +130,8 @@ without a browser.
 
 ## Brain layout
 
-The Python edition runs on the main brain of **Cadence 0.71.0**, `Brain.compose`,
-installed as `cadence-net==0.71.0`. Its teacher and reward eligibility phases
+The Python edition runs on the main brain of **Cadence 0.80.0**, `Brain.compose`,
+installed as `cadence-net==0.80.0`. Its teacher and reward eligibility phases
 retain the demo's finite budgets; upgrading the package does not enable
 qualified teaching. Whole-brain actions still require equation qualification.
 
@@ -143,8 +159,8 @@ screen-dependent teacher in our trials, so the learning configuration above is
 part of the demo. Reward uses discount `gamma=0.97` and eligibility decay
 `lam=0.9`, rather than `Brain.compose`'s default `0.9` and `0.8`; both teacher
 and reward updates use `momentum=0.9` and `normalize=0.99`. See the
-[brain guide](https://github.com/muellerberndt/cadence/blob/v0.71.0/docs/brain.md)
-and [continuous interaction](https://github.com/muellerberndt/cadence/blob/v0.71.0/docs/continuous.md).
+[brain guide](https://github.com/muellerberndt/cadence/blob/v0.80.0/docs/brain.md)
+and [continuous interaction](https://github.com/muellerberndt/cadence/blob/v0.80.0/docs/continuous.md).
 
 ## Run
 
@@ -160,7 +176,7 @@ python3 -m venv .venv
 Open **http://localhost:8668**. `ARCADE_GAMES` selects the games (default
 `Atlantis,Freeway,Carnival,SpaceInvaders`), `ARCADE_PUBLIC=1` locks the speed
 control, `ARCADE_HOST` and `ARCADE_PORT` bind the server. Each game needs about
-one processor core. `requirements.txt` pins `cadence-net==0.71.0`.
+one processor core. `requirements.txt` pins `cadence-net==0.80.0`.
 
 ## What the brain receives
 

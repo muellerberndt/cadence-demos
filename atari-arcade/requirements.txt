@@ -3,4 +3,4 @@ pillow
 numpy
 ale-py>=0.10
 gymnasium
-cadence-net==0.71.0
+cadence-net==0.80.0

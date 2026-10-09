@@ -1,4 +1,4 @@
-"""Cadence Arcade: System 1 brains of Cadence 0.71.0 learning Atari while you watch.
+"""Cadence Arcade: System 1 brains of Cadence 0.80.0 learning Atari while you watch.
 
 Every runner composes a fresh brain with ``Brain.compose``: 7,056 sensory
 neurons (the 84x84 screen), an association cortex with a working trace, a
@@ -71,19 +71,20 @@ def teacher_action(game, ram, meanings, tick):
 
 def build_brain(n_actions, seed=0):
     """System 1 on raw pixels with demo learning rates, adaptivity and reward timescales."""
-    from cadence import ActorCriticConfig, Brain, LearnerConfig
+    from cadence import Brain
 
-    learning = LearnerConfig(
-        beta=0.1, temperature=0.2, tolerance=3e-3,
-        free_steps=1024, nudged_steps=12, eta_bias=0.02,
+    return Brain.compose(
+        N_SCREEN, n_actions, seed=seed,
+        learning_beta=0.1, temperature=0.2, learning_tolerance=3e-3,
+        learning_free_steps=1024, learning_nudged_steps=12, learning_eta_bias=0.02,
         # each synapse steps on its own running mean over its own running
         # scale: most pixels are quiet most of the time
-        eta=0.003, momentum=0.9, normalize=0.99, normalize_floor=1e-4)
-    reward = ActorCriticConfig(
-        gamma=0.97, lam=0.9, eta=0.001, eta_critic=0.3,
-        momentum=0.9, normalize=0.99)
-    return Brain.compose(N_SCREEN, n_actions, seed=seed,
-                         learning=learning, reward=reward)
+        learning_eta=0.003, learning_momentum=0.9, learning_normalize=0.99,
+        learning_normalize_floor=1e-4,
+        actor_gamma=0.97, actor_lam=0.9, actor_eta=0.001, actor_eta_bias=0.0001,
+        actor_eta_critic=0.3, actor_momentum=0.9, actor_normalize=0.99,
+        actor_eligibility_steps=None,
+    )
 
 
 def make_env(game):
