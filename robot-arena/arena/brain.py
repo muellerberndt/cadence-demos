@@ -9,7 +9,7 @@ equilibrium, and lateral inhibition stays within a motor.
 
 The founder genes are the arena nursery's operating point: a quiet working trace, no
 efference copy, sensory projection scale 4, and actor eta 0.03 with a fast critic.
-Episodic memory is disabled in this founder. ``preset: "chamber"`` keeps the earlier
+Associative memory is enabled in this founder. ``preset: "chamber"`` keeps the earlier
 library reward-chamber point (cadence 0.76/0.77), including efference amplitude 3 and
 actor eta 0.1; ``preset: "compose"`` builds the library's composed defaults. Both are
 controls for the arena point. Every value is a gene of the blueprint.
@@ -24,13 +24,11 @@ from __future__ import annotations
 
 import copy
 import time
-from dataclasses import replace
 from pathlib import Path
 from typing import Any
 
 import numpy as np
-from cadence import ArousalConfig, Brain, Genome, Projection, Region, develop
-from cadence.regions import motor_cortex, prefrontal_cortex
+from cadence import Brain
 
 from .parts import Blueprint
 from .senses import input_count
@@ -113,48 +111,9 @@ def genes_of(blueprint: Blueprint) -> dict[str, Any]:
     return genes
 
 
-def composed_genome(
-    inputs: int,
-    actions: int,
-    *,
-    modules: tuple[int, ...],
-    slots: list[int],
-    sensory_scale: float,
-    efference: bool,
-    observers: tuple[int, ...] = (),
-) -> Genome:
-    """``Brain.compose``'s own layout, region for region and projection for projection, with
-    one difference offered as a gene: the scale of the sensory projection. At scale 1.0 the
-    genome is the composed one and develops the same connectome from the same seed."""
-    lateral = -0.5 if max(slots) <= 8 else 0.0  # the library's default motor inhibition
-    names = [f"module_{index}" for index in range(len(modules) - 1)] + ["association"]
-    regions = [Region("sensory", inputs)]
-    regions.extend(Region(name, width) for name, width in zip(names, modules, strict=True))
-    regions.extend((prefrontal_cortex(modules[-1]), motor_cortex(actions, lateral=lateral, slots=slots)))
-    projections = [Projection("sensory", names[0], reciprocal=False, scale=sensory_scale)]
-    projections.extend(Projection(left, right) for left, right in zip(names, names[1:], strict=False))
-    projections.extend(
-        (
-            Projection("association", "motor"),
-            Projection("prefrontal", "association", scale=12.0, reciprocal=False),
-        )
-    )
-    observed = [*names, "motor"]
-    for index, width in enumerate(observers):
-        name = f"observer_{index}"
-        regions.append(Region(name, width))
-        projections.extend(Projection(source, name) for source in observed)
-        observed.append(name)
-    if efference:
-        regions.append(Region("efference", actions))
-        projections.append(Projection("efference", "association", scale=12.0, reciprocal=False))
-    return Genome(tuple(regions), tuple(projections), label="composed-brain")
-
-
 def compose(blueprint: Blueprint, genes: dict[str, Any] | None = None) -> Brain:
     """A newborn brain for this body: every motor a slot, every sense an input."""
     g = genes_of(blueprint) if genes is None else genes
-    arousal = ArousalConfig(**g["arousal"])
     inputs, slots = input_count(blueprint), blueprint.slots
     if g.get("preset") == "compose":
         return Brain.compose(
@@ -163,9 +122,15 @@ def compose(blueprint: Blueprint, genes: dict[str, Any] | None = None) -> Brain:
             modules=tuple(g["modules"]),
             slots=slots,
             seed=blueprint.seed,
-            arousal=arousal,
+            arousal=g["arousal"],
         )
-    options: dict[str, Any] = dict(
+    return Brain.compose(
+        inputs,
+        sum(slots),
+        modules=tuple(g["modules"]),
+        observers=tuple(int(w) for w in g.get("observers", ()) or ()),
+        slots=slots,
+        seed=blueprint.seed,
         episodic=bool(g["episodic"]),
         consolidation=float(g["consolidation"]),
         working_memory_amplitude=float(g["trace_amplitude"]),
@@ -173,35 +138,15 @@ def compose(blueprint: Blueprint, genes: dict[str, Any] | None = None) -> Brain:
         efference_amplitude=float(g["efference_amplitude"]),
         efference_decay=float(g["efference_decay"]),
         resting_bias=float(g["resting_bias"]),
-        arousal=arousal,
+        arousal=g["arousal"],
+        sensory_scale=float(g.get("sensory_scale", 1.0)),
+        temperature=float(g.get("temperature", 0.2)),
+        actor_eta=float(g["eta"]),
+        actor_eta_bias=float(g["eta_bias"]),
+        actor_lam=float(g["lam"]),
+        actor_gamma=float(g["gamma"]),
+        actor_eta_critic=float(g["eta_critic"]),
     )
-    observers = tuple(int(w) for w in g.get("observers", ()) or ())
-    if float(g.get("sensory_scale", 1.0)) == 1.0:
-        brain = Brain.compose(
-            inputs, sum(slots), modules=tuple(g["modules"]), observers=observers, slots=slots, seed=blueprint.seed, **options
-        )
-    else:
-        genome = composed_genome(
-            inputs,
-            sum(slots),
-            modules=tuple(g["modules"]),
-            slots=slots,
-            sensory_scale=float(g["sensory_scale"]),
-            efference=float(g["efference_amplitude"]) > 0.0,
-            observers=observers,
-        )
-        brain = Brain(develop(genome, seed=blueprint.seed), seed=blueprint.seed, slots=slots, **options)
-    if float(g.get("temperature", 0.2)) != 0.2:
-        brain.learner.config = replace(brain.learner.config, temperature=float(g["temperature"]))
-    brain.basal_ganglia.config = replace(
-        brain.basal_ganglia.config,
-        eta=float(g["eta"]),
-        eta_bias=float(g["eta_bias"]),
-        lam=float(g["lam"]),
-        gamma=float(g["gamma"]),
-        eta_critic=float(g["eta_critic"]),
-    )
-    return brain
 
 
 def activity(brain: Brain) -> dict[str, list[float]] | None:
@@ -265,7 +210,7 @@ class RobotBrain:
 
     def has_pending(self) -> bool:
         """Whether an issued command still awaits its outcome."""
-        return self.brain.basal_ganglia._pending is not None or self.brain._lived is not None
+        return self.brain.pending_feedback
 
     def moment(
         self, observation: np.ndarray, reward: float | None, done: bool = False
@@ -430,14 +375,12 @@ def set_stage(brain: Brain, stage: dict[str, Any] | None) -> None:
     if not stage or brain.arousal is None:
         return
     arousal = {k: stage[k] for k in ("need", "heat", "threshold", "decay", "tolerance") if k in stage}
-    if arousal:
-        brain.arousal.config = replace(brain.arousal.config, **arousal)
+    genes: dict[str, Any] = {}
     if "temperature" in stage:
-        brain.learner.config = replace(brain.learner.config, temperature=float(stage["temperature"]))
+        genes["temperature"] = float(stage["temperature"])
     if "eta" in stage:
-        brain.basal_ganglia.config = replace(brain.basal_ganglia.config, eta=float(stage["eta"]), eta_bias=float(stage["eta"]) / 10.0)
-    if stage.get("reset"):
-        brain.arousal.reset()
+        genes.update(actor_eta=float(stage["eta"]), actor_eta_bias=float(stage["eta"]) / 10.0)
+    brain.retune(arousal=arousal, reset_arousal=bool(stage.get("reset", False)), **genes)
 
 
 def set_need(brain: Brain, need: float | None, reset: bool = False) -> None:
@@ -447,10 +390,7 @@ def set_need(brain: Brain, need: float | None, reset: bool = False) -> None:
     nursery's income otherwise wants forever in a ring that pays less."""
     if brain.arousal is None:
         return
-    if need is not None:
-        brain.arousal.config = replace(brain.arousal.config, need=float(need))
-    if reset:
-        brain.arousal.reset()
+    brain.retune(arousal={} if need is None else {"need": float(need)}, reset_arousal=reset)
 
 
 def make_policy(

@@ -1,12 +1,18 @@
 # The brain settings
 
-Every robot is one `Brain.compose` life of cadence-net 0.79.0: System 1, two reciprocally
+The native adapter uses cadence-net 0.80.0. Every robot is one `Brain.compose` life: System 1, two reciprocally
 coupled regions, the working trace as short-term memory, an associative memory, one reward
 channel, and the actor-critic of the basal ganglia with TD eligibility over its own recent
 commands. Every constant below is a gene of the robot's blueprint (`arena/brain.py:FOUNDER`),
 so evolution can move it; the values are the founders. They are suggestions: one working
 point, measured on these bodies in this ring, and the same goes for the bodies, the brain
 layout, the nursery, the driving test and the stage. Start from them and change what you like.
+
+The measurements below were recorded with 0.79.0. The 0.80.0 interface migration keeps their
+settings: `compose` accepts the sensory scale and named actor rates, and `retune` applies a
+stage without replacing configurations or rebuilding a brain. This is an interface change,
+not a new learning or retention result. The committed browser pack retains its own 0.79.0
+wheel, source hashes and trained checkpoints; new packs use 0.80.0.
 
 ## Senses and motors
 
@@ -25,13 +31,24 @@ one settlement of the whole graph.
 | `modules` | 48, 24 | two reciprocally connected regions; the second is the association cortex |
 | `observers` | none | System 2 regions, expressed only on a developed System 1 |
 | `trace_amplitude`, `trace_decay` | 0.3, 0.1 | the working trace: how strongly and how long the last state carries on; the library's 3.0 holds a continuing life in one state |
-| `efference_amplitude` | 0 | the copy of the last command fed back as a sense; at the library founder of 3.0 it drowned these twenty-two senses and the policy ignored the world |
+| `efference_amplitude` | 0 | the copy of the last command fed back as a sense; the reward-chamber point of 3.0 drowned these twenty-two senses; the library's composed default is also 0 |
 | `episodic`, `consolidation` | on, 0.05 | the associative memory and the rate at which salient moments are written |
 | `sensory_scale` | 4 | the weight of the sensory projection relative to the recurrent drive; at the composed 1.0 the policy was blind to its senses |
 | `temperature` | 0.3 | the learner's softmax temperature: how wide an aroused brain samples |
 | `eta`, `eta_bias` | 0.03, 0.003 | the actor's step in the nursery, and the bias step a tenth of it |
 | `lam`, `gamma` | 0.6, 0.95 | eligibility decay and discount: credit reaches back about a second |
 | `eta_critic` | 5 | the critic's normalised rate; a slow critic cannot carry delayed credit |
+
+The table names the arena's blueprint genes. The public library names the reward rates
+`actor_eta`, `actor_eta_bias`, `actor_lam`, `actor_gamma` and `actor_eta_critic`;
+`trace_amplitude` and `trace_decay` map to `working_memory_amplitude` and
+`working_memory_decay`. `learning_eta` is the rate for supplied teaching, which this
+reward-only application does not use. `temperature` affects the sampling policy.
+
+These arena settings are not general defaults. Plain `Brain.compose` keeps sensory scale
+1, efference amplitude 0, working-trace amplitude 3, actor rate 1 and actor bias rate 0.05.
+The chamber control chooses efference 3 and actor rate 0.1 explicitly. Compare candidate
+values against the composed control and uniform random on each new body and task.
 
 Arousal, the law that decides whether a moment is routine or learning:
 
@@ -59,6 +76,19 @@ after forty fights; at 0.001 the mean held at 0.49 with burn moments per fight b
 and 31, about ninety kills per twenty fights and several different winners. A higher
 arousal threshold is no remedy: at 0.3 or 0.5 the brains were calm throughout and one robot
 won every fight.
+
+For example, a stage changes the same living brain with one call:
+
+```python
+brain.retune(
+    arousal={"need": 0.0, "heat": 0.0}, temperature=0.2,
+    actor_eta=0.001, actor_eta_bias=0.0001, reset_arousal=True,
+)
+```
+
+The application supplies this stage; the brain has not learned when to select it.
+`reset_arousal` clears the arousal baselines only. Acquired parameters, working context,
+associations and any outcome still owed to the last action continue through the stage.
 
 ## What pays
 
