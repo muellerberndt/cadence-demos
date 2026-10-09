@@ -36,23 +36,24 @@ from .parts import Blueprint
 from .senses import input_count
 
 FOUNDER: dict[str, Any] = {
-    # The operating point selected in the nursery grids of 2026-10-08 (STATUS.md): no
-    # efference copy, the sensory projection at four times the composed scale, a small actor
-    # step, short eligibility, a learner temperature that keeps a saturated motor cortex
-    # from becoming deterministic. Every value is a gene; ``preset: "chamber"`` builds the
+    # The operating point selected in the nursery grids of 2026-10-08 and 09 (STATUS.md):
+    # two processing modules, no efference copy, the sensory projection at four times the
+    # composed scale, the associative memory on, a small actor step, short eligibility, a
+    # learner temperature of 0.3. Every value is a gene; ``preset: "chamber"`` builds the
     # library's reward-chamber point (the control that was observation-blind here) and
     # ``preset: "compose"`` the library's composed defaults.
     "preset": "founder",
-    "modules": [48],
+    "modules": [48, 24],
+    "observers": [],  # System 2 observer regions, expressed only on a developed two-module System 1
     "trace_amplitude": 0.3,
     "trace_decay": 0.1,
     "efference_amplitude": 0.0,
     "efference_decay": 0.0,
-    "episodic": False,
+    "episodic": True,
     "consolidation": 0.05,
     "resting_bias": 0.0,
     "sensory_scale": 4.0,  # the sensory projection's scale; 1.0 is Brain.compose's own
-    "temperature": 0.5,  # the learner's softmax temperature; 0.2 is the library default
+    "temperature": 0.3,  # the learner's softmax temperature; 0.2 is the library default
     "eta": 0.03,
     "eta_bias": 0.003,
     "lam": 0.6,
@@ -71,6 +72,19 @@ FOUNDER: dict[str, Any] = {
         "record_surprise": 0.0,
         "need": 0.05,
     },
+}
+
+PAGE_STAGE: dict[str, Any] = {
+    # The ring stage of a life in the page and in the league's fights: no need and no heat
+    # (calm unless surprised, no wider exploration), a sharp sampling temperature, the memory
+    # of the nursery's income forgotten on entering the ring, and an actor step of 0.001, a
+    # thirtieth of the nursery's: a fight refines a brain's policy instead of overwriting it.
+    # Measured on six licensed brains over sixty fights: at 0.001 the driving-test mean held at
+    # 0.49 of its 0.57 start with burn moments per fight between 14 and 31 and several winners;
+    # at 0.003 it fell to 0.34 and the burn rose again in the third block; at the gene's 0.03
+    # three fights turned approach into spinning. A threshold above the gene's 0.2 left the
+    # brains calm throughout, the same winner twenty fights running.
+    "need": 0.0, "heat": 0.0, "temperature": 0.2, "reset": True, "eta": 0.001,
 }
 
 CHAMBER_POINT: dict[str, Any] = {
@@ -107,6 +121,7 @@ def composed_genome(
     slots: list[int],
     sensory_scale: float,
     efference: bool,
+    observers: tuple[int, ...] = (),
 ) -> Genome:
     """``Brain.compose``'s own layout, region for region and projection for projection, with
     one difference offered as a gene: the scale of the sensory projection. At scale 1.0 the
@@ -124,6 +139,12 @@ def composed_genome(
             Projection("prefrontal", "association", scale=12.0, reciprocal=False),
         )
     )
+    observed = [*names, "motor"]
+    for index, width in enumerate(observers):
+        name = f"observer_{index}"
+        regions.append(Region(name, width))
+        projections.extend(Projection(source, name) for source in observed)
+        observed.append(name)
     if efference:
         regions.append(Region("efference", actions))
         projections.append(Projection("efference", "association", scale=12.0, reciprocal=False))
@@ -154,9 +175,10 @@ def compose(blueprint: Blueprint, genes: dict[str, Any] | None = None) -> Brain:
         resting_bias=float(g["resting_bias"]),
         arousal=arousal,
     )
+    observers = tuple(int(w) for w in g.get("observers", ()) or ())
     if float(g.get("sensory_scale", 1.0)) == 1.0:
         brain = Brain.compose(
-            inputs, sum(slots), modules=tuple(g["modules"]), slots=slots, seed=blueprint.seed, **options
+            inputs, sum(slots), modules=tuple(g["modules"]), observers=observers, slots=slots, seed=blueprint.seed, **options
         )
     else:
         genome = composed_genome(
@@ -166,6 +188,7 @@ def compose(blueprint: Blueprint, genes: dict[str, Any] | None = None) -> Brain:
             slots=slots,
             sensory_scale=float(g["sensory_scale"]),
             efference=float(g["efference_amplitude"]) > 0.0,
+            observers=observers,
         )
         brain = Brain(develop(genome, seed=blueprint.seed), seed=blueprint.seed, slots=slots, **options)
     if float(g.get("temperature", 0.2)) != 0.2:
@@ -401,8 +424,9 @@ class FrozenPolicy:
 
 
 def set_stage(brain: Brain, stage: dict[str, Any] | None) -> None:
-    """The ring stage's genes: ``need``, ``heat`` (arousal), ``temperature`` (learner), ``eta``
-    (actor) and ``reset`` (forget what life used to pay). None or {} keeps the brain as it is."""
+    """The ring stage's genes: ``need``, ``heat``, ``threshold``, ``decay``, ``tolerance`` (arousal),
+    ``temperature`` (the learner's sampling temperature), ``eta`` (the actor) and ``reset`` (forget
+    what life used to pay). None or {} keeps the brain as it is."""
     if not stage or brain.arousal is None:
         return
     arousal = {k: stage[k] for k in ("need", "heat", "threshold", "decay", "tolerance") if k in stage}

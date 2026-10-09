@@ -19,7 +19,7 @@ export default function App() {
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Cadence Showcase League</h1>
         </div>
         <p className="text-sm text-muted max-w-xl leading-relaxed">
-          The six best survivors of an hour of evolution on 192 CPUs, each with one continuing Cadence brain wired to every motor, fight round after round <em className="text-ink not-italic font-medium">live, in your browser</em>.
+          The best-licensed survivors of lineage evolution on a 192-CPU machine, each with one continuing Cadence brain wired to every motor, fight round after round <em className="text-ink not-italic font-medium">live, in your browser</em>.
           Every brain learns from every fight; their brains are saved here after each one and come back the next time you open the page. Watch the damage per fight and the ladder move.
         </p>
         <div className="ml-auto flex items-center gap-2 text-xs text-muted tnum">
@@ -61,7 +61,7 @@ export default function App() {
             <div className="mt-4 text-[11px] text-muted leading-relaxed space-y-1">
               <div><i className="inline-block w-2 h-2 rounded-full mr-1.5 bg-calm" />calm: one settled state, no learning</div>
               <div><i className="inline-block w-2 h-2 rounded-full mr-1.5 bg-aroused" />aroused: sampling and learning</div>
-              <div>The ring closes to 2.5 m over 50 s; outside it, robots burn. Closing in on a rival and damage dealt pay; damage taken hurts; placement pays at the end.</div>
+              <div>The ring closes to 3.5 m over 100 s; outside it, robots burn. Closing in on a rival and damage dealt pay; damage taken hurts; placement pays at the end.</div>
               <div>In the ring a brain is calm unless an outcome contradicts its forecast: a hard hit, the burn, a placement. Then it is aroused, samples and learns, and settles back.</div>
             </div>
           </aside>

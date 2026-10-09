@@ -28,7 +28,9 @@ from .senses import input_names, observe
 from .world import Arena, Robot
 
 DAMAGE_SCALE = 20.0
+BURN_WEIGHT = 10.0  # the burn hurts this many times its hit points in the reward: a loud, steady pain
 APPROACH_PAY = 3.0  # reward per metre closed on the nearest rival
+KILL_PAY = 2.0  # the trophy for finishing a rival, the nursery's price for a destroyed dummy
 APPROACH_CAP = 0.3
 MODE_CODES = {"routine": 0, "aroused": 1, "random": 2, "frozen": 3, "refused": 4}
 DEAD = 9
@@ -77,7 +79,7 @@ def run_royale(
     acc = {
         f.name: {
             "moments": 0, "aroused": 0, "sweeps": 0, "learning_sweeps": 0, "refused": 0,
-            "ms": 0.0, "dealt": 0.0, "taken": 0.0, "burn": 0.0, "hits": 0, "outside": 0,
+            "ms": 0.0, "dealt": 0.0, "taken": 0.0, "burn": 0.0, "hits": 0, "kills": 0, "outside": 0,
             "travelled": 0.0, "closing": 0,
         }
         for f in fighters
@@ -122,7 +124,7 @@ def run_royale(
             for robot in alive:
                 f = fighters[robot.rid]
                 o = out[robot.rid]
-                reward = (o["dealt"] - o["taken"]) / DAMAGE_SCALE
+                reward = (o["dealt"] - o["taken"] - (BURN_WEIGHT - 1.0) * o["zone"]) / DAMAGE_SCALE + KILL_PAY * o.get("kills", 0)
                 closed = gap_before[robot.rid] - _nearest_gap(robot, arena.alive())
                 if math.isfinite(closed):
                     reward += float(np.clip(APPROACH_PAY * closed, -APPROACH_CAP, APPROACH_CAP))
@@ -135,6 +137,7 @@ def run_royale(
                 a["taken"] += o["taken"]
                 a["burn"] += o["zone"]
                 a["hits"] += len(robot.hits)
+                a["kills"] += int(o.get("kills", 0))
                 a["outside"] += int(o["outside"])
                 bx, by = before[robot.rid]
                 a["travelled"] += math.hypot(robot.x - bx, robot.y - by)
@@ -164,6 +167,7 @@ def run_royale(
                 "taken": round(a["taken"], 1),
                 "burn": round(a["burn"], 1),
                 "hits": a["hits"],
+                "kills": a["kills"],
                 "moments_outside": a["outside"],
                 "travelled_m": round(a["travelled"], 1),
                 "closing_share": round(a["closing"] / m, 3),

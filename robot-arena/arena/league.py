@@ -110,9 +110,19 @@ class League:
         seed: int = 0,
         controls: bool = False,
         verbose: bool = False,
+        refresher: list[str] | None = None,
+        refresher_moments: int = 0,
     ) -> list[dict[str, Any]]:
         names = names or self.names("brain")
         jobs = []
+        refreshed = set(refresher or [])
+        for name in refresher or []:
+            # a veteran's extra practice: the same continuing brain, its owed outcome delivered first
+            entry = self.data["robots"][name]
+            if entry["policy"] != "brain":
+                continue
+            jobs.append((self.blueprint(name).to_dict(), refresher_moments, seed + 7, "brain", str(self.brain_path(name)),
+                         entry.get("owed"), verbose))
         for name in names:
             entry = self.data["robots"][name]
             if entry["policy"] != "brain":
@@ -136,6 +146,14 @@ class League:
         (self.root / "reports").mkdir(parents=True, exist_ok=True)
         for report in reports:
             name = report["robot"]
+            if name in refreshed:
+                # a veteran's refresher: more life for the same brain, its first nursery record kept
+                save_report(report, self.root / "reports" / f"refresher-{name}.json")
+                entry = self.data["robots"][name]
+                entry["moments"] += report["moments"]
+                entry["owed"] = report["owed"]
+                entry["refreshers"] = entry.get("refreshers", 0) + 1
+                continue
             save_report(report, self.root / "reports" / f"nursery-{name}-{report['policy']}.json")
             if report["policy"] == "brain":
                 entry = self.data["robots"][name]
@@ -306,6 +324,7 @@ class League:
         record: bool = False,
         rng: random.Random | None = None,
         zone_end: float = 2.5,
+        stage: dict[str, Any] | None = None,
     ) -> list[dict[str, Any]]:
         """One round: the league split into disjoint groups that fight at the same time, one
         process per fight (and, with ``inner_workers``, one worker per brain inside it).
@@ -325,7 +344,7 @@ class League:
                         "owed": entry.get("owed"),
                     }
                 )
-            jobs.append((fighters, seed * 1000 + k, duration, zone_moments, inner_workers, record, zone_end))
+            jobs.append((fighters, seed * 1000 + k, duration, zone_moments, inner_workers, record, zone_end, stage))
         if not jobs:
             return []
         began = time.perf_counter()
@@ -404,7 +423,7 @@ class League:
 
 def _fight_job(job: tuple) -> dict[str, Any]:
     """One royale in its own process; returns plain data (the brains are saved in place)."""
-    fighters_data, seed, duration, zone_moments, inner_workers, record, zone_end = job
+    fighters_data, seed, duration, zone_moments, inner_workers, record, zone_end, stage = job
     fighters = [
         Fighter(
             name=f["name"],
@@ -412,6 +431,7 @@ def _fight_job(job: tuple) -> dict[str, Any]:
             policy=f["policy"],
             brain_path=None if f["brain_path"] is None else Path(f["brain_path"]),
             owed=None if f["owed"] is None else (float(f["owed"][0]), bool(f["owed"][1])),
+            stage=stage,
         )
         for f in fighters_data
     ]

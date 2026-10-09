@@ -89,6 +89,8 @@ class Robot:
     zone_taken: float = 0.0
     outside: bool = False
     hits: list[tuple[float, float, float]] = field(default_factory=list)  # x, y, damage dealt
+    kills: int = 0  # rivals this robot finished this moment
+    credited: bool = False  # its own destruction already credited to an attacker
 
     @classmethod
     def build(cls, rid: int, blueprint: Blueprint) -> Robot:
@@ -222,6 +224,7 @@ class Arena:
         for robot in self.robots:
             robot.dealt = robot.taken = robot.zone_taken = 0.0
             robot.hits = []
+            robot.kills = 0
             robot.outside = False
             if robot.rid in commands and robot.alive:
                 cmd = list(commands[robot.rid])
@@ -249,6 +252,7 @@ class Arena:
                 "taken": robot.taken,
                 "zone": robot.zone_taken,
                 "outside": robot.outside,
+                "kills": robot.kills,
                 "alive": robot.alive,
                 "hp": robot.hp,
             }
@@ -396,6 +400,9 @@ class Arena:
         victim.taken += damage
         attacker.dealt += damage
         attacker.hits.append((float(x), float(y), float(damage)))
+        if victim.hp <= 0.0 and victim.alive and not victim.credited:
+            victim.credited = True  # the blow that finished it; a burn death credits nobody
+            attacker.kills += 1
 
     def _weapons(self) -> None:
         alive = self.alive()

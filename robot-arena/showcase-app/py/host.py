@@ -134,13 +134,13 @@ class Host:
     # -- a fight, moment by moment
 
     def new_fight(
-        self, names: list[str], seed: int, duration: int = 1200, zone_moments: int = 1000
+        self, names: list[str], seed: int, duration: int = 1200, zone_moments: int = 1000, zone_end: float = 2.5
     ) -> dict[str, Any]:
         fighters = [
             Fighter(name=n, blueprint=self.blueprints[n], policy="brain", owed=self.owed[n]) for n in names
         ]
         robots = [Robot.build(i, f.blueprint) for i, f in enumerate(fighters)]
-        arena = Arena(robots, radius=10.0, zone_end=2.5, zone_moments=zone_moments, seed=int(seed))
+        arena = Arena(robots, radius=10.0, zone_end=float(zone_end), zone_moments=zone_moments, seed=int(seed))
         self.fight = {
             "fighters": fighters,
             "robots": robots,

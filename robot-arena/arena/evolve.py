@@ -17,8 +17,10 @@ every robot's rank, score, Elo, lineage, parent and the mutations that made it.
 from __future__ import annotations
 
 import math
+import multiprocessing
 import random
 import time
+from concurrent.futures import ProcessPoolExecutor
 from dataclasses import replace
 from typing import Any
 
@@ -72,7 +74,7 @@ def mutate(parent: Blueprint, name: str, seed: int, rng: random.Random, steps: i
                 weapon = rng.choice([w for w in WEAPONS if w != parts[i].weapon])
                 parts[i] = replace(parts[i], weapon=weapon)
                 log.append(f"re-armed arm {i} with a {weapon}")
-            else:
+            elif len(parts) < int(CHASSIS[chassis]["mounts"]):
                 parts.append(Part("arm", round(rng.uniform(-60, 60), 1), rng.choice(WEAPONS)))
                 log.append(f"added an arm with a {parts[-1].weapon}")
         elif kind == "add" and len(parts) < int(CHASSIS[chassis]["mounts"]):
@@ -127,6 +129,10 @@ def generation(
     parallel: int = 0,
     inner_workers: int = 0,
     zone_end: float = 2.5,
+    fitness: str = "placement",
+    niche_min: int = 0,
+    refresher_moments: int = 0,
+    stage: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     data = league.data
     data.setdefault("evolution", [])
@@ -134,12 +140,15 @@ def generation(
     number = len(data["evolution"]) + 1
     names = league.names()
     began = time.perf_counter()
-    # 1. newborns learn to move
+    # 1. newborns learn to move; survivors spar a while longer on the idle cores
     newborn = [n for n in names if data["robots"][n]["policy"] == "brain" and data["robots"][n]["nursery"] is None]
+    veterans = [n for n in names if data["robots"][n]["policy"] == "brain" and data["robots"][n]["nursery"] is not None]
     if newborn:
         if verbose:
-            print(f"generation {number}: nursery for {', '.join(newborn)} ({nursery_moments} moments each)", flush=True)
-        league.nursery(newborn, moments=nursery_moments, workers=workers, seed=number)
+            print(f"generation {number}: nursery for {len(newborn)} newborns ({nursery_moments} moments each)"
+                  + (f", refresher for {len(veterans)} veterans ({refresher_moments})" if refresher_moments and veterans else ""), flush=True)
+        league.nursery(newborn, moments=nursery_moments, workers=workers, seed=number,
+                       refresher=veterans if refresher_moments else None, refresher_moments=refresher_moments)
     # 2. fights; everyone fights about equally often
     fought_before = {n: data["robots"][n]["fights"] for n in names}
     if rounds:
@@ -147,6 +156,7 @@ def generation(
             rows = league.round(
                 size=size, parallel=parallel, inner_workers=inner_workers, seed=number * 1000 + k,
                 duration=duration, zone_moments=zone_moments, record=False, rng=rng, zone_end=zone_end,
+                stage=stage,
             )
             if verbose:
                 took = data["rounds"][-1]["seconds"]
@@ -156,7 +166,7 @@ def generation(
     for k in range(0 if rounds else fights):
         order = sorted(names, key=lambda n: (data["robots"][n]["fights"], rng.random()))
         row = league.royale(order[:size], seed=number * 1000 + k, duration=duration,
-                            zone_moments=zone_moments, zone_end=zone_end,
+                            zone_moments=zone_moments, zone_end=zone_end, stage=stage,
                             workers=min(size, workers) if size > 2 else 0, record=True, verbose=False)
         if verbose:
             top = row["results"][0]
@@ -172,11 +182,40 @@ def generation(
                         "dealt": round(dealt, 1), "lineage": entry.get("lineage", n),
                         "generation_born": entry.get("generation", 0), "policy": entry["policy"],
                         "aroused": round(sum(r["aroused_share"] for r in rows) / len(rows), 3) if rows else None})
-    ranking.sort(key=lambda r: (-r["score"], -r["elo"]))
+    if fitness == "licence":
+        # the driving test of every brain's greedy policy, in parallel; placement breaks ties
+        jobs = [(data["robots"][r["name"]]["blueprint"], str(league.brain_path(r["name"]))) for r in ranking if r["policy"] == "brain"]
+        if workers > 1 and len(jobs) > 1:
+            with ProcessPoolExecutor(max_workers=workers, mp_context=multiprocessing.get_context("spawn")) as pool:
+                tests = list(pool.map(_licence_job, jobs))
+        else:
+            tests = [_licence_job(j) for j in jobs]
+        by_name = {t["robot"]: t for t in tests}
+        for r in ranking:
+            t = by_name.get(r["name"])
+            if t:
+                r["licence"] = t["licence"]
+                r["test"] = {k: t[k] for k in ("approach", "kills", "escape", "engage_dealt", "engage_taken", "spin")}
+        ranking.sort(key=lambda r: (-(r.get("licence", -9.0)), -r["score"], -r["elo"]))
+    else:
+        ranking.sort(key=lambda r: (-r["score"], -r["elo"]))
     for k, r in enumerate(ranking):
         r["rank"] = k + 1
-    # 4. selection: the elite stays (brains and all); the rest retire; offspring fill the places
+    # 4. selection: the elite stays (brains and all); the rest retire; offspring fill the places.
+    # With a niche quota, the best ``niche_min`` of every lineage survive whatever the ranking.
     survivors = [r["name"] for r in ranking if r["policy"] == "brain"][:elite]
+    if niche_min:
+        protected: list[str] = []
+        seen: dict[str, int] = {}
+        for r in ranking:
+            if r["policy"] != "brain":
+                continue
+            lineage = r["lineage"]
+            if seen.get(lineage, 0) < niche_min:
+                protected.append(r["name"])
+                seen[lineage] = seen.get(lineage, 0) + 1
+        rest = [r["name"] for r in ranking if r["policy"] == "brain" and r["name"] not in protected]
+        survivors = (protected + rest)[:max(elite, len(protected))]
     baselines = [r["name"] for r in ranking if r["policy"] != "brain"]
     retired = [r["name"] for r in ranking if r["name"] not in survivors and r["name"] not in baselines]
     for n in retired:
@@ -226,6 +265,14 @@ def generation(
     return record
 
 
+def _licence_job(job: tuple) -> dict[str, Any]:
+    from .licence import licence
+    from .parts import blueprint_from_dict
+
+    bp_dict, path = job
+    return licence(blueprint_from_dict(bp_dict), path, "brain")
+
+
 def seed_population(
     league: League, population: int, rng: random.Random, founders: list[str] | None = None
 ) -> list[str]:
@@ -256,12 +303,25 @@ def seed_population(
     return born
 
 
-def final_cut(league: League, keep: int) -> list[str]:
-    """Keep the ``keep`` best brains of the last generation's ranking; retire the rest."""
+def final_cut(league: League, keep: int, per_lineage: int = 0) -> list[str]:
+    """Keep the ``keep`` best brains of the last generation's ranking, with the best
+    ``per_lineage`` of every lineage kept first; retire the rest."""
     evolution = league.data.get("evolution", [])
     if not evolution:
         return []
-    ranking = [r["name"] for r in evolution[-1]["ranking"] if r["name"] in league.data["robots"]]
-    survivors = ranking[:keep]
+    rows = [r for r in evolution[-1]["ranking"] if r["name"] in league.data["robots"]]
+    survivors: list[str] = []
+    if per_lineage:
+        seen: dict[str, int] = {}
+        for r in rows:
+            if seen.get(r["lineage"], 0) < per_lineage:
+                survivors.append(r["name"])
+                seen[r["lineage"]] = seen.get(r["lineage"], 0) + 1
+    for r in rows:
+        if len(survivors) >= max(keep, len(survivors)):
+            break
+        if r["name"] not in survivors:
+            survivors.append(r["name"])
+    survivors = survivors[: max(keep, len([s for s in survivors]))] if keep >= len(survivors) else survivors[:max(keep, per_lineage * len({r["lineage"] for r in rows}))]
     gone = [n for n in league.data["robots"] if n not in survivors]
     return league.retire(gone, reason="final cut", delete_brains=True)

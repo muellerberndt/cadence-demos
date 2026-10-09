@@ -28,7 +28,9 @@ EDGE_SIGHT = 4.0  # m at which the ring's edge reads zero
 SPEED_SCALE = 3.0  # m/s that reads one
 TURN_SCALE = 3.0  # rad/s that reads one
 PAIN_SCALE = 20.0  # hit points per moment that read one
-BODY_INPUTS = 2 * EYES + 2 + 2 + 4
+CLOSING_SCALE = 3.0  # m/s of closing speed that reads one
+THREAT_REACH = 0.5  # m from this hull at which another robot's weapon reads as a threat
+BODY_INPUTS = 2 * EYES + 3 + 2 + 2 + 4
 _PREFERRED = [2 * math.pi * k / EYES for k in range(EYES)]
 
 
@@ -39,6 +41,7 @@ def input_count(blueprint: Blueprint) -> int:
 def input_names(blueprint: Blueprint) -> list[str]:
     where = ["ahead", "left", "behind", "right"]
     names = [f"robot {w}" for w in where] + [f"edge {w}" for w in where]
+    names += ["robot closing", "robot receding", "weapon threat"]
     names += ["speed forward", "speed backward", "turning left", "turning right"]
     names += ["hit points", "pain", "damage dealt", "outside the ring"]
     for i, p in enumerate(blueprint.parts):
@@ -91,8 +94,24 @@ def observe(robot: Robot, arena: Arena) -> np.ndarray:
         else:
             enters = disc > 0.0 and (-pu - math.sqrt(disc)) > 0.0
             x[EYES + k] = 0.0 if enters else 1.0
-    # the body
+    # the nearest robot closing or receding, and any weapon near this hull
     base = 2 * EYES
+    if nearest is not None:
+        dx, dy = nearest.x - robot.x, nearest.y - robot.y
+        dist = math.hypot(dx, dy) or 1e-9
+        rel = ((nearest.vx - robot.vx) * dx + (nearest.vy - robot.vy) * dy) / dist  # + when drawing away
+        x[base + 0] = min(1.0, max(0.0, -rel / CLOSING_SCALE))
+        x[base + 1] = min(1.0, max(0.0, rel / CLOSING_SCALE))
+    threat = 0.0
+    for other in arena.robots:
+        if other is robot or not other.alive:
+            continue
+        for i in other.blueprint.arms():
+            d = math.hypot(other.tip[i][0] - robot.x, other.tip[i][1] - robot.y) - robot.radius
+            threat = max(threat, 1.0 - d / THREAT_REACH)
+    x[base + 2] = min(1.0, max(0.0, threat))
+    # the body
+    base = 2 * EYES + 3
     v_fwd = float(np.dot(robot.vel, robot.forward)) / SPEED_SCALE
     x[base + 0] = min(1.0, max(0.0, v_fwd))
     x[base + 1] = min(1.0, max(0.0, -v_fwd))

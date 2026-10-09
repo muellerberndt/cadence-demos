@@ -14,7 +14,8 @@ export type LeagueRecord = {
 export type Speed = 1 | 2 | 0; // 0 = as fast as the brains settle
 
 const PACK = "/pack/";
-const DURATION = 1200, ZONE = 1000, BATCH = 6;
+// the training ring: the fight lasts up to 2400 moments and the ring closes to 3.5 m over 2000
+const DURATION = 2400, ZONE = 2000, ZONE_END = 3.5, BATCH = 6;
 
 function eloUpdate(ratings: Record<string, number>, places: Record<string, number>, k = 32): Record<string, number> {
   const names = Object.keys(places), n = names.length, delta: Record<string, number> = {};
@@ -118,7 +119,7 @@ export function useLeague() {
     const seed = Math.floor(Math.random() * 1_000_000);
     buffer.current = []; fightDone.current = false; fightResults.current = null; setResults(null); setCountdown(null);
     if (timerRef.current) { window.clearInterval(timerRef.current); timerRef.current = null; }
-    const started = await call("new_fight", { names, seed, duration: DURATION, zone_moments: ZONE });
+    const started = await call("new_fight", { names, seed, duration: DURATION, zone_moments: ZONE, zone_end: ZONE_END });
     const sp: Spec[] = started.robots; setSpecs(sp); specsRef.current = sp;
     tallyRef.current = { dealt: sp.map(() => 0), aroused: sp.map(() => 0), alive: sp.map(() => 0), sweeps: sp.map(() => 0) };
     setTallies({ ...tallyRef.current });
