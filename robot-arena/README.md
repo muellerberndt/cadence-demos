@@ -6,7 +6,7 @@ six-robot royales for the rest of its life and keeps learning from every fight. 
 reset between fights, and the page runs the fights live in your browser and saves every
 brain there.
 
-![The page](docs/showcase-page.png)
+![Six robots in the ring](docs/robots-fighting.png)
 
 ## See it
 
