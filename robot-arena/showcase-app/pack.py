@@ -19,7 +19,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
 PYODIDE = "314.0.7"
-CADENCE = "0.79.0"
+CADENCE = "0.80.0"
 sys.path.insert(0, str(REPO))
 from arena.brain import PAGE_STAGE as STAGE  # noqa: E402  the ring stage of a life in the page
 SOURCES = ["__init__.py", "parts.py", "world.py", "senses.py", "brain.py", "controls.py", "pool.py", "royale.py", "nursery.py", "probe.py"]
