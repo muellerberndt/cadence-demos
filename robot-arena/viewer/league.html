@@ -57,7 +57,7 @@
   <section id="nurserySec"><h2>Raised in the nursery, before the first fight</h2><p class="tag" style="margin:0 0 10px">Alone with a training dummy, headless, tens of times faster than real time. Metres of progress toward the dummy and dummies destroyed over the whole stay, against uniform random with the same body and the robot's own frozen newborn (greedy, never learning). Bars: progress per eighth of the stay.</p><div class="cards" id="nursery"></div></section>
   <section><h2>Rating over the fights</h2><div id="elo"></div><div class="legend" id="eloLegend"></div></section>
   <section><h2>Each robot's tactics, fight by fight</h2><p class="tag" style="margin:0 0 10px">Damage dealt, weapon hits, moments in the burn, metres travelled, the share of aroused (learning) moments and the learning sweeps per fight. A tactic that changes shows here before it shows in the rating.</p><div class="cards" id="cards"></div></section>
-  <section id="evoSec"><h2>Evolution · who dominates</h2><p class="tag" style="margin:0 0 10px" id="evoLead"></p><div id="evoChart"></div><div class="legend" id="evoLegend"></div><div class="cards" id="evoCards" style="margin-top:12px"></div></section>
+  <section id="evoSec"><h2>Evolution · who dominates</h2><p class="tag" style="margin:0 0 10px" id="evoLead"></p><div id="evoChart"></div><div class="legend" id="evoLegend"></div><p class="tag" style="margin:10px 0 6px" id="licLead"></p><div id="licChart"></div><div class="legend" id="licLegend"></div><div class="cards" id="evoCards" style="margin-top:12px"></div></section>
   <section><h2>Fights</h2><div class="fights" id="fights"></div></section>
 </main>
 <footer>Blue is a calm brain answering from a settled state without learning; orange is an aroused brain that explores and learns. Replays carry every robot's brain activity; click a robot in a replay to inspect it.</footer>
@@ -186,14 +186,34 @@ rows.forEach(r => {
   g += `<text x="${L - 6}" y="${T + 10}" fill="var(--muted)" font-size="11" text-anchor="end">all</text><text x="${L - 6}" y="${H - B}" fill="var(--muted)" font-size="11" text-anchor="end">none</text>`;
   document.getElementById("evoChart").innerHTML = `<svg viewBox="0 0 ${W} ${H}">${g}</svg>`;
   document.getElementById("evoLegend").innerHTML = lineages.map(l => `<span><span class="sw" style="background:${lcolor[l]}"></span>${l} lineage</span>`).join("") + `<span>dot below: the best robot of each generation</span>`;
+  // the driving test over the generations: best, the kept sixteen, the median of all
+  const licGens = evo.filter(gen => gen.ranking.some(r => r.licence !== undefined && r.licence !== null));
+  if (licGens.length) {
+    const stat = gen => { const v = gen.ranking.filter(r => r.policy === "brain" && r.licence !== undefined && r.licence !== null).map(r => r.licence).sort((a, b) => b - a);
+      const top = v.slice(0, 16); return { best: v[0], kept: top.reduce((a, b) => a + b, 0) / top.length, median: v[Math.floor(v.length / 2)], good: v.filter(x => x >= 0.4).length, n: v.length, name: gen.ranking[0].name }; };
+    const st = licGens.map(stat), lo = -0.4, hi = 1.0;
+    const W2 = 1100, H2 = 180, L2 = 44, R2 = 10, T2 = 10, B2 = 26, n2 = licGens.length, bw2 = (W2 - L2 - R2) / Math.max(n2, 1);
+    const ty = v => T2 + (hi - Math.max(lo, Math.min(hi, v))) / (hi - lo) * (H2 - T2 - B2), tx = k => L2 + k * bw2 + bw2 / 2;
+    const line = (key, col) => n2 > 1 ? `<polyline fill="none" stroke="${col}" stroke-width="2" points="${st.map((s, k) => `${tx(k)},${ty(s[key])}`).join(" ")}"/>` : "";
+    let g2 = "";
+    [0, 0.5, 1].forEach(v => { g2 += `<line x1="${L2}" x2="${W2 - R2}" y1="${ty(v)}" y2="${ty(v)}" stroke="var(--line)"/><text x="${L2 - 6}" y="${ty(v) + 4}" fill="var(--muted)" font-size="11" text-anchor="end">${v.toFixed(1)}</text>`; });
+    st.forEach((s, k) => { const h = s.good / s.n * (H2 - T2 - B2); g2 += `<rect x="${L2 + k * bw2 + 2}" y="${H2 - B2 - h}" width="${bw2 - 4}" height="${h}" fill="var(--hp)" opacity="0.18"><title>generation ${licGens[k].generation}: ${s.good} of ${s.n} brains at licence 0.4 or better</title></rect>`; });
+    g2 += line("median", "var(--muted)") + line("kept", "var(--calm)") + line("best", "var(--accent)");
+    st.forEach((s, k) => { g2 += `<circle cx="${tx(k)}" cy="${ty(s.best)}" r="4" fill="var(--accent)"><title>generation ${licGens[k].generation}: best ${s.name} ${s.best.toFixed(2)}, kept sixteen ${s.kept.toFixed(2)}, median ${s.median.toFixed(2)}</title></circle>`;
+      g2 += `<text x="${tx(k)}" y="${H2 - 2}" fill="var(--muted)" font-size="11" text-anchor="middle">${licGens[k].generation}</text>`; });
+    document.getElementById("licChart").innerHTML = `<svg viewBox="0 0 ${W2} ${H2}">${g2}</svg>`;
+    document.getElementById("licLegend").innerHTML = `<span><span class="sw" style="background:var(--accent)"></span>best licence</span><span><span class="sw" style="background:var(--calm)"></span>the kept sixteen (mean)</span><span><span class="sw" style="background:var(--muted)"></span>median of all</span><span><span class="sw" style="background:var(--hp);opacity:.4"></span>share at 0.4 or better</span>`;
+    const first = st[0], lastS = st[st.length - 1];
+    document.getElementById("licLead").textContent = `The driving test (licence score of each brain's greedy policy: approach, escape, the closing ring, engagement, chase, facing, spin, stall) decides who stays. Best ${first.best.toFixed(2)} → ${lastS.best.toFixed(2)}, median ${first.median.toFixed(2)} → ${lastS.median.toFixed(2)}, brains at 0.4 or better ${first.good} → ${lastS.good} of ${lastS.n}.`;
+  } else { document.getElementById("licLead").style.display = "none"; }
   const lastGen = evo[evo.length - 1], births = evo.reduce((a, gen) => a + gen.born.length, 0), retired = evo.reduce((a, gen) => a + gen.retired.length, 0);
   const totalSec = evo.reduce((a, gen) => a + (gen.seconds || 0), 0);
   const dom = Object.entries(lastGen.lineages).sort((a, b) => b[1] - a[1]);
-  document.getElementById("evoLead").textContent = `${evo.length} generations in ${(totalSec / 60).toFixed(0)} min: ${births} robots born, ${retired} retired. Share of the population by founder lineage per generation; after generation ${lastGen.generation}: ${dom.map(([l, c]) => `${l} ${c}`).join(", ")}.`;
+  document.getElementById("evoLead").textContent = `${evo.length} generation${evo.length === 1 ? "" : "s"} in ${(totalSec / 60).toFixed(0)} min: ${births} robots born, ${retired} retired. Share of the population by founder lineage per generation; after generation ${lastGen.generation}: ${dom.map(([l, c]) => `${l} ${c}`).join(", ")}.`;
   const cards = document.getElementById("evoCards");
   evo.forEach(gen => {
     const card = document.createElement("div"); card.className = "card";
-    const podium = gen.ranking.slice(0, 3).map(r => `<div class="spark"><span>#${r.rank}</span><span><span class="sw" style="background:${color[r.name] || lcolor[r.lineage]}"></span>${r.name}${r.name === r.lineage ? " (founder)" : ""}</span><b>${r.score >= 0 ? "+" : ""}${r.score.toFixed(2)}</b></div>`).join("");
+    const podium = gen.ranking.slice(0, 3).map(r => `<div class="spark"><span>#${r.rank}</span><span><span class="sw" style="background:${color[r.name] || lcolor[r.lineage]}"></span>${r.name}${r.name === r.lineage ? " (founder)" : ""}${r.licence !== undefined && r.licence !== null ? ` · fights ${r.score >= 0 ? "+" : ""}${r.score.toFixed(2)}` : ""}</span><b title="${r.licence !== undefined && r.licence !== null ? "licence score; fight score beside the name" : "mean fight score"}">${r.licence !== undefined && r.licence !== null ? (r.licence >= 0 ? "+" : "") + r.licence.toFixed(2) : (r.score >= 0 ? "+" : "") + r.score.toFixed(2)}</b></div>`).join("");
     const founders = ["Mantis", "Dozer", "Crab"].concat(lineages).filter((v, i, a) => a.indexOf(v) === i).filter(f => gen.ranking.some(r => r.name === f)).map(f => { const r = gen.ranking.find(r => r.name === f); return `${f} #${r.rank}`; }).join(" · ");
     const sample = gen.born.slice(0, 3).map(b => `${b.name}: ${b.mutations.join("; ") || "a copy"}`).join("<br>");
     card.innerHTML = `<h3>Generation ${gen.generation}</h3><div class="sub">${gen.ranking.length} fought · ${gen.survivors.length} kept · ${gen.born.length} born · ${((gen.seconds || 0) / 60).toFixed(1)} min${founders ? " · founders: " + founders : ""}</div>${podium}<div class="sub" style="margin-top:8px">${sample}${gen.born.length > 3 ? "<br>…" : ""}</div>`;

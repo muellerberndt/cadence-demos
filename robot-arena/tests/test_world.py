@@ -139,3 +139,33 @@ def test_collision_separation_keeps_weapons_attached_without_inventing_a_strike(
     assert np.linalg.norm(attacker.tip_vel[2]) > 1.0
     assert outcome[0]["dealt"] > 0.0
     assert outcome[1]["taken"] == outcome[0]["dealt"]
+
+
+def test_the_finishing_blow_is_credited_as_a_kill_and_a_burn_death_is_not():
+    attacker = Robot.build(0, TUMBLER)
+    dummy = Robot.build(1, DUMMY)
+    arena = Arena([attacker, dummy], seed=1, spawn=False)
+    attacker.place_at(-2.5, 0.0, 0.0)
+    dummy.place_at(0.0, 0.0, 0.0)
+    dummy.hp = 1.0
+    kills = 0
+    for _ in range(100):
+        out = arena.step({0: [2, 2, 1], 1: [1]})
+        kills += out[0]["kills"]
+        if not dummy.alive:
+            break
+    assert not dummy.alive and kills == 1
+    assert sum(arena.step({0: [1, 1, 1], 1: [1]})[0]["kills"] for _ in range(3)) == 0  # credited once
+
+    burner, bystander = Robot.build(0, TUMBLER), Robot.build(1, TUMBLER)
+    ring = Arena([burner, bystander], seed=1, zone_moments=50, spawn=False)
+    burner.place_at(8.0, 0.0, 0.0)
+    bystander.place_at(0.0, 0.0, 0.0)
+    burner.hp = 0.5
+    credited = 0
+    for _ in range(100):
+        out = ring.step({0: [1, 1, 1], 1: [1, 1, 1]})
+        credited += out[1]["kills"]
+        if not burner.alive:
+            break
+    assert not burner.alive and credited == 0

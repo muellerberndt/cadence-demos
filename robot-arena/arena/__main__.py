@@ -81,6 +81,11 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--inner-workers", type=int, default=0, help="brain workers inside each fight (0: in process)")
     p.add_argument("--hours", type=float, default=0.0, help="stop starting generations after this many hours")
     p.add_argument("--keep", type=int, default=0, help="after the last generation keep only the best N")
+    p.add_argument("--keep-per-lineage", type=int, default=0, help="the final cut keeps the best N of every lineage first")
+    p.add_argument("--fitness", default="placement", choices=("placement", "licence"), help="rank a generation by placement score or by the driving test")
+    p.add_argument("--niche-min", type=int, default=0, help="the best N of every lineage survive each generation")
+    p.add_argument("--refresher-moments", type=int, default=0, help="extra nursery moments for the survivors while newborns are raised")
+    p.add_argument("--stage", help='ring-stage genes for the generation fights as JSON, e.g. {"need":0,"heat":0,"temperature":0.2,"reset":true,"threshold":0.5,"eta":0.01}')
 
     p = sub.add_parser("retire", help="move robots out of the league (records stay)")
     p.add_argument("names", nargs="*")
@@ -95,6 +100,13 @@ def main(argv: list[str] | None = None) -> int:
 
     p = sub.add_parser("probe", help="fingerprint a robot's policy in declared situations")
     p.add_argument("name")
+
+    p = sub.add_parser("licence", help="the driving test of a robot's greedy policy: approach, escape, engage, spin")
+    p.add_argument("names", nargs="*")
+    p.add_argument("--all", action="store_true")
+    p.add_argument("--random", action="store_true", help="also the uniform-random baseline for each body")
+    p.add_argument("--scale", type=float, default=1.0, help="shorten the tests (0.2 for a quick look)")
+    p.add_argument("--workers", type=int, default=1, help="robots tested at the same time (full-length tests only)")
 
     args = parser.parse_args(argv)
     league = League(args.league)
@@ -195,15 +207,17 @@ def main(argv: list[str] | None = None) -> int:
                 nursery_moments=args.nursery_moments, fights=args.fights, size=args.size,
                 duration=args.duration, zone_moments=args.zone_moments, workers=args.workers,
                 rng=rng, verbose=not args.quiet, rounds=args.rounds, parallel=args.parallel,
-                inner_workers=args.inner_workers, zone_end=args.zone_end,
+                inner_workers=args.inner_workers, zone_end=args.zone_end, fitness=args.fitness,
+                niche_min=args.niche_min, refresher_moments=args.refresher_moments,
+                stage=json.loads(args.stage) if args.stage else None,
             )
             last = record["seconds"]
             print(f"generation {record['generation']} ({record['seconds']} s): " + ", ".join(
                 f"{r['rank']}. {r['name']} {r['score']:+.2f}" for r in record["ranking"][:5]), flush=True)
             print("  lineages: " + ", ".join(f"{k} x{v}" for k, v in sorted(record["lineages"].items(), key=lambda kv: -kv[1])), flush=True)
         if args.keep:
-            gone = final_cut(league, args.keep)
-            print(f"final cut: kept {args.keep}, retired {len(gone)}")
+            gone = final_cut(league, args.keep, args.keep_per_lineage)
+            print(f"final cut: kept {len(league.data['robots'])}, retired {len(gone)}")
         return 0
 
     if args.command == "retire":
@@ -224,6 +238,29 @@ def main(argv: list[str] | None = None) -> int:
         for h in entry["history"][-10:]:
             print(f"  fight {h['fight']}: place {h['place']}, dealt {h['dealt']}, taken {h['taken']}, "
                   f"aroused {h['aroused_share']}, learning sweeps {h['learning_sweeps']}, elo {h['elo_after']}")
+        return 0
+
+    if args.command == "licence":
+        from .licence import licence, licence_text
+
+        names = league.names("brain") if args.all else list(args.names)
+        names = [n for n in names if league.brain_path(n).exists()]  # a robot without a brain file is not raised yet
+        if args.workers > 1 and len(names) > 1 and not args.random and args.scale == 1.0:
+            import multiprocessing
+            from concurrent.futures import ProcessPoolExecutor
+
+            from .evolve import _licence_job
+
+            jobs = [(league.blueprint(n).to_dict(), str(league.brain_path(n))) for n in names]
+            with ProcessPoolExecutor(max_workers=args.workers, mp_context=multiprocessing.get_context("spawn")) as pool:
+                for result in pool.map(_licence_job, jobs):
+                    print(licence_text(result), flush=True)
+            return 0
+        for name in names:
+            bp = league.blueprint(name)
+            print(licence_text(licence(bp, league.brain_path(name), "brain", args.scale)), flush=True)
+            if args.random:
+                print(licence_text(licence(bp, None, "random", args.scale)), flush=True)
         return 0
 
     if args.command == "probe":

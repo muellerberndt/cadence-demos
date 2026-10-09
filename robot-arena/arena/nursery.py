@@ -1,7 +1,10 @@
 """The nursery: an accelerated, lonely arena where a newborn robot learns to move and hit.
 
 A training dummy stands somewhere in the ring; it never moves and never strikes back, but
-ramming it hurts both. The world pays progress toward the dummy, damage dealt, and one unit
+ramming it hurts both. Every other time the target reappears it is a sparring partner
+instead: a wheeled robot with a spike that turns toward the pupil and drives at it, run by a
+fixed script and not by a brain. Hitting it pays like hitting the dummy; its spike hurts a
+little, so fending it off pays too. The world pays progress toward the dummy, damage dealt, and one unit
 when the dummy is destroyed; damage taken is suffering. A dummy that is destroyed, or that
 has stood for ``relocate`` moments, reappears somewhere else, so approaching is a repeated
 problem and not a one-off. The ring stands still at ``RING`` metres: the strip along the wall
@@ -31,16 +34,37 @@ import numpy as np
 
 from .brain import RobotBrain, make_policy
 from .parts import Blueprint, Part
+from .royale import BURN_WEIGHT
 from .senses import observe
 from .world import Arena, Robot
 
 DUMMY = Blueprint("Dummy", "medium", (Part("leg", 180.0),), seed=0, policy="random")
 DUMMY_HP = 60.0
+SPAR = Blueprint(
+    "Spar", "medium", (Part("wheel", 90.0), Part("wheel", -90.0), Part("arm", 0.0, "spike")), seed=0, policy="random"
+)  # a spike, so that sparring hurts a little and hitting back pays more than it costs
+SPAR_HP = 40.0  # fragile enough that a few hits bring the trophy
+SPAR_SPEED = 2  # 0..2: the spar's wheel command when driving (2 = full)
 RING = 8.5  # m, the nursery's standing ring; outside it burns
 PROGRESS_PAY = 10.0  # reward per metre of approach (0.5 per moment at 1 m/s)
 PROGRESS_CAP = 0.5
 DAMAGE_SCALE = 20.0  # hit points that pay or cost one unit
-KILL_PAY = 1.0
+KILL_PAY = 2.0  # the trophy for destroying the dummy or the sparring partner
+
+
+def spar_commands(spar: Robot, pupil: Robot) -> list[int]:
+    """The sparring partner's script: turn toward the pupil, drive when roughly facing it.
+    Wheels: 0 reverse, 1 brake, 2 forward; the arm holds."""
+    bearing = math.atan2(pupil.y - spar.y, pupil.x - spar.x) - spar.heading
+    bearing = (bearing + math.pi) % (2 * math.pi) - math.pi
+    gap = math.hypot(pupil.x - spar.x, pupil.y - spar.y) - spar.radius - pupil.radius
+    if bearing > 0.35:  # pupil on the left: left wheel back, right wheel forward
+        left, right = 0, 2
+    elif bearing < -0.35:
+        left, right = 2, 0
+    else:
+        left = right = SPAR_SPEED if gap > 0.2 else 1
+    return [left, right, 1]
 
 
 def _place_dummy(arena: Arena, robot: Robot, dummy: Robot, rng: np.random.Generator) -> None:
@@ -51,9 +75,11 @@ def _place_dummy(arena: Arena, robot: Robot, dummy: Robot, rng: np.random.Genera
         if math.hypot(x, y) < arena.zone_radius() - dummy.radius - 0.5:
             break
     dummy.place_at(x, y, rng.uniform(-math.pi, math.pi))
-    dummy.hp = DUMMY_HP
+    dummy.hp = SPAR_HP if dummy.blueprint is SPAR else DUMMY_HP
     dummy.alive = True
     dummy.place = dummy.died_at = None
+    for i in range(len(dummy.blueprint.parts)):
+        dummy.spin[i] = 0.0
 
 
 def run_nursery(
@@ -69,6 +95,7 @@ def run_nursery(
     save_to: str | Path | None = None,
     verbose: bool = False,
     probe_every: int = 0,
+    sparring: bool = True,
 ) -> dict[str, Any]:
     """Run one physical nursery episode without resetting its brain.
 
@@ -81,9 +108,14 @@ def run_nursery(
     probes: list[dict[str, Any]] = []
     robot = Robot.build(0, blueprint)
     dummy = Robot.build(1, DUMMY)
-    arena = Arena([robot, dummy], radius=10.0, zone_end=RING, zone_moments=1, seed=seed, spawn=False)
+    spar = Robot.build(2, SPAR)
+    spar.alive = False  # waits off the floor until its turn
+    spar.place_at(50.0, -50.0, 0.0)
+    arena = Arena([robot, dummy, spar], radius=10.0, zone_end=RING, zone_moments=1, seed=seed, spawn=False)
     arena.t = 1  # the ring stands at RING from the first moment
     robot.place_at(0.0, 0.0, rng.uniform(-math.pi, math.pi))
+    target = dummy  # the dummy or the sparring partner, in turns
+    spar_turns = 0
     _place_dummy(arena, robot, dummy, rng)
     agent = make_policy(blueprint, policy, brain_path)
     reward, done = (None, False) if owed is None else owed
@@ -97,16 +129,18 @@ def run_nursery(
         reading = agent.moment(x, reward, done)
         if not (isinstance(agent, RobotBrain) and reading["refused"] and agent.has_pending()):
             done = False  # a refused forecast still owes the same terminal outcome
-        before = math.hypot(dummy.x - robot.x, dummy.y - robot.y)
+        tx, ty = target.x, target.y  # progress credits the pupil's own motion toward where the target was
+        before = math.hypot(tx - robot.x, ty - robot.y)
         px, py = robot.x, robot.y
-        out = arena.step({0: reading["commands"], 1: [1]})
+        commands = {0: reading["commands"], 1: [1], 2: spar_commands(spar, robot) if spar.alive else [1, 1, 1]}
+        out = arena.step(commands)
         robot.hp = blueprint.hp  # immortal in the nursery: the pain stays, the life goes on
         travelled += math.hypot(robot.x - px, robot.y - py)
-        after = math.hypot(dummy.x - robot.x, dummy.y - robot.y)
+        after = math.hypot(tx - robot.x, ty - robot.y)
         progress = before - after
         pay = float(np.clip(PROGRESS_PAY * progress, -PROGRESS_CAP, PROGRESS_CAP))
-        pay += (out[0]["dealt"] - out[0]["taken"]) / DAMAGE_SCALE
-        killed = not dummy.alive  # the dummy stands inside the ring, so only the robot kills it
+        pay += (out[0]["dealt"] - out[0]["taken"] - (BURN_WEIGHT - 1.0) * out[0]["zone"]) / DAMAGE_SCALE
+        killed = not target.alive  # the target stands inside the ring, so only the robot kills it
         if killed:
             pay += KILL_PAY
         reward = pay
@@ -114,6 +148,8 @@ def run_nursery(
         acc["dealt"] += out[0]["dealt"]
         acc["taken"] += out[0]["taken"]
         acc["kills"] += int(killed)
+        acc["spar_kills"] += int(killed and target is spar)
+        acc["spar_taken"] += out[0]["taken"] - out[0]["zone"] if target is spar else 0.0
         acc["burn"] += out[0]["zone"]
         acc["outside"] += int(out[0]["outside"])
         acc["reward"] += pay
@@ -125,7 +161,12 @@ def run_nursery(
         acc["moments"] += 1
         stood += 1
         if killed or stood >= relocate:
-            _place_dummy(arena, robot, dummy, rng)
+            # the target steps off the floor; the next one is the dummy or the sparring partner
+            target.alive = False
+            target.place_at(50.0, 50.0 if target is dummy else -50.0, 0.0)
+            spar_turns += 1
+            target = spar if (sparring and spar_turns % 2 == 1) else dummy
+            _place_dummy(arena, robot, target, rng)
             stood = 0
         if probe_every and (t + 1) % probe_every == 0 and isinstance(agent, RobotBrain):
             probes.append({"moment": t + 1, **_probe(agent, blueprint)})
@@ -157,6 +198,10 @@ def run_nursery(
         "reward": sum(b["reward"] for b in blocks),
         "refused": sum(b["refused"] for b in blocks),
         "travelled_m": travelled,
+        "burn": sum(b["burn"] for b in blocks),
+        "outside_share": round(sum(b["outside_share"] * b["moments"] for b in blocks) / max(1, moments), 3),
+        "spar_kills": sum(b["spar_kills"] for b in blocks),
+        "spar_taken": round(sum(b["spar_taken"] for b in blocks), 1),
     }
     half = len(blocks) // 2
     return {
@@ -194,7 +239,7 @@ def _fresh_block() -> dict[str, float]:
     return {
         "progress": 0.0, "dealt": 0.0, "taken": 0.0, "kills": 0, "reward": 0.0, "burn": 0.0,
         "outside": 0, "aroused": 0, "sweeps": 0, "learning_sweeps": 0, "refused": 0, "ms": 0.0,
-        "moments": 0,
+        "moments": 0, "spar_kills": 0, "spar_taken": 0.0,
     }
 
 
@@ -208,6 +253,8 @@ def _close_block(acc: dict[str, float]) -> dict[str, Any]:
         "taken": round(acc["taken"], 2),
         "burn": round(acc["burn"], 2),
         "outside_share": round(acc["outside"] / n, 3),
+        "spar_kills": int(acc["spar_kills"]),
+        "spar_taken": round(acc["spar_taken"], 1),
         "reward": round(acc["reward"], 3),
         "reward_per_moment": round(acc["reward"] / n, 4),
         "aroused_share": round(acc["aroused"] / n, 3),

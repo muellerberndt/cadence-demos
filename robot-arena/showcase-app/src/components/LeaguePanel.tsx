@@ -33,6 +33,9 @@ export function LeaguePanel({ league, roster, manifest, onReset, persisted, desc
   const k = Math.max(1, Math.floor(perFight.length / 3));
   const early = perFight.length >= 2 ? perFight.slice(0, k).reduce((a, b) => a + b, 0) / k : null;
   const late = perFight.length >= 2 ? perFight.slice(-k).reduce((a, b) => a + b, 0) / k : null;
+  const burnPerFight = league.fights.map((f) => f.results.reduce((a, r) => a + (r.moments_outside || 0), 0) / Math.max(1, f.results.length));
+  const burnEarly = burnPerFight.length >= 2 ? burnPerFight.slice(0, k).reduce((a, b) => a + b, 0) / k : null;
+  const burnLate = burnPerFight.length >= 2 ? burnPerFight.slice(-k).reduce((a, b) => a + b, 0) / k : null;
   const sweeps = league.fights.reduce((a, f) => a + f.results.reduce((b, r) => b + r.learning_sweeps, 0), 0);
   const calmLate = perFight.length ? 1 - league.fights.slice(-k).reduce((a, f) => a + f.results.reduce((b, r) => b + r.aroused_share, 0) / f.results.length, 0) / k : null;
   const lineages = Array.from(new Set(evo.flatMap((g: any) => Object.keys(g.lineages)))) as string[];
@@ -44,12 +47,13 @@ export function LeaguePanel({ league, roster, manifest, onReset, persisted, desc
         <span className="text-xs text-muted">{league.fights.length} fights here · {(league.totalMoments / 1000).toFixed(0)}k brain moments lived here · brains {persisted === "fresh" ? "as they arrived" : persisted === "restored" ? "restored from your last visit" : "saved after the last fight"}</span>
         <button className="btn ml-auto text-xs" onClick={onReset}>Reset the brains to how they arrived</button>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-2">
         {[
           [league.fights.length, "fights in this browser"],
           [(league.totalMoments / 1000).toFixed(0) + "k", "brain moments lived here"],
           [sweeps >= 1000 ? (sweeps / 1000).toFixed(0) + "k" : sweeps, "learning sweeps so far"],
           [early === null ? "–" : `${early.toFixed(0)} → ${late!.toFixed(0)}`, "damage per robot per fight, first third → last third"],
+          [burnEarly === null ? "–" : `${burnEarly.toFixed(0)} → ${burnLate!.toFixed(0)}`, "moments in the burn per robot per fight, first third → last third"],
           [calmLate === null ? "–" : `${Math.round(100 * calmLate)}%`, "calm moments, last fights"],
         ].map(([v, l], i) => <div key={i} className="rounded-xl border border-line px-3 py-2"><b className="block text-lg tnum">{v as any}</b><span className="text-[11px] text-muted leading-tight block">{l as any}</span></div>)}
       </div>
@@ -68,7 +72,7 @@ export function LeaguePanel({ league, roster, manifest, onReset, persisted, desc
                 <td className="text-right">{r.meanPlace === null ? "–" : r.meanPlace.toFixed(2)}</td>
                 <td className="pl-4"><Spark values={r.elos} color={colors[r.name]} /></td>
                 <td className="pl-4"><Bars values={r.dealt} color={colors[r.name]} /></td>
-                <td className="text-right text-xs text-muted">gen {r.generation} of the {r.lineage} line · {r.fights} fights, elo {Math.round(r.elo)} · {r.brain ? `${(r.brain.age / 1000).toFixed(0)}k moments lived` : ""}</td>
+                <td className="text-right text-xs text-muted">gen {r.generation} of the {r.lineage} line · {r.fights} fights, elo {Math.round(r.elo)}{r.licence ? <span title={`driving test at arrival: ${(r.licence.tests || []).map((t: string, i: number) => `${t} ${r.licence.marks[i]}`).join(", ")}; score ${r.licence.licence >= 0 ? "+" : ""}${r.licence.licence.toFixed(2)}`} className="block">driving test {r.licence.passes}/{(r.licence.tests || []).length} <span className="font-mono">{r.licence.marks}</span></span> : null}</td>
               </tr>
             ))}
           </tbody>
@@ -78,9 +82,12 @@ export function LeaguePanel({ league, roster, manifest, onReset, persisted, desc
         <div>
           <h3 className="kicker mb-2">Where they come from</h3>
           <p className="text-sm text-muted leading-relaxed">
-            Three champions of a laptop league (Mantis, Dozer, Crab) founded lineages on a 192-vCPU machine for one hour: 189 mutants of their bodies and
-            genes were born with newborn brains, raised in a nursery, and fought 32 royales at a time; every generation the weakest third retired.
-            Four generations and 3,840 royales later these six were the best of 192. Their mutations: {roster.slice(0, 6).map((r) => `${r.name}: ${(r.mutations || []).join("; ") || "a copy"}`).join(" · ")}.
+            {lineages.length || 8} stock bodies founded lineages on a 192-vCPU machine. Every generation 192 robots, each with one continuing brain, were raised in a
+            nursery, fought rounds of six-robot royales on this same ring stage, and took a driving test: approach, escape, the closing ring, engagement, chase,
+            facing, no spinning, no stalling. The best of every lineage stayed with their brains; mutants of their bodies and genes filled the places.
+            After {evo.length} generation{evo.length === 1 ? "" : "s"} and {(manifest?.league?.fights ?? 0).toLocaleString()} royales these {roster.length} are the best-licensed of their lineages
+            ({roster.map((r) => `${r.name} ${r.licence ? r.licence.passes + "/" + (r.licence.tests || []).length : ""}`).join(", ")}).
+            Their mutations: {roster.map((r) => `${r.name}: ${(r.mutations || []).join("; ") || "a copy"}`).join(" · ")}.
           </p>
         </div>
         <div>
@@ -95,7 +102,7 @@ export function LeaguePanel({ league, roster, manifest, onReset, persisted, desc
               );
             })}
           </div>
-          <div className="flex gap-4 mt-2 text-xs text-muted">{lineages.map((l) => <span key={l}><i className="inline-block w-2.5 h-2.5 rounded-sm mr-1.5 align-[-1px]" style={{ background: lcol[l] || "#888" }} />{l} line</span>)}<span>generations 1 to {evo.length}; the Dozer line took 80 % of the places first and lost ground every generation after</span></div>
+          <div className="flex gap-4 mt-2 text-xs text-muted">{lineages.map((l) => <span key={l}><i className="inline-block w-2.5 h-2.5 rounded-sm mr-1.5 align-[-1px]" style={{ background: lcol[l] || "#888" }} />{l} line</span>)}<span>{(() => { if (!evo.length) return ""; const last = evo[evo.length - 1]; const entries = Object.entries(last.lineages as Record<string, number>).sort((a, b) => b[1] - a[1]); const total = entries.reduce((a, e) => a + e[1], 0) || 1; return `generations 1 to ${evo.length}; after the last, the ${entries[0][0]} line held ${Math.round(100 * entries[0][1] / total)} % of the places`; })()}</span></div>
         </div>
       </div>
     </section>

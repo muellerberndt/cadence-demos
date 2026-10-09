@@ -54,7 +54,7 @@ as well; the `pack/` files must be served with their paths intact.
 
 ## What the page shows
 
-- **The ring**: an isometric royale of six, the ring closing from 10 m to 2.5 m over fifty
+- **The ring**: an isometric royale of six, the ring closing from 10 m to 3.5 m over a hundred
   seconds, the burn outside it, wheels, legs with planted feet, arms with their weapons,
   hits, flames, trails and each robot's mood halo (blue calm, orange aroused).
 - **Standings**: hit points, damage dealt, the brain's mode and, live, the share of moments it
@@ -64,11 +64,11 @@ as well; the `pack/` files must be served with their paths intact.
   association cortex, the motor cortex slot by slot with the chosen command, the arousal
   level against its threshold with the last 200 moments of level and reward, and the
   command it just issued.
-- **The league in this browser**: Elo over your fights, wins, mean place, what each robot
-  arrived with (lineage, generation, mutations, fights on the big machine) and the lineage
-  shares per generation of the hour of evolution they came from.
+- **The league in this browser**: Elo over your fights, wins, mean place, damage and burn per
+  fight early against late, what each robot arrived with (lineage, generation, mutations and
+  its driving test) and the lineage shares per generation of the evolution it came from.
 - **Reset**: restores the six brains to the checkpoints they arrived with.
 
-Speeds: 1×, 2× and "as fast as they settle". A brain's moment costs 2 to 6 ms in Pyodide
-depending on the body, so six robots run near real time on a laptop; the shown rate and the
+Speeds: 1×, 2× and "as fast as they settle". A brain's moment costs a few to a few tens of
+milliseconds in Pyodide depending on the body and the machine; the shown rate and the
 brains' cost per moment are in the header.

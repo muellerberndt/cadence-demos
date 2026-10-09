@@ -46,7 +46,7 @@ def test_edge_cells_read_the_ring():
     burning.t = 1
     robot.place_at(6.0, 0.0, math.pi)  # outside, facing the centre
     x = observe(robot, burning)[0]
-    assert x[EYES] == 0.0 and x[EYES + 2] == 1.0 and x[2 * EYES + 7] == 0.0
+    assert x[EYES] == 0.0 and x[EYES + 2] == 1.0 and x[2 * EYES + 3 + 7] == 0.0
     burning.step({0: [1, 1, 1, 1]})
     x = observe(robot, burning)[0]
-    assert x[2 * EYES + 7] == 1.0 and x[2 * EYES + 5] > 0.0  # outside, in pain
+    assert x[2 * EYES + 3 + 7] == 1.0 and x[2 * EYES + 3 + 5] > 0.0  # outside, in pain
