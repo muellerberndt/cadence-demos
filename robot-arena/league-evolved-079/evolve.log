@@ -1,0 +1,623 @@
+seeded 184 newborns: Tumbler-01, Mantis-01, Hexapod-01, Cart-01, Crab-01, Roller-01, Scorpion-01, Dozer-01 ...
+generation 1: nursery for Tumbler-01, Mantis-01, Hexapod-01, Cart-01, Crab-01, Roller-01, Scorpion-01, Dozer-01, Tumbler-02, Mantis-02, Hexapod-02, Cart-02, Crab-02, Roller-02, Scorpion-02, Dozer-02, Tumbler-03, Mantis-03, Hexapod-03, Cart-03, Crab-03, Roller-03, Scorpion-03, Dozer-03, Tumbler-04, Mantis-04, Hexapod-04, Cart-04, Crab-04, Roller-04, Scorpion-04, Dozer-04, Tumbler-05, Mantis-05, Hexapod-05, Cart-05, Crab-05, Roller-05, Scorpion-05, Dozer-05, Tumbler-06, Mantis-06, Hexapod-06, Cart-06, Crab-06, Roller-06, Scorpion-06, Dozer-06, Tumbler-07, Mantis-07, Hexapod-07, Cart-07, Crab-07, Roller-07, Scorpion-07, Dozer-07, Tumbler-08, Mantis-08, Hexapod-08, Cart-08, Crab-08, Roller-08, Scorpion-08, Dozer-08, Tumbler-09, Mantis-09, Hexapod-09, Cart-09, Crab-09, Roller-09, Scorpion-09, Dozer-09, Tumbler-010, Mantis-010, Hexapod-010, Cart-010, Crab-010, Roller-010, Scorpion-010, Dozer-010, Tumbler-011, Mantis-011, Hexapod-011, Cart-011, Crab-011, Roller-011, Scorpion-011, Dozer-011, Tumbler-012, Mantis-012, Hexapod-012, Cart-012, Crab-012, Roller-012, Scorpion-012, Dozer-012, Tumbler-013, Mantis-013, Hexapod-013, Cart-013, Crab-013, Roller-013, Scorpion-013, Dozer-013, Tumbler-014, Mantis-014, Hexapod-014, Cart-014, Crab-014, Roller-014, Scorpion-014, Dozer-014, Tumbler-015, Mantis-015, Hexapod-015, Cart-015, Crab-015, Roller-015, Scorpion-015, Dozer-015, Tumbler-016, Mantis-016, Hexapod-016, Cart-016, Crab-016, Roller-016, Scorpion-016, Dozer-016, Tumbler-017, Mantis-017, Hexapod-017, Cart-017, Crab-017, Roller-017, Scorpion-017, Dozer-017, Tumbler-018, Mantis-018, Hexapod-018, Cart-018, Crab-018, Roller-018, Scorpion-018, Dozer-018, Tumbler-019, Mantis-019, Hexapod-019, Cart-019, Crab-019, Roller-019, Scorpion-019, Dozer-019, Tumbler-020, Mantis-020, Hexapod-020, Cart-020, Crab-020, Roller-020, Scorpion-020, Dozer-020, Tumbler-021, Mantis-021, Hexapod-021, Cart-021, Crab-021, Roller-021, Scorpion-021, Dozer-021, Tumbler-022, Mantis-022, Hexapod-022, Cart-022, Crab-022, Roller-022, Scorpion-022, Dozer-022, Tumbler-023, Mantis-023, Hexapod-023, Cart-023, Crab-023, Roller-023, Scorpion-023, Dozer-023 (80000 moments each)
+  round 1/24: 32 fights in 16.6 s; winners Crab-014, Mantis-06, Dozer-03, Roller-011, Crab-020, Crab-02 ...
+  round 2/24: 32 fights in 14.6 s; winners Crab-01, Tumbler-018, Cart-014, Mantis-09, Hexapod-013, Roller-05 ...
+  round 3/24: 32 fights in 15.5 s; winners Cart-014, Crab-05, Mantis-07, Dozer-08, Crab-019, Mantis-02 ...
+  round 4/24: 32 fights in 16.1 s; winners Cart-022, Tumbler-015, Tumbler-021, Roller-022, Dozer-08, Dozer-022 ...
+  round 5/24: 32 fights in 15.1 s; winners Dozer-011, Roller-011, Scorpion-016, Hexapod-022, Dozer-019, Cart-01 ...
+  round 6/24: 32 fights in 15.3 s; winners Mantis-022, Hexapod-08, Dozer-04, Mantis-012, Mantis-08, Dozer-07 ...
+  round 7/24: 32 fights in 16.3 s; winners Cart-03, Crab-017, Dozer-019, Scorpion-01, Scorpion-08, Mantis-022 ...
+  round 8/24: 32 fights in 15.9 s; winners Cart-016, Mantis-03, Roller-05, Mantis-020, Tumbler-011, Mantis-019 ...
+  round 9/24: 32 fights in 17.7 s; winners Dozer-01, Dozer-022, Cart-019, Crab-017, Mantis-022, Hexapod-016 ...
+  round 10/24: 32 fights in 16.5 s; winners Dozer-017, Roller-015, Crab-018, Crab-014, Dozer-013, Dozer-01 ...
+  round 11/24: 32 fights in 14.5 s; winners Cart-014, Dozer-015, Roller-022, Scorpion-03, Cart-013, Dozer-09 ...
+  round 12/24: 32 fights in 15.7 s; winners Scorpion-022, Dozer-022, Dozer-018, Cart-014, Cart-06, Roller-05 ...
+  round 13/24: 32 fights in 16.4 s; winners Dozer-012, Dozer-017, Crab-016, Hexapod-09, Scorpion-01, Hexapod-023 ...
+  round 14/24: 32 fights in 15.6 s; winners Dozer-017, Dozer-08, Dozer-02, Crab-019, Mantis-07, Mantis-022 ...
+  round 15/24: 32 fights in 17.1 s; winners Tumbler-018, Mantis-017, Crab-014, Dozer-09, Scorpion-02, Dozer-021 ...
+  round 16/24: 32 fights in 14.5 s; winners Crab-015, Dozer-011, Dozer-09, Dozer-02, Dozer-015, Dozer-016 ...
+  round 17/24: 32 fights in 15.3 s; winners Crab-04, Crab-018, Hexapod-08, Mantis-012, Cart-014, Scorpion-013 ...
+  round 18/24: 32 fights in 16.1 s; winners Cart-01, Dozer-018, Mantis-023, Dozer-017, Dozer-01, Hexapod-06 ...
+  round 19/24: 32 fights in 15.4 s; winners Hexapod-017, Roller-01, Dozer-020, Crab-09, Dozer-022, Dozer-016 ...
+  round 20/24: 32 fights in 17.6 s; winners Dozer-010, Dozer-019, Cart-014, Tumbler-06, Roller-05, Dozer-03 ...
+  round 21/24: 32 fights in 17.8 s; winners Cart-020, Hexapod-023, Mantis-012, Crab-016, Crab-06, Cart-014 ...
+  round 22/24: 32 fights in 16.0 s; winners Tumbler-013, Crab-02, Dozer-08, Crab-021, Dozer-019, Cart-014 ...
+  round 23/24: 32 fights in 16.1 s; winners Dozer-013, Roller-018, Dozer-012, Crab-010, Dozer-02, Dozer-05 ...
+  round 24/24: 32 fights in 15.6 s; winners Dozer-012, Dozer-010, Roller-013, Crab-08, Mantis-017, Crab-019 ...
+  born Dozer-1.1 from Dozer-019: arousal.heat 2 -> 2.1667; added a hammer
+  born Crab-1.2 from Crab-021: moved leg 3 to -110 deg; re-armed arm 5 with a spinner
+  born Crab-1.3 from Crab-021: moved leg 2 to 100 deg; sensory_scale 4 -> 4.0357
+  born Crab-1.4 from Crab-016: removed leg; added a wheel
+  born Dozer-1.5 from Dozer-06: added a wheel; arousal.threshold 0.2 -> 0.2119
+  born Hexapod-1.6 from Hexapod: moved leg 1 to -79 deg; temperature 0.5 -> 0.4242
+  born Mantis-1.7 from Mantis-017: moved leg 3 to -116 deg; efference_amplitude 0.0986 -> 0.0822
+  born Cart-1.8 from Cart-05: moved wheel 0 to 75 deg; moved arm 2 to 57 deg
+  born Crab-1.9 from Crab-06: arousal.threshold 0.2 -> 0.2265; moved leg 0 to 49 deg
+  born Mantis-1.10 from Mantis-015: lam 0.6 -> 0.4367; arousal.need 0.05 -> 0.0608
+  born Roller-1.11 from Roller-05: arousal.decay 0.9 -> 0.8162; re-armed arm 5 with a spinner
+  born Mantis-1.12 from Mantis-03: moved leg 0 to 62 deg; trace_amplitude 0.3 -> 0.2149
+  born Mantis-1.13 from Mantis-022: moved leg 0 to 22 deg; moved arm 4 to -33 deg
+  born Hexapod-1.14 from Hexapod-017: removed leg; re-armed arm 5 with a spike
+  born Dozer-1.15 from Dozer-017: moved arm 4 to -30 deg
+  born Dozer-1.16 from Dozer-022: removed spike; arousal.youth 300 -> 450
+  born Roller-1.17 from Roller-013: eta 0.03 -> 0.0839; heavy chassis
+  born Dozer-1.18 from Dozer-020: arousal.threshold 0.2 -> 0.2205; arousal.youth 300 -> 258
+  born Hexapod-1.19 from Hexapod-08: arousal.heat 2 -> 1.6714; removed hammer
+  born Crab-1.20 from Crab-04: heavy chassis; re-armed arm 3 with a spinner
+  born Dozer-1.21 from Dozer-014: moved wheel 1 to 140 deg; re-armed arm 4 with a hammer
+  born Mantis-1.22 from Mantis-02: moved leg 0 to 63 deg; moved leg 1 to -16 deg
+  born Roller-1.23 from Roller-023: moved wheel 2 to -99 deg; moved wheel 2 to -129 deg
+  born Roller-1.24 from Roller-05: medium chassis; heavy chassis
+  born Cart-1.25 from Cart-09: re-armed arm 2 with a spinner; removed wheel
+  born Crab-1.26 from Crab-021: removed leg; added a leg
+  born Roller-1.27 from Roller-011: medium chassis; arousal.heat 2 -> 3.2175
+  born Dozer-1.28 from Dozer-016: trace_amplitude 0.3 -> 0.4115; moved arm 5 to -31 deg
+  born Crab-1.29 from Crab-016: arousal.need 0.05 -> 0.0721; efference_amplitude 0 -> 0.1855
+  born Dozer-1.30 from Dozer-014: moved arm 3 to -6 deg; moved arm 5 to -20 deg
+  born Mantis-1.31 from Mantis-02: re-armed arm 4 with a spike; added a leg
+  born Roller-1.32 from Roller-013: eta 0.03 -> 0.0362; lam 0.6 -> 0.99
+  born Crab-1.33 from Crab-021: moved leg 0 to 22 deg
+  born Dozer-1.34 from Dozer-010: arousal.decay 0.9 -> 0.4314; moved wheel 0 to 81 deg
+  born Cart-1.35 from Cart-015: added a leg; heavy chassis
+  born Hexapod-1.36 from Hexapod: re-armed arm 6 with a hammer; sensory_scale 4 -> 5.608
+  born Cart-1.37 from Cart-014: moved wheel 0 to 128 deg; moved arm 3 to -36 deg
+  born Cart-1.38 from Cart-016: moved wheel 1 to -118 deg; removed wheel
+  born Dozer-1.39 from Dozer-08: trace_amplitude 0.3 -> 0.3837; removed wheel
+  born Roller-1.40 from Roller-011: re-armed arm 4 with a spinner; re-armed arm 4 with a spike
+  born Cart-1.41 from Cart-09: light chassis; sensory_scale 5.1609 -> 3.7425
+  born Tumbler-1.42 from Tumbler-06: efference_amplitude 0 -> 0.117; sensory_scale 4 -> 3.5572
+  born Dozer-1.43 from Dozer-07: lam 0.6 -> 0.6332; removed wheel
+  born Roller-1.44 from Roller-04: added a leg; removed wheel
+  born Mantis-1.45 from Mantis-015: arousal.youth 300 -> 221; added a wheel
+  born Cart-1.46 from Cart-015: heavy chassis; moved arm 3 to -65 deg
+  born Dozer-1.47 from Dozer-016: medium chassis; re-armed arm 5 with a spike
+  born Dozer-1.48 from Dozer-08: efference_amplitude 0 -> 0.2029; arousal.threshold 0.2 -> 0.2002
+  born Mantis-1.49 from Mantis-07: heavy chassis; eta 0.03 -> 0.0273
+  born Dozer-1.50 from Dozer-03: arousal.threshold 0.2 -> 0.1448; medium chassis
+  born Crab-1.51 from Crab-09: re-armed arm 5 with a hammer; arousal.decay 0.9 -> 0.7407
+  born Dozer-1.52 from Dozer-04: arousal.decay 0.9 -> 0.586; temperature 0.5 -> 0.4676
+  born Cart-1.53 from Cart-015: re-armed arm 2 with a hammer; removed hammer
+  born Dozer-1.54 from Dozer-08: added a spinner; eta_critic 5 -> 4.0442
+  born Crab-1.55 from Crab-05: heavy chassis; moved leg 3 to -159 deg
+  born Crab-1.56 from Crab-017: lam 0.6 -> 0.9539
+  born Roller-1.57 from Roller-013: heavy chassis; arousal.threshold 0.2 -> 0.2019
+  born Dozer-1.58 from Dozer-08: re-armed arm 6 with a spinner
+  born Roller-1.59 from Roller-05: added a leg; removed spinner
+  born Crab-1.60 from Crab-06: moved arm 4 to 37 deg; eta 0.03 -> 0.018
+  born Mantis-1.61 from Mantis-07: efference_amplitude 0 -> 0.2288; trace_amplitude 0.3 -> 0.3482
+  born Dozer-1.62 from Dozer-011: eta 0.03 -> 0.0123; added a leg
+  born Hexapod-1.63 from Hexapod-08: removed hammer; moved leg 3 to -61 deg
+  born Cart-1.64 from Cart-05: moved wheel 1 to -118 deg; eta 0.03 -> 0.0344
+  born Mantis-1.65 from Mantis-03: removed leg; moved leg 2 to -99 deg
+  born Hexapod-1.66 from Hexapod-023: moved leg 5 to -161 deg; sensory_scale 4 -> 3.669
+  born Cart-1.67 from Cart-09: removed spike; efference_amplitude 0 -> 0.1521
+  born Crab-1.68 from Crab-013: moved leg 0 to 82 deg
+  born Hexapod-1.69 from Hexapod-023: arousal.decay 0.9 -> 0.9386; trace_amplitude 0.3 -> 0.2249
+  born Dozer-1.70 from Dozer-010: arousal.decay 0.9 -> 0.7882; added a spike
+  born Hexapod-1.71 from Hexapod: moved leg 3 to -113 deg; trace_amplitude 0.3 -> 0.1637
+  born Mantis-1.72 from Mantis-07: re-armed arm 4 with a spike; re-armed arm 4 with a hammer
+  born Dozer-1.73 from Dozer-020: efference_amplitude 0 -> 0.1704; trace_amplitude 0.3 -> 0.4726
+  born Crab-1.74 from Crab-09: moved leg 3 to 171 deg; moved leg 2 to 159 deg
+  born Dozer-1.75 from Dozer-09: moved arm 4 to 53 deg; added a hammer
+  born Hexapod-1.76 from Hexapod-023: moved leg 1 to -72 deg; added a leg
+  born Cart-1.77 from Cart-014: added a wheel; removed wheel
+  born Dozer-1.78 from Dozer-017: removed wheel; eta 0.03 -> 0.0462
+  born Mantis-1.79 from Mantis-03: sensory_scale 4 -> 5.1541
+  born Hexapod-1.80 from Hexapod-08: moved leg 1 to -63 deg; removed leg
+  born Cart-1.81 from Cart-016: removed wheel; arousal.youth 300 -> 192
+  born Mantis-1.82 from Mantis-017: arousal.youth 300 -> 201; eta 0.03 -> 0.0133
+  born Dozer-1.83 from Dozer-08: moved wheel 1 to -45 deg; moved wheel 0 to 153 deg
+  born Dozer-1.84 from Dozer-020: moved arm 6 to -32 deg; trace_amplitude 0.3 -> 0.3329
+  born Hexapod-1.85 from Hexapod-023: re-armed arm 6 with a spike
+  born Dozer-1.86 from Dozer: arousal.heat 2 -> 1.7616; temperature 0.5 -> 0.4967
+  born Roller-1.87 from Roller-05: medium chassis
+  born Roller-1.88 from Roller-04: re-armed arm 4 with a spike; eta_critic 5 -> 4.4987
+  born Dozer-1.89 from Dozer-017: a copy
+  born Dozer-1.90 from Dozer-012: added a leg
+  born Dozer-1.91 from Dozer-018: moved wheel 3 to -136 deg; moved wheel 1 to -107 deg
+  born Dozer-1.92 from Dozer-017: moved wheel 2 to 74 deg; efference_amplitude 0 -> 0.1336
+  born Dozer-1.93 from Dozer-021: eta 0.03 -> 0.0239
+  born Mantis-1.94 from Mantis-03: removed leg; added a leg
+  born Dozer-1.95 from Dozer-014: lam 0.6 -> 0.6359; added a wheel
+  born Crab-1.96 from Crab-015: moved arm 3 to 31 deg; lam 0.6 -> 0.3292
+  born Cart-1.97 from Cart-09: re-armed arm 3 with a spinner; removed spinner
+  born Dozer-1.98 from Dozer-05: removed wheel; added a hammer
+  born Crab-1.99 from Crab-06: eta_critic 5 -> 3.6162; removed leg
+  born Roller-1.100 from Roller-011: moved wheel 1 to -41 deg; moved wheel 2 to 141 deg
+  born Roller-1.101 from Roller-05: eta_critic 5 -> 6.4537; removed wheel
+  born Mantis-1.102 from Mantis-03: moved leg 1 to -61 deg; moved leg 2 to 117 deg
+  born Mantis-1.103 from Mantis-017: added a leg; heavy chassis
+  born Dozer-1.104 from Dozer-06: arousal.heat 2 -> 1.6339; medium chassis
+  born Dozer-1.105 from Dozer-07: moved arm 5 to -39 deg
+  born Dozer-1.106 from Dozer-07: sensory_scale 4 -> 3.7366; removed wheel
+  born Roller-1.107 from Roller-05: removed wheel; trace_amplitude 0.3 -> 0.3707
+  born Crab-1.108 from Crab-013: moved leg 2 to 153 deg; arousal.decay 0.9 -> 0.8457
+  born Crab-1.109 from Crab-016: eta_critic 5 -> 4.9549; re-armed arm 5 with a hammer
+  born Dozer-1.110 from Dozer-013: re-armed arm 4 with a hammer
+  born Crab-1.111 from Crab-04: eta 0.03 -> 0.0267; removed leg
+  born Dozer-1.112 from Dozer-03: moved wheel 0 to 30 deg; moved arm 5 to -53 deg
+  born Crab-1.113 from Crab-015: re-armed arm 4 with a hammer; added a hammer
+  born Dozer-1.114 from Dozer-011: moved arm 5 to -53 deg; arousal.need 0.05 -> 0.042
+  born Cart-1.115 from Cart-03: removed wheel; light chassis
+  born Dozer-1.116 from Dozer-022: sensory_scale 3.4691 -> 3.0078; arousal.youth 300 -> 520
+  born Dozer-1.117 from Dozer-020: added a wheel
+  born Mantis-1.118 from Mantis-013: re-armed arm 4 with a spinner; trace_amplitude 0.3 -> 0.2356
+  born Dozer-1.119 from Dozer: removed spike; eta 0.03 -> 0.0336
+  born Crab-1.120 from Crab-06: removed leg; eta 0.03 -> 0.0222
+  born Crab-1.121 from Crab-04: moved leg 1 to 107 deg; removed spike
+  born Cart-1.122 from Cart-05: removed hammer; moved arm 2 to -11 deg
+  born Dozer-1.123 from Dozer-06: moved arm 4 to -37 deg; added a wheel
+  born Mantis-1.124 from Mantis-022: moved leg 1 to -67 deg; re-armed arm 4 with a spinner
+  born Mantis-1.125 from Mantis-03: arousal.threshold 0.2 -> 0.1411; moved arm 4 to -19 deg
+  born Dozer-1.126 from Dozer-016: moved wheel 3 to -103 deg; sensory_scale 4 -> 2.2901
+  born Roller-1.127 from Roller-016: moved arm 4 to -14 deg; re-armed arm 4 with a hammer
+  born Crab-1.128 from Crab-013: temperature 0.5 -> 0.4307; removed spike
+generation 1 (943.3 s): 1. Dozer-013 +0.78, 2. Dozer-017 +0.75, 3. Dozer +0.72, 4. Dozer-010 +0.68, 5. Dozer-012 +0.63
+  lineages: Dozer x66, Crab x34, Mantis x28, Roller x23, Cart x22, Hexapod x15, Tumbler x3, Scorpion x1
+generation 2: nursery for Dozer-1.1, Crab-1.2, Crab-1.3, Crab-1.4, Dozer-1.5, Hexapod-1.6, Mantis-1.7, Cart-1.8, Crab-1.9, Mantis-1.10, Roller-1.11, Mantis-1.12, Mantis-1.13, Hexapod-1.14, Dozer-1.15, Dozer-1.16, Roller-1.17, Dozer-1.18, Hexapod-1.19, Crab-1.20, Dozer-1.21, Mantis-1.22, Roller-1.23, Roller-1.24, Cart-1.25, Crab-1.26, Roller-1.27, Dozer-1.28, Crab-1.29, Dozer-1.30, Mantis-1.31, Roller-1.32, Crab-1.33, Dozer-1.34, Cart-1.35, Hexapod-1.36, Cart-1.37, Cart-1.38, Dozer-1.39, Roller-1.40, Cart-1.41, Tumbler-1.42, Dozer-1.43, Roller-1.44, Mantis-1.45, Cart-1.46, Dozer-1.47, Dozer-1.48, Mantis-1.49, Dozer-1.50, Crab-1.51, Dozer-1.52, Cart-1.53, Dozer-1.54, Crab-1.55, Crab-1.56, Roller-1.57, Dozer-1.58, Roller-1.59, Crab-1.60, Mantis-1.61, Dozer-1.62, Hexapod-1.63, Cart-1.64, Mantis-1.65, Hexapod-1.66, Cart-1.67, Crab-1.68, Hexapod-1.69, Dozer-1.70, Hexapod-1.71, Mantis-1.72, Dozer-1.73, Crab-1.74, Dozer-1.75, Hexapod-1.76, Cart-1.77, Dozer-1.78, Mantis-1.79, Hexapod-1.80, Cart-1.81, Mantis-1.82, Dozer-1.83, Dozer-1.84, Hexapod-1.85, Dozer-1.86, Roller-1.87, Roller-1.88, Dozer-1.89, Dozer-1.90, Dozer-1.91, Dozer-1.92, Dozer-1.93, Mantis-1.94, Dozer-1.95, Crab-1.96, Cart-1.97, Dozer-1.98, Crab-1.99, Roller-1.100, Roller-1.101, Mantis-1.102, Mantis-1.103, Dozer-1.104, Dozer-1.105, Dozer-1.106, Roller-1.107, Crab-1.108, Crab-1.109, Dozer-1.110, Crab-1.111, Dozer-1.112, Crab-1.113, Dozer-1.114, Cart-1.115, Dozer-1.116, Dozer-1.117, Mantis-1.118, Dozer-1.119, Crab-1.120, Crab-1.121, Cart-1.122, Dozer-1.123, Mantis-1.124, Mantis-1.125, Dozer-1.126, Roller-1.127, Crab-1.128 (80000 moments each)
+  round 1/24: 32 fights in 14.7 s; winners Dozer-1.89, Dozer-1.91, Crab-1.120, Dozer-1.43, Dozer-1.75, Dozer-1.73 ...
+  round 2/24: 32 fights in 13.2 s; winners Dozer-1.95, Crab-1.2, Dozer-1.73, Dozer-1.1, Crab-1.4, Cart-1.38 ...
+  round 3/24: 32 fights in 15.8 s; winners Dozer-1.1, Crab-1.51, Roller-1.24, Hexapod-1.69, Crab-1.9, Crab-1.55 ...
+  round 4/24: 32 fights in 14.1 s; winners Dozer-1.73, Crab-1.60, Crab-1.3, Crab-1.109, Crab-1.9, Dozer-1.90 ...
+  round 5/24: 32 fights in 14.0 s; winners Crab-1.68, Mantis-1.49, Dozer-1.70, Crab-1.51, Dozer-1.15, Dozer-1.91 ...
+  round 6/24: 32 fights in 12.9 s; winners Mantis-1.118, Crab-1.3, Dozer-1.90, Dozer-1.123, Dozer-1.43, Hexapod-1.69 ...
+  round 7/24: 32 fights in 14.5 s; winners Dozer-1.62, Dozer-1.43, Crab-1.29, Dozer-1.84, Crab-1.121, Dozer-1.73 ...
+  round 8/24: 32 fights in 13.7 s; winners Crab-1.56, Dozer-1.50, Cart-1.81, Dozer-1.117, Crab-1.111, Crab-1.51 ...
+  round 9/24: 32 fights in 13.6 s; winners Crab-1.113, Dozer-1.73, Dozer-1.114, Mantis-1.49, Crab-1.3, Roller-1.101 ...
+  round 10/24: 32 fights in 12.5 s; winners Dozer-1.73, Dozer-1.98, Roller-1.101, Hexapod-1.69, Roller-1.87, Roller-1.107 ...
+  round 11/24: 32 fights in 14.9 s; winners Dozer-1.47, Roller-1.57, Dozer-1.78, Dozer-1.1, Mantis-1.125, Crab-1.121 ...
+  round 12/24: 32 fights in 15.4 s; winners Dozer-1.21, Cart-1.115, Cart-1.38, Dozer-1.52, Dozer-1.39, Crab-1.74 ...
+  round 13/24: 32 fights in 14.2 s; winners Roller-1.107, Dozer-1.98, Dozer-1.73, Dozer-1.52, Crab-1.113, Hexapod-1.69 ...
+  round 14/24: 32 fights in 14.3 s; winners Dozer-1.106, Dozer-1.116, Crab-1.2, Mantis-1.13, Dozer-1.114, Dozer-1.91 ...
+  round 15/24: 32 fights in 13.0 s; winners Dozer-1.114, Dozer-1.91, Hexapod-1.69, Dozer-1.48, Crab-1.96, Dozer-1.75 ...
+  round 16/24: 32 fights in 14.9 s; winners Dozer-1.18, Crab-1.2, Dozer-1.93, Crab-1.55, Crab-1.113, Crab-1.109 ...
+  round 17/24: 32 fights in 15.4 s; winners Dozer-1.75, Crab-1.74, Hexapod-1.85, Mantis-1.22, Dozer-1.16, Roller-1.127 ...
+  round 18/24: 32 fights in 15.0 s; winners Dozer-1.117, Cart-1.25, Dozer-1.28, Dozer-1.1, Crab-1.108, Dozer-1.62 ...
+  round 19/24: 32 fights in 13.8 s; winners Dozer-1.123, Dozer-1.98, Dozer-1.70, Hexapod-1.36, Mantis-1.10, Dozer-1.106 ...
+  round 20/24: 32 fights in 14.8 s; winners Dozer-1.75, Roller-1.87, Dozer-1.117, Dozer-1.84, Roller-1.127, Dozer-1.105 ...
+  round 21/24: 32 fights in 13.3 s; winners Dozer-1.126, Crab-1.96, Dozer-1.75, Dozer-1.91, Dozer-1.110, Cart-1.77 ...
+  round 22/24: 32 fights in 13.5 s; winners Crab-1.120, Dozer-1.83, Dozer-1.126, Dozer-1.91, Dozer-1.78, Dozer-1.98 ...
+  round 23/24: 32 fights in 12.8 s; winners Mantis-1.65, Dozer-1.116, Dozer-1.104, Dozer-1.78, Crab-1.96, Dozer-1.114 ...
+  round 24/24: 32 fights in 14.5 s; winners Dozer-1.90, Roller-1.32, Dozer-1.117, Cart-1.8, Dozer-1.18, Dozer-1.106 ...
+  born Mantis-2.1 from Mantis-1.72: moved leg 1 to -60 deg; moved leg 0 to 28 deg
+  born Dozer-2.2 from Dozer-019: moved wheel 3 to -143 deg; lam 0.6 -> 0.6805
+  born Dozer-2.3 from Dozer-1.43: eta 0.03 -> 0.052; re-armed arm 5 with a spinner
+  born Dozer-2.4 from Dozer-1.1: arousal.youth 300 -> 373
+  born Dozer-2.5 from Dozer-1.52: re-armed arm 5 with a spinner; added a spinner
+  born Dozer-2.6 from Dozer-1.126: sensory_scale 2.2901 -> 1.9909; added a hammer
+  born Dozer-2.7 from Dozer-1.92: moved arm 5 to -0 deg; removed wheel
+  born Dozer-2.8 from Dozer-1.1: arousal.youth 300 -> 289; removed wheel
+  born Dozer-2.9 from Dozer-1.114: arousal.youth 300 -> 236; sensory_scale 4 -> 2.4438
+  born Mantis-2.10 from Mantis-1.65: moved leg 1 to 115 deg; moved leg 0 to -17 deg
+  born Dozer-2.11 from Dozer-07: removed wheel; sensory_scale 4 -> 3.7165
+  born Roller-2.12 from Roller-1.127: eta 0.03 -> 0.0328; removed wheel
+  born Crab-2.13 from Crab-017: efference_amplitude 0 -> 0.1668; moved arm 4 to 33 deg
+  born Dozer-2.14 from Dozer-1.89: lam 0.6 -> 0.4886
+  born Cart-2.15 from Cart-1.38: arousal.threshold 0.2 -> 0.2079; arousal.decay 0.9 -> 0.6108
+  born Dozer-2.16 from Dozer-1.73: moved arm 6 to 37 deg; moved arm 5 to 10 deg
+  born Dozer-2.17 from Dozer-04: moved wheel 2 to 152 deg
+  born Dozer-2.18 from Dozer-07: re-armed arm 6 with a spike; moved arm 6 to 45 deg
+  born Roller-2.19 from Roller-05: moved wheel 3 to -89 deg; arousal.decay 0.9 -> 0.99
+  born Crab-2.20 from Crab-017: removed leg; arousal.need 0.0528 -> 0.0621
+  born Dozer-2.21 from Dozer-1.106: temperature 0.5 -> 0.4627; arousal.youth 300 -> 178
+  born Dozer-2.22 from Dozer-1.75: eta_critic 5 -> 7.7849
+  born Dozer-2.23 from Dozer-1.116: re-armed arm 4 with a hammer; re-armed arm 6 with a spike
+  born Dozer-2.24 from Dozer-010: eta_critic 5 -> 5.2828; temperature 0.5 -> 0.4544
+  born Crab-2.25 from Crab-013: re-armed arm 4 with a hammer; moved arm 5 to -62 deg
+  born Dozer-2.26 from Dozer-1.98: moved arm 5 to -14 deg
+  born Roller-2.27 from Roller-05: arousal.youth 300 -> 284; added a hammer
+  born Roller-2.28 from Roller-016: moved wheel 3 to -61 deg; added a hammer
+  born Dozer-2.29 from Dozer-1.75: sensory_scale 4 -> 3.855
+  born Dozer-2.30 from Dozer-1.21: arousal.decay 0.9 -> 0.99; moved arm 5 to -29 deg
+  born Dozer-2.31 from Dozer-07: added a leg
+  born Tumbler-2.32 from Tumbler-022: re-armed arm 1 with a hammer; moved wheel 0 to 55 deg
+  born Dozer-2.33 from Dozer-1.18: eta_critic 5 -> 3.4648; re-armed arm 5 with a spinner
+  born Mantis-2.34 from Mantis-1.72: removed hammer; removed leg
+  born Dozer-2.35 from Dozer-1.39: trace_amplitude 0.3837 -> 0.3405; moved arm 4 to 25 deg
+  born Dozer-2.36 from Dozer-018: arousal.youth 225 -> 201
+  born Dozer-2.37 from Dozer-019: sensory_scale 4 -> 4.6102
+  born Crab-2.38 from Crab-013: eta_critic 5 -> 5.7316; re-armed arm 4 with a spinner
+  born Crab-2.39 from Crab-1.4: trace_amplitude 0.3 -> 0.4182; removed hammer
+  born Dozer-2.40 from Dozer-1.91: re-armed arm 5 with a hammer; re-armed arm 6 with a spike
+  born Dozer-2.41 from Dozer-1.15: eta_critic 5 -> 2.8734; moved wheel 0 to 27 deg
+  born Crab-2.42 from Crab-1.4: moved arm 4 to -53 deg; moved leg 1 to -75 deg
+  born Dozer-2.43 from Dozer-1.90: arousal.need 0.05 -> 0.0319; removed wheel
+  born Dozer-2.44 from Dozer: added a leg
+  born Mantis-2.45 from Mantis-1.49: moved leg 3 to -109 deg; arousal.need 0.05 -> 0.0516
+  born Dozer-2.46 from Dozer: trace_amplitude 0.3 -> 0.3255; removed wheel
+  born Dozer-2.47 from Dozer-1.98: moved arm 5 to -12 deg; arousal.threshold 0.2 -> 0.1892
+  born Crab-2.48 from Crab-1.113: efference_amplitude 0 -> 0.0863; moved leg 0 to 83 deg
+  born Dozer-2.49 from Dozer-1.114: arousal.youth 300 -> 110; eta 0.03 -> 0.0202
+  born Mantis-2.50 from Mantis-1.49: removed leg; moved arm 3 to 22 deg
+  born Dozer-2.51 from Dozer-1.106: removed spike; eta 0.03 -> 0.0187
+  born Dozer-2.52 from Dozer-019: moved arm 4 to -30 deg; moved arm 5 to 1 deg
+  born Dozer-2.53 from Dozer-1.98: eta_critic 5 -> 3.897; added a leg
+  born Dozer-2.54 from Dozer-1.21: moved wheel 1 to 175 deg; arousal.decay 0.9 -> 0.99
+  born Crab-2.55 from Crab-013: removed leg; moved arm 4 to -7 deg
+  born Dozer-2.56 from Dozer-1.91: re-armed arm 5 with a hammer; moved wheel 0 to 91 deg
+  born Dozer-2.57 from Dozer-1.106: arousal.heat 2 -> 1.6962; efference_amplitude 0 -> 0.3768
+  born Crab-2.58 from Crab-018: moved leg 1 to -85 deg; lam 0.5363 -> 0.5068
+  born Dozer-2.59 from Dozer-1.98: efference_amplitude 0 -> 0.19; moved arm 4 to -19 deg
+  born Dozer-2.60 from Dozer: efference_amplitude 0 -> 0.0805; moved wheel 1 to -38 deg
+  born Dozer-2.61 from Dozer-017: re-armed arm 6 with a spike; added a wheel
+  born Dozer-2.62 from Dozer-1.117: moved wheel 0 to 86 deg; removed wheel
+  born Dozer-2.63 from Dozer-013: moved arm 4 to 46 deg; arousal.need 0.05 -> 0.0665
+  born Dozer-2.64 from Dozer-019: moved arm 4 to -19 deg; added a leg
+  born Crab-2.65 from Crab-1.113: heavy chassis; added a leg
+  born Dozer-2.66 from Dozer-017: added a wheel; eta_critic 5 -> 4.7982
+  born Dozer-2.67 from Dozer-1.95: lam 0.6359 -> 0.4248; arousal.need 0.05 -> 0.0801
+  born Dozer-2.68 from Dozer-1.92: sensory_scale 4 -> 2.6786; moved wheel 3 to -97 deg
+  born Dozer-2.69 from Dozer-1.84: temperature 0.5 -> 0.5
+  born Dozer-2.70 from Dozer-1.21: moved arm 5 to -25 deg; re-armed arm 3 with a spinner
+  born Roller-2.71 from Roller-016: added a leg; moved wheel 0 to 47 deg
+  born Mantis-2.72 from Mantis-1.72: heavy chassis; medium chassis
+  born Dozer-2.73 from Dozer-1.116: trace_amplitude 0.3 -> 0.2161; trace_amplitude 0.2161 -> 0.1986
+  born Mantis-2.74 from Mantis-1.72: removed leg; arousal.decay 0.9 -> 0.7683
+  born Cart-2.75 from Cart-016: efference_amplitude 0 -> 0.1547; arousal.threshold 0.2 -> 0.1981
+  born Dozer-2.76 from Dozer-1.114: arousal.threshold 0.2 -> 0.1146; arousal.heat 2 -> 1.3169
+  born Roller-2.77 from Roller-05: moved arm 5 to -29 deg; re-armed arm 5 with a spike
+  born Dozer-2.78 from Dozer-1.52: re-armed arm 4 with a hammer; temperature 0.4676 -> 0.5
+  born Crab-2.79 from Crab-1.113: removed hammer
+  born Dozer-2.80 from Dozer-1.84: removed wheel; medium chassis
+  born Dozer-2.81 from Dozer-1.39: arousal.heat 2 -> 1.5355; arousal.heat 1.5355 -> 2.5947
+  born Dozer-2.82 from Dozer-1.21: arousal.need 0.05 -> 0.0395; arousal.youth 300 -> 724
+  born Dozer-2.83 from Dozer-1.116: removed wheel; moved leg 6 to 83 deg
+  born Dozer-2.84 from Dozer-1.126: arousal.heat 2 -> 1.7738; removed wheel
+  born Crab-2.85 from Crab: re-armed arm 5 with a spinner
+  born Dozer-2.86 from Dozer-1.95: eta 0.03 -> 0.0302; moved arm 4 to 24 deg
+  born Dozer-2.87 from Dozer-05: trace_amplitude 0.3 -> 0.3391; moved wheel 0 to 95 deg
+  born Cart-2.88 from Cart-05: added a hammer; heavy chassis
+  born Roller-2.89 from Roller-05: medium chassis; removed wheel
+  born Dozer-2.90 from Dozer-02: eta_critic 5 -> 5.9439; eta_critic 5.9439 -> 9.5217
+  born Roller-2.91 from Roller-016: moved wheel 1 to -25 deg; efference_amplitude 0 -> 0.1424
+  born Crab-2.92 from Crab-017: removed hammer; added a wheel
+  born Dozer-2.93 from Dozer-04: temperature 0.5 -> 0.5; moved arm 4 to -29 deg
+  born Roller-2.94 from Roller-1.87: moved arm 5 to 22 deg; arousal.threshold 0.2 -> 0.2285
+  born Dozer-2.95 from Dozer-04: efference_amplitude 0 -> 0.1024; arousal.threshold 0.2 -> 0.1438
+  born Dozer-2.96 from Dozer-1.52: arousal.heat 2 -> 2.7845; arousal.need 0.05 -> 0.0412
+  born Roller-2.97 from Roller-05: medium chassis; removed wheel
+  born Dozer-2.98 from Dozer-1.92: removed spike; added a spike
+  born Dozer-2.99 from Dozer-1.114: moved wheel 1 to -53 deg; arousal.threshold 0.2 -> 0.1536
+  born Crab-2.100 from Crab-1.109: temperature 0.5 -> 0.5; trace_amplitude 0.3 -> 0.2958
+  born Crab-2.101 from Crab-1.113: heavy chassis; added a spike
+  born Cart-2.102 from Cart-05: arousal.heat 2 -> 1.8444; removed wheel
+  born Dozer-2.103 from Dozer-013: lam 0.6 -> 0.7781; re-armed arm 5 with a hammer
+  born Mantis-2.104 from Mantis-1.49: moved leg 3 to -97 deg; arousal.threshold 0.2 -> 0.1073
+  born Cart-2.105 from Cart-1.38: removed hammer; eta_critic 4.3735 -> 3.978
+  born Dozer-2.106 from Dozer-013: arousal.heat 2 -> 2.6804; removed wheel
+  born Dozer-2.107 from Dozer-020: efference_amplitude 0 -> 0.1183; moved arm 5 to 20 deg
+  born Dozer-2.108 from Dozer-011: eta_critic 5 -> 3.4368; lam 0.6 -> 0.99
+  born Dozer-2.109 from Dozer-1.114: trace_amplitude 0.3 -> 0.2225; added a hammer
+  born Crab-2.110 from Crab-013: heavy chassis; added a wheel
+  born Cart-2.111 from Cart-1.38: arousal.threshold 0.2 -> 0.1609; eta_critic 4.3735 -> 2.5987
+  born Dozer-2.112 from Dozer-1.123: lam 0.6 -> 0.4749
+  born Crab-2.113 from Crab-1.4: medium chassis; removed leg
+  born Mantis-2.114 from Mantis-1.65: added a spinner; moved leg 1 to 165 deg
+  born Dozer-2.115 from Dozer-012: moved arm 5 to -37 deg; arousal.need 0.05 -> 0.0636
+  born Dozer-2.116 from Dozer-1.91: moved arm 5 to 22 deg
+  born Roller-2.117 from Roller-1.127: sensory_scale 4 -> 2.7889; moved wheel 1 to -21 deg
+  born Dozer-2.118 from Dozer-019: moved wheel 0 to 40 deg; removed hammer
+  born Dozer-2.119 from Dozer-1.15: moved wheel 2 to 69 deg
+  born Dozer-2.120 from Dozer-1.123: re-armed arm 4 with a hammer; arousal.threshold 0.2 -> 0.1559
+  born Mantis-2.121 from Mantis-1.65: efference_amplitude 0 -> 0.3255; heavy chassis
+  born Dozer-2.122 from Dozer-021: lam 0.6 -> 0.7593; eta_critic 5 -> 4.3696
+  born Dozer-2.123 from Dozer-1.117: moved wheel 7 to 121 deg
+  born Crab-2.124 from Crab-013: eta 0.03 -> 0.0338; moved leg 0 to 104 deg
+  born Tumbler-2.125 from Tumbler-022: eta_critic 5 -> 4.5155; added a leg
+  born Dozer-2.126 from Dozer-1.114: removed wheel; lam 0.6 -> 0.99
+  born Dozer-2.127 from Dozer-1.92: moved arm 6 to -31 deg; eta 0.03 -> 0.0242
+  born Cart-2.128 from Cart-1.38: lam 0.6 -> 0.317; moved arm 1 to 12 deg
+generation 2 (798.0 s): 1. Dozer-017 +0.83, 2. Dozer-1.1 +0.58, 3. Dozer-1.73 +0.57, 4. Dozer-02 +0.55, 5. Dozer-1.98 +0.55
+  lineages: Dozer x122, Crab x27, Roller x15, Mantis x13, Cart x12, Tumbler x3
+generation 3: nursery for Mantis-2.1, Dozer-2.2, Dozer-2.3, Dozer-2.4, Dozer-2.5, Dozer-2.6, Dozer-2.7, Dozer-2.8, Dozer-2.9, Mantis-2.10, Dozer-2.11, Roller-2.12, Crab-2.13, Dozer-2.14, Cart-2.15, Dozer-2.16, Dozer-2.17, Dozer-2.18, Roller-2.19, Crab-2.20, Dozer-2.21, Dozer-2.22, Dozer-2.23, Dozer-2.24, Crab-2.25, Dozer-2.26, Roller-2.27, Roller-2.28, Dozer-2.29, Dozer-2.30, Dozer-2.31, Tumbler-2.32, Dozer-2.33, Mantis-2.34, Dozer-2.35, Dozer-2.36, Dozer-2.37, Crab-2.38, Crab-2.39, Dozer-2.40, Dozer-2.41, Crab-2.42, Dozer-2.43, Dozer-2.44, Mantis-2.45, Dozer-2.46, Dozer-2.47, Crab-2.48, Dozer-2.49, Mantis-2.50, Dozer-2.51, Dozer-2.52, Dozer-2.53, Dozer-2.54, Crab-2.55, Dozer-2.56, Dozer-2.57, Crab-2.58, Dozer-2.59, Dozer-2.60, Dozer-2.61, Dozer-2.62, Dozer-2.63, Dozer-2.64, Crab-2.65, Dozer-2.66, Dozer-2.67, Dozer-2.68, Dozer-2.69, Dozer-2.70, Roller-2.71, Mantis-2.72, Dozer-2.73, Mantis-2.74, Cart-2.75, Dozer-2.76, Roller-2.77, Dozer-2.78, Crab-2.79, Dozer-2.80, Dozer-2.81, Dozer-2.82, Dozer-2.83, Dozer-2.84, Crab-2.85, Dozer-2.86, Dozer-2.87, Cart-2.88, Roller-2.89, Dozer-2.90, Roller-2.91, Crab-2.92, Dozer-2.93, Roller-2.94, Dozer-2.95, Dozer-2.96, Roller-2.97, Dozer-2.98, Dozer-2.99, Crab-2.100, Crab-2.101, Cart-2.102, Dozer-2.103, Mantis-2.104, Cart-2.105, Dozer-2.106, Dozer-2.107, Dozer-2.108, Dozer-2.109, Crab-2.110, Cart-2.111, Dozer-2.112, Crab-2.113, Mantis-2.114, Dozer-2.115, Dozer-2.116, Roller-2.117, Dozer-2.118, Dozer-2.119, Dozer-2.120, Mantis-2.121, Dozer-2.122, Dozer-2.123, Crab-2.124, Tumbler-2.125, Dozer-2.126, Dozer-2.127, Cart-2.128 (80000 moments each)
+  round 1/24: 32 fights in 13.0 s; winners Dozer-2.118, Dozer-2.122, Dozer-2.115, Mantis-2.72, Crab-2.110, Dozer-2.53 ...
+  round 2/24: 32 fights in 13.6 s; winners Dozer-2.47, Dozer-2.33, Dozer-2.23, Dozer-2.62, Mantis-2.121, Dozer-2.123 ...
+  round 3/24: 32 fights in 11.9 s; winners Dozer-2.120, Crab-2.58, Dozer-2.108, Dozer-2.37, Crab-2.100, Dozer-2.70 ...
+  round 4/24: 32 fights in 12.0 s; winners Dozer-2.122, Dozer-2.66, Crab-2.38, Roller-2.27, Dozer-2.86, Dozer-2.2 ...
+  round 5/24: 32 fights in 14.3 s; winners Dozer-2.9, Dozer-2.61, Dozer-2.23, Dozer-2.53, Dozer-2.87, Dozer-2.33 ...
+  round 6/24: 32 fights in 13.3 s; winners Dozer-2.8, Dozer-2.112, Dozer-2.18, Roller-2.27, Dozer-2.47, Dozer-2.62 ...
+  round 7/24: 32 fights in 12.7 s; winners Dozer-2.103, Dozer-2.7, Dozer-2.54, Dozer-2.115, Dozer-2.63, Dozer-2.22 ...
+  round 8/24: 32 fights in 12.0 s; winners Dozer-2.80, Dozer-2.86, Dozer-2.96, Dozer-2.109, Dozer-2.81, Dozer-2.16 ...
+  round 9/24: 32 fights in 14.4 s; winners Dozer-2.109, Dozer-2.6, Mantis-2.45, Roller-2.94, Dozer-2.106, Dozer-2.68 ...
+  round 10/24: 32 fights in 13.4 s; winners Dozer-2.66, Dozer-2.6, Dozer-2.49, Dozer-2.29, Crab-2.110, Dozer-2.16 ...
+  round 11/24: 32 fights in 11.8 s; winners Dozer-2.123, Dozer-2.115, Dozer-2.35, Dozer-2.41, Dozer-2.52, Dozer-2.23 ...
+  round 12/24: 32 fights in 12.1 s; winners Dozer-2.66, Dozer-2.52, Dozer-2.120, Dozer-2.18, Cart-2.111, Roller-2.117 ...
+  round 13/24: 32 fights in 13.8 s; winners Dozer-2.6, Dozer-2.120, Dozer-2.31, Dozer-2.56, Dozer-2.73, Crab-2.58 ...
+  round 14/24: 32 fights in 14.2 s; winners Dozer-2.59, Cart-2.111, Cart-2.88, Dozer-2.108, Dozer-2.107, Dozer-2.47 ...
+  round 15/24: 32 fights in 12.5 s; winners Dozer-2.43, Crab-2.101, Dozer-2.66, Dozer-2.26, Dozer-2.2, Dozer-2.123 ...
+  round 16/24: 32 fights in 13.3 s; winners Dozer-2.43, Dozer-2.109, Cart-2.75, Crab-2.65, Dozer-2.3, Roller-2.97 ...
+  round 17/24: 32 fights in 12.0 s; winners Dozer-2.96, Dozer-2.47, Cart-2.102, Dozer-2.120, Dozer-2.56, Roller-2.117 ...
+  round 18/24: 32 fights in 13.0 s; winners Dozer-2.18, Dozer-2.112, Dozer-2.9, Dozer-2.8, Dozer-2.98, Dozer-2.103 ...
+  round 19/24: 32 fights in 12.2 s; winners Dozer-2.43, Dozer-2.80, Dozer-2.109, Crab-2.20, Dozer-2.8, Dozer-2.108 ...
+  round 20/24: 32 fights in 11.8 s; winners Dozer-2.52, Dozer-2.41, Dozer-2.61, Dozer-2.107, Cart-2.88, Dozer-2.6 ...
+  round 21/24: 32 fights in 11.8 s; winners Dozer-2.63, Dozer-2.86, Dozer-2.126, Dozer-2.43, Dozer-2.37, Dozer-2.29 ...
+  round 22/24: 32 fights in 13.3 s; winners Dozer-2.29, Dozer-2.63, Dozer-2.66, Dozer-2.68, Dozer-2.120, Dozer-2.109 ...
+  round 23/24: 32 fights in 12.5 s; winners Dozer-2.33, Dozer-2.14, Dozer-2.36, Dozer-2.26, Dozer-2.68, Dozer-2.126 ...
+  round 24/24: 32 fights in 12.6 s; winners Dozer-2.112, Roller-2.27, Dozer-2.122, Dozer-2.59, Crab-2.20, Dozer-2.120 ...
+  born Dozer-3.1 from Dozer-2.115: arousal.need 0.0636 -> 0.0919; moved arm 4 to -23 deg
+  born Dozer-3.2 from Dozer-2.109: removed wheel
+  born Crab-3.3 from Crab-1.109: arousal.decay 0.9 -> 0.99; removed leg
+  born Cart-3.4 from Cart-016: added a wheel; eta 0.03 -> 0.0161
+  born Dozer-3.5 from Dozer-2.86: re-armed arm 4 with a hammer; re-armed arm 3 with a spinner
+  born Tumbler-3.6 from Tumbler-2.32: added a leg; lam 0.6 -> 0.9812
+  born Dozer-3.7 from Dozer-1.90: removed hammer
+  born Roller-3.8 from Roller-2.117: re-armed arm 4 with a spike; eta 0.03 -> 0.0287
+  born Dozer-3.9 from Dozer-04: sensory_scale 4 -> 6.6094; arousal.threshold 0.2 -> 0.3509
+  born Dozer-3.10 from Dozer-2.30: removed hammer; moved wheel 2 to -132 deg
+  born Dozer-3.11 from Dozer-1.73: removed wheel; moved wheel 1 to -44 deg
+  born Dozer-3.12 from Dozer-1.1: removed hammer; moved wheel 1 to -104 deg
+  born Dozer-3.13 from Dozer-2.52: moved arm 6 to -25 deg; added a leg
+  born Dozer-3.14 from Dozer-2.6: arousal.threshold 0.2 -> 0.245; re-armed arm 5 with a spinner
+  born Cart-3.15 from Cart-2.111: moved arm 1 to 5 deg; added a wheel
+  born Dozer-3.16 from Dozer-018: arousal.heat 2 -> 2.1343; moved wheel 3 to -79 deg
+  born Dozer-3.17 from Dozer-2.86: moved wheel 2 to -73 deg; temperature 0.5 -> 0.5
+  born Crab-3.18 from Crab-2.65: removed leg; arousal.need 0.05 -> 0.0361
+  born Roller-3.19 from Roller-2.27: moved arm 4 to 22 deg; arousal.heat 2 -> 1.9876
+  born Dozer-3.20 from Dozer-2.63: removed wheel; eta_critic 5 -> 3.9818
+  born Dozer-3.21 from Dozer-2.80: heavy chassis; efference_amplitude 0 -> 0.1413
+  born Dozer-3.22 from Dozer-2.115: added a wheel; arousal.heat 2 -> 1.9843
+  born Dozer-3.23 from Dozer-2.126: moved arm 3 to 6 deg; medium chassis
+  born Dozer-3.24 from Dozer-2.59: re-armed arm 3 with a spinner; moved wheel 2 to 71 deg
+  born Tumbler-3.25 from Tumbler-2.32: moved wheel 0 to 26 deg; lam 0.6 -> 0.4134
+  born Roller-3.26 from Roller-1.87: re-armed arm 5 with a spike; moved wheel 2 to 92 deg
+  born Cart-3.27 from Cart-2.111: moved arm 1 to 68 deg; removed hammer
+  born Dozer-3.28 from Dozer-2.108: trace_amplitude 0.3 -> 0.2627; added a leg
+  born Crab-3.29 from Crab-1.113: moved leg 0 to 97 deg; eta_critic 5 -> 7.5102
+  born Dozer-3.30 from Dozer-2.23: moved wheel 0 to 113 deg; re-armed arm 4 with a spinner
+  born Roller-3.31 from Roller-2.19: eta 0.03 -> 0.0401; lam 0.6 -> 0.6271
+  born Dozer-3.32 from Dozer-2.108: moved wheel 0 to 40 deg; added a wheel
+  born Dozer-3.33 from Dozer-2.80: temperature 0.5 -> 0.5
+  born Dozer-3.34 from Dozer-2.107: re-armed arm 4 with a spinner; added a leg
+  born Dozer-3.35 from Dozer-1.1: removed hammer; moved wheel 3 to -91 deg
+  born Dozer-3.36 from Dozer-2.4: re-armed arm 7 with a spinner; arousal.threshold 0.2 -> 0.1737
+  born Dozer-3.37 from Dozer-2.8: re-armed arm 3 with a hammer; added a wheel
+  born Dozer-3.38 from Dozer-2.108: added a leg
+  born Dozer-3.39 from Dozer-2.2: moved wheel 1 to -90 deg; sensory_scale 4 -> 4.7094
+  born Crab-3.40 from Crab-2.48: sensory_scale 4 -> 4.7607; trace_amplitude 0.3 -> 0.4017
+  born Cart-3.41 from Cart-2.88: sensory_scale 4 -> 5.3615; arousal.threshold 0.2 -> 0.0766
+  born Cart-3.42 from Cart-1.115: efference_amplitude 0 -> 0.1216; arousal.threshold 0.2 -> 0.1768
+  born Dozer-3.43 from Dozer-2.56: sensory_scale 4 -> 3.9545; removed wheel
+  born Dozer-3.44 from Dozer-2.43: re-armed arm 4 with a hammer
+  born Dozer-3.45 from Dozer-2.80: arousal.heat 2 -> 2.479; re-armed arm 3 with a hammer
+  born Dozer-3.46 from Dozer-2.59: moved arm 6 to 126 deg; sensory_scale 4 -> 5.1114
+  born Roller-3.47 from Roller-1.87: removed spinner; added a leg
+  born Tumbler-3.48 from Tumbler-2.32: re-armed arm 1 with a spinner; moved arm 1 to 36 deg
+  born Dozer-3.49 from Dozer-2.7: arousal.heat 2 -> 1.9983; re-armed arm 5 with a spike
+  born Dozer-3.50 from Dozer-2.43: lam 0.6 -> 0.8274; removed wheel
+  born Dozer-3.51 from Dozer-1.90: moved arm 4 to 4 deg; re-armed arm 4 with a hammer
+  born Dozer-3.52 from Dozer-1.1: moved wheel 0 to 88 deg; moved arm 5 to -2 deg
+  born Cart-3.53 from Cart-2.15: removed hammer; re-armed arm 1 with a spinner
+  born Dozer-3.54 from Dozer-1.84: moved wheel 1 to -105 deg; moved wheel 0 to 87 deg
+  born Dozer-3.55 from Dozer-2.120: arousal.threshold 0.1559 -> 0.1924; removed wheel
+  born Dozer-3.56 from Dozer-2.109: removed wheel; moved arm 6 to -107 deg
+  born Cart-3.57 from Cart-016: sensory_scale 4 -> 2.3243; removed wheel
+  born Cart-3.58 from Cart-1.38: added a wheel; moved wheel 0 to 142 deg
+  born Dozer-3.59 from Dozer-2.107: temperature 0.5 -> 0.4279
+  born Dozer-3.60 from Dozer-2.108: removed wheel; removed wheel
+  born Dozer-3.61 from Dozer-2.126: moved arm 5 to 44 deg; added a wheel
+  born Dozer-3.62 from Dozer-2.120: sensory_scale 4 -> 4.0171; moved wheel 6 to -14 deg
+  born Dozer-3.63 from Dozer-2.109: re-armed arm 7 with a spike; moved wheel 0 to 50 deg
+  born Dozer-3.64 from Dozer-2.109: moved arm 7 to -152 deg; moved arm 7 to -165 deg
+  born Dozer-3.65 from Dozer-2.4: re-armed arm 7 with a spike
+  born Dozer-3.66 from Dozer-2.52: eta 0.03 -> 0.0534; re-armed arm 5 with a spike
+  born Dozer-3.67 from Dozer-2.47: added a hammer
+  born Dozer-3.68 from Dozer-2.4: removed wheel; moved arm 3 to 0 deg
+  born Dozer-3.69 from Dozer-2.47: added a leg; moved leg 7 to -6 deg
+  born Dozer-3.70 from Dozer-1.73: moved wheel 2 to 84 deg; added a leg
+  born Crab-3.71 from Crab-1.113: eta_critic 5 -> 8.3222; removed leg
+  born Dozer-3.72 from Dozer-1.75: re-armed arm 6 with a spike
+  born Dozer-3.73 from Dozer-1.98: efference_amplitude 0 -> 0.0742; temperature 0.5 -> 0.3365
+  born Dozer-3.74 from Dozer-020: sensory_scale 4 -> 3.7182; arousal.decay 0.9 -> 0.8488
+  born Dozer-3.75 from Dozer-2.11: added a leg; moved arm 4 to 23 deg
+  born Cart-3.76 from Cart-1.115: moved arm 1 to -5 deg; re-armed arm 2 with a hammer
+  born Dozer-3.77 from Dozer-1.110: re-armed arm 5 with a hammer; moved wheel 2 to 123 deg
+  born Dozer-3.78 from Dozer-2.68: eta_critic 5 -> 4.7559
+  born Dozer-3.79 from Dozer-2.63: arousal.youth 300 -> 225
+  born Dozer-3.80 from Dozer-2.4: removed wheel; moved wheel 0 to -81 deg
+  born Dozer-3.81 from Dozer-1.98: moved wheel 1 to -111 deg
+  born Dozer-3.82 from Dozer-2.68: sensory_scale 2.6786 -> 2.6202; efference_amplitude 0.1336 -> 0.1225
+  born Dozer-3.83 from Dozer-2.126: arousal.threshold 0.2 -> 0.2228; arousal.decay 0.9 -> 0.99
+  born Dozer-3.84 from Dozer-2.23: moved arm 4 to -6 deg; moved wheel 1 to -98 deg
+  born Dozer-3.85 from Dozer-2.120: arousal.youth 300 -> 253; re-armed arm 5 with a spike
+  born Cart-3.86 from Cart-1.38: moved arm 2 to -40 deg; re-armed arm 2 with a spinner
+  born Dozer-3.87 from Dozer-1.1: re-armed arm 6 with a spike; trace_amplitude 0.3 -> 0.447
+  born Dozer-3.88 from Dozer: added a leg; eta_critic 5 -> 4.8232
+  born Dozer-3.89 from Dozer-2.23: moved arm 5 to -58 deg; re-armed arm 6 with a hammer
+  born Roller-3.90 from Roller-2.19: lam 0.6 -> 0.3871; medium chassis
+  born Cart-3.91 from Cart-2.102: moved arm 2 to 5 deg; eta 0.03 -> 0.041
+  born Cart-3.92 from Cart-016: re-armed arm 2 with a spinner; light chassis
+  born Dozer-3.93 from Dozer-2.43: added a wheel; moved wheel 1 to -95 deg
+  born Dozer-3.94 from Dozer-017: added a wheel
+  born Dozer-3.95 from Dozer-2.43: removed leg; re-armed arm 5 with a spinner
+  born Dozer-3.96 from Dozer-2.23: eta 0.03 -> 0.0403; moved arm 4 to 37 deg
+  born Dozer-3.97 from Dozer-2.112: added a leg
+  born Dozer-3.98 from Dozer-2.115: arousal.threshold 0.2 -> 0.2005; moved wheel 2 to 152 deg
+  born Dozer-3.99 from Dozer-2.47: temperature 0.5 -> 0.2984; re-armed arm 6 with a spinner
+  born Crab-3.100 from Crab-2.100: added a leg
+  born Dozer-3.101 from Dozer-1.90: eta 0.03 -> 0.0477
+  born Dozer-3.102 from Dozer-2.63: moved wheel 2 to 148 deg
+  born Dozer-3.103 from Dozer-1.75: arousal.decay 0.6867 -> 0.6414; moved arm 6 to 37 deg
+  born Dozer-3.104 from Dozer-2.86: removed hammer; eta 0.0302 -> 0.0499
+  born Roller-3.105 from Roller-2.19: efference_amplitude 0 -> 0.2836; trace_amplitude 0.3 -> 0.2471
+  born Dozer-3.106 from Dozer-2.120: lam 0.6 -> 0.6969
+  born Dozer-3.107 from Dozer-1.117: sensory_scale 4 -> 4.5679
+  born Dozer-3.108 from Dozer-017: trace_amplitude 0.3 -> 0.2166; temperature 0.5 -> 0.4497
+  born Crab-3.109 from Crab-2.48: moved arm 5 to -25 deg; sensory_scale 4 -> 4.0835
+  born Roller-3.110 from Roller-2.117: moved wheel 1 to -61 deg; eta_critic 5 -> 5.3843
+  born Dozer-3.111 from Dozer-2.4: temperature 0.5 -> 0.5; moved wheel 2 to 128 deg
+  born Roller-3.112 from Roller-2.27: removed spinner; eta 0.03 -> 0.0412
+  born Dozer-3.113 from Dozer-1.73: efference_amplitude 0.1704 -> 0.3053; moved wheel 3 to -149 deg
+  born Cart-3.114 from Cart-1.115: added a wheel; medium chassis
+  born Dozer-3.115 from Dozer-2.11: moved arm 5 to -31 deg; moved arm 5 to -52 deg
+  born Crab-3.116 from Crab-2.65: arousal.threshold 0.2 -> 0.1387; moved arm 5 to -47 deg
+  born Dozer-3.117 from Dozer-2.11: lam 0.6 -> 0.6704; moved arm 3 to 51 deg
+  born Roller-3.118 from Roller-2.27: sensory_scale 4 -> 3.0268; efference_amplitude 0 -> 0.1987
+  born Dozer-3.119 from Dozer-2.30: removed hammer; added a leg
+  born Dozer-3.120 from Dozer-2.103: arousal.heat 2 -> 1.8565; arousal.need 0.05 -> 0.0441
+  born Dozer-3.121 from Dozer-2.37: sensory_scale 4.6102 -> 4.932; moved wheel 2 to 76 deg
+  born Dozer-3.122 from Dozer-2.66: eta 0.03 -> 0.0209; temperature 0.5 -> 0.4636
+  born Dozer-3.123 from Dozer-2.37: eta_critic 5 -> 6.4653; arousal.need 0.05 -> 0.0378
+  born Dozer-3.124 from Dozer-2.7: added a leg; lam 0.6 -> 0.8144
+  born Dozer-3.125 from Dozer-1.75: moved arm 7 to -92 deg; eta 0.03 -> 0.0351
+  born Dozer-3.126 from Dozer-04: re-armed arm 5 with a spinner; moved arm 6 to -25 deg
+  born Dozer-3.127 from Dozer-1.98: sensory_scale 4 -> 2.2912
+  born Dozer-3.128 from Dozer-2.54: eta_critic 5 -> 4.2606; temperature 0.5 -> 0.2935
+generation 3 (751.5 s): 1. Dozer-2.8 +0.80, 2. Dozer-1.110 +0.65, 3. Dozer-1.75 +0.63, 4. Dozer-2.66 +0.62, 5. Crab-2.65 +0.58
+  lineages: Dozer x140, Cart x20, Crab x14, Roller x14, Tumbler x4
+generation 4: nursery for Dozer-3.1, Dozer-3.2, Crab-3.3, Cart-3.4, Dozer-3.5, Tumbler-3.6, Dozer-3.7, Roller-3.8, Dozer-3.9, Dozer-3.10, Dozer-3.11, Dozer-3.12, Dozer-3.13, Dozer-3.14, Cart-3.15, Dozer-3.16, Dozer-3.17, Crab-3.18, Roller-3.19, Dozer-3.20, Dozer-3.21, Dozer-3.22, Dozer-3.23, Dozer-3.24, Tumbler-3.25, Roller-3.26, Cart-3.27, Dozer-3.28, Crab-3.29, Dozer-3.30, Roller-3.31, Dozer-3.32, Dozer-3.33, Dozer-3.34, Dozer-3.35, Dozer-3.36, Dozer-3.37, Dozer-3.38, Dozer-3.39, Crab-3.40, Cart-3.41, Cart-3.42, Dozer-3.43, Dozer-3.44, Dozer-3.45, Dozer-3.46, Roller-3.47, Tumbler-3.48, Dozer-3.49, Dozer-3.50, Dozer-3.51, Dozer-3.52, Cart-3.53, Dozer-3.54, Dozer-3.55, Dozer-3.56, Cart-3.57, Cart-3.58, Dozer-3.59, Dozer-3.60, Dozer-3.61, Dozer-3.62, Dozer-3.63, Dozer-3.64, Dozer-3.65, Dozer-3.66, Dozer-3.67, Dozer-3.68, Dozer-3.69, Dozer-3.70, Crab-3.71, Dozer-3.72, Dozer-3.73, Dozer-3.74, Dozer-3.75, Cart-3.76, Dozer-3.77, Dozer-3.78, Dozer-3.79, Dozer-3.80, Dozer-3.81, Dozer-3.82, Dozer-3.83, Dozer-3.84, Dozer-3.85, Cart-3.86, Dozer-3.87, Dozer-3.88, Dozer-3.89, Roller-3.90, Cart-3.91, Cart-3.92, Dozer-3.93, Dozer-3.94, Dozer-3.95, Dozer-3.96, Dozer-3.97, Dozer-3.98, Dozer-3.99, Crab-3.100, Dozer-3.101, Dozer-3.102, Dozer-3.103, Dozer-3.104, Roller-3.105, Dozer-3.106, Dozer-3.107, Dozer-3.108, Crab-3.109, Roller-3.110, Dozer-3.111, Roller-3.112, Dozer-3.113, Cart-3.114, Dozer-3.115, Crab-3.116, Dozer-3.117, Roller-3.118, Dozer-3.119, Dozer-3.120, Dozer-3.121, Dozer-3.122, Dozer-3.123, Dozer-3.124, Dozer-3.125, Dozer-3.126, Dozer-3.127, Dozer-3.128 (80000 moments each)
+  round 1/24: 32 fights in 12.8 s; winners Dozer-3.60, Crab-3.116, Dozer-3.80, Dozer-3.106, Dozer-3.45, Tumbler-3.25 ...
+  round 2/24: 32 fights in 14.7 s; winners Dozer-3.37, Dozer-3.121, Dozer-3.32, Dozer-3.111, Dozer-3.34, Dozer-3.14 ...
+  round 3/24: 32 fights in 13.5 s; winners Dozer-3.56, Dozer-3.64, Dozer-3.73, Dozer-3.32, Dozer-3.97, Dozer-3.113 ...
+  round 4/24: 32 fights in 14.0 s; winners Dozer-3.17, Cart-3.86, Dozer-3.80, Roller-3.90, Dozer-3.16, Dozer-3.127 ...
+  round 5/24: 32 fights in 14.1 s; winners Dozer-3.11, Dozer-3.106, Dozer-3.69, Dozer-3.81, Dozer-3.125, Dozer-3.67 ...
+  round 6/24: 32 fights in 14.5 s; winners Dozer-3.50, Cart-3.53, Dozer-3.97, Dozer-3.51, Dozer-3.13, Dozer-3.69 ...
+  round 7/24: 32 fights in 14.2 s; winners Crab-3.71, Dozer-3.111, Dozer-3.97, Crab-3.109, Dozer-3.65, Dozer-3.85 ...
+  round 8/24: 32 fights in 13.3 s; winners Dozer-3.22, Dozer-3.39, Dozer-3.7, Dozer-3.45, Dozer-3.9, Dozer-3.70 ...
+  round 9/24: 32 fights in 14.0 s; winners Dozer-3.59, Dozer-3.36, Dozer-3.28, Dozer-3.73, Dozer-3.12, Roller-3.19 ...
+  round 10/24: 32 fights in 14.3 s; winners Dozer-3.98, Dozer-3.87, Dozer-3.38, Dozer-3.93, Cart-3.57, Dozer-3.13 ...
+  round 11/24: 32 fights in 14.4 s; winners Dozer-3.101, Dozer-3.36, Dozer-3.33, Dozer-3.39, Dozer-3.83, Cart-3.58 ...
+  round 12/24: 32 fights in 14.4 s; winners Dozer-3.126, Dozer-3.43, Dozer-3.32, Dozer-3.52, Dozer-3.46, Roller-3.105 ...
+  round 13/24: 32 fights in 12.5 s; winners Roller-3.31, Roller-3.110, Cart-3.92, Dozer-3.21, Dozer-3.73, Dozer-3.35 ...
+  round 14/24: 32 fights in 12.4 s; winners Dozer-3.111, Dozer-3.73, Dozer-3.72, Dozer-3.46, Dozer-3.126, Dozer-3.11 ...
+  round 15/24: 32 fights in 12.6 s; winners Dozer-3.68, Dozer-3.45, Dozer-3.123, Roller-3.31, Dozer-3.84, Dozer-3.28 ...
+  round 16/24: 32 fights in 12.9 s; winners Dozer-3.89, Dozer-3.106, Dozer-3.73, Dozer-3.98, Dozer-3.74, Dozer-3.123 ...
+  round 17/24: 32 fights in 14.2 s; winners Dozer-3.64, Dozer-3.54, Dozer-3.52, Dozer-3.120, Dozer-3.9, Cart-3.53 ...
+  round 18/24: 32 fights in 14.0 s; winners Roller-3.26, Dozer-3.128, Crab-3.40, Dozer-3.67, Cart-3.57, Dozer-3.79 ...
+  round 19/24: 32 fights in 12.6 s; winners Crab-3.100, Dozer-3.106, Dozer-3.35, Roller-3.90, Dozer-3.121, Dozer-3.23 ...
+  round 20/24: 32 fights in 12.1 s; winners Dozer-3.12, Roller-3.8, Dozer-3.21, Cart-3.92, Cart-3.42, Roller-3.47 ...
+  round 21/24: 32 fights in 12.7 s; winners Dozer-3.34, Dozer-3.121, Dozer-3.106, Crab-3.18, Dozer-3.97, Dozer-3.61 ...
+  round 22/24: 32 fights in 14.0 s; winners Dozer-3.32, Dozer-3.67, Dozer-3.13, Dozer-3.128, Dozer-3.44, Dozer-3.95 ...
+  round 23/24: 32 fights in 14.2 s; winners Dozer-3.46, Dozer-3.55, Dozer-3.60, Crab-3.100, Dozer-3.12, Dozer-3.101 ...
+  round 24/24: 32 fights in 11.8 s; winners Dozer-3.122, Dozer-3.56, Crab-3.18, Dozer-3.111, Crab-3.71, Crab-3.29 ...
+  born Crab-4.1 from Crab-3.40: moved arm 4 to 20 deg; temperature 0.5 -> 0.3805
+  born Dozer-4.2 from Dozer-3.45: removed wheel; arousal.youth 300 -> 653
+  born Dozer-4.3 from Dozer-3.32: eta 0.03 -> 0.0484; moved arm 4 to 61 deg
+  born Dozer-4.4 from Dozer-3.67: moved arm 7 to -40 deg; moved arm 3 to 27 deg
+  born Dozer-4.5 from Dozer-1.75: re-armed arm 7 with a spinner
+  born Dozer-4.6 from Dozer-3.55: re-armed arm 5 with a spinner; re-armed arm 4 with a spike
+  born Dozer-4.7 from Dozer-012: moved arm 6 to -25 deg
+  born Dozer-4.8 from Dozer-1.1: trace_amplitude 0.3 -> 0.1789
+  born Crab-4.9 from Crab-3.40: re-armed arm 5 with a spike
+  born Dozer-4.10 from Dozer-3.60: moved wheel 1 to -113 deg; lam 0.99 -> 0.6688
+  born Dozer-4.11 from Dozer-3.12: re-armed arm 6 with a spike; eta 0.03 -> 0.0537
+  born Dozer-4.12 from Dozer-3.50: re-armed arm 2 with a spinner; moved wheel 1 to 150 deg
+  born Dozer-4.13 from Dozer-3.21: medium chassis; sensory_scale 4 -> 4.0091
+  born Dozer-4.14 from Dozer-3.64: re-armed arm 6 with a spinner; sensory_scale 4 -> 4.4478
+  born Crab-4.15 from Crab-3.71: re-armed arm 2 with a spinner; heavy chassis
+  born Dozer-4.16 from Dozer-3.106: arousal.heat 2 -> 2.0449
+  born Dozer-4.17 from Dozer-3.87: moved arm 7 to 45 deg; removed spike
+  born Cart-4.18 from Cart-1.38: added a leg; removed spike
+  born Dozer-4.19 from Dozer-2.37: eta_critic 5 -> 5.1913; moved wheel 2 to 67 deg
+  born Tumbler-4.20 from Tumbler-2.32: arousal.youth 300 -> 138; moved wheel 0 to 18 deg
+  born Dozer-4.21 from Dozer-3.67: re-armed arm 7 with a spinner; moved wheel 2 to 126 deg
+  born Dozer-4.22 from Dozer-1.1: temperature 0.5 -> 0.402
+  born Cart-4.23 from Cart-3.57: moved wheel 0 to -113 deg; temperature 0.5 -> 0.5
+  born Dozer-4.24 from Dozer-3.111: moved wheel 3 to -136 deg; lam 0.6 -> 0.5014
+  born Dozer-4.25 from Dozer-3.32: eta_critic 3.4368 -> 5.166; lam 0.99 -> 0.6445
+  born Dozer-4.26 from Dozer-3.13: eta 0.03 -> 0.038
+  born Roller-4.27 from Roller-3.90: re-armed arm 5 with a spinner; heavy chassis
+  born Crab-4.28 from Crab-3.40: efference_amplitude 0.0863 -> 0.1146
+  born Dozer-4.29 from Dozer-2.120: temperature 0.5 -> 0.4821; lam 0.6 -> 0.9277
+  born Dozer-4.30 from Dozer-3.23: removed spike; moved arm 3 to -76 deg
+  born Dozer-4.31 from Dozer-3.106: moved wheel 1 to 137 deg; sensory_scale 4 -> 5.1406
+  born Roller-4.32 from Roller-3.90: moved wheel 1 to -33 deg; re-armed arm 5 with a spike
+  born Crab-4.33 from Crab-3.100: moved leg 3 to -158 deg
+  born Dozer-4.34 from Dozer-012: removed wheel; re-armed arm 5 with a spinner
+  born Crab-4.35 from Crab-3.109: heavy chassis; moved leg 0 to 110 deg
+  born Dozer-4.36 from Dozer-2.59: sensory_scale 4 -> 3.6578; efference_amplitude 0.19 -> 0.1822
+  born Dozer-4.37 from Dozer-3.45: moved arm 5 to -63 deg; lam 0.6 -> 0.4453
+  born Dozer-4.38 from Dozer-3.2: re-armed arm 5 with a spinner; moved arm 6 to -106 deg
+  born Dozer-4.39 from Dozer-3.68: re-armed arm 5 with a spike; re-armed arm 6 with a spinner
+  born Dozer-4.40 from Dozer-3.50: removed wheel; moved wheel 0 to 124 deg
+  born Crab-4.41 from Crab-018: eta 0.03 -> 0.0279; re-armed arm 4 with a spike
+  born Dozer-4.42 from Dozer-3.50: lam 0.8274 -> 0.974; medium chassis
+  born Crab-4.43 from Crab-3.109: trace_amplitude 0.3 -> 0.3165; lam 0.6 -> 0.6894
+  born Roller-4.44 from Roller-3.19: arousal.heat 1.9876 -> 2.1432
+  born Dozer-4.45 from Dozer-012: eta_critic 5 -> 6.1957; moved arm 6 to -33 deg
+  born Dozer-4.46 from Dozer-3.21: arousal.heat 2 -> 2.4438; medium chassis
+  born Crab-4.47 from Crab-018: efference_amplitude 0 -> 0.2361; moved leg 2 to 165 deg
+  born Dozer-4.48 from Dozer-2.120: moved wheel 1 to 151 deg; added a leg
+  born Roller-4.49 from Roller-3.90: re-armed arm 4 with a spike; re-armed arm 4 with a spinner
+  born Dozer-4.50 from Dozer-3.87: a copy
+  born Dozer-4.51 from Dozer-3.32: moved wheel 1 to -59 deg; arousal.threshold 0.2 -> 0.2032
+  born Dozer-4.52 from Dozer-1.110: moved arm 4 to 57 deg
+  born Dozer-4.53 from Dozer-012: re-armed arm 4 with a hammer
+  born Dozer-4.54 from Dozer-3.11: moved arm 5 to -29 deg; temperature 0.5 -> 0.5
+  born Dozer-4.55 from Dozer-1.1: moved wheel 0 to 51 deg; eta 0.03 -> 0.0415
+  born Dozer-4.56 from Dozer-2.8: trace_amplitude 0.3 -> 0.2654; removed wheel
+  born Dozer-4.57 from Dozer-2.54: arousal.need 0.05 -> 0.0402; removed spike
+  born Dozer-4.58 from Dozer-3.55: lam 0.6 -> 0.6329; moved wheel 2 to -90 deg
+  born Cart-4.59 from Cart-3.57: removed hammer; efference_amplitude 0 -> 0.1812
+  born Cart-4.60 from Cart-1.38: added a leg; arousal.need 0.05 -> 0.0649
+  born Dozer-4.61 from Dozer-3.51: temperature 0.5 -> 0.5; arousal.heat 2 -> 3.1928
+  born Dozer-4.62 from Dozer-3.2: re-armed arm 3 with a spinner; moved arm 3 to 73 deg
+  born Crab-4.63 from Crab-3.100: moved arm 4 to -9 deg; moved leg 6 to 97 deg
+  born Crab-4.64 from Crab-018: added a wheel; arousal.decay 0.9 -> 0.7632
+  born Dozer-4.65 from Dozer-3.128: medium chassis; trace_amplitude 0.3 -> 0.2519
+  born Dozer-4.66 from Dozer-3.32: moved arm 6 to -11 deg
+  born Dozer-4.67 from Dozer-1.1: eta 0.03 -> 0.0323; arousal.heat 2.1667 -> 1.9482
+  born Crab-4.68 from Crab-3.40: re-armed arm 3 with a spike; moved leg 1 to 82 deg
+  born Dozer-4.69 from Dozer-3.23: moved wheel 2 to 84 deg; moved wheel 2 to 109 deg
+  born Dozer-4.70 from Dozer-3.106: moved wheel 6 to -64 deg; sensory_scale 4 -> 4.1394
+  born Dozer-4.71 from Dozer-3.123: temperature 0.5 -> 0.271; eta_critic 6.4653 -> 11.3853
+  born Dozer-4.72 from Dozer-1.75: moved wheel 1 to -96 deg; temperature 0.5 -> 0.3389
+  born Dozer-4.73 from Dozer-3.64: trace_amplitude 0.2225 -> 0.2382
+  born Dozer-4.74 from Dozer-2.108: temperature 0.5 -> 0.4772; trace_amplitude 0.3 -> 0.3984
+  born Dozer-4.75 from Dozer-3.111: lam 0.6 -> 0.6824; moved arm 4 to -23 deg
+  born Dozer-4.76 from Dozer-2.8: moved arm 4 to 29 deg; moved arm 3 to -19 deg
+  born Dozer-4.77 from Dozer-3.128: arousal.decay 0.99 -> 0.99; removed wheel
+  born Dozer-4.78 from Dozer-2.54: medium chassis
+  born Dozer-4.79 from Dozer-012: arousal.heat 2 -> 1.6912; temperature 0.5 -> 0.5
+  born Dozer-4.80 from Dozer-3.56: added a wheel; removed wheel
+  born Dozer-4.81 from Dozer-3.38: arousal.threshold 0.2 -> 0.3119
+  born Dozer-4.82 from Dozer-2.59: re-armed arm 3 with a spinner; trace_amplitude 0.3 -> 0.2636
+  born Crab-4.83 from Crab-3.100: added a leg; arousal.decay 0.9 -> 0.99
+  born Crab-4.84 from Crab-3.100: arousal.threshold 0.2 -> 0.1834; moved leg 6 to 106 deg
+  born Dozer-4.85 from Dozer-3.13: efference_amplitude 0 -> 0.356; moved wheel 3 to -93 deg
+  born Roller-4.86 from Roller-3.19: re-armed arm 6 with a spike; moved wheel 0 to 102 deg
+  born Dozer-4.87 from Dozer-3.80: added a hammer; eta_critic 5 -> 4.3923
+  born Dozer-4.88 from Dozer-2.4: moved arm 6 to -11 deg; lam 0.6 -> 0.573
+  born Dozer-4.89 from Dozer-3.64: re-armed arm 7 with a spinner; temperature 0.5 -> 0.5
+  born Roller-4.90 from Roller-2.19: arousal.youth 300 -> 408; removed wheel
+  born Crab-4.91 from Crab-018: moved leg 0 to 30 deg; trace_amplitude 0.3 -> 0.263
+  born Dozer-4.92 from Dozer-3.111: removed wheel; re-armed arm 3 with a hammer
+  born Dozer-4.93 from Dozer-3.123: moved wheel 1 to -36 deg; removed spike
+  born Dozer-4.94 from Dozer-2.108: moved arm 4 to 48 deg
+  born Dozer-4.95 from Dozer-2.4: efference_amplitude 0 -> 0.1769
+  born Dozer-4.96 from Dozer-2.54: moved arm 4 to 29 deg; moved wheel 1 to -168 deg
+  born Dozer-4.97 from Dozer-3.128: temperature 0.2935 -> 0.4346; moved arm 3 to 46 deg
+  born Dozer-4.98 from Dozer-3.38: removed leg; re-armed arm 5 with a spinner
+  born Crab-4.99 from Crab-3.100: efference_amplitude 0 -> 0.1419; arousal.heat 2 -> 1.4695
+  born Dozer-4.100 from Dozer-3.80: added a leg; trace_amplitude 0.3 -> 0.4449
+  born Dozer-4.101 from Dozer-2.108: removed wheel; medium chassis
+  born Roller-4.102 from Roller-3.19: a copy
+  born Dozer-4.103 from Dozer-2.47: added a leg; trace_amplitude 0.3 -> 0.3119
+  born Dozer-4.104 from Dozer-3.21: removed hammer; moved wheel 0 to 87 deg
+  born Dozer-4.105 from Dozer-3.128: eta 0.03 -> 0.0372; moved arm 3 to -19 deg
+  born Dozer-4.106 from Dozer-3.14: removed wheel; added a leg
+  born Crab-4.107 from Crab-2.65: arousal.youth 300 -> 521
+  born Dozer-4.108 from Dozer-3.2: eta_critic 5 -> 4.1401
+  born Dozer-4.109 from Dozer-3.87: sensory_scale 4 -> 3.4951; eta 0.03 -> 0.0382
+  born Dozer-4.110 from Dozer-3.89: moved wheel 2 to 138 deg
+  born Dozer-4.111 from Dozer-3.23: re-armed arm 4 with a spinner
+  born Dozer-4.112 from Dozer-2.54: moved wheel 2 to -94 deg; efference_amplitude 0 -> 0.0848
+  born Dozer-4.113 from Dozer-3.21: added a spike; eta_critic 5 -> 8.7681
+  born Dozer-4.114 from Dozer-2.4: efference_amplitude 0 -> 0.133; temperature 0.5 -> 0.3153
+  born Dozer-4.115 from Dozer-3.68: moved arm 3 to -11 deg; moved wheel 2 to -73 deg
+  born Dozer-4.116 from Dozer-3.122: eta_critic 4.7982 -> 12.5085; moved arm 5 to 29 deg
+  born Crab-4.117 from Crab-2.48: moved leg 1 to 149 deg; sensory_scale 4 -> 2.5254
+  born Crab-4.118 from Crab-3.40: moved arm 3 to 55 deg; removed leg
+  born Tumbler-4.119 from Tumbler-2.32: medium chassis; moved arm 1 to -41 deg
+  born Dozer-4.120 from Dozer-2.8: re-armed arm 3 with a spinner; moved wheel 0 to 86 deg
+  born Dozer-4.121 from Dozer-3.68: arousal.decay 0.9 -> 0.8301
+  born Dozer-4.122 from Dozer-3.23: arousal.heat 2 -> 3.0668
+  born Dozer-4.123 from Dozer-3.12: moved wheel 1 to -130 deg; removed spike
+  born Tumbler-4.124 from Tumbler-2.32: moved arm 1 to -37 deg; moved arm 1 to -55 deg
+  born Dozer-4.125 from Dozer-3.106: moved wheel 0 to -105 deg; added a spinner
+  born Dozer-4.126 from Dozer-2.120: removed hammer; lam 0.6 -> 0.5358
+  born Dozer-4.127 from Dozer-3.97: arousal.youth 300 -> 287; moved wheel 2 to -146 deg
+  born Dozer-4.128 from Dozer-3.106: lam 0.6969 -> 0.8808; moved wheel 1 to 66 deg
+generation 4 (785.5 s): 1. Dozer-3.128 +0.72, 2. Dozer-2.8 +0.52, 3. Crab-3.40 +0.52, 4. Dozer-1.110 +0.50, 5. Dozer-2.59 +0.50
+  lineages: Dozer x144, Crab x26, Roller x10, Cart x8, Tumbler x4
+stopping before generation 5: 55 min used, last generation took 13 min
+final cut: kept 12, retired 180

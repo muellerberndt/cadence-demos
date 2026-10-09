@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cadence Showcase League</title>
+<style>
+  :root {
+    --bg: #0f1218; --panel: #171c25; --ink: #e6e9ef; --muted: #8d95a5; --line: #262d3a;
+    --calm: #4fa3ff; --aroused: #ffb347; --accent: #ffb347; --hp: #5ad37a; --hp-low: #ff5d5d; --ring: #ff7a45;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) { --bg: #f3f5f8; --panel: #ffffff; --ink: #1a1f29; --muted: #5d6677; --line: #dde2ea; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { padding: 20px 16px 8px; max-width: 1200px; margin: 0 auto; }
+  h1 { font-size: 24px; margin: 0 0 4px; }
+  .lead { color: var(--muted); max-width: 820px; margin: 0; }
+  main { max-width: 1200px; margin: 0 auto; padding: 8px 16px 40px; display: grid; gap: 16px; }
+  section { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 0 0 10px; font-weight: 600; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .tile { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+  .tile b { display: block; font-size: 22px; font-variant-numeric: tabular-nums; }
+  .tile span { color: var(--muted); font-size: 12px; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { text-align: right; padding: 6px 8px; border-top: 1px solid var(--line); white-space: nowrap; }
+  th { color: var(--muted); font-weight: 600; font-size: 12px; border-top: 0; }
+  td:first-child, th:first-child, td:nth-child(2), th:nth-child(2) { text-align: left; }
+  .sw { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+  .tag { color: var(--muted); font-size: 12px; }
+  svg { width: 100%; height: auto; display: block; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; color: var(--muted); font-size: 12px; margin-top: 8px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .card { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+  .card h3 { margin: 0 0 2px; font-size: 15px; }
+  .card .sub { color: var(--muted); font-size: 12px; margin-bottom: 8px; }
+  .spark { display: grid; grid-template-columns: 92px 1fr 48px; gap: 6px; align-items: center; font-size: 12px; color: var(--muted); margin: 3px 0; }
+  .spark b { color: var(--ink); font-weight: 600; text-align: right; }
+  .fights { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+  .fight { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 13px; }
+  .fight a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  .fight .r { color: var(--muted); font-size: 12px; }
+  footer { color: var(--muted); font-size: 12px; max-width: 1200px; margin: 0 auto; padding: 0 16px 24px; }
+  @media (max-width: 700px) { th:nth-child(n+8), td:nth-child(n+8) { display: none; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Cadence Showcase League</h1>
+  <p class="lead">Robots assembled from parts, each with one continuing Cadence brain wired to every motor. Nobody resets between fights: what a robot learns in one royale it carries into the next. The ring closes, the shy burn, and the ranking is free to change as the brains change.</p>
+</header>
+<main>
+  <section><h2>The league so far</h2><div class="tiles" id="tiles"></div></section>
+  <section><h2>Ladder</h2><div style="overflow:auto"><table id="ladder"></table></div></section>
+  <section id="nurserySec"><h2>Raised in the nursery, before the first fight</h2><p class="tag" style="margin:0 0 10px">Alone with a training dummy, headless, tens of times faster than real time. Metres of progress toward the dummy and dummies destroyed over the whole stay, against uniform random with the same body and the robot's own frozen newborn (greedy, never learning). Bars: progress per eighth of the stay.</p><div class="cards" id="nursery"></div></section>
+  <section><h2>Rating over the fights</h2><div id="elo"></div><div class="legend" id="eloLegend"></div></section>
+  <section><h2>Each robot's tactics, fight by fight</h2><p class="tag" style="margin:0 0 10px">Damage dealt, weapon hits, moments in the burn, metres travelled, the share of aroused (learning) moments and the learning sweeps per fight. A tactic that changes shows here before it shows in the rating.</p><div class="cards" id="cards"></div></section>
+  <section id="evoSec"><h2>Evolution · who dominates</h2><p class="tag" style="margin:0 0 10px" id="evoLead"></p><div id="evoChart"></div><div class="legend" id="evoLegend"></div><div class="cards" id="evoCards" style="margin-top:12px"></div></section>
+  <section><h2>Fights</h2><div class="fights" id="fights"></div></section>
+</main>
+<footer>Blue is a calm brain answering from a settled state without learning; orange is an aroused brain that explores and learns. Replays carry every robot's brain activity; click a robot in a replay to inspect it.</footer>
+<script>
+const LEAGUE = /*LEAGUE*/null;
+const PALETTE = ["#4fd1c5", "#f6ad55", "#f687b3", "#63b3ed", "#b794f4", "#68d391", "#fc8181", "#f6e05e", "#9ae6b4", "#fbd38d", "#d6bcfa", "#90cdf4"];
+const names = Object.keys(LEAGUE.robots);
+const color = Object.fromEntries(names.map((n, i) => [n, PALETTE[i % PALETTE.length]]));
+const fmt = (v, d = 0) => v === null || v === undefined ? "–" : (+v).toFixed(d);
+
+// tiles
+const tiles = document.getElementById("tiles");
+const brains = names.filter(n => LEAGUE.robots[n].policy === "brain");
+const totalMoments = names.reduce((a, n) => a + LEAGUE.robots[n].moments, 0);
+const speedup = LEAGUE.wall_seconds ? (LEAGUE.simulated_seconds / LEAGUE.wall_seconds) : 0;
+const winners = LEAGUE.fights.map(f => f.results.find(r => r.place === 1)?.name);
+const distinctWinners = new Set(winners).size;
+[
+  [LEAGUE.fights.length, "royales fought"],
+  [brains.length, "learning robots" + (names.length > brains.length ? ` + ${names.length - brains.length} random baselines` : "")],
+  [distinctWinners, "different winners"],
+  [(LEAGUE.simulated_seconds / 60).toFixed(1) + " min", "of ring time simulated"],
+  [speedup ? speedup.toFixed(1) + "×" : "–", "faster than real time, brains included"],
+  [(totalMoments / 1000).toFixed(0) + "k", "brain moments lived in total"],
+].forEach(([v, l]) => { const d = document.createElement("div"); d.className = "tile"; d.innerHTML = `<b>${v}</b><span>${l}</span>`; tiles.appendChild(d); });
+
+// ladder
+const rows = names.map(n => ({name: n, ...LEAGUE.robots[n]})).sort((a, b) => b.elo - a.elo);
+const ladder = document.getElementById("ladder");
+ladder.innerHTML = `<tr><th>#</th><th>robot</th><th>elo</th><th>fights</th><th>wins</th><th>mean place</th><th>dealt / fight</th><th>burn / fight</th><th>aroused (last 5)</th><th>learning sweeps (last 5)</th><th>brain moments</th></tr>` +
+  rows.map((r, i) => {
+    const h = r.history, last = h.slice(-5), mean = h.length ? h.reduce((a, x) => a + x.place, 0) / h.length : null;
+    const dealt = h.length ? h.reduce((a, x) => a + x.dealt, 0) / h.length : null, burn = h.length ? h.reduce((a, x) => a + x.burn, 0) / h.length : null;
+    const ar = last.length ? last.reduce((a, x) => a + (x.aroused_share || 0), 0) / last.length : null, ls = last.reduce((a, x) => a + (x.learning_sweeps || 0), 0);
+    const parts = r.parts.map(p => p.weapon || p.kind).join(", ");
+    return `<tr><td>${i + 1}</td><td><span class="sw" style="background:${color[r.name]}"></span>${r.name} <span class="tag">${r.policy === "brain" ? r.chassis + " · " + parts : "uniform random · " + r.chassis}</span></td><td>${fmt(r.elo)}</td><td>${r.fights}</td><td>${r.wins}</td><td>${fmt(mean, 2)}</td><td>${fmt(dealt, 1)}</td><td>${fmt(burn, 1)}</td><td>${r.policy === "brain" ? fmt(ar, 2) : "–"}</td><td>${r.policy === "brain" ? ls : "–"}</td><td>${(r.moments / 1000).toFixed(0)}k</td></tr>`;
+  }).join("");
+
+// nursery cards
+(function () {
+  const box = document.getElementById("nursery"); let any = false;
+  rows.forEach(r => {
+    const n = r.raised && r.raised.brain; if (!n) return; any = true;
+    const ctrl = p => r.raised[p] ? `${fmt(r.raised[p].progress_m, 0)} m · ${r.raised[p].kills} kills` : "–";
+    const card = document.createElement("div"); card.className = "card";
+    card.innerHTML = `<h3><span class="sw" style="background:${color[r.name]}"></span>${r.name}</h3><div class="sub">${r.chassis} · ${r.parts.map(p => p.weapon || p.kind).join(", ")} · ${(n.moments / 1000).toFixed(0)}k moments at ${(n.moments_per_second / 20).toFixed(0)}× real time</div>` +
+      `<div class="spark"><span>progress</span>${sparkline(n.blocks, color[r.name])}<b>${fmt(n.progress_m, 0)} m</b></div>` +
+      `<div class="spark"><span>dummies killed</span><span></span><b>${n.kills}</b></div>` +
+      `<div class="spark"><span>damage dealt</span><span></span><b>${fmt(n.dealt, 0)}</b></div>` +
+      `<div class="spark"><span>calm share, late</span><span></span><b>${n.calm_share === null ? "–" : n.calm_share}</b></div>` +
+      `<div class="spark"><span>uniform random</span><span></span><b style="color:var(--muted)">${ctrl("random")}</b></div>` +
+      `<div class="spark"><span>frozen newborn</span><span></span><b style="color:var(--muted)">${ctrl("frozen")}</b></div>`;
+    box.appendChild(card);
+  });
+  if (!any) document.getElementById("nurserySec").style.display = "none";
+})();
+
+// elo chart
+(function () {
+  const W = 1100, H = 300, L = 44, R = 10, T = 10, B = 26, nF = LEAGUE.fights.length;
+  const firstF = Math.max(1, Math.min(nF, ...names.flatMap(n => LEAGUE.robots[n].history.map(h => h.fight))) - 1);
+  let lo = 1000, hi = 1000;
+  names.forEach(n => LEAGUE.robots[n].history.forEach(h => { lo = Math.min(lo, h.elo_after); hi = Math.max(hi, h.elo_after); }));
+  lo = Math.floor((lo - 10) / 50) * 50; hi = Math.ceil((hi + 10) / 50) * 50;
+  const x = f => L + (nF <= firstF ? 0 : (f - firstF) / (nF - firstF)) * (W - L - R), y = e => T + (1 - (e - lo) / (hi - lo)) * (H - T - B);
+  let g = "";
+  for (let e = lo; e <= hi; e += 50) g += `<line x1="${L}" x2="${W - R}" y1="${y(e)}" y2="${y(e)}" stroke="var(--line)"/><text x="${L - 6}" y="${y(e) + 4}" fill="var(--muted)" font-size="11" text-anchor="end">${e}</text>`;
+  names.forEach(n => {
+    const h = LEAGUE.robots[n].history; if (!h.length) return;
+    const pts = [[x(Math.max(firstF, h[0].fight - 1)), y(h[0].elo_before ?? 1000)]].concat(h.map(r => [x(r.fight), y(r.elo_after)]));
+    g += `<polyline points="${pts.map(p => p.join(",")).join(" ")}" fill="none" stroke="${color[n]}" stroke-width="${LEAGUE.robots[n].policy === "brain" ? 2.5 : 1.5}" stroke-dasharray="${LEAGUE.robots[n].policy === "brain" ? "" : "4 4"}" stroke-linejoin="round"/>`;
+    const last = pts[pts.length - 1]; g += `<circle cx="${last[0]}" cy="${last[1]}" r="3.5" fill="${color[n]}"/>`;
+  });
+  // winners strip
+  const span = nF - firstF;
+  winners.forEach((w, k) => { if (w && color[w] && k + 1 >= firstF && span <= 120) g += `<rect x="${x(k + 1) - 4}" y="${H - B + 8}" width="8" height="8" rx="2" fill="${color[w]}"><title>fight ${k + 1}: ${w}</title></rect>`; });
+  g += `<text x="${L}" y="${H - 2}" fill="var(--muted)" font-size="11">fight ${firstF}</text><text x="${W - R}" y="${H - 2}" fill="var(--muted)" font-size="11" text-anchor="end">fight ${nF}</text>`;
+  document.getElementById("elo").innerHTML = `<svg viewBox="0 0 ${W} ${H}">${g}</svg>`;
+  document.getElementById("eloLegend").innerHTML = names.map(n => `<span><span class="sw" style="background:${color[n]}"></span>${n}${LEAGUE.robots[n].policy !== "brain" ? " (random)" : ""}</span>`).join("") + `<span>squares below the axis: the winner of each fight</span>`;
+})();
+
+// tactic cards
+function sparkline(values, col, h = 26, w = 160) {
+  if (!values.length) return "";
+  const max = Math.max(1e-9, ...values.map(v => Math.abs(v))), n = values.length;
+  const bw = w / n;
+  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" style="height:${h}px">` + values.map((v, k) => {
+    const bh = Math.max(1, Math.abs(v) / max * (h - 2)); return `<rect x="${k * bw + 0.5}" y="${h - bh}" width="${Math.max(1, bw - 1)}" height="${bh}" fill="${col}" opacity="${0.45 + 0.55 * (k + 1) / n}"/>`;
+  }).join("") + "</svg>";
+}
+const cards = document.getElementById("cards");
+rows.forEach(r => {
+  const h = r.history; if (!h.length) return;
+  const trend = (key, label, col, d = 0) => { const vals = h.map(x => x[key] || 0); const first = vals.slice(0, Math.max(1, Math.floor(vals.length / 3))), last = vals.slice(-Math.max(1, Math.floor(vals.length / 3)));
+    const a = first.reduce((s, v) => s + v, 0) / first.length, b = last.reduce((s, v) => s + v, 0) / last.length;
+    return `<div class="spark"><span>${label}</span>${sparkline(vals, col)}<b title="early ${a.toFixed(d)} → late ${b.toFixed(d)}">${fmt(b, d)}</b></div>`; };
+  const parts = r.parts.map(p => (p.weapon || p.kind)).join(", ");
+  const card = document.createElement("div"); card.className = "card";
+  card.innerHTML = `<h3><span class="sw" style="background:${color[r.name]}"></span>${r.name}</h3><div class="sub">${r.policy === "brain" ? r.chassis + " · " + parts : "uniform random · " + r.chassis} · ${r.fights} fights · ${r.wins} wins</div>` +
+    trend("dealt", "damage dealt", "var(--hp)") + trend("hits", "weapon hits", "#f6ad55") + trend("moments_outside", "moments burning", "var(--ring)") +
+    trend("travelled_m", "metres travelled", "#63b3ed") + (r.policy === "brain" ? trend("aroused_share", "aroused share", "var(--aroused)", 2) + trend("learning_sweeps", "learning sweeps", "#b794f4") : "") +
+    `<div class="spark"><span>placement</span>${sparkline(h.map(x => (LEAGUE.fights.find(f => f.id === x.fight)?.results.length || 6) + 1 - x.place), color[r.name])}<b>#${h[h.length - 1].place}</b></div>`;
+  cards.appendChild(card);
+});
+
+// evolution
+(function () {
+  const evo = LEAGUE.evolution || [];
+  if (!evo.length) { document.getElementById("evoSec").style.display = "none"; return; }
+  const lineages = Array.from(new Set(evo.flatMap(g => Object.keys(g.lineages))));
+  const lcolor = Object.fromEntries(lineages.map((l, i) => [l, color[l] || PALETTE[(i + 3) % PALETTE.length]]));
+  const W = 1100, H = 220, L = 44, R = 10, T = 10, B = 26, n = evo.length;
+  const bw = (W - L - R) / n;
+  let g = "";
+  evo.forEach((gen, k) => {
+    const total = Object.values(gen.lineages).reduce((a, b) => a + b, 0) || 1;
+    let y = T;
+    lineages.forEach(l => {
+      const share = (gen.lineages[l] || 0) / total, h = share * (H - T - B);
+      if (h > 0) { g += `<rect x="${L + k * bw + 2}" y="${y}" width="${bw - 4}" height="${h}" fill="${lcolor[l]}"><title>generation ${gen.generation}: ${l} ${gen.lineages[l]} of ${total}</title></rect>`; y += h; }
+    });
+    const top = gen.ranking[0];
+    if (top) g += `<circle cx="${L + k * bw + bw / 2}" cy="${H - B + 12}" r="5" fill="${color[top.name] || lcolor[top.lineage] || "#fff"}"><title>best of generation ${gen.generation}: ${top.name} (${top.score >= 0 ? "+" : ""}${top.score})</title></circle>`;
+    g += `<text x="${L + k * bw + bw / 2}" y="${H - 2}" fill="var(--muted)" font-size="11" text-anchor="middle">${gen.generation}</text>`;
+  });
+  g += `<text x="${L - 6}" y="${T + 10}" fill="var(--muted)" font-size="11" text-anchor="end">all</text><text x="${L - 6}" y="${H - B}" fill="var(--muted)" font-size="11" text-anchor="end">none</text>`;
+  document.getElementById("evoChart").innerHTML = `<svg viewBox="0 0 ${W} ${H}">${g}</svg>`;
+  document.getElementById("evoLegend").innerHTML = lineages.map(l => `<span><span class="sw" style="background:${lcolor[l]}"></span>${l} lineage</span>`).join("") + `<span>dot below: the best robot of each generation</span>`;
+  const lastGen = evo[evo.length - 1], births = evo.reduce((a, gen) => a + gen.born.length, 0), retired = evo.reduce((a, gen) => a + gen.retired.length, 0);
+  const totalSec = evo.reduce((a, gen) => a + (gen.seconds || 0), 0);
+  const dom = Object.entries(lastGen.lineages).sort((a, b) => b[1] - a[1]);
+  document.getElementById("evoLead").textContent = `${evo.length} generations in ${(totalSec / 60).toFixed(0)} min: ${births} robots born, ${retired} retired. Share of the population by founder lineage per generation; after generation ${lastGen.generation}: ${dom.map(([l, c]) => `${l} ${c}`).join(", ")}.`;
+  const cards = document.getElementById("evoCards");
+  evo.forEach(gen => {
+    const card = document.createElement("div"); card.className = "card";
+    const podium = gen.ranking.slice(0, 3).map(r => `<div class="spark"><span>#${r.rank}</span><span><span class="sw" style="background:${color[r.name] || lcolor[r.lineage]}"></span>${r.name}${r.name === r.lineage ? " (founder)" : ""}</span><b>${r.score >= 0 ? "+" : ""}${r.score.toFixed(2)}</b></div>`).join("");
+    const founders = ["Mantis", "Dozer", "Crab"].concat(lineages).filter((v, i, a) => a.indexOf(v) === i).filter(f => gen.ranking.some(r => r.name === f)).map(f => { const r = gen.ranking.find(r => r.name === f); return `${f} #${r.rank}`; }).join(" · ");
+    const sample = gen.born.slice(0, 3).map(b => `${b.name}: ${b.mutations.join("; ") || "a copy"}`).join("<br>");
+    card.innerHTML = `<h3>Generation ${gen.generation}</h3><div class="sub">${gen.ranking.length} fought · ${gen.survivors.length} kept · ${gen.born.length} born · ${((gen.seconds || 0) / 60).toFixed(1)} min${founders ? " · founders: " + founders : ""}</div>${podium}<div class="sub" style="margin-top:8px">${sample}${gen.born.length > 3 ? "<br>…" : ""}</div>`;
+    cards.appendChild(card);
+  });
+})();
+
+// fights
+const fights = document.getElementById("fights");
+const recentFights = LEAGUE.fights.slice(-60).reverse();
+if (LEAGUE.fights.length > 60) { const note = document.createElement("div"); note.className = "tag"; note.style.gridColumn = "1 / -1"; note.textContent = `the most recent 60 of ${LEAGUE.fights.length} fights`; fights.appendChild(note); }
+recentFights.forEach(f => {
+  const d = document.createElement("div"); d.className = "fight";
+  const podium = f.results.slice(0, 3).map(r => `<span class="sw" style="background:${color[r.name]}"></span>${r.place}. ${r.name}`).join(" · ");
+  d.innerHTML = `${f.page ? `<a href="${f.page}">Fight ${f.id}</a>` : `<b>Fight ${f.id}</b>`} <span class="r">${(f.moments * 0.05).toFixed(0)} s · ${f.seconds ? f.seconds + " s wall" : ""}</span><div class="r">${podium}</div>`;
+  fights.appendChild(d);
+});
+</script>
+</body>
+</html>

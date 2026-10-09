@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Robot Arena Replay</title>
+<style>
+  :root {
+    --bg: #0f1218; --panel: #171c25; --ink: #e6e9ef; --muted: #8d95a5; --line: #262d3a;
+    --floor: #1d2430; --floor-grid: #26303f; --burn: rgba(255, 92, 42, 0.22); --ring: #ff7a45;
+    --calm: #4fa3ff; --aroused: #ffb347; --random: #9aa3b5; --frozen: #c58bff; --dead: #4a5160;
+    --hp: #5ad37a; --hp-low: #ff5d5d; --accent: #ffb347;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #f3f5f8; --panel: #ffffff; --ink: #1a1f29; --muted: #5d6677; --line: #dde2ea;
+      --floor: #dfe5ee; --floor-grid: #cdd5e1; --burn: rgba(255, 92, 42, 0.18); --dead: #b8bec9;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  header h1 { font-size: 16px; margin: 0; font-weight: 600; }
+  header .meta { color: var(--muted); font-variant-numeric: tabular-nums; }
+  main { display: grid; grid-template-columns: 1fr 300px; gap: 16px; padding: 16px; max-width: 1400px; margin: 0 auto; }
+  @media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+  #inspector { grid-column: 1 / -1; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+  #inspector h2 { font-size: 13px; margin: 0 0 6px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+  #inspector h2 span { text-transform: none; letter-spacing: 0; color: var(--ink); }
+  #brain { width: 100%; height: auto; }
+  #stage { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  canvas { display: block; width: 100%; height: auto; }
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 12px; border-top: 1px solid var(--line); }
+  button { background: var(--line); color: var(--ink); border: 0; border-radius: 6px; padding: 6px 12px; font: inherit; cursor: pointer; }
+  button:hover { filter: brightness(1.15); }
+  button.active { background: var(--accent); color: #1a1208; }
+  input[type=range] { flex: 1 1 160px; min-width: 120px; accent-color: var(--accent); }
+  aside { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+  aside h2 { font-size: 13px; margin: 0 0 8px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+  .robot { display: grid; grid-template-columns: 14px 1fr auto; gap: 4px 8px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); }
+  .robot:first-of-type { border-top: 0; }
+  .swatch { width: 12px; height: 12px; border-radius: 3px; }
+  .name { font-weight: 600; }
+  .tag { color: var(--muted); font-size: 12px; margin-left: 6px; font-weight: 400; }
+  .place { color: var(--muted); font-variant-numeric: tabular-nums; }
+  .bar { grid-column: 2 / 4; height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
+  .bar i { display: block; height: 100%; background: var(--hp); }
+  .line { grid-column: 2 / 4; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; display: flex; gap: 10px; flex-wrap: wrap; }
+  .mode { display: inline-flex; align-items: center; gap: 5px; }
+  .mode b { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .legend { color: var(--muted); font-size: 12px; margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px 14px; }
+  .hint { color: var(--muted); font-size: 12px; margin: 0 0 8px; }
+  .robot { cursor: pointer; }
+  .robot.selected { background: var(--line); margin: 0 -8px; padding-left: 8px; padding-right: 8px; border-radius: 6px; }
+  #drop { padding: 40px 16px; text-align: center; color: var(--muted); }
+  #drop input { display: block; margin: 12px auto 0; }
+  footer { color: var(--muted); font-size: 12px; padding: 0 16px 24px; max-width: 1400px; margin: 0 auto; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Cadence Robot Arena</h1>
+  <span class="meta" id="meta"></span>
+</header>
+<main>
+  <div id="stage">
+    <div id="drop" hidden>Open a replay file (<code>fight-NNNN.json</code>) to watch it.<input type="file" id="file" accept="application/json"></div>
+    <canvas id="c" width="1000" height="640"></canvas>
+    <div class="controls">
+      <button id="play">Pause</button>
+      <span id="speeds"></span>
+      <input type="range" id="scrub" min="0" max="0" value="0">
+      <span class="meta" id="clock"></span>
+    </div>
+  </div>
+  <aside>
+    <h2>Standings</h2>
+    <div id="board"></div>
+
+    <div class="legend">
+      <span class="mode"><b style="background:var(--calm)"></b>calm, routine settle</span>
+      <span class="mode"><b style="background:var(--aroused)"></b>aroused, learning</span>
+      <span class="mode"><b style="background:var(--random)"></b>uniform random</span>
+      <span class="mode"><b style="background:var(--dead)"></b>out</span>
+    </div>
+  </aside>
+  <section id="inspector">
+    <h2>Brain inspector <span id="who"></span></h2>
+    <p class="hint" id="hint">Click a robot in the ring or in the standings to watch its brain: what it senses, how its association cortex settled, what its motor cortex chose, and how aroused it is. Every value is read from the replay, moment by moment.</p>
+    <canvas id="brain" width="1240" height="470" style="display:none"></canvas>
+  </section>
+</main>
+<footer>Every robot is one continuing Cadence brain wired to each of its motors. Blue means it answers from a calm, settled state and learns nothing; orange means something surprised it or it wants more, so it explores and learns. The ring closes; outside it, robots burn.</footer>
+<script>
+const REPLAY = /*REPLAY*/null;
+const PALETTE = ["#4fd1c5", "#f6ad55", "#f687b3", "#63b3ed", "#b794f4", "#68d391", "#fc8181", "#f6e05e"];
+const MODE_COLOR = {0: "--calm", 1: "--aroused", 2: "--random", 3: "--frozen", 4: "--random", 9: "--dead"};
+const MODE_NAME = {0: "calm", 1: "aroused", 2: "random", 3: "frozen", 4: "refused", 9: "out"};
+const COS30 = Math.cos(Math.PI / 6), SIN30 = 0.5;
+const ARM_LENGTH = 0.8, HEIGHT = {light: 0.30, medium: 0.40, heavy: 0.50};
+
+const canvas = document.getElementById("c"), ctx = canvas.getContext("2d");
+const board = document.getElementById("board"), scrub = document.getElementById("scrub");
+const playBtn = document.getElementById("play"), clock = document.getElementById("clock");
+let replay = null, frame = 0, playing = true, speed = 1, acc = 0, last = null, sparks = [], spinAngle = [], trails = [];
+let dealt = [];
+let selected = null, levelHistory = [], rewardHistory = [];
+const brainCanvas = document.getElementById('brain'), bctx = brainCanvas.getContext('2d');
+
+function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+function load(data) {
+  replay = data;
+  frame = 0; sparks = []; dealt = replay.robots.map(() => 0); spinAngle = replay.robots.map(() => 0); trails = replay.robots.map(() => []);
+  document.getElementById("drop").hidden = true;
+  scrub.max = replay.frames.length - 1;
+  const names = replay.robots.map(r => r.name).join(", ");
+  document.getElementById("meta").textContent = `fight seed ${replay.seed} · ${replay.moments} moments · ${names}`;
+  const hash = location.hash.match(/t=(\d+)/);
+  if (hash) { frame = Math.min(+hash[1], replay.frames.length - 1); }
+  if (/paused/.test(location.hash)) { playing = false; playBtn.textContent = "Play"; }
+  const sel = location.hash.match(/select=(\d+)/);
+  // damage dealt per robot up to each frame, for the standings
+  cumulate();
+  buildBoard();
+  if (sel) select(+sel[1]);
+  draw();
+}
+
+let dealtAt = [], learnAt = [];
+function cumulate() {
+  dealtAt = []; learnAt = [];
+  const run = replay.robots.map(() => 0), aroused = replay.robots.map(() => 0), alive = replay.robots.map(() => 0), sweeps = replay.robots.map(() => 0);
+  for (const f of replay.frames) {
+    for (const h of f.hits) run[h[3]] += h[2];
+    dealtAt.push(run.slice());
+    f.robots.forEach((r, i) => { if (r[4] !== 9) { alive[i]++; if (r[4] === 1) aroused[i]++; if (r[9]) sweeps[i] += r[9][6] || 0; } });
+    learnAt.push(replay.robots.map((_, i) => [aroused[i], alive[i], sweeps[i]]));
+  }
+}
+
+function project(x, y, z) {
+  const S = scale();
+  return [cx + (x - y) * COS30 * S, cy + (x + y) * SIN30 * S - (z || 0) * S];
+}
+let cx = 0, cy = 0;
+function scale() { return Math.min(canvas.width / (2 * replay.radius * Math.SQRT2 * COS30 + 2), canvas.height / (2 * replay.radius * Math.SQRT2 * SIN30 + 3.5)); }
+
+function ellipsePath(x, y, r, z) {
+  const S = scale(), [sx, sy] = project(x, y, z);
+  ctx.beginPath();
+  ctx.ellipse(sx, sy, r * Math.SQRT2 * COS30 * S, r * Math.SQRT2 * SIN30 * S, 0, 0, Math.PI * 2);
+}
+
+function draw() {
+  if (!replay) return;
+  const f = replay.frames[frame], S = scale();
+  cx = canvas.width / 2; cy = canvas.height / 2 - 0.4 * S;
+  ctx.fillStyle = css("--panel"); ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // floor
+  ellipsePath(0, 0, replay.radius, 0);
+  { const [gx, gy] = project(0, 0, 0); const g = ctx.createRadialGradient(gx, gy, 0, gx, gy, replay.radius * Math.SQRT2 * COS30 * S);
+    g.addColorStop(0, shade(rgbHex(css("--floor")), 14)); g.addColorStop(1, shade(rgbHex(css("--floor")), -10)); ctx.fillStyle = g; }
+  ctx.fill();
+  ctx.strokeStyle = css("--floor-grid"); ctx.lineWidth = 1;
+  for (let g = -replay.radius; g <= replay.radius; g += 2) {
+    const h = Math.sqrt(Math.max(0, replay.radius ** 2 - g * g));
+    let p = project(g, -h, 0), q = project(g, h, 0); ctx.beginPath(); ctx.moveTo(...p); ctx.lineTo(...q); ctx.stroke();
+    p = project(-h, g, 0); q = project(h, g, 0); ctx.beginPath(); ctx.moveTo(...p); ctx.lineTo(...q); ctx.stroke();
+  }
+  // the burn outside the ring
+  if (f.zone < replay.radius - 0.01) {
+    ellipsePath(0, 0, replay.radius, 0); ellipsePath2(0, 0, f.zone);
+    ctx.fillStyle = css("--burn"); ctx.fill("evenodd");
+  }
+  ellipsePath(0, 0, f.zone, 0); ctx.strokeStyle = css("--ring"); ctx.lineWidth = 2.5; ctx.setLineDash([8, 6]); ctx.lineDashOffset = -frame * 0.8; ctx.stroke(); ctx.setLineDash([]);
+  // trails: the last 24 positions of every living robot
+  replay.robots.forEach((r, i) => {
+    const row = f.robots[i]; const tr = trails[i];
+    if (row[4] === 9) return;
+    if (!tr.length || tr[tr.length - 1][2] !== frame) { if (tr.length && tr[tr.length - 1][2] > frame) tr.length = 0; tr.push([row[0], row[1], frame]); if (tr.length > 24) tr.shift(); }
+  });
+  // robots, far to near
+  const order = replay.robots.map((r, i) => i).sort((a, b) => (f.robots[a][0] + f.robots[a][1]) - (f.robots[b][0] + f.robots[b][1]));
+  for (const i of order) drawRobot(i, f.robots[i], replay.robots[i]);
+  // sparks
+  for (const h of f.hits) {
+    const big = h[2] >= 2.5;
+    sparks.push({x: h[0], y: h[1], d: h[2], age: 0, who: h[3], kind: "flash"});
+    const n = big ? 8 : 3;
+    for (let k = 0; k < n; k++) { const a = Math.random() * Math.PI * 2, v = 0.06 + Math.random() * 0.12; sparks.push({x: h[0], y: h[1], vx: Math.cos(a) * v, vy: Math.sin(a) * v, vz: 0.1 + Math.random() * 0.15, z: 0.3, age: 0, kind: "spark"}); }
+    if (big) sparks.push({x: h[0], y: h[1], d: h[2], age: 0, kind: "number"});
+  }
+  sparks = sparks.filter(s => s.age < 16);
+  for (const s of sparks) {
+    const life = 1 - s.age / 16;
+    if (s.kind === "flash") {
+      const [sx, sy] = project(s.x, s.y, 0.3);
+      const rad = Math.min(18, 4 + s.d * 1.4) * (1 - s.age / 6);
+      if (s.age < 6) { ctx.beginPath(); ctx.arc(sx, sy, rad, 0, Math.PI * 2); ctx.fillStyle = `rgba(255, 236, 160, ${1 - s.age / 6})`; ctx.fill(); }
+    } else if (s.kind === "spark") {
+      s.x += s.vx; s.y += s.vy; s.z += s.vz; s.vz -= 0.03;
+      const [sx, sy] = project(s.x, s.y, Math.max(0, s.z));
+      ctx.beginPath(); ctx.arc(sx, sy, 2 * life + 0.5, 0, Math.PI * 2); ctx.fillStyle = `rgba(255, ${160 + Math.round(80 * life)}, 60, ${life})`; ctx.fill();
+    } else {
+      const [sx, sy] = project(s.x, s.y, 0.8 + s.age * 0.05);
+      ctx.fillStyle = `rgba(255, 240, 200, ${life})`; ctx.font = "bold 13px system-ui"; ctx.textAlign = "center";
+      ctx.shadowColor = "rgba(0,0,0,0.7)"; ctx.shadowBlur = 3; ctx.fillText("-" + s.d.toFixed(0), sx, sy); ctx.shadowBlur = 0;
+    }
+    s.age++;
+  }
+  // flames on robots outside the ring
+  replay.robots.forEach((r, i) => {
+    const row = f.robots[i]; if (row[4] === 9) return;
+    if (Math.hypot(row[0], row[1]) > f.zone) {
+      for (let k = 0; k < 4; k++) {
+        const ph = ((frame * 0.11) + k / 4) % 1, a = k * 1.7 + frame * 0.2;
+        const [sx, sy] = project(row[0] + 0.5 * r.radius * Math.cos(a), row[1] + 0.5 * r.radius * Math.sin(a), 0.1 + ph * 0.9);
+        ctx.beginPath(); ctx.arc(sx, sy, (0.16 - 0.1 * ph) * scale(), 0, Math.PI * 2); ctx.fillStyle = `rgba(255, ${90 + Math.round(120 * (1 - ph))}, 40, ${0.8 * (1 - ph)})`; ctx.fill();
+      }
+    }
+  });
+  clock.textContent = `moment ${f.t} · ${(f.t * replay.dt).toFixed(1)} s · ring ${f.zone.toFixed(1)} m`;
+  scrub.value = frame;
+  updateBoard(f);
+  if (selected !== null) {
+    // a selection ring around the chosen robot
+    const row = f.robots[selected];
+    ellipsePath(row[0], row[1], replay.robots[selected].radius * 1.7, 0); ctx.strokeStyle = css("--ink"); ctx.lineWidth = 1.5; ctx.setLineDash([3, 4]); ctx.stroke(); ctx.setLineDash([]);
+    drawBrain(selected, f);
+  }
+}
+
+// ---------------------------------------------------------------- the brain inspector
+const DIRS = ["ahead", "left", "behind", "right"];
+function drawBrain(i, f) {
+  const spec = replay.robots[i], row = f.robots[i], b = row[9];
+  const W = brainCanvas.width, H = brainCanvas.height, c = bctx;
+  c.fillStyle = css("--panel"); c.fillRect(0, 0, W, H);
+  const ink = css("--ink"), muted = css("--muted"), line = css("--line"), accent = PALETTE[i % PALETTE.length];
+  c.textBaseline = "alphabetic";
+  if (!b) {
+    c.fillStyle = muted; c.font = "18px system-ui"; c.textAlign = "left";
+    c.fillText(row[4] === 9 ? `${spec.name} is out of the fight` : `${spec.name}: ${spec.policy} policy, no brain to inspect`, 16, 40);
+    return;
+  }
+  const [sens, assoc, motor, level, want, sweeps, learning, reward] = b;
+  const mode = row[4];
+  levelHistory.push(level); rewardHistory.push(reward); if (levelHistory.length > 200) { levelHistory.shift(); rewardHistory.shift(); }
+  // ---- column 1: mode + senses
+  let x0 = 16, y = 22;
+  c.fillStyle = css(MODE_COLOR[mode] || "--random"); c.beginPath(); c.arc(x0 + 8, y + 6, 8, 0, Math.PI * 2); c.fill();
+  c.fillStyle = ink; c.font = "600 18px system-ui"; c.textAlign = "left";
+  c.fillText((MODE_NAME[mode] || "") + (mode === 1 ? " · sampling, learning" : mode === 0 ? " · routine, no learning" : ""), x0 + 26, y + 12);
+  c.fillStyle = muted; c.font = "13px system-ui";
+  c.fillText(`${sweeps} settling sweeps this moment${learning ? `, ${learning} learning sweeps` : ""} · reward ${reward >= 0 ? "+" : ""}${reward.toFixed(2)}`, x0 + 26, y + 32);
+  y = 76; section(c, "Senses", y, ink, x0);
+  rose(c, x0 + 62, y + 84, 56, sens.slice(0, 4), accent, "nearest robot", ink, muted);
+  rose(c, x0 + 196, y + 84, 56, sens.slice(4, 8), css("--ring"), "ring edge", ink, muted);
+  const bodyNames = ["speed +", "speed -", "turn L", "turn R", "hit points", "pain", "dealt", "outside"];
+  bars(c, x0 + 262, y + 14, 150, 150, bodyNames, sens.slice(8, 16), "#8fa4c4", ink, muted, 62);
+  const pnames = spec.inputs.slice(16, -1), pvals = sens.slice(16, -1);
+  if (pnames.length) { section(c, "Proprioception", y + 182, ink, x0); bars(c, x0, y + 196, 412, Math.min(190, 16 * pnames.length + 4), pnames, pvals, "#9fb8a1", ink, muted, 96); }
+  // ---- column 2: association cortex
+  x0 = 456; y = 22;
+  section(c, `Association cortex · ${assoc.length} neurons, one settled state`, y, ink, x0);
+  const cols = 8, cell = Math.min(36, 360 / cols), rows = Math.ceil(assoc.length / cols);
+  for (let k = 0; k < assoc.length; k++) {
+    const v = Math.max(-1, Math.min(1, assoc[k])), cx0 = x0 + (k % cols) * cell, cy0 = y + 14 + Math.floor(k / cols) * cell;
+    c.fillStyle = v >= 0 ? `rgba(255, 179, 71, ${0.06 + 0.94 * v})` : `rgba(79, 163, 255, ${0.06 + 0.94 * -v})`;
+    c.fillRect(cx0 + 1, cy0 + 1, cell - 2, cell - 2);
+  }
+  c.fillStyle = muted; c.font = "12px system-ui"; c.textAlign = "left";
+  c.fillText("orange active, blue below rest; the working trace carries it on", x0, y + 14 + rows * cell + 16);
+  // motor cortex under it
+  let my = y + 14 + rows * cell + 40;
+  section(c, "Motor cortex · one slot per motor, the chosen command in white", my, ink, x0);
+  const slotW = Math.min(100, 372 / spec.slots.length); let k = 0;
+  spec.slots.forEach((size, sidx) => {
+    const sx = x0 + sidx * slotW, chosen = row[10] ? row[10][sidx] : null, kind = spec.motors[sidx].kind;
+    const labels = size === 3 ? (kind === "arm" ? ["←", "hold", "→"] : kind === "leg" ? ["push", "hold", "swing"] : ["rev", "brake", "fwd"]) : ["off", "on"];
+    for (let j = 0; j < size; j++, k++) {
+      const v = motor[k] ?? 0, bw = (slotW - 10) / size - 3, bh = Math.max(0, Math.min(1, (v + 1) / 2)) * 54;
+      c.fillStyle = j === chosen ? ink : (v >= 0 ? "rgba(255, 179, 71, 0.75)" : "rgba(79, 163, 255, 0.75)");
+      c.fillRect(sx + j * (bw + 3), my + 70 - bh, bw, bh);
+      c.fillStyle = muted; c.font = "10px system-ui"; c.textAlign = "center"; c.fillText(labels[j], sx + j * (bw + 3) + bw / 2, my + 82);
+    }
+    c.fillStyle = ink; c.font = "600 11px system-ui"; c.textAlign = "center"; c.fillText(spec.motors[sidx].label, sx + (slotW - 10) / 2, my + 96);
+  });
+  c.textAlign = "left";
+  // ---- column 3: arousal
+  x0 = 860; y = 22; const gw = W - x0 - 16;
+  section(c, "Arousal · routine or learning, decided by the brain's own law", y, ink, x0);
+  c.fillStyle = line; c.fillRect(x0, y + 20, gw, 12);
+  c.fillStyle = mode === 1 ? css("--aroused") : css("--calm"); c.fillRect(x0, y + 20, gw * Math.min(1, level), 12);
+  const thr = x0 + gw * 0.2; c.fillStyle = ink; c.fillRect(thr - 1, y + 16, 2, 20);
+  c.fillStyle = muted; c.font = "12px system-ui";
+  c.fillText(`level ${level.toFixed(2)} · threshold 0.20 · want ${want.toFixed(2)}`, x0, y + 50);
+  const sh = 120, sy = y + 66; c.fillStyle = line; c.fillRect(x0, sy, gw, sh);
+  const n = levelHistory.length;
+  for (let j = 0; j < n; j++) {
+    const rx = x0 + j * gw / 200, rv = rewardHistory[j];
+    if (rv) { c.fillStyle = rv > 0 ? "rgba(90, 211, 122, 0.85)" : "rgba(255, 93, 93, 0.85)"; const rh = Math.min(sh / 2, Math.abs(rv) * sh); c.fillRect(rx, rv > 0 ? sy + sh / 2 - rh : sy + sh / 2, Math.max(1, gw / 200 - 1), rh); }
+  }
+  c.strokeStyle = css("--aroused"); c.lineWidth = 2; c.beginPath();
+  for (let j = 0; j < n; j++) { const rx = x0 + j * gw / 200, ry = sy + sh - Math.min(1, levelHistory[j]) * sh; j ? c.lineTo(rx, ry) : c.moveTo(rx, ry); }
+  c.stroke();
+  c.strokeStyle = ink; c.setLineDash([3, 3]); c.beginPath(); c.moveTo(x0, sy + sh * 0.8); c.lineTo(x0 + gw, sy + sh * 0.8); c.stroke(); c.setLineDash([]);
+  c.fillStyle = muted; c.fillText("arousal level (orange) over the last 200 moments, dashed = threshold", x0, sy + sh + 16);
+  c.fillText("reward per moment: green up, red down (damage dealt minus taken, /20)", x0, sy + sh + 32);
+  // explanation of the law
+  const text = [
+    "Calm: one settled state, the greedy command, no learning.",
+    "A reward below what life usually pays, below the need, or an",
+    "outcome that contradicts the forecast raises the level; above",
+    "the threshold the brain samples wider, keeps eligibility and",
+    "learns from every outcome until it is calm again.",
+  ];
+  c.fillStyle = muted; c.font = "12px system-ui";
+  text.forEach((t, j) => c.fillText(t, x0, sy + sh + 60 + j * 16));
+  // efference copy: the last commands as issued
+  if (row[10]) {
+    const ey = sy + sh + 150; section(c, "Efference copy · the command it just issued", ey, ink, x0);
+    c.fillStyle = ink; c.font = "13px system-ui"; c.fillText(row[10].map((cmd, sidx) => `${spec.motors[sidx].label}: ${cmd}`).join("  ·  ").slice(0, 70), x0, ey + 22);
+  }
+}
+function section(c, text, y, ink, x = 24) { c.fillStyle = ink; c.font = "600 13px system-ui"; c.textAlign = "left"; c.fillText(text, x, y + 6); }
+function rose(c, cx0, cy0, R, cells, color, title, ink, muted) {
+  c.strokeStyle = css("--line"); c.lineWidth = 1; c.beginPath(); c.arc(cx0, cy0, R, 0, Math.PI * 2); c.stroke();
+  const ang = [-Math.PI / 2, Math.PI, Math.PI / 2, 0]; // ahead up, left left, behind down, right right
+  cells.forEach((v, k) => {
+    const a = ang[k], rr = R * Math.max(0.06, Math.min(1, v));
+    c.fillStyle = color; c.globalAlpha = 0.25 + 0.75 * Math.min(1, v);
+    c.beginPath(); c.moveTo(cx0, cy0); c.arc(cx0, cy0, rr, a - 0.7, a + 0.7); c.closePath(); c.fill(); c.globalAlpha = 1;
+  });
+  c.fillStyle = ink; c.beginPath(); c.moveTo(cx0, cy0 - 7); c.lineTo(cx0 - 5, cy0 + 5); c.lineTo(cx0 + 5, cy0 + 5); c.closePath(); c.fill();
+  c.fillStyle = muted; c.font = "12px system-ui"; c.textAlign = "center"; c.fillText(title, cx0, cy0 + R + 16); c.textAlign = "left";
+}
+function bars(c, x, y, w, h, names, values, color, ink, muted, lw = 92) {
+  const n = names.length, rh = Math.min(17, h / Math.max(1, n));
+  for (let k = 0; k < n; k++) {
+    const yy = y + k * rh, v = Math.max(0, Math.min(1, values[k] ?? 0));
+    c.fillStyle = muted; c.font = "11px system-ui"; c.textAlign = "right"; c.fillText(names[k], x + lw - 6, yy + rh - 5);
+    c.fillStyle = css("--line"); c.fillRect(x + lw, yy + 3, w - lw, rh - 6);
+    c.fillStyle = color; c.fillRect(x + lw, yy + 3, (w - lw) * v, rh - 6);
+  }
+  c.textAlign = "left";
+}
+function ellipsePath2(x, y, r) { // append a second ellipse to the current path (for even-odd fill)
+  const S = scale(), [sx, sy] = project(x, y, 0);
+  ctx.ellipse(sx, sy, r * Math.SQRT2 * COS30 * S, r * Math.SQRT2 * SIN30 * S, 0, 0, Math.PI * 2);
+}
+
+function drawRobot(i, row, spec) {
+  const [x, y, heading, hp, mode, strides, planted, angles, spins] = row;
+  const S = scale(), r = spec.radius, h = HEIGHT[spec.chassis] || 0.4, dead = mode === 9;
+  const color = dead ? css("--dead") : PALETTE[i % PALETTE.length];
+  const dark = dead ? shade(css("--dead"), -30) : shade(color, -70), mid = dead ? css("--dead") : shade(color, -35);
+  const fx = Math.cos(heading), fy = Math.sin(heading);
+  const t = frame;
+  // trail
+  if (!dead && trails[i] && trails[i].length > 1) {
+    ctx.lineWidth = Math.max(1, 0.06 * S); ctx.lineCap = "round";
+    for (let k = 1; k < trails[i].length; k++) {
+      const a = trails[i][k - 1], b = trails[i][k], p = project(a[0], a[1], 0.02), q = project(b[0], b[1], 0.02);
+      ctx.strokeStyle = hexa(color, 0.35 * k / trails[i].length); ctx.beginPath(); ctx.moveTo(...p); ctx.lineTo(...q); ctx.stroke();
+    }
+  }
+  // shadow and mood halo
+  ellipsePath(x + 0.15, y + 0.15, r * 1.08, 0); ctx.fillStyle = "rgba(0,0,0,0.28)"; ctx.fill();
+  if (!dead && (mode === 0 || mode === 1)) {
+    const pulse = mode === 1 ? 0.5 + 0.5 * Math.sin(t * 0.6) : 0.3;
+    ellipsePath(x, y, r * (1.35 + 0.1 * pulse), 0);
+    ctx.strokeStyle = mode === 1 ? `rgba(255, 179, 71, ${0.35 + 0.45 * pulse})` : "rgba(79, 163, 255, 0.35)";
+    ctx.lineWidth = Math.max(2, 0.09 * S); ctx.stroke();
+  }
+  let legIndex = 0, armIndex = 0;
+  const arms = [];
+  spec.parts.forEach(part => {
+    const phi = heading + part.mount * Math.PI / 180, mx = x + r * Math.cos(phi), my = y + r * Math.sin(phi);
+    if (part.kind === "wheel") {
+      drawWheel(mx, my, fx, fy, h, S, dead, color);
+    } else if (part.kind === "leg") {
+      const s = strides[legIndex] ?? 0, up = !(planted[legIndex] ?? 1); legIndex++;
+      drawLeg(mx, my, phi, fx, fy, s, up, h, S, dead, color);
+    } else if (part.kind === "arm") {
+      arms.push({part, phi, mx, my, angle: angles[armIndex] ?? 0, spin: spins[armIndex] ?? 0}); armIndex++;
+    }
+  });
+  // hull: side wall, top plate, bevel ring, visor
+  const [bx, by] = project(x, y, 0), [tx, ty] = project(x, y, h);
+  const ea = r * Math.SQRT2 * COS30 * S, eb = r * Math.SQRT2 * SIN30 * S;
+  const wall = ctx.createLinearGradient(bx - ea, by, bx + ea, by);
+  wall.addColorStop(0, shade(color, -75)); wall.addColorStop(0.45, shade(color, -40)); wall.addColorStop(1, shade(color, -85));
+  ctx.fillStyle = dead ? shade(css("--dead"), -25) : wall;
+  ctx.beginPath(); ctx.ellipse(bx, by, ea, eb, 0, 0, Math.PI); ctx.lineTo(tx + ea, ty); ctx.ellipse(tx, ty, ea, eb, 0, 0, Math.PI, true); ctx.closePath(); ctx.fill();
+  const plate = ctx.createRadialGradient(tx - ea * 0.3, ty - eb * 0.5, 1, tx, ty, ea);
+  plate.addColorStop(0, dead ? css("--dead") : shade(color, 35)); plate.addColorStop(1, dead ? shade(css("--dead"), -15) : shade(color, -15));
+  ctx.beginPath(); ctx.ellipse(tx, ty, ea, eb, 0, 0, Math.PI * 2); ctx.fillStyle = plate; ctx.fill();
+  ctx.strokeStyle = dead ? shade(css("--dead"), -40) : shade(color, -60); ctx.lineWidth = Math.max(1, 0.05 * S); ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(tx, ty, ea * 0.62, eb * 0.62, 0, 0, Math.PI * 2); ctx.strokeStyle = dead ? shade(css("--dead"), -35) : shade(color, -45); ctx.stroke();
+  // armour studs around the plate
+  for (let k = 0; k < 6; k++) {
+    const a = heading + k * Math.PI / 3 + Math.PI / 6, [sx, sy] = project(x + r * 0.8 * Math.cos(a), y + r * 0.8 * Math.sin(a), h);
+    ctx.beginPath(); ctx.arc(sx, sy, Math.max(1, 0.05 * S), 0, Math.PI * 2); ctx.fillStyle = dead ? shade(css("--dead"), -40) : shade(color, -55); ctx.fill();
+  }
+  if (dead) {  // cracks and smoke
+    ctx.strokeStyle = shade(css("--dead"), -60); ctx.lineWidth = Math.max(1, 0.05 * S);
+    ctx.beginPath(); ctx.moveTo(tx - ea * 0.5, ty - eb * 0.2); ctx.lineTo(tx - ea * 0.1, ty + eb * 0.1); ctx.lineTo(tx + ea * 0.3, ty - eb * 0.3); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(tx + ea * 0.1, ty + eb * 0.5); ctx.lineTo(tx + ea * 0.4, ty + eb * 0.1); ctx.stroke();
+    for (let k = 0; k < 3; k++) {
+      const ph = ((t * 0.07) + k / 3) % 1, [sx, sy] = project(x + 0.2 * Math.sin(k + t * 0.05), y, h + 0.3 + ph * 1.2);
+      ctx.beginPath(); ctx.arc(sx, sy, (0.12 + 0.2 * ph) * S, 0, Math.PI * 2); ctx.fillStyle = `rgba(120, 125, 135, ${0.35 * (1 - ph)})`; ctx.fill();
+    }
+  } else {
+    // visor at the front
+    const [vx, vy] = project(x + r * 0.78 * fx, y + r * 0.78 * fy, h);
+    ctx.beginPath(); ctx.ellipse(vx, vy, Math.max(2, 0.16 * S), Math.max(1.5, 0.1 * S), 0, 0, Math.PI * 2);
+    ctx.fillStyle = mode === 1 ? "#ffd27a" : "#dff3ff"; ctx.fill();
+    ctx.beginPath(); ctx.arc(vx, vy, Math.max(1, 0.06 * S), 0, Math.PI * 2); ctx.fillStyle = "#1b2030"; ctx.fill();
+    // an antenna light in the robot's colour
+    const [ax, ay] = project(x - r * 0.4 * fx, y - r * 0.4 * fy, h), [a2x, a2y] = project(x - r * 0.4 * fx, y - r * 0.4 * fy, h + 0.45);
+    ctx.strokeStyle = "#5a6275"; ctx.lineWidth = Math.max(1, 0.04 * S); ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(a2x, a2y); ctx.stroke();
+    ctx.beginPath(); ctx.arc(a2x, a2y, Math.max(2, 0.08 * S), 0, Math.PI * 2); ctx.fillStyle = mode === 1 ? css("--aroused") : (mode === 0 ? css("--calm") : css("--random")); ctx.fill();
+  }
+  for (const a of arms) drawArm(i, a, h, S, dead, color);
+  // label, hp bar, mode dot
+  const [lx, ly] = project(x, y, h + 1.1), w = Math.max(44, 1.5 * S);
+  ctx.fillStyle = "rgba(0,0,0,0.45)"; roundRect(lx - w / 2 - 2, ly - 2, w + 4, 9, 3); ctx.fill();
+  const share = Math.max(0, hp / spec.hp);
+  ctx.fillStyle = dead ? css("--dead") : (share > 0.35 ? css("--hp") : css("--hp-low")); roundRect(lx - w / 2, ly, w * share, 5, 2); ctx.fill();
+  ctx.fillStyle = dead ? css("--muted") : css("--ink"); ctx.font = `600 ${Math.max(10, 0.5 * S)}px system-ui`; ctx.textAlign = "center";
+  ctx.shadowColor = "rgba(0,0,0,0.6)"; ctx.shadowBlur = 4; ctx.fillText(spec.name, lx, ly - 7); ctx.shadowBlur = 0;
+  ctx.beginPath(); ctx.arc(lx + w / 2 + 9, ly + 2.5, 4, 0, Math.PI * 2); ctx.fillStyle = css(MODE_COLOR[mode] || "--random"); ctx.fill();
+}
+
+function drawWheel(mx, my, fx, fy, h, S, dead, color) {
+  const len = 0.22, z = 0.14;
+  const a = project(mx + len * fx, my + len * fy, z), b = project(mx - len * fx, my - len * fy, z);
+  ctx.lineCap = "round";
+  ctx.lineWidth = Math.max(4, 0.3 * S); ctx.strokeStyle = dead ? shade(css("--dead"), -30) : "#1f232c"; ctx.beginPath(); ctx.moveTo(...a); ctx.lineTo(...b); ctx.stroke();
+  ctx.lineWidth = Math.max(2, 0.16 * S); ctx.strokeStyle = dead ? css("--dead") : "#3b414e"; ctx.beginPath(); ctx.moveTo(...a); ctx.lineTo(...b); ctx.stroke();
+  // tread marks
+  ctx.lineWidth = Math.max(1, 0.04 * S); ctx.strokeStyle = "#6b7383";
+  for (let k = -1; k <= 1; k++) {
+    const p = project(mx + k * 0.12 * fx, my + k * 0.12 * fy, z + 0.12), q = project(mx + k * 0.12 * fx, my + k * 0.12 * fy, z - 0.1);
+    ctx.beginPath(); ctx.moveTo(...p); ctx.lineTo(...q); ctx.stroke();
+  }
+  const hub = project(mx, my, z);
+  ctx.beginPath(); ctx.arc(hub[0], hub[1], Math.max(1.5, 0.06 * S), 0, Math.PI * 2); ctx.fillStyle = dead ? css("--dead") : color; ctx.fill();
+}
+
+function drawLeg(mx, my, phi, fx, fy, s, up, h, S, dead, color) {
+  const out = 0.55, footX = mx + out * Math.cos(phi) + 0.35 * s * fx, footY = my + out * Math.sin(phi) + 0.35 * s * fy;
+  const kneeX = mx + 0.5 * (footX - mx), kneeY = my + 0.5 * (footY - my);
+  const hip = project(mx, my, h * 0.55), knee = project(kneeX, kneeY, h * 0.55 + (up ? 0.4 : 0.28)), foot = project(footX, footY, up ? 0.2 : 0);
+  const bone = dead ? css("--dead") : shade(color, -40), joint = dead ? shade(css("--dead"), -20) : shade(color, -70);
+  ctx.lineCap = "round"; ctx.lineJoin = "round";
+  ctx.lineWidth = Math.max(3, 0.14 * S); ctx.strokeStyle = joint; ctx.beginPath(); ctx.moveTo(...hip); ctx.lineTo(...knee); ctx.lineTo(...foot); ctx.stroke();
+  ctx.lineWidth = Math.max(1.5, 0.08 * S); ctx.strokeStyle = bone; ctx.beginPath(); ctx.moveTo(...hip); ctx.lineTo(...knee); ctx.lineTo(...foot); ctx.stroke();
+  ctx.beginPath(); ctx.arc(knee[0], knee[1], Math.max(1.5, 0.07 * S), 0, Math.PI * 2); ctx.fillStyle = joint; ctx.fill();
+  // claw
+  const cw = 0.12, c1 = project(footX + cw * Math.cos(phi + 0.9), footY + cw * Math.sin(phi + 0.9), up ? 0.2 : 0), c2 = project(footX + cw * Math.cos(phi - 0.9), footY + cw * Math.sin(phi - 0.9), up ? 0.2 : 0);
+  ctx.lineWidth = Math.max(1.5, 0.07 * S); ctx.strokeStyle = up ? bone : joint;
+  ctx.beginPath(); ctx.moveTo(...c1); ctx.lineTo(...foot); ctx.lineTo(...c2); ctx.stroke();
+  if (!up) { ctx.beginPath(); ctx.arc(foot[0], foot[1], Math.max(2, 0.08 * S), 0, Math.PI * 2); ctx.fillStyle = joint; ctx.fill(); }
+}
+
+function drawArm(i, a, h, S, dead, color) {
+  const dir = a.phi + a.angle, L = ARM_LENGTH, tipX = a.mx + L * Math.cos(dir), tipY = a.my + L * Math.sin(dir);
+  const base = project(a.mx, a.my, h), tip = project(tipX, tipY, h * 0.95), elbow = project(a.mx + 0.5 * L * Math.cos(dir), a.my + 0.5 * L * Math.sin(dir), h + 0.12);
+  ctx.lineCap = "round"; ctx.lineJoin = "round";
+  ctx.lineWidth = Math.max(4, 0.2 * S); ctx.strokeStyle = dead ? shade(css("--dead"), -30) : "#232834"; ctx.beginPath(); ctx.moveTo(...base); ctx.lineTo(...elbow); ctx.lineTo(...tip); ctx.stroke();
+  ctx.lineWidth = Math.max(2, 0.1 * S); ctx.strokeStyle = dead ? css("--dead") : "#5c6577"; ctx.beginPath(); ctx.moveTo(...base); ctx.lineTo(...elbow); ctx.lineTo(...tip); ctx.stroke();
+  ctx.beginPath(); ctx.arc(base[0], base[1], Math.max(2.5, 0.12 * S), 0, Math.PI * 2); ctx.fillStyle = dead ? css("--dead") : shade(color, -50); ctx.fill(); ctx.strokeStyle = "#1b2030"; ctx.lineWidth = 1; ctx.stroke();
+  ctx.lineWidth = 1; ctx.strokeStyle = "#1b2030";
+  if (a.part.weapon === "spike") {
+    const ex = project(tipX + 0.38 * Math.cos(dir), tipY + 0.38 * Math.sin(dir), h * 0.95);
+    const px = -(tip[1] - base[1]), py = tip[0] - base[0], n = Math.hypot(px, py) || 1, w = 0.11 * S;
+    const g = ctx.createLinearGradient(tip[0] + px / n * w, tip[1] + py / n * w, tip[0] - px / n * w, tip[1] - py / n * w);
+    g.addColorStop(0, "#f4f7fb"); g.addColorStop(0.5, "#aab3c3"); g.addColorStop(1, "#6a7383");
+    ctx.fillStyle = dead ? css("--dead") : g;
+    ctx.beginPath(); ctx.moveTo(tip[0] + px / n * w, tip[1] + py / n * w); ctx.lineTo(...ex); ctx.lineTo(tip[0] - px / n * w, tip[1] - py / n * w); ctx.closePath(); ctx.fill(); ctx.stroke();
+  } else if (a.part.weapon === "hammer") {
+    // an iso block: top face, left face, right face
+    const w = 0.2, d = 0.16, z0 = h * 0.95, z1 = z0 + 0.3, cx0 = tipX, cy0 = tipY;
+    const ux = Math.cos(dir + Math.PI / 2), uy = Math.sin(dir + Math.PI / 2), vx = Math.cos(dir), vy = Math.sin(dir);
+    const corner = (su, sv, z) => project(cx0 + su * w * ux + sv * d * vx, cy0 + su * w * uy + sv * d * vy, z);
+    const faces = [
+      {pts: [corner(-1, -1, z1), corner(1, -1, z1), corner(1, 1, z1), corner(-1, 1, z1)], col: "#e8d3a6"},
+      {pts: [corner(-1, 1, z0), corner(1, 1, z0), corner(1, 1, z1), corner(-1, 1, z1)], col: "#b8955a"},
+      {pts: [corner(1, -1, z0), corner(1, 1, z0), corner(1, 1, z1), corner(1, -1, z1)], col: "#8f7142"},
+      {pts: [corner(-1, -1, z0), corner(-1, 1, z0), corner(-1, 1, z1), corner(-1, -1, z1)], col: "#8f7142"},
+    ];
+    for (const f of faces.slice(1).concat(faces.slice(0, 1))) {
+      ctx.beginPath(); ctx.moveTo(...f.pts[0]); for (const p of f.pts.slice(1)) ctx.lineTo(...p); ctx.closePath();
+      ctx.fillStyle = dead ? css("--dead") : f.col; ctx.fill(); ctx.stroke();
+    }
+  } else {
+    const rr = 0.32; spinAngle[i] = (spinAngle[i] + a.spin * 0.9) % (Math.PI * 2);
+    if (a.spin > 0.05 && !dead) {
+      ctx.beginPath(); ctx.ellipse(tip[0], tip[1], (rr + 0.12) * Math.SQRT2 * COS30 * S, (rr + 0.12) * Math.SQRT2 * SIN30 * S, 0, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255, 150, 60, ${0.25 * a.spin})`; ctx.fill();
+    }
+    ctx.beginPath(); ctx.ellipse(tip[0], tip[1] + 0.06 * S, rr * Math.SQRT2 * COS30 * S, rr * Math.SQRT2 * SIN30 * S, 0, 0, Math.PI * 2); ctx.fillStyle = "#2a2f3a"; ctx.fill();
+    ctx.beginPath(); ctx.ellipse(tip[0], tip[1], rr * Math.SQRT2 * COS30 * S, rr * Math.SQRT2 * SIN30 * S, 0, 0, Math.PI * 2);
+    ctx.fillStyle = dead ? css("--dead") : (a.spin > 0.05 ? `rgb(255, ${Math.round(215 - 130 * a.spin)}, 90)` : "#9aa3b5"); ctx.fill(); ctx.stroke();
+    ctx.strokeStyle = "#1b2030"; ctx.lineWidth = Math.max(1, 0.06 * S);
+    for (let k = 0; k < 4; k++) {
+      const t = spinAngle[i] + k * Math.PI / 2, [ex, ey] = project(tipX + rr * Math.cos(t), tipY + rr * Math.sin(t), h * 0.95);
+      ctx.beginPath(); ctx.moveTo(...tip); ctx.lineTo(ex, ey); ctx.stroke();
+    }
+    ctx.beginPath(); ctx.arc(tip[0], tip[1], Math.max(2, 0.08 * S), 0, Math.PI * 2); ctx.fillStyle = "#e6e9ef"; ctx.fill();
+  }
+}
+
+function roundRect(x, y, w, h, r) {
+  ctx.beginPath(); ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y); ctx.quadraticCurveTo(x + w, y, x + w, y + r); ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h); ctx.lineTo(x + r, y + h); ctx.quadraticCurveTo(x, y + h, x, y + h - r); ctx.lineTo(x, y + r); ctx.quadraticCurveTo(x, y, x + r, y); ctx.closePath();
+}
+function hexa(hex, alpha) {
+  const n = parseInt(hex.slice(1), 16); return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`;
+}
+
+function rgbHex(v) {
+  v = v.trim(); if (v[0] === "#") return v.length === 4 ? "#" + [...v.slice(1)].map(c => c + c).join("") : v;
+  const m = v.match(/\d+/g); if (!m) return "#223344"; return "#" + m.slice(0, 3).map(n => (+n).toString(16).padStart(2, "0")).join("");
+}
+function shade(hex, amount) {
+  const n = parseInt(hex.slice(1), 16), r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  const f = v => Math.max(0, Math.min(255, v + amount));
+  return `rgb(${f(r)}, ${f(g)}, ${f(b)})`;
+}
+
+function buildBoard() {
+  board.innerHTML = "";
+  replay.robots.forEach((r, i) => {
+    const el = document.createElement("div"); el.className = "robot"; el.id = "r" + i;
+    el.innerHTML = `<span class="swatch" style="background:${PALETTE[i % PALETTE.length]}"></span>
+      <span><span class="name">${r.name}</span><span class="tag">${r.policy === "brain" ? r.chassis : r.policy}</span></span>
+      <span class="place"></span><div class="bar"><i></i></div><div class="line"><span class="mode"><b></b><span class="m"></span></span><span class="hp"></span><span class="d"></span><span class="l"></span></div>`;
+    el.onclick = () => select(i);
+    board.appendChild(el);
+  });
+}
+
+function select(i) {
+  selected = selected === i ? null : i;
+  levelHistory = []; rewardHistory = [];
+  document.querySelectorAll(".robot").forEach((el, k) => el.classList.toggle("selected", +el.id.slice(1) === selected));
+  brainCanvas.style.display = selected === null ? "none" : "block";
+  document.getElementById("hint").style.display = selected === null ? "block" : "none";
+  document.getElementById("who").textContent = selected === null ? "" : "· " + replay.robots[selected].name;
+  draw();
+}
+
+canvas.addEventListener("click", e => {
+  if (!replay) return;
+  const rect = canvas.getBoundingClientRect(), px = (e.clientX - rect.left) * canvas.width / rect.width, py = (e.clientY - rect.top) * canvas.height / rect.height;
+  const f = replay.frames[frame]; let best = null, bestD = 40;
+  replay.robots.forEach((r, i) => { const [sx, sy] = project(f.robots[i][0], f.robots[i][1], 0.3); const d = Math.hypot(sx - px, sy - py); if (d < bestD) { best = i; bestD = d; } });
+  if (best !== null) select(best);
+});
+
+function updateBoard(f) {
+  const rows = replay.robots.map((r, i) => ({i, hp: f.robots[i][3], mode: f.robots[i][4], place: r.place}));
+  rows.sort((a, b) => (a.mode === 9) - (b.mode === 9) || b.hp - a.hp);
+  rows.forEach((row, k) => {
+    const el = document.getElementById("r" + row.i); board.appendChild(el);
+    const spec = replay.robots[row.i];
+    el.querySelector(".bar i").style.width = `${Math.max(0, 100 * row.hp / spec.hp)}%`;
+    el.querySelector(".bar i").style.background = row.mode === 9 ? "var(--dead)" : (row.hp / spec.hp > 0.35 ? "var(--hp)" : "var(--hp-low)");
+    el.querySelector(".mode b").style.background = `var(${MODE_COLOR[row.mode] || "--random"})`;
+    el.querySelector(".m").textContent = MODE_NAME[row.mode] || "";
+    el.querySelector(".hp").textContent = `hp ${row.hp.toFixed(0)}`;
+    el.querySelector(".d").textContent = `dealt ${dealtAt[frame][row.i].toFixed(0)}`;
+    const la = learnAt[frame][row.i];
+    el.querySelector(".l").textContent = spec.policy === "brain" && la[1] ? `learning ${Math.round(100 * la[0] / la[1])}% · ${la[2] >= 1000 ? (la[2] / 1000).toFixed(1) + "k" : la[2]} sweeps` : "";
+    el.querySelector(".place").textContent = frame === replay.frames.length - 1 ? `#${spec.place}` : (row.mode === 9 ? `#${spec.place}` : "");
+  });
+}
+
+function tick(now) {
+  if (replay && playing) {
+    if (last !== null) acc += (now - last) / 1000 * 20 * speed;
+    while (acc >= 1) { acc -= 1; if (frame < replay.frames.length - 1) frame++; else { playing = false; playBtn.textContent = "Replay"; } }
+    draw();
+  }
+  last = now;
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+playBtn.onclick = () => {
+  if (!replay) return;
+  if (!playing && frame >= replay.frames.length - 1) { frame = 0; sparks = []; }
+  playing = !playing; playBtn.textContent = playing ? "Pause" : "Play";
+};
+scrub.oninput = () => { frame = +scrub.value; sparks = []; trails = replay.robots.map(() => []); draw(); };
+const speeds = document.getElementById("speeds");
+[0.5, 1, 2, 4].forEach(s => {
+  const b = document.createElement("button"); b.textContent = s + "×"; if (s === 1) b.className = "active";
+  b.onclick = () => { speed = s; [...speeds.children].forEach(c => c.classList.remove("active")); b.classList.add("active"); };
+  speeds.appendChild(b);
+});
+document.getElementById("file").onchange = e => {
+  const file = e.target.files[0]; if (!file) return;
+  file.text().then(t => load(JSON.parse(t)));
+};
+document.addEventListener("keydown", e => { if (e.key === " ") { e.preventDefault(); playBtn.onclick(); } });
+
+if (REPLAY) load(REPLAY); else document.getElementById("drop").hidden = false;
+</script>
+</body>
+</html>
