@@ -68,13 +68,9 @@ wrapper, the nursery, the royale and the page's pack.
 
 ## From showcase to game
 
-The same pieces carry a multiplayer game: players assemble a body from the parts catalogue
-and name it; the server nurses it (a nursery is a few minutes of CPU) and hands back its
-driving test; matchmaking by Elo fills six-robot rooms; the fight runs on the server with
-the replay streamed, or in every browser from the same seed; brains live on between fights,
-so a robot that lost learns from it; a season ends with lineages, where the top robots'
-mutants enter the next season. Everything a player could fake stays server-side: the brain
-file, the fight seed, the replay.
+This could be a great game: players assemble robot bodies and brains from the parts
+catalogue, train them, and let them fight in a robot arena, where every robot keeps its one
+life and learns from every fight.
 
 ## Layout
 
