@@ -61,8 +61,7 @@ activity. Nothing is propagated backwards through layers. The page's worker load
 from jsDelivr and checks the Cadence wheel, the sources and the brain against the SHA-256 in
 `web/pack/manifest.json`. `web/shapes.js` draws exactly the pixels of `tracker/shapes.py`
 (`tests/test_shapes_js.py`), so the page shows the brain the images it was raised on. The brain
-view (`web/brain_scan.js`, `tracker/atlas.py`) is the standard viewer of
-[cadence-examples](https://github.com/muellerberndt/cadence-examples).
+view is `web/brain_scan.js` with the layout from `tracker/atlas.py`.
 
 ## Brain layout
 

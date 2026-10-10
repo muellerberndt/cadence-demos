@@ -275,11 +275,8 @@ What they do not show:
   a brain sees depends on the machine. Two brains from one seed take over at
   slightly different lesson counts.
 
-Against the 0.50.0 demo this replaces: its recorded Freeway lives were 17, 21,
-16, 26, 21, 21 against a teacher of 21 after a takeover at 174 s, and its
-Atlantis lives were 2000 five times after 288 s (the receipts of its browser
-edition). Carnival and Space Invaders fell into holding one action after the
-takeover and scored far below their teachers
+Carnival and Space Invaders can still fall into holding one action after the
+takeover and score far below their teachers
 ([#1](https://github.com/muellerberndt/cadence-demos/issues/1)).
 
 ```sh
@@ -341,9 +338,6 @@ most 20,000 samples. It times the brain's handler and its bookkeeping and
 visualization work, including handled refusals, but excludes uncaught faults,
 emulator/retina work and rendering. The page shows the median of the latest
 200 samples. These timings also do not isolate post-takeover decisions.
-
-The 0.50.0 browser edition this replaces recorded 17, 21, 16, 26, 21, 21 for
-Freeway after a takeover at 174 s and 2000 five times for Atlantis after 288 s.
 
 `emulator/` rebuilds `emulator.js` (`npm install && npm run build`). The ROM
 images are the ones shipped with `ale-py` 0.12.1; see `web/THIRD_PARTY.md`.

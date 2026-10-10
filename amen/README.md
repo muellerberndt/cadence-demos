@@ -46,8 +46,7 @@ archived recipe and its measured results below remain unchanged.
   of music, took 78 CPU minutes on one core, with no GPU.
 - **Training that repeats exactly.** The brain was trained from random
   parameters on Cadence 0.70.0. On the same machine the recipe gives the same
-  brain byte for byte: its files are identical to those of the brain trained on
-  Cadence 0.11.0 that this page carried before.
+  brain byte for byte.
 - **Prediction on tracks it never heard.** Eight tracks were held out, and the
   scores stand beside baselines on the same rows.
 - **An engine you can check.** The page runs a JavaScript version of the
@@ -245,12 +244,10 @@ What the runs show:
   scores equal to 3e-8 (the record table ships as float32). It also reproduces
   the library's record writes: after observing its own first four bars, the
   continuation matches to 3e-8.
-- **The same brain as before, from scratch.** The first brain on this page was
-  trained in September on Cadence 0.11.0. Training again from random parameters
-  on 0.70.0, on the same machine with the same recipe, gave the same slow
-  parameters and records byte for byte. The model files did not change when the
-  page moved to 0.70.0. On a different processor and numerical library the
-  recipe gives a close twin with the same behaviour, not the same bytes.
+- **The recipe reproduces the brain.** Training again from random parameters
+  on the same machine with the same recipe gives the same slow parameters and
+  records byte for byte. On a different processor and numerical library it gives
+  a close twin with the same behaviour, not the same bytes.
 - **A track costs little.** In Node the engine builds the brain in about 35 ms
   and composes sixteen bars in about 0.3 s on the same laptop. One half-beat
   takes about 1 ms in the Python library on one x86 core.
