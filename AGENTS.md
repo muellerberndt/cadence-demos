@@ -8,6 +8,12 @@ region and a readout taught on every presentation shows a layered network, not C
 such a setup is a control. A demo shows a creature: a stream, retained state, lessons on
 mismatch, free behaviour over a life, retention and recovery.
 
+**Codes of meaning (owner, 2026-10-20).** The brain computes, and indexes its memories, on
+learned compressed representations of meaning; raw observations are its input. A demo brain
+whose memories key on raw observations, or on a fixed random code of them, finds only moments
+whose raw inputs overlap. The library's learned code is work in progress in
+[cadence#211](https://github.com/muellerberndt/cadence/issues/211).
+
 Read this repository's `README.md` and the affected demo's README first. Follow
 the current Cadence README/AGENTS and
 [world-model guide](https://github.com/muellerberndt/cadence/blob/main/docs/world-model.md)
