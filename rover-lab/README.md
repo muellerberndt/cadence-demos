@@ -150,8 +150,7 @@ server binds only to `127.0.0.1`.
 
 [web/](web/) is the same lab as static files. The rover body, the four models,
 the controller and the step loop run in a worker beside the page at ten control
-steps per second, and the page draws the state the worker publishes. This is
-the edition at <https://floatingpragma.io/demos/rover-lab/>.
+steps per second, and the page draws the state the worker publishes.
 
 ```sh
 python3 -m http.server 8080 --directory web     # http://localhost:8080/

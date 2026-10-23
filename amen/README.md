@@ -26,7 +26,7 @@ acquisition; neither mathematical settlement nor pleasant output establishes
 low physical energy or superiority to a competent comparison model. The
 archived recipe and its measured results below remain unchanged.
 
-[![A dub playing: the studio and the waveform on the left, the brain on the right with its context channels, record cells and the loop through the world](screenshot.png)](https://floatingpragma.io/demos/amen/)
+[![A dub playing: the studio and the waveform on the left, the brain on the right with its context channels, record cells and the loop through the world](screenshot.png)](web/)
 
 ## What it demonstrates
 
@@ -165,9 +165,6 @@ To check the receipt, the model files and the browser engine:
 python3 amen/verify.py      # the receipt's sources and the model files; runs the parity test when node is installed
 node amen/parity.mjs        # the browser engine against the archived run
 ```
-
-[floatingpragma.io/demos/amen](https://floatingpragma.io/demos/amen/) serves a
-pinned copy of `web/` with the same model files.
 
 ## What the brain receives
 

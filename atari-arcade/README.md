@@ -341,5 +341,3 @@ emulator/retina work and rendering. The page shows the median of the latest
 
 `emulator/` rebuilds `emulator.js` (`npm install && npm run build`). The ROM
 images are the ones shipped with `ale-py` 0.12.1; see `web/THIRD_PARTY.md`.
-[floatingpragma.io/demos/atari-arcade](https://floatingpragma.io/demos/atari-arcade/)
-serves a pinned copy of this folder.
