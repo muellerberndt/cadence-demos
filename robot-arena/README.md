@@ -28,9 +28,12 @@ Returning visitors get their own league back; "Reset the brains to how they arri
 over.
 
 The committed browser pack is the source-pinned 0.79.0 showcase. Native source and new
-packs use 0.80.0, whose public `compose` and `retune` arguments replace the arena's manual
-genome and configuration edits. The historical browser pack and its measurements are
-retained unchanged. Rebuild a pack with `pack.py` to use the current adapter and wheel.
+packs use 0.89.0 through the public `compose` and `retune` arguments that replaced the arena's
+manual genome and configuration edits in 0.80.0. The adapter names two founders the library
+has changed since the arena's brains were raised: the motor inhibition (-0.5 for slots of up
+to eight neurons) and the trace read back at scale 12, so a newborn is wired as before. The
+historical browser pack and its measurements are retained unchanged. Rebuild a pack with
+`pack.py` to use the current adapter and wheel.
 
 ## How a robot learns
 

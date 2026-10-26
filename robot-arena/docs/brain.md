@@ -1,6 +1,6 @@
 # The brain settings
 
-The native adapter uses cadence-net 0.80.0. Every robot is one `Brain.compose` life: System 1, two reciprocally
+The native adapter uses cadence-net 0.89.0. Every robot is one `Brain.compose` life: System 1, two reciprocally
 coupled regions, the working trace as short-term memory, an associative memory, one reward
 channel, and the actor-critic of the basal ganglia with TD eligibility over its own recent
 commands. Every constant below is a gene of the robot's blueprint (`arena/brain.py:FOUNDER`),
@@ -8,11 +8,14 @@ so evolution can move it; the values are the founders. They are suggestions: one
 point, measured on these bodies in this ring, and the same goes for the bodies, the brain
 layout, the nursery, the driving test and the stage. Start from them and change what you like.
 
-The measurements below were recorded with 0.79.0. The 0.80.0 interface migration keeps their
-settings: `compose` accepts the sensory scale and named actor rates, and `retune` applies a
-stage without replacing configurations or rebuilding a brain. This is an interface change,
-not a new learning or retention result. The committed browser pack retains its own 0.79.0
-wheel, source hashes and trained checkpoints; new packs use 0.80.0.
+The measurements below were recorded with 0.79.0. The interface keeps their settings:
+`compose` takes the sensory scale (`scales`) and named actor rates, and `retune` applies a stage
+without replacing configurations or rebuilding a brain. On 0.89.0 the adapter also names the
+motor inhibition (-0.5) and the trace's readback scale (12) the brains were raised with, which
+the library has changed since; `tests/test_interface_migration.py` checks that a newborn's
+wiring, configurations and short life match the 0.79 recipe. This is an interface change, not
+a new learning or retention result. The committed browser pack retains its own 0.79.0 wheel,
+source hashes and trained checkpoints; new packs use 0.89.0.
 
 ## Senses and motors
 

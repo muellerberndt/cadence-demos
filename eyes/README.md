@@ -22,7 +22,7 @@ continuity is its own settled state, carried from frame to frame.
 
 ## What it demonstrates
 
-- **Seeing from pixels, in the browser.** The released `cadence-net` 0.74.0 wheel runs in
+- **Seeing from pixels, in the browser.** The released `cadence-net` 0.89.0 wheel runs in
   Pyodide in up to six web workers, unmodified apart from one compatibility shim (see Limits).
   The page draws its shapes into pixels, and each eye reads its receptors from those pixels and
   from nothing else. The brain is told only where to open an eye, when you point at a shape.
@@ -88,7 +88,7 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python -m pytest -q tests
 .venv/bin/python check_page.py          # the promise, in a headless Chrome
 .venv/bin/python compare.py             # the eye against its control
-.venv/bin/python raise_eye.py --out runs/eye-s1 --seed 1   # raise the brain again
+.venv/bin/python raise_eye.py --out runs/eye-s1 --seed 1   # raise it again (weaker on 0.89.0)
 .venv/bin/python pack.py --run runs/eye-s1                 # and pack it for the page
 ```
 
@@ -114,7 +114,7 @@ are among the nine shapes it was raised on; stars, tees and ells it never saw.
 ## Measurement and evidence
 
 The page's promise (`evidence/page_check.txt`, `check_page.py`, headless Chrome on a Mac): the
-brain loads in Pyodide; six eyes on six moving shapes, 5.93 of 6 on average on their own shapes;
+brain loads in Pyodide; six eyes on six moving shapes, 5.83 of 6 on average on their own shapes;
 a still world costs zero sweeps; a shape dragged 20 px in 150 ms is centred in its eye again a
 second later; no console errors.
 
@@ -133,6 +133,12 @@ faces; both run the same tests and seeds, faces included):
 
 60 trials per jump, 30 s at 20 frames per second per scene.
 
+The page runs the eye raised on Cadence 0.74.0. Its lessons used the quadratic nudge, which a
+`Brain` checkpoint of 0.89.0 no longer takes, so the pack stores it under the cross-entropy
+nudge with every learned array unchanged; the page never teaches it. Frozen, 0.89.0 answers as
+0.74.0 did: `compare.py` gives the same readings for the eye and for its control, value for
+value (the control's checkpoint is stored the same way, `controls/window-eye.json`).
+
 The raised brain, measured right after raising at its raised tolerance of 0.003
 (`evidence/fovea-v1x8-s1-summary.json`): at first glance from rest, with the eye's own shape the
 nearest one, it finds a shape within 3 px of its centre on 1.00 of trials, 3 to 12 px out on
@@ -140,8 +146,14 @@ nearest one, it finds a shape within 3 px of its centre on 1.00 of trials, 3 to 
 0.10). Faces 0.91; never seen: stars 0.85, tees 0.78, ells 0.72. After its own shape jumps 10,
 20 or 30 px, it is centred on it again within three frames on 0.95, 0.55 and 0.32 of trials, and
 it ignores another shape's jump on all of them. Every unchanged frame costs zero sweeps. Raising
-took 20,000 lessons, 632 s on one core (Python 3.11, NumPy 2.4.6). `raise_eye.py --seed 1` runs
-the same configuration and code; another platform may differ in the last bits and so in detail.
+took 20,000 lessons, 632 s on one core (Python 3.11, NumPy 2.4.6, Cadence 0.74.0).
+
+Raised again on 0.89.0 with the same lessons and settings (`raise_eye.py --seed 1`, 584 s;
+`evidence/fovea-v1x8-s1-0890-raise-summary.json`), the eye is weaker: at first glance 0.99, 0.79
+and 0.53 by distance, faces 0.88, stars 0.78, tees 0.74, ells 0.66, and after a jump of 10, 20 or
+30 px centred again within three frames on 0.90, 0.37 and 0.08 of trials; it still ignores
+another shape's jump on all of them. The library's settling and learning changed between the
+two releases, not the eye's settings, so the page keeps the eye raised on 0.74.0.
 
 The page runs the brain at an answer tolerance of 0.03 (`pack.py --tolerance`): a moving frame
 then settles in one 32-sweep chunk instead of about two, so the brain answers twice as often
@@ -159,11 +171,12 @@ spreads the eyes over up to six workers.
 - When two shapes pass through each other, an eye can go on with the other one.
 - A second visual stage (V2) did not help this eye in development and costs five to ten times
   the compute; the page uses one.
-- Pyodide's NumPy is 32-bit. Cadence 0.74.0 builds a learner with several slots by
+- Pyodide's NumPy is 32-bit. Cadence 0.89.0 builds a learner with several slots by
   `np.repeat(..., slot_sizes)` on int64 counts, which a 32-bit NumPy refuses to cast.
   `tracker/eye_host.fit_32_bit_numpy` gives the library's learning module a NumPy whose `repeat`
   casts those counts; the library's files are unchanged. The same holds for `np.add.reduceat`
   on the transport above `dense_limit`, which this brain does not use.
 - Grayscale only.
 
-Built with Cadence 0.74.0 (`cadence-net` from PyPI) and Pyodide 314.0.7.
+Runs on Cadence 0.89.0 (`cadence-net` from PyPI) and Pyodide 314.0.7; the eye was raised on
+Cadence 0.74.0.

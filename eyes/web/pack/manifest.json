@@ -1,10 +1,11 @@
 {
  "schema": "cadence-eyes-pack/1",
- "created": "2026-10-05",
+ "created": "2026-10-26",
  "pyodide": "314.0.7",
- "cadence": "0.74.0",
- "wheel": "cadence_net-0.74.0-py3-none-any.whl",
- "wheel_sha256": "146333a017048450580bdb8557e647b943092bc917ee6308770bc9586b74f766",
+ "cadence": "0.89.0",
+ "wheel": "cadence_net-0.89.0-py3-none-any.whl",
+ "wheel_sha256": "7b27009d0affd2235026ca5f7b4776ba545c15d5c5a14a61c75e52b6df65b786",
+ "wheel_source": "PyPI",
  "sources": [
   "__init__.py",
   "world.py",
@@ -21,10 +22,10 @@
   "life.py": "327f8a1a313019b78ec4329e92ade2dc14b5ad24317dcfa1901f8b3d4d0cd79e",
   "eyes.py": "f7e530cb3103dafc623f03d9bfa5721ae0507ec6e0ebfdc828d1c4877fd65e79",
   "fovea.py": "a39a0a137b3fa543962ebd58056445e1be4dc75295441f0cb7e35de6fb431d46",
-  "eye_host.py": "e7e5132f2febb8e88897a630ccb0431491a934e70a120987a96a063406fefa27"
+  "eye_host.py": "feb07f19c8552bee2db640d59b3138076e272640783d7b07b7bb1eac30f5f370"
  },
  "brain": "brain.npz",
- "brain_sha256": "ae8954dfccacfe795add55867ef9e5ba18fa2c9c656856d15fae485729afc13b",
+ "brain_sha256": "c3a911e994aa7602b4dc99cf37e7d2ed8133a2bb92fde66ce408009140939881",
  "atlas": "atlas.json",
  "run": "v1x8-s1",
  "phase": "bootstrap",
@@ -54,13 +55,5 @@
   "cross",
   "bar",
   "face"
- ],
- "glance": {
-  "trials": 300,
-  "hit": 0.8333,
-  "exact": 0.4067,
-  "err_px_median": 2.17,
-  "centre": 0.3733,
-  "random": 0.07
- }
+ ]
 }

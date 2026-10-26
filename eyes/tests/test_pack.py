@@ -24,7 +24,7 @@ def test_the_pack_carries_these_sources_and_its_manifest_holds():
         assert sha(packed) == manifest["sources_sha256"][name]
     assert sha(PACK / manifest["wheel"]) == manifest["wheel_sha256"]
     assert sha(PACK / manifest["brain"]) == manifest["brain_sha256"]
-    assert manifest["eye"] == "fovea" and manifest["cadence"] == "0.74.0"
+    assert manifest["eye"] == "fovea" and manifest["cadence"] == "0.89.0"
 
 
 def test_the_packed_eye_follows_a_shape_from_pixels(tmp_path):

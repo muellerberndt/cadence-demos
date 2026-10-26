@@ -1,7 +1,7 @@
 # Atari Arcade
 
 Brains born at server start learn Atari games while you watch. Each brain is a
-Cadence 0.80.0 **System 1** brain on raw screen pixels in the Python edition. It begins as a
+Cadence 0.89.0 **System 1** brain on raw screen pixels in the Python edition. It begins as a
 hatchling and watches a scripted teacher play. Once its own answers agree with
 the teacher's actions often enough it takes the controls, and from then on it
 keeps learning from the reward of its own actions. The page shows the game
@@ -9,10 +9,12 @@ beside the settled brain: the retina, the association cortex and its working
 trace, the motor cortex with one neuron per action, the value the critic
 expects, and the score of every life with a skill badge from noob to legend.
 
-The current Python adapter uses named learning and actor overrides in `Brain.compose`.
-The interface migration preserves the previous explicit configuration on the candidate
-0.80.0 runtime, including short teacher/reward tapes and saved continuation. It adds no
-new Atari skill claim or numerical parity claim with 0.71.0. For the former Python
+The Python adapter composes with named actor overrides and the teacher's own learning
+configuration (`learning=LearnerConfig(...)`, the way 0.89.0 takes a lesson's own steps). The
+actor's running moments (`momentum`, `normalize`) left the library in 0.85.0, so the reward step
+is the actor's own. `tests/test_brain_interface.py` checks that the factory builds the archived
+explicit recipe less those two options, including short teacher/reward tapes and saved
+continuation; it adds no numerical parity claim with earlier runtimes. For the former Python
 installation, use [the source at 2a32c3e](https://github.com/muellerberndt/cadence-demos/tree/2a32c3e/atari-arcade)
 and its `cadence-net==0.71.0` requirements. The browser engine, fixtures and measured
 receipts below retain their historical versions.
@@ -74,21 +76,19 @@ demo's recorded teacher/reward configuration, not a prescription to reduce
 new applications to independent screen classification. The brain is composed once:
 
 ```python
-from cadence import Brain
+from cadence import Brain, LearnerConfig
 
 brain = Brain.compose(
     7056, n_actions, seed=seed,                 # 84 x 84 screen, one motor neuron per action
-    learning_beta=0.1, temperature=0.2, learning_tolerance=3e-3,
-    learning_free_steps=1024, learning_nudged_steps=12,
-    learning_eta_bias=0.02, learning_eta=0.003, learning_momentum=0.9,
-    learning_normalize=0.99, learning_normalize_floor=1e-4,
+    learning=LearnerConfig(                     # the teacher's lessons
+        beta=0.1, temperature=0.2, tolerance=3e-3, free_steps=1024, nudged_steps=12,
+        eta_bias=0.02, eta=0.003, momentum=0.9, normalize=0.99, normalize_floor=1e-4),
     actor_gamma=0.97, actor_lam=0.9, actor_eta=0.001, actor_eta_bias=0.0001,
-    actor_eta_critic=0.3, actor_momentum=0.9, actor_normalize=0.99,
-    actor_eligibility_steps=None,
+    actor_eta_critic=0.3, actor_eligibility_steps=None,
 )
 ```
 
-`learning_eta` and `learning_eta_bias` govern the supplied teacher's lessons;
+The learning configuration's `eta` and `eta_bias` govern the supplied teacher's lessons;
 `actor_eta` and `actor_eta_bias` govern actual reward through `step`.
 `actor_eligibility_steps=None` retains this demo's inheritance of the learner's
 12-step nudged budget. These measured pixel settings are application choices,
@@ -130,8 +130,8 @@ without a browser.
 
 ## Brain layout
 
-The Python edition runs on the main brain of **Cadence 0.80.0**, `Brain.compose`,
-installed as `cadence-net==0.80.0`. Its teacher and reward eligibility phases
+The Python edition runs on the main brain of **Cadence 0.89.0**, `Brain.compose`,
+installed as `cadence-net==0.89.0`. Its teacher and reward eligibility phases
 retain the demo's finite budgets; upgrading the package does not enable
 qualified teaching. Whole-brain actions still require equation qualification.
 
@@ -140,12 +140,12 @@ qualified teaching. Whole-brain actions still require equation qualification.
 | Sensory neurons | 7,056 | The screen, one neuron per pooled pixel |
 | Association cortex | 64 | Reads the screen; exchanges activity with the motor cortex |
 | Working trace | 64 | Holds the association cortex's activity of the moments before |
-| Motor cortex | one neuron per action | The policy; neurons inhibit one another |
+| Motor cortex | one neuron per action | The policy; no lateral synapses between them since 0.85.0 |
 | Critic (basal ganglia) | reads the association cortex | Expected return; its error is the dopamine signal |
 | Associative memory | 7,056 by actions | Reward recalled for each action in a similar screen |
 
-A Freeway brain (three actions) has 7,187 neurons and 456,070 synapses; an
-Atlantis brain (four actions) has 7,188 and 456,204. All of them settle
+A Freeway brain (three actions) has 7,187 neurons and 456,064 synapses; an
+Atlantis brain (four actions) has 7,188 and 456,192. All of them settle
 together for every decision, and an answer is accepted only when the whole
 state satisfies the neural equations to tolerance.
 
@@ -157,10 +157,11 @@ time. The constructor's default step sizes suit small inputs: on these 7,056
 pixels they did not get a brain past the most frequent label of a
 screen-dependent teacher in our trials, so the learning configuration above is
 part of the demo. Reward uses discount `gamma=0.97` and eligibility decay
-`lam=0.9`, rather than `Brain.compose`'s default `0.9` and `0.8`; both teacher
-and reward updates use `momentum=0.9` and `normalize=0.99`. See the
-[brain guide](https://github.com/muellerberndt/cadence/blob/v0.80.0/docs/brain.md)
-and [continuous interaction](https://github.com/muellerberndt/cadence/blob/v0.80.0/docs/continuous.md).
+`lam=0.9`, rather than `Brain.compose`'s default `0.9` and `0.8`. The teacher's
+lessons use `momentum=0.9` and `normalize=0.99`; the reward step is the actor's
+own. See the
+[start guide](https://github.com/muellerberndt/cadence/blob/v0.89.0/docs/start.md)
+and [learning from reward](https://github.com/muellerberndt/cadence/blob/v0.89.0/docs/reward.md).
 
 ## Run
 
@@ -176,7 +177,7 @@ python3 -m venv .venv
 Open **http://localhost:8668**. `ARCADE_GAMES` selects the games (default
 `Atlantis,Freeway,Carnival,SpaceInvaders`), `ARCADE_PUBLIC=1` locks the speed
 control, `ARCADE_HOST` and `ARCADE_PORT` bind the server. Each game needs about
-one processor core. `requirements.txt` pins `cadence-net==0.80.0`.
+one processor core. `requirements.txt` pins `cadence-net==0.89.0`.
 
 ## What the brain receives
 
@@ -206,27 +207,27 @@ current synaptic weights.
 ## Measurement and evidence
 
 `headless_control.py` ran every game for three seeds on the released package
-(`cadence-net==0.70.0`, Python 3.11, NumPy 2.4.6, one BLAS thread per brain, an
-AWS c7i.16xlarge shared with other jobs). Each run has two brains born from one
-seed: one keeps learning after the takeover, the other receives no outcome at
-all (the frozen twin). Each lived at least twelve whole games at the controls.
-The reports are in [evidence/headless-070/](evidence/headless-070/); each one
-binds the hashes of `server.py` and `headless_control.py` it ran.
+(`cadence-net==0.89.0`, Python 3.13.7, NumPy 2.5.4, one BLAS thread per brain, one game per
+run and three runs at a time on an Apple arm64 laptop shared with other jobs). Each run has
+two brains born from one seed: one keeps learning after the takeover, the other receives no
+outcome at all (the frozen twin). Each lived at least twelve whole games at the controls.
+The reports are in [evidence/headless-089/](evidence/headless-089/); each one binds the
+hashes of `server.py` and `headless_control.py` it ran.
 
 | Game | Seed | Teacher alone | Takeover: lessons / agreement / time | Living: mean (lives) | Living: last five | Living: best | Frozen twin: mean (lives) | Faults / refused | Brain ms per screen: p50 / p95 | Checks |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Atlantis | 0 | 2,000 | 500 / 1.0 / 33.0 s | 2,000 (13) | 2,000 | 2,000 | 2,008 (13) | 0 / 0 | 74 / 117 | pass |
-| Atlantis | 1 | 2,000 | 500 / 1.0 / 33.9 s | 2,000 (13) | 2,000 | 2,000 | 2,000 (13) | 0 / 0 | 70 / 102 | pass |
-| Atlantis | 2 | 2,000 | 500 / 1.0 / 33.5 s | 1,969 (13) | 2,000 | 2,000 | 1,938 (13) | 0 / 0 | 74 / 110 | pass |
-| Carnival | 0 | 540 | 2000 / 0.783 / 123.0 s | 422 (12) | 448 | 640 | 543 (15) | 0 / 0 | 64 / 88 | fail: living_holds_or_beats_frozen |
-| Carnival | 1 | 540 | 2000 / 0.733 / 124.0 s | 485 (12) | 424 | 860 | 707 (15) | 0 / 0 | 62 / 83 | fail: expert_via_selfplay, living_holds_or_beats_frozen |
-| Carnival | 2 | 540 | 2000 / 0.758 / 129.2 s | 454 (13) | 456 | 700 | 492 (15) | 0 / 0 | 64 / 92 | fail: living_holds_or_beats_frozen |
-| Freeway | 0 | 21.5 | 500 / 1.0 / 37.9 s | 22.7 (12) | 22.2 | 26.0 | 23.4 (12) | 0 / 0 | 46 / 81 | pass |
-| Freeway | 1 | 21.5 | 500 / 1.0 / 39.3 s | 21.9 (12) | 22.6 | 24.0 | 22.7 (12) | 0 / 0 | 47 / 86 | pass |
-| Freeway | 2 | 21.5 | 500 / 1.0 / 39.8 s | 22.7 (12) | 23.4 | 25.0 | 22.8 (12) | 0 / 0 | 46 / 85 | pass |
-| SpaceInvaders | 0 | 225 | 1313 / 0.9 / 86.2 s | 207 (13) | 141 | 435 | 183 (13) | 0 / 0 | 67 / 100 | fail: expert_via_selfplay, living_holds_or_beats_frozen |
-| SpaceInvaders | 1 | 225 | 1519 / 0.9 / 97.3 s | 249 (17) | 262 | 315 | 251 (13) | 0 / 0 | 60 / 86 | fail: living_holds_or_beats_frozen |
-| SpaceInvaders | 2 | 225 | 1370 / 0.9 / 88.9 s | 237 (12) | 241 | 325 | 215 (15) | 0 / 0 | 65 / 95 | pass |
+| Atlantis | 0 | 2,000 | 500 / 1.0 / 26.5 s | 2,000 (13) | 2,000 | 2,000 | 2,000 (13) | 0 / 0 | 37 / 57 | pass |
+| Atlantis | 1 | 2,000 | 500 / 1.0 / 28.1 s | 2,046 (13) | 2,000 | 2,600 | 2,008 (13) | 0 / 0 | 34 / 55 | pass |
+| Atlantis | 2 | 2,000 | 500 / 1.0 / 27.2 s | 2,000 (13) | 2,000 | 2,000 | 2,000 (13) | 0 / 0 | 14 / 52 | pass |
+| Carnival | 0 | 540 | 2000 / 0.892 / 166.1 s | 438 (12) | 396 | 1,020 | 449 (16) | 0 / 0 | 61 / 140 | fail: expert_via_selfplay |
+| Carnival | 1 | 540 | 1669 / 0.9 / 141.0 s | 213 (12) | 208 | 440 | 440 (21) | 0 / 0 | 54 / 124 | fail: expert_via_selfplay, living_holds_or_beats_frozen |
+| Carnival | 2 | 540 | 1628 / 0.9 / 144.2 s | 457 (12) | 484 | 920 | 579 (22) | 0 / 0 | 49 / 122 | pass |
+| Freeway | 0 | 21.7 | 500 / 1.0 / 32.0 s | 23.7 (12) | 24.0 | 27.0 | 22.1 (12) | 0 / 0 | 37 / 60 | pass |
+| Freeway | 1 | 21.7 | 500 / 1.0 / 28.9 s | 23.4 (12) | 23.4 | 26.0 | 23.6 (12) | 0 / 0 | 36 / 57 | pass |
+| Freeway | 2 | 21.7 | 500 / 1.0 / 29.0 s | 23.0 (12) | 23.2 | 28.0 | 22.8 (12) | 0 / 0 | 38 / 61 | pass |
+| SpaceInvaders | 0 | 225 | 746 / 0.9 / 44.3 s | 248 (12) | 215 | 530 | 275 (12) | 0 / 0 | 50 / 84 | pass |
+| SpaceInvaders | 1 | 225 | 566 / 0.9 / 32.7 s | 337 (12) | 309 | 650 | 178 (15) | 0 / 0 | 42 / 71 | pass |
+| SpaceInvaders | 2 | 225 | 711 / 0.9 / 45.6 s | 285 (12) | 282 | 425 | 204 (15) | 0 / 0 | 42 / 72 | pass |
 
 "Teacher alone" is the mean of the teacher's own games. A check line passes when
 both brains took the controls, neither faulted, the living brain's last five
@@ -248,32 +249,37 @@ are elapsed wall times under the host's load, not operation counts.
 
 What the runs show:
 
-- **Freeway and Atlantis reach the teacher's level in every seed.** Freeway
-  lives average 21.9 to 22.7 against a teacher of 21.5, with single lives up to
-  26. Atlantis holds the teacher's 2,000. Both brains take the controls after
-  500 lessons, 33 to 40 seconds after birth, with every one of the last 120
-  answers in agreement.
-- **Space Invaders and Carnival keep playing after the takeover.** Space
-  Invaders lives average 207 to 249 against a teacher of 225; Carnival 422 to
-  485 against 540. Their teachers depend on the player's position, so the
-  agreement there (0.90 for Space Invaders at the gate, 0.73 to 0.78 for
-  Carnival at the 2,000-lesson limit) is read from the pixels. They do not pass
-  every check, and they stay out of the published pair.
-- **No brain faulted and no decision was refused** in any of the 24 brains.
-  Brain processing per screen, collected during watching and play, took 46 to 74 ms
-  at the median and 81 to 117 ms at the 95th percentile on that shared host;
-  the live page showed about 100 ms on an Apple M4 laptop.
+- **Freeway, Atlantis and Space Invaders pass every check on every seed.** Freeway
+  lives average 23.0 to 23.7 against a teacher of 21.7, with single lives up to 28.
+  Atlantis holds the teacher's 2,000, with a best life of 2,600. Both take the controls
+  after 500 lessons, 27 to 32 seconds after birth, with every one of the last 120 answers
+  in agreement. Space Invaders' living brains end at 215, 309 and 282 against a teacher of
+  225, after a takeover at 566 to 746 lessons.
+- **Carnival reaches its teacher on one seed.** Its living brain's last five lives average
+  484 on seed 2, 396 on seed 0 and 208 on seed 1, against a teacher of 540. Its teacher and
+  Space Invaders' depend on the player's position, so the agreement there (0.89 to 0.90) is
+  read from the pixels.
+- **No brain faulted and no decision was refused** in any of the 24 brains. Brain processing
+  per screen, collected during watching and play, took 14 to 61 ms at the median and 52 to
+  140 ms at the 95th percentile on that laptop.
 
 What they do not show:
 
-- **A gain from reward.** The frozen twin does as well as the living brain in
-  Freeway and Atlantis and better in Carnival. In these runs learning from
-  reward keeps the taught skill; it does not improve on it. Freeway's and
-  Atlantis's teachers are a single held action, and a random policy scores far
-  more in Atlantis than its teacher does.
-- **Repeatable timing.** The game does not wait for the brain, so which screens
-  a brain sees depends on the machine. Two brains from one seed take over at
-  slightly different lesson counts.
+- **A reliable gain from reward.** The living brain ends above its frozen twin in Space
+  Invaders on seeds 1 and 2 (309 against 174, 282 against 216) and in Freeway on seed 0,
+  level with it elsewhere, and below it in Carnival on seed 1 (208 against 364). Freeway's
+  and Atlantis's teachers are a single held action, and a random policy scores far more in
+  Atlantis than its teacher does.
+- **Repeatable timing.** The game does not wait for the brain, so which screens a brain sees
+  depends on the machine and its load. Two brains from one seed take over at slightly
+  different lesson counts.
+
+On 0.70.0 ([evidence/headless-070/](evidence/headless-070/), one game per run on an AWS
+c7i.16xlarge shared with other jobs) seven of the twelve checks passed: Freeway and Atlantis
+on every seed and Space Invaders on seed 2; Carnival on none. Between the two releases the
+actor's reward step lost its running moments (0.85.0), the motor slot's lateral inhibition
+went from -0.5 to 0.0 (0.85.0), and the actor now credits the policy that sampled each action
+(0.79.0).
 
 Carnival and Space Invaders can still fall into holding one action after the
 takeover and score far below their teachers

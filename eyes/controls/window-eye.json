@@ -18,5 +18,7 @@
   "cross",
   "bar"
  ],
- "what": "The window eye: a 26x26 window at full resolution, 13 bins of 2 px, V1 4x5/2, raised on eight shapes (faces held out); the control for the foveated eye."
+ "what": "The window eye: a 26x26 window at full resolution, 13 bins of 2 px, V1 4x5/2, raised on eight shapes (faces held out); the control for the foveated eye.",
+ "nudge": "raised with the quadratic nudge on cadence-net 0.74.0; the checkpoint stores the cross-entropy nudge, the one a Brain loads on 0.89.0, with every array unchanged. The control never learns in compare.py, and frozen it answers identically on both releases.",
+ "original_sha256": "933381cea4f7080ab4873523bddf862caef2fd9ecf50ee80ed045ecc45e35116"
 }
