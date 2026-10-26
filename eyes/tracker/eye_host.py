@@ -28,7 +28,7 @@ from .fovea import Fovea, FovealEyes
 
 
 def fit_32_bit_numpy() -> bool:
-    """Pyodide's numpy is 32-bit: its index type is int32. Cadence 0.74.0 sets up a learner
+    """Pyodide's numpy is 32-bit: its index type is int32. Cadence 0.89.0 sets up a learner
     with several slots by ``np.repeat(..., slot_sizes)`` on int64 sizes, which a 32-bit numpy
     refuses to cast. The library's learning module gets a numpy whose ``repeat`` casts the
     counts to the index type; every other call is numpy's own. Nothing changes on 64 bits."""

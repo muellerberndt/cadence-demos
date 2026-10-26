@@ -1,0 +1,127 @@
+{
+ "seed": 1,
+ "identity": {
+  "cadence_net": "0.89.0",
+  "python": "3.13.7",
+  "numpy": "2.5.4",
+  "machine": "arm64",
+  "sources_sha256": {
+   "server.py": "bbaac9bd594850ed4cf4089fc8403244387aa94f551244e8e099b6a0d615204a",
+   "headless_control.py": "ed6b8d94a28beef38fdd8136e64463f5d1afaaa5dfe8b553fd7a272f5fa9d801"
+  }
+ },
+ "report": {
+  "Atlantis:living": {
+   "phase": "playing",
+   "lessons": 500,
+   "takeover": {
+    "lessons": 500,
+    "agreement": 1.0,
+    "seconds": 28.1
+   },
+   "agreement_with_teacher_now": 1.0,
+   "teacher_returns": [
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0
+   ],
+   "teacher_mean": 2000.0,
+   "episodes_lived": 13,
+   "returns": [
+    2000.0,
+    2000.0,
+    2600.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0
+   ],
+   "late_mean": 2000.0,
+   "best": 2600.0,
+   "faults": 0,
+   "refused": 0,
+   "last_error": null,
+   "decisions": 3853,
+   "env_steps": 7033,
+   "outcomes_learned": 3852,
+   "seconds": 151.6,
+   "think_seconds": {
+    "p50": 0.0335,
+    "p95": 0.0549,
+    "p99": 0.0667,
+    "max": 0.5279
+   },
+   "think_seconds_scope": "last 20000 whole brain handlers; watching and play, including refusals/fault backoff; excludes emulator, retina, waiting and rendering"
+  },
+  "Atlantis:frozen": {
+   "phase": "playing",
+   "lessons": 500,
+   "takeover": {
+    "lessons": 500,
+    "agreement": 1.0,
+    "seconds": 27.2
+   },
+   "agreement_with_teacher_now": 0.975,
+   "teacher_returns": [
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0
+   ],
+   "teacher_mean": 2000.0,
+   "episodes_lived": 13,
+   "returns": [
+    2000.0,
+    2100.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    2000.0
+   ],
+   "late_mean": 2000.0,
+   "best": 2100.0,
+   "faults": 0,
+   "refused": 0,
+   "last_error": null,
+   "decisions": 5763,
+   "env_steps": 7020,
+   "outcomes_learned": 0,
+   "seconds": 150.1,
+   "think_seconds": {
+    "p50": 0.0124,
+    "p95": 0.0507,
+    "p99": 0.0626,
+    "max": 0.2603
+   },
+   "think_seconds_scope": "last 20000 whole brain handlers; watching and play, including refusals/fault backoff; excludes emulator, retina, waiting and rendering"
+  }
+ },
+ "verdicts": {
+  "Atlantis": {
+   "takeover_living": true,
+   "takeover_frozen": true,
+   "no_faults": true,
+   "lived_episodes": true,
+   "no_collapse": true,
+   "expert_via_selfplay": true,
+   "living_holds_or_beats_frozen": true,
+   "PASS": true
+  }
+ }
+}

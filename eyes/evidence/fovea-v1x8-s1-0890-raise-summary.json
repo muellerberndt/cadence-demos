@@ -1,0 +1,153 @@
+{
+ "lessons": 20000,
+ "seconds": 584.2,
+ "world": {
+  "scenes": 996,
+  "lost": 0,
+  "darts": 2975
+ },
+ "assays": {
+  "glance": {
+   "trials": 300,
+   "all": {
+    "trials": 300,
+    "hit": 0.77,
+    "exact": 0.37,
+    "err_px_median": 2.2,
+    "centre": 0.3733,
+    "random": 0.07
+   },
+   "near": {
+    "trials": 100,
+    "hit": 0.99,
+    "exact": 0.53,
+    "err_px_median": 1.49,
+    "centre": 1.0,
+    "random": 0.04
+   },
+   "mid": {
+    "trials": 100,
+    "hit": 0.79,
+    "exact": 0.36,
+    "err_px_median": 2.31,
+    "centre": 0.07,
+    "random": 0.07
+   },
+   "far": {
+    "trials": 100,
+    "hit": 0.53,
+    "exact": 0.22,
+    "err_px_median": 10.07,
+    "centre": 0.05,
+    "random": 0.1
+   },
+   "by_kind": {
+    "bar": 0.6071,
+    "cross": 0.5938,
+    "diamond": 0.7576,
+    "disc": 0.9268,
+    "face": 0.875,
+    "frame": 0.7674,
+    "ring": 0.7692,
+    "square": 0.7083,
+    "triangle": 0.8571
+   },
+   "still_zero_share": 1.0
+  },
+  "glance_unseen": {
+   "trials": 300,
+   "all": {
+    "trials": 300,
+    "hit": 0.73,
+    "exact": 0.2867,
+    "err_px_median": 2.66,
+    "centre": 0.3767,
+    "random": 0.0533
+   },
+   "near": {
+    "trials": 100,
+    "hit": 0.91,
+    "exact": 0.45,
+    "err_px_median": 1.6,
+    "centre": 1.0,
+    "random": 0.06
+   },
+   "mid": {
+    "trials": 100,
+    "hit": 0.8,
+    "exact": 0.27,
+    "err_px_median": 2.49,
+    "centre": 0.12,
+    "random": 0.04
+   },
+   "far": {
+    "trials": 100,
+    "hit": 0.48,
+    "exact": 0.14,
+    "err_px_median": 6.92,
+    "centre": 0.01,
+    "random": 0.06
+   },
+   "by_kind": {
+    "ell": 0.6632,
+    "star": 0.7835,
+    "tee": 0.7407
+   },
+   "still_zero_share": 1.0
+  },
+  "dart": {
+   "10.0": {
+    "1": 0.8,
+    "2": 0.9,
+    "3": 0.9
+   },
+   "20.0": {
+    "1": 0.0167,
+    "2": 0.25,
+    "3": 0.3667
+   },
+   "30.0": {
+    "1": 0.0,
+    "2": 0.0833,
+    "3": 0.0833
+   }
+  },
+  "dart_distractor": {
+   "10.0": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 1.0
+   },
+   "20.0": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 1.0
+   },
+   "30.0": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 1.0
+   }
+  },
+  "scene": {
+   "4": {
+    "objects": 4,
+    "frames": 600,
+    "on_own_shape": 0.5179,
+    "hit": 0.5208,
+    "in_reach": 0.9862,
+    "losses_per_eye_minute": 4.5,
+    "sweeps_mean": 44.69
+   },
+   "8": {
+    "objects": 8,
+    "frames": 600,
+    "on_own_shape": 0.7552,
+    "hit": 0.7594,
+    "in_reach": 1.0,
+    "losses_per_eye_minute": 5.75,
+    "sweeps_mean": 57.76
+   }
+  }
+ }
+}

@@ -1,7 +1,8 @@
-"""The current native factory keeps the archived explicit recipe on Cadence 0.80.
+"""The current native factory keeps the archived explicit recipe on Cadence 0.89.
 
-The old Python recipe is evaluated on the candidate runtime. This does not rewrite
-the browser's 0.70 fixture or establish numerical parity with older runtimes.
+The old Python recipe is evaluated on the candidate runtime, less the actor's running
+moments (``momentum``, ``normalize``), which the library removed in 0.85.0. This does not
+rewrite the browser's 0.70 fixture or establish numerical parity with older runtimes.
 """
 
 import hashlib
@@ -24,6 +25,8 @@ def previous_recipe():
     spec = importlib.util.spec_from_file_location("arcade_previous_recipe", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
+    for removed in ("momentum", "normalize"):  # the actor's running moments left in 0.85.0
+        module.REWARD.pop(removed)
     return module
 
 

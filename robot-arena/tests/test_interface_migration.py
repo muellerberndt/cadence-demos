@@ -1,4 +1,11 @@
-"""The public 0.80 interface preserves the source-pinned 0.79 arena recipe.
+"""The public interface preserves the source-pinned 0.79 arena recipe on Cadence 0.89.
+
+The control runs on this runtime less what the library removed in 0.85.0: the arousal's record
+channel and the resting bias, both at zero, the laws without them. It takes what it took from
+the library on 0.79 and the library has changed since: the motor inhibition (-0.5 for motor
+slots of up to eight; 0.0 since 0.85.0) and the trace read back at scale 12 (changed in
+0.82.0). The arena's operating points name both; the ``compose`` preset leaves them
+to the library.
 
 The committed browser wrapper is an immutable control, not the current native adapter.
 These short tapes check wiring, acquired state, stage changes and pending-outcome custody;
@@ -29,6 +36,26 @@ def previous_interface():
     spec = importlib.util.spec_from_file_location("arena._interface_079_control", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
+    config, brain = module.ArousalConfig, module.Brain
+
+    def arousal_config(**genes):
+        assert genes.pop("record_surprise", 0.0) == 0.0
+        return config(**genes)
+
+    class Control(brain):
+        def __init__(self, *args, resting_bias=0.0, **options):
+            assert resting_bias == 0.0
+            super().__init__(*args, **options)
+
+        @classmethod
+        def compose(cls, inputs, actions, *, resting_bias=0.0, **options):
+            assert resting_bias == 0.0
+            if "episodic" in options and "lateral" not in options:  # an operating point
+                options["lateral"] = -0.5 if max(options["slots"]) <= 8 else 0.0
+                options["scales"] = {"trace": 12.0}
+            return brain.compose(inputs, actions, **options)
+
+    module.ArousalConfig, module.Brain = arousal_config, Control
     return module
 
 

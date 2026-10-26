@@ -114,6 +114,14 @@ def genes_of(blueprint: Blueprint) -> dict[str, Any]:
 def compose(blueprint: Blueprint, genes: dict[str, Any] | None = None) -> Brain:
     """A newborn brain for this body: every motor a slot, every sense an input."""
     g = genes_of(blueprint) if genes is None else genes
+    if float(g.get("resting_bias", 0.0)) != 0.0:
+        # every bias starts at zero since cadence-net 0.85.0, which removed the gene
+        raise ValueError("a resting bias other than zero needs cadence-net 0.84.3")
+    arousal = dict(g["arousal"])
+    # the record channel at its founder weight of zero is the law without it, which the
+    # library no longer takes
+    if float(arousal.pop("record_surprise", 0.0)) != 0.0:
+        raise ValueError("record_surprise above zero needs cadence-net 0.84.3")
     inputs, slots = input_count(blueprint), blueprint.slots
     if g.get("preset") == "compose":
         return Brain.compose(
@@ -122,7 +130,7 @@ def compose(blueprint: Blueprint, genes: dict[str, Any] | None = None) -> Brain:
             modules=tuple(g["modules"]),
             slots=slots,
             seed=blueprint.seed,
-            arousal=g["arousal"],
+            arousal=arousal,
         )
     return Brain.compose(
         inputs,
@@ -130,6 +138,9 @@ def compose(blueprint: Blueprint, genes: dict[str, Any] | None = None) -> Brain:
         modules=tuple(g["modules"]),
         observers=tuple(int(w) for w in g.get("observers", ()) or ()),
         slots=slots,
+        # the motor inhibition the arena's brains were raised with, the library's own before
+        # cadence-net 0.85.0 (which resolves an unset lateral to 0.0)
+        lateral=-0.5 if max(slots) <= 8 else 0.0,
         seed=blueprint.seed,
         episodic=bool(g["episodic"]),
         consolidation=float(g["consolidation"]),
@@ -137,9 +148,10 @@ def compose(blueprint: Blueprint, genes: dict[str, Any] | None = None) -> Brain:
         working_memory_decay=float(g["trace_decay"]),
         efference_amplitude=float(g["efference_amplitude"]),
         efference_decay=float(g["efference_decay"]),
-        resting_bias=float(g["resting_bias"]),
-        arousal=g["arousal"],
-        sensory_scale=float(g.get("sensory_scale", 1.0)),
+        arousal=arousal,
+        # the trace read back at scale 12, as composed brains did before cadence-net 0.82.0,
+        # the composition the arena's brains were raised with
+        scales={"sensory": float(g.get("sensory_scale", 1.0)), "trace": 12.0},
         temperature=float(g.get("temperature", 0.2)),
         actor_eta=float(g["eta"]),
         actor_eta_bias=float(g["eta_bias"]),
@@ -380,7 +392,9 @@ def set_stage(brain: Brain, stage: dict[str, Any] | None) -> None:
         genes["temperature"] = float(stage["temperature"])
     if "eta" in stage:
         genes.update(actor_eta=float(stage["eta"]), actor_eta_bias=float(stage["eta"]) / 10.0)
-    brain.retune(arousal=arousal, reset_arousal=bool(stage.get("reset", False)), **genes)
+    brain.retune(arousal=arousal, **genes)
+    if stage.get("reset", False):
+        brain.arousal.reset()
 
 
 def set_need(brain: Brain, need: float | None, reset: bool = False) -> None:
@@ -390,7 +404,9 @@ def set_need(brain: Brain, need: float | None, reset: bool = False) -> None:
     nursery's income otherwise wants forever in a ring that pays less."""
     if brain.arousal is None:
         return
-    brain.retune(arousal={} if need is None else {"need": float(need)}, reset_arousal=reset)
+    brain.retune(arousal={} if need is None else {"need": float(need)})
+    if reset:
+        brain.arousal.reset()
 
 
 def make_policy(

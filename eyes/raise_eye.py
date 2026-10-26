@@ -12,6 +12,10 @@ shape and moves it as a competent eye would, and every frame is a lesson on wher
 shape is (``Learner.step``, the library's local contrast rule, warm from the answer's own free
 state). Faces are among the shapes it is raised on; stars, tees and ells are never shown.
 
+The lessons use the quadratic nudge, which the library keeps on a standalone ``Learner``; a
+``Brain`` checkpoint takes the cross-entropy nudge only. The raised brain is saved under the
+cross-entropy nudge: the assays and the page never teach it, so its answers are the same.
+
 The assays run on the raised brain, frozen: first glance from rest; the dart test (the eye's own
 shape jumps 10, 20 or 30 px while everything else stays still); another shape's jump; and every
 shape followed by its own eye on a surface where all of them move. ``summary.json`` holds them.
@@ -95,6 +99,8 @@ def main() -> None:
                   f"sweeps {np.mean([r['sweeps'] for r in window]):5.1f}  "
                   f"ms {np.mean([r['ms'] for r in window]):5.1f}", flush=True)
             window.clear()
+    # saved under the nudge a Brain checkpoint takes; nothing teaches the brain after this
+    brain.learner.config = replace(brain.learner.config, nudge="cross_entropy")
     path = brain.save(out / "brain.npz")
     summary = {"lessons": a.lessons, "seconds": round(time.time() - t0, 1),
                "world": dict(world.counts),
