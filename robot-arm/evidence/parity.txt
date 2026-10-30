@@ -1,0 +1,2 @@
+parity trial_a.json ok ['24:grasped', '51:placed:A:right']
+parity trial_b.json ok ['25:grasped', '51:placed:B:right']

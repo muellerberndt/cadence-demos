@@ -1,0 +1,101 @@
+{
+ "about": "Episode-400 stage-2 brains re-read on stable contact bands (contact time constant >= 0.015 s): 'brain'/'teacher' on the wide set, 'heldout'/'teacher_heldout' on heldout2; 200 trials each.",
+ "runs": {
+  "D1_s1": {
+   "brain": 0.915,
+   "teacher": 0.935,
+   "heldout": 0.215,
+   "teacher_heldout": 0.33,
+   "random": 0.0,
+   "newborn": 0.0
+  },
+  "D1_s2": {
+   "brain": 0.925,
+   "teacher": 0.94,
+   "heldout": 0.265,
+   "teacher_heldout": 0.25,
+   "random": 0.0,
+   "newborn": 0.0
+  },
+  "D1_s3": {
+   "brain": 0.91,
+   "teacher": 0.925,
+   "heldout": 0.265,
+   "teacher_heldout": 0.26,
+   "random": 0.0,
+   "newborn": 0.0
+  },
+  "D3_s1": {
+   "brain": 0.91,
+   "teacher": 0.935,
+   "heldout": 0.31,
+   "teacher_heldout": 0.33,
+   "random": 0.0,
+   "newborn": 0.0
+  },
+  "D3_s2": {
+   "brain": 0.93,
+   "teacher": 0.94,
+   "heldout": 0.345,
+   "teacher_heldout": 0.25,
+   "random": 0.0,
+   "newborn": 0.0
+  },
+  "D3_s3": {
+   "brain": 0.9,
+   "teacher": 0.925,
+   "heldout": 0.295,
+   "teacher_heldout": 0.26,
+   "random": 0.0,
+   "newborn": 0.0
+  },
+  "D3b_s1": {
+   "brain": 0.92,
+   "teacher": 0.935,
+   "heldout": 0.225,
+   "teacher_heldout": 0.33,
+   "random": 0.0,
+   "newborn": 0.0
+  },
+  "D3b_s2": {
+   "brain": 0.905,
+   "teacher": 0.94,
+   "heldout": 0.27,
+   "teacher_heldout": 0.25,
+   "random": 0.0,
+   "newborn": 0.0
+  },
+  "D3b_s3": {
+   "brain": 0.95,
+   "teacher": 0.925,
+   "heldout": 0.275,
+   "teacher_heldout": 0.26,
+   "random": 0.0,
+   "newborn": 0.0
+  },
+  "D5_s1": {
+   "brain": 0.915,
+   "teacher": 0.935,
+   "heldout": 0.325,
+   "teacher_heldout": 0.33,
+   "random": 0.0,
+   "newborn": 0.0
+  },
+  "D5_s2": {
+   "brain": 0.915,
+   "teacher": 0.94,
+   "heldout": 0.28,
+   "teacher_heldout": 0.25,
+   "random": 0.0,
+   "newborn": 0.0
+  },
+  "D5_s3": {
+   "brain": 0.965,
+   "teacher": 0.925,
+   "heldout": 0.24,
+   "teacher_heldout": 0.26,
+   "random": 0.0,
+   "newborn": 0.0
+  }
+ }
+}

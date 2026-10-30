@@ -1,0 +1,40 @@
+{"brain": "stage2b/B_D3b_s3 (brain_best, the page's brain)", "bin": "B", "xy": [0.62, 0.08], "right": 20, "wrong": 0, "dropped": 0, "none": 0, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2b/B_D3b_s3 (brain_best, the page's brain)", "bin": "A", "xy": [0.62, -0.1], "right": 20, "wrong": 0, "dropped": 0, "none": 0, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2b/B_D3b_s3 (brain_best, the page's brain)", "bin": "A", "xy": [0.62, -0.22], "right": 19, "wrong": 0, "dropped": 0, "none": 1, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2b/B_D3b_s3 (brain_best, the page's brain)", "bin": "A", "xy": [0.62, -0.33], "right": 19, "wrong": 0, "dropped": 0, "none": 1, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2b/B_D3b_s3 (brain_best, the page's brain)", "bin": "A", "xy": [0.7, -0.06], "right": 19, "wrong": 0, "dropped": 0, "none": 1, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2b/B_D3b_s3 (brain_best, the page's brain)", "bin": "B", "xy": [0.62, 0.22], "right": 19, "wrong": 0, "dropped": 0, "none": 1, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2b/B_D3b_s3 (brain_best, the page's brain)", "bin": "A", "xy": [0.72, -0.22], "right": 19, "wrong": 0, "dropped": 0, "none": 1, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2b/B_D3b_s3 (brain_best, the page's brain)", "bin": "B", "xy": [0.72, 0.32], "right": 10, "wrong": 0, "dropped": 10, "none": 0, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D3_s2", "bin": "B", "xy": [0.62, 0.08], "right": 20, "wrong": 0, "dropped": 0, "none": 0, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D3_s2", "bin": "A", "xy": [0.62, -0.1], "right": 20, "wrong": 0, "dropped": 0, "none": 0, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D3_s2", "bin": "A", "xy": [0.62, -0.22], "right": 19, "wrong": 0, "dropped": 0, "none": 1, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D3_s2", "bin": "A", "xy": [0.62, -0.33], "right": 19, "wrong": 0, "dropped": 0, "none": 1, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D3_s2", "bin": "B", "xy": [0.62, 0.22], "right": 19, "wrong": 0, "dropped": 0, "none": 1, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D3_s2", "bin": "A", "xy": [0.7, -0.06], "right": 19, "wrong": 0, "dropped": 1, "none": 0, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D3_s2", "bin": "B", "xy": [0.72, 0.32], "right": 9, "wrong": 0, "dropped": 11, "none": 0, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D3_s2", "bin": "A", "xy": [0.72, -0.22], "right": 4, "wrong": 0, "dropped": 16, "none": 0, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D5_s1", "bin": "A", "xy": [0.62, -0.1], "right": 20, "wrong": 0, "dropped": 0, "none": 0, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D5_s1", "bin": "B", "xy": [0.62, 0.08], "right": 20, "wrong": 0, "dropped": 0, "none": 0, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D5_s1", "bin": "B", "xy": [0.62, 0.22], "right": 20, "wrong": 0, "dropped": 0, "none": 0, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D5_s1", "bin": "A", "xy": [0.62, -0.22], "right": 19, "wrong": 0, "dropped": 0, "none": 1, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D5_s1", "bin": "A", "xy": [0.62, -0.33], "right": 19, "wrong": 0, "dropped": 0, "none": 1, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D5_s1", "bin": "A", "xy": [0.7, -0.06], "right": 19, "wrong": 0, "dropped": 1, "none": 0, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D5_s1", "bin": "A", "xy": [0.72, -0.22], "right": 7, "wrong": 0, "dropped": 13, "none": 0, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D5_s1", "bin": "B", "xy": [0.72, 0.32], "right": 6, "wrong": 0, "dropped": 14, "none": 0, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D5_s2", "bin": "A", "xy": [0.62, -0.1], "right": 20, "wrong": 0, "dropped": 0, "none": 0, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D5_s2", "bin": "B", "xy": [0.62, 0.08], "right": 20, "wrong": 0, "dropped": 0, "none": 0, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D5_s2", "bin": "A", "xy": [0.62, -0.22], "right": 19, "wrong": 0, "dropped": 0, "none": 1, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D5_s2", "bin": "A", "xy": [0.7, -0.06], "right": 19, "wrong": 0, "dropped": 1, "none": 0, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D5_s2", "bin": "B", "xy": [0.62, 0.22], "right": 19, "wrong": 0, "dropped": 0, "none": 1, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D5_s2", "bin": "A", "xy": [0.62, -0.33], "right": 19, "wrong": 0, "dropped": 0, "none": 1, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D5_s2", "bin": "B", "xy": [0.72, 0.32], "right": 10, "wrong": 0, "dropped": 10, "none": 0, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D5_s2", "bin": "A", "xy": [0.72, -0.22], "right": 7, "wrong": 0, "dropped": 13, "none": 0, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D5_s3", "bin": "A", "xy": [0.62, -0.1], "right": 20, "wrong": 0, "dropped": 0, "none": 0, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D5_s3", "bin": "B", "xy": [0.62, 0.08], "right": 20, "wrong": 0, "dropped": 0, "none": 0, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D5_s3", "bin": "A", "xy": [0.62, -0.22], "right": 20, "wrong": 0, "dropped": 0, "none": 0, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D5_s3", "bin": "A", "xy": [0.7, -0.06], "right": 19, "wrong": 0, "dropped": 0, "none": 1, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D5_s3", "bin": "A", "xy": [0.62, -0.33], "right": 19, "wrong": 0, "dropped": 1, "none": 0, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D5_s3", "bin": "B", "xy": [0.62, 0.22], "right": 19, "wrong": 0, "dropped": 0, "none": 1, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D5_s3", "bin": "A", "xy": [0.72, -0.22], "right": 7, "wrong": 0, "dropped": 12, "none": 1, "trials": 20, "physics": "nominal", "founder_seed": 7}
+{"brain": "stage2/D5_s3", "bin": "B", "xy": [0.72, 0.32], "right": 6, "wrong": 0, "dropped": 14, "none": 0, "trials": 20, "physics": "nominal", "founder_seed": 7}

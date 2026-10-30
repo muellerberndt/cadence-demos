@@ -1,0 +1,275 @@
+{
+ "arm": "D3b",
+ "pools": "cartesian",
+ "slots": [
+  5,
+  5,
+  5,
+  2
+ ],
+ "settings": {
+  "arm": "D3b",
+  "pools": "cartesian",
+  "out": "/home/ec2-user/cadence-arm-2b/runs/stage2b-20261030/B_D3b_s3",
+  "seed": 3,
+  "cells": 128,
+  "workers": 3,
+  "episodes": 400,
+  "decisions": 80,
+  "cap": 80,
+  "eta": null,
+  "anneal_patience": 6,
+  "all_rows": false,
+  "no_velocity": false,
+  "physics": "wide",
+  "heldout_set": "heldout2",
+  "senses": "basic",
+  "teacher": "recover",
+  "arousal": true,
+  "mixture": 0.5,
+  "mixture_end": 0.0,
+  "fade": 1.0,
+  "warm_start": 0.7,
+  "warm_max": 40,
+  "inspect_every": 20,
+  "inspect_trials": 40,
+  "fresh_every": 100,
+  "fresh_trials": 200,
+  "no_render": false,
+  "mlp_control": null,
+  "reading_timeout": 10800,
+  "report_every": 5,
+  "backend": "cpu",
+  "device": null
+ },
+ "layout": {
+  "inputs": 262,
+  "slip": null,
+  "bins": 15,
+  "joint_bins": 7,
+  "hand": [
+   0,
+   45
+  ],
+  "block_minus_hand": [
+   45,
+   90
+  ],
+  "release_minus_hand": [
+   90,
+   135
+  ],
+  "joints": [
+   135,
+   184
+  ],
+  "opening": [
+   184,
+   191
+  ],
+  "flags": [
+   191,
+   193
+  ],
+  "velocity": [
+   193,
+   242
+  ],
+  "efference": [
+   242,
+   259
+  ],
+  "lamp": [
+   259,
+   262
+  ],
+  "hand_span_m": [
+   [
+    0.2,
+    0.8
+   ],
+   [
+    -0.4,
+    0.4
+   ],
+   [
+    0.0,
+    0.5
+   ]
+  ],
+  "relative_reach_m": [
+   0.6,
+   0.6,
+   0.45
+  ],
+  "velocity_span_rad_s": 2.0,
+  "relative_warp": "u = sign(d) * sqrt(min(|d|, R) / R)",
+  "blind_zeroes": [
+   45,
+   135
+  ]
+ },
+ "velocity": true,
+ "workers": 3,
+ "senses": "basic",
+ "physics_set": "wide",
+ "heldout_set": "heldout2",
+ "teacher": "recover",
+ "recipe": {
+  "modules": [
+   256,
+   128,
+   64
+  ],
+  "apical": 0.25,
+  "teaching": "normalized",
+  "learning_normalize_relative": 0.1,
+  "learning_nudged_steps": 32,
+  "learning_nudged_fixed": true,
+  "learning_qualified": false
+ },
+ "brain": {
+  "neurons": 791,
+  "synapses": 155264,
+  "populations": {
+   "sensory": 262,
+   "module_0": 256,
+   "module_1": 128,
+   "association": 64,
+   "prefrontal": 64,
+   "motor": 17,
+   "motor/actions": 17
+  },
+  "learning": {
+   "beta": 0.1,
+   "eta": 0.003,
+   "eta_bias": 0.0003,
+   "free_steps": 1024,
+   "nudged_steps": 32,
+   "tolerance": 0.003,
+   "nudge": "cross_entropy",
+   "temperature": 0.2,
+   "normalize": 0.99,
+   "normalize_floor": 0.0001,
+   "momentum": 0.9,
+   "scale_cap": 8.0,
+   "qualified": false,
+   "damping": 3,
+   "surprise": true,
+   "initial_damping": 0,
+   "normalize_relative": 0.1,
+   "nudged_fixed": true
+  }
+ },
+ "steps": {
+  "eta": 0.003,
+  "eta_bias": 0.0003
+ },
+ "physics": {
+  "nominal": {
+   "half": [
+    0.015,
+    0.03
+   ],
+   "mass": [
+    0.03,
+    0.12
+   ],
+   "friction": [
+    0.7,
+    1.2
+   ],
+   "solref": [
+    [
+     0.02,
+     0.02
+    ]
+   ]
+  },
+  "heldout": {
+   "half": [
+    0.015,
+    0.03
+   ],
+   "mass": [
+    0.13,
+    0.18
+   ],
+   "friction": [
+    0.45,
+    0.6
+   ],
+   "solref": [
+    [
+     0.008,
+     0.012
+    ],
+    [
+     0.03,
+     0.04
+    ]
+   ]
+  },
+  "wide": {
+   "half": [
+    0.015,
+    0.03
+   ],
+   "mass": [
+    0.03,
+    0.18
+   ],
+   "friction": [
+    0.45,
+    1.2
+   ],
+   "solref": [
+    [
+     0.015,
+     0.04
+    ]
+   ],
+   "dampratio": [
+    0.6,
+    1.0
+   ]
+  },
+  "heldout2": {
+   "half": [
+    0.015,
+    0.03
+   ],
+   "mass": [
+    0.18,
+    0.22
+   ],
+   "friction": [
+    0.38,
+    0.45
+   ],
+   "solref": [
+    [
+     0.04,
+     0.048
+    ]
+   ],
+   "dampratio": [
+    0.5,
+    0.6
+   ]
+  }
+ },
+ "cadence": "0.91.1",
+ "mujoco": "3.17.0",
+ "numpy": "2.5.4",
+ "python": "3.12.15",
+ "machine": "x86_64",
+ "threads": "4",
+ "selection_seed": 30003,
+ "starts_seed": 90003,
+ "render_seed": 70003,
+ "notes": [
+  "Brain.lesson before Brain.act; Brain.step never called",
+  "D4 keys its recall on all inputs plus the command (recall_heard is one number in 0.91.1)"
+ ]
+}

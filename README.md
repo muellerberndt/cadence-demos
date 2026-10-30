@@ -107,10 +107,11 @@ section below. The library README has
 | [Amen](amen/) | A record patch composing jungle tracks in the browser | A brain trained with `RecordPatchNet`; the page runs a JavaScript version of its forward pass |
 | [Eyes](eyes/) | One brain that follows every shape you drag with its own eye, from the page's pixels only | A hand-wired connectome run by `cadence.Brain`; in the browser, the released library itself, in Pyodide |
 | [Connectome](connectome/) | Teach a fish gaze circuit to hold, return and hold again on measured wiring; explore a larva with fixed connections | Cadence rate patches in JavaScript, with plastic fish connections and declared body models |
+| [Robot Arm](robot-arm/) | A Franka Panda that picks up a block and places it in the bin you choose, under contact physics; move the bin while it carries the block and it follows | A deep `Brain.compose` taught by a scripted teacher in MuJoCo; in the browser, MuJoCo as WebAssembly and the released library itself, in Pyodide |
 
-Rover Lab and Patch World run on the population solver, Atari Arcade on
-`Brain.compose`, Amen on a record patch, and Eyes on a hand-wired connectome
-run by `cadence.Brain`. Each demo's README names the Cadence version it was
+Rover Lab and Patch World run on the population solver, Atari Arcade and
+Robot Arm on `Brain.compose`, Amen on a record patch, and Eyes on a hand-wired
+connectome run by `cadence.Brain`. Each demo's README names the Cadence version it was
 built with.
 
 ## [Rover Lab](rover-lab/): a body model that keeps learning
@@ -238,3 +239,23 @@ with what they learn, and their tactics are coarse.
 
 See the [Robot Arena README](robot-arena/README.md) to run the league, the page and the
 scripted check of the page's promise.
+
+## [Robot Arm](robot-arm/): pick and place under contact physics
+
+A Franka Panda in MuJoCo picks up a block and places it in the bin that a lit lamp names. Its
+brain is one deep `Brain.compose` with three hidden regions and the apical compartment. It learned
+the job during its life by imitating a scripted teacher. A disclosed inverse-kinematics reflex
+turns its centimetre moves into joint targets. Read frozen on fresh trials, the page's brain places
+0.955 of the blocks under randomized physics. On the hardest held-out physics it places 0.465,
+where the teacher places 0.295. It also follows a target bin moved to places it never trained
+with.
+
+The page runs MuJoCo 3.17 as WebAssembly and the trained brain in Pyodide, and draws every neuron
+after each decision. Drag the block and the bins, press Run, and move the bin while the arm
+carries the block.
+
+```sh
+python -m http.server -d robot-arm/site 8830   # open http://localhost:8830/
+```
+
+See the [Robot Arm README](robot-arm/README.md) to train the brain, read it and check the page.

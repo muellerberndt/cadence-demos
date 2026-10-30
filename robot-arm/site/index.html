@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cadence Arm</title>
+<meta name="description" content="A Cadence brain that learned during life picks up a block and places it in the bin you choose. Physics and brain run in your browser.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Sora:wght@500;600&display=swap">
+<link rel="stylesheet" href="styles.css">
+<script type="importmap">{ "imports": { "three": "./vendor/three/three.module.min.js" } }</script>
+</head>
+<body>
+<div class="app">
+  <section class="stage" id="stage">
+    <canvas id="scene" aria-label="The robot arm, the table, the block and two bins. Drag the block or a bin; click a bin to make it the target."></canvas>
+    <header class="topbar">
+      <div class="title">
+        <h1>Cadence Arm</h1>
+        <p>A brain that learned during life, running in your browser</p>
+        <p class="hint" id="hint">Drag the <b class="c-block">block</b> or a <b>bin</b>. Click a bin to make it the <b class="c-target">target</b>. Then press Run.</p>
+      </div>
+      <div class="status" id="status" role="status"><span class="dot"></span><span id="status-text">Loading physics</span></div>
+    </header>
+    <div class="toast" id="toast" hidden></div>
+    <div class="controls">
+      <div class="segmented" role="group" aria-label="Target bin">
+        <button id="target-A" class="seg" aria-pressed="true">Bin A</button>
+        <button id="target-B" class="seg" aria-pressed="false">Bin B</button>
+      </div>
+      <button id="run" class="primary" disabled>Run</button>
+      <button id="reset" class="ghost">Reset</button>
+      <button id="shuffle" class="ghost">Shuffle</button>
+      <div class="segmented speed" role="group" aria-label="Speed">
+        <button class="seg" data-speed="1" aria-pressed="true">1×</button>
+        <button class="seg" data-speed="2" aria-pressed="false">2×</button>
+        <button class="seg" data-speed="4" aria-pressed="false">4×</button>
+      </div>
+    </div>
+  </section>
+  <aside class="brain" aria-label="The brain">
+    <div class="brain-head">
+      <div>
+        <h2>The brain</h2>
+        <p id="brain-sub">Loading…</p>
+      </div>
+      <dl class="stats">
+        <div><dt>Decision</dt><dd id="s-decision">–</dd></div>
+        <div><dt>Settle</dt><dd id="s-sweeps">–</dd></div>
+        <div><dt>Think</dt><dd id="s-ms">–</dd></div>
+      </dl>
+    </div>
+    <div class="canvas-wrap"><canvas id="brain"></canvas><div class="tip" id="brain-tip" hidden></div></div>
+    <div class="legend">
+      <span><i class="sw ff"></i>Bottom-up signal</span>
+      <span><i class="sw td"></i>Top-down (apical) signal</span>
+      <span><i class="sw mem"></i>Working memory</span>
+    </div>
+    <p class="note">Every square is a neuron, lit by its activity after the brain settles on what it senses. The brain chooses a small move of the hand (in centimetres) and whether to close the gripper, about five times a second. Its long-term memory is its 155,264 synapses, frozen here; its short-term memory is the working trace on the right, which carries the last moments forward.</p>
+    <footer class="foot">Cadence 0.91.1 · MuJoCo 3.17 · Franka Panda model from MuJoCo Menagerie · <a href="https://github.com/muellerberndt/cadence" target="_blank" rel="noopener">Cadence on GitHub</a></footer>
+  </aside>
+</div>
+<script type="module" src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+{
+ "schema": "cadence-arm-site-pack/1",
+ "packed": "2026-10-30",
+ "pyodide": "314.0.7",
+ "cadence": "0.91.1",
+ "wheel": "cadence_net-0.91.1-py3-none-any.whl",
+ "wheel_sha256": "756f27bca70897283d01501ea57b62558513c7823644fb617c417d208804110f",
+ "wheel_source": "PyPI",
+ "sources": [
+  "__init__.py",
+  "host.py"
+ ],
+ "sources_sha256": {
+  "__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "host.py": "1d31eec45849c6e106e255fd598126db8e5545cb69325976c3f30b66292e850e"
+ },
+ "brain": "brain.npz",
+ "brain_sha256": "fb2337350fa662467190779f6300a7e61354319b0815cbc8c9918c872e32ec61",
+ "brain_bytes": 6711302,
+ "run": "run.json",
+ "run_sha256": "d60a40d5bfc5d14debda9a050b3a7d316088b44275d4e29c66da936cf3ea1e03",
+ "brain_size": {
+  "neurons": 791,
+  "synapses": 155264,
+  "populations": {
+   "sensory": 262,
+   "module_0": 256,
+   "module_1": 128,
+   "association": 64,
+   "prefrontal": 64,
+   "motor": 17,
+   "motor/actions": 17
+  },
+  "learning": {
+   "beta": 0.1,
+   "eta": 0.003,
+   "eta_bias": 0.0003,
+   "free_steps": 1024,
+   "nudged_steps": 32,
+   "tolerance": 0.003,
+   "nudge": "cross_entropy",
+   "temperature": 0.2,
+   "normalize": 0.99,
+   "normalize_floor": 0.0001,
+   "momentum": 0.9,
+   "scale_cap": 8.0,
+   "qualified": false,
+   "damping": 3,
+   "surprise": true,
+   "initial_damping": 0,
+   "normalize_relative": 0.1,
+   "nudged_fixed": true
+  }
+ },
+ "arm": "D3b",
+ "assets": {
+  "cell.mjb": "bfd3b28ce4ee3d5ec2999381c8201af53cce1895dfe184380e7b1d0fa6d7618a",
+  "panda_visual.bin": "854274507f01dfd316be6372f051ce06a5718c9b584f78cfe66cc34086387659",
+  "panda_visual.json": "72bf9e40bee61479343873249dbdd3568096da21eaa22fc846853a77fe9ede09"
+ }
+}

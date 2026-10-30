@@ -1,0 +1,863 @@
+{
+ "about": "Stage 2b: trained on the 'wide' physics set, read on fresh 'wide' trials and on the harder 'heldout2' set; the last fresh reading per run (episode given). B_D3b_slip and B_D5_slip were stopped after their episode-300 reading.",
+ "runs": {
+  "B_D1_slip_s1": {
+   "episode": 400,
+   "kind": "fresh_best",
+   "trials": 200,
+   "physics": "wide",
+   "heldout_set": "heldout2",
+   "brain": {
+    "success": 0.88,
+    "grasped": 0.975,
+    "lifted": 0.965,
+    "dropped": 0.18,
+    "right": 0.88,
+    "wrong": 0.005,
+    "decisions_median": 41.0
+   },
+   "teacher": {
+    "success": 0.95,
+    "grasped": 0.985,
+    "lifted": 0.975,
+    "dropped": 0.08,
+    "right": 0.95,
+    "wrong": 0.0,
+    "decisions_median": 38.0
+   },
+   "brain_heldout": {
+    "success": 0.31,
+    "grasped": 0.96,
+    "lifted": 0.96,
+    "dropped": 0.75,
+    "right": 0.31,
+    "wrong": 0.0,
+    "decisions_median": 41.0
+   },
+   "teacher_heldout": {
+    "success": 0.285,
+    "grasped": 0.965,
+    "lifted": 0.955,
+    "dropped": 0.795,
+    "right": 0.285,
+    "wrong": 0.0,
+    "decisions_median": 42.0
+   },
+   "controls": {
+    "random": 0.0,
+    "blind": 0.0,
+    "newborn": 0.0
+   },
+   "recipe": {
+    "modules": [
+     256
+    ]
+   },
+   "settings": {
+    "arm": "D1",
+    "seed": 1,
+    "cells": 128,
+    "episodes": 400,
+    "physics": "wide",
+    "senses": "slip",
+    "teacher": "recover",
+    "arousal": true,
+    "heldout_set": "heldout2"
+   }
+  },
+  "B_D1_slip_s2": {
+   "episode": 400,
+   "kind": "fresh_best",
+   "trials": 200,
+   "physics": "wide",
+   "heldout_set": "heldout2",
+   "brain": {
+    "success": 0.89,
+    "grasped": 0.99,
+    "lifted": 0.99,
+    "dropped": 0.18,
+    "right": 0.89,
+    "wrong": 0.0,
+    "decisions_median": 41.0
+   },
+   "teacher": {
+    "success": 0.89,
+    "grasped": 0.955,
+    "lifted": 0.945,
+    "dropped": 0.09,
+    "right": 0.89,
+    "wrong": 0.0,
+    "decisions_median": 37.0
+   },
+   "brain_heldout": {
+    "success": 0.295,
+    "grasped": 0.99,
+    "lifted": 0.99,
+    "dropped": 0.815,
+    "right": 0.295,
+    "wrong": 0.0,
+    "decisions_median": 41.0
+   },
+   "teacher_heldout": {
+    "success": 0.34,
+    "grasped": 0.975,
+    "lifted": 0.97,
+    "dropped": 0.79,
+    "right": 0.34,
+    "wrong": 0.0,
+    "decisions_median": 39.0
+   },
+   "controls": {
+    "random": 0.0,
+    "blind": 0.0,
+    "newborn": 0.0
+   },
+   "recipe": {
+    "modules": [
+     256
+    ]
+   },
+   "settings": {
+    "arm": "D1",
+    "seed": 2,
+    "cells": 128,
+    "episodes": 400,
+    "physics": "wide",
+    "senses": "slip",
+    "teacher": "recover",
+    "arousal": true,
+    "heldout_set": "heldout2"
+   }
+  },
+  "B_D1_slip_s3": {
+   "episode": 400,
+   "kind": "fresh_best",
+   "trials": 200,
+   "physics": "wide",
+   "heldout_set": "heldout2",
+   "brain": {
+    "success": 0.895,
+    "grasped": 0.97,
+    "lifted": 0.96,
+    "dropped": 0.175,
+    "right": 0.895,
+    "wrong": 0.005,
+    "decisions_median": 40.0
+   },
+   "teacher": {
+    "success": 0.955,
+    "grasped": 0.985,
+    "lifted": 0.98,
+    "dropped": 0.085,
+    "right": 0.955,
+    "wrong": 0.0,
+    "decisions_median": 37.0
+   },
+   "brain_heldout": {
+    "success": 0.37,
+    "grasped": 0.99,
+    "lifted": 0.99,
+    "dropped": 0.77,
+    "right": 0.37,
+    "wrong": 0.0,
+    "decisions_median": 42.0
+   },
+   "teacher_heldout": {
+    "success": 0.295,
+    "grasped": 0.985,
+    "lifted": 0.98,
+    "dropped": 0.765,
+    "right": 0.295,
+    "wrong": 0.0,
+    "decisions_median": 38.0
+   },
+   "controls": {
+    "random": 0.0,
+    "blind": 0.0,
+    "newborn": 0.0
+   },
+   "recipe": {
+    "modules": [
+     256
+    ]
+   },
+   "settings": {
+    "arm": "D1",
+    "seed": 3,
+    "cells": 128,
+    "episodes": 400,
+    "physics": "wide",
+    "senses": "slip",
+    "teacher": "recover",
+    "arousal": true,
+    "heldout_set": "heldout2"
+   }
+  },
+  "B_D3b_s1": {
+   "episode": 400,
+   "kind": "fresh",
+   "trials": 200,
+   "physics": "wide",
+   "heldout_set": "heldout2",
+   "brain": {
+    "success": 0.95,
+    "grasped": 0.985,
+    "lifted": 0.985,
+    "dropped": 0.085,
+    "right": 0.95,
+    "wrong": 0.0,
+    "decisions_median": 39.0
+   },
+   "teacher": {
+    "success": 0.95,
+    "grasped": 0.97,
+    "lifted": 0.965,
+    "dropped": 0.035,
+    "right": 0.95,
+    "wrong": 0.0,
+    "decisions_median": 37.5
+   },
+   "brain_heldout": {
+    "success": 0.37,
+    "grasped": 0.99,
+    "lifted": 0.99,
+    "dropped": 0.745,
+    "right": 0.37,
+    "wrong": 0.0,
+    "decisions_median": 40.0
+   },
+   "teacher_heldout": {
+    "success": 0.35,
+    "grasped": 0.98,
+    "lifted": 0.975,
+    "dropped": 0.765,
+    "right": 0.35,
+    "wrong": 0.0,
+    "decisions_median": 39.0
+   },
+   "controls": {
+    "random": 0.0,
+    "blind": 0.0,
+    "newborn": 0.0
+   },
+   "recipe": {
+    "modules": [
+     256,
+     128,
+     64
+    ],
+    "apical": 0.25,
+    "teaching": "normalized",
+    "learning_normalize_relative": 0.1,
+    "learning_nudged_steps": 32,
+    "learning_nudged_fixed": true,
+    "learning_qualified": false
+   },
+   "settings": {
+    "arm": "D3b",
+    "seed": 1,
+    "cells": 128,
+    "episodes": 400,
+    "physics": "wide",
+    "senses": "basic",
+    "teacher": "recover",
+    "arousal": true,
+    "heldout_set": "heldout2"
+   }
+  },
+  "B_D3b_s2": {
+   "episode": 400,
+   "kind": "fresh",
+   "trials": 200,
+   "physics": "wide",
+   "heldout_set": "heldout2",
+   "brain": {
+    "success": 0.915,
+    "grasped": 0.99,
+    "lifted": 0.965,
+    "dropped": 0.145,
+    "right": 0.915,
+    "wrong": 0.0,
+    "decisions_median": 39.0
+   },
+   "teacher": {
+    "success": 0.935,
+    "grasped": 0.97,
+    "lifted": 0.96,
+    "dropped": 0.075,
+    "right": 0.935,
+    "wrong": 0.0,
+    "decisions_median": 38.0
+   },
+   "brain_heldout": {
+    "success": 0.375,
+    "grasped": 0.98,
+    "lifted": 0.97,
+    "dropped": 0.755,
+    "right": 0.375,
+    "wrong": 0.0,
+    "decisions_median": 40.0
+   },
+   "teacher_heldout": {
+    "success": 0.28,
+    "grasped": 0.965,
+    "lifted": 0.96,
+    "dropped": 0.805,
+    "right": 0.28,
+    "wrong": 0.0,
+    "decisions_median": 42.0
+   },
+   "controls": {
+    "random": 0.0,
+    "blind": 0.0,
+    "newborn": 0.0
+   },
+   "recipe": {
+    "modules": [
+     256,
+     128,
+     64
+    ],
+    "apical": 0.25,
+    "teaching": "normalized",
+    "learning_normalize_relative": 0.1,
+    "learning_nudged_steps": 32,
+    "learning_nudged_fixed": true,
+    "learning_qualified": false
+   },
+   "settings": {
+    "arm": "D3b",
+    "seed": 2,
+    "cells": 128,
+    "episodes": 400,
+    "physics": "wide",
+    "senses": "basic",
+    "teacher": "recover",
+    "arousal": true,
+    "heldout_set": "heldout2"
+   }
+  },
+  "B_D3b_s3": {
+   "episode": 400,
+   "kind": "fresh_best",
+   "trials": 200,
+   "physics": "wide",
+   "heldout_set": "heldout2",
+   "brain": {
+    "success": 0.955,
+    "grasped": 1.0,
+    "lifted": 1.0,
+    "dropped": 0.11,
+    "right": 0.955,
+    "wrong": 0.0,
+    "decisions_median": 39.0
+   },
+   "teacher": {
+    "success": 0.955,
+    "grasped": 0.985,
+    "lifted": 0.98,
+    "dropped": 0.085,
+    "right": 0.955,
+    "wrong": 0.0,
+    "decisions_median": 37.0
+   },
+   "brain_heldout": {
+    "success": 0.465,
+    "grasped": 0.995,
+    "lifted": 0.995,
+    "dropped": 0.67,
+    "right": 0.465,
+    "wrong": 0.0,
+    "decisions_median": 41.0
+   },
+   "teacher_heldout": {
+    "success": 0.295,
+    "grasped": 0.985,
+    "lifted": 0.98,
+    "dropped": 0.765,
+    "right": 0.295,
+    "wrong": 0.0,
+    "decisions_median": 38.0
+   },
+   "controls": {
+    "random": 0.0,
+    "blind": 0.0,
+    "newborn": 0.0
+   },
+   "recipe": {
+    "modules": [
+     256,
+     128,
+     64
+    ],
+    "apical": 0.25,
+    "teaching": "normalized",
+    "learning_normalize_relative": 0.1,
+    "learning_nudged_steps": 32,
+    "learning_nudged_fixed": true,
+    "learning_qualified": false
+   },
+   "settings": {
+    "arm": "D3b",
+    "seed": 3,
+    "cells": 128,
+    "episodes": 400,
+    "physics": "wide",
+    "senses": "basic",
+    "teacher": "recover",
+    "arousal": true,
+    "heldout_set": "heldout2"
+   }
+  },
+  "B_D3b_slip_s1": {
+   "episode": 300,
+   "kind": "fresh",
+   "trials": 200,
+   "physics": "wide",
+   "heldout_set": "heldout2",
+   "brain": {
+    "success": 0.88,
+    "grasped": 0.975,
+    "lifted": 0.96,
+    "dropped": 0.185,
+    "right": 0.88,
+    "wrong": 0.0,
+    "decisions_median": 39.0
+   },
+   "teacher": {
+    "success": 0.91,
+    "grasped": 0.97,
+    "lifted": 0.955,
+    "dropped": 0.115,
+    "right": 0.91,
+    "wrong": 0.0,
+    "decisions_median": 37.0
+   },
+   "brain_heldout": {
+    "success": 0.31,
+    "grasped": 0.94,
+    "lifted": 0.94,
+    "dropped": 0.77,
+    "right": 0.31,
+    "wrong": 0.0,
+    "decisions_median": 43.0
+   },
+   "teacher_heldout": {
+    "success": 0.315,
+    "grasped": 0.985,
+    "lifted": 0.98,
+    "dropped": 0.785,
+    "right": 0.315,
+    "wrong": 0.0,
+    "decisions_median": 41.0
+   },
+   "controls": {
+    "random": 0.0,
+    "blind": 0.0,
+    "newborn": 0.0
+   },
+   "recipe": {
+    "modules": [
+     256,
+     128,
+     64
+    ],
+    "apical": 0.25,
+    "teaching": "normalized",
+    "learning_normalize_relative": 0.1,
+    "learning_nudged_steps": 32,
+    "learning_nudged_fixed": true,
+    "learning_qualified": false
+   },
+   "settings": {
+    "arm": "D3b",
+    "seed": 1,
+    "cells": 128,
+    "episodes": 400,
+    "physics": "wide",
+    "senses": "slip",
+    "teacher": "recover",
+    "arousal": true,
+    "heldout_set": "heldout2"
+   }
+  },
+  "B_D3b_slip_s2": {
+   "episode": 300,
+   "kind": "fresh",
+   "trials": 200,
+   "physics": "wide",
+   "heldout_set": "heldout2",
+   "brain": {
+    "success": 0.96,
+    "grasped": 0.98,
+    "lifted": 0.975,
+    "dropped": 0.085,
+    "right": 0.96,
+    "wrong": 0.0,
+    "decisions_median": 40.0
+   },
+   "teacher": {
+    "success": 0.93,
+    "grasped": 0.985,
+    "lifted": 0.985,
+    "dropped": 0.12,
+    "right": 0.93,
+    "wrong": 0.0,
+    "decisions_median": 39.0
+   },
+   "brain_heldout": {
+    "success": 0.365,
+    "grasped": 0.985,
+    "lifted": 0.985,
+    "dropped": 0.735,
+    "right": 0.365,
+    "wrong": 0.0,
+    "decisions_median": 39.0
+   },
+   "teacher_heldout": {
+    "success": 0.32,
+    "grasped": 0.965,
+    "lifted": 0.96,
+    "dropped": 0.76,
+    "right": 0.32,
+    "wrong": 0.0,
+    "decisions_median": 40.0
+   },
+   "controls": {
+    "random": 0.0,
+    "blind": 0.0,
+    "newborn": 0.0
+   },
+   "recipe": {
+    "modules": [
+     256,
+     128,
+     64
+    ],
+    "apical": 0.25,
+    "teaching": "normalized",
+    "learning_normalize_relative": 0.1,
+    "learning_nudged_steps": 32,
+    "learning_nudged_fixed": true,
+    "learning_qualified": false
+   },
+   "settings": {
+    "arm": "D3b",
+    "seed": 2,
+    "cells": 128,
+    "episodes": 400,
+    "physics": "wide",
+    "senses": "slip",
+    "teacher": "recover",
+    "arousal": true,
+    "heldout_set": "heldout2"
+   }
+  },
+  "B_D3b_slip_s3": {
+   "episode": 300,
+   "kind": "fresh",
+   "trials": 200,
+   "physics": "wide",
+   "heldout_set": "heldout2",
+   "brain": {
+    "success": 0.89,
+    "grasped": 0.97,
+    "lifted": 0.95,
+    "dropped": 0.12,
+    "right": 0.89,
+    "wrong": 0.0,
+    "decisions_median": 40.0
+   },
+   "teacher": {
+    "success": 0.925,
+    "grasped": 0.97,
+    "lifted": 0.96,
+    "dropped": 0.125,
+    "right": 0.925,
+    "wrong": 0.0,
+    "decisions_median": 38.0
+   },
+   "brain_heldout": {
+    "success": 0.315,
+    "grasped": 0.985,
+    "lifted": 0.98,
+    "dropped": 0.795,
+    "right": 0.315,
+    "wrong": 0.0,
+    "decisions_median": 43.0
+   },
+   "teacher_heldout": {
+    "success": 0.28,
+    "grasped": 0.985,
+    "lifted": 0.98,
+    "dropped": 0.81,
+    "right": 0.28,
+    "wrong": 0.0,
+    "decisions_median": 41.5
+   },
+   "controls": {
+    "random": 0.0,
+    "blind": 0.0,
+    "newborn": 0.0
+   },
+   "recipe": {
+    "modules": [
+     256,
+     128,
+     64
+    ],
+    "apical": 0.25,
+    "teaching": "normalized",
+    "learning_normalize_relative": 0.1,
+    "learning_nudged_steps": 32,
+    "learning_nudged_fixed": true,
+    "learning_qualified": false
+   },
+   "settings": {
+    "arm": "D3b",
+    "seed": 3,
+    "cells": 128,
+    "episodes": 400,
+    "physics": "wide",
+    "senses": "slip",
+    "teacher": "recover",
+    "arousal": true,
+    "heldout_set": "heldout2"
+   }
+  },
+  "B_D5_slip_s1": {
+   "episode": 300,
+   "kind": "fresh",
+   "trials": 200,
+   "physics": "wide",
+   "heldout_set": "heldout2",
+   "brain": {
+    "success": 0.93,
+    "grasped": 0.985,
+    "lifted": 0.985,
+    "dropped": 0.12,
+    "right": 0.93,
+    "wrong": 0.0,
+    "decisions_median": 39.0
+   },
+   "teacher": {
+    "success": 0.91,
+    "grasped": 0.97,
+    "lifted": 0.955,
+    "dropped": 0.115,
+    "right": 0.91,
+    "wrong": 0.0,
+    "decisions_median": 37.0
+   },
+   "brain_heldout": {
+    "success": 0.385,
+    "grasped": 0.97,
+    "lifted": 0.97,
+    "dropped": 0.72,
+    "right": 0.385,
+    "wrong": 0.0,
+    "decisions_median": 41.0
+   },
+   "teacher_heldout": {
+    "success": 0.315,
+    "grasped": 0.985,
+    "lifted": 0.98,
+    "dropped": 0.785,
+    "right": 0.315,
+    "wrong": 0.0,
+    "decisions_median": 41.0
+   },
+   "controls": {
+    "random": 0.0,
+    "blind": 0.0,
+    "newborn": 0.0
+   },
+   "recipe": {
+    "modules": [
+     256,
+     128,
+     64
+    ],
+    "apical": 0.25,
+    "teaching": "normalized",
+    "learning_normalize_relative": 0.1,
+    "learning_nudged_steps": 32,
+    "learning_nudged_fixed": true,
+    "learning_qualified": false,
+    "recall": true,
+    "recall_heads": 2,
+    "recall_action": true,
+    "recall_boundary": true,
+    "recall_position": 32,
+    "recall_recency": 0.0
+   },
+   "settings": {
+    "arm": "D5",
+    "seed": 1,
+    "cells": 128,
+    "episodes": 400,
+    "physics": "wide",
+    "senses": "slip",
+    "teacher": "recover",
+    "arousal": true,
+    "heldout_set": "heldout2"
+   }
+  },
+  "B_D5_slip_s2": {
+   "episode": 300,
+   "kind": "fresh",
+   "trials": 200,
+   "physics": "wide",
+   "heldout_set": "heldout2",
+   "brain": {
+    "success": 0.91,
+    "grasped": 0.965,
+    "lifted": 0.96,
+    "dropped": 0.095,
+    "right": 0.91,
+    "wrong": 0.0,
+    "decisions_median": 40.0
+   },
+   "teacher": {
+    "success": 0.93,
+    "grasped": 0.985,
+    "lifted": 0.985,
+    "dropped": 0.12,
+    "right": 0.93,
+    "wrong": 0.0,
+    "decisions_median": 39.0
+   },
+   "brain_heldout": {
+    "success": 0.43,
+    "grasped": 0.99,
+    "lifted": 0.99,
+    "dropped": 0.67,
+    "right": 0.43,
+    "wrong": 0.0,
+    "decisions_median": 39.0
+   },
+   "teacher_heldout": {
+    "success": 0.32,
+    "grasped": 0.965,
+    "lifted": 0.96,
+    "dropped": 0.76,
+    "right": 0.32,
+    "wrong": 0.0,
+    "decisions_median": 40.0
+   },
+   "controls": {
+    "random": 0.0,
+    "blind": 0.0,
+    "newborn": 0.0
+   },
+   "recipe": {
+    "modules": [
+     256,
+     128,
+     64
+    ],
+    "apical": 0.25,
+    "teaching": "normalized",
+    "learning_normalize_relative": 0.1,
+    "learning_nudged_steps": 32,
+    "learning_nudged_fixed": true,
+    "learning_qualified": false,
+    "recall": true,
+    "recall_heads": 2,
+    "recall_action": true,
+    "recall_boundary": true,
+    "recall_position": 32,
+    "recall_recency": 0.0
+   },
+   "settings": {
+    "arm": "D5",
+    "seed": 2,
+    "cells": 128,
+    "episodes": 400,
+    "physics": "wide",
+    "senses": "slip",
+    "teacher": "recover",
+    "arousal": true,
+    "heldout_set": "heldout2"
+   }
+  },
+  "B_D5_slip_s3": {
+   "episode": 300,
+   "kind": "fresh",
+   "trials": 200,
+   "physics": "wide",
+   "heldout_set": "heldout2",
+   "brain": {
+    "success": 0.9,
+    "grasped": 0.975,
+    "lifted": 0.97,
+    "dropped": 0.13,
+    "right": 0.9,
+    "wrong": 0.0,
+    "decisions_median": 40.0
+   },
+   "teacher": {
+    "success": 0.925,
+    "grasped": 0.97,
+    "lifted": 0.96,
+    "dropped": 0.125,
+    "right": 0.925,
+    "wrong": 0.0,
+    "decisions_median": 38.0
+   },
+   "brain_heldout": {
+    "success": 0.38,
+    "grasped": 0.985,
+    "lifted": 0.98,
+    "dropped": 0.755,
+    "right": 0.38,
+    "wrong": 0.0,
+    "decisions_median": 42.5
+   },
+   "teacher_heldout": {
+    "success": 0.28,
+    "grasped": 0.985,
+    "lifted": 0.98,
+    "dropped": 0.81,
+    "right": 0.28,
+    "wrong": 0.0,
+    "decisions_median": 41.5
+   },
+   "controls": {
+    "random": 0.0,
+    "blind": 0.0,
+    "newborn": 0.0
+   },
+   "recipe": {
+    "modules": [
+     256,
+     128,
+     64
+    ],
+    "apical": 0.25,
+    "teaching": "normalized",
+    "learning_normalize_relative": 0.1,
+    "learning_nudged_steps": 32,
+    "learning_nudged_fixed": true,
+    "learning_qualified": false,
+    "recall": true,
+    "recall_heads": 2,
+    "recall_action": true,
+    "recall_boundary": true,
+    "recall_position": 32,
+    "recall_recency": 0.0
+   },
+   "settings": {
+    "arm": "D5",
+    "seed": 3,
+    "cells": 128,
+    "episodes": 400,
+    "physics": "wide",
+    "senses": "slip",
+    "teacher": "recover",
+    "arousal": true,
+    "heldout_set": "heldout2"
+   }
+  }
+ }
+}

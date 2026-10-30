@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panda Arm Demo</title>
+<style>
+  :root { --bg: #f5f4f0; --fg: #1b1b1b; --muted: #666; --card: #fff; --line: #ddd; --ok: #2d7a3a; --warn: #a3471b; --accent: #2b5fa8; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #141414; --fg: #eee; --muted: #aaa; --card: #1e1e1e; --line: #333; } }
+  :root[data-theme="dark"] { --bg: #141414; --fg: #eee; --muted: #aaa; --card: #1e1e1e; --line: #333; }
+  body { margin: 0; padding: 16px; background: var(--bg); color: var(--fg); font: 14px/1.4 -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+  h1 { font-size: 18px; margin: 0 0 8px; }
+  .row { display: flex; flex-wrap: wrap; gap: 16px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 12px; }
+  img { width: 640px; max-width: 100%; height: auto; border-radius: 6px; background: #000; display: block; }
+  label { display: block; margin: 6px 0 2px; color: var(--muted); }
+  input[type=range] { width: 220px; }
+  button { padding: 6px 12px; margin: 4px 4px 4px 0; border: 1px solid var(--line); border-radius: 6px; background: var(--card); color: var(--fg); cursor: pointer; }
+  button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .stages span { display: inline-block; padding: 2px 8px; margin: 2px; border-radius: 10px; border: 1px solid var(--line); color: var(--muted); }
+  .stages span.on { background: var(--ok); color: #fff; border-color: var(--ok); }
+  .stages span.bad { background: var(--warn); color: #fff; border-color: var(--warn); }
+  table { border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  td, th { padding: 2px 8px; text-align: right; border-bottom: 1px solid var(--line); }
+  th:first-child, td:first-child { text-align: left; }
+  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: var(--muted); }
+  .big { font-size: 20px; font-weight: 600; }
+</style>
+</head>
+<body>
+<h1>Panda arm: a frozen Cadence brain on the contact cell</h1>
+<div class="row">
+  <div class="card">
+    <img id="scene" alt="the rendered scene" src="/frame.png">
+    <div class="mono" id="checkpoint"></div>
+  </div>
+  <div class="card" style="min-width: 260px">
+    <div><span class="big" id="stage">-</span> <span class="mono" id="policy"></span></div>
+    <div class="stages" id="stages"></div>
+    <div class="mono" id="counters"></div>
+    <button class="primary" id="new">New trial</button>
+    <button id="nudge">Nudge block 3 cm</button>
+    <label><input type="checkbox" id="teacher"> teacher runs instead of the brain</label>
+    <label><input type="checkbox" id="auto" checked> next trial starts by itself</label>
+    <label><input type="checkbox" id="random" checked> random block and lamp</label>
+    <label>block mass (kg): <span id="massv"></span><br><input type="range" id="mass" min="0.03" max="0.28" step="0.01" value="0.08"></label>
+    <label>friction: <span id="frictionv"></span><br><input type="range" id="friction" min="0.30" max="1.20" step="0.05" value="0.9"></label>
+    <label>block x (m): <span id="xv"></span><br><input type="range" id="x" min="0.36" max="0.54" step="0.01" value="0.45"></label>
+    <label>block y (m): <span id="yv"></span><br><input type="range" id="y" min="-0.24" max="0.24" step="0.01" value="0.0"></label>
+    <label>lamp: <select id="order"><option value="0">random</option><option value="1">A (right bin)</option><option value="2">B (left bin)</option></select></label>
+    <div class="mono">nominal: mass 0.03-0.12, friction 0.7-1.2; held-out: mass 0.13-0.18, friction 0.45-0.60</div>
+  </div>
+  <div class="card" style="min-width: 300px">
+    <table id="gates"><thead><tr><th>gate (this trial)</th><th>brain</th><th>teacher nominal</th><th>ratio</th></tr></thead><tbody></tbody></table>
+    <div class="mono" id="sweeps"></div>
+    <div class="mono" id="physics"></div>
+    <div class="mono" id="events"></div>
+  </div>
+</div>
+<script>
+const $ = id => document.getElementById(id);
+const GATES = [["oscillation_hz", "oscillation within 1 cm (Hz)"], ["oscillation_near_hz", "oscillation within 3 cm (Hz)"],
+  ["settling_s", "settling (s)"], ["effort_nms", "effort (N m s)"], ["jerk", "jerk (m/s^3)"], ["path_cm", "path (cm)"], ["overshoot_cm", "overshoot (cm)"]];
+const STAGES = ["reached", "grasped", "lifted", "carried", "right", "wrong", "dropped"];
+function post(path, body) { return fetch(path, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body || {})}); }
+function settings() {
+  const random = $("random").checked;
+  return {teacher: $("teacher").checked, auto: $("auto").checked,
+    mass: random ? null : parseFloat($("mass").value), friction: random ? null : parseFloat($("friction").value),
+    x: random ? null : parseFloat($("x").value), y: random ? null : parseFloat($("y").value),
+    order: parseInt($("order").value) || null};
+}
+for (const id of ["mass", "friction", "x", "y"]) { const show = () => $(id + "v").textContent = $(id).value; $(id).addEventListener("input", show); show(); }
+$("new").onclick = () => post("/api/new_trial", settings());
+$("nudge").onclick = () => post("/api/nudge");
+for (const id of ["teacher", "auto"]) $(id).onchange = () => post("/api/set", settings());
+setInterval(() => { $("scene").src = "/frame.png?t=" + Date.now(); }, 100);
+async function poll() {
+  try {
+    const s = await (await fetch("/api/state")).json();
+    $("stage").textContent = s.stage;
+    $("policy").textContent = s.policy + (s.command ? "  command " + JSON.stringify(s.command) + (s.hold ? " (hold)" : "") : "");
+    $("stages").innerHTML = STAGES.map(k => `<span class="${s.passed.includes(k) ? (k === "wrong" || k === "dropped" ? "bad" : "on") : ""}">${k}</span>`).join("");
+    $("counters").textContent = `decision ${s.decision}/80 | lamp ${s.lamp} | holding ${s.holding} | closed ${s.closed} | tip ${s.tip_cm} cm | block ${s.block_cm} cm | trials ${s.tally.trials}: right ${s.tally.right}, wrong ${s.tally.wrong}, dropped ${s.tally.dropped}`;
+    $("gates").querySelector("tbody").innerHTML = GATES.map(([k, name]) => `<tr><td>${name}</td><td>${s.gates[k] ?? "-"}</td><td>${s.teacher_nominal[k] ?? "-"}</td><td>${s.ratios[k] ?? "-"}</td></tr>`).join("");
+    $("sweeps").textContent = "sweeps per settle: " + (s.sweeps ?? "-") + (s.policy === "teacher" ? " (teacher: no settle)" : "");
+    $("physics").textContent = "block: " + JSON.stringify(s.physics);
+    $("events").textContent = s.events.join("  |  ");
+    $("checkpoint").textContent = "checkpoint " + s.checkpoint;
+  } catch (e) {}
+}
+setInterval(poll, 200); poll();
+</script>
+</body>
+</html>
