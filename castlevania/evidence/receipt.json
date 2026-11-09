@@ -1,0 +1,369 @@
+{
+ "brain": {
+  "file": "brain/brain.npz",
+  "sha256": "58225f8f15911ae4102f54f1d548bf8a05ce0039eb371bc87e2c915e6d7ef2e7",
+  "bytes": 26284422,
+  "source_sha256": "07a8ea61c8d777fae3d885a55be0facc645718613540238c26c8c112df353890",
+  "cadence": "0.95.2",
+  "inputs": 827,
+  "modules": [
+   256,
+   128
+  ],
+  "neurons": 4697,
+  "synapses": 724736,
+  "learner": {
+   "beta": 0.1,
+   "eta": 0.2,
+   "eta_bias": 0.02,
+   "free_steps": 1024,
+   "nudged_steps": 32,
+   "tolerance": 0.003,
+   "temperature": 0.2,
+   "normalize": 0.0,
+   "normalize_floor": 0.001,
+   "momentum": 0.9,
+   "scale_cap": 8.0,
+   "qualified": false,
+   "damping": 3,
+   "surprise": false,
+   "surprise_share": false,
+   "normalize_relative": 0.0,
+   "nudged_fixed": true,
+   "rehearsal": 0.0,
+   "rehearsal_capacity": 512,
+   "fast_settle": false
+  }
+ },
+ "readings": [
+  {
+   "brain": "runs/init/W6_s0_d200000_v2.brain.npz",
+   "eye": "v2",
+   "starts": [
+    0,
+    7,
+    14,
+    3,
+    10,
+    21,
+    28,
+    35,
+    42
+   ],
+   "decisions": 1500,
+   "progress": [
+    200248,
+    200248,
+    200248,
+    200248,
+    200248,
+    200248,
+    200248,
+    200248,
+    200248
+   ],
+   "mean_progress": 200248.0,
+   "min_progress": 200248,
+   "stage": [
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+   ],
+   "past_stairs": 9,
+   "stage3": 0,
+   "stage4": 0,
+   "world_x": [
+    {
+     "0": 712,
+     "1": 1584,
+     "2": 248
+    },
+    {
+     "0": 712,
+     "1": 1584,
+     "2": 248
+    },
+    {
+     "0": 712,
+     "1": 1584,
+     "2": 248
+    },
+    {
+     "0": 712,
+     "1": 1584,
+     "2": 248
+    },
+    {
+     "0": 712,
+     "1": 1584,
+     "2": 248
+    },
+    {
+     "0": 712,
+     "1": 1584,
+     "2": 248
+    },
+    {
+     "0": 712,
+     "1": 1584,
+     "2": 248
+    },
+    {
+     "0": 712,
+     "1": 1584,
+     "2": 248
+    },
+    {
+     "0": 712,
+     "1": 1584,
+     "2": 248
+    }
+   ],
+   "bat_hp_dealt": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "deaths_by_stage": {
+    "2": 17,
+    "1": 3
+   },
+   "score": [
+    4800,
+    2600,
+    4600,
+    2400,
+    4800,
+    2200,
+    4800,
+    4800,
+    2400
+   ],
+   "lives_lost": [
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4
+   ],
+   "games": [
+    {
+     "noops": 0,
+     "decisions": 1112,
+     "furthest_stage": 2,
+     "progress": 200248,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 248
+     },
+     "deaths_by_stage": {
+      "2": 3
+     },
+     "bat_hp_dealt": 0,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 368,
+      "2.0": 243
+     }
+    },
+    {
+     "noops": 7,
+     "decisions": 1044,
+     "furthest_stage": 2,
+     "progress": 200248,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 248
+     },
+     "deaths_by_stage": {
+      "2": 1
+     },
+     "bat_hp_dealt": 0,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 368,
+      "2.0": 289
+     }
+    },
+    {
+     "noops": 14,
+     "decisions": 1084,
+     "furthest_stage": 2,
+     "progress": 200248,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 248
+     },
+     "deaths_by_stage": {
+      "2": 3
+     },
+     "bat_hp_dealt": 0,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 368,
+      "2.0": 243
+     }
+    },
+    {
+     "noops": 3,
+     "decisions": 978,
+     "furthest_stage": 2,
+     "progress": 200248,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 248
+     },
+     "deaths_by_stage": {
+      "1": 1
+     },
+     "bat_hp_dealt": 0,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 304,
+      "2.0": 257
+     }
+    },
+    {
+     "noops": 10,
+     "decisions": 1112,
+     "furthest_stage": 2,
+     "progress": 200248,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 248
+     },
+     "deaths_by_stage": {
+      "2": 3
+     },
+     "bat_hp_dealt": 0,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 368,
+      "2.0": 243
+     }
+    },
+    {
+     "noops": 21,
+     "decisions": 947,
+     "furthest_stage": 2,
+     "progress": 200248,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 248
+     },
+     "deaths_by_stage": {
+      "1": 1,
+      "2": 1
+     },
+     "bat_hp_dealt": 0,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 368,
+      "2.0": 243
+     }
+    },
+    {
+     "noops": 28,
+     "decisions": 1112,
+     "furthest_stage": 2,
+     "progress": 200248,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 248
+     },
+     "deaths_by_stage": {
+      "2": 3
+     },
+     "bat_hp_dealt": 0,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 368,
+      "2.0": 243
+     }
+    },
+    {
+     "noops": 35,
+     "decisions": 1112,
+     "furthest_stage": 2,
+     "progress": 200248,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 248
+     },
+     "deaths_by_stage": {
+      "2": 3
+     },
+     "bat_hp_dealt": 0,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 368,
+      "2.0": 243
+     }
+    },
+    {
+     "noops": 42,
+     "decisions": 978,
+     "furthest_stage": 2,
+     "progress": 200248,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 248
+     },
+     "deaths_by_stage": {
+      "1": 1
+     },
+     "bat_hp_dealt": 0,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 304,
+      "2.0": 257
+     }
+    }
+   ],
+   "seconds": 145.3
+  }
+ ]
+}
