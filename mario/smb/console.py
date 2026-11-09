@@ -2,9 +2,8 @@
 
 Written for this demo on nes-py (MIT). It re-implements, step by step, what gym-super-mario-bros
 7.4.0 (Christian Kauten) does for a single level: the same start sequence, per-frame skips and RAM
-addresses, because the brain was raised there. That package's licence ("for educational purposes
-only") grants no reuse, so none of its code is copied here. The model card records that this
-console and that package give the brain identical screens, RAM and answers.
+addresses, because the brain was raised there; none of its code is copied here. The model card
+records that this console and that package give the brain identical screens, RAM and answers.
 
 One `Console` is one level from power-on:
 - the title screen is skipped by tapping Start; while the level loads, the world, stage and area

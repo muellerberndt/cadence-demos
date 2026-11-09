@@ -63,7 +63,7 @@ Lineage, all on screen input plus the body readings above:
 The training code is in
 [cadence-arcade](https://github.com/sean-mcclane832/cadence-arcade/tree/main/mario)
 (`concepts/csteady.py`, `concepts/cplay.py`, `dagger.py`, `game.py`); it runs on
-gym-super-mario-bros, whose licence is not an open one, so it is not part of this folder.
+gym-super-mario-bros, so it stays there.
 
 ## How it was picked
 

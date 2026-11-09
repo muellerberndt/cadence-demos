@@ -88,10 +88,9 @@ ran on cadence-net 0.91.1 to 0.91.3 from late October to 1 November 2026: 1-1 an
 then all four World 1 levels with lesson shares weighted to 1-3. The model card has the lineage.
 
 The training code lives in [cadence-arcade](https://github.com/sean-mcclane832/cadence-arcade/tree/main/mario).
-It runs on gym-super-mario-bros (Christian Kauten), whose licence ("for educational purposes
-only") is not an open one, so it is not part of this folder. `smb/console.py` follows that
-package's single-level start and frame handling step by step, rewritten on nes-py; on the training
-dump it gives the brain the same screens, RAM and answers at every decision of the gauntlet and of
+It runs on gym-super-mario-bros (Christian Kauten), so it stays there. `smb/console.py` follows
+that package's single-level start and frame handling step by step, rewritten on nes-py; on the
+training dump it gives the brain the same screens, RAM and answers at every decision of the gauntlet and of
 the 200 held-out attempts (32,402 decisions).
 
 ## Results
