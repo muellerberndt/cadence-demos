@@ -15,23 +15,24 @@ own dump of the cartridge.
 
 [![The brain crossing the stage-2 underground; click for the whole run](docs/castlevania-run-poster.png)](docs/castlevania-run.mp4)
 
-[`docs/castlevania-run.mp4`](docs/castlevania-run.mp4) (4 min 30 s, 1280 x 720, every NES frame
+[`docs/castlevania-run.mp4`](docs/castlevania-run.mp4) (4 min 26 s, 1280 x 720, every NES frame
 at 60 frames a second) is one whole game of the packed brain from the first frame Simon can
-move, after 1 idle decision: frozen, greedy, no search, no cuts. Beside the game: what the eye
-sees, the answer per slot, the settled regions, the recall memory.
-[`docs/castlevania-run.webm`](docs/castlevania-run.webm) is 14 s of it, the underground crossing.
-The per-decision log is [`evidence/castlevania-run.json`](evidence/castlevania-run.json);
-[`record.py`](record.py) makes the video from your own ROM (`python record.py --idle 1`).
+move, after 49 idle decisions (one of the fresh starts): frozen, greedy, no search, no cuts.
+Beside the game: what the eye sees, the answer per slot, the settled regions, the recall memory.
+[`docs/castlevania-run.webm`](docs/castlevania-run.webm) is 14 s of it, the first underground
+crossing. The per-decision log is [`evidence/castlevania-run.json`](evidence/castlevania-run.json);
+[`record.py`](record.py) makes the video from your own ROM (`python record.py --idle 49`).
 
 What the run shows:
 
 | Time | |
 | --- | --- |
-| 0:00 to 1:19 | The courtyard and the hall: through the gate, along the hall, up the stairs at its end; no life lost |
-| 1:19 to 2:19 | Stage 2: two lives lost at the bottom-left staircase down into the underground |
-| 2:26 to 2:36 | Third life: down the staircase and across the underground, over the water, to its far end (world x 495) |
-| 2:36 to 3:30 | It stands at the underground's far end, past and below the staircase up and out, pressing right and up, until enemies take the life |
-| 3:30 to 4:27 | Last life: lost at the bottom-left staircase again; game over |
+| 0:00 to 0:58 | The courtyard and the hall: through the gate, along the hall, up the stairs at its end; no life lost |
+| 0:58 to 1:06 | Stage 2: the first life lost at the bottom-left staircase down into the underground |
+| 1:18 to 1:25 | Second life: down the staircase and across the underground, over the water, to its far end (world x 495) |
+| 1:25 to 2:13 | It stands at the underground's far end, past and below the staircase up and out, until enemies take the life |
+| 2:28 to 3:15 | Third life: across the underground again (2:35), then the same end |
+| 3:53 to 4:23 | Last life: across once more (4:00), the same end; game over |
 
 The game's first block ends with the giant bat at stage 3 (the screen's STAGE 03). No brain of
 ours has reached stage 3: this one stops in stage 2. Stage numbers here are the game's RAM
@@ -119,8 +120,12 @@ starts. The brain never reads RAM beyond the eye's position readings.
    positions the widened brain answers as before on every one.
 4. **Stage 2.** 125,120 more decisions of practice on this release, eight streams, with the
    draw weighted to stage 2 (the staircase down to the underground, the water jumps, the way
-   out): about an hour on one core of a c7i. Of the checkpoints read every 25,000 decisions, the
-   one at 325,120 is packed.
+   out): about an hour on one core of a c7i.
+5. **Its own path (DAgger).** 124,896 decisions in which the brain drives and the teacher labels
+   every state the brain reaches, with the same stage-2 draw: the lessons now come from where
+   the brain actually goes, including its own mistakes at the staircase. 32 streams on
+   `backend="mlx"` on an Apple M4, 62 minutes. Of its checkpoints, read every 25,000 decisions,
+   the one at 450,016 is packed.
 
 ## Readings
 
@@ -131,18 +136,21 @@ pick.
 
 | Starts (idle decisions) | Past the hall stairs | Down the stage-2 staircase and across the underground | Stage 3 |
 | --- | --- | --- | --- |
-| Fresh: 1, 5, 11, 17, 25, 31, 38, 45, 49 | 9 of 9 | 7 of 9 | 0 of 9 |
-| Selection: 0, 3, 7, 10, 14, 21, 28, 35, 42 | 9 of 9 | 4 of 9 | 0 of 9 |
-| The brain this one continued from, selection starts | 9 of 9 | 0 of 9 | 0 of 9 |
+| Fresh: 1, 5, 11, 17, 25, 31, 38, 45, 49 | 9 of 9 | 8 of 9 | 0 of 9 |
+| Selection: 0, 3, 7, 10, 14, 21, 28, 35, 42 | 9 of 9 | 6 of 9 | 0 of 9 |
+| The brain before step 5, fresh starts | 9 of 9 | 7 of 9 | 0 of 9 |
+| The brain before step 5, selection starts | 9 of 9 | 4 of 9 | 0 of 9 |
+| The brain before step 4, selection starts | 9 of 9 | 0 of 9 | 0 of 9 |
 
-Every start ends with its four lives lost, nearly all of them in stage 2 (fresh starts: 32 deaths
-in stage 2, 4 in stage 1). Across the underground means down the staircase at the bottom left of
-stage 2 and on to world x 495 in the underground.
+Every start ends with its four lives lost, nearly all of them in stage 2 (fresh starts: 33 deaths
+in stage 2, 2 in stage 1). Across the underground means down the staircase at the bottom left of
+stage 2 and on to world x 495 in the underground. A checkpoint replaces the packed brain only if
+it is no worse on both sets of starts and no start leaves the brain standing still.
 
 ## Limits
 
 - **Stage 2.** At the bottom left of stage 2 the route goes down a staircase into the
-  underground. On some starts (2 of the 9 fresh ones) the brain stops a few pixels short of the staircase's foot and
+  underground. On some starts (1 of the 9 fresh ones) the brain stops a few pixels short of the staircase's foot and
   holds down, which crouches, until enemies take its lives. Where it does go down, it crosses the
   underground but walks past the staircase up and out (world x 434 to 456) and loses its lives
   further on. It has not reached stage 3.

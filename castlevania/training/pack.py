@@ -48,8 +48,9 @@ def main() -> None:
         receipt["readings"] = json.loads(a.readings.read_text())
     if a.run is not None:
         run = json.loads(a.run.read_text())
+        library = {k: v for k, v in (run.get("library") or {}).items() if k != "python"}  # no local paths
         receipt["run"] = {"config": run.get("config"), "counters": run.get("counters"),
-                          "seconds": run.get("seconds"), "library": run.get("library"),
+                          "seconds": run.get("seconds"), "library": library,
                           "evaluations": [{k: e.get(k) for k in ("decision", "stage", "past_stairs", "stage3",
                                                                    "stage4", "lives_lost", "progress")}
                                           | {"predict": (e.get("predict") or {}).get("agreement")}

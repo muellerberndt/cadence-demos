@@ -1,9 +1,9 @@
-# Model card: Simon (C2s at 325,120 decisions)
+# Model card: Simon (C2sd at 450,016 decisions)
 
 | | |
 | --- | --- |
 | Demo | Castlevania (`castlevania/`) |
-| File | `brain/brain.npz` · 36.6 MB · SHA-256 `553d33987a6ae00b…` |
+| File | `brain/brain.npz` · 38.3 MB · SHA-256 `b5305d061227e7c1…` |
 | Library | `cadence-net` 0.95.2 (`Brain.load(path, backend="cpu")`, float64, as `server.py` loads it) |
 | Composition | 827 inputs, 10 motor neurons in slots (3, 3, 2, 2), modules (256, 128), apical 0.25, recall memory (128 slots, 2 heads, the executed command and the boundary in its keys, position 32, no recency), `memory_choice=True`, arousal; learner set by `LearnerConfig` (raw step 0.2, bias step 0.02, 32 nudged sweeps run whole, unqualified, every row taught) |
 | Size | 4,697 neurons (the recall memory's regions included), 724,736 synapses |
@@ -40,7 +40,10 @@ The teacher alone reaches stage 4 on ten of ten starts.
 4. 125,120 decisions of practice on 0.95.2 (run C2s): eight streams side by side in one
    emulator, `Brain.lesson(x, labels, weights=w)` on all eight rows (rows at critical places
    weigh 3), then `Brain.act`; the draw weighted to stage 2. 57 minutes on one c7i core.
-   Checkpoints were read every 25,000 decisions; the one at 325,120 is packed.
+5. 124,896 decisions of DAgger (run C2sd): the brain's own greedy action is executed and the
+   teacher labels every state it reaches, same lesson and draw; 32 streams on `backend="mlx"`
+   (float32) on an Apple M4, 62 minutes. Checkpoints were read every 25,000 decisions; the one at
+   450,016 is packed.
 
 The commands are in the README's "Train your own" (`training/train.py`, `training/pack.py`).
 
@@ -54,26 +57,27 @@ read once after the pick.
 | Reading | Fresh starts (1, 5, 11, 17, 25, 31, 38, 45, 49) | Selection starts (0, 3, 7, 10, 14, 21, 28, 35, 42) |
 | --- | --- | --- |
 | Past the hall's stairs (stage 2 reached) | 9 of 9 | 9 of 9 |
-| Down the stage-2 staircase and across the underground (block 0, world x 495) | 7 of 9 | 4 of 9 |
+| Down the stage-2 staircase and across the underground (block 0, world x 495) | 8 of 9 | 6 of 9 |
 | Stage 3 reached | 0 of 9 | 0 of 9 |
-| Deaths (all four lives on every start) | 32 in stage 2, 4 in stage 1 | 29 in stage 2, 7 in stage 1 |
+| Deaths (all four lives on every start) | 33 in stage 2, 2 in stage 1 | 29 in stage 2, 5 in stage 1 |
+| Starts where the brain stands still | 0 | 0 |
 
-The brain it continued from (W6 widened), selection starts: 9 of 9 past the stairs, 0 of 9 across
-the underground.
-
-The teacher it imitated, on ten power-on starts: stage 4 on 10 of 10.
+The brain before step 5 (C2s at 325,120): fresh 9 of 9 past the stairs and 7 of 9 across the
+underground; selection 9 of 9 and 4 of 9. Gate for replacing the packed brain: no worse on both
+sets, no start standing still. All readings with `backend="cpu"`: the selection starts on an Apple
+M4, the fresh starts on a c7i (Linux).
 
 ## The video
 
 [`docs/castlevania-run.mp4`](docs/castlevania-run.mp4): one whole game from the first frame Simon
-can move (start after 1 idle decision, one of the fresh starts: it crosses the underground and loses no
-life before stage 2), frozen, greedy, no search, no cuts, made by [`record.py`](record.py); per-decision
-log in [`evidence/castlevania-run.json`](evidence/castlevania-run.json). It shows the courtyard and
-hall passed with no life lost (1:19), two lives lost at the stage-2 staircase, the third life
-going down the staircase and across the underground to world x 495 (2:26 to 2:36), standing
-there below the staircase up and out until that life is lost (3:30), and the last life lost at
-the staircase (game over, 4:27). The game's first block ends with the giant bat at stage 3; this
-brain does not reach stage 3.
+can move (start after 49 idle decisions, one of the fresh starts: no life lost before stage 2, the
+earliest crossing of the underground among them), frozen, greedy, no search, no cuts, made by
+[`record.py`](record.py); per-decision log in [`evidence/castlevania-run.json`](evidence/castlevania-run.json).
+It shows the courtyard and hall passed with no life lost (0:58), the first life lost at the
+stage-2 staircase, then on each of the three other lives the brain going down the staircase and
+across the underground to world x 495 (1:18, 2:28, 3:53) and standing there below the staircase
+up and out until the life is lost; game over at 4:23. The game's first block ends with the giant
+bat at stage 3; this brain does not reach stage 3.
 
 ## In the page
 

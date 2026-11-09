@@ -1,9 +1,9 @@
 {
  "brain": {
   "file": "brain/brain.npz",
-  "sha256": "553d33987a6ae00b307375a581de372e06b39802ca52892d55ad1df78e49952c",
-  "bytes": 36596367,
-  "source_sha256": "005ec4cc79c9264cef7eb00c289016d0266289acaf32b7da04bd715974f6f20e",
+  "sha256": "b5305d061227e7c1cc249ea76a6bf37b4d119e3355f6b85b3ad5d1e644012249",
+  "bytes": 38326094,
+  "source_sha256": "670685fea056a722a27ec8a79805d1b2b5dd938a3118b84d63f8a44f1f8b2eca",
   "cadence": "0.95.2",
   "inputs": 827,
   "modules": [
@@ -37,8 +37,8 @@
  },
  "run": {
   "config": {
-   "name": "C2s",
-   "seed": 3,
+   "name": "C2sd",
+   "seed": 5,
    "modules": [
     256,
     128
@@ -50,19 +50,19 @@
     "recall_action": true,
     "recall_boundary": true
    },
-   "streams": 8,
+   "streams": 32,
    "segment": 40,
    "budget": 450000,
    "draw": {
-    "all": 0.1,
+    "all": 0.15,
     "start": 0.03,
-    "stairs1": 0.07,
+    "stairs1": 0.1,
     "stage2_start": 0.15,
-    "stage2_left": 0.2,
-    "water_jumps": 0.08,
-    "under_stairs": 0.08,
-    "stage2_exit": 0.12,
-    "stage3": 0.07,
+    "stage2_left": 0.17,
+    "water_jumps": 0.07,
+    "under_stairs": 0.07,
+    "stage2_exit": 0.1,
+    "stage3": 0.06,
     "bat": 0.05,
     "stage4": 0.05
    },
@@ -74,8 +74,8 @@
     14
    ],
    "eval_decisions": 1500,
-   "search_at": 0,
-   "search_share": 0.5,
+   "search_at": 325120,
+   "search_share": 0.0,
    "search_k": 5,
    "search_horizon": 16,
    "search_sims": 48,
@@ -86,77 +86,54 @@
    "wall_hours": 0,
    "practice": "runs/pool/practice.pkl",
    "validation": "runs/pool/validation.npz",
-   "load": "W6_s0 at 200,000 decisions, widened to eye v2 (training/widen.py)",
-   "backend": null,
-   "load_decisions": 200000
+   "load": "C2s at 325,120 decisions (the previous packed brain)",
+   "backend": "mlx",
+   "load_decisions": 325120
   },
   "counters": {
-   "decisions": 325120,
-   "lessons": 125120,
+   "decisions": 450016,
+   "lessons": 124896,
    "lesson_refused": 0,
    "act_refused": 0,
    "searched": 0,
    "search_changed": 0,
    "search_informative": 0,
-   "own_ran": 0,
-   "teacher_ran": 125120,
-   "segments": 3128,
-   "weighted_rows": 96792
+   "own_ran": 124896,
+   "teacher_ran": 0,
+   "segments": 3136,
+   "weighted_rows": 88750
   },
-  "seconds": 3434.4,
+  "seconds": 3741.9,
   "library": {
    "cadence": "0.95.2",
    "cadence_source_sha256": "917857fdcb62b08b",
-   "numpy": "2.5.4",
-   "python": "/home/ec2-user/venv/bin/python"
+   "numpy": "2.5.4"
   },
   "evaluations": [
    {
-    "decision": 225280,
+    "decision": 350720,
     "stage": [
-     2,
+     1,
      2,
      2
     ],
-    "past_stairs": 3,
+    "past_stairs": 2,
     "stage3": 0,
     "stage4": 0,
     "lives_lost": [
-     4,
+     0,
      4,
      4
     ],
     "progress": [
-     200248,
-     200248,
-     200248
+     100467,
+     200495,
+     200495
     ],
-    "predict": 0.6566552901023891
+    "predict": 0.6733788395904436
    },
    {
-    "decision": 250240,
-    "stage": [
-     2,
-     2,
-     2
-    ],
-    "past_stairs": 3,
-    "stage3": 0,
-    "stage4": 0,
-    "lives_lost": [
-     4,
-     4,
-     4
-    ],
-    "progress": [
-     200248,
-     200248,
-     200248
-    ],
-    "predict": 0.6689419795221843
-   },
-   {
-    "decision": 275200,
+    "decision": 375040,
     "stage": [
      2,
      2,
@@ -175,10 +152,32 @@
      200495,
      200248
     ],
-    "predict": 0.6686006825938566
+    "predict": 0.6716723549488055
    },
    {
-    "decision": 300160,
+    "decision": 400640,
+    "stage": [
+     2,
+     2,
+     1
+    ],
+    "past_stairs": 2,
+    "stage3": 0,
+    "stage4": 0,
+    "lives_lost": [
+     4,
+     4,
+     4
+    ],
+    "progress": [
+     200495,
+     200495,
+     101311
+    ],
+    "predict": 0.6703071672354949
+   },
+   {
+    "decision": 426240,
     "stage": [
      2,
      2,
@@ -197,10 +196,10 @@
      200248,
      200248
     ],
-    "predict": 0.6675767918088737
+    "predict": 0.6706484641638225
    },
    {
-    "decision": 325120,
+    "decision": 450016,
     "stage": [
      2,
      2,
@@ -215,22 +214,24 @@
      4
     ],
     "progress": [
-     200248,
-     200248,
-     200495
+     200495,
+     200495,
+     200248
     ],
-    "predict": 0.6706484641638225
+    "predict": 0.673037542662116
    }
   ]
  },
  "lineage": [
   "200,000 decisions of practice on the first 588 inputs (earlier library release, one stream)",
   "carried to cadence-net 0.95.2 and widened to 827 inputs (training/widen.py)",
-  "125,120 decisions of practice on 0.95.2 with eight streams, the draw weighted to stage 2 (run C2s)"
+  "125,120 decisions of teacher-driven practice, eight streams, the draw weighted to stage 2 (run C2s, CPU)",
+  "124,896 decisions of DAgger: the brain drives, the teacher labels every state it reaches; 32 streams, backend mlx on an Apple M4 (run C2sd)"
  ],
+ "readings_selection_note": "starts 0, 3, 7, 10, 14, 21, 28, 35, 42: checkpoints were compared on these starts and this one was picked there",
  "readings_selection": [
   {
-   "brain": "C2s/d325120.brain.npz",
+   "brain": "C2sd/d450016.brain.npz",
    "eye": "v2",
    "starts": [
     0,
@@ -245,17 +246,17 @@
    ],
    "decisions": 1500,
    "progress": [
-    200248,
+    200495,
+    200495,
     200248,
     200495,
     200248,
     200495,
     200495,
     200495,
-    200248,
     200248
    ],
-   "mean_progress": 200357.77777777778,
+   "mean_progress": 200412.66666666666,
    "min_progress": 200248,
    "stage": [
     2,
@@ -275,7 +276,12 @@
     {
      "0": 712,
      "1": 1584,
-     "2": 248
+     "2": 495
+    },
+    {
+     "0": 712,
+     "1": 1584,
+     "2": 495
     },
     {
      "0": 712,
@@ -306,11 +312,6 @@
      "0": 712,
      "1": 1584,
      "2": 495
-    },
-    {
-     "0": 712,
-     "1": 1584,
-     "2": 248
     },
     {
      "0": 712,
@@ -331,18 +332,18 @@
    ],
    "deaths_by_stage": {
     "2": 29,
-    "1": 7
+    "1": 5
    },
    "score": [
-    5000,
-    2000,
-    4000,
-    5100,
-    1400,
-    500,
-    3400,
-    5100,
-    2100
+    2500,
+    2300,
+    4200,
+    3200,
+    5800,
+    2500,
+    1600,
+    2100,
+    5500
    ],
    "lives_lost": [
     4,
@@ -358,50 +359,7 @@
    "games": [
     {
      "noops": 0,
-     "decisions": 1146,
-     "furthest_stage": 2,
-     "progress": 200248,
-     "lives_lost": 4,
-     "world_x": {
-      "0": 712,
-      "1": 1584,
-      "2": 248
-     },
-     "deaths_by_stage": {
-      "2": 4
-     },
-     "bat_hp_dealt": 0,
-     "max_wx": {
-      "0.0": 712,
-      "1.0": 1584,
-      "2.1": 368
-     }
-    },
-    {
-     "noops": 7,
-     "decisions": 1131,
-     "furthest_stage": 2,
-     "progress": 200248,
-     "lives_lost": 4,
-     "world_x": {
-      "0": 712,
-      "1": 1584,
-      "2": 248
-     },
-     "deaths_by_stage": {
-      "1": 2,
-      "2": 2
-     },
-     "bat_hp_dealt": 0,
-     "max_wx": {
-      "0.0": 712,
-      "1.0": 1584,
-      "2.1": 304
-     }
-    },
-    {
-     "noops": 14,
-     "decisions": 1351,
+     "decisions": 1236,
      "furthest_stage": 2,
      "progress": 200495,
      "lives_lost": 4,
@@ -411,7 +369,30 @@
       "2": 495
      },
      "deaths_by_stage": {
-      "2": 4
+      "2": 3
+     },
+     "bat_hp_dealt": 0,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 336,
+      "2.0": 495
+     }
+    },
+    {
+     "noops": 7,
+     "decisions": 1175,
+     "furthest_stage": 2,
+     "progress": 200495,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 495
+     },
+     "deaths_by_stage": {
+      "1": 2,
+      "2": 2
      },
      "bat_hp_dealt": 0,
      "max_wx": {
@@ -422,8 +403,8 @@
      }
     },
     {
-     "noops": 3,
-     "decisions": 1140,
+     "noops": 14,
+     "decisions": 1083,
      "furthest_stage": 2,
      "progress": 200248,
      "lives_lost": 4,
@@ -431,27 +412,6 @@
       "0": 712,
       "1": 1584,
       "2": 248
-     },
-     "deaths_by_stage": {
-      "2": 4
-     },
-     "bat_hp_dealt": 0,
-     "max_wx": {
-      "0.0": 712,
-      "1.0": 1584,
-      "2.1": 248
-     }
-    },
-    {
-     "noops": 10,
-     "decisions": 1296,
-     "furthest_stage": 2,
-     "progress": 200495,
-     "lives_lost": 4,
-     "world_x": {
-      "0": 712,
-      "1": 1584,
-      "2": 495
      },
      "deaths_by_stage": {
       "1": 1,
@@ -461,285 +421,11 @@
      "max_wx": {
       "0.0": 712,
       "1.0": 1584,
-      "2.1": 248,
-      "2.0": 495
+      "2.1": 304
      }
     },
     {
-     "noops": 21,
-     "decisions": 1156,
-     "furthest_stage": 2,
-     "progress": 200495,
-     "lives_lost": 4,
-     "world_x": {
-      "0": 712,
-      "1": 1584,
-      "2": 495
-     },
-     "deaths_by_stage": {
-      "1": 2,
-      "2": 2
-     },
-     "bat_hp_dealt": 0,
-     "max_wx": {
-      "0.0": 712,
-      "1.0": 1584,
-      "2.1": 336,
-      "2.0": 495
-     }
-    },
-    {
-     "noops": 28,
-     "decisions": 1225,
-     "furthest_stage": 2,
-     "progress": 200495,
-     "lives_lost": 4,
-     "world_x": {
-      "0": 712,
-      "1": 1584,
-      "2": 495
-     },
-     "deaths_by_stage": {
-      "2": 4
-     },
-     "bat_hp_dealt": 0,
-     "max_wx": {
-      "0.0": 712,
-      "1.0": 1584,
-      "2.1": 248,
-      "2.0": 495
-     }
-    },
-    {
-     "noops": 35,
-     "decisions": 1066,
-     "furthest_stage": 2,
-     "progress": 200248,
-     "lives_lost": 4,
-     "world_x": {
-      "0": 712,
-      "1": 1584,
-      "2": 248
-     },
-     "deaths_by_stage": {
-      "2": 4
-     },
-     "bat_hp_dealt": 0,
-     "max_wx": {
-      "0.0": 712,
-      "1.0": 1584,
-      "2.1": 248
-     }
-    },
-    {
-     "noops": 42,
-     "decisions": 1097,
-     "furthest_stage": 2,
-     "progress": 200248,
-     "lives_lost": 4,
-     "world_x": {
-      "0": 712,
-      "1": 1584,
-      "2": 248
-     },
-     "deaths_by_stage": {
-      "1": 2,
-      "2": 2
-     },
-     "bat_hp_dealt": 0,
-     "max_wx": {
-      "0.0": 712,
-      "1.0": 1584,
-      "2.1": 248
-     }
-    }
-   ],
-   "seconds": 169.0
-  }
- ],
- "readings_selection_note": "starts 0, 3, 7, 10, 14, 21, 28, 35, 42: the checkpoints of the runs were compared on these starts, and this one was picked on them",
- "readings_fresh": [
-  {
-   "brain": "brain/brain.npz",
-   "eye": "v2",
-   "starts": [
-    1,
-    5,
-    11,
-    17,
-    25,
-    31,
-    38,
-    45,
-    49
-   ],
-   "decisions": 1500,
-   "progress": [
-    200495,
-    200248,
-    200495,
-    200495,
-    200495,
-    200495,
-    200495,
-    200495,
-    200248
-   ],
-   "stage": [
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2
-   ],
-   "past_stairs": 9,
-   "stage3": 0,
-   "stage4": 0,
-   "world_x": [
-    {
-     "0": 712,
-     "1": 1584,
-     "2": 495
-    },
-    {
-     "0": 712,
-     "1": 1584,
-     "2": 248
-    },
-    {
-     "0": 712,
-     "1": 1584,
-     "2": 495
-    },
-    {
-     "0": 712,
-     "1": 1584,
-     "2": 495
-    },
-    {
-     "0": 712,
-     "1": 1584,
-     "2": 495
-    },
-    {
-     "0": 712,
-     "1": 1584,
-     "2": 495
-    },
-    {
-     "0": 712,
-     "1": 1584,
-     "2": 495
-    },
-    {
-     "0": 712,
-     "1": 1584,
-     "2": 495
-    },
-    {
-     "0": 712,
-     "1": 1584,
-     "2": 248
-    }
-   ],
-   "bat_hp_dealt": [
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0
-   ],
-   "deaths_by_stage": {
-    "2": 32,
-    "1": 4
-   },
-   "lives_lost": [
-    4,
-    4,
-    4,
-    4,
-    4,
-    4,
-    4,
-    4,
-    4
-   ],
-   "games": [
-    {
-     "noops": 1,
-     "decisions": 1339,
-     "furthest_stage": 2,
-     "progress": 200495,
-     "lives_lost": 4,
-     "world_x": {
-      "0": 712,
-      "1": 1584,
-      "2": 495
-     },
-     "deaths_by_stage": {
-      "2": 4
-     },
-     "bat_hp_dealt": 0,
-     "max_wx": {
-      "0.0": 712,
-      "1.0": 1584,
-      "2.1": 336,
-      "2.0": 495
-     }
-    },
-    {
-     "noops": 5,
-     "decisions": 1263,
-     "furthest_stage": 2,
-     "progress": 200248,
-     "lives_lost": 4,
-     "world_x": {
-      "0": 712,
-      "1": 1584,
-      "2": 248
-     },
-     "deaths_by_stage": {
-      "2": 4
-     },
-     "bat_hp_dealt": 0,
-     "max_wx": {
-      "0.0": 712,
-      "1.0": 1584,
-      "2.1": 248
-     }
-    },
-    {
-     "noops": 11,
-     "decisions": 1225,
-     "furthest_stage": 2,
-     "progress": 200495,
-     "lives_lost": 4,
-     "world_x": {
-      "0": 712,
-      "1": 1584,
-      "2": 495
-     },
-     "deaths_by_stage": {
-      "2": 4
-     },
-     "bat_hp_dealt": 0,
-     "max_wx": {
-      "0.0": 712,
-      "1.0": 1584,
-      "2.1": 248,
-      "2.0": 495
-     }
-    },
-    {
-     "noops": 17,
+     "noops": 3,
      "decisions": 1287,
      "furthest_stage": 2,
      "progress": 200495,
@@ -750,50 +436,26 @@
       "2": 495
      },
      "deaths_by_stage": {
-      "1": 1,
-      "2": 3
+      "2": 4
      },
      "bat_hp_dealt": 0,
      "max_wx": {
       "0.0": 712,
       "1.0": 1584,
-      "2.1": 248,
+      "2.1": 272,
       "2.0": 495
      }
     },
     {
-     "noops": 25,
-     "decisions": 1364,
+     "noops": 10,
+     "decisions": 1208,
      "furthest_stage": 2,
-     "progress": 200495,
+     "progress": 200248,
      "lives_lost": 4,
      "world_x": {
       "0": 712,
       "1": 1584,
-      "2": 495
-     },
-     "deaths_by_stage": {
-      "1": 1,
-      "2": 3
-     },
-     "bat_hp_dealt": 0,
-     "max_wx": {
-      "0.0": 712,
-      "1.0": 1584,
-      "2.1": 336,
-      "2.0": 495
-     }
-    },
-    {
-     "noops": 31,
-     "decisions": 1225,
-     "furthest_stage": 2,
-     "progress": 200495,
-     "lives_lost": 4,
-     "world_x": {
-      "0": 712,
-      "1": 1584,
-      "2": 495
+      "2": 248
      },
      "deaths_by_stage": {
       "2": 4
@@ -802,35 +464,12 @@
      "max_wx": {
       "0.0": 712,
       "1.0": 1584,
-      "2.1": 248,
-      "2.0": 495
+      "2.1": 336
      }
     },
     {
-     "noops": 38,
-     "decisions": 1225,
-     "furthest_stage": 2,
-     "progress": 200495,
-     "lives_lost": 4,
-     "world_x": {
-      "0": 712,
-      "1": 1584,
-      "2": 495
-     },
-     "deaths_by_stage": {
-      "2": 4
-     },
-     "bat_hp_dealt": 0,
-     "max_wx": {
-      "0.0": 712,
-      "1.0": 1584,
-      "2.1": 248,
-      "2.0": 495
-     }
-    },
-    {
-     "noops": 45,
-     "decisions": 1281,
+     "noops": 21,
+     "decisions": 1313,
      "furthest_stage": 2,
      "progress": 200495,
      "lives_lost": 4,
@@ -852,15 +491,37 @@
      }
     },
     {
-     "noops": 49,
-     "decisions": 1040,
+     "noops": 28,
+     "decisions": 1131,
      "furthest_stage": 2,
-     "progress": 200248,
+     "progress": 200495,
      "lives_lost": 4,
      "world_x": {
       "0": 712,
       "1": 1584,
-      "2": 248
+      "2": 495
+     },
+     "deaths_by_stage": {
+      "2": 3
+     },
+     "bat_hp_dealt": 0,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 248,
+      "2.0": 495
+     }
+    },
+    {
+     "noops": 35,
+     "decisions": 1292,
+     "furthest_stage": 2,
+     "progress": 200495,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 495
      },
      "deaths_by_stage": {
       "1": 1,
@@ -870,12 +531,365 @@
      "max_wx": {
       "0.0": 712,
       "1.0": 1584,
-      "2.1": 304
+      "2.1": 368,
+      "2.0": 495
+     }
+    },
+    {
+     "noops": 42,
+     "decisions": 1188,
+     "furthest_stage": 2,
+     "progress": 200248,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 248
+     },
+     "deaths_by_stage": {
+      "2": 4
+     },
+     "bat_hp_dealt": 0,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 336
      }
     }
    ],
-   "seconds": 234.0
+   "seconds": 274.3
   }
  ],
- "readings_fresh_note": "starts 1, 5, 11, 17, 25, 31, 38, 45, 49: read once, after the pick, by training/evaluate.py on an Apple M4 (CPU)"
+ "readings_fresh_note": "starts 1, 5, 11, 17, 25, 31, 38, 45, 49: read once after the pick, gate: no worse than the previous brain on both sets, no frozen start",
+ "readings_fresh": [
+  {
+   "brain": "C2sd/d450016.brain.npz",
+   "eye": "v2",
+   "starts": [
+    1,
+    5,
+    11,
+    17,
+    25,
+    31,
+    38,
+    45,
+    49
+   ],
+   "decisions": 1500,
+   "progress": [
+    200495,
+    200495,
+    200248,
+    200495,
+    200495,
+    200495,
+    200495,
+    200495,
+    200495
+   ],
+   "mean_progress": 200467.55555555556,
+   "min_progress": 200248,
+   "stage": [
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+   ],
+   "past_stairs": 9,
+   "stage3": 0,
+   "stage4": 0,
+   "world_x": [
+    {
+     "0": 712,
+     "1": 1584,
+     "2": 495
+    },
+    {
+     "0": 712,
+     "1": 1584,
+     "2": 495
+    },
+    {
+     "0": 712,
+     "1": 1584,
+     "2": 248
+    },
+    {
+     "0": 712,
+     "1": 1584,
+     "2": 495
+    },
+    {
+     "0": 712,
+     "1": 1584,
+     "2": 495
+    },
+    {
+     "0": 712,
+     "1": 1584,
+     "2": 495
+    },
+    {
+     "0": 712,
+     "1": 1584,
+     "2": 495
+    },
+    {
+     "0": 712,
+     "1": 1584,
+     "2": 495
+    },
+    {
+     "0": 712,
+     "1": 1584,
+     "2": 495
+    }
+   ],
+   "bat_hp_dealt": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "deaths_by_stage": {
+    "2": 33,
+    "1": 2
+   },
+   "score": [
+    3100,
+    2600,
+    5300,
+    2000,
+    3900,
+    2700,
+    1600,
+    3100,
+    2500
+   ],
+   "lives_lost": [
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4
+   ],
+   "games": [
+    {
+     "noops": 1,
+     "decisions": 1373,
+     "furthest_stage": 2,
+     "progress": 200495,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 495
+     },
+     "deaths_by_stage": {
+      "2": 4
+     },
+     "bat_hp_dealt": 0,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 248,
+      "2.0": 495
+     }
+    },
+    {
+     "noops": 5,
+     "decisions": 1433,
+     "furthest_stage": 2,
+     "progress": 200495,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 495
+     },
+     "deaths_by_stage": {
+      "2": 4
+     },
+     "bat_hp_dealt": 0,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 248,
+      "2.0": 495
+     }
+    },
+    {
+     "noops": 11,
+     "decisions": 1188,
+     "furthest_stage": 2,
+     "progress": 200248,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 248
+     },
+     "deaths_by_stage": {
+      "2": 4
+     },
+     "bat_hp_dealt": 0,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 336
+     }
+    },
+    {
+     "noops": 17,
+     "decisions": 1263,
+     "furthest_stage": 2,
+     "progress": 200495,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 495
+     },
+     "deaths_by_stage": {
+      "1": 1,
+      "2": 3
+     },
+     "bat_hp_dealt": 0,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 336,
+      "2.0": 495
+     }
+    },
+    {
+     "noops": 25,
+     "decisions": 1359,
+     "furthest_stage": 2,
+     "progress": 200495,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 495
+     },
+     "deaths_by_stage": {
+      "1": 1,
+      "2": 3
+     },
+     "bat_hp_dealt": 0,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 304,
+      "2.0": 495
+     }
+    },
+    {
+     "noops": 31,
+     "decisions": 1407,
+     "furthest_stage": 2,
+     "progress": 200495,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 495
+     },
+     "deaths_by_stage": {
+      "2": 4
+     },
+     "bat_hp_dealt": 0,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 248,
+      "2.0": 495
+     }
+    },
+    {
+     "noops": 38,
+     "decisions": 1139,
+     "furthest_stage": 2,
+     "progress": 200495,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 495
+     },
+     "deaths_by_stage": {
+      "2": 3
+     },
+     "bat_hp_dealt": 0,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 248,
+      "2.0": 495
+     }
+    },
+    {
+     "noops": 45,
+     "decisions": 1486,
+     "furthest_stage": 2,
+     "progress": 200495,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 495
+     },
+     "deaths_by_stage": {
+      "2": 4
+     },
+     "bat_hp_dealt": 0,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 304,
+      "2.0": 495
+     }
+    },
+    {
+     "noops": 49,
+     "decisions": 1319,
+     "furthest_stage": 2,
+     "progress": 200495,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 495
+     },
+     "deaths_by_stage": {
+      "2": 4
+     },
+     "bat_hp_dealt": 0,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 248,
+      "2.0": 495
+     }
+    }
+   ],
+   "seconds": 206.8
+  }
+ ]
 }
