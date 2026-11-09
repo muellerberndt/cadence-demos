@@ -46,16 +46,20 @@ The commands are in the README's "Train your own" (`training/train.py`, `trainin
 
 ## How it was measured
 
-Brain alone, frozen and greedy, from power-on after 0, 3, 7, 10, 14, 21, 28, 35 and 42 idle
-decisions, 1,500 decisions each (`training/evaluate.py`; [`evidence/receipt.json`](evidence/receipt.json)):
+Brain alone, frozen and greedy, from power-on, 1,500 decisions per start
+(`training/evaluate.py`; [`evidence/receipt.json`](evidence/receipt.json)). The runs' checkpoints
+were compared on nine selection starts and this one was picked there; nine fresh starts were
+read once after the pick.
 
-| Reading | Value |
-| --- | --- |
-| Past the hall's stairs (stage 2 reached) | 9 of 9 starts |
-| Down the stage-2 staircase and across the underground (block 0, world x 495) | 4 of 9 (starts 10, 14, 21, 28) |
-| Stage 3 reached | 0 of 9 |
-| Lives lost | 4 of 4 on every start (36 deaths: 29 in stage 2, 7 in stage 1) |
-| The brain it continued from, same starts | 9 of 9 past the stairs, 0 of 9 across the underground |
+| Reading | Fresh starts (1, 5, 11, 17, 25, 31, 38, 45, 49) | Selection starts (0, 3, 7, 10, 14, 21, 28, 35, 42) |
+| --- | --- | --- |
+| Past the hall's stairs (stage 2 reached) | 9 of 9 | 9 of 9 |
+| Down the stage-2 staircase and across the underground (block 0, world x 495) | 7 of 9 | 4 of 9 |
+| Stage 3 reached | 0 of 9 | 0 of 9 |
+| Deaths (all four lives on every start) | 32 in stage 2, 4 in stage 1 | 29 in stage 2, 7 in stage 1 |
+
+The brain it continued from (W6 widened), selection starts: 9 of 9 past the stairs, 0 of 9 across
+the underground.
 
 The teacher it imitated, on ten power-on starts: stage 4 on 10 of 10.
 
@@ -68,9 +72,9 @@ trace and recall memory are cleared at each new game. Nothing is saved. One deci
 
 ## Limits
 
-- It does not get past stage 2. On 5 of 9 starts it stops a few pixels short of the bottom-left
-  staircase's foot and holds down, which crouches, until enemies take its lives; on the other 4
-  it crosses the underground but walks past the staircase up and out.
+- It does not get past stage 2. On some starts it stops a few pixels short of the bottom-left
+  staircase's foot and holds down, which crouches, until enemies take its lives; where it goes
+  down, it crosses the underground but walks past the staircase up and out.
 - It learned from a teacher's labels; reward played no part.
 - Simon's position, facing, stage, block and body state come from RAM, not from pixels.
 - Checked on the PRG1 printing and stable-retro's FCEUmm core only.

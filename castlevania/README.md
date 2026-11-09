@@ -97,23 +97,25 @@ starts. The brain never reads RAM beyond the eye's position readings.
 
 ## Readings
 
-Frozen and greedy from power-on, 1,500 decisions on each of nine idle offsets (0, 3, 7, 10, 14,
-21, 28, 35, 42), `training/evaluate.py`; the receipt is [`evidence/receipt.json`](evidence/receipt.json).
+Frozen and greedy from power-on, 1,500 decisions per start (`training/evaluate.py`; the receipt
+is [`evidence/receipt.json`](evidence/receipt.json)). The checkpoints of the runs were compared on
+nine selection starts and this one was picked there; nine fresh starts were read once, after the
+pick.
 
-| Start | Hall stairs passed | Down the stage-2 staircase and across the underground |
-| --- | --- | --- |
-| 0, 3, 7, 35, 42 | yes | no |
-| 10, 14, 21, 28 | yes | yes, to x 495 |
+| Starts (idle decisions) | Past the hall stairs | Down the stage-2 staircase and across the underground | Stage 3 |
+| --- | --- | --- | --- |
+| Fresh: 1, 5, 11, 17, 25, 31, 38, 45, 49 | 9 of 9 | 7 of 9 | 0 of 9 |
+| Selection: 0, 3, 7, 10, 14, 21, 28, 35, 42 | 9 of 9 | 4 of 9 | 0 of 9 |
+| The brain this one continued from, selection starts | 9 of 9 | 0 of 9 | 0 of 9 |
 
-Every start passes the hall's stairs at the end of stage 1 (9 of 9), and on 4 of 9 the brain
-goes down the staircase into stage 2's underground and crosses it. None reaches stage 3; every
-start ends with its four lives lost (36 deaths: 29 in stage 2, 7 in stage 1). The brain this
-one continued from crossed the underground on 0 of the same 9 starts.
+Every start ends with its four lives lost, nearly all of them in stage 2 (fresh starts: 32 deaths
+in stage 2, 4 in stage 1). Across the underground means down the staircase at the bottom left of
+stage 2 and on to world x 495 in the underground.
 
 ## Limits
 
 - **Stage 2.** At the bottom left of stage 2 the route goes down a staircase into the
-  underground. On 5 of 9 starts the brain stops a few pixels short of the staircase's foot and
+  underground. On some starts (2 of the 9 fresh ones) the brain stops a few pixels short of the staircase's foot and
   holds down, which crouches, until enemies take its lives. Where it does go down, it crosses the
   underground but walks past the staircase up and out (world x 434 to 456) and loses its lives
   further on. It has not reached stage 3.
