@@ -15,7 +15,7 @@ export type Spec = {
 // [x, y, heading, hp, mode, strides, planted, angles, spins, brain, commands]
 export type BrainRow = [number[], number[], number[], number, number, number, number, number] | null;
 export type RobotRow = [number, number, number, number, number, number[], number[], number[], number[], BrainRow, number[] | null];
-export type Frame = { t: number; zone: number; robots: RobotRow[]; hits: [number, number, number, number][] };
+export type Frame = { t: number; zone: number; robots: RobotRow[]; hits: [number, number, number, number][]; inspect?: import("./brainview").Inspect };
 export type Result = {
   name: string; place: number; score: number; alive: boolean; hp: number; died_at: number | null; moments: number;
   dealt: number; taken: number; burn: number; hits: number; moments_outside: number; travelled_m: number;

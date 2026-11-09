@@ -3,6 +3,7 @@
 // browser after each fight. One continuing life per robot: the brain that fights the next
 // royale is the brain that fought this one, in this browser.
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { Anatomy, Inspect } from "./arena/brainview";
 import { Frame, Result, Spec } from "./arena/types";
 import { getItem, removeAll, setItem } from "./store/persist";
 
@@ -70,6 +71,12 @@ export function useLeague() {
   const speedRef = useRef<Speed>(1); speedRef.current = speed;
   const leagueRef = useRef(league); leagueRef.current = league;
   const specsRef = useRef<Spec[]>([]); specsRef.current = specs;
+  const selectedRef = useRef<number | null>(null); selectedRef.current = selected;
+  // the inspector: the selected brain's records in the order their frames are shown, and this
+  // fight's frames by moment (the recall memory's thumbnails read them)
+  const inspectQueue = useRef<Inspect[]>([]);
+  const history = useRef<Map<number, Frame>>(new Map());
+  const [anatomy, setAnatomy] = useState<Anatomy | null>(null);
   const tallyRef = useRef({ dealt: [] as number[], aroused: [] as number[], alive: [] as number[], sweeps: [] as number[] });
   const shownCount = useRef(0), shownSince = useRef(performance.now());
   const arrived = useRef(0), arrivalRate = useRef(20), arrivalSince = useRef(performance.now());
@@ -123,7 +130,7 @@ export function useLeague() {
     const rec = record || leagueRef.current;
     const names = (manifestRef.current?.roster || []).map((r: any) => r.name);
     const seed = Math.floor(Math.random() * 1_000_000);
-    buffer.current = []; fightDone.current = false; fightResults.current = null; setResults(null); setCountdown(null);
+    buffer.current = []; history.current = new Map(); inspectQueue.current = []; fightDone.current = false; fightResults.current = null; setResults(null); setCountdown(null);
     if (timerRef.current) { window.clearInterval(timerRef.current); timerRef.current = null; }
     const started = await call("new_fight", { names, seed, duration: DURATION, zone_moments: ZONE, zone_end: ZONE_END });
     const sp: Spec[] = started.robots; setSpecs(sp); specsRef.current = sp;
@@ -140,7 +147,9 @@ export function useLeague() {
     if (buffer.current.length > 60) return;
     fetching.current = true;
     try {
-      const out = await call("step", { n: BATCH });
+      const sel = selectedRef.current;
+      const inspect = sel !== null ? specsRef.current[sel]?.name : undefined;
+      const out = await call("step", { n: BATCH, inspect });
       buffer.current.push(...out.frames);
       arrived.current += out.frames.length;
       setMsPerMoment(out.ms_per_moment);
@@ -170,7 +179,13 @@ export function useLeague() {
       if (acc > 4) acc = 4;
       if (n > 0) {
         let f: Frame | undefined;
-        for (let k = 0; k < n; k++) { f = buffer.current.shift(); if (f) tally(f); }
+        for (let k = 0; k < n; k++) {
+          f = buffer.current.shift();
+          if (f) {
+            tally(f); history.current.set(f.t, f);
+            if (f.inspect) { inspectQueue.current.push(f.inspect); if (inspectQueue.current.length > 64) inspectQueue.current.shift(); }
+          }
+        }
         if (f) { setFrame(f); setFrameIndex(f.t); shownCount.current += n; }
         setTallies({ ...tallyRef.current });
       }
@@ -227,10 +242,19 @@ export function useLeague() {
     await newFight(record);
   }, [call, newFight]);
 
+  useEffect(() => {
+    setAnatomy(null); inspectQueue.current = [];
+    const name = selected !== null ? specs[selected]?.name : undefined;
+    if (!name || !ready) return;
+    let live = true;
+    call("anatomy", { name }).then((a) => { if (live) setAnatomy(a); }).catch((err) => setError(String(err.message || err)));
+    return () => { live = false; };
+  }, [selected, specs, ready, call]);
+
   const roster = useMemo(() => (manifest?.roster || []) as any[], [manifest]);
   return {
     status, progress, error, ready, manifest, describe, roster, specs, frame, frameIndex, playing, setPlaying, speed, setSpeed,
-    selected, setSelected, results, league, msPerMoment, achieved, tallies, persisted, fightSeed,
+    selected, setSelected, anatomy, inspectQueue, history, results, league, msPerMoment, achieved, tallies, persisted, fightSeed,
     autoContinue, setAutoContinue, countdown,
     nextFight: () => newFight(), resetLeague, duration: DURATION,
   };

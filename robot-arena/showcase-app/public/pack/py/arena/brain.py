@@ -50,6 +50,7 @@ FOUNDER: dict[str, Any] = {
     "episodic": True,
     "consolidation": 0.05,
     "recall": False,  # the recall memory Brain.compose holds by default; off unless a blueprint turns it on
+    "teaching": None,  # Brain.compose's teaching point ("deep", "normalized"); None keeps the composed one
     "resting_bias": 0.0,
     "sensory_scale": 4.0,  # the sensory projection's scale; 1.0 is Brain.compose's own
     "temperature": 0.3,  # the learner's softmax temperature; 0.2 is the library default
@@ -144,6 +145,7 @@ def compose(blueprint: Blueprint, genes: dict[str, Any] | None = None) -> Brain:
         lateral=-0.5 if max(slots) <= 8 else 0.0,
         seed=blueprint.seed,
         recall=bool(g.get("recall", False)),
+        **({"teaching": str(g["teaching"])} if g.get("teaching") else {}),
         episodic=bool(g["episodic"]),
         consolidation=float(g["consolidation"]),
         working_memory_amplitude=float(g["trace_amplitude"]),

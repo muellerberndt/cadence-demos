@@ -52,7 +52,13 @@ try {
   console.log(`info brains at ${ms ? ms[1] : "?"} ms/moment in Pyodide`);
   // select a robot from the standings and expect the inspector
   await evalJs(`document.querySelector("aside button").click()`);
-  await until(`!!document.querySelector("section canvas[width='1240']")`, "the brain inspector opened for a robot", 10000);
+  await until(`!!window.__brainView`, "the brain inspector opened for a robot", 10000);
+  // the brain view draws the selected brain's real records: anatomy read, moments arriving
+  await until(`(() => { const v = window.__brainView; return v && v.an && v.last && v.moments >= 20; })()`, "the brain view draws the robot's own moments", 60000);
+  await sleep(4000);
+  const view = await evalJs(`(() => { const v = window.__brainView; return { ms: v.frameMs, frames: v.frames, moments: v.moments, neurons: v.an.neurons, tracts: v.an.tracts.length, learned: v.learnedMoments, changed: v.changedTotal }; })()`);
+  console.log(`info brain view: ${view.neurons} neurons, ${view.tracts} tracts, ${view.moments} moments shown, ${view.learned} with learning (${view.changed} synapses changed), draw ${view.ms.toFixed(1)} ms over ${view.frames} frames`);
+  if (!(view.ms < 16)) throw new Error(`brain view draws in ${view.ms.toFixed(1)} ms, over a 60 fps frame`);
   // full speed to the end of the fight
   await evalJs(`[...document.querySelectorAll("button")].find(b => b.textContent.includes("as fast")).click()`);
   await until(`/fight over/i.test(document.body.innerText)`, "the fight ended", 600000);

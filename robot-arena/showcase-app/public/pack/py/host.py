@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import base64
 import json
+from contextlib import nullcontext
 import math
 import os
 import time
@@ -55,6 +56,34 @@ from arena.royale import (  # noqa: E402
 )
 from arena.senses import input_names, observe  # noqa: E402
 from arena.world import Arena, Robot  # noqa: E402
+from cadence import record_settlements  # noqa: E402
+
+TRAJECTORY_EVERY = 8  # the inspected brain's full settle, sweep by sweep, every this many moments
+TRAJECTORY_FRAMES = 18  # sweeps sent per settle (first, last and evenly between; the movement of every sweep)
+TRACT_SAMPLE = 36  # synapses drawn per projection, the strongest
+TOP_CHANGES = 48  # the largest synaptic changes of a moment that the page flashes
+
+
+def _value(brain) -> float | None:
+    """The critic's value of the state the brain last acted from (``Brain.live`` keeps it with its
+    pending action), or None before a first action."""
+    lived = getattr(brain, "_lived", None)
+    return None if lived is None else float(lived[2])
+
+
+def _prediction_error(brain, before: float | None, owed) -> float | None:
+    """The reward prediction error of this moment's outcome, signed: the library's TD error when the
+    outcome was learned from, otherwise reward + gamma * value(now) - value(before), the formula the
+    arousal law reads (unsigned there)."""
+    learning = getattr(brain, "last_learning", None) or {}
+    if "td_error" in learning and (brain.last_arousal or {}).get("learned"):
+        return round(float(learning["td_error"]), 4)
+    if before is None or owed is None:
+        return None
+    reward, ended = float(owed[0]), bool(owed[1])
+    now = _value(brain)
+    following = 0.0 if ended or now is None else now
+    return round(reward + float(brain.basal_ganglia.config.gamma) * following - before, 4)
 
 
 class Host:
@@ -169,7 +198,7 @@ class Host:
         ]
         return {"robots": specs, "frame": _frame(arena, fighters, {}, {}), "seed": int(seed), "duration": int(duration)}
 
-    def step(self, n: int = 1) -> dict[str, Any]:
+    def step(self, n: int = 1, inspect: str | None = None) -> dict[str, Any]:
         F = self.fight
         if F is None:
             raise ValueError("no fight; call new_fight first")
@@ -187,13 +216,23 @@ class Host:
                 break
             fighters = F["fighters"]
             readings = {}
+            inspected = None
             for robot in alive:
                 f = fighters[robot.rid]
                 owed = F["feedback"][f.name]
-                reading = self.brains[f.name].moment(
-                    observe(robot, arena), None if owed is None else owed[0], False if owed is None else owed[1]
-                )
+                watched = f.name == inspect
+                records: list = []
+                life = self.brains[f.name]
+                w0 = np.array(life.brain.learner.brain.weights, copy=True) if watched else None
+                v0 = _value(life.brain) if watched else None
+                with record_settlements(records.append) if watched else nullcontext():
+                    reading = life.moment(
+                        observe(robot, arena), None if owed is None else owed[0], False if owed is None else owed[1]
+                    )
                 readings[f.name] = reading
+                if watched:
+                    inspected = self._inspect(life.brain, records, w0, F["t"])
+                    inspected["rpe"] = _prediction_error(life.brain, v0, None if owed is None else owed)
             before = {robot.rid: (robot.x, robot.y) for robot in alive}
             gap_before = {robot.rid: _nearest_gap(robot, alive) for robot in alive}
             commands = {}
@@ -225,7 +264,10 @@ class Host:
                 a["outside"] += int(o["outside"])
                 bx, by = before[robot.rid]
                 a["travelled"] += math.hypot(robot.x - bx, robot.y - by)
-            frames.append(_frame(arena, fighters, readings, F["last_reward"]))
+            frame = _frame(arena, fighters, readings, F["last_reward"])
+            if inspected is not None:
+                frame["inspect"] = inspected
+            frames.append(frame)
             F["t"] += 1
             moments += 1
         if moments:
@@ -272,6 +314,80 @@ class Host:
 
     # -- the page's protocol
 
+    # -- the brain inspector: real state of one brain
+
+    def anatomy(self, name: str) -> dict[str, Any]:
+        """The brain's populations and, per projection, its strongest synapses (the tracts the
+        inspector draws), with every population's neuron indices."""
+        brain = self.brains[name].brain
+        c = brain.connectome
+        groups: dict[tuple[int, ...], str] = {}
+        for pop, members in c.populations.items():
+            key = tuple(int(i) for i in members)
+            if key and (key not in groups or len(pop) < len(groups[key])):
+                groups[key] = pop
+        pops = sorted(({"name": n, "index": list(k)} for k, n in groups.items()), key=lambda p: p["index"][0])
+        label = np.full(c.n, -1, dtype=np.int64)
+        for k, p in enumerate(pops):
+            label[p["index"]] = k
+        pre, post = np.asarray(c.pre), np.asarray(c.post)
+        w = np.asarray(brain.learner.brain.weights)
+        tracts = []
+        for a, b in sorted(set(zip(label[pre].tolist(), label[post].tolist()))):
+            idx = np.flatnonzero((label[pre] == a) & (label[post] == b))
+            top = idx[np.argsort(-np.abs(w[idx]), kind="stable")[:TRACT_SAMPLE]]
+            tracts.append({"pre": pops[a]["name"] if a >= 0 else "?", "post": pops[b]["name"] if b >= 0 else "?",
+                           "synapses": int(len(idx)), "drawn": [int(i) for i in top],
+                           "from": [int(i) for i in pre[top]], "to": [int(i) for i in post[top]],
+                           "w": [round(float(x), 4) for x in w[top]]})
+        recall = getattr(brain, "recall", None)
+        return {"name": name, "neurons": int(c.n), "synapses": int(c.synapses), "populations": pops, "tracts": tracts,
+                "sensory": [int(i) for i in brain.sensory_index], "motor": [int(i) for i in brain.motor_index],
+                "recall_capacity": int(recall.capacity) if recall is not None else 0}
+
+    def _inspect(self, brain, records: list, w0: np.ndarray, t: int) -> dict[str, Any]:
+        """What the watched brain did in this moment, read from the brain itself: its act's settle
+        (every sweep's movement; the sweeps themselves every TRAJECTORY_EVERY moments), the learning
+        settles, the synapses that changed, the critic's error, arousal and the recall memory's reads."""
+        free = [r for r in records if r.nudge is None and r.steps > 0]
+        nudged = [r for r in records if r.nudge is not None]
+        act = max(free, key=lambda r: r.steps) if free else None
+        out: dict[str, Any] = {"t": int(t), "settles": len(records), "learning_settles": len(nudged),
+                               "learning_sweeps": int(sum(r.steps for r in nudged))}
+        if act is not None:
+            a = np.asarray(act.activation)[:, 0, :]
+            move = np.abs(np.diff(a, axis=0)).max(axis=1) if len(a) > 1 else np.zeros(0)
+            out["sweeps"] = int(act.steps)
+            out["movement"] = [round(float(x), 5) for x in move]
+            out["state"] = [round(float(x), 2) for x in a[-1]]
+            if t % TRAJECTORY_EVERY == 0 and len(a) > 1:
+                pick = np.unique(np.linspace(0, len(a) - 1, min(TRAJECTORY_FRAMES, len(a))).round().astype(int))
+                q = np.clip((a[pick] + 0.1) / 1.1 * 255.0, 0, 255).astype(np.uint8)
+                out["trajectory"] = {"sweeps": [int(k) for k in pick], "neurons": int(a.shape[1]),
+                                     "q": base64.b64encode(q.tobytes()).decode("ascii")}
+        w1 = np.asarray(brain.learner.brain.weights)
+        dw = w1 - w0
+        changed = np.flatnonzero(dw)
+        top = changed[np.argsort(-np.abs(dw[changed]), kind="stable")[:TOP_CHANGES]] if len(changed) else changed
+        pre, post = np.asarray(brain.connectome.pre), np.asarray(brain.connectome.post)
+        out["plasticity"] = {"changed": int(len(changed)), "max": round(float(np.abs(dw).max()), 6) if len(changed) else 0.0,
+                             "top": [int(i) for i in top], "delta": [round(float(dw[i]), 6) for i in top],
+                             "pre": [int(pre[i]) for i in top], "post": [int(post[i]) for i in top],
+                             "w": [round(float(w1[i]), 4) for i in top]}
+        info = brain.last_arousal or {}
+        out["arousal"] = {k: (round(float(info[k]), 4) if isinstance(info.get(k), float) else info.get(k))
+                          for k in ("mode", "level", "error", "surprise", "want", "learned", "heated_slot")}
+        recall = getattr(brain, "recall", None)
+        if recall is not None:
+            ages = np.asarray(recall.ages)
+            heads = np.asarray(recall.attended_heads, dtype=float) if recall.attended_heads is not None else np.zeros((0, 1, 0))
+            read = heads.reshape(-1, heads.shape[-1]).max(axis=0) if heads.size else np.zeros(0)
+            k = min(len(ages), len(read))
+            order = np.argsort(-read[:k])[:6] if k else []
+            out["recall"] = {"stored": int(len(ages)), "capacity": int(recall.capacity),
+                             "reads": [[int(j), int(ages[j]), round(float(read[j]), 3)] for j in order if read[j] > 0.01]}
+        return out
+
     def handle_json(self, text: str) -> str:
         m = json.loads(text)
         op = m.get("op")
@@ -280,7 +396,9 @@ class Host:
         if op == "new_fight":
             return json.dumps(self.new_fight(m["names"], int(m.get("seed", 0)), int(m.get("duration", 1200)), int(m.get("zone_moments", 1000))))
         if op == "step":
-            return json.dumps(self.step(int(m.get("n", 1))))
+            return json.dumps(self.step(int(m.get("n", 1)), m.get("inspect")))
+        if op == "anatomy":
+            return json.dumps(self.anatomy(m["name"]))
         if op == "save":
             return json.dumps(self.save())
         if op == "restore":

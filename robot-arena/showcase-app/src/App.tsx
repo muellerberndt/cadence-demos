@@ -65,7 +65,7 @@ export default function App() {
               <div>In the ring a brain is calm unless an outcome contradicts its forecast: a hard hit, the burn, a placement. Then it is aroused, samples and learns, and settles back.</div>
             </div>
           </aside>
-          <div className="lg:col-span-2"><BrainInspector frame={L.frame} specs={L.specs} selected={L.selected} /></div>
+          <div className="lg:col-span-2"><BrainInspector specs={L.specs} selected={L.selected} anatomy={L.anatomy} inspectQueue={L.inspectQueue} history={L.history} /></div>
           <div className="lg:col-span-2"><LeaguePanel league={L.league} roster={L.roster} manifest={L.manifest} onReset={() => L.resetLeague()} persisted={L.persisted} describe={L.describe} /></div>
           <footer className="lg:col-span-2 text-xs text-muted leading-relaxed max-w-4xl">
             Built on <a className="underline hover:text-ink" href="https://github.com/muellerberndt/cadence">Cadence</a> {L.manifest?.cadence}: a brain is one neural graph that settles into agreement every moment; routine is equilibrium, surprise and want trigger learning.
