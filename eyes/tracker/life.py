@@ -16,7 +16,7 @@ from __future__ import annotations
 import time
 import warnings
 from dataclasses import dataclass, replace
-from typing import Any
+from typing import Any, Callable
 
 import numpy as np
 from cadence import Brain
@@ -94,6 +94,8 @@ class Life:
         self.brain = brain
         self.world = world
         self.teaching = teaching
+        # optional: frame -> how hard its lesson pulls (``Learner.step``'s weight); None pulls 1
+        self.weigh: Callable[[Frame], float] | None = None
         self.footprint = footprint
         self.instrument = instrument
         self.moved = moved
@@ -147,7 +149,8 @@ class Life:
             warm = brain.basal_ganglia.state if answer is not None else None
             with warnings.catch_warnings(record=True) as caught:
                 warnings.simplefilter("always")
-                _, report = brain.learner.step(drive, labels, warm=warm)
+                weight = None if self.weigh is None else np.array([float(self.weigh(frame))])
+                _, report = brain.learner.step(drive, labels, warm=warm, weight=weight)
             row["lesson_sweeps"] = int(report.get("total_steps", 0))
             row["lesson_exhausted"] = bool(report.get("free_budget_exhausted", 0.0))
             row["lesson_warnings"] = len(caught)

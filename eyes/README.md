@@ -7,7 +7,9 @@ around it, and also sees what changed since the previous frame. Every frame the 
 for each eye, where its own shape is, and the eye moves there: a small correction, or one long
 saccade after a shape you dragged away fast. While nothing moves, the brain stays in equilibrium
 and settles nothing. The 3D view shows one eye's stream through the whole brain, every module
-named.
+named: several times a second one frame's settle plays sweep by sweep, a wave from the retina
+through V1 and the collicular map to the gaze neurons that dies down as the brain agrees, and
+when nothing moves the brain goes dark.
 
 ![Eyes on moving shapes, and one eye's stream through the brain](docs/eyes.png)
 
@@ -92,8 +94,9 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python -m pytest -q tests
 .venv/bin/python check_page.py          # the promise, in a headless Chrome
 .venv/bin/python compare.py             # the eye against its control
-.venv/bin/python raise_eye.py --out runs/eye-s1 --seed 1 --backend mlx   # raise the brain again
-                                                     # (--backend mlx on a Mac; leave it out elsewhere)
+.venv/bin/python raise_eye.py --out runs/eye-s1 --seed 1 --lessons 100000 \
+    --own-dart 0.2 --dart-px 8 40 --eta-final 0.02 --decay-from 0.5   # raise the brain again
+                                                     # (add --backend mlx on a Mac for its GPU)
 .venv/bin/python pack.py --run runs/eye-s1                 # and pack it for the page
 ```
 
@@ -119,7 +122,8 @@ are among the nine shapes it was raised on; stars, tees and ells it never saw.
 ## Measurement and evidence
 
 The page's promise (`evidence/page_check.txt`, `check_page.py`, headless Chrome on a Mac): the
-brain loads in Pyodide; six eyes on six moving shapes, 6.00 of 6 on average on their own shapes;
+brain loads in Pyodide; six eyes on six moving shapes, 5.40 of 6 on average on their own shapes
+(on a Mac running other jobs, at about half the usual frame rate);
 a still world costs zero sweeps; a shape dragged 20 px in 150 ms is centred in its eye again a
 second later; no console errors.
 
@@ -129,35 +133,56 @@ faces; both run the same tests and seeds, faces included):
 
 | Test | Foveated eye | Window eye (control) |
 | --- | --- | --- |
-| Its own shape jumps 10 px: centred on it again after one / three frames | 0.82 / 0.98 | 0.42 / 0.65 |
-| ... jumps 20 px | 0.12 / 0.48 | 0.00 / 0.00 |
-| ... jumps 30 px | 0.02 / 0.23 | 0.00 / 0.00 |
+| Its own shape jumps 10 px: centred on it again after one / three frames | 0.88 / 0.98 | 0.42 / 0.65 |
+| ... jumps 20 px | 0.18 / 0.77 | 0.00 / 0.00 |
+| ... jumps 30 px | 0.22 / 0.53 | 0.00 / 0.00 |
 | Another shape jumps 10 / 20 / 30 px: the eye stays on its own | 1.00 / 1.00 / 1.00 | 0.87 / 0.88 / 0.75 |
-| Four shapes moving on their own: eye frames on the eye's own shape (two seeds) | 1.00, 0.99 | 0.79, 0.79 |
-| Eight shapes moving on their own | 0.93, 0.87 | 0.80, 0.75 |
+| Four shapes moving on their own: eye frames on the eye's own shape (two seeds) | 1.00, 1.00 | 0.79, 0.79 |
+| Eight shapes moving on their own | 0.94, 0.87 | 0.80, 0.75 |
 
 60 trials per jump, 30 s at 20 frames per second per scene.
 
 The raised brain, measured right after raising at its raised tolerance of 0.003
 (`evidence/fovea-v1x8-s1-summary.json`): at first glance from rest, with the eye's own shape the
-nearest one, it finds a shape within 3 px of its centre on 0.99 of trials, 3 to 12 px out on
-0.82 and 12 to 34 px out on 0.61 (the centre guess: 1.00, 0.07, 0.05; random: 0.04, 0.07,
-0.10). Faces 0.91; never seen: stars 0.81, tees 0.77, ells 0.75. After its own shape jumps 10,
-20 or 30 px, it is centred on it again within three frames on 0.92, 0.48 and 0.27 of trials, and
-it ignores another shape's jump on all of them. Every unchanged frame costs zero sweeps. Raising
-took 20,000 lessons on the `"mlx"` backend in float32 (`raise_eye.py --backend mlx`), 2,729 s on
-an Apple M4 that was running other jobs at the same time; on its CPU, in float64, the same lessons
-took 323 ms each against 196 on MLX in a side-by-side measurement. `pack.py` stores the brain for
-the CPU in float64, as the page runs it. Another platform or backend may differ in the last bits
-and so in detail.
+nearest one, it finds a shape within 3 px of its centre on 1.00 of trials, 3 to 12 px out on
+0.88 and 12 to 34 px out on 0.73 (the centre guess: 1.00, 0.07, 0.05; random: 0.04, 0.07,
+0.10). Faces 0.81; never seen: stars 0.84, tees 0.81, ells 0.85. After its own shape jumps 10,
+20 or 30 px, it is centred on it again within three frames on 0.93, 0.68 and 0.53 of trials; it
+stays on its own shape when another shape jumps 20 or 30 px on all trials and 10 px on 0.98.
+Every unchanged frame costs zero sweeps.
+
+The brain was raised with 100,000 lessons in a world whose own shape darts on a fifth of the
+ticks, 8 to 40 px at a time (`--own-dart 0.2 --dart-px 8 40`), with the learner's step falling
+from 0.1 to 0.02 over the second half (`--eta-final 0.02 --decay-from 0.5`); the assays read the
+default world. It took 5,353 s on one core of a 64-core cloud machine (Python 3.12, NumPy 2.5,
+`cadence-net[fast]`) that raised 47 other eyes at the same time, about 25 ms per lesson; the same
+recipe at 20,000 lessons and the default world reads 0.61 far and 0.48 and 0.27 after 20 and
+30 px jumps. Of the 24 recipes tried on two seeds each, it is the one whose every reading of the
+comparison below is at least the 20,000-lesson eye's; the second seed of the same recipe falls
+short on one scene reading. `--backend mlx` raises on a Mac's GPU in float32; `pack.py` stores
+the brain for the CPU in float64, as the page runs it. Another platform or backend may differ in
+the last bits and so in detail.
 
 The page runs the brain at an answer tolerance of 0.03 (`pack.py --tolerance`): a moving frame
 then settles in one 32-sweep chunk instead of about two, so the brain answers twice as often
 while you drag, and a jump between two of its answers is half as long. A 20 px jump is found
-again within three frames on 0.48 of trials at either tolerance; a 30 px jump on 0.23 at 0.03
-against 0.27 at 0.003. The page spreads the eyes over up to six workers. In headless Chrome on
-a Mac that was running other jobs, a still frame took 4 ms (the page check) and a frame of six
-moving eyes about 65 ms.
+again within three frames on 0.77 of trials at 0.03 against 0.68 at 0.003; a 30 px jump on 0.53
+at either. The page spreads the eyes over up to six workers.
+
+**The wave.** Every sixth brain frame (`?wave=N` in the address sets it, `?wave=0` turns it off)
+the worker that holds the selected eye settles that eye's row again from the state it started
+from, under the same drive, for exactly the sweeps the brain ran, and records every sweep. Rows
+settle independently (the batch shares only its stopping rule), so the replay's last sweep is the
+state the answer was read from; the host checks that and sends nothing when it differs or when the
+solve halved its step (`tests/test_pack.py` checks it on the packed brain). The view steps through
+up to 16 of those sweeps, one per animation frame, beside the largest change of any neuron per
+sweep; other frames show the settled state. When a frame costs zero sweeps the view dims to a dark
+brain. What the wave costs, in headless Chrome with six moving eyes on a Mac running other jobs
+(load 80 to 100), two readings of a minute each: a frame that carries a wave takes 147 and 142 ms
+(median) against 106 and 92 ms for the other frames of the same run, and the mean frame takes
+132 and 108 ms with the wave against 123 and 93 ms with `?wave=0`. The packed brain itself costs
+what the 20,000-lesson eye cost: interleaved with it, without the wave, 79, 65 and 56 ms per frame
+against 94, 87 and 59 ms.
 
 ## Limits
 
@@ -172,6 +197,8 @@ moving eyes about 65 ms.
   `tracker/eye_host.fit_32_bit_numpy` gives the library's learning module a NumPy whose `repeat`
   casts those counts; the library's files are unchanged. The same holds for `np.add.reduceat`
   on the transport above `dense_limit`, which this brain does not use.
+- Faces at first glance read 0.81, below the 20,000-lesson eye's 0.91; the longer raise traded
+  them for the far and the long-jump readings.
 - Grayscale only.
 
 Runs on Cadence 0.95.2 (`cadence-net` from PyPI) and Pyodide 314.0.7.

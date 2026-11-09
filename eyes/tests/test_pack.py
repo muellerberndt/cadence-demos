@@ -1,4 +1,5 @@
 import hashlib
+import base64
 import json
 from pathlib import Path
 
@@ -39,6 +40,28 @@ def test_the_packed_eye_follows_a_shape_from_pixels(tmp_path):
     gx, gy = out["eyes"][0]["next"]
     assert abs(gx - shape.x) <= 2 and abs(gy - shape.y) <= 2
     assert json.loads(host.see(render(100, 160, [shape], 0.1).astype(np.float32)))["sweeps"] == 0
+
+
+def test_the_wave_is_the_selected_eyes_own_settle():
+    """A wave frame's last sweep is the activity the frame reports for the selected eye."""
+    manifest = json.loads((PACK / "manifest.json").read_text())
+    host = Host(str(PACK / manifest["brain"]), 0, manifest["bins"], manifest["width"],
+                manifest["height"], eye="fovea", fovea=manifest["fovea"])
+    host.handle_json(json.dumps({"op": "open", "id": 1, "x": 60, "y": 40}))
+    host.handle_json(json.dumps({"op": "open", "id": 2, "x": 110, "y": 60}))
+    shapes = [Thing("disc", 66.0, 44.0, 8, 0.9), Thing("ring", 104.0, 58.0, 8, 0.8)]
+    waves = 0
+    for k in range(9):
+        moved = [Thing(t.kind, t.x + k, t.y, t.size, t.level) for t in shapes]
+        out = json.loads(host.see(render(100, 160, moved, 0.1).astype(np.float32), wave=1))
+        if "wave" in out:
+            waves += 1
+            w = out["wave"]
+            n = len(base64.b64decode(out["activity"]))
+            frames = np.frombuffer(base64.b64decode(w["frames"]), dtype=np.uint8).reshape(-1, n)
+            assert w["sweeps"][-1] == w["of"] == out["sweeps"]
+            assert np.array_equal(frames[-1], np.frombuffer(base64.b64decode(out["activity"]), dtype=np.uint8))
+    assert waves >= 2
 
 
 def test_the_window_eye_control_loads_and_runs():

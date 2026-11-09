@@ -45,10 +45,10 @@
   "stay": 0.3,
   "step": 0.7,
   "dart": 0.06,
-  "own_dart": 0.1,
+  "own_dart": 0.2,
   "dart_px": [
    8.0,
-   34.0
+   40.0
   ],
   "slip": 0.3
  },
@@ -96,17 +96,30 @@
   "free_steps": 1024
  },
  "seed": 1,
- "lessons": 20000,
+ "lessons": 100000,
  "cadence": "0.95.2",
+ "world_changes": {
+  "own_dart": 0.2,
+  "dart_px": [
+   8.0,
+   40.0
+  ]
+ },
+ "schedule": {
+  "far_weight": 1.0,
+  "move_weight": 1.0,
+  "eta_final": 0.02,
+  "decay_from": 0.5
+ },
  "placement": {
-  "backend": "mlx",
+  "backend": "cpu",
   "device": null,
-  "precision": "float32",
+  "precision": "float64",
   "chosen_by": "named",
   "why": "the backend was named",
   "refused": [],
   "pending": false
  },
  "numpy": "2.5.4",
- "python": "3.13.7"
+ "python": "3.12.3"
 }

@@ -400,8 +400,10 @@ class Eyes:
         ox, oy = self.retina.origin(gx, gy)
         return surface[oy:oy + w, ox:ox + w]
 
-    def see(self, surface: np.ndarray) -> dict[str, Any]:
-        """One frame for every eye: answers, saccades, the settlement's work."""
+    def see(self, surface: np.ndarray, record: int | None = None) -> dict[str, Any]:
+        """One frame for every eye: answers, saccades, the settlement's work. With ``record`` (a
+        stream index) the frame also returns that stream's settle sweep by sweep (``trajectory``,
+        see ``_trajectory``)."""
         ids = list(self.gaze)
         if ids != self.streams:
             self.brain.reset()
@@ -411,6 +413,8 @@ class Eyes:
             return out
         inputs = np.stack([self.window(surface, *self.gaze[i]) for i in ids])
         x = inputs.reshape(len(ids), -1)
+        before = stream_row(self.brain.basal_ganglia.state, record) if record is not None else None
+        drive = self.brain.stimulus(x)[record:record + 1] if before is not None else None
         start = time.perf_counter()
         try:
             answers = [(int(a[0]), int(a[1])) for a in self.brain.act(x, greedy=True)]
@@ -418,6 +422,8 @@ class Eyes:
             answers = [None] * len(ids)
         ms = (time.perf_counter() - start) * 1000
         rep = self.brain.last_settlement or {}
+        if record is not None and before is not None and answers[record] is not None:
+            out["trajectory"] = settle_trajectory(self.brain, drive, before, rep, record)
         for eid, a in zip(ids, answers, strict=True):
             gx, gy = self.gaze[eid]
             self.answers[eid] = a
@@ -427,6 +433,29 @@ class Eyes:
         out.update(sweeps=int(rep.get("steps", 0)), ms=round(ms, 2), x=x, inputs=inputs,
                    state=self.brain.basal_ganglia.state)
         return out
+
+
+def settle_trajectory(brain: Brain, drive: np.ndarray, before, rep: dict, row: int) -> np.ndarray | None:
+    """Stream ``row``'s settle of this frame, sweep by sweep: its own row settled again from the
+    state it started from, under the same drive, for exactly the sweeps the brain's solve ran.
+    Rows settle independently (the batch shares only the stopping rule), so the last sweep is the
+    state the answer was read from; it is checked, and nothing is returned when it differs or when
+    the solve halved its step (the rescue ladder, which this replay does not run)."""
+    steps = int(rep.get("steps", 0))
+    if steps <= 0 or rep.get("damping_halvings") or rep.get("rescue_steps"):
+        return None
+    traj = np.asarray(brain.brain.settle_batch(drive, steps=steps, state=before, tolerance=None,
+                                               trajectory=True).trajectory)[:, 0]
+    final = np.asarray(brain.basal_ganglia.state.activation)[row]
+    return traj if np.abs(traj[-1] - final).max() < 1e-9 else None
+
+
+def stream_row(state, k: int):
+    """An owned one-row copy of stream ``k`` of a ``BrainState`` (None before the first frame)."""
+    if state is None:
+        return None
+    return replace(state, v=np.array(state.v)[k:k + 1], activation=np.array(state.activation)[k:k + 1],
+                   adaptation=np.array(state.adaptation)[k:k + 1])
 
 
 class Scene:

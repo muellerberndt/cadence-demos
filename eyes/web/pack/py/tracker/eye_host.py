@@ -64,6 +64,9 @@ class Host:
         self.frames = 0
         self.last_inputs: np.ndarray | None = None
         self.last_out: dict[str, Any] | None = None
+        # a frame asked for a wave also returns that eye's settle sweep by sweep (the exact
+        # replay of its row), so the page can play the settle as a wave; the page decides how often
+        self.wave_for: int | None = None
 
     def handle_json(self, text: str) -> str:
         msg = json.loads(text)
@@ -124,13 +127,16 @@ class Host:
                                 for e in self.last_out["eyes"]]
                 held.update(sweeps=0, ms=0.0, held=True)
                 return held
-        seen = eyes.see(surface)
+        record = ids.index(self.wave_for) if self.wave_for in ids else None
+        seen = eyes.see(surface, record=record)
         self.last_inputs = None if seen["x"] is None else np.array(seen["x"])
         self.last_out = seen
         return seen
 
-    def see(self, pixels: Any) -> str:
-        """One frame: the page's pixels in, every eye's answer and next gaze out."""
+    def see(self, pixels: Any, wave: int = -1) -> str:
+        """One frame: the page's pixels in, every eye's answer and next gaze out. ``wave``: the
+        eye whose settle the page plays as a wave, when this host holds it (-1: none)."""
+        self.wave_for = int(wave) if wave is not None and int(wave) >= 0 else None
         if isinstance(pixels, np.ndarray):
             surface = pixels.astype(np.float32)
         elif hasattr(pixels, "to_bytes"):  # a JavaScript Float32Array inside Pyodide
@@ -160,6 +166,15 @@ class Host:
                 win = np.asarray(seen["inputs"])
             win = (np.clip(win, 0, 1) * 255).astype(np.uint8)
             out["windows"] = [base64.b64encode(w.tobytes()).decode() for w in win]
+        traj = seen.get("trajectory")
+        if traj is not None and len(traj):
+            steps = len(traj)
+            keep = np.unique(np.linspace(0, steps - 1, min(16, steps)).round().astype(int))
+            move = np.abs(np.diff(traj, axis=0)).max(axis=1) if steps > 1 else np.zeros(0)
+            wave = np.clip(np.round((np.clip(traj[keep], -0.1, 1.0) + 0.1) / 1.1 * 255), 0, 255).astype(np.uint8)
+            out["wave"] = {"sweeps": [int(k) + 1 for k in keep], "of": steps,
+                           "move": [float(v) for v in np.round(move, 5)],
+                           "frames": base64.b64encode(wave.tobytes()).decode()}
         if seen.get("held"):
             out["held"] = True
         return json.dumps(out)

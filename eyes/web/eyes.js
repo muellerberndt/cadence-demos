@@ -186,15 +186,22 @@ function wander(dt, now) {
 
 // -- one brain frame
 
+// every WAVE_EVERY-th brain frame the worker holding the selected eye also replays its settle
+// sweep by sweep for the wave (?wave=N in the address; 0 turns it off)
+const WAVE_EVERY = (() => { const v = new URLSearchParams(location.search).get("wave"); return v === null ? 6 : Math.max(0, Number(v) || 0); })();
+let sends = 0;
+
 async function send(now) {
   busy = true;
+  sends += 1;
   lastSent = now;
   const snapshot = new Map(things.map((t) => [t.id, { x: t.x, y: t.y }]));
   const busyWorkers = pool.filter((w) => w.eyes.size);
   try {
     const parts = await Promise.all(busyWorkers.map((w) => {
       const pixels = Float32Array.from(surface);
-      return ask(w, "see", { pixels: pixels.buffer }, [pixels.buffer]);
+      const wantWave = WAVE_EVERY > 0 && !wave && sends % WAVE_EVERY === 0 && w.eyes.has(selectedEye);
+      return ask(w, "see", { pixels: pixels.buffer, wave: wantWave ? selectedEye : -1 }, [pixels.buffer]);
     }));
     const r = { eyes: [], windows: [], sweeps: 0, worker_ms: 0, selected: selectedEye, activity: null };
     for (const part of parts) {
@@ -202,7 +209,7 @@ async function send(now) {
       r.windows.push(...(part.windows || []));
       r.sweeps = Math.max(r.sweeps, part.sweeps);
       r.worker_ms = Math.max(r.worker_ms, part.worker_ms);
-      if (part.selected === selectedEye) r.activity = part.activity;
+      if (part.selected === selectedEye) { r.activity = part.activity; r.wave = part.wave || null; }
     }
     onResult(r, snapshot);
   } catch (error) {
@@ -264,8 +271,11 @@ function onResult(r, snapshot) {
   return finish(r);
 }
 
+const frameLog = []; // the brain's time per frame and whether the frame carried a wave, for the page check
 function finish(r) {
   result = r;
+  frameLog.push([r.worker_ms, r.wave ? 1 : 0]);
+  if (frameLog.length > 4000) frameLog.shift();
   history.push(r.sweeps);
   if (history.length > 300) history.shift();
   const now = performance.now();
@@ -281,15 +291,72 @@ function finish(r) {
   drawStrip();
   drawEyeViews(r);
   if (scan && r.activity) {
-    const s = atob(r.activity);
-    if (s.length === scan.n) {
-      const act = new Float32Array(s.length);
-      for (let i = 0; i < s.length; i++) act[i] = (s.charCodeAt(i) / 255) * 1.1 - 0.1;
-      scan.step(act, { draw: false });
-    }
+    const act = decode8(r.activity);
+    if (act && r.wave) startWave(r.wave, act);
+    else if (act) { if (wave) wave.after = act; else scan.step(act, { draw: false }); }
+  }
+  quiet.target = r.sweeps === 0 ? QUIET_EXPOSURE : ACTIVE_EXPOSURE;
+  if (r.sweeps === 0 && !wave) {
+    $("wavetext").textContent = "nothing moves: the brain holds its equilibrium, no sweeps, no work";
+    const c = $("wavecurve"); c.getContext("2d").clearRect(0, 0, c.width, c.height);
   }
   const sel = things.find((t) => t.id === r.selected);
-  $("legend").textContent = `Every module named; glow marks neurons that changed on this frame, the brain repairing. A brain in equilibrium cools. Showing the stream of ${sel ? `the ${sel.kind}'s eye` : "no eye"}.`;
+  $("legend").textContent = `Showing the stream of ${sel ? `the ${sel.kind}'s eye` : "no eye"}. The regions play the roles their names say: the retina is the Cadence population visual/input (the eye's receptors, where the input enters), V1 visual cortex is visual/v1, the superior colliculus map is the association region, and the gaze neurons are the motor population. Glow marks neurons that changed; several times a second the settle of one frame plays sweep by sweep, a wave from the retina through V1 and the map to the gaze neurons that dies down as the brain agrees. When nothing moves the brain does no work and goes dark.`;
+}
+
+// -- the settle as a wave: a wave frame carries the selected eye's settle sweep by sweep (the
+// host's exact replay of its row: the last sweep is the state the answer was read from); the
+// brain view steps through the sweeps one animation frame each, so the change spreads from the
+// retina through V1 and the collicular map to the gaze neurons and dies down as the brain agrees.
+
+const QUIET_EXPOSURE = 0.16, ACTIVE_EXPOSURE = 1.0; // a brain in equilibrium does no work: it goes dark
+const quiet = { level: ACTIVE_EXPOSURE, target: ACTIVE_EXPOSURE };
+let wave = null;
+
+function decode8(b64) {
+  const s = atob(b64);
+  if (!scan || s.length % scan.n) return null;
+  const a = new Float32Array(s.length);
+  for (let i = 0; i < s.length; i++) a[i] = (s.charCodeAt(i) / 255) * 1.1 - 0.1;
+  return a;
+}
+
+function startWave(w, final) {
+  const all = decode8(w.frames);
+  if (!all) { scan.step(final, { draw: false }); return; }
+  const frames = [];
+  for (let k = 0; k < all.length / scan.n; k++) frames.push(all.subarray(k * scan.n, (k + 1) * scan.n));
+  wave = { frames, sweeps: w.sweeps, of: w.of, move: w.move, i: 0, after: null };
+}
+
+function playWave() {
+  if (!wave || !scan) return;
+  const k = wave.i++;
+  scan.step(wave.frames[k], { draw: false });
+  drawWaveCurve(wave.sweeps[k]);
+  $("wavetext").textContent = `settle of ${eyeName()}: sweep ${wave.sweeps[k]} of ${wave.of}`;
+  if (wave.i >= wave.frames.length) {
+    const after = wave.after;
+    wave = null;
+    if (after) scan.step(after, { draw: false });
+  }
+}
+
+function eyeName() { const t = things.find((o) => o.id === selectedEye); return t ? `the ${t.kind}'s eye` : "the eye"; }
+
+function drawWaveCurve(at) {
+  const c = $("wavecurve"), g = c.getContext("2d"), w = c.width, h = c.height;
+  g.clearRect(0, 0, w, h);
+  const move = wave ? wave.move : [];
+  if (!move.length) return;
+  const lo = Math.log10(1e-4), hi = Math.log10(Math.max(...move, 1e-3));
+  const y = (v) => h - 4 - ((Math.log10(Math.max(v, 1e-4)) - lo) / Math.max(1e-6, hi - lo)) * (h - 8);
+  g.strokeStyle = "#2a3446"; g.beginPath(); g.moveTo(0, y(0.03)); g.lineTo(w, y(0.03)); g.stroke();
+  g.strokeStyle = "#6aa8ff"; g.lineWidth = 1.5; g.beginPath();
+  move.forEach((v, i) => { const x = (i / Math.max(1, move.length - 1)) * (w - 2) + 1; if (i) g.lineTo(x, y(v)); else g.moveTo(x, y(v)); });
+  g.stroke();
+  const i = Math.min(move.length - 1, Math.max(0, at - 2)), x = (i / Math.max(1, move.length - 1)) * (w - 2) + 1;
+  g.fillStyle = "#ffd296"; g.beginPath(); g.arc(x, y(move[i]), 3, 0, 2 * Math.PI); g.fill();
 }
 
 // -- drawing
@@ -456,7 +523,13 @@ function tick(now) {
     if (!paused && !busy && now - lastSent >= 1000 / rate) send(now);
     draw();
   }
-  if (scan) scan.draw(now);
+  if (scan) {
+    playWave();
+    quiet.level += (quiet.target - quiet.level) * Math.min(1, dt * (quiet.target < quiet.level ? 1.5 : 8));
+    scan.options.exposure = quiet.level;
+    scan.pending = true;
+    scan.draw(now);
+  }
   requestAnimationFrame(tick);
 }
 
@@ -603,4 +676,4 @@ async function boot() {
 boot();
 
 // A read-only handle for checks and the curious: the shapes and the brain's latest frame.
-window.cadenceEyes = { get things() { return things; }, get result() { return result; }, get workers() { return pool.length; } };
+window.cadenceEyes = { get things() { return things; }, get result() { return result; }, get workers() { return pool.length; }, get frames() { return frameLog.slice(); } };

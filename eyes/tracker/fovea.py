@@ -32,6 +32,7 @@ from typing import Any
 import numpy as np
 from cadence import Brain
 
+from .eyes import settle_trajectory, stream_row
 from .life import Life, Teaching
 from .shapes import KINDS, ROTATES, TRAINED, Thing, render
 from .world import Frame
@@ -368,7 +369,9 @@ class FovealEyes:
         self.answers.pop(eid, None)
         self.inputs.pop(eid, None)
 
-    def see(self, surface: np.ndarray) -> dict[str, Any]:
+    def see(self, surface: np.ndarray, record: int | None = None) -> dict[str, Any]:
+        """One frame for every eye; with ``record`` (a stream index) also that stream's settle
+        sweep by sweep (``trajectory``, ``tracker.eyes.settle_trajectory``)."""
         ids = list(self.gaze)
         change = np.zeros_like(surface) if self.previous is None or self.previous.shape != surface.shape \
             else np.abs(surface - self.previous)
@@ -382,6 +385,8 @@ class FovealEyes:
         fv = self.fovea
         bright, moved = fv.integral(surface), fv.integral(self.change_gain * change, 0.0)
         x = np.stack([fv.see(bright, moved, *self.gaze[i]) for i in ids])
+        before = stream_row(self.brain.basal_ganglia.state, record) if record is not None else None
+        drive = self.brain.stimulus(x)[record:record + 1] if before is not None else None
         start = time.perf_counter()
         try:
             answers = [(int(a[0]), int(a[1])) for a in self.brain.act(x, greedy=True)]
@@ -389,6 +394,8 @@ class FovealEyes:
             answers = [None] * len(ids)
         ms = (time.perf_counter() - start) * 1000
         rep = self.brain.last_settlement or {}
+        if before is not None and answers[record] is not None:
+            out["trajectory"] = settle_trajectory(self.brain, drive, before, rep, record)
         for k, (eid, a) in enumerate(zip(ids, answers, strict=True)):
             gx, gy = self.gaze[eid]
             self.answers[eid] = a

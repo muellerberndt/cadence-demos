@@ -67,7 +67,7 @@ self.onmessage = async (event) => {
     if (!host) throw new Error("the brain is not loaded yet");
     if (op === "see") {
       const t0 = performance.now();
-      const result = JSON.parse(host.see(new Float32Array(event.data.pixels)));
+      const result = JSON.parse(host.see(new Float32Array(event.data.pixels), event.data.wave ?? -1));
       result.worker_ms = Math.round((performance.now() - t0) * 100) / 100;
       self.postMessage({ rid, result });
       return;

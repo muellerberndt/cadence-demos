@@ -1,10 +1,10 @@
-check_page.py, 2026-11-09 15:21
-ok    the brain loads in Pyodide (26.7 s): ready
+check_page.py, 2026-11-09 20:54
+ok    the brain loads in Pyodide (49.6 s): ready
       2,413 neurons · 74,612 synapses · Cadence 0.95.2 in Pyodide 314.0.7 · 6 workers
-ok    six eyes answer (0.5 s): 6 of 6
-ok    while every shape moves, eyes on their own shape: 6.00 of 6 on average over 30 samples (needs 4.5)
-ok    a still world costs zero sweeps (20.1 s): 4 ms per frame
-      dragged the cross from (30.6, 73.1) to (48.6, 82.1) in 150 ms
-ok    the dragged shape is found again (7.5 s): its eye is centred on it, 1.7 px away
+ok    six eyes answer (0.1 s): 6 of 6
+ok    while every shape moves, eyes on their own shape: 5.40 of 6 on average over 30 samples (needs 4.5)
+ok    a still world costs zero sweeps (30.6 s): 19 ms per frame
+      dragged the cross from (29.3, 73.8) to (47.3, 82.8) in 150 ms
+ok    the dragged shape is found again (27.8 s): its eye is centred on it, 0.4 px away
 ok    console errors: 0
 PASS
