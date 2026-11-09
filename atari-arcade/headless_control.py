@@ -60,6 +60,7 @@ def run_pass(seed: int, games, minutes: float, episodes_target: int):
             "decisions": r.decisions,
             "env_steps": r.tick,
             "outcomes_learned": r.outcomes,
+            "calm": r.calm,
             "seconds": round(time.time() - r.born, 1),
             "think_seconds": {
                 name: round(float(value), 4) for name, value in zip(
@@ -113,6 +114,7 @@ def identity():
         "numpy": np.__version__,
         "machine": platform.machine(),
         "recall": server.RECALL,
+        "recipe": server.arcade_brain_recipe(),
         "sources_sha256": {
             name: hashlib.sha256((here / name).read_bytes()).hexdigest()
             for name in ("server.py", "arcade_brain.py", "headless_control.py")},

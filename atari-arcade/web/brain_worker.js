@@ -49,7 +49,7 @@ if "/home/pyodide" not in sys.path:
     sys.path.insert(0, "/home/pyodide")
 import numpy as np
 from arcade_brain import BrainSide
-_side = BrainSide(_game, json.loads(_meanings), seed=int(_seed))
+_side = BrainSide(_game, json.loads(_meanings), seed=int(_seed), replay_every=2)
 
 def _iterate(drive, teacher, reward, done, games):
     out = _side.iterate(np.asarray(drive.to_py(), dtype=np.float64), teacher, reward, done, games)

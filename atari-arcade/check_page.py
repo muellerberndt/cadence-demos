@@ -22,6 +22,7 @@ HERE = Path(__file__).resolve().parent
 
 
 async def check(port: int, minutes: float, shot: str | None, chromium: str | None) -> dict:
+    frames: list = []
     from playwright.async_api import async_playwright
 
     async with async_playwright() as p:
@@ -56,6 +57,7 @@ async def check(port: int, minutes: float, shot: str | None, chromium: str | Non
             played = len(brains) == 2 and all(b["phase"] == "playing" and b["life"]["decisions"] >= 300 for b in brains)
             if played:
                 break
+        frames = await page.evaluate("window.__arcadeFrames ? window.__arcadeFrames() : []")
         if shot:
             await page.screenshot(path=shot)
         await browser.close()
@@ -67,9 +69,12 @@ async def check(port: int, minutes: float, shot: str | None, chromium: str | Non
         "kept_playing": played,
         "no_faults_or_refusals": all(b["brain"]["faults"] == 0 and b["life"]["refused"] == 0 for b in brains.values()),
         "no_page_errors": not errors and not any(k.endswith(":error") for k in states),
+        # the brain views on screen draw every animation frame from the brain's state, at 30 frames a
+        # second or more (a view scrolled out of sight draws nothing)
+        "brain_view_frame_time": any(frames) and all(f["mean"] < 33.4 for f in frames if f),
     }
     checks["PASS"] = all(checks.values())
-    return {"checks": checks, "seconds": round(time.time() - began, 1), "brains": brains,
+    return {"checks": checks, "seconds": round(time.time() - began, 1), "brains": brains, "frame_ms": frames,
             "page_errors": errors, "cadence": [r.get("cadence") for r in ready.values()]}
 
 

@@ -8,7 +8,7 @@ shows the game beside the settled brain: the retina, the association cortex and 
 trace, the motor cortex with one neuron per action, the value the critic expects, and the
 score of every life with a skill badge from noob to legend.
 
-![Freeway in the browser edition: the brain at the controls after 649 watched screens](docs/browser.png)
+![Freeway in the browser edition: the brain at the controls after 656 watched screens, drawn as a brain seen from the side](docs/browser.png)
 
 The brain, its settings and its measured readings are summarized in [MODEL_CARD.md](MODEL_CARD.md).
 
@@ -47,8 +47,9 @@ python3 -m venv .venv && .venv/bin/python -m pip install -r requirements.txt
 ```
 
 `ARCADE_GAMES` selects the games (default `Atlantis,Freeway,Carnival,SpaceInvaders`),
-`ARCADE_RECALL=1` composes the recall memory (below), `ARCADE_PUBLIC=1` locks the speed
-control, `ARCADE_HOST` and `ARCADE_PORT` bind the server. Each game needs about one
+`ARCADE_RECALL=1` composes the recall memory (below), `ARCADE_RECIPE` patches the recipe in
+`arcade_brain.py` (a JSON object or a path to one, such as `{"actor": {"eta": 0.0005}}`),
+`ARCADE_PUBLIC=1` locks the speed control, `ARCADE_HOST` and `ARCADE_PORT` bind the server. Each game needs about one
 processor core.
 
 ## What it demonstrates
@@ -228,15 +229,51 @@ What they do not show:
 .venv/bin/python headless_control.py --seed 0 --games Freeway --episodes 12 --out report.json
 ```
 
+## The brain view
+
+The page draws each brain as a stylized brain seen from the left side, front to the left. Every
+lit pixel comes from the brain's state at that moment, sent by the worker with each view; each
+population sits where the animal-brain region whose role it plays sits, and hovering a region
+names the population and its role. The outline, its folds and the slow camera sway are drawing.
+
+| Region drawn | Cadence population | What lights it |
+| --- | --- | --- |
+| Visual cortex, at the back | the 7,056 sensory neurons | the 84 x 84 retina, drawn as the screen on the occipital surface |
+| Association cortex | association, 64 neurons | each neuron's settled activation (warm positive, cool negative) |
+| Prefrontal cortex | working trace, 64 neurons | the association cortex's activity of the moments before |
+| Motor strip | motor, one neuron per action, named | activation; the executed action gold; while watching, the teacher's action green and a disagreeing own answer red |
+| Striatum | the critic | the value it expects from this screen |
+| Midbrain dopamine nucleus | the critic's prediction error | a gold wash (burst) or blue wash (dip) over the striatum and cortex after each paid outcome, sized by the dopamine |
+| Hippocampus | the associative memory | reward recalled per action for a similar screen |
+
+- **Fibre tracts.** About 780 of the brain's synapses are drawn (the strongest of a random
+  tenth per tract), bundled through one waypoint per pair of regions. A fibre's brightness is
+  `|weight x presynaptic activation|` relative to its tract's strongest synapse; warm fibres
+  excite, cool fibres inhibit.
+- **Settling.** Every second view carries the screen's settle replayed from rest, sweep by
+  sweep, with the same drive, budget and tolerance the brain's own settle uses (the brain's own
+  settle starts from its previous state). The page plays it as a wave over the regions, with the
+  sweep count and the largest movement per sweep falling to the tolerance.
+- **Plasticity.** A drawn synapse whose weight moved by more than 1e-4 since the last view
+  flashes gold and thickens; the panel counts every synapse of the brain that moved that much.
+- **Phase and arousal.** Chips show whether the brain is watching the teacher (a lesson per
+  screen) or at the controls (learning from reward); a brain living by `Brain.live` also shows
+  calm (dim, nothing learned) or aroused (bright, learning).
+
+`check_page.py` reads the frame time of every brain view on screen: 18.1 ms on average (p95
+20.4 ms) in headless Chromium on the shared Mac, and the view data costs each screen about
+1.1 times what it cost without it.
+
 ## The browser edition, checked
 
 `check_page.py` opens the page in a headless browser and checks its promise: both brains are
 born on the 0.95.2 wheel, learn from the teacher, take the controls and keep playing, with no
-fault, refusal or page error. Its last reading is
-[evidence/page_check.json](evidence/page_check.json): every check passed; in headless Chromium on
-the Mac shared with other jobs, Atlantis took the controls after 500 lessons and Freeway after
-649 (it also waits for the teacher's first whole game), 42 and 54 seconds after the page
-opened, and both then played at a median of 72 to 73 ms per screen, with no fault or refusal.
+fault, refusal or page error, and that the brain view draws at 30 frames a second or more. Its
+last reading is [evidence/page_check.json](evidence/page_check.json): every check passed; in
+headless Chromium on the Mac shared with other jobs, Atlantis took the controls after 500
+lessons and Freeway after 656 (it also waits for the teacher's first whole game), 39 and 52
+seconds after the page opened, and both then played at a median of 79 to 81 ms per screen, with
+no fault or refusal.
 
 ```sh
 python check_page.py --shot docs/browser.png      # needs Playwright and its Chromium

@@ -76,10 +76,14 @@ shared with other jobs. Receipts in [evidence/headless-0952/](evidence/headless-
 
 The browser edition (`web/`) runs Freeway and Atlantis; the brain learns all the time the page
 is open, by the same calls as the server. Nothing is saved: a reload is a new birth from seed
-0. The visitor can change the game's speed, not the brain. Measured by `check_page.py`
-([evidence/page_check.json](evidence/page_check.json), headless Chromium on the loaded Mac):
-both brains took the controls 42 to 54 s after the page opened (500 and 649 lessons) and then
-played at a median of 72 to 73 ms per screen, with no fault, refusal or page error.
+0. The visitor can change the game's speed, not the brain. The page draws the brain as a brain
+seen from the side, from its state at each view: activations, the settle replayed from rest
+sweep by sweep, the weights of about 780 drawn synapses and the count of synapses that moved,
+the critic's value and dopamine, and the phase (README, "The brain view"). Measured by
+`check_page.py` ([evidence/page_check.json](evidence/page_check.json), headless Chromium on the
+loaded Mac): both brains took the controls 39 to 52 s after the page opened (500 and 656
+lessons) and then played at a median of 79 to 81 ms per screen, the brain view drew a frame in
+18.1 ms on average, with no fault, refusal or page error.
 
 ## Limits
 

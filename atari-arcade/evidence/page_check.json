@@ -5,9 +5,10 @@
   "kept_playing": true,
   "no_faults_or_refusals": true,
   "no_page_errors": true,
+  "brain_view_frame_time": true,
   "PASS": true
  },
- "seconds": 91.0,
+ "seconds": 116.6,
  "brains": {
   "g2": {
    "phase": "playing",
@@ -15,7 +16,7 @@
     "lessons": 500,
     "to_takeover": 1,
     "sweeps": 3,
-    "agreement": 0.99,
+    "agreement": 1,
     "sweeps_hist": [
      3,
      3,
@@ -26,6 +27,11 @@
      3,
      3,
      3,
+     5,
+     3,
+     3,
+     3,
+     38,
      3,
      3,
      3,
@@ -44,11 +50,6 @@
      3,
      3,
      3,
-     3,
-     3,
-     3,
-     3,
-     36,
      3,
      3,
      3,
@@ -79,10 +80,6 @@
      1,
      1,
      1,
-     1,
-     1,
-     1,
-     1,
      0.992,
      0.983,
      0.983,
@@ -126,12 +123,16 @@
      0.983,
      0.992,
      0.992,
-     0.992
+     0.992,
+     0.992,
+     1,
+     1,
+     1
     ],
     "takeover": {
      "lessons": 500,
      "agreement": 1,
-     "seconds": 42.5
+     "seconds": 39.1
     }
    },
    "brain": {
@@ -140,23 +141,24 @@
     "last_error": null
    },
    "life": {
-    "decisions": 459,
-    "outcomes": 458,
+    "decisions": 496,
+    "outcomes": 495,
     "refused": 0,
-    "rewarded": 7,
-    "think_ms": 72.8,
+    "rewarded": 8,
+    "calm": 0,
+    "think_ms": 81.2,
     "think_ms_scope": "median of the latest 200 brain handlers, watching and play, including refusals",
-    "value": 0.238,
-    "dopamine": -0.024
+    "value": 0.267,
+    "dopamine": -0.008
    }
   },
   "g1": {
    "phase": "playing",
    "watch": {
-    "lessons": 649,
+    "lessons": 656,
     "to_takeover": 1,
     "sweeps": 3,
-    "agreement": 0.99,
+    "agreement": 0.98,
     "sweeps_hist": [
      3,
      3,
@@ -235,10 +237,6 @@
      1,
      1,
      1,
-     1,
-     1,
-     1,
-     1,
      0.992,
      0.983,
      0.983,
@@ -267,12 +265,16 @@
      0.992,
      0.992,
      0.992,
-     0.992
+     0.992,
+     0.983,
+     0.983,
+     0.983,
+     0.983
     ],
     "takeover": {
-     "lessons": 649,
+     "lessons": 656,
      "agreement": 1,
-     "seconds": 54.4
+     "seconds": 51.5
     }
    },
    "brain": {
@@ -281,21 +283,30 @@
     "last_error": null
    },
    "life": {
-    "decisions": 307,
-    "outcomes": 306,
+    "decisions": 340,
+    "outcomes": 339,
     "refused": 0,
-    "rewarded": 8,
-    "think_ms": 72.3,
+    "rewarded": 12,
+    "calm": 0,
+    "think_ms": 79.3,
     "think_ms_scope": "median of the latest 200 brain handlers, watching and play, including refusals",
-    "value": 0.263,
-    "dopamine": -0.008
+    "value": 0.381,
+    "dopamine": -0.011
    }
   }
  },
+ "frame_ms": [
+  null,
+  {
+   "n": 300,
+   "mean": 18.105333333412805,
+   "p95": 20.399999976158142
+  }
+ ],
  "page_errors": [],
  "cadence": [
   "0.95.2",
   "0.95.2"
  ],
- "checked_utc": "2026-11-09T07:52:21Z"
+ "checked_utc": "2026-11-09T13:15:22Z"
 }

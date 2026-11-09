@@ -48,13 +48,12 @@ def test_watched_rewarded_and_saved_tape_continues(actions, tmp_path):
         np.testing.assert_array_equal(restored.step(x, reward=reward), brain.step(x, reward=reward))
 
 
-def test_brain_side_takes_over_from_the_teacher(monkeypatch):
-    monkeypatch.setattr(arcade_brain, "MIN_LESSONS", 20)
-    monkeypatch.setattr(arcade_brain, "AGREE_WINDOW", 10)
-    side = arcade_brain.BrainSide("Freeway", ["NOOP", "UP", "DOWN"], seed=0)
+def test_brain_side_takes_over_from_the_teacher():
+    rec = arcade_brain.recipe({"min_lessons": 20, "agree_window": 10})
+    side = arcade_brain.BrainSide("Freeway", ["NOOP", "UP", "DOWN"], seed=0, rec=rec)
     drive = screen(0, 7056)[0]
     out = {}
-    for _ in range(arcade_brain.MAX_LESSONS):
+    for _ in range(rec["max_lessons"]):
         out = side.iterate(drive, 1, 0.0, False, 1)
         if out.get("takeover"):
             break
