@@ -31,7 +31,7 @@ BOARD = BOTTOM * ((1 << ROWS) - 1)
 ORDER = (3, 2, 4, 1, 5, 0, 6)
 WIN = 1000.0
 MARGIN = 0.25  # how much higher the search must score a column to overrule the brain
-NODES = 40_000  # the search's budget: positions visited per move (deterministic on any machine)
+NODES = 120_000  # the search's budget: positions visited per move (deterministic on any machine)
 
 
 def bits(board: Board) -> tuple[int, int, int]:

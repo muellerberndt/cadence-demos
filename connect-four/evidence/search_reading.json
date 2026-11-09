@@ -1,18 +1,279 @@
 {
- "player_search": "connect4/search.py, nodes 40000",
  "brain": "web/pack/brain.npz",
- "command": "python -m c4train.play_search web/pack/brain.npz --games 40 --nodes 40000 --only <condition> [--seed S] [--alone]",
- "first_vs_perfect_solver_search_200": {
-  "games": 200,
-  "win": 163,
-  "draw": 14,
-  "loss": 23
+ "command": "python -m c4train.play_search web/pack/brain.npz --games 40 --nodes N --only CONDITION [--seed S] [--alone]",
+ "conditions": "solverXYZ_first/second: games from the empty board against the solver at strength XYZ/100 (a random column otherwise), the player first or second; vs_brain_*: against the brain alone after two random opening moves",
+ "seeds": "31337 by default; *_1..4 runs 31337 + 1000 k; *_0/_1 runs 31337 + 77 k",
+ "summary": {
+  "brain + search, 120000 nodes (the page)": {
+   "solver100_first": {
+    "games": 200,
+    "win": 184,
+    "draw": 10,
+    "loss": 6,
+    "runs": [
+     "s120_solver100_first",
+     "s120_first_1",
+     "s120_first_2",
+     "s120_first_3",
+     "s120_first_4"
+    ]
+   },
+   "solver100_second": {
+    "games": 40,
+    "win": 0,
+    "draw": 0,
+    "loss": 40,
+    "runs": [
+     "s120_solver100_second_0",
+     "s120_solver100_second_1"
+    ]
+   },
+   "solver090_first": {
+    "games": 40,
+    "win": 38,
+    "draw": 1,
+    "loss": 1,
+    "runs": [
+     "s120_solver090_first_0",
+     "s120_solver090_first_1"
+    ]
+   },
+   "solver090_second": {
+    "games": 40,
+    "win": 19,
+    "draw": 4,
+    "loss": 17,
+    "runs": [
+     "s120_solver090_second"
+    ]
+   },
+   "solver070_first": {
+    "games": 40,
+    "win": 36,
+    "draw": 2,
+    "loss": 2,
+    "runs": [
+     "s120_solver070_first_0",
+     "s120_solver070_first_1"
+    ]
+   },
+   "solver070_second": {
+    "games": 40,
+    "win": 37,
+    "draw": 2,
+    "loss": 1,
+    "runs": [
+     "s120_solver070_second"
+    ]
+   },
+   "vs_brain_first": {
+    "games": 40,
+    "win": 34,
+    "draw": 5,
+    "loss": 1,
+    "runs": [
+     "s120_vs_brain_first"
+    ]
+   },
+   "vs_brain_second": {
+    "games": 40,
+    "win": 24,
+    "draw": 3,
+    "loss": 13,
+    "runs": [
+     "s120_vs_brain_second"
+    ]
+   }
+  },
+  "brain + search, 40000 nodes": {
+   "solver100_first": {
+    "games": 200,
+    "win": 163,
+    "draw": 14,
+    "loss": 23,
+    "runs": [
+     "s40_solver100_first",
+     "s40b_first_1",
+     "s40b_first_2",
+     "s40b_first_3",
+     "s40b_first_4"
+    ]
+   },
+   "solver100_second": {
+    "games": 40,
+    "win": 0,
+    "draw": 0,
+    "loss": 40,
+    "runs": [
+     "s40_solver100_second"
+    ]
+   },
+   "solver090_first": {
+    "games": 40,
+    "win": 35,
+    "draw": 0,
+    "loss": 5,
+    "runs": [
+     "s40_solver090_first"
+    ]
+   },
+   "solver090_second": {
+    "games": 40,
+    "win": 22,
+    "draw": 4,
+    "loss": 14,
+    "runs": [
+     "s40_solver090_second"
+    ]
+   },
+   "solver070_first": {
+    "games": 40,
+    "win": 39,
+    "draw": 1,
+    "loss": 0,
+    "runs": [
+     "s40_solver070_first"
+    ]
+   },
+   "solver070_second": {
+    "games": 40,
+    "win": 34,
+    "draw": 4,
+    "loss": 2,
+    "runs": [
+     "s40_solver070_second"
+    ]
+   },
+   "vs_brain_first": {
+    "games": 40,
+    "win": 34,
+    "draw": 5,
+    "loss": 1,
+    "runs": [
+     "s40_vs_brain_first"
+    ]
+   },
+   "vs_brain_second": {
+    "games": 40,
+    "win": 23,
+    "draw": 7,
+    "loss": 10,
+    "runs": [
+     "s40_vs_brain_second"
+    ]
+   }
+  },
+  "brain + search, 80000 nodes": {
+   "solver100_first": {
+    "games": 160,
+    "win": 135,
+    "draw": 5,
+    "loss": 20,
+    "runs": [
+     "s80_first_1",
+     "s80_first_2",
+     "s80_first_3",
+     "s80_first_4"
+    ]
+   },
+   "solver090_second": {
+    "games": 40,
+    "win": 17,
+    "draw": 6,
+    "loss": 17,
+    "runs": [
+     "s80_solver090_second"
+    ]
+   },
+   "solver070_second": {
+    "games": 40,
+    "win": 35,
+    "draw": 3,
+    "loss": 2,
+    "runs": [
+     "s80_solver070_second"
+    ]
+   },
+   "vs_brain_first": {
+    "games": 40,
+    "win": 35,
+    "draw": 5,
+    "loss": 0,
+    "runs": [
+     "s80_vs_brain_first"
+    ]
+   },
+   "vs_brain_second": {
+    "games": 40,
+    "win": 24,
+    "draw": 6,
+    "loss": 10,
+    "runs": [
+     "s80_vs_brain_second"
+    ]
+   }
+  },
+  "brain alone": {
+   "solver100_first": {
+    "games": 40,
+    "win": 19,
+    "draw": 13,
+    "loss": 8,
+    "runs": [
+     "a_solver100_first"
+    ]
+   },
+   "solver100_second": {
+    "games": 40,
+    "win": 0,
+    "draw": 0,
+    "loss": 40,
+    "runs": [
+     "a_solver100_second"
+    ]
+   },
+   "solver090_first": {
+    "games": 40,
+    "win": 29,
+    "draw": 10,
+    "loss": 1,
+    "runs": [
+     "a_solver090_first"
+    ]
+   },
+   "solver090_second": {
+    "games": 40,
+    "win": 12,
+    "draw": 7,
+    "loss": 21,
+    "runs": [
+     "a_solver090_second"
+    ]
+   },
+   "solver070_first": {
+    "games": 40,
+    "win": 30,
+    "draw": 6,
+    "loss": 4,
+    "runs": [
+     "a_solver070_first"
+    ]
+   },
+   "solver070_second": {
+    "games": 40,
+    "win": 27,
+    "draw": 4,
+    "loss": 9,
+    "runs": [
+     "a_solver070_second"
+    ]
+   }
+  }
  },
  "runs": {
   "a_solver070_first": {
    "player": "brain alone",
    "nodes": 40000,
-   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
    "conditions": [
     {
      "name": "solver070_first",
@@ -32,7 +293,6 @@
   "a_solver070_second": {
    "player": "brain alone",
    "nodes": 40000,
-   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
    "conditions": [
     {
      "name": "solver070_second",
@@ -52,7 +312,6 @@
   "a_solver090_first": {
    "player": "brain alone",
    "nodes": 40000,
-   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
    "conditions": [
     {
      "name": "solver090_first",
@@ -72,7 +331,6 @@
   "a_solver090_second": {
    "player": "brain alone",
    "nodes": 40000,
-   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
    "conditions": [
     {
      "name": "solver090_second",
@@ -92,7 +350,6 @@
   "a_solver100_first": {
    "player": "brain alone",
    "nodes": 40000,
-   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
    "conditions": [
     {
      "name": "solver100_first",
@@ -112,7 +369,6 @@
   "a_solver100_second": {
    "player": "brain alone",
    "nodes": 40000,
-   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
    "conditions": [
     {
      "name": "solver100_second",
@@ -129,10 +385,294 @@
     "depth_median": 0
    }
   },
+  "s120_first_1": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 36,
+     "draw": 4,
+     "loss": 0
+    }
+   ],
+   "search": {
+    "moves": 840,
+    "overruled_share": 0.0357,
+    "ms_median": 606.9,
+    "ms_max": 780.0,
+    "depth_median": 10.0
+   }
+  },
+  "s120_first_2": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 35,
+     "draw": 3,
+     "loss": 2
+    }
+   ],
+   "search": {
+    "moves": 838,
+    "overruled_share": 0.0477,
+    "ms_median": 633.9,
+    "ms_max": 755.7,
+    "depth_median": 9.0
+   }
+  },
+  "s120_first_3": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 34,
+     "draw": 2,
+     "loss": 4
+    }
+   ],
+   "search": {
+    "moves": 834,
+    "overruled_share": 0.0468,
+    "ms_median": 616.1,
+    "ms_max": 751.2,
+    "depth_median": 9.0
+   }
+  },
+  "s120_first_4": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 40,
+     "draw": 0,
+     "loss": 0
+    }
+   ],
+   "search": {
+    "moves": 840,
+    "overruled_share": 0.0381,
+    "ms_median": 644.6,
+    "ms_max": 780.0,
+    "depth_median": 9.0
+   }
+  },
+  "s120_solver070_first_0": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "conditions": [
+    {
+     "name": "solver070_first",
+     "win": 17,
+     "draw": 1,
+     "loss": 2
+    }
+   ],
+   "search": {
+    "moves": 297,
+    "overruled_share": 0.1145,
+    "ms_median": 694.3,
+    "ms_max": 757.8,
+    "depth_median": 9.0
+   }
+  },
+  "s120_solver070_first_1": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "conditions": [
+    {
+     "name": "solver070_first",
+     "win": 19,
+     "draw": 1,
+     "loss": 0
+    }
+   ],
+   "search": {
+    "moves": 273,
+    "overruled_share": 0.1392,
+    "ms_median": 695.6,
+    "ms_max": 760.3,
+    "depth_median": 9.0
+   }
+  },
+  "s120_solver070_second": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "conditions": [
+    {
+     "name": "solver070_second",
+     "win": 37,
+     "draw": 2,
+     "loss": 1
+    }
+   ],
+   "search": {
+    "moves": 559,
+    "overruled_share": 0.1306,
+    "ms_median": 701.6,
+    "ms_max": 785.5,
+    "depth_median": 10.0
+   }
+  },
+  "s120_solver090_first_0": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "conditions": [
+    {
+     "name": "solver090_first",
+     "win": 19,
+     "draw": 1,
+     "loss": 0
+    }
+   ],
+   "search": {
+    "moves": 348,
+    "overruled_share": 0.0977,
+    "ms_median": 684.0,
+    "ms_max": 761.4,
+    "depth_median": 9.0
+   }
+  },
+  "s120_solver090_first_1": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "conditions": [
+    {
+     "name": "solver090_first",
+     "win": 19,
+     "draw": 0,
+     "loss": 1
+    }
+   ],
+   "search": {
+    "moves": 397,
+    "overruled_share": 0.0655,
+    "ms_median": 661.3,
+    "ms_max": 750.9,
+    "depth_median": 9.0
+   }
+  },
+  "s120_solver090_second": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "conditions": [
+    {
+     "name": "solver090_second",
+     "win": 19,
+     "draw": 4,
+     "loss": 17
+    }
+   ],
+   "search": {
+    "moves": 670,
+    "overruled_share": 0.1493,
+    "ms_median": 658.7,
+    "ms_max": 777.9,
+    "depth_median": 10.0
+   }
+  },
+  "s120_solver100_first": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 39,
+     "draw": 1,
+     "loss": 0
+    }
+   ],
+   "search": {
+    "moves": 840,
+    "overruled_share": 0.0345,
+    "ms_median": 576.6,
+    "ms_max": 755.1,
+    "depth_median": 10.0
+   }
+  },
+  "s120_solver100_second_0": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "conditions": [
+    {
+     "name": "solver100_second",
+     "win": 0,
+     "draw": 0,
+     "loss": 20
+    }
+   ],
+   "search": {
+    "moves": 369,
+    "overruled_share": 0.1436,
+    "ms_median": 649.8,
+    "ms_max": 747.5,
+    "depth_median": 10.0
+   }
+  },
+  "s120_solver100_second_1": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "conditions": [
+    {
+     "name": "solver100_second",
+     "win": 0,
+     "draw": 0,
+     "loss": 20
+    }
+   ],
+   "search": {
+    "moves": 370,
+    "overruled_share": 0.1432,
+    "ms_median": 655.1,
+    "ms_max": 751.4,
+    "depth_median": 10.0
+   }
+  },
+  "s120_vs_brain_first": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "conditions": [
+    {
+     "name": "vs_brain_first",
+     "win": 34,
+     "draw": 5,
+     "loss": 1
+    }
+   ],
+   "search": {
+    "moves": 509,
+    "overruled_share": 0.1277,
+    "ms_median": 681.1,
+    "ms_max": 762.0,
+    "depth_median": 10.0
+   }
+  },
+  "s120_vs_brain_second": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "conditions": [
+    {
+     "name": "vs_brain_second",
+     "win": 24,
+     "draw": 3,
+     "loss": 13
+    }
+   ],
+   "search": {
+    "moves": 580,
+    "overruled_share": 0.2172,
+    "ms_median": 674.6,
+    "ms_max": 763.0,
+    "depth_median": 10.0
+   }
+  },
   "s15_solver070_first": {
    "player": "brain + search",
    "nodes": 15000,
-   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
    "conditions": [
     {
      "name": "solver070_first",
@@ -152,7 +692,6 @@
   "s15_solver070_second": {
    "player": "brain + search",
    "nodes": 15000,
-   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
    "conditions": [
     {
      "name": "solver070_second",
@@ -172,7 +711,6 @@
   "s15_solver090_first": {
    "player": "brain + search",
    "nodes": 15000,
-   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
    "conditions": [
     {
      "name": "solver090_first",
@@ -192,7 +730,6 @@
   "s15_solver090_second": {
    "player": "brain + search",
    "nodes": 15000,
-   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
    "conditions": [
     {
      "name": "solver090_second",
@@ -212,7 +749,6 @@
   "s15_solver100_first": {
    "player": "brain + search",
    "nodes": 15000,
-   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
    "conditions": [
     {
      "name": "solver100_first",
@@ -232,7 +768,6 @@
   "s15_solver100_second": {
    "player": "brain + search",
    "nodes": 15000,
-   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
    "conditions": [
     {
      "name": "solver100_second",
@@ -252,7 +787,6 @@
   "s15_vs_brain_first": {
    "player": "brain + search",
    "nodes": 15000,
-   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
    "conditions": [
     {
      "name": "vs_brain_first",
@@ -272,7 +806,6 @@
   "s15_vs_brain_second": {
    "player": "brain + search",
    "nodes": 15000,
-   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
    "conditions": [
     {
      "name": "vs_brain_second",
@@ -292,7 +825,6 @@
   "s40_solver070_first": {
    "player": "brain + search",
    "nodes": 40000,
-   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
    "conditions": [
     {
      "name": "solver070_first",
@@ -312,7 +844,6 @@
   "s40_solver070_second": {
    "player": "brain + search",
    "nodes": 40000,
-   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
    "conditions": [
     {
      "name": "solver070_second",
@@ -332,7 +863,6 @@
   "s40_solver090_first": {
    "player": "brain + search",
    "nodes": 40000,
-   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
    "conditions": [
     {
      "name": "solver090_first",
@@ -352,7 +882,6 @@
   "s40_solver090_second": {
    "player": "brain + search",
    "nodes": 40000,
-   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
    "conditions": [
     {
      "name": "solver090_second",
@@ -372,7 +901,6 @@
   "s40_solver100_first": {
    "player": "brain + search",
    "nodes": 40000,
-   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
    "conditions": [
     {
      "name": "solver100_first",
@@ -392,7 +920,6 @@
   "s40_solver100_second": {
    "player": "brain + search",
    "nodes": 40000,
-   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
    "conditions": [
     {
      "name": "solver100_second",
@@ -412,7 +939,6 @@
   "s40_vs_brain_first": {
    "player": "brain + search",
    "nodes": 40000,
-   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
    "conditions": [
     {
      "name": "vs_brain_first",
@@ -432,7 +958,6 @@
   "s40_vs_brain_second": {
    "player": "brain + search",
    "nodes": 40000,
-   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
    "conditions": [
     {
      "name": "vs_brain_second",
@@ -452,7 +977,6 @@
   "s40b_first_1": {
    "player": "brain + search",
    "nodes": 40000,
-   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
    "conditions": [
     {
      "name": "solver100_first",
@@ -472,7 +996,6 @@
   "s40b_first_2": {
    "player": "brain + search",
    "nodes": 40000,
-   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
    "conditions": [
     {
      "name": "solver100_first",
@@ -492,7 +1015,6 @@
   "s40b_first_3": {
    "player": "brain + search",
    "nodes": 40000,
-   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
    "conditions": [
     {
      "name": "solver100_first",
@@ -512,7 +1034,6 @@
   "s40b_first_4": {
    "player": "brain + search",
    "nodes": 40000,
-   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
    "conditions": [
     {
      "name": "solver100_first",
@@ -527,6 +1048,158 @@
     "ms_median": 225.9,
     "ms_max": 301.8,
     "depth_median": 8.0
+   }
+  },
+  "s80_first_1": {
+   "player": "brain + search",
+   "nodes": 80000,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 37,
+     "draw": 1,
+     "loss": 2
+    }
+   ],
+   "search": {
+    "moves": 830,
+    "overruled_share": 0.0265,
+    "ms_median": 454.4,
+    "ms_max": 538.0,
+    "depth_median": 9.0
+   }
+  },
+  "s80_first_2": {
+   "player": "brain + search",
+   "nodes": 80000,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 32,
+     "draw": 2,
+     "loss": 6
+    }
+   ],
+   "search": {
+    "moves": 814,
+    "overruled_share": 0.0442,
+    "ms_median": 457.7,
+    "ms_max": 534.3,
+    "depth_median": 9.0
+   }
+  },
+  "s80_first_3": {
+   "player": "brain + search",
+   "nodes": 80000,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 34,
+     "draw": 1,
+     "loss": 5
+    }
+   ],
+   "search": {
+    "moves": 828,
+    "overruled_share": 0.0278,
+    "ms_median": 456.9,
+    "ms_max": 527.4,
+    "depth_median": 9.0
+   }
+  },
+  "s80_first_4": {
+   "player": "brain + search",
+   "nodes": 80000,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 32,
+     "draw": 1,
+     "loss": 7
+    }
+   ],
+   "search": {
+    "moves": 826,
+    "overruled_share": 0.0339,
+    "ms_median": 443.0,
+    "ms_max": 536.6,
+    "depth_median": 9.0
+   }
+  },
+  "s80_solver070_second": {
+   "player": "brain + search",
+   "nodes": 80000,
+   "conditions": [
+    {
+     "name": "solver070_second",
+     "win": 35,
+     "draw": 3,
+     "loss": 2
+    }
+   ],
+   "search": {
+    "moves": 528,
+    "overruled_share": 0.1212,
+    "ms_median": 467.0,
+    "ms_max": 508.9,
+    "depth_median": 9.0
+   }
+  },
+  "s80_solver090_second": {
+   "player": "brain + search",
+   "nodes": 80000,
+   "conditions": [
+    {
+     "name": "solver090_second",
+     "win": 17,
+     "draw": 6,
+     "loss": 17
+    }
+   ],
+   "search": {
+    "moves": 688,
+    "overruled_share": 0.1192,
+    "ms_median": 455.4,
+    "ms_max": 521.8,
+    "depth_median": 10.0
+   }
+  },
+  "s80_vs_brain_first": {
+   "player": "brain + search",
+   "nodes": 80000,
+   "conditions": [
+    {
+     "name": "vs_brain_first",
+     "win": 35,
+     "draw": 5,
+     "loss": 0
+    }
+   ],
+   "search": {
+    "moves": 509,
+    "overruled_share": 0.1179,
+    "ms_median": 471.0,
+    "ms_max": 511.0,
+    "depth_median": 9.0
+   }
+  },
+  "s80_vs_brain_second": {
+   "player": "brain + search",
+   "nodes": 80000,
+   "conditions": [
+    {
+     "name": "vs_brain_second",
+     "win": 24,
+     "draw": 6,
+     "loss": 10
+    }
+   ],
+   "search": {
+    "moves": 597,
+    "overruled_share": 0.2178,
+    "ms_median": 461.2,
+    "ms_max": 522.1,
+    "depth_median": 10.0
    }
   }
  }

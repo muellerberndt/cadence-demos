@@ -30,7 +30,7 @@ from playwright.sync_api import sync_playwright
 
 HERE = Path(__file__).resolve().parent
 LATENCY_MS = 8000.0  # a settle, as the worker measures it, must finish within this (the page draws it as it runs)
-ANSWER_S = 8.0  # a click to the brain's stone on the board, animations included
+ANSWER_S = 10.0  # a click to the brain's stone on the board, animations included
 GPU = (["--use-angle=metal", "--enable-gpu", "--ignore-gpu-blocklist"] if platform.system() == "Darwin"
        else ["--enable-gpu", "--ignore-gpu-blocklist"])
 

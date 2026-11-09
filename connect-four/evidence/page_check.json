@@ -1,7 +1,7 @@
 {
  "schema": "connect-four-page-check/1",
- "url": "http://127.0.0.1:58371/",
- "checked_utc": "2026-11-09T09:04:11.341159+00:00",
+ "url": "http://127.0.0.1:59604/",
+ "checked_utc": "2026-11-09T09:14:20.938902+00:00",
  "checks": [
   {
    "name": "runtime_is_released_cadence",
@@ -12,13 +12,13 @@
      "synapses": 3295232,
      "cadence": "0.95.2"
     },
-    "startup_ms": 13470
+    "startup_ms": 13245
    }
   },
   {
    "name": "startup_measured",
    "passed": true,
-   "detail": 13470
+   "detail": 13245
   },
   {
    "name": "brain_view_renderer",
@@ -111,23 +111,23 @@
    "detail": {
     "player": "search",
     "search_ms": [
-     1334.4,
-     1055,
-     1082.7,
-     1350.9,
-     1333.7,
-     1322.5,
-     1356.1,
+     4217.5,
+     3269.6,
+     3305.7,
+     3456,
+     3471.2,
+     3381.2,
+     3416,
      0
     ],
     "search_depth": [
-     8,
-     8,
-     8,
-     8,
+     9,
      9,
      10,
      10,
+     11,
+     12,
+     12,
      0
     ],
     "overruled": 3
@@ -139,24 +139,24 @@
    "detail": {
     "bound_ms": 8000.0,
     "worker_ms": [
-     1825.3,
-     1702.6,
-     1650.2,
-     2642.6,
-     2294.2,
-     3128,
-     2325.9,
-     2211.7
+     4701.3,
+     3709.7,
+     3855.4,
+     4393.2,
+     4006.8,
+     4221.8,
+     4176.1,
+     1371.5
     ],
     "settle_ms": [
-     478,
-     634.6,
-     547.6,
-     1277.4,
-     948,
-     1778.8,
-     956.7,
-     2181.4
+     458.3,
+     420.4,
+     524.1,
+     916.4,
+     515.1,
+     805.6,
+     737.8,
+     1342.1
     ],
     "sweeps": [
      65,
@@ -174,16 +174,16 @@
    "name": "answer_on_board_within_bound",
    "passed": true,
    "detail": {
-    "bound_s": 8.0,
+    "bound_s": 10.0,
     "seconds": [
-     3.96,
-     3.81,
-     3.61,
-     4.74,
-     4.03,
-     5.06,
-     4.05,
-     4.33
+     6.48,
+     5.79,
+     4.84,
+     5.54,
+     5.76,
+     5.26,
+     5.85,
+     3.5
     ]
    }
   },
@@ -200,36 +200,36 @@
    "passed": true,
    "detail": [
     {
-     "mean": 76.59327443117395,
-     "litShare": 0.5924340067596205,
-     "hash": 1658062232,
-     "playhead": 1.4405769230769414,
+     "mean": 71.55570890886104,
+     "litShare": 0.5793168653618354,
+     "hash": 4234754561,
+     "playhead": 1.4703846153846163,
      "frames": 10,
-     "t": 0.767
+     "t": 0.789
     },
     {
-     "mean": 105.06429609021522,
-     "litShare": 0.6336763858852169,
-     "hash": 1418767940,
-     "playhead": 6.005576923076951,
-     "frames": 21,
-     "t": 0.949
+     "mean": 105.81479509221123,
+     "litShare": 0.633806796570199,
+     "hash": 3034507026,
+     "playhead": 5.635384615384625,
+     "frames": 20,
+     "t": 0.957
     },
     {
-     "mean": 106.44821790176452,
-     "litShare": 0.6346762011367465,
-     "hash": 1460721797,
-     "playhead": 17.275576923076937,
-     "frames": 47,
-     "t": 1.387
+     "mean": 106.31096065582085,
+     "litShare": 0.634567525565928,
+     "hash": 1925555353,
+     "playhead": 15.607884615384616,
+     "frames": 44,
+     "t": 1.37
     },
     {
-     "mean": 106.9756349370225,
-     "litShare": 0.6352195789908387,
-     "hash": 3815264981,
-     "playhead": 21.440576923076947,
-     "frames": 57,
-     "t": 1.572
+     "mean": 106.80266689850788,
+     "litShare": 0.6348718171642197,
+     "hash": 3435212765,
+     "playhead": 20.220384615384617,
+     "frames": 55,
+     "t": 1.534
     }
    ]
   },
@@ -237,7 +237,7 @@
    "name": "brain_view_frame_rate_while_settling",
    "passed": true,
    "detail": {
-    "frames_per_second": 58.4,
+    "frames_per_second": 60.4,
     "renderer": "webgl2"
    }
   },
@@ -251,8 +251,8 @@
    "detail": {
     "candidates": 7,
     "sweeps": 96,
-    "ms": 3234.5,
-    "seconds_to_answer": 6.28
+    "ms": 3346,
+    "seconds_to_answer": 8.42
    }
   },
   {
@@ -272,7 +272,7 @@
     "max_change": 0.0032887870068269154,
     "choice_before": 3,
     "choice_after": 3,
-    "ms": 1187.5
+    "ms": 1419.8
    }
   },
   {
@@ -373,47 +373,47 @@
    "detail": {
     "page": "software",
     "visitor": 0,
-    "seconds_to_answer": 4.16,
+    "seconds_to_answer": 5.82,
     "brain": 3,
     "legal": true,
-    "settle_ms": 578,
-    "worker_ms": 1911.9,
+    "settle_ms": 304.9,
+    "worker_ms": 3622.9,
     "sweeps": 58,
     "brain_column": 3,
-    "search_ms": 1322.6,
-    "search_depth": 8,
+    "search_ms": 3299.4,
+    "search_depth": 9,
     "samples": [
      {
-      "mean": 22.737620946854022,
-      "litShare": 0.20213656172229044,
-      "hash": 787757133,
-      "playhead": 2.226346153846141,
-      "frames": 11,
-      "t": 0.943
+      "mean": 20.07855794762562,
+      "litShare": 0.16152450090744103,
+      "hash": 2641740356,
+      "playhead": 1.4375000000000209,
+      "frames": 9,
+      "t": 0.763
      },
      {
-      "mean": 25.31488384392739,
-      "litShare": 0.23510872990860385,
-      "hash": 997337433,
-      "playhead": 7.9038461538461044,
-      "frames": 16,
-      "t": 1.211
+      "mean": 23.02858167512525,
+      "litShare": 0.20540769640392537,
+      "hash": 3429083163,
+      "playhead": 6.437500000000021,
+      "frames": 15,
+      "t": 0.933
      },
      {
-      "mean": 27.397926470108786,
-      "litShare": 0.25571361813577925,
-      "hash": 1306215693,
-      "playhead": 14.50134615384605,
-      "frames": 23,
-      "t": 1.416
+      "mean": 25.963955935678552,
+      "litShare": 0.2422052446830477,
+      "hash": 2644145630,
+      "playhead": 10.602499999999985,
+      "frames": 24,
+      "t": 1.133
      },
      {
-      "mean": 29.262114609256983,
-      "litShare": 0.2697110316571938,
-      "hash": 2275934666,
-      "playhead": 19.086346153846087,
-      "frames": 30,
-      "t": 1.617
+      "mean": 27.818218372692,
+      "litShare": 0.2590282230457415,
+      "hash": 630528601,
+      "playhead": 15.185000000000013,
+      "frames": 32,
+      "t": 1.332
      }
     ]
    }
@@ -443,102 +443,102 @@
   {
    "page": "desktop",
    "visitor": 2,
-   "seconds_to_answer": 3.96,
+   "seconds_to_answer": 6.48,
    "brain": 3,
    "legal": true,
-   "settle_ms": 478,
-   "worker_ms": 1825.3,
+   "settle_ms": 458.3,
+   "worker_ms": 4701.3,
    "sweeps": 65,
    "brain_column": 3,
-   "search_ms": 1334.4,
-   "search_depth": 8
-  },
-  {
-   "page": "desktop",
-   "visitor": 1,
-   "seconds_to_answer": 3.81,
-   "brain": 3,
-   "legal": true,
-   "settle_ms": 634.6,
-   "worker_ms": 1702.6,
-   "sweeps": 58,
-   "brain_column": 3,
-   "search_ms": 1055,
-   "search_depth": 8
-  },
-  {
-   "page": "desktop",
-   "visitor": 3,
-   "seconds_to_answer": 3.61,
-   "brain": 3,
-   "legal": true,
-   "settle_ms": 547.6,
-   "worker_ms": 1650.2,
-   "sweeps": 85,
-   "brain_column": 3,
-   "search_ms": 1082.7,
-   "search_depth": 8
-  },
-  {
-   "page": "desktop",
-   "visitor": 5,
-   "seconds_to_answer": 4.74,
-   "brain": 1,
-   "legal": true,
-   "settle_ms": 1277.4,
-   "worker_ms": 2642.6,
-   "sweeps": 73,
-   "brain_column": 3,
-   "search_ms": 1350.9,
-   "search_depth": 8
-  },
-  {
-   "page": "desktop",
-   "visitor": 0,
-   "seconds_to_answer": 4.03,
-   "brain": 2,
-   "legal": true,
-   "settle_ms": 948,
-   "worker_ms": 2294.2,
-   "sweeps": 54,
-   "brain_column": 3,
-   "search_ms": 1333.7,
+   "search_ms": 4217.5,
    "search_depth": 9
   },
   {
    "page": "desktop",
-   "visitor": 0,
-   "seconds_to_answer": 5.06,
+   "visitor": 1,
+   "seconds_to_answer": 5.79,
    "brain": 3,
    "legal": true,
-   "settle_ms": 1778.8,
-   "worker_ms": 3128,
+   "settle_ms": 420.4,
+   "worker_ms": 3709.7,
+   "sweeps": 58,
+   "brain_column": 3,
+   "search_ms": 3269.6,
+   "search_depth": 9
+  },
+  {
+   "page": "desktop",
+   "visitor": 3,
+   "seconds_to_answer": 4.84,
+   "brain": 3,
+   "legal": true,
+   "settle_ms": 524.1,
+   "worker_ms": 3855.4,
+   "sweeps": 85,
+   "brain_column": 3,
+   "search_ms": 3305.7,
+   "search_depth": 10
+  },
+  {
+   "page": "desktop",
+   "visitor": 5,
+   "seconds_to_answer": 5.54,
+   "brain": 1,
+   "legal": true,
+   "settle_ms": 916.4,
+   "worker_ms": 4393.2,
+   "sweeps": 73,
+   "brain_column": 3,
+   "search_ms": 3456,
+   "search_depth": 10
+  },
+  {
+   "page": "desktop",
+   "visitor": 0,
+   "seconds_to_answer": 5.76,
+   "brain": 2,
+   "legal": true,
+   "settle_ms": 515.1,
+   "worker_ms": 4006.8,
+   "sweeps": 54,
+   "brain_column": 3,
+   "search_ms": 3471.2,
+   "search_depth": 11
+  },
+  {
+   "page": "desktop",
+   "visitor": 0,
+   "seconds_to_answer": 5.26,
+   "brain": 3,
+   "legal": true,
+   "settle_ms": 805.6,
+   "worker_ms": 4221.8,
    "sweeps": 97,
    "brain_column": 3,
-   "search_ms": 1322.5,
-   "search_depth": 10
+   "search_ms": 3381.2,
+   "search_depth": 12
   },
   {
    "page": "desktop",
    "visitor": 6,
-   "seconds_to_answer": 4.05,
+   "seconds_to_answer": 5.85,
    "brain": 1,
    "legal": true,
-   "settle_ms": 956.7,
-   "worker_ms": 2325.9,
+   "settle_ms": 737.8,
+   "worker_ms": 4176.1,
    "sweeps": 54,
    "brain_column": 1,
-   "search_ms": 1356.1,
-   "search_depth": 10
+   "search_ms": 3416,
+   "search_depth": 12
   },
   {
    "page": "desktop",
    "visitor": 4,
-   "seconds_to_answer": 4.33,
+   "seconds_to_answer": 3.5,
    "brain": 4,
    "legal": true,
-   "settle_ms": 2181.4,
-   "worker_ms": 2211.7,
+   "settle_ms": 1342.1,
+   "worker_ms": 1371.5,
    "sweeps": 116,
    "brain_column": 3,
    "search_ms": 0,
@@ -547,48 +547,48 @@
   {
    "page": "desktop",
    "visitor": 0,
-   "seconds_to_answer": 12.58,
+   "seconds_to_answer": 13.71,
    "brain": 3,
    "legal": true,
-   "settle_ms": 596.5,
-   "worker_ms": 1639.3,
+   "settle_ms": 544.3,
+   "worker_ms": 3821.8,
    "sweeps": 82,
    "brain_column": 3,
-   "search_ms": 1026.9,
-   "search_depth": 8
+   "search_ms": 3247.7,
+   "search_depth": 10
   },
   {
    "page": "mobile",
    "visitor": 2,
    "brain": 3,
    "legal": true,
-   "settle_ms": 706,
-   "worker_ms": 2112.5,
+   "settle_ms": 651.1,
+   "worker_ms": 5380.5,
    "sweeps": 65,
-   "seconds_to_answer": 4.28
+   "seconds_to_answer": 7.12
   },
   {
    "page": "mobile",
    "visitor": 4,
    "brain": 3,
    "legal": true,
-   "settle_ms": 786.5,
-   "worker_ms": 1884.6,
+   "settle_ms": 538.7,
+   "worker_ms": 4179.2,
    "sweeps": 70,
-   "seconds_to_answer": 4.04
+   "seconds_to_answer": 6.29
   },
   {
    "page": "software",
    "visitor": 0,
-   "seconds_to_answer": 4.16,
+   "seconds_to_answer": 5.82,
    "brain": 3,
    "legal": true,
-   "settle_ms": 578,
-   "worker_ms": 1911.9,
+   "settle_ms": 304.9,
+   "worker_ms": 3622.9,
    "sweeps": 58,
    "brain_column": 3,
-   "search_ms": 1322.6,
-   "search_depth": 8
+   "search_ms": 3299.4,
+   "search_depth": 9
   }
  ],
  "console_errors": [],
@@ -613,10 +613,10 @@
   "web/index.html": "d10c0b6994ebb885489416beb70994b323bb6125a49c2beb0caa75a1e88f763f",
   "web/styles.css": "e09db8321c5a68575740d8af151b7718ef82c974ee8ef1ec4c411a1b15e29311",
   "web/worker.js": "d828adbb0429806096046d8d84202290c868cf5944f124a10e5ffd898d052e62",
-  "web/pack/manifest.json": "61666f5a06cd0a4be349f7cc214da98fc7fad43271dfa4b23f700b6010a8212e"
+  "web/pack/manifest.json": "c221bd04ebfcbc69a256eda12b41bb6c77add18846c14a9e497f21084d0297d3"
  },
  "desktop_renderer": "webgl2",
- "settle_frames_per_second": 58.4,
- "seconds": 135.4,
+ "settle_frames_per_second": 60.4,
+ "seconds": 150.5,
  "passed": true
 }

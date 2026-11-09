@@ -21,7 +21,7 @@
   sweep (budget 1,024 sweeps). *Brain alone:* the strongest column neuron among the columns with
   room (greedy). *Brain + search* (the page's default): the column neurons, as a softmax at the
   temperature 0.2, rank the columns for a negamax search with alpha-beta pruning over the game's
-  rules (`connect4/search.py`, 40,000 positions a move, a threat count at its horizon); a proven
+  rules (`connect4/search.py`, 120,000 positions a move, a threat count at its horizon); a proven
   win is played, columns proven lost are dropped, and among the rest the brain's column is played
   unless the search scores another higher by more than 0.25. The verdict is read beside the move
   and enters neither.
@@ -71,13 +71,13 @@ stated; the solver at 0.9 and 0.7 plays a random column one move in ten and thre
 
 | Opponent | Brain alone | Brain + search |
 | --- | --- | --- |
-| The perfect solver, the brain first | 119-50-31 (200 games, `evidence/reading.json`) | 163-14-23 (200 games) |
+| The perfect solver, the brain first | 119-50-31 (200 games, `evidence/reading.json`) | 184-10-6 (200 games) |
 | The perfect solver, the brain second | 0-0-40 | 0-0-40 |
-| The solver at 0.9, the brain first | 29-10-1 | 35-0-5 |
-| The solver at 0.9, the brain second | 12-7-21 | 22-4-14 |
-| The solver at 0.7, the brain first | 30-6-4 | 39-1-0 |
-| The solver at 0.7, the brain second | 27-4-9 | 34-4-2 |
-| Brain + search against the brain alone (search first, search second) | | 34-5-1, 23-7-10 |
+| The solver at 0.9, the brain first | 29-10-1 | 38-1-1 |
+| The solver at 0.9, the brain second | 12-7-21 | 19-4-17 |
+| The solver at 0.7, the brain first | 30-6-4 | 36-2-2 |
+| The solver at 0.7, the brain second | 27-4-9 | 37-2-1 |
+| Brain + search against the brain alone (search first, search second) | | 34-5-1, 24-3-13 |
 
 The perfect solver wins every game it starts.
 
@@ -91,9 +91,9 @@ file. The visitor's record and lessons are not saved.
 
 Measured by `check_page.py` in headless Chromium on an Apple M4 running other jobs
 (`evidence/page_check.json`), with brain + search: startup (Pyodide, NumPy, Cadence, the brain)
-13.5 s; a settle 54–116 sweeps and 0.5–2.2 s in the worker; the search 1.1–1.4 s (depth 8 to
-10); a click to the brain's stone on the board 3.6–5.1 s with the animations; the seven imagined
-replies, when ticked, 3.2 s more.
+13.2 s; a settle 54–116 sweeps and 0.4–1.3 s in the worker; the search 3.3–4.2 s (9 to 12 moves
+ahead); a click to the brain's stone on the board 4.8–6.5 s with the animations; the seven
+imagined replies, when ticked, 3.3 s more.
 
 ## Limits
 

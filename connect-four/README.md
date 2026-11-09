@@ -51,7 +51,7 @@ phases of a fixed 32 sweeps. 3,208 neurons and 3,295,232 synapses.
 - **Brain alone:** the strongest column neuron among the columns with room, from one settle.
 - **Brain + search** (the default, labelled on the page): the same settle, then a negamax search
   with alpha-beta pruning over the game's rules (`connect4/search.py`): bitboards, a
-  transposition table and iterative deepening within a budget of 40,000 positions a move. At
+  transposition table and iterative deepening within a budget of 120,000 positions a move. At
   its horizon it counts threats, the empty cells where a stone would complete four for either
   side, weighted by the row parity that lets that side use them; wins and losses inside the
   horizon are exact. The move: a win the search proves is played; columns it proves lost are
@@ -136,26 +136,27 @@ brain's side:
 
 | Opponent | Brain alone | Brain + search |
 | --- | --- | --- |
-| The perfect solver, the brain first | 119-50-31 (200 games, `evidence/reading.json`) | 163-14-23 (200 games) |
+| The perfect solver, the brain first | 119-50-31 (200 games, `evidence/reading.json`) | 184-10-6 (200 games) |
 | The perfect solver, the brain second | 0-0-40 | 0-0-40 |
-| The solver at 0.9, the brain first | 29-10-1 | 35-0-5 |
-| The solver at 0.9, the brain second | 12-7-21 | 22-4-14 |
-| The solver at 0.7, the brain first | 30-6-4 | 39-1-0 |
-| The solver at 0.7, the brain second | 27-4-9 | 34-4-2 |
+| The solver at 0.9, the brain first | 29-10-1 | 38-1-1 |
+| The solver at 0.9, the brain second | 12-7-21 | 19-4-17 |
+| The solver at 0.7, the brain first | 30-6-4 | 36-2-2 |
+| The solver at 0.7, the brain second | 27-4-9 | 37-2-1 |
 | Brain + search against the brain alone, search first | | 34-5-1 |
-| Brain + search against the brain alone, search second | | 23-7-10 |
+| Brain + search against the brain alone, search second | | 24-3-13 |
 
 The perfect solver wins every game it starts. Each row is 40 games unless it says otherwise;
 games against the brain alone begin with two random moves, since both players are otherwise
-deterministic. With the search, the player overruled the brain's column on 5% of its moves
-against the perfect solver; natively the search took a median of 0.22 s a move (depth 8).
+deterministic. The record also holds the same games at budgets of 40,000 and 80,000 positions:
+moving first against the perfect solver they read 163-14-23 and 135-5-20 (160 games at 80,000).
+Natively the search at 120,000 took a median of 0.6 s a move.
 
 `check_page.py` ran the page in headless Chromium on an Apple M4 (record:
 `evidence/page_check.json`), while the machine ran other jobs. With brain + search: starting
-Pyodide, NumPy, Cadence and the brain took 13.5 s; over a whole game a settle took 54–116 sweeps
-and 0.5–2.2 s in the worker, the search 1.1–1.4 s (depth 8 to 10), and from a click to the
-brain's stone on the board 3.6–5.1 s, animation included. With imagination on, the seven
-imagined replies took 3.2 s more.
+Pyodide, NumPy, Cadence and the brain took 13.2 s; over a whole game a settle took 54–116 sweeps
+and 0.4–1.3 s in the worker, the search 3.3–4.2 s (9 to 12 moves ahead), and from a click to the
+brain's stone on the board 4.8–6.5 s, animation included. With imagination on, the seven
+imagined replies took 3.3 s more.
 
 ## Train it further
 
