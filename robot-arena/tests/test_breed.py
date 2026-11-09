@@ -47,3 +47,12 @@ def test_a_pool_fight_leaves_the_anchor_file_unchanged(tmp_path):
     out = breed._pool_fight((cand, pool, 1, 60, 50, 3.5, None))
     assert set(out["stats"]) == {body.name, "ref:Cart", "ref:Random-Tumbler"}
     assert hashlib.sha256(Path(pool[0]["brain_path"]).read_bytes()).hexdigest() == before
+
+
+def test_a_locked_lineage_keeps_its_body_class():
+    rng = random.Random(5)
+    for founder in stock_designs():
+        parent = founder
+        for k in range(25):
+            parent, _ = breed.mutate(parent, f"{founder.name}-{k}", seed=k, rng=rng, lock_class=True)
+            assert breed.body_class(parent) == breed.body_class(founder)

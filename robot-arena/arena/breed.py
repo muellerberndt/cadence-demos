@@ -63,9 +63,25 @@ def cost(genes: dict[str, Any]) -> float:
     return base * (RECALL_COST if genes.get("recall") else 1.0)
 
 
-def mutate(parent: Blueprint, name: str, seed: int, rng: random.Random, steps: int = 2) -> tuple[Blueprint, list[str]]:
+def body_class(bp: Blueprint) -> tuple:
+    """What makes a body type: its chassis, how it moves (wheels, legs) and the kinds of weapon it
+    carries. With ``lock_class`` a lineage keeps its founder's class, so lineages stay different robots."""
+    return (bp.chassis, tuple(sorted({p.kind for p in bp.parts if p.kind != "arm"})),
+            tuple(sorted({p.weapon for p in bp.parts if p.kind == "arm" and p.weapon})))
+
+
+def mutate(parent: Blueprint, name: str, seed: int, rng: random.Random, steps: int = 2,
+           lock_class: bool = False) -> tuple[Blueprint, list[str]]:
     """The arena's body and gene mutations, plus the 0.95 brain genes: the layout, the recall
-    memory, the teaching point and the actor's bias rate."""
+    memory, the teaching point and the actor's bias rate. With ``lock_class`` a mutation that would
+    change the body class is drawn again (up to 50 times; then the genes alone change)."""
+    if lock_class:
+        for _ in range(50):
+            child, log = mutate(parent, name, seed, rng, steps)
+            if body_class(child) == body_class(parent):
+                return child, log
+        child, log = mutate(replace(parent, genes=parent.genes), name, seed, rng, 0)
+        return replace(child, chassis=parent.chassis, parts=parent.parts), [entry for entry in log if not entry.startswith(("moved", "added", "removed", "re-armed"))]
     bounds = dict(evolve.GENE_BOUNDS)
     evolve.GENE_BOUNDS = {**bounds, "eta": (0.002, 1.0), **EXTRA_BOUNDS}
     try:
@@ -133,7 +149,7 @@ def reference_pool(path: Path, names: list[str] | None = None) -> list[dict[str,
 def generation(league: League, pool: list[dict[str, Any]], *, population: int, elite: int, nursery_moments: int,
                fights_each: int, per_fight: int, workers: int, rng: random.Random, duration: int, zone_moments: int,
                zone_end: float, stage: dict[str, Any], niche: int = 0, refresher_moments: int = 0,
-               verbose: bool = True) -> dict[str, Any]:
+               lock_class: bool = False, verbose: bool = True) -> dict[str, Any]:
     data = league.data
     data.setdefault("breeding", [])
     data.setdefault("retired", {})
@@ -251,7 +267,7 @@ def generation(league: League, pool: list[dict[str, Any]], *, population: int, e
         name = f"{lineage.split('-')[0]}-{number}.{k + 1}"
         while name in data["robots"] or name in data["retired"]:
             name += "x"
-        child, log = mutate(parent, name, seed=rng.randrange(1_000_000), rng=rng)
+        child, log = mutate(parent, name, seed=rng.randrange(1_000_000), rng=rng, lock_class=lock_class)
         entry = league.add(child)
         entry.update({"lineage": lineage, "parent": parent_name, "generation": number, "mutations": log})
         born.append({"name": name, "parent": parent_name, "mutations": log})
@@ -273,7 +289,7 @@ def generation(league: League, pool: list[dict[str, Any]], *, population: int, e
     return record
 
 
-def seed(league: League, population: int, rng: random.Random) -> None:
+def seed(league: League, population: int, rng: random.Random, lock_class: bool = False) -> None:
     """The stock bodies with the founder genes (the control) and mutants of them."""
     stock = stock_designs()
     designs = list(stock)
@@ -281,7 +297,7 @@ def seed(league: League, population: int, rng: random.Random) -> None:
     while len(designs) < population:
         parent = stock[k % len(stock)]
         child, log = mutate(parent, f"{parent.name}-0.{k + 1}", seed=rng.randrange(1_000_000), rng=rng,
-                            steps=rng.choice((1, 2)))
+                            steps=rng.choice((1, 2)), lock_class=lock_class)
         designs.append(child)
         k += 1
     league.create(designs)
@@ -309,13 +325,14 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--hours", type=float, default=0.0, help="start no generation after this many hours")
     p.add_argument("--niche", type=int, default=0, help="the best N of every lineage survive each generation")
+    p.add_argument("--lock-class", action="store_true", help="a lineage keeps its founder's body class")
     p.add_argument("--refresher-moments", type=int, default=0,
                    help="more nursery for every surviving brain while the newborns are raised")
     a = p.parse_args(argv)
     rng = random.Random(a.seed)
     league = League(a.league)
     if not league.path.exists():
-        seed(league, a.population, rng)
+        seed(league, a.population, rng, lock_class=a.lock_class)
     else:  # resume: the league's own generations continue
         rng = random.Random(a.seed + len(league.data.get("breeding", [])))
     pool = reference_pool(Path(a.reference), a.anchors.split(",") if a.anchors else None)
@@ -328,7 +345,7 @@ def main(argv: list[str] | None = None) -> int:
         generation(league, pool, population=a.population, elite=a.elite, nursery_moments=a.nursery_moments,
                    fights_each=a.fights_each, per_fight=a.per_fight, workers=a.workers, rng=rng,
                    duration=a.duration, zone_moments=a.zone_moments, zone_end=a.zone_end, stage=dict(PAGE_STAGE),
-                   niche=a.niche, refresher_moments=a.refresher_moments)
+                   niche=a.niche, refresher_moments=a.refresher_moments, lock_class=a.lock_class)
     return 0
 
 

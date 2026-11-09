@@ -21,8 +21,16 @@ cadence-net wheel; Pyodide runs them in a worker. What to watch:
   escape, the closing ring, engagement, chase, facing, no spinning, no stalling);
 - the "getting better" row: damage per robot per fight and moments in the burn, first third
   of your fights against the last third, and the share of calm moments;
-- the brain inspector of the selected robot: its senses, the one settled state, the chosen
-  command per motor, and the arousal level that decides whether it learns this moment.
+- the brain inspector of the selected robot (click a robot), drawn as a brain seen from the
+  side from the brain's own state in every moment: its senses entering the sensory cortex, the
+  intermediate and association cortex, the prefrontal region where the working trace returns,
+  the motor strip with every motor's command, the actor's choice (greedy when calm, sampling
+  when aroused), the critic's reward prediction error as a gold or blue wash from a midbrain
+  nucleus, the synapses a learning step changes, and, for brains with the recall memory, the
+  stored moments it reads. Every eighth moment the act's settle replays sweep by sweep from
+  `cadence.record_settlements`. Regions are named for the role their population plays.
+
+![The brain inspector](docs/brain-inspector.png)
 
 Returning visitors get their own league back; "Reset the brains to how they arrived" starts
 over.
@@ -77,6 +85,18 @@ cd showcase-app && ../.venv/bin/python pack.py --league ../league --robots 6 && 
 without it on the same loaded machine. On an Apple M4 a batch of eight 100,000-moment nursery
 lives took 36 to 43 minutes and the 20 royales 7. The shipped roster raised three seeds of
 each body (the blueprint's `seed`) this way and kept the seed with the best driving test.
+
+`python -m arena.breed --help` breeds bodies and brain genes against a fixed reference pool:
+every generation the newborns go through the nursery, every robot fights royales of six
+against anchors (the shipped brains, reloaded fresh for every fight, and the random twins),
+and takes the driving test. Fitness is the placement against the pool, plus the driving test,
+plus a share for damage dealt, less a cost for slower brain layouts. The genes include the
+layout (one or two cortical regions from 64 to 256 neurons), the recall memory, the teaching
+point, the actor's rates, the efference copy, the arousal law and the sensory scale;
+`--niche` keeps the best of every lineage, `--lock-class` keeps a lineage's chassis, locomotion
+and weapon kinds, and `--refresher-moments` gives the survivors more nursery. `python -m
+arena.gate` is the test a new roster passes before it ships: mixed royales against the shipped
+roster with a bootstrap interval, the driving test, and royales against the random twins.
 
 `python -m arena evolve --help` breeds lineages: mutants of body and genes are born with
 newborn brains, raised, fought on the stage and ranked by the driving test; the best of
