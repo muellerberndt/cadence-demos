@@ -173,5 +173,5 @@ is used in training only; the page plays the brain alone.
 
 ## Licence
 
-The code is MIT, as the rest of this repository. The game and its ROM are Konami's and are not
+GPL-3.0, as Cadence ([`LICENSE`](LICENSE)). The game and its ROM are Konami's and are not
 distributed here.
