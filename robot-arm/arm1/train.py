@@ -1,4 +1,4 @@
-"""DAgger-style warm lessons on true state, many cells at once, on Cadence 0.91.1.
+"""DAgger-style warm lessons on true state, many cells at once, on Cadence 0.95.2.
 
     python -m arm1.train --arm D1 --out runs/arm1/D1_s1 --seed 1 --cells 128 --episodes 400
 
@@ -189,7 +189,7 @@ def main() -> None:
             "machine": platform.machine(), "threads": os.environ.get("NUMBA_NUM_THREADS"),
             "selection_seed": 30_000 + a.seed, "starts_seed": 90_000 + a.seed, "render_seed": 70_000 + a.seed,
             "notes": ["Brain.lesson before Brain.act; Brain.step never called",
-                      "D4 keys its recall on all inputs plus the command (recall_heard is one number in 0.91.1)"]}
+                      "D4 keys its recall on all inputs plus the command (the recall key is the whole observation)"]}
     (out / ("run_resume.json" if resuming else "run.json")).write_text(json.dumps(meta, indent=1, default=str))
     receipt: dict = {"settings": vars(a), "cadence": cadence.__version__, "curve": [], "anneals": [], "steps": [step_now]}
     if resuming and (out / "receipt.json").exists():

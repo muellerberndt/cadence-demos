@@ -7,7 +7,9 @@ imitating a scripted teacher, and is then read frozen on trials it never trained
 the bins and press Run; move the target bin while the arm carries the block and the arm follows
 it.
 
-Built with `cadence-net==0.91.1` and `mujoco==3.17.0`.
+![The arm carries the block to bin B, beside the brain's settled state](docs/robot-arm.png)
+
+Runs on `cadence-net==0.95.2` and `mujoco==3.17.0`.
 
 ## The page
 
@@ -24,9 +26,8 @@ Python cell and the checks; [`site/DEPLOY.md`](site/DEPLOY.md) describes hosting
 
 ```python
 Brain.compose(262, 17, slots=[5, 5, 5, 2], seed=3, learning_surprise=True,
-              modules=(256, 128, 64), apical=0.25, teaching="normalized",
-              learning_normalize_relative=0.1, learning_nudged_steps=32,
-              learning_nudged_fixed=True, learning_qualified=False)
+              modules=(256, 128, 64), apical=0.25, teaching="deep",
+              learning_qualified=False, recall=False, arousal=True)
 ```
 
 This is the arm `D3b` in [`arm1/brains.py`](arm1/brains.py): three hidden regions with the apical
@@ -72,7 +73,7 @@ neurons and 155,264 synapses.
 ## Train
 
 ```sh
-pip install cadence-net==0.91.1 mujoco==3.17.0 pytest   # torch too, for the MLP control
+pip install cadence-net==0.95.2 mujoco==3.17.0 pytest   # torch too, for the MLP control
 sh arm2/menagerie/fetch.sh                               # the Panda from MuJoCo Menagerie, pinned and checked
 PYTHONPATH=. python -m pytest tests -q
 PYTHONPATH=. python -m arm2.train --arm D3b --physics wide --teacher recover --arousal \
@@ -81,7 +82,9 @@ PYTHONPATH=. python -m arm2.inspect --checkpoint runs/B_D3b_s3/brain_best.npz --
     --heldout --heldout-set heldout2 --trials 200 --controls
 ```
 
-One 400-episode run takes about 8 hours on 3 CPU cores. `--teacher recover` re-approaches a block
+One 400-episode run takes about 8 hours on 3 CPU cores. `teaching="deep"` is the normalized
+teaching point with the projection-relative floor at 0.1 and nudged phases of a whole 32
+sweeps; `recall=False` keeps the recall memory out, which a new brain composes by default. `--teacher recover` re-approaches a block
 that slipped. `--arousal` only composes the arousal system; no stage here gates by it. Stage 2
 (`--physics nominal`) and the other arms (`--arm D1 | D1nv | D2 | D3 | D4 | D5 | mlp`) use the
 same command. [`arm2/README.md`](arm2/README.md) documents the cell, the senses, the reflex, the
@@ -90,7 +93,10 @@ teacher and the gates.
 ## Results
 
 All results are frozen brains on fresh trials, three seeds per arm, with the teacher read on the
-same trials. The files are in [`evidence/`](evidence/).
+same trials. The files are in [`evidence/`](evidence/). The page's brain gives the same command
+as the recorded Python trials on all 104 decisions of `site/tests/fixtures/` under 0.95.2, and
+the page check (`site/tools/check_page.py`, [`page_check.json`](evidence/page_check.json)) places
+the block in bin A in 52 decisions and follows bin B moved mid-carry into its new place.
 
 **Stage 2, nominal physics, after 400 episodes** (200 trials; [`stage2_final.json`](evidence/stage2_final.json)):
 

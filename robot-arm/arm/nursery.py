@@ -58,8 +58,7 @@ def make_brain(seed: int, size: int, eyes: int, change: bool, hidden: int, featu
     if apical:  # the 0.90 compartment: top-down halves of the reciprocal pairs between regions
         options["apical"] = apical
     if memory:
-        options.update(memory_choice=True, memory_context=0.5, memory_rate=0.5, memory_replay=8,
-                       memory_demonstrations=1.0, memory_expansion=1024, memory_winners=24)
+        options.update(memory_choice=True, memory_context=0.5, memory_rate=0.5)
     brain = build(anatomy, seed=seed, trace=(3.0, 0.0) if trace else None, tie_rate=tie_rate, **options)
     return brain, anatomy, head
 
@@ -419,8 +418,8 @@ def main() -> None:
     r.add_argument("--change", action="store_true")
     r.add_argument("--colour", action="store_true", help="a second cone channel per eye: redness")
     r.add_argument("--hidden", type=int, default=256)
-    r.add_argument("--deep", type=int, nargs="*", default=[], help="widths of further association regions (0.91)")
-    r.add_argument("--apical", type=float, default=0.0, help="the apical compartment's fraction (0.91)")
+    r.add_argument("--deep", type=int, nargs="*", default=[], help="widths of further association regions")
+    r.add_argument("--apical", type=float, default=0.0, help="the apical compartment's fraction")
     r.add_argument("--features", type=int, default=8)
     r.add_argument("--field", type=int, default=5, help="side of a V1 cell's window in pixels")
     r.add_argument("--sheet", type=int, default=18)

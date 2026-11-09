@@ -4,7 +4,7 @@ A Franka Panda with gripper from MuJoCo Menagerie in plain MuJoCo on the CPU (`s
 the stage-1 observation, actions, teacher, loop and inspection carried over (`arm1`), grasp,
 lift and place read from contacts and the block's height.
 
-    pip install cadence-net==0.91.1 mujoco==3.17.0 pytest   # from robot-arm/
+    pip install cadence-net==0.95.2 mujoco==3.17.0 pytest   # from robot-arm/
     export PYTHONPATH=.
     export NUMBA_NUM_THREADS=1 OMP_NUM_THREADS=1
     PY=python

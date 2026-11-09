@@ -4,7 +4,7 @@ pack (the released Cadence wheel, the checkpoint, its run.json and the host) wit
 SHA-256 digests that the worker checks before anything runs.
 
     python site/tools/build.py --brain runs/.../brain_best.npz --run runs/.../run.json \
-        --wheel cadence_net-0.91.1-py3-none-any.whl --mujoco node_modules/@mujoco/mujoco \
+        --wheel cadence_net-0.95.2-py3-none-any.whl --mujoco node_modules/@mujoco/mujoco \
         --three node_modules/three
 
 Needs mujoco 3.17.0 and fast-simplification (for the visual meshes) in the Python that runs it,

@@ -1,4 +1,4 @@
-"""Closed-loop teaching in many worlds at once, on Cadence 0.91.
+"""Closed-loop teaching in many worlds at once, on Cadence.
 
     python -m arm091.dagger --init runs/n10-xent/brain.npz --out runs/d1 --worlds 32 --episodes 4000
 

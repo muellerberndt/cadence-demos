@@ -29,7 +29,7 @@ def test_connectome_populations_and_tie_groups():
 def test_brain_answers_one_index_per_slot_and_learns_one_lesson(tmp_path):
     head, anatomy = small()
     brain = build(anatomy, seed=0, memory_choice=True, memory_context=0.5, memory_rate=0.5,
-                  memory_replay=8, memory_demonstrations=1.0, memory_expansion=256, memory_winners=8, arousal=True)
+                  arousal=True)
     raising_config(brain)
     world, eyes = World(ArmSpec(), seed=0), Eyes(head)
     world.randomize()
@@ -43,7 +43,7 @@ def test_brain_answers_one_index_per_slot_and_learns_one_lesson(tmp_path):
     drive = brain.stimulus(x)
     _, report = brain.learner.step(drive, labels, warm=brain.basal_ganglia.state)
     assert report.get("total_steps", 0) > 0
-    # Cadence 0.91 saves and loads only a learner with the cross-entropy nudge; the nursery's
+    # Cadence saves and loads only a learner with the cross-entropy nudge; the nursery's
     # pools phase sets it (``--pool-nudge cross_entropy``) before a brain is saved
     brain.learner.config = replace(brain.learner.config, nudge="cross_entropy")
     path = brain.save(tmp_path / "b.npz")

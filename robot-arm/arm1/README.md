@@ -8,7 +8,7 @@ frozen, in a separate process, against the teacher and the controls.
 
 Run from `robot-arm/` with the library installed:
 
-    pip install cadence-net==0.91.1 mujoco==3.17.0 pytest   # from robot-arm/
+    pip install cadence-net==0.95.2 mujoco==3.17.0 pytest   # from robot-arm/
     export PYTHONPATH=.
     export NUMBA_NUM_THREADS=1 OMP_NUM_THREADS=1
     PY=python
@@ -59,12 +59,12 @@ and four rendered trials), one JSON line each in `readings.jsonl`.
 
 ## Arms (`brains.py`)
 
-D1 flat (256,); D2 D1 on joint pools; D3 (256, 128) apical 0.25, normalized teaching,
-`learning_normalize_relative=0.1`, `learning_nudged_steps=32`, `learning_nudged_fixed=True`,
-`learning_qualified=False`; D4 D1 + `recall=True, recall_action=True, recall_heads=1`. Controls:
-uniform random, the teacher, the blind twin, the frozen newborn, the torch MLP (`mlp.py`,
-`--arm mlp`). 0.91.1 keys a recall memory on the whole observation (`recall_heard` is one
-number), so D4 keys on every input plus the command, not on the body senses alone.
+D1 flat (256,); D2 D1 on joint pools; D3 (256, 128) apical 0.25, `teaching="deep"` (normalized
+teaching, projection-relative floor 0.1, nudged phases of a whole 32 sweeps),
+`learning_qualified=False`; D4 D1 + `recall=True, recall_action=True, recall_heads=1`. D1, D2 and
+D3 say `recall=False`. Controls: uniform random, the teacher, the blind twin, the frozen newborn,
+the torch MLP (`mlp.py`, `--arm mlp`). D4 keys its recall memory on the whole observation, every
+input plus the command, not on the body senses alone.
 
 ## Gates (`job.py`)
 

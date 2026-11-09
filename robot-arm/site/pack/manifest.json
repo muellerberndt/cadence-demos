@@ -1,10 +1,10 @@
 {
  "schema": "cadence-arm-site-pack/1",
- "packed": "2026-10-30",
+ "packed": "2026-11-09",
  "pyodide": "314.0.7",
- "cadence": "0.91.1",
- "wheel": "cadence_net-0.91.1-py3-none-any.whl",
- "wheel_sha256": "756f27bca70897283d01501ea57b62558513c7823644fb617c417d208804110f",
+ "cadence": "0.95.2",
+ "wheel": "cadence_net-0.95.2-py3-none-any.whl",
+ "wheel_sha256": "734487b6a821ef0d39441dc59817f67e6f6ac070a8cbbe45243a12193ea2d090",
  "wheel_source": "PyPI",
  "sources": [
   "__init__.py",

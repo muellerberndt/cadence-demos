@@ -9,8 +9,8 @@ from arm.world import ArmSpec, World
 def tiny_brain():
     head = HeadSpec(size=16, eyes=2)
     anatomy = Anatomy(size=16, channels=head.channels, hidden=32, stages=(Stage(4, 5, 2),), sheet=6)
-    brain = build(anatomy, seed=0, memory_choice=True, memory_context=0.5, memory_rate=0.5, memory_replay=8,
-                  memory_demonstrations=1.0, memory_expansion=256, memory_winners=8, arousal=True)
+    brain = build(anatomy, seed=0, memory_choice=True, memory_context=0.5, memory_rate=0.5,
+                  arousal=True)
     raising_config(brain)
     return brain, head
 

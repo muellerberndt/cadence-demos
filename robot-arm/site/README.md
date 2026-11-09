@@ -8,7 +8,7 @@ There is no server.
 - **Physics:** MuJoCo 3.17 compiled to WebAssembly (the official `@mujoco/mujoco` package)
   simulates a Franka Panda with contact physics.
 - **The brain:** the real trained Cadence brain runs in a Web Worker in Python (Pyodide, with
-  the released `cadence-net==0.91.1` wheel).
+  the released `cadence-net==0.95.2` wheel).
 - **The view:** the page draws every neuron of the brain and the strongest synapses after each
   decision, along with its working memory over time.
 
@@ -53,11 +53,12 @@ band the brain was tested to place 19 or 20 of 20 blocks. In the far corners it 
 - `tests/parity.mjs` loads the same physics model in MuJoCo WebAssembly. It replays recorded
   Python trials of this brain with `sim.js`. The observation matches Python to 1e-7 at every
   decision, the arm's joints to 1e-10, and the grasp and placement land on the same decisions.
-- Under Pyodide, the brain host reproduces all 52 commands of a recorded trial exactly, at
-  13 ms per decision on average.
-- In headless Chrome, the page placed the block in bin A in 52 decisions, exactly as the Python
-  trial did. With a mouse-dragged block and bin and bin B as the target, it placed the block in
-  bin B. When bin B was dragged to a new place mid-carry, the block ended in the moved bin.
+- The brain host (`pack/py/armbrain/host.py`) gives the recorded command at all 104 decisions of
+  the two recorded trials.
+- `tools/check_page.py` runs the page in headless Chrome: it placed the block in bin A in 52
+  decisions, exactly as the Python trial did, and with bin B as the target, moved to (0.66, −0.12)
+  m once the hand held the block, it placed the block in the moved bin
+  (`../evidence/page_check.json`). The brain answered in a median of 42 ms per decision there.
 
 ## Run it locally
 
@@ -84,13 +85,15 @@ as the brain is ready.
 | `tools/build.py` | rebuilds `assets/`, `vendor/` and `pack/` from `../arm2`, the checkpoint and the npm packages |
 | `tools/record_trial.py`, `tools/moved_bins.py` | record a reference trial of the brain in Python; read the brain with a bin moved |
 | `tests/parity.mjs`, `tests/fixtures/` | the parity test and its two recorded Python trials |
+| `tools/check_page.py` | the page's promise in headless Chrome; writes `../evidence/page_check.json` |
 
 ## Rebuild
 
 ```sh
 python site/tools/build.py --brain <brain_best.npz> --run <run.json> \
-  --wheel cadence_net-0.91.1-py3-none-any.whl --mujoco <@mujoco/mujoco 3.17.0> --three <three 0.160.0>
+  --wheel cadence_net-0.95.2-py3-none-any.whl --mujoco <@mujoco/mujoco 3.17.0> --three <three 0.160.0>
 node site/tests/parity.mjs site/vendor/mujoco/mujoco.js site/assets/cell.mjb site/tests/fixtures/trial_a.json site/tests/fixtures/trial_b.json
+python site/tools/check_page.py --shot docs/robot-arm.png   # the promise in headless Chrome (Playwright)
 ```
 
 The Franka Panda model comes from MuJoCo Menagerie (`assets/LICENSE-menagerie-panda`). Cadence is GPL-3.0.
