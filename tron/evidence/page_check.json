@@ -1,9 +1,9 @@
 {
- "url": "http://127.0.0.1:57410/index.html",
+ "url": "http://127.0.0.1:58471/index.html",
  "sims": 0,
  "slots": {
   "deep": {
-   "boot_s": 10.2,
+   "boot_s": 10.6,
    "brain": "mako-deep-2",
    "sims": 0,
    "switch_marks": [
@@ -29,59 +29,59 @@
    "parity_ms": {
     "round": {
      "n": 328,
-     "median": 56.6,
-     "p90": 106.7,
-     "max": 171.9
+     "median": 41.2,
+     "p90": 49.3,
+     "max": 81.8
     },
     "worker": {
      "n": 328,
-     "median": 54.5,
-     "p90": 103,
-     "max": 171.6
+     "median": 40.0,
+     "p90": 46.3,
+     "max": 81.3
     }
    },
    "games": [
     {
-     "result_for_brain": "win",
-     "ticks": 63
+     "result_for_brain": "loss",
+     "ticks": 99
     }
    ],
    "record": {
     "games": 1,
-    "you": 0,
-    "them": 1,
+    "you": 1,
+    "them": 0,
     "draws": 0
    },
    "play_ms": {
     "round": {
-     "n": 63,
-     "median": 46.2,
-     "p90": 63.8,
-     "max": 78.6
+     "n": 99,
+     "median": 53.3,
+     "p90": 85.4,
+     "max": 167.1
     },
     "worker": {
-     "n": 63,
-     "median": 39.6,
-     "p90": 55.4,
-     "max": 74.7
+     "n": 99,
+     "median": 41.3,
+     "p90": 77.9,
+     "max": 166.1
     },
     "python_act": {
-     "n": 63,
-     "median": 32,
-     "p90": 49.5,
-     "max": 65.8
+     "n": 99,
+     "median": 34.4,
+     "p90": 68.1,
+     "max": 149.7
     }
    },
    "fps_median": 59.9,
    "record_after_reload": {
     "games": 1,
-    "you": 0,
-    "them": 1,
+    "you": 1,
+    "them": 0,
     "draws": 0
    }
   },
   "flat": {
-   "boot_s": 6.1,
+   "boot_s": 6.9,
    "brain": "mako-flat",
    "sims": 0,
    "switch_marks": [
@@ -107,15 +107,15 @@
    "parity_ms": {
     "round": {
      "n": 328,
-     "median": 34.2,
-     "p90": 44.6,
-     "max": 94.7
+     "median": 33.6,
+     "p90": 38.8,
+     "max": 59.9
     },
     "worker": {
      "n": 328,
-     "median": 33.1,
-     "p90": 42.7,
-     "max": 87.9
+     "median": 32.5,
+     "p90": 37.2,
+     "max": 59.5
     }
    },
    "games": [
@@ -133,21 +133,21 @@
    "play_ms": {
     "round": {
      "n": 12,
-     "median": 34.0,
-     "p90": 38.4,
-     "max": 46.7
+     "median": 50.6,
+     "p90": 65.8,
+     "max": 67.6
     },
     "worker": {
      "n": 12,
-     "median": 26.4,
-     "p90": 34.1,
-     "max": 34.5
+     "median": 44.0,
+     "p90": 53.8,
+     "max": 60.3
     },
     "python_act": {
      "n": 12,
-     "median": 20.3,
-     "p90": 27.6,
-     "max": 29.8
+     "median": 35.7,
+     "p90": 49,
+     "max": 51.6
     }
    },
    "fps_median": 59.9,
@@ -162,7 +162,7 @@
  "chromium": "156.0.8078.4",
  "phone": {
   "result_for_brain": "win",
-  "ticks": 14,
+  "ticks": 19,
   "no_overflow": true,
   "scroll_vs_client": [
    390,

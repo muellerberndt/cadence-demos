@@ -89,9 +89,9 @@ Frozen: nothing is learned while you play, and a round is fully determined by th
 moves. The visitor picks the brain (`?brain=flat|deep`); the record against each brain is kept in
 the browser's local storage, apart per brain. The worker checks every file against its SHA-256
 before running. Measured in headless Chromium on an Apple M4 with the anatomy view on
-(`evidence/page_check.json`): start 6.1 s (flat) and 10.2 s (deep: Pyodide, NumPy, the wheel and
-the brain), a settle in Python 20 ms (flat) and 32 ms (deep) at the median, the whole move in the
-worker 26 and 40 ms, the brain view at 60 frames per second; the page ticks every 120 ms. The
+(`evidence/page_check.json`): start 6.9 s (flat) and 10.6 s (deep: Pyodide, NumPy, the wheel and
+the brain), a settle in Python 36 ms (flat) and 34 ms (deep) at the median, the whole move in the
+worker 44 and 41 ms, the brain view at 60 frames per second; the page ticks every 120 ms. The
 panel draws the brain from the side by default (`?view=layers` for the layers): every neuron
 replays its recorded sweeps, and every tract is as bright as its live |weight x activation|.
 
