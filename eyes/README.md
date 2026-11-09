@@ -9,6 +9,8 @@ saccade after a shape you dragged away fast. While nothing moves, the brain stay
 and settles nothing. The 3D view shows one eye's stream through the whole brain, every module
 named.
 
+![Eyes on moving shapes, and one eye's stream through the brain](docs/eyes.png)
+
 ```sh
 python -m http.server -d eyes/web 8797     # open http://localhost:8797/
 ```
@@ -22,7 +24,7 @@ continuity is its own settled state, carried from frame to frame.
 
 ## What it demonstrates
 
-- **Seeing from pixels, in the browser.** The released `cadence-net` 0.74.0 wheel runs in
+- **Seeing from pixels, in the browser.** The released `cadence-net` 0.95.2 wheel runs in
   Pyodide in up to six web workers, unmodified apart from one compatibility shim (see Limits).
   The page draws its shapes into pixels, and each eye reads its receptors from those pixels and
   from nothing else. The brain is told only where to open an eye, when you point at a shape.
@@ -88,7 +90,8 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python -m pytest -q tests
 .venv/bin/python check_page.py          # the promise, in a headless Chrome
 .venv/bin/python compare.py             # the eye against its control
-.venv/bin/python raise_eye.py --out runs/eye-s1 --seed 1   # raise the brain again
+.venv/bin/python raise_eye.py --out runs/eye-s1 --seed 1 --backend mlx   # raise the brain again
+                                                     # (--backend mlx on a Mac; leave it out elsewhere)
 .venv/bin/python pack.py --run runs/eye-s1                 # and pack it for the page
 ```
 
@@ -114,7 +117,7 @@ are among the nine shapes it was raised on; stars, tees and ells it never saw.
 ## Measurement and evidence
 
 The page's promise (`evidence/page_check.txt`, `check_page.py`, headless Chrome on a Mac): the
-brain loads in Pyodide; six eyes on six moving shapes, 5.93 of 6 on average on their own shapes;
+brain loads in Pyodide; six eyes on six moving shapes, 6.00 of 6 on average on their own shapes;
 a still world costs zero sweeps; a shape dragged 20 px in 150 ms is centred in its eye again a
 second later; no console errors.
 
@@ -124,32 +127,35 @@ faces; both run the same tests and seeds, faces included):
 
 | Test | Foveated eye | Window eye (control) |
 | --- | --- | --- |
-| Its own shape jumps 10 px: centred on it again after one / three frames | 0.77 / 0.95 | 0.42 / 0.65 |
-| ... jumps 20 px | 0.02 / 0.35 | 0.00 / 0.00 |
-| ... jumps 30 px | 0.00 / 0.17 | 0.00 / 0.00 |
+| Its own shape jumps 10 px: centred on it again after one / three frames | 0.82 / 0.98 | 0.42 / 0.65 |
+| ... jumps 20 px | 0.12 / 0.48 | 0.00 / 0.00 |
+| ... jumps 30 px | 0.02 / 0.23 | 0.00 / 0.00 |
 | Another shape jumps 10 / 20 / 30 px: the eye stays on its own | 1.00 / 1.00 / 1.00 | 0.87 / 0.88 / 0.75 |
-| Four shapes moving on their own: eye frames on the eye's own shape (two seeds) | 0.99, 0.95 | 0.79, 0.79 |
-| Eight shapes moving on their own | 0.94, 0.87 | 0.80, 0.75 |
+| Four shapes moving on their own: eye frames on the eye's own shape (two seeds) | 1.00, 0.99 | 0.79, 0.79 |
+| Eight shapes moving on their own | 0.93, 0.87 | 0.80, 0.75 |
 
 60 trials per jump, 30 s at 20 frames per second per scene.
 
 The raised brain, measured right after raising at its raised tolerance of 0.003
 (`evidence/fovea-v1x8-s1-summary.json`): at first glance from rest, with the eye's own shape the
-nearest one, it finds a shape within 3 px of its centre on 1.00 of trials, 3 to 12 px out on
-0.85 and 12 to 34 px out on 0.65 (the centre guess: 1.00, 0.07, 0.05; random: 0.04, 0.07,
-0.10). Faces 0.91; never seen: stars 0.85, tees 0.78, ells 0.72. After its own shape jumps 10,
-20 or 30 px, it is centred on it again within three frames on 0.95, 0.55 and 0.32 of trials, and
+nearest one, it finds a shape within 3 px of its centre on 0.99 of trials, 3 to 12 px out on
+0.82 and 12 to 34 px out on 0.61 (the centre guess: 1.00, 0.07, 0.05; random: 0.04, 0.07,
+0.10). Faces 0.91; never seen: stars 0.81, tees 0.77, ells 0.75. After its own shape jumps 10,
+20 or 30 px, it is centred on it again within three frames on 0.92, 0.48 and 0.27 of trials, and
 it ignores another shape's jump on all of them. Every unchanged frame costs zero sweeps. Raising
-took 20,000 lessons, 632 s on one core (Python 3.11, NumPy 2.4.6). `raise_eye.py --seed 1` runs
-the same configuration and code; another platform may differ in the last bits and so in detail.
+took 20,000 lessons on the `"mlx"` backend in float32 (`raise_eye.py --backend mlx`), 2,729 s on
+an Apple M4 that was running other jobs at the same time; on its CPU, in float64, the same lessons
+took 323 ms each against 196 on MLX in a side-by-side measurement. `pack.py` stores the brain for
+the CPU in float64, as the page runs it. Another platform or backend may differ in the last bits
+and so in detail.
 
 The page runs the brain at an answer tolerance of 0.03 (`pack.py --tolerance`): a moving frame
 then settles in one 32-sweep chunk instead of about two, so the brain answers twice as often
-while you drag, and a jump between two of its answers is half as long. Long jumps pay for it: a
-20 px jump is found again within three frames on 0.35 of trials at 0.03 against 0.55 at 0.003,
-a 30 px jump on 0.17 against 0.32. In Pyodide under Node a
-moving frame costs about 15 ms for one eye and 28 ms for two, a still frame about 1 ms; the page
-spreads the eyes over up to six workers.
+while you drag, and a jump between two of its answers is half as long. A 20 px jump is found
+again within three frames on 0.48 of trials at either tolerance; a 30 px jump on 0.23 at 0.03
+against 0.27 at 0.003. The page spreads the eyes over up to six workers. In headless Chrome on
+a Mac that was running other jobs, a still frame took 4 ms (the page check) and a frame of six
+moving eyes about 65 ms.
 
 ## Limits
 
@@ -159,11 +165,11 @@ spreads the eyes over up to six workers.
 - When two shapes pass through each other, an eye can go on with the other one.
 - A second visual stage (V2) did not help this eye in development and costs five to ten times
   the compute; the page uses one.
-- Pyodide's NumPy is 32-bit. Cadence 0.74.0 builds a learner with several slots by
+- Pyodide's NumPy is 32-bit. Cadence builds a learner with several slots by
   `np.repeat(..., slot_sizes)` on int64 counts, which a 32-bit NumPy refuses to cast.
   `tracker/eye_host.fit_32_bit_numpy` gives the library's learning module a NumPy whose `repeat`
   casts those counts; the library's files are unchanged. The same holds for `np.add.reduceat`
   on the transport above `dense_limit`, which this brain does not use.
 - Grayscale only.
 
-Built with Cadence 0.74.0 (`cadence-net` from PyPI) and Pyodide 314.0.7.
+Runs on Cadence 0.95.2 (`cadence-net` from PyPI) and Pyodide 314.0.7.

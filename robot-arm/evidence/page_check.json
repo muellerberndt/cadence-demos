@@ -1,0 +1,44 @@
+{
+ "schema": "cadence-arm-page-check/1",
+ "checked": "2026-11-09 15:35",
+ "checks": [
+  {
+   "name": "the brain loads in Pyodide",
+   "passed": true,
+   "seconds": 32.1,
+   "cadence": "0.95.2"
+  },
+  {
+   "name": "places the block in bin A",
+   "passed": true,
+   "result": "Placed in bin A in 52 decisions (10.4 s of arm time)",
+   "decisions": 52,
+   "brain_ms_median": 51.3
+  },
+  {
+   "name": "follows bin B moved mid-carry",
+   "passed": true,
+   "result": "Placed in bin B in 60 decisions (12.0 s of arm time)",
+   "moved_to": [
+    0.66,
+    -0.12
+   ],
+   "bin_b": [
+    0.66,
+    -0.12
+   ],
+   "block": [
+    0.643,
+    -0.119,
+    0.025
+   ]
+  },
+  {
+   "name": "console errors",
+   "passed": true,
+   "errors": [],
+   "loader_progress_lines": 0
+  }
+ ],
+ "passed": true
+}
