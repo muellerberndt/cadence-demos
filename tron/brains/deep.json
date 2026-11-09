@@ -1,0 +1,28 @@
+{
+ "name": "mako-deep",
+ "title": "Mako Deep",
+ "tagline": "deep: 256 → 128 → 32, the deep layers decide 75% of moves · 0.64 vs voronoi (512 games)",
+ "sense": "field",
+ "size": 24,
+ "cadence": "0.95.2",
+ "play": "frozen, every move settled from rest: brain.reset() then brain.act(field(arena, 0)[None, :], greedy=True), as tron.r3.policy plays it; nothing is learned while you play",
+ "reading": {
+  "opponent": "voronoi",
+  "games": 512,
+  "wins": 330,
+  "losses": 182,
+  "draws": 0,
+  "score": 0.645,
+  "seeds": "2,200,000+ and 7,000,000+, 128 mirror pairs each (160-96 and 170-86)",
+  "vs_mako_1_0": "108-122-26, 0.47",
+  "vs_mako_1_5": "104-104-48, 0.50",
+  "deep_share": "cutting the deep pathway changes 75% of moves and drops it to 0.00 vs voronoi"
+ },
+ "layout": [
+  256,
+  128,
+  32
+ ],
+ "settle_from_rest": true,
+ "games": 0
+}

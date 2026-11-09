@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tron vs Mako</title>
+<meta name="description" content="Ride a light cycle against a Cadence brain running in your browser, and watch it think.">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23000'/%3E%3Cpath d='M6 24V10h10v8h10' fill='none' stroke='%232de2ff' stroke-width='3'/%3E%3Cpath d='M26 8h-6' stroke='%23ff4fd8' stroke-width='3'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap">
+<link rel="stylesheet" href="css/play.css">
+</head>
+<body>
+<div class="app">
+  <header class="bar">
+    <div class="brand"><span class="you">TRON</span><span class="vs">vs</span><span class="them" id="brain-name">MAKO</span></div>
+    <div class="score" aria-label="Score"><span class="you" id="score-you">0</span><span class="dash">:</span><span class="them" id="score-them">0</span></div>
+    <div class="right">
+      <nav class="pick" id="pick" aria-label="Which brain">
+        <a href="?brain=flat" data-slot="flat" title="One region of 256 neurons">FLAT</a>
+        <a href="?brain=deep" data-slot="deep" title="Three regions: 256, 128, 32">DEEP</a>
+      </nav>
+      <span class="stats" id="stats">0 games</span>
+      <button class="icon" id="mute" aria-label="Sound on" title="Sound (M)">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path class="spk" d="M4 9h4l5-4v14l-5-4H4z"/><path class="wave" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/><path class="x" d="M16 9l5 6M21 9l-5 6"/></svg>
+      </button>
+    </div>
+  </header>
+  <main class="stage">
+    <section class="arena-wrap" id="arena-wrap">
+      <canvas id="arena" aria-label="Light-cycle arena"></canvas>
+      <div class="overlay" id="overlay"><div class="panel" id="panel">
+        <div class="spinner"></div><div class="status" id="status">starting</div>
+      </div></div>
+    </section>
+    <section class="brain-wrap" aria-label="The brain, live">
+      <canvas id="brain" aria-label="Every neuron of the brain, layer by layer, and its settle, sweep by sweep"></canvas>
+      <div class="zoom" id="zoom" aria-live="polite"></div>
+    </section>
+  </main>
+  <div class="touch">
+    <button class="turn" id="left" aria-label="Turn left"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <button class="turn" id="right" aria-label="Turn right"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+  </div>
+  <footer class="hint"><span class="desk">arrows or WASD · space · M mutes</span><span class="mob">swipe to steer · tap to ride</span></footer>
+</div>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

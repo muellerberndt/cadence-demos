@@ -1,0 +1,32 @@
+{
+ "schema": "cadence-tron-play/1",
+ "created": "2026-11-09",
+ "pyodide": "314.0.7",
+ "cadence": "0.95.2",
+ "slot": "deep",
+ "wheel": "cadence_net-0.95.2-py3-none-any.whl",
+ "wheel_sha256": "734487b6a821ef0d39441dc59817f67e6f6ac070a8cbbe45243a12193ea2d090",
+ "host": "tron.fieldhost:FieldHost",
+ "sources": [
+  "__init__.py",
+  "world.py",
+  "field.py",
+  "fieldhost.py"
+ ],
+ "sources_sha256": {
+  "__init__.py": "334d3699fc560e5b0524fdac9c752d89157f8f39f75ace5743f2675f38bedfea",
+  "world.py": "671bbe234e438668975e5948130255b8e1fc0ee8168bf21a7fb4680655281d52",
+  "field.py": "f96b6b014b83a6b9da79db13062e4d01f9b1c50dbe0b53f55ca71cc5700199f0",
+  "fieldhost.py": "21899f44922b3d9f5dad863adbd6cc35abad0b561413826ddb65b4afd8554464"
+ },
+ "brain": {
+  "id": "mako-deep",
+  "title": "Mako Deep",
+  "file": "brain/brain.npz",
+  "sha256": "bfac8fa5fa938a094277e51edb6218f696102367e4ad98896452ddab794e33d3",
+  "meta": "brain/meta.json",
+  "meta_sha256": "4b6ab7c32520bc2c0e4ffe698e122ea649242bbd4011d235918a27f0b84e242e",
+  "introspect": "brain/introspect.json",
+  "introspect_sha256": "1318f664d55987bc10845e45a9460215617eb89ac36912990aa9222ac2d4d9c7"
+ }
+}

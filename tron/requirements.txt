@@ -1,0 +1,5 @@
+cadence-net==0.95.2
+numpy
+numba
+pytest
+playwright

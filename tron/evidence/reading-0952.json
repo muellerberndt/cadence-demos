@@ -1,0 +1,40 @@
+{
+ "cadence": "0.95.2",
+ "python": "3.13.7",
+ "pairs": 32,
+ "seeds": "2,200,000+",
+ "play": "brain.reset() then brain.act(field, greedy=True) each move",
+ "opponent": "voronoi",
+ "machine": "Apple M4, other jobs running",
+ "readings": {
+  "flat": {
+   "brain": "mako-flat",
+   "voronoi": {
+    "wins": 48,
+    "losses": 16,
+    "draws": 0,
+    "score": 0.75,
+    "ci95": 0.10608811196359373
+   }
+  },
+  "deep": {
+   "brain": "mako-deep",
+   "voronoi": {
+    "wins": 40,
+    "losses": 24,
+    "draws": 0,
+    "score": 0.625,
+    "ci95": 0.11861011497760214
+   }
+  }
+ },
+ "seconds": {
+  "flat": 62.0,
+  "deep": 242.6
+ },
+ "command": "python scripts/reading.py --slots flat deep --pairs 32 --workers 4",
+ "recorded": {
+  "flat": "186-68-2, 0.73 (128 pairs, same seeds from 2,200,000)",
+  "deep": "160-96, 0.625 (128 pairs, same seeds from 2,200,000)"
+ }
+}

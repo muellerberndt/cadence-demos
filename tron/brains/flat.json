@@ -1,0 +1,25 @@
+{
+ "name": "mako-flat",
+ "title": "Mako",
+ "tagline": "flat: one region of 256 · 0.72 vs voronoi (512 games)",
+ "sense": "field",
+ "size": 24,
+ "cadence": "0.95.2",
+ "play": "frozen, every move settled from rest: brain.reset() then brain.act(field(arena, 0)[None, :], greedy=True), as tron.r3.policy plays it; nothing is learned while you play",
+ "reading": {
+  "opponent": "voronoi",
+  "games": 512,
+  "wins": 368,
+  "losses": 142,
+  "draws": 2,
+  "seeds": "2,200,000+ and 7,000,000+, 128 mirror pairs each (186-68-2 and 182-74-0)",
+  "vs_mako_1_0": "128-106-22, 0.54",
+  "vs_mako_1_5": "130-78-48, 0.60",
+  "score": 0.721
+ },
+ "layout": [
+  256
+ ],
+ "settle_from_rest": true,
+ "games": 0
+}
