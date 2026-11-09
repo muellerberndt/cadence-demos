@@ -412,13 +412,18 @@ function stop(message, kind = '') {
   if (message) toast(message, kind, 0);
 }
 
+// every WAVE_EVERY-th decision the worker also replays the decision's settle sweep by sweep for
+// the brain panel (?wave=N in the address; 0 turns it off)
+const WAVE_EVERY = (() => { const v = new URLSearchParams(location.search).get('wave'); return v === null ? 2 : Math.max(0, Number(v) || 0); })();
+
 async function think() {
   if (state.phase !== 'running') return;
   if (state.decision >= CAP) { stop(`Out of time after ${CAP} decisions`, 'bad'); return; }
   const x = cell.observe();
   state.awaiting = true;
   let reply;
-  try { reply = await brain.call('act', { x: Array.from(x) }); } catch (error) { stop(`The brain stopped: ${error.message}`, 'bad'); return; }
+  const wave = WAVE_EVERY > 0 && state.decision % WAVE_EVERY === 0;
+  try { reply = await brain.call('act', { x: Array.from(x), wave }); } catch (error) { stop(`The brain stopped: ${error.message}`, 'bad'); return; }
   state.awaiting = false;
   if (state.phase !== 'running') return;
   const answer = reply.refused ? holdAnswer() : reply.answer;
@@ -433,6 +438,8 @@ async function think() {
   ui.sweeps.textContent = reply.refused ? 'refused' : `${reply.sweeps}`;
   ui.ms.textContent = `${Math.round(reply.ms ?? reply.worker_ms)} ms`;
   (state.thinkMs ||= []).push(reply.ms ?? reply.worker_ms);
+  (state.frames ||= []).push([reply.worker_ms ?? reply.ms, reply.wave ? 1 : 0]);
+  if (reply.wave) view.playWave(reply.wave, (k, of) => { ui.sweeps.textContent = `${k} / ${of}`; }, () => { ui.sweeps.textContent = `${reply.sweeps}`; });
   const { target, qTarget } = cell.command(answer);
   scenery.aim.position.set(...target); scenery.aim.visible = true;
   cell.decideBegin(qTarget, answer[3]);

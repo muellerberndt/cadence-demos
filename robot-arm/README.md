@@ -98,7 +98,10 @@ All results are frozen brains on fresh trials, three seeds per arm, with the tea
 same trials. The files are in [`evidence/`](evidence/). The page's brain gives the same command
 as the recorded Python trials on all 104 decisions of `site/tests/fixtures/` under 0.95.2, and
 the page check (`site/tools/check_page.py`, [`page_check.json`](evidence/page_check.json)) places
-the block in bin A in 52 decisions and follows bin B moved mid-carry into its new place.
+the block in bin A in 52 decisions and follows bin B moved mid-carry into its new place. Every
+second decision the brain panel replays that decision's settle sweep by sweep, an exact replay
+checked against the answer's state; it adds about 45 ms of worker time to those decisions
+([`site/README.md`](site/README.md)).
 
 **Stage 2, nominal physics, after 400 episodes** (200 trials; [`stage2_final.json`](evidence/stage2_final.json)):
 

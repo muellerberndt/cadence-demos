@@ -1,11 +1,11 @@
 {
  "schema": "cadence-arm-page-check/1",
- "checked": "2026-11-09 15:35",
+ "checked": "2026-11-09 21:19",
  "checks": [
   {
    "name": "the brain loads in Pyodide",
    "passed": true,
-   "seconds": 32.1,
+   "seconds": 12.9,
    "cadence": "0.95.2"
   },
   {
@@ -13,7 +13,15 @@
    "passed": true,
    "result": "Placed in bin A in 52 decisions (10.4 s of arm time)",
    "decisions": 52,
-   "brain_ms_median": 51.3
+   "brain_ms_median": 29.5
+  },
+  {
+   "name": "the settle plays as a wave",
+   "passed": true,
+   "wave_decisions": 25,
+   "decisions": 52,
+   "worker_ms_median_wave": 78.9,
+   "worker_ms_median_plain": 33.5
   },
   {
    "name": "follows bin B moved mid-carry",

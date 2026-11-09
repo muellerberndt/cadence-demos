@@ -70,6 +70,13 @@ export class BrainView {
     this.target.fill(-0.1); this.messages.fill(0); this.probabilities = null; this.answer = null; this.history = []; this.trace = null;
   }
 
+  /** Play a decision's settle sweep by sweep (the worker's exact replay): one sweep per animation
+   *  frame, shown as it is, so the change spreads from the senses through the layers and back. */
+  playWave(wave, onSweep, onEnd) {
+    if (!this.ready || !wave || !wave.frames.length) return;
+    this.wave = { ...wave, i: 0, onSweep, onEnd };
+  }
+
   update(reply, answer) {
     if (!this.ready || !reply.activation) return;
     this.target.set(reply.activation);
@@ -185,6 +192,15 @@ export class BrainView {
   // --- drawing --------------------------------------------------------------------------------
   frame(dt) {
     if (!this.ready || !this.W) return;
+    if (this.wave) {
+      const w = this.wave, k = w.i++;
+      this.shown.set(w.frames[k]);
+      w.onSweep?.(w.sweeps[k], w.of);
+      if (w.i >= w.frames.length) { this.wave = null; w.onEnd?.(); }
+      for (let i = 0; i < this.messages.length; i++) this.shownMessages[i] += (this.messages[i] - this.shownMessages[i]) * 0.3;
+      this.draw();
+      return;
+    }
     const a = 1 - Math.exp(-dt / 0.12);
     for (let i = 0; i < this.n; i++) this.shown[i] += (this.target[i] - this.shown[i]) * a;
     for (let i = 0; i < this.messages.length; i++) this.shownMessages[i] += (this.messages[i] - this.shownMessages[i]) * a;

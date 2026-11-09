@@ -58,7 +58,14 @@ band the brain was tested to place 19 or 20 of 20 blocks. In the far corners it 
 - `tools/check_page.py` runs the page in headless Chrome: it placed the block in bin A in 52
   decisions, exactly as the Python trial did, and with bin B as the target, moved to (0.66, −0.12)
   m once the hand held the block, it placed the block in the moved bin
-  (`../evidence/page_check.json`). The brain answered in a median of 51.3 ms per decision there.
+  (`../evidence/page_check.json`). The brain answered in a median of 29.5 ms per decision there.
+- **The settle as a wave.** Every second decision (`?wave=N` sets it, `?wave=0` turns it off)
+  the worker settles the brain again from the state the decision started from, under the same
+  drive, for exactly the sweeps the decision ran, and sends up to 16 of the sweeps; the panel
+  shows them one per animation frame and SETTLE counts them. The host checks that the last sweep
+  is the state the answer was read from and sends nothing otherwise. In the page check a decision
+  carrying a wave took 78.9 ms of worker time (median, 25 decisions) against 33.5 ms for the
+  others, and the run placed the block on the same decisions as without it.
 
 ## Run it locally
 

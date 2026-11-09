@@ -80,9 +80,15 @@ def main() -> None:
             result = wait_result(page, a.timeout)
             decisions = int(page.evaluate("document.body.dataset.decisions"))
             ms = page.evaluate("(window.cadenceArm.state.thinkMs || []).slice()")
+            frames = page.evaluate("(window.cadenceArm.state.frames || []).slice()")
             checks.append({"name": "places the block in bin A", "passed": result.startswith("Placed in bin A"),
                            "result": result, "decisions": decisions,
                            "brain_ms_median": sorted(ms)[len(ms) // 2] if ms else None})
+            waved = sorted(f[0] for f in frames if f[1]); plain = sorted(f[0] for f in frames if not f[1])
+            checks.append({"name": "the settle plays as a wave", "passed": len(waved) >= decisions // 3,
+                           "wave_decisions": len(waved), "decisions": len(frames),
+                           "worker_ms_median_wave": waved[len(waved) // 2] if waved else None,
+                           "worker_ms_median_plain": plain[len(plain) // 2] if plain else None})
 
             # 2. bin B, moved while the arm carries the block
             page.evaluate("window.cadenceArm.state.thinkMs = []; document.body.dataset.result = '';"

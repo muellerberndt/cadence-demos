@@ -82,6 +82,16 @@ SLOT_NAMES = ("dx", "dy", "dz", "grip")
 TOP_PER_PAIR = 60
 
 
+def _copy_state(state):
+    """An owned copy of a ``BrainState`` (None before the first act)."""
+    if state is None:
+        return None
+    from dataclasses import replace
+
+    return replace(state, v=np.array(state.v), activation=np.array(state.activation),
+                   adaptation=np.array(state.adaptation))
+
+
 def _r(values: Any, digits: int = 4) -> list:
     return [round(float(v), digits) for v in np.asarray(values).ravel()]
 
@@ -134,8 +144,12 @@ class Host:
         self.decisions = 0
         return {"reset": True}
 
-    def act(self, x: list[float]) -> dict[str, Any]:
+    def act(self, x: list[float], wave: bool = False) -> dict[str, Any]:
+        """``Brain.act(x, greedy=True)``; with ``wave`` the reply also carries this decision's
+        settle sweep by sweep (``_wave``), outside the measured ``ms``."""
         obs = np.asarray(x, dtype=float)[None]
+        before = _copy_state(self.brain.basal_ganglia.state) if wave else None
+        drive = self.brain.stimulus(obs) if before is not None else None
         began = time.perf_counter()
         try:
             answer = np.asarray(self.brain.act(obs, greedy=True))[0]
@@ -158,13 +172,39 @@ class Host:
         trace = self.brain.working_memory.trace
         trace = None if trace is None else np.asarray(trace)
         trace = None if trace is None else (trace[0] if trace.ndim == 2 else trace)
+        out_wave = None
+        if before is not None:
+            began = time.perf_counter()
+            out_wave = self._wave(drive, before, settle, a)
+            if out_wave is not None:
+                out_wave["ms"] = round((time.perf_counter() - began) * 1000, 1)
         return {
+            "wave": out_wave,
             "answer": [int(v) for v in answer], "ms": round(ms, 1), "decision": self.decisions,
             "sweeps": int(settle.get("steps", 0)), "residual": float(settle.get("max_residual") or 0.0),
             "activation": _r(a, 3), "probabilities": probabilities,
             "trace": None if trace is None else _r(trace, 3),
             "flows": _r(flows, 3), "top_messages": _r(self.efficacy[self.top] * a[self.pre[self.top]], 4),
         }
+
+    def _wave(self, drive, before, settle, final) -> dict[str, Any] | None:
+        """The decision's settle, sweep by sweep: the brain settled again from the state the act
+        started from, under the same drive, for exactly the sweeps the act ran, every sweep
+        recorded. The last sweep is the state the answer was read from (checked; nothing is sent
+        when it differs or when the act's solve halved its step). Up to 16 sweeps are sent, with
+        the largest change of any neuron at every sweep."""
+        steps = int(settle.get("steps", 0))
+        if steps <= 0 or settle.get("damping_halvings") or settle.get("rescue_steps"):
+            return None
+        traj = np.asarray(self.brain.brain.settle_batch(drive, steps=steps, state=before, tolerance=None,
+                                                         trajectory=True).trajectory)[:, 0]
+        if np.abs(traj[-1] - final).max() > 1e-9:
+            return None
+        keep = np.unique(np.linspace(0, steps - 1, min(16, steps)).round().astype(int))
+        start = np.asarray(before.activation)[0]
+        move = np.abs(np.diff(np.vstack([start, traj]), axis=0)).max(axis=1)
+        return {"sweeps": [int(k) + 1 for k in keep], "of": steps, "move": _r(move, 5),
+                "frames": [_r(traj[k], 3) for k in keep]}
 
     def handle(self, m: dict[str, Any]) -> dict[str, Any]:
         command = m.get("command")
@@ -173,5 +213,5 @@ class Host:
         if command == "reset":
             return self.reset()
         if command == "act":
-            return self.act(m["x"])
+            return self.act(m["x"], bool(m.get("wave", False)))
         return {"error": f"unknown command {command!r}"}

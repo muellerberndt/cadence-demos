@@ -69,9 +69,11 @@ Frozen: the synapses do not change while the visitor plays. The visitor places t
 the bins (bins only inside the band where the brain placed 19 or 20 of 20), picks the target
 bin, runs, and may move the target bin while the arm carries the block. Run and Reset clear the
 working trace; nothing is saved in the browser. The page check (`evidence/page_check.json`,
-headless Chrome on a Mac running other jobs): the brain loads in 32.1 s; bin A placed in 52
+headless Chrome on a Mac running other jobs): the brain loads in 12.9 s; bin A placed in 52
 decisions; bin B, moved to (0.66, −0.12) mid-carry, placed in the moved bin in 60 decisions;
-median 51.3 ms per brain decision; no console errors.
+median 29.5 ms per brain decision; no console errors. Every second decision the worker also
+replays the decision's settle sweep by sweep for the brain panel (exact, checked against the
+answer's state): 78.9 ms of worker time on those decisions against 33.5 ms on the others.
 
 ## Limits
 
