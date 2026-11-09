@@ -50,24 +50,24 @@ opponent's heading relative to its own.
 | --- | --- | --- |
 | Layout | one region of 256 | 256 → 128 → 32 |
 | Neurons, synapses | 2,985 · 699,398 | 2,921 · 708,806 |
-| Against `voronoi`, 256 games on seeds 2,200,000+ | 186-68-2, 0.73 | 182-74, 0.71 |
-| Against `voronoi`, 256 games on seeds 7,000,000+ | 182-74, 0.71 | 188-68, 0.73 |
-| Against Mako 1.0 and Mako 1.5, 256 games each | 0.54, 0.60 | 0.50, 0.48 |
-| Against `voronoi3`, 128 games | 0.25 | 0.12 |
+| Against `voronoi`, 256 games on seeds 2,200,000+ | 186-68-2, 0.73 | 192-64, 0.75 |
+| Against `voronoi`, 256 games on seeds 7,000,000+ | 182-74, 0.71 | 190-66, 0.74 |
+| Against Mako 1.0 and Mako 1.5, 256 games each | 0.54, 0.60 | 0.53, 0.49 |
+| Against `voronoi3`, 128 games | 0.25 | 0.20 |
 
 A mirror pair plays one arena seed twice, the brain in either seat; draws count half. `voronoi`
 moves to the cell that leaves it the most cells it reaches before its opponent, one move ahead for
 both riders; `voronoi3` looks three rounds ahead; Mako 1.0 and 1.5 are earlier flat brains of the
 same line. The readings are in [`brains/`](brains/); the deep brain's were taken on 0.95.2
-([`evidence/deep-g3-readings.json`](evidence/deep-g3-readings.json)), and the flat brain reads
+([`evidence/deep-readings.json`](evidence/deep-readings.json)), and the flat brain reads
 48-16 on 0.95.2 over the first 32 pairs of the same seeds
 ([`evidence/reading-0952.json`](evidence/reading-0952.json)).
 
 **The deep brain's deep layers play.** It was built from the flat line with a skip connection from
 its first layer to the motor neurons, the skip weakened in stages while the deep pathway learned
 the moves, and then taught by its own brain + tree search (below). With the deep pathway cut (its
-73,920 synapses at zero) it changes 81% of its moves and loses every game against `voronoi`
-([`evidence/deep-g3-ablation.json`](evidence/deep-g3-ablation.json)).
+73,920 synapses at zero) it changes 82% of its moves and loses every game against `voronoi`
+([`evidence/deep-ablation.json`](evidence/deep-ablation.json)).
 
 **The brain view.** By default the panel lays the brain out as seen from the side, front to the
 left ([`web/js/anatomy.js`](web/js/anatomy.js)). Each population sits where the region whose role
@@ -103,12 +103,12 @@ readings, and a smoke-scale run of each route that takes minutes. In short:
 - **Deep:** a flat brain of the same line (Mako 1.6) grafted into the first layer of a
   (256, 128, 32) brain with a skip from that layer to the motor neurons, so it starts with the
   flat brain's play; self-play; then, five times, the skip halved and the deep pathway taught that
-  brain's moves with the first layer and the skip frozen. Last, two generations of distillation
-  from its own brain + tree search (200 simulations): the search's choice at each position the
+  brain's moves with the first layer and the skip frozen. Last, three generations of distillation
+  from its own brain + tree search (200, then 400 simulations): the search's choice at each position the
   brain reaches is the lesson, and a generation is kept only if the brain alone beats its parent
   through a sequential test and holds against the previous deep brain
   ([`scripts/distil.py`](scripts/distil.py)). Against `voronoi` it went from 0.63 / 0.66 to
-  0.71 / 0.73.
+  0.75 / 0.74, against `voronoi3` from 0.10 to 0.20.
 
 ## Limits
 

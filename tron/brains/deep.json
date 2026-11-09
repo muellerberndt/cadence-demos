@@ -1,7 +1,7 @@
 {
- "name": "mako-deep-2",
+ "name": "mako-deep-3",
  "title": "Mako Deep",
- "tagline": "deep: 256 → 128 → 32, the deep layers decide 81% of moves · 0.72 vs voronoi (512 games)",
+ "tagline": "deep: 256 → 128 → 32, the deep layers decide 82% of moves · 0.75 vs voronoi (512 games)",
  "sense": "field",
  "size": 24,
  "cadence": "0.95.2",
@@ -9,15 +9,15 @@
  "reading": {
   "opponent": "voronoi",
   "games": 512,
-  "wins": 370,
-  "losses": 142,
+  "wins": 382,
+  "losses": 130,
   "draws": 0,
-  "score": 0.723,
-  "seeds": "2,200,000+ and 7,000,000+, 128 mirror pairs each (182-74 and 188-68)",
-  "vs_mako_1_0": "122-120-14, 0.50",
-  "vs_mako_1_5": "102-114-40, 0.48",
-  "voronoi3_64_pairs": "14-112-2, 0.12",
-  "deep_share": "cutting the deep pathway (73,920 synapses) changes 81% of moves and drops it to 0.00 vs voronoi (64 pairs)"
+  "score": 0.746,
+  "seeds": "2,200,000+ and 7,000,000+, 128 mirror pairs each (192-64 and 190-66)",
+  "vs_mako_1_0": "122-106-28, 0.53",
+  "vs_mako_1_5": "110-114-32, 0.49",
+  "voronoi3_64_pairs": "24-102-2, 0.20",
+  "deep_share": "cutting the deep pathway (73,920 synapses) changes 82% of moves and drops it to 0.00 vs voronoi (64 pairs)"
  },
  "layout": [
   256,
@@ -26,5 +26,5 @@
  ],
  "settle_from_rest": true,
  "games": 0,
- "lineage": "the previous Mako Deep (skip-built, skip annealed) -> two kept generations of distillation from its own brain + tree search (200 simulations, territory leaves): argmax of the root visits as the lesson, rate 0.0009/20, every act and lesson from rest, gated on the brain alone (scripts/distil.py)"
+ "lineage": "the skip-built, skip-annealed deep brain -> three kept generations of distillation from its own brain + tree search, argmax of the root visits as the lesson, gated on the brain alone (scripts/distil.py): two at 200 simulations and rate 0.0009/20, one at 400 simulations and rate 0.0009/40"
 }

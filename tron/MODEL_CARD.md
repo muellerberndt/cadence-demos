@@ -6,7 +6,7 @@ play the same way; they differ in depth and in how they were raised.
 | | Mako (flat) | Mako Deep |
 | --- | --- | --- |
 | Demo | Tron (`tron/`), `?brain=flat` | Tron (`tron/`), `?brain=deep` (the default) |
-| File | `web/pack/flat/brain/brain.npz` · 14.2 MB · SHA-256 `a235900228b601f9…` | `web/pack/deep/brain/brain.npz` · 21.7 MB · SHA-256 `77050758caa684f0…` |
+| File | `web/pack/flat/brain/brain.npz` · 14.2 MB · SHA-256 `a235900228b601f9…` | `web/pack/deep/brain/brain.npz` · 21.7 MB · SHA-256 `1feba9bcb858ceb5…` |
 | Library | `cadence-net` 0.95.2, `Brain.load(..., backend="cpu")`, float64 (NumPy in Pyodide on the page) | the same |
 | Composition | `Brain.compose(2470, 3, modules=(256,), lateral=-0.5, recall=False, arousal=True, seed=23)`, teaching at the normalized point (rate 3.75e-5, normalize 0.99), temperature 0.1, working-trace amplitude 0 | `Brain.compose(connectome=...)`: the (256, 128, 32) layout plus a skip between `module_0` and the motor neurons both ways; the same learner settings at rate 9e-4; recall off; working-trace amplitude 0 |
 | Size | 2,985 neurons, 699,398 synapses | 2,921 neurons, 708,806 synapses |
@@ -47,18 +47,19 @@ that layer to the motor neurons, the new pathway at 0.2 of its construction, so 
 starts with Mako 1.6's play; one kept generation of self-play; then five stages, each halving the
 skip and teaching the deep pathway alone the moves of that self-play brain, with the first layer
 and the skip held at rate 0 through `learner.synapse_rate`, until the deep pathway decided 75% of
-the moves (the deep lessons on the L4, `backend="torch"`). Then two kept generations of
-distillation on cadence-net 0.95.2 (`scripts/distil.py`, one c7i.48xlarge, about 35 minutes for the
-two): the brain rides alone against bots and its own earlier generations; at each position it
-reaches, its own brain + tree search (200 simulations, territory leaves) chooses a move; the
-children learn those choices as `lesson` labels, every act and lesson from rest, at rate
-0.0009/20, positions where the search is sharp weighted 2.5; a child is kept only if the brain alone
-beats its parent through a sequential test of paired differences against `voronoi` (+0.086 over
-128 pairs, then +0.069 over 288) and holds head to head against its parent (0.52, 0.55) and the
-previous deep brain (0.54, 0.58).
+the moves (the deep lessons on the L4, `backend="torch"`). Then three kept generations of
+distillation on cadence-net 0.95.2 (`scripts/distil.py`, one c7i.48xlarge, about 1.5 hours for the
+three): the brain rides alone against bots and its own earlier generations; at each position it
+reaches, its own brain + tree search (territory leaves; 200 simulations for the first two, 400 for
+the third) chooses a move; the children learn those choices as `lesson` labels, every act and
+lesson from rest, at rate 0.0009/20 (0.0009/40 for the third), positions where the search is sharp
+weighted 2.5; a child is kept only if the brain alone beats its parent through a sequential test of
+paired differences against `voronoi` (+0.086 over 128 pairs, +0.069 over 288, +0.059 over 288)
+and holds head to head against its parent (0.52, 0.55, 0.51) and the previous deep brain (0.54,
+0.58, 0.56).
 
 Mako was raised on the 0.95 series before 0.95.2 and loads unchanged on 0.95.2; Mako Deep's last
-two generations and all its readings below are on 0.95.2.
+three generations and all its readings below are on 0.95.2.
 
 ## How it was measured
 
@@ -67,13 +68,13 @@ every move settled from rest, greedy.
 
 | Reading | Mako | Mako Deep | Receipt |
 | --- | --- | --- | --- |
-| `voronoi`, 128 pairs, seeds 2,200,000+ | 186-68-2, 0.73 ± 0.05 | 182-74, 0.71 ± 0.06 | `brains/flat.json`, `evidence/deep-g3-readings.json` |
-| `voronoi`, 128 pairs, seeds 7,000,000+ (never used by selection) | 182-74, 0.71 ± 0.06 | 188-68, 0.73 ± 0.05 | the same |
-| Mako 1.0, 128 pairs, seeds 8,000,000+ | 128-106-22, 0.54 | 122-120-14, 0.50 | the same |
-| Mako 1.5, 128 pairs, seeds 8,000,500+ | 130-78-48, 0.60 | 102-114-40, 0.48 | the same |
-| `voronoi2`, `voronoi3`, `ab5`, 64 pairs each | 0.20, 0.25, 0.14 | `voronoi3` 0.12 | [TRAINING.md](TRAINING.md#5-self-play), `evidence/deep-g3-readings.json` |
+| `voronoi`, 128 pairs, seeds 2,200,000+ | 186-68-2, 0.73 ± 0.05 | 192-64, 0.75 ± 0.05 | `brains/flat.json`, `evidence/deep-readings.json` |
+| `voronoi`, 128 pairs, seeds 7,000,000+ (never used by selection) | 182-74, 0.71 ± 0.06 | 190-66, 0.74 ± 0.05 | the same |
+| Mako 1.0, 128 pairs, seeds 8,000,000+ | 128-106-22, 0.54 | 122-106-28, 0.53 | the same |
+| Mako 1.5, 128 pairs, seeds 8,000,500+ | 130-78-48, 0.60 | 110-114-32, 0.49 | the same |
+| `voronoi2`, `voronoi3`, `ab5`, 64 pairs each | 0.20, 0.25, 0.14 | `voronoi3` 0.20 | [TRAINING.md](TRAINING.md#5-self-play), `evidence/deep-readings.json` |
 | On cadence-net 0.95.2: `voronoi`, 32 pairs, seeds 2,200,000+ | 48-16, 0.75 | (all its readings are on 0.95.2) | `evidence/reading-0952.json` |
-| The deep pathway cut (its 73,920 synapses at zero) | | changes 81% of moves, 0.00 against `voronoi` | `evidence/deep-g3-ablation.json` |
+| The deep pathway cut (its 73,920 synapses at zero) | | changes 82% of moves, 0.00 against `voronoi` | `evidence/deep-ablation.json` |
 | Page: the same moves as the native brain, 2 games each | identical | identical | `evidence/page_check.json` |
 | Brain + search, 8 / 16 simulations (not on the page): `voronoi`, 32 pairs; deep: the previous deep brain | 0.63 / 0.66 | 0.63 / 0.63 | `evidence/search-0952.json` |
 | Brain + search, 8 / 16 simulations: `voronoi3`, 32 pairs (brain alone 0.27 / 0.09) | 0.25 / 0.09 | 0.22 / 0.09 | the same |
@@ -89,9 +90,9 @@ Frozen: nothing is learned while you play, and a round is fully determined by th
 moves. The visitor picks the brain (`?brain=flat|deep`); the record against each brain is kept in
 the browser's local storage, apart per brain. The worker checks every file against its SHA-256
 before running. Measured in headless Chromium on an Apple M4 with the anatomy view on
-(`evidence/page_check.json`): start 6.9 s (flat) and 10.6 s (deep: Pyodide, NumPy, the wheel and
-the brain), a settle in Python 36 ms (flat) and 34 ms (deep) at the median, the whole move in the
-worker 44 and 41 ms, the brain view at 60 frames per second; the page ticks every 120 ms. The
+(`evidence/page_check.json`): start 8.6 s (flat) and 10.3 s (deep: Pyodide, NumPy, the wheel and
+the brain), a settle in Python 27 ms (flat) and 38 ms (deep) at the median, the whole move in the
+worker 33 and 45 ms, the brain view at 60 frames per second; the page ticks every 120 ms. The
 panel draws the brain from the side by default (`?view=layers` for the layers): every neuron
 replays its recorded sweeps, and every tract is as bright as its live |weight x activation|.
 

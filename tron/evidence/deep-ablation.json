@@ -1,0 +1,9 @@
+{
+ "brain": "web/pack/deep/brain/brain.npz",
+ "deep_synapses": 73920,
+ "agreement_with_pathway_cut": 0.17502335720959203,
+ "turns_with": 0.22858922454064154,
+ "turns_cut": 1.0,
+ "voronoi_64_with": 0.796875,
+ "voronoi_64_cut": 0.0
+}

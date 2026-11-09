@@ -177,7 +177,7 @@ brain with the flat brain's function, then move the play into the deep layers in
 | 2. Self-play | `select_exit.py --selfplay` | L4, about 25 minutes per generation | 0.64 / 0.59; the deep pathway decides 0.1% of moves |
 | 3. Distil the deep pathway | `skip_scale.py`, `deep_raise.py` | L4, 2,500 moments, under an hour | skip x 0.5: 0.64, the deep pathway decides 3.4% |
 | 4. Anneal the skip | the same, five times | L4, overnight | skip x 0.016: 0.63 / 0.66, the deep pathway decides 75% |
-| 5. Distil the brain + search | `distil.py` | one c7i.48xlarge, about 35 minutes for two kept generations | **Mako Deep**: 0.71 / 0.73, the deep pathway decides 81% |
+| 5. Distil the brain + search | `distil.py` | one c7i.48xlarge, about 1.5 hours for three kept generations | **Mako Deep**: 0.75 / 0.74, the deep pathway decides 82% |
 
 ### 1. Function-preserving growth
 
@@ -240,7 +240,10 @@ shares (`lesson(x, targets=...)`), odd children their argmax, sharp positions we
 the sequential test against its parent over mirror pairs against `voronoi` (cap 512, undecided:
 128 fresh pairs), then head to head against its parent and each league brain. Kept: generation 0
 (+0.086 over 128 pairs) and generation 2 (+0.069 over 288), both argmax children at rate
-0.0009/20; generations 3 to 8 found no child ahead. The same route lowered every child of the flat
+0.0009/20; generations 3 to 12 found no child ahead. A second line from generation 3's brain with
+a 400-simulation teacher and rates 0.0009 divided by 40, 60 or 100 kept its generation 1 (+0.059
+over 288 pairs, an argmax child at 0.0009/40): 0.75 / 0.74 against `voronoi`, 0.20 against
+`voronoi3`, the shipped Mako Deep. The same route lowered every child of the flat
 brain, at 200 and 800 simulations and rates down to 0.0009/800.
 
 ## A brain-guided search

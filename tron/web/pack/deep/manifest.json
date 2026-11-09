@@ -24,13 +24,13 @@
   "mcts.py": "dbd68724ef1050115ed34454eb67efbfb926ab3b2b41161d42b3b15e03890359"
  },
  "brain": {
-  "id": "mako-deep-2",
+  "id": "mako-deep-3",
   "title": "Mako Deep",
   "file": "brain/brain.npz",
-  "sha256": "77050758caa684f0f94c2bf0d7936746e94f57bb60fc06e5d3f65746a4cdc89e",
+  "sha256": "1feba9bcb858ceb5bfcf08a01579ded928fea4c00882a4af16ccff5e914ae677",
   "meta": "brain/meta.json",
-  "meta_sha256": "a7affe832eab935cc0ae7cdfc3513cb9b294a4d5c954dc8ea9c1e1a40086753d",
+  "meta_sha256": "5f97ad0ca8294c35fbd135d0ce920e77fe0b3ddb1cb33b8a544074dc43542bb8",
   "introspect": "brain/introspect.json",
-  "introspect_sha256": "8f29072e0e6af6051ce2a7e541fbfd63ae5c9168e3bf2b636f0cab09ce6e0519"
+  "introspect_sha256": "e78a943c0779976912a139e6e763e3cecc9339b9c0ee4e81601058ad25eee81d"
  }
 }

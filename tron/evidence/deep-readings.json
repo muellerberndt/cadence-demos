@@ -1,0 +1,77 @@
+{
+ "what": "the shipped deep brain (mako-deep-3) and the one before it (deep generation 3), read on cadence-net 0.95.2, every move settled from rest; 128 mirror pairs per opponent, 64 against voronoi3",
+ "mako-deep-3": {
+  "mako1.0_seeds_8000000": {
+   "wins": 122,
+   "losses": 106,
+   "draws": 28,
+   "score": 0.53125,
+   "ci95": 0.061130254039913616
+  },
+  "mako1.5_seeds_8000500": {
+   "wins": 110,
+   "losses": 114,
+   "draws": 32,
+   "score": 0.4921875,
+   "ci95": 0.0612425227369556
+  },
+  "voronoi_checkpoint_seeds_2200000": {
+   "wins": 192,
+   "losses": 64,
+   "draws": 0,
+   "score": 0.75,
+   "ci95": 0.053044055981796866
+  },
+  "voronoi_confirmation_seeds_7000000": {
+   "wins": 190,
+   "losses": 66,
+   "draws": 0,
+   "score": 0.7421875,
+   "ci95": 0.05358520439682043
+  },
+  "voronoi3_checkpoint_64": {
+   "wins": 24,
+   "losses": 102,
+   "draws": 2,
+   "score": 0.1953125,
+   "ci95": 0.0686799125611288
+  }
+ },
+ "previous": {
+  "mako1.0_seeds_8000000": {
+   "wins": 122,
+   "losses": 120,
+   "draws": 14,
+   "score": 0.50390625,
+   "ci95": 0.06124813076981722
+  },
+  "mako1.5_seeds_8000500": {
+   "wins": 102,
+   "losses": 114,
+   "draws": 40,
+   "score": 0.4765625,
+   "ci95": 0.061182671735375456
+  },
+  "voronoi_checkpoint_seeds_2200000": {
+   "wins": 182,
+   "losses": 74,
+   "draws": 0,
+   "score": 0.7109375,
+   "ci95": 0.05553255779248409
+  },
+  "voronoi_confirmation_seeds_7000000": {
+   "wins": 188,
+   "losses": 68,
+   "draws": 0,
+   "score": 0.734375,
+   "ci95": 0.054104016189845776
+  },
+  "voronoi3_checkpoint_64": {
+   "wins": 14,
+   "losses": 112,
+   "draws": 2,
+   "score": 0.1171875,
+   "ci95": 0.05572190662284939
+  }
+ }
+}
