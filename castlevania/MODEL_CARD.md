@@ -1,9 +1,9 @@
-# Model card: Simon (C2sd at 450,016 decisions)
+# Model card: Simon (D2 at 425,280 decisions)
 
 | | |
 | --- | --- |
 | Demo | Castlevania (`castlevania/`) |
-| File | `brain/brain.npz` · 38.3 MB · SHA-256 `b5305d061227e7c1…` |
+| File | `brain/brain.npz` · 36.7 MB · SHA-256 `b868dc955e544df9…` |
 | Library | `cadence-net` 0.95.2 (`Brain.load(path, backend="cpu")`, float64, as `server.py` loads it) |
 | Composition | 827 inputs, 10 motor neurons in slots (3, 3, 2, 2), modules (256, 128), apical 0.25, recall memory (128 slots, 2 heads, the executed command and the boundary in its keys, position 32, no recency), `memory_choice=True`, arousal; learner set by `LearnerConfig` (raw step 0.2, bias step 0.02, 32 nudged sweeps run whole, unqualified, every row taught) |
 | Size | 4,697 neurons (the recall memory's regions included), 724,736 synapses |
@@ -40,10 +40,12 @@ The teacher alone reaches stage 4 on ten of ten starts.
 4. 125,120 decisions of practice on 0.95.2 (run C2s): eight streams side by side in one
    emulator, `Brain.lesson(x, labels, weights=w)` on all eight rows (rows at critical places
    weigh 3), then `Brain.act`; the draw weighted to stage 2. 57 minutes on one c7i core.
-5. 124,896 decisions of DAgger (run C2sd): the brain's own greedy action is executed and the
-   teacher labels every state it reaches, same lesson and draw; 32 streams on `backend="mlx"`
-   (float32) on an Apple M4, 62 minutes. Checkpoints were read every 25,000 decisions; the one at
-   450,016 is packed.
+5. 100,160 decisions of DAgger (run D2): the brain's own greedy action is executed and the
+   teacher labels every state it reaches, same lesson and draw; eight streams on one c7i core.
+   After 74,880 of them the teacher gained one recovery rule (jump left off the low ledge past the
+   underground's exit stairs, onto the floor, x 470-500 at y 144), and the run resumed from its
+   checkpoint at 400,000 with it. Checkpoints were read every 25,000 decisions; the one at 425,280
+   is packed.
 
 The commands are in the README's "Train your own" (`training/train.py`, `training/pack.py`).
 
@@ -57,27 +59,29 @@ read once after the pick.
 | Reading | Fresh starts (1, 5, 11, 17, 25, 31, 38, 45, 49) | Selection starts (0, 3, 7, 10, 14, 21, 28, 35, 42) |
 | --- | --- | --- |
 | Past the hall's stairs (stage 2 reached) | 9 of 9 | 9 of 9 |
-| Down the stage-2 staircase and across the underground (block 0, world x 495) | 8 of 9 | 6 of 9 |
-| Stage 3 reached | 0 of 9 | 0 of 9 |
-| Deaths (all four lives on every start) | 33 in stage 2, 2 in stage 1 | 29 in stage 2, 5 in stage 1 |
+| Down the stage-2 staircase and across the underground | 8 of 9 | 9 of 9 |
+| Stage 3 reached (the giant bat's stage) | 2 of 9 | 3 of 9 |
+| Bat health taken (of 64), best start | 0 | 36 (start 42) |
+| Deaths (all four lives on every start) | 20 in stage 2, 5 in stage 1, 2 in stage 3 | 17 in stage 2, 2 in stage 1, 4 in stage 3 |
 | Starts where the brain stands still | 0 | 0 |
 
-The brain before step 5 (C2s at 325,120): fresh 9 of 9 past the stairs and 7 of 9 across the
-underground; selection 9 of 9 and 4 of 9. Gate for replacing the packed brain: no worse on both
-sets, no start standing still. All readings with `backend="cpu"`: the selection starts on an Apple
-M4, the fresh starts on a c7i (Linux).
+The previous packed brain (C2sd at 450,016): fresh 9 of 9 past the stairs, 8 of 9 across the
+underground, 0 of 9 in stage 3; selection 9, 6 and 0. Gate for replacing the packed brain: no worse
+on both sets, no start standing still. All readings with `backend="cpu"` on a c7i (Linux).
 
 ## The video
 
 [`docs/castlevania-run.mp4`](docs/castlevania-run.mp4): one whole game from the first frame Simon
-can move (start after 49 idle decisions, one of the fresh starts: no life lost before stage 2, the
-earliest crossing of the underground among them), frozen, greedy, no search, no cuts, drawn
-frame by frame by the page's own brain view (`web/render.html`, [`record.py`](record.py)); per-decision log in [`evidence/castlevania-run.json`](evidence/castlevania-run.json).
-It shows the courtyard and hall passed with no life lost (0:58), the first life lost at the
-stage-2 staircase, then on each of the three other lives the brain going down the staircase and
-across the underground to world x 495 (1:18, 2:28, 3:53) and standing there below the staircase
-up and out until the life is lost; game over at 4:23. The game's first block ends with the giant
-bat at stage 3; this brain does not reach stage 3.
+can move, start after 42 idle decisions (a selection start), frozen, greedy, no search, no cuts,
+every frame drawn by the page's own brain view (`web/render.html`, [`record.py`](record.py));
+per-decision log in [`evidence/castlevania-run.json`](evidence/castlevania-run.json). Life 1 clears
+the courtyard and the hall and climbs into stage 2 (0:56). Lives 1 and 2 are lost in stage 2. Life 3
+goes down into the underground, across it, up its exit stairs and into stage 3 (2:14), and is lost
+there. Life 4 fights the giant bat, which loses 36 of its 64 health, until the game over (4:32).
+[`docs/castlevania-highlights.mp4`](docs/castlevania-highlights.mp4) cuts two stretches of that game
+together (life 1 to stage 2; life 3 through the underground into stage 3), each captioned with its
+start and life and preceded by a card marking the cut. The game's first block ends with the giant
+bat at stage 3; this brain has not beaten it.
 
 ## In the page
 
@@ -88,9 +92,9 @@ trace and recall memory are cleared at each new game. Nothing is saved. One deci
 
 ## Limits
 
-- It does not get past stage 2. On some starts it stops a few pixels short of the bottom-left
-  staircase's foot and holds down, which crouches, until enemies take its lives; where it goes
-  down, it crosses the underground but walks past the staircase up and out.
+- It has not beaten the giant bat that ends the game's first block (stage 3): it reaches the bat
+  on 2 of 9 fresh starts. On the other starts it loses its lives in stage 2, at the bottom-left
+  staircase or on the low ledge past the underground's exit.
 - It learned from a teacher's labels; reward played no part.
 - Simon's position, facing, stage, block and body state come from RAM, not from pixels.
 - Checked on the PRG1 printing and stable-retro's FCEUmm core only.

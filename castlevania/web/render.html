@@ -13,13 +13,19 @@
 // Video frames for record.py: the game large on the left, the brain view (brain.js, the page's
 // own renderer) on the right, the answer and the run's numbers below. Each call draws one NES
 // frame with the newest decision's state and returns it as a JPEG.
+// ?scale=2 draws everything natively at 2x (2560 x 1440): the game nearest-neighbour, the brain
+// view on a canvas twice as large, the text at twice the size
+const SCALE = Number(new URLSearchParams(location.search).get("scale") || 1);
 const out = document.getElementById("out"), ctx = out.getContext("2d");
+out.width = 1280 * SCALE; out.height = 720 * SCALE;
+document.getElementById("brainview").width = 1320 * SCALE; document.getElementById("brainview").height = 1188 * SCALE;
 const view = new BrainView(document.getElementById("brainview"), { offline: true });
 const SLOT = [["horizontal", ["left", "-", "right"]], ["vertical", ["up", "-", "down"]], ["whip", ["no", "yes"]], ["jump", ["no", "yes"]]];
 let snap = null;
 window.setSnap = (s) => { snap = s; view.setSnap(s); };
 function load(b64) { return new Promise((ok) => { const im = new Image(); im.onload = () => ok(im); im.src = "data:image/png;base64," + b64; }); }
 window.renderFrame = async (gameB64, phase, clock, caption, extra) => {
+  ctx.setTransform(SCALE, 0, 0, SCALE, 0, 0);
   ctx.fillStyle = "#0d0b10"; ctx.fillRect(0, 0, 1280, 720);
   const game = await load(gameB64);
   ctx.imageSmoothingEnabled = false;

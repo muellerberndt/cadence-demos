@@ -83,22 +83,28 @@ class Player:
         self.thumbs = {}
 
     def decide(self, frame, ram, thumb: str | None = None) -> int:
-        from cadence.recording import record_settlements
         x = self.eye.observe(frame, ram)
+        action = self.decide_input(x, ram, thumb)
+        self.eye.executed(action)
+        return action
+
+    def decide_input(self, x, ram=None, thumb: str | None = None) -> int:
+        """One decision from a given eye input (the player page's live mode feeds recorded ones)."""
+        from cadence.recording import record_settlements
+        x = np.asarray(x, float)
         records = []
         t0 = time.perf_counter()
         with record_settlements(records.append):
             parts = self.brain.act(x[None, :], greedy=True)
         ms = (time.perf_counter() - t0) * 1000
         action = from_slots(parts[0])
-        self.eye.executed(action)
         if thumb is not None:
             self.thumbs[self.decisions] = thumb
             for old in [k for k in self.thumbs if k < self.decisions - 400]:
                 del self.thumbs[old]
         self.decisions += 1
         free = max(records, key=lambda r: np.asarray(r.activation).shape[0]) if records else None
-        self.last = {"x": x, "action": action, "ms": ms, "ram": np.asarray(ram).copy(),
+        self.last = {"x": x, "action": action, "ms": ms, "ram": None if ram is None else np.asarray(ram).copy(),
                      "settle": dict(self.brain.last_settlement or {}),
                      "trajectory": None if free is None else np.asarray(free.activation)[:, 0, :]}
         return action
@@ -153,7 +159,11 @@ class Player:
             probs.append(np.round(z / z.sum(), 3).tolist())
             start += size
         eye = {k: np.round(x[a:b], 3).tolist() for k, (a, b) in SLICES.items()}
-        left, top, right, bottom, facing = fovea_window(ram)
+        fovea, game = None, None
+        if ram is not None:
+            left, top, right, bottom, facing = fovea_window(ram)
+            fovea = {"left": left, "top": top, "right": right, "bottom": bottom, "facing": facing}
+            game = readings(ram)
         settle = self.last["settle"]
         return {"decisions": self.decisions, "action": self.last["action"],
                 "buttons": buttons_of(self.last["action"]), "act": list(ACTIONS[self.last["action"]]),
@@ -168,5 +178,4 @@ class Player:
                 "regions": {name: np.round(activation[self.index[name]], 3).tolist()
                             for name in DRAWN if name in self.index},
                 "memory": self._recall(),
-                "fovea": {"left": left, "top": top, "right": right, "bottom": bottom, "facing": facing},
-                "game": readings(ram)}
+                "fovea": fovea, "game": game}

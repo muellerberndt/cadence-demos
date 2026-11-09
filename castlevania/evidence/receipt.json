@@ -1,9 +1,9 @@
 {
  "brain": {
   "file": "brain/brain.npz",
-  "sha256": "b5305d061227e7c1cc249ea76a6bf37b4d119e3355f6b85b3ad5d1e644012249",
-  "bytes": 38326094,
-  "source_sha256": "670685fea056a722a27ec8a79805d1b2b5dd938a3118b84d63f8a44f1f8b2eca",
+  "sha256": "b868dc955e544df98c5b63a41c705f149d29c2aea72cc6bec1ade1153801a6ed",
+  "bytes": 36706482,
+  "source_sha256": "5911d26942b72a2702990654b56ead4082b53c9fd4e97c6cb0315792959a557a",
   "cadence": "0.95.2",
   "inputs": 827,
   "modules": [
@@ -37,8 +37,8 @@
  },
  "run": {
   "config": {
-   "name": "C2sd",
-   "seed": 5,
+   "name": "D2",
+   "seed": 42,
    "modules": [
     256,
     128
@@ -50,9 +50,9 @@
     "recall_action": true,
     "recall_boundary": true
    },
-   "streams": 32,
+   "streams": 8,
    "segment": 40,
-   "budget": 450000,
+   "budget": 525000,
    "draw": {
     "all": 0.15,
     "start": 0.03,
@@ -86,24 +86,24 @@
    "wall_hours": 0,
    "practice": "runs/pool/practice.pkl",
    "validation": "runs/pool/validation.npz",
-   "load": "C2s at 325,120 decisions (the previous packed brain)",
-   "backend": "mlx",
+   "load": "C2s at 325,120 decisions",
+   "backend": null,
    "load_decisions": 325120
   },
   "counters": {
-   "decisions": 450016,
-   "lessons": 124896,
+   "decisions": 450240,
+   "lessons": 125120,
    "lesson_refused": 0,
    "act_refused": 0,
    "searched": 0,
    "search_changed": 0,
    "search_informative": 0,
-   "own_ran": 124896,
+   "own_ran": 125120,
    "teacher_ran": 0,
-   "segments": 3136,
-   "weighted_rows": 88750
+   "segments": 3128,
+   "weighted_rows": 90621
   },
-  "seconds": 3741.9,
+  "seconds": 4729.7,
   "library": {
    "cadence": "0.95.2",
    "cadence_source_sha256": "917857fdcb62b08b",
@@ -111,29 +111,7 @@
   },
   "evaluations": [
    {
-    "decision": 350720,
-    "stage": [
-     1,
-     2,
-     2
-    ],
-    "past_stairs": 2,
-    "stage3": 0,
-    "stage4": 0,
-    "lives_lost": [
-     0,
-     4,
-     4
-    ],
-    "progress": [
-     100467,
-     200495,
-     200495
-    ],
-    "predict": 0.6733788395904436
-   },
-   {
-    "decision": 375040,
+    "decision": 350080,
     "stage": [
      2,
      2,
@@ -149,13 +127,79 @@
     ],
     "progress": [
      200248,
-     200495,
+     200248,
      200248
     ],
-    "predict": 0.6716723549488055
+    "predict": 0.6665529010238908
    },
    {
-    "decision": 400640,
+    "decision": 375040,
+    "stage": [
+     2,
+     2,
+     2
+    ],
+    "past_stairs": 3,
+    "stage3": 0,
+    "stage4": 0,
+    "lives_lost": [
+     4,
+     3,
+     4
+    ],
+    "progress": [
+     200495,
+     200495,
+     200495
+    ],
+    "predict": 0.668259385665529
+   },
+   {
+    "decision": 400000,
+    "stage": [
+     2,
+     2,
+     2
+    ],
+    "past_stairs": 3,
+    "stage3": 0,
+    "stage4": 0,
+    "lives_lost": [
+     3,
+     3,
+     4
+    ],
+    "progress": [
+     200495,
+     200495,
+     200495
+    ],
+    "predict": 0.669283276450512
+   },
+   {
+    "decision": 425280,
+    "stage": [
+     3,
+     2,
+     2
+    ],
+    "past_stairs": 3,
+    "stage3": 1,
+    "stage4": 0,
+    "lives_lost": [
+     4,
+     4,
+     4
+    ],
+    "progress": [
+     300268,
+     200378,
+     200320
+    ],
+    "predict": 0.6699658703071673
+   },
+   {
+    "decision": 450240,
     "stage": [
      2,
      2,
@@ -170,55 +214,11 @@
      4
     ],
     "progress": [
-     200495,
-     200495,
-     101311
-    ],
-    "predict": 0.6703071672354949
-   },
-   {
-    "decision": 426240,
-    "stage": [
-     2,
-     2,
-     2
-    ],
-    "past_stairs": 3,
-    "stage3": 0,
-    "stage4": 0,
-    "lives_lost": [
-     4,
-     4,
-     4
-    ],
-    "progress": [
      200248,
-     200248,
-     200248
-    ],
-    "predict": 0.6706484641638225
-   },
-   {
-    "decision": 450016,
-    "stage": [
-     2,
-     2,
-     2
-    ],
-    "past_stairs": 3,
-    "stage3": 0,
-    "stage4": 0,
-    "lives_lost": [
-     4,
-     4,
-     4
-    ],
-    "progress": [
      200495,
-     200495,
-     200248
+     101519
     ],
-    "predict": 0.673037542662116
+    "predict": 0.6791808873720137
    }
   ]
  },
@@ -226,12 +226,13 @@
   "200,000 decisions of practice on the first 588 inputs (earlier library release, one stream)",
   "carried to cadence-net 0.95.2 and widened to 827 inputs (training/widen.py)",
   "125,120 decisions of teacher-driven practice, eight streams, the draw weighted to stage 2 (run C2s, CPU)",
-  "124,896 decisions of DAgger: the brain drives, the teacher labels every state it reaches; 32 streams, backend mlx on an Apple M4 (run C2sd)"
+  "74,880 decisions of DAgger (the brain drives, the teacher labels every state it reaches), eight streams, the same draw (run D2, CPU)",
+  "25,280 more decisions of the same DAgger after the teacher learned to leave the low ledge past the underground's exit stairs (jump left), resumed from the checkpoint at 400,000 (run D2)"
  ],
  "readings_selection_note": "starts 0, 3, 7, 10, 14, 21, 28, 35, 42: checkpoints were compared on these starts and this one was picked there",
  "readings_selection": [
   {
-   "brain": "C2sd/d450016.brain.npz",
+   "brain": "D2/d425280.brain.npz",
    "eye": "v2",
    "starts": [
     0,
@@ -246,37 +247,64 @@
    ],
    "decisions": 1500,
    "progress": [
+    300268,
+    200378,
+    200320,
+    300664,
+    200380,
+    200342,
     200495,
-    200495,
-    200248,
-    200495,
-    200248,
-    200495,
-    200495,
-    200495,
-    200248
+    200342,
+    300664
    ],
-   "mean_progress": 200412.66666666666,
-   "min_progress": 200248,
+   "mean_progress": 233761.44444444444,
+   "min_progress": 200320,
    "stage": [
+    3,
+    2,
+    2,
+    3,
     2,
     2,
     2,
     2,
-    2,
-    2,
-    2,
-    2,
-    2
+    3
    ],
    "past_stairs": 9,
-   "stage3": 0,
+   "stage3": 3,
    "stage4": 0,
    "world_x": [
     {
      "0": 712,
      "1": 1584,
-     "2": 495
+     "2": 560,
+     "3": 268
+    },
+    {
+     "0": 712,
+     "1": 1584,
+     "2": 378
+    },
+    {
+     "0": 712,
+     "1": 1584,
+     "2": 320
+    },
+    {
+     "0": 712,
+     "1": 1584,
+     "2": 560,
+     "3": 664
+    },
+    {
+     "0": 712,
+     "1": 1584,
+     "2": 380
+    },
+    {
+     "0": 712,
+     "1": 1584,
+     "2": 342
     },
     {
      "0": 712,
@@ -286,64 +314,41 @@
     {
      "0": 712,
      "1": 1584,
-     "2": 248
+     "2": 342
     },
     {
      "0": 712,
      "1": 1584,
-     "2": 495
-    },
-    {
-     "0": 712,
-     "1": 1584,
-     "2": 248
-    },
-    {
-     "0": 712,
-     "1": 1584,
-     "2": 495
-    },
-    {
-     "0": 712,
-     "1": 1584,
-     "2": 495
-    },
-    {
-     "0": 712,
-     "1": 1584,
-     "2": 495
-    },
-    {
-     "0": 712,
-     "1": 1584,
-     "2": 248
+     "2": 560,
+     "3": 664
     }
    ],
    "bat_hp_dealt": [
     0,
     0,
     0,
+    8,
     0,
     0,
     0,
     0,
-    0,
-    0
+    36
    ],
    "deaths_by_stage": {
-    "2": 29,
-    "1": 5
+    "1": 2,
+    "2": 17,
+    "3": 4
    },
    "score": [
-    2500,
-    2300,
     4200,
-    3200,
-    5800,
+    1900,
+    4200,
+    3000,
     2500,
-    1600,
-    2100,
-    5500
+    4700,
+    1500,
+    5000,
+    2200
    ],
    "lives_lost": [
     4,
@@ -359,74 +364,146 @@
    "games": [
     {
      "noops": 0,
-     "decisions": 1236,
-     "furthest_stage": 2,
-     "progress": 200495,
+     "decisions": 1164,
+     "furthest_stage": 3,
+     "progress": 300268,
      "lives_lost": 4,
      "world_x": {
       "0": 712,
       "1": 1584,
-      "2": 495
+      "2": 560,
+      "3": 268
      },
      "deaths_by_stage": {
-      "2": 3
+      "1": 1,
+      "2": 2,
+      "3": 1
+     },
+     "bat_hp_dealt": 0,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 560,
+      "2.0": 466,
+      "3.0": 268
+     }
+    },
+    {
+     "noops": 7,
+     "decisions": 656,
+     "furthest_stage": 2,
+     "progress": 200378,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 378
+     },
+     "deaths_by_stage": {
+      "2": 1
      },
      "bat_hp_dealt": 0,
      "max_wx": {
       "0.0": 712,
       "1.0": 1584,
       "2.1": 336,
-      "2.0": 495
-     }
-    },
-    {
-     "noops": 7,
-     "decisions": 1175,
-     "furthest_stage": 2,
-     "progress": 200495,
-     "lives_lost": 4,
-     "world_x": {
-      "0": 712,
-      "1": 1584,
-      "2": 495
-     },
-     "deaths_by_stage": {
-      "1": 2,
-      "2": 2
-     },
-     "bat_hp_dealt": 0,
-     "max_wx": {
-      "0.0": 712,
-      "1.0": 1584,
-      "2.1": 248,
-      "2.0": 495
+      "2.0": 385
      }
     },
     {
      "noops": 14,
-     "decisions": 1083,
+     "decisions": 972,
      "furthest_stage": 2,
-     "progress": 200248,
+     "progress": 200320,
      "lives_lost": 4,
      "world_x": {
       "0": 712,
       "1": 1584,
-      "2": 248
+      "2": 320
      },
      "deaths_by_stage": {
-      "1": 1,
       "2": 3
      },
      "bat_hp_dealt": 0,
      "max_wx": {
       "0.0": 712,
       "1.0": 1584,
-      "2.1": 304
+      "2.1": 368,
+      "2.0": 385
      }
     },
     {
      "noops": 3,
-     "decisions": 1287,
+     "decisions": 1092,
+     "furthest_stage": 3,
+     "progress": 300664,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 560,
+      "3": 664
+     },
+     "deaths_by_stage": {
+      "1": 1,
+      "3": 1
+     },
+     "bat_hp_dealt": 8,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 642,
+      "2.0": 467,
+      "3.0": 664
+     }
+    },
+    {
+     "noops": 10,
+     "decisions": 889,
+     "furthest_stage": 2,
+     "progress": 200380,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 380
+     },
+     "deaths_by_stage": {
+      "2": 2
+     },
+     "bat_hp_dealt": 0,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 368,
+      "2.0": 385
+     }
+    },
+    {
+     "noops": 21,
+     "decisions": 1050,
+     "furthest_stage": 2,
+     "progress": 200342,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 342
+     },
+     "deaths_by_stage": {
+      "2": 3
+     },
+     "bat_hp_dealt": 0,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 368,
+      "2.0": 342
+     }
+    },
+    {
+     "noops": 28,
+     "decisions": 762,
      "furthest_stage": 2,
      "progress": 200495,
      "lives_lost": 4,
@@ -436,7 +513,7 @@
       "2": 495
      },
      "deaths_by_stage": {
-      "2": 4
+      "2": 2
      },
      "bat_hp_dealt": 0,
      "max_wx": {
@@ -447,84 +524,17 @@
      }
     },
     {
-     "noops": 10,
-     "decisions": 1208,
-     "furthest_stage": 2,
-     "progress": 200248,
-     "lives_lost": 4,
-     "world_x": {
-      "0": 712,
-      "1": 1584,
-      "2": 248
-     },
-     "deaths_by_stage": {
-      "2": 4
-     },
-     "bat_hp_dealt": 0,
-     "max_wx": {
-      "0.0": 712,
-      "1.0": 1584,
-      "2.1": 336
-     }
-    },
-    {
-     "noops": 21,
-     "decisions": 1313,
-     "furthest_stage": 2,
-     "progress": 200495,
-     "lives_lost": 4,
-     "world_x": {
-      "0": 712,
-      "1": 1584,
-      "2": 495
-     },
-     "deaths_by_stage": {
-      "1": 1,
-      "2": 3
-     },
-     "bat_hp_dealt": 0,
-     "max_wx": {
-      "0.0": 712,
-      "1.0": 1584,
-      "2.1": 368,
-      "2.0": 495
-     }
-    },
-    {
-     "noops": 28,
-     "decisions": 1131,
-     "furthest_stage": 2,
-     "progress": 200495,
-     "lives_lost": 4,
-     "world_x": {
-      "0": 712,
-      "1": 1584,
-      "2": 495
-     },
-     "deaths_by_stage": {
-      "2": 3
-     },
-     "bat_hp_dealt": 0,
-     "max_wx": {
-      "0.0": 712,
-      "1.0": 1584,
-      "2.1": 248,
-      "2.0": 495
-     }
-    },
-    {
      "noops": 35,
-     "decisions": 1292,
+     "decisions": 1065,
      "furthest_stage": 2,
-     "progress": 200495,
+     "progress": 200342,
      "lives_lost": 4,
      "world_x": {
       "0": 712,
       "1": 1584,
-      "2": 495
+      "2": 342
      },
      "deaths_by_stage": {
-      "1": 1,
       "2": 3
      },
      "bat_hp_dealt": 0,
@@ -532,38 +542,42 @@
       "0.0": 712,
       "1.0": 1584,
       "2.1": 368,
-      "2.0": 495
+      "2.0": 342
      }
     },
     {
      "noops": 42,
-     "decisions": 1188,
-     "furthest_stage": 2,
-     "progress": 200248,
+     "decisions": 1362,
+     "furthest_stage": 3,
+     "progress": 300664,
      "lives_lost": 4,
      "world_x": {
       "0": 712,
       "1": 1584,
-      "2": 248
+      "2": 560,
+      "3": 664
      },
      "deaths_by_stage": {
-      "2": 4
+      "2": 1,
+      "3": 2
      },
-     "bat_hp_dealt": 0,
+     "bat_hp_dealt": 36,
      "max_wx": {
       "0.0": 712,
       "1.0": 1584,
-      "2.1": 336
+      "2.1": 560,
+      "2.0": 467,
+      "3.0": 664
      }
     }
    ],
-   "seconds": 274.3
+   "seconds": 221.3
   }
  ],
- "readings_fresh_note": "starts 1, 5, 11, 17, 25, 31, 38, 45, 49: read once after the pick, gate: no worse than the previous brain on both sets, no frozen start",
+ "readings_fresh_note": "starts 1, 5, 11, 17, 25, 31, 38, 45, 49: read once after the pick; gate: no worse than the packed brain on both sets, no start standing still",
  "readings_fresh": [
   {
-   "brain": "C2sd/d450016.brain.npz",
+   "brain": "D2/d425280.brain.npz",
    "eye": "v2",
    "starts": [
     1,
@@ -578,42 +592,53 @@
    ],
    "decisions": 1500,
    "progress": [
-    200495,
-    200495,
+    200416,
+    200307,
+    200342,
+    300664,
     200248,
     200495,
-    200495,
-    200495,
-    200495,
-    200495,
-    200495
+    300664,
+    200320,
+    200320
    ],
-   "mean_progress": 200467.55555555556,
+   "mean_progress": 222641.77777777778,
    "min_progress": 200248,
    "stage": [
     2,
     2,
     2,
+    3,
     2,
     2,
-    2,
-    2,
+    3,
     2,
     2
    ],
    "past_stairs": 9,
-   "stage3": 0,
+   "stage3": 2,
    "stage4": 0,
    "world_x": [
     {
      "0": 712,
      "1": 1584,
-     "2": 495
+     "2": 416
     },
     {
      "0": 712,
      "1": 1584,
-     "2": 495
+     "2": 307
+    },
+    {
+     "0": 712,
+     "1": 1584,
+     "2": 342
+    },
+    {
+     "0": 712,
+     "1": 1584,
+     "2": 560,
+     "3": 664
     },
     {
      "0": 712,
@@ -628,27 +653,18 @@
     {
      "0": 712,
      "1": 1584,
-     "2": 495
+     "2": 560,
+     "3": 664
     },
     {
      "0": 712,
      "1": 1584,
-     "2": 495
+     "2": 320
     },
     {
      "0": 712,
      "1": 1584,
-     "2": 495
-    },
-    {
-     "0": 712,
-     "1": 1584,
-     "2": 495
-    },
-    {
-     "0": 712,
-     "1": 1584,
-     "2": 495
+     "2": 320
     }
    ],
    "bat_hp_dealt": [
@@ -663,19 +679,20 @@
     0
    ],
    "deaths_by_stage": {
-    "2": 33,
-    "1": 2
+    "2": 20,
+    "1": 5,
+    "3": 2
    },
    "score": [
-    3100,
-    2600,
-    5300,
+    3200,
+    2300,
+    4500,
+    1700,
+    3000,
+    3000,
     2000,
-    3900,
-    2700,
-    1600,
-    3100,
-    2500
+    4500,
+    4300
    ],
    "lives_lost": [
     4,
@@ -691,51 +708,99 @@
    "games": [
     {
      "noops": 1,
-     "decisions": 1373,
+     "decisions": 990,
      "furthest_stage": 2,
-     "progress": 200495,
+     "progress": 200416,
      "lives_lost": 4,
      "world_x": {
       "0": 712,
       "1": 1584,
-      "2": 495
+      "2": 416
      },
      "deaths_by_stage": {
-      "2": 4
+      "2": 3
      },
      "bat_hp_dealt": 0,
      "max_wx": {
       "0.0": 712,
       "1.0": 1584,
-      "2.1": 248,
-      "2.0": 495
+      "2.1": 368,
+      "2.0": 416
      }
     },
     {
      "noops": 5,
-     "decisions": 1433,
+     "decisions": 895,
      "furthest_stage": 2,
-     "progress": 200495,
+     "progress": 200307,
      "lives_lost": 4,
      "world_x": {
       "0": 712,
       "1": 1584,
-      "2": 495
+      "2": 307
      },
      "deaths_by_stage": {
-      "2": 4
+      "1": 2,
+      "2": 1
      },
      "bat_hp_dealt": 0,
      "max_wx": {
       "0.0": 712,
       "1.0": 1584,
       "2.1": 248,
-      "2.0": 495
+      "2.0": 307
      }
     },
     {
      "noops": 11,
-     "decisions": 1188,
+     "decisions": 1045,
+     "furthest_stage": 2,
+     "progress": 200342,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 342
+     },
+     "deaths_by_stage": {
+      "2": 3
+     },
+     "bat_hp_dealt": 0,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 368,
+      "2.0": 342
+     }
+    },
+    {
+     "noops": 17,
+     "decisions": 967,
+     "furthest_stage": 3,
+     "progress": 300664,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 560,
+      "3": 664
+     },
+     "deaths_by_stage": {
+      "2": 2,
+      "3": 1
+     },
+     "bat_hp_dealt": 0,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 642,
+      "2.0": 495,
+      "3.0": 664
+     }
+    },
+    {
+     "noops": 25,
+     "decisions": 1029,
      "furthest_stage": 2,
      "progress": 200248,
      "lives_lost": 4,
@@ -745,64 +810,19 @@
       "2": 248
      },
      "deaths_by_stage": {
-      "2": 4
+      "1": 2,
+      "2": 2
      },
      "bat_hp_dealt": 0,
      "max_wx": {
       "0.0": 712,
       "1.0": 1584,
-      "2.1": 336
-     }
-    },
-    {
-     "noops": 17,
-     "decisions": 1263,
-     "furthest_stage": 2,
-     "progress": 200495,
-     "lives_lost": 4,
-     "world_x": {
-      "0": 712,
-      "1": 1584,
-      "2": 495
-     },
-     "deaths_by_stage": {
-      "1": 1,
-      "2": 3
-     },
-     "bat_hp_dealt": 0,
-     "max_wx": {
-      "0.0": 712,
-      "1.0": 1584,
-      "2.1": 336,
-      "2.0": 495
-     }
-    },
-    {
-     "noops": 25,
-     "decisions": 1359,
-     "furthest_stage": 2,
-     "progress": 200495,
-     "lives_lost": 4,
-     "world_x": {
-      "0": 712,
-      "1": 1584,
-      "2": 495
-     },
-     "deaths_by_stage": {
-      "1": 1,
-      "2": 3
-     },
-     "bat_hp_dealt": 0,
-     "max_wx": {
-      "0.0": 712,
-      "1.0": 1584,
-      "2.1": 304,
-      "2.0": 495
+      "2.1": 248
      }
     },
     {
      "noops": 31,
-     "decisions": 1407,
+     "decisions": 1055,
      "furthest_stage": 2,
      "progress": 200495,
      "lives_lost": 4,
@@ -812,26 +832,51 @@
       "2": 495
      },
      "deaths_by_stage": {
-      "2": 4
+      "2": 3
      },
      "bat_hp_dealt": 0,
      "max_wx": {
       "0.0": 712,
       "1.0": 1584,
-      "2.1": 248,
+      "2.1": 368,
       "2.0": 495
      }
     },
     {
      "noops": 38,
-     "decisions": 1139,
-     "furthest_stage": 2,
-     "progress": 200495,
+     "decisions": 1065,
+     "furthest_stage": 3,
+     "progress": 300664,
      "lives_lost": 4,
      "world_x": {
       "0": 712,
       "1": 1584,
-      "2": 495
+      "2": 560,
+      "3": 664
+     },
+     "deaths_by_stage": {
+      "1": 1,
+      "3": 1
+     },
+     "bat_hp_dealt": 0,
+     "max_wx": {
+      "0.0": 712,
+      "1.0": 1584,
+      "2.1": 674,
+      "2.0": 465,
+      "3.0": 664
+     }
+    },
+    {
+     "noops": 45,
+     "decisions": 1018,
+     "furthest_stage": 2,
+     "progress": 200320,
+     "lives_lost": 4,
+     "world_x": {
+      "0": 712,
+      "1": 1584,
+      "2": 320
      },
      "deaths_by_stage": {
       "2": 3
@@ -840,56 +885,34 @@
      "max_wx": {
       "0.0": 712,
       "1.0": 1584,
-      "2.1": 248,
-      "2.0": 495
-     }
-    },
-    {
-     "noops": 45,
-     "decisions": 1486,
-     "furthest_stage": 2,
-     "progress": 200495,
-     "lives_lost": 4,
-     "world_x": {
-      "0": 712,
-      "1": 1584,
-      "2": 495
-     },
-     "deaths_by_stage": {
-      "2": 4
-     },
-     "bat_hp_dealt": 0,
-     "max_wx": {
-      "0.0": 712,
-      "1.0": 1584,
-      "2.1": 304,
-      "2.0": 495
+      "2.1": 368,
+      "2.0": 320
      }
     },
     {
      "noops": 49,
-     "decisions": 1319,
+     "decisions": 1032,
      "furthest_stage": 2,
-     "progress": 200495,
+     "progress": 200320,
      "lives_lost": 4,
      "world_x": {
       "0": 712,
       "1": 1584,
-      "2": 495
+      "2": 320
      },
      "deaths_by_stage": {
-      "2": 4
+      "2": 3
      },
      "bat_hp_dealt": 0,
      "max_wx": {
       "0.0": 712,
       "1.0": 1584,
-      "2.1": 248,
-      "2.0": 495
+      "2.1": 368,
+      "2.0": 320
      }
     }
    ],
-   "seconds": 206.8
+   "seconds": 237.3
   }
  ]
 }

@@ -23,6 +23,26 @@ from simon.pad import readings
 
 HERE = Path(__file__).resolve().parent
 SETTLE_FRAMES = 9  # the settle is played over the first 9 of a decision's 12 frames
+SWEEP_STRIDE = 2  # the trace keeps every second sweep of the settle (and the last)
+
+
+def trace_record(snap: dict, x, frame: int, thumb: str) -> dict:
+    """One decision for the player page: the first video frame it covers, the exact eye input
+    (float64, so live mode can settle on it bit for bit), the snapshot without what the page can
+    rebuild from the input, and the frame the decision saw (the recall view's thumbnails)."""
+    import numpy as np
+    s = dict(snap)
+    t = dict(s["trajectory"])
+    keep = lambda seq: seq[::SWEEP_STRIDE] + ([seq[-1]] if (len(seq) - 1) % SWEEP_STRIDE else [])  # noqa: E731
+    t["regions"] = {k: keep(v) for k, v in t["regions"].items()}
+    s["trajectory"] = t
+    for key in ("eye", "regions"):
+        s.pop(key, None)
+    if s.get("memory"):
+        s["memory"] = dict(s["memory"])
+        s["memory"]["top"] = [{k: v for k, v in top.items() if k != "thumb"} for top in s["memory"]["top"]]
+        s["memory"]["weights"] = [round(w, 2) for w in s["memory"]["weights"]]
+    return {"frame": frame, "x": base64.b64encode(np.asarray(x, "<f8").tobytes()).decode(), "snap": s, "thumb": thumb}
 
 
 def main() -> None:
@@ -32,6 +52,9 @@ def main() -> None:
     p.add_argument("--out", type=Path, default=Path("docs/castlevania-run.mp4"))
     p.add_argument("--log", type=Path, default=None, help="per-decision readings as JSON")
     p.add_argument("--crf", type=int, default=30)
+    p.add_argument("--scale", type=int, default=1, help="2: draw the frames natively at 2560 x 1440")
+    p.add_argument("--trace", type=Path, default=None, help="the player page's trace (gzip JSON)")
+    p.add_argument("--game-video", type=Path, default=None, help="the game alone at 3x, for the player page")
     a = p.parse_args()
     import cadence
     from playwright.sync_api import sync_playwright
@@ -50,11 +73,18 @@ def main() -> None:
         [exe, "-y", "-loglevel", "error", "-f", "image2pipe", "-c:v", "mjpeg", "-r", "60", "-i", "-",
          "-c:v", "libx264", "-preset", "slow", "-crf", str(a.crf), "-pix_fmt", "yuv420p",
          "-movflags", "+faststart", str(a.out)], stdin=subprocess.PIPE)
+    game_pipe = None
+    if a.game_video is not None:
+        game_pipe = subprocess.Popen(
+            [exe, "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", "720x672", "-r", "60",
+             "-i", "-", "-c:v", "libx264", "-preset", "slow", "-crf", "28", "-pix_fmt", "yuv420p",
+             "-movflags", "+faststart", str(a.game_video)], stdin=subprocess.PIPE)
+    trace = []
     log, frames, lives = [], 0, readings(ram)["lives"]
     with sync_playwright() as pw:
         browser = pw.chromium.launch()
-        page = browser.new_page(viewport={"width": 1280, "height": 720})
-        page.goto((HERE / "web" / "render.html").as_uri())
+        page = browser.new_page(viewport={"width": 1280 * a.scale, "height": 720 * a.scale})
+        page.goto((HERE / "web" / "render.html").as_uri() + f"?scale={a.scale}")
         page.wait_for_function("window.ready === true")
 
         def emit(game, phase, extra):
@@ -63,11 +93,16 @@ def main() -> None:
                                 [base64.b64encode(png(game[8:232, 8:248])).decode(), phase,
                                  frames * 1000 / 60, caption, extra])
             ffmpeg.stdin.write(base64.b64decode(url.split(",", 1)[1]))
+            if game_pipe is not None:
+                game_pipe.stdin.write(game[8:232, 8:248].repeat(3, axis=0).repeat(3, axis=1).tobytes())
             frames += 1
 
         for t in range(a.decisions):
-            action = player.decide(frame, ram, thumb=thumbnail(frame))
+            thumb = thumbnail(frame)
+            action = player.decide(frame, ram, thumb=thumb)
             snap = player.snapshot()
+            if a.trace is not None:
+                trace.append(trace_record(snap, player.last["x"], frames, thumb))
             page.evaluate("s => setSnap(s)", snap)
             g = snap["game"]
             extra = (f"stage {g['stage']}   block {g['block']}   world x {g['world_x']}   health {g['health']}   "
@@ -88,6 +123,18 @@ def main() -> None:
         browser.close()
     ffmpeg.stdin.close()
     ffmpeg.wait()
+    if game_pipe is not None:
+        game_pipe.stdin.close()
+        game_pipe.wait()
+    if a.trace is not None:
+        import gzip
+        import hashlib
+        body = {"schema": "cadence-castlevania-trace/1", "cadence": cadence.__version__, "idle": a.idle,
+                "brain_sha256": hashlib.sha256(BRAIN.read_bytes()).hexdigest(), "fps": 60,
+                "frames_per_decision": 12, "settle_frames": SETTLE_FRAMES, "sweep_stride": SWEEP_STRIDE,
+                "frames": frames, "decisions": trace}
+        with gzip.open(a.trace, "wt", compresslevel=9) as handle:
+            json.dump(body, handle, separators=(",", ":"))
     if a.log is not None:
         a.log.write_text(json.dumps({"idle": a.idle, "frames": frames, "decisions": len(log), "log": log}) + "\n")
     print(json.dumps({"out": str(a.out), "frames": frames, "seconds": round(frames / 60, 1), "decisions": len(log)}))

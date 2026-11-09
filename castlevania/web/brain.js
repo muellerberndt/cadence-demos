@@ -157,13 +157,15 @@
       if (!snap || !c) { ctx.fillStyle = PAL.dim; ctx.font = "22px system-ui"; ctx.fillText("waiting for the first decision", 360, 450); return; }
       const sweep = Math.min(c.sweeps, Math.max(0, Math.round(phase * c.sweeps)));
       const settled = sweep >= c.sweeps;
+      // a recorded settle may keep every n-th sweep: pick the kept state nearest this point of the settle
+      const at = (n) => Math.min(n - 1, Math.round((sweep / Math.max(1, c.sweeps)) * (n - 1)));
       const span = {};
       for (const pop of Object.keys(c.regions)) { const last = c.regions[pop][c.regions[pop].length - 1]; let lo = 255, hi = 0; for (const v of last) { lo = Math.min(lo, v); hi = Math.max(hi, v); } span[pop] = [lo, Math.max(hi, lo + 8)]; }
       // each region coloured over its own range at this decision (its settled minimum to maximum)
-      const act = (pop, i) => { const a = c.regions[pop]; if (!a) return 0; const [lo, hi] = span[pop]; return Math.max(0, Math.min(1, (a[Math.min(sweep, a.length - 1)][i] - lo) / (hi - lo))); };
+      const act = (pop, i) => { const a = c.regions[pop]; if (!a) return 0; const [lo, hi] = span[pop]; return Math.max(0, Math.min(1, (a[at(a.length)][i] - lo) / (hi - lo))); };
       // activity per region at this sweep (for the pulses along the tracts)
       const level = {};
-      for (const pop of Object.keys(c.regions)) { const a = c.regions[pop][Math.min(sweep, c.regions[pop].length - 1)]; let m = 0; for (const v of a) m += v; level[pop] = m / a.length / 255; }
+      for (const pop of Object.keys(c.regions)) { const a = c.regions[pop][at(c.regions[pop].length)]; let m = 0; for (const v of a) m += v; level[pop] = m / a.length / 255; }
       level.sensory = Math.min(1, snap.drive * 2.2); ["recall", "recall_1", "next", "next_1"].forEach((k) => { level[k] = 0.5; });
 
       // 1. tracts (bundled projections): warm = excitatory flow, cool = inhibitory flow
