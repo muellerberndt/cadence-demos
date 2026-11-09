@@ -12,6 +12,8 @@ Settlement](https://philpapers.org/rec/MUECAP-2).
 
 ![The larva page: the whole-body connectome in the loop](docs/larva.png)
 
+The [model card](MODEL_CARD.md) describes both compiled nets, how the fish learns and what was measured.
+
 ## Run
 
 ```sh
