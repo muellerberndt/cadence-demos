@@ -1,0 +1,7 @@
+main.player { grid-template-columns: minmax(300px, 760px) minmax(320px, 1fr); }
+@media (max-width: 980px) { main.player { grid-template-columns: 1fr; } }
+#video { width: 100%; aspect-ratio: 240 / 224; background: #000; border: 1px solid var(--line); border-radius: 6px; image-rendering: pixelated; }
+.live-row { display: flex; gap: 12px; align-items: center; margin: 10px 0; }
+#live.on { border-color: var(--on); color: var(--on); }
+.note.bad { color: var(--accent); }
+.note.good { color: #7ad08a; }

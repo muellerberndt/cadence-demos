@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cadence Castlevania, the recorded run</title>
+<link rel="stylesheet" href="../web/style.css">
+<link rel="stylesheet" href="player.css">
+</head>
+<body>
+<header>
+  <h1>Castlevania, played by a Cadence brain: the recorded run</h1>
+  <p class="about">The video is one whole game the brain played, frozen, from the first frame Simon can
+    move. Beside it the brain view replays that decision's real state, in step with the video: play,
+    pause, seek or change the speed. <b>Live</b> runs the brain itself in your browser (Python and
+    the released cadence-net in Pyodide) on the same eye inputs and checks its buttons against the
+    recording. No ROM is involved.</p>
+</header>
+<main class="player">
+  <section class="game">
+    <video id="video" controls playsinline muted preload="auto"></video>
+    <div class="stats" id="stats"></div>
+    <div class="live-row">
+      <button id="live">Live: off</button>
+      <span id="live-status" class="note">recorded state</span>
+    </div>
+    <div class="card answer-card">
+      <h2>The answer <span class="note" id="settle"></span></h2>
+      <div class="answer">
+        <div class="pad" id="pad">
+          <div class="dpad"><span data-b="UP">&#9650;</span><span data-b="LEFT">&#9664;</span><span data-b="RIGHT">&#9654;</span><span data-b="DOWN">&#9660;</span></div>
+          <div class="ab"><span data-b="B">B<small>whip</small></span><span data-b="A">A<small>jump</small></span></div>
+        </div>
+        <div class="slots" id="slots"></div>
+      </div>
+    </div>
+  </section>
+  <section class="brain">
+    <div class="card brain-card">
+      <h2>The brain <span class="note" id="source">recorded</span></h2>
+      <canvas id="brainview" width="1000" height="900" aria-label="the brain, region by region, settling"></canvas>
+      <p class="caption">Every mark is the decision's real state, recorded while the brain played: the
+        eye's input maps, each neuron's activity through the settle (every second sweep kept), the
+        projections between regions, the strongest synapses, the choice per slot, and the recall
+        memory's slots with the moment the brightest one holds.</p>
+    </div>
+  </section>
+</main>
+<script src="../web/brain.js"></script>
+<script src="player.js"></script>
+</body>
+</html>

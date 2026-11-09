@@ -1,0 +1,59 @@
+{
+ "url": "player/index.html",
+ "checks": {
+  "plays": {
+   "ok": true,
+   "time": 4.0046,
+   "frame": 238,
+   "decision": 19,
+   "shown": 19,
+   "expected": 20
+  },
+  "seek_150s": {
+   "ok": true,
+   "time": 151.3303,
+   "frame": 9079,
+   "decision": 756,
+   "shown": 756,
+   "expected": 756
+  },
+  "pause": {
+   "ok": true,
+   "time": 151.3332,
+   "frame": 9079,
+   "decision": 756,
+   "shown": 756,
+   "expected": 756
+  },
+  "speed_2x": {
+   "ok": true,
+   "time": 157.338,
+   "frame": 9439,
+   "decision": 786,
+   "shown": 786,
+   "expected": 786
+  },
+  "live_matches": {
+   "ok": true,
+   "matches": 60,
+   "of": 60
+  }
+ },
+ "frame_ms": {
+  "median": 16.7,
+  "p95": 16.7,
+  "samples": 181
+ },
+ "live_status_at_ready": "0 of 0 live choices match the recording \u00b7 1 decision behind",
+ "live_load_seconds": 6.3,
+ "live": {
+  "decisions": 60,
+  "matches": 60,
+  "mismatched": [],
+  "ms_per_decision_median": 98.6,
+  "seconds": 15.1,
+  "real_time_needs_ms": 200
+ },
+ "page_errors": [],
+ "ok": true
+}

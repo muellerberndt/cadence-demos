@@ -1,0 +1,31 @@
+{
+ "schema": "cadence-castlevania-player/1",
+ "created": "2026-11-09",
+ "pyodide": "314.0.7",
+ "cadence": "0.95.2",
+ "wheel": "cadence_net-0.95.2-py3-none-any.whl",
+ "wheel_sha256": "734487b6a821ef0d39441dc59817f67e6f6ac070a8cbbe45243a12193ea2d090",
+ "sources": [
+  "__init__.py",
+  "pad.py",
+  "eye.py",
+  "player.py"
+ ],
+ "sources_sha256": {
+  "__init__.py": "c8b9b3dd78190609e038314895c658d063fe72e718e96512ce33c95280e2821b",
+  "pad.py": "95317100af13c2b9ee41533feb8b4288b59f5b8f0269175b9595fcb09cb9fd8d",
+  "eye.py": "290b2d52aedc2f3160564d63f1baa15a82ebd9d08cdd01c95ede783ea91d62b5",
+  "player.py": "60d2d4331d1f28ef5672efdcd7f3c4aa63c15380719c980bba849beec0ca10a7"
+ },
+ "brain": {
+  "file": "../../brain/brain.npz",
+  "sha256": "b868dc955e544df98c5b63a41c705f149d29c2aea72cc6bec1ade1153801a6ed"
+ },
+ "trace": {
+  "file": "trace.json.gz",
+  "sha256": "421be85caea718bb713a0083e538174719e46ed29c06a42e9d02acee015426d5"
+ },
+ "video": {
+  "file": "../../docs/castlevania-game.mp4"
+ }
+}

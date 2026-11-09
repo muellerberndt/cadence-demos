@@ -215,13 +215,15 @@ def main() -> None:
     out.mkdir(parents=True, exist_ok=True)
     result_path, readings_path = out / "result.json", out / "readings.jsonl"
     states = load_practice(Path(cfg["practice"]))
+    for extra in cfg.get("extra_pools", []):  # e.g. a frozen brain's stall and death points (harvest.py --failures)
+        states = states + load_practice(Path(extra))
     validation = load_validation(Path(cfg["validation"]))
     inputs = EYES[cfg["eye"]]
     if len(states[0]["obs"]) != inputs:
         raise ValueError("the practice states carry another eye's observations")
     groups: dict[str, list] = {"all": list(range(len(states)))}
     for i, s in enumerate(states):
-        for tag in s["tags"]:
+        for tag in s["tags"] + ([s["failure"]] if s.get("failure") else []):
             groups.setdefault(tag, []).append(i)
         if s["stage"] == 0 and s["wx"] < 200:
             groups.setdefault("start", []).append(i)
