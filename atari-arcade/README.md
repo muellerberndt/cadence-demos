@@ -10,6 +10,8 @@ score of every life with a skill badge from noob to legend.
 
 ![Freeway in the browser edition: the brain at the controls after 649 watched screens](docs/browser.png)
 
+The brain, its settings and its measured readings are summarized in [MODEL_CARD.md](MODEL_CARD.md).
+
 Two editions run the same `Brain.compose` call from [arcade_brain.py](arcade_brain.py):
 
 - **The browser edition** (`web/`) plays Freeway and Atlantis with nothing behind the page.
