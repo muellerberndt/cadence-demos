@@ -19,7 +19,7 @@ export default function App() {
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Cadence Showcase League</h1>
         </div>
         <p className="text-sm text-muted max-w-xl leading-relaxed">
-          The best-licensed survivors of lineage evolution on a 192-CPU machine, each with one continuing Cadence brain wired to every motor, fight round after round <em className="text-ink not-italic font-medium">live, in your browser</em>.
+          Robots raised in a nursery, each with one continuing Cadence brain wired to every motor, fight round after round <em className="text-ink not-italic font-medium">live, in your browser</em>.
           Every brain learns from every fight; their brains are saved here after each one and come back the next time you open the page. Watch the damage per fight and the ladder move.
         </p>
         <div className="ml-auto flex items-center gap-2 text-xs text-muted tnum">
@@ -69,7 +69,7 @@ export default function App() {
           <div className="lg:col-span-2"><LeaguePanel league={L.league} roster={L.roster} manifest={L.manifest} onReset={() => L.resetLeague()} persisted={L.persisted} describe={L.describe} /></div>
           <footer className="lg:col-span-2 text-xs text-muted leading-relaxed max-w-4xl">
             Built on <a className="underline hover:text-ink" href="https://github.com/muellerberndt/cadence">Cadence</a> {L.manifest?.cadence}: a brain is one neural graph that settles into agreement every moment; routine is equilibrium, surprise and want trigger learning.
-            The arena, the robots and the league are open at <a className="underline hover:text-ink" href="https://github.com/muellerberndt/cadence-robot-arena">cadence-robot-arena</a>. The same Python runs here in Pyodide as ran the leagues on a laptop and on 192 vCPUs.
+            The arena, the robots and the league are open at <a className="underline hover:text-ink" href="https://github.com/muellerberndt/cadence-demos/tree/main/robot-arena">cadence-demos/robot-arena</a>. The same Python that raised the brains runs here in Pyodide.
           </footer>
         </main>
       )}

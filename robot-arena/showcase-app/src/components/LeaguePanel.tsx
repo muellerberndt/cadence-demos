@@ -81,15 +81,25 @@ export function LeaguePanel({ league, roster, manifest, onReset, persisted, desc
       <div className="grid md:grid-cols-2 gap-5">
         <div>
           <h3 className="kicker mb-2">Where they come from</h3>
+          {evo.length ? (
           <p className="text-sm text-muted leading-relaxed">
-            {lineages.length || 8} stock bodies founded lineages on a 192-vCPU machine. Every generation 192 robots, each with one continuing brain, were raised in a
+            {lineages.length || 8} stock bodies founded lineages. Every generation the robots, each with one continuing brain, were raised in a
             nursery, fought rounds of six-robot royales on this same ring stage, and took a driving test: approach, escape, the closing ring, engagement, chase,
             facing, no spinning, no stalling. The best of every lineage stayed with their brains; mutants of their bodies and genes filled the places.
             After {evo.length} generation{evo.length === 1 ? "" : "s"} and {(manifest?.league?.fights ?? 0).toLocaleString()} royales these {roster.length} are the best-licensed of their lineages
             ({roster.map((r) => `${r.name} ${r.licence ? r.licence.passes + "/" + (r.licence.tests || []).length : ""}`).join(", ")}).
             Their mutations: {roster.map((r) => `${r.name}: ${(r.mutations || []).join("; ") || "a copy"}`).join(" · ")}.
           </p>
+          ) : (
+          <p className="text-sm text-muted leading-relaxed">
+            Each robot is a stock body with a newborn brain. Alone in the nursery it learned to drive, aim and stay inside the ring from what the world paid, then it took
+            the driving test (approach, escape, the closing ring, engagement, chase, facing, no spinning, no stalling) and fought {(manifest?.league?.fights ?? 0).toLocaleString()} six-robot
+            royales on this same ring stage. These {roster.length} had the highest ratings
+            ({roster.map((r) => `${r.name} ${r.licence ? r.licence.passes + "/" + (r.licence.tests || []).length : ""}, ${(r.moments || 0).toLocaleString()} moments lived`).join("; ")}).
+          </p>
+          )}
         </div>
+        {evo.length > 0 && (
         <div>
           <h3 className="kicker mb-2">Who dominated, generation by generation</h3>
           <div className="flex gap-2 items-end h-28">
@@ -104,6 +114,7 @@ export function LeaguePanel({ league, roster, manifest, onReset, persisted, desc
           </div>
           <div className="flex gap-4 mt-2 text-xs text-muted">{lineages.map((l) => <span key={l}><i className="inline-block w-2.5 h-2.5 rounded-sm mr-1.5 align-[-1px]" style={{ background: lcol[l] || "#888" }} />{l} line</span>)}<span>{(() => { if (!evo.length) return ""; const last = evo[evo.length - 1]; const entries = Object.entries(last.lineages as Record<string, number>).sort((a, b) => b[1] - a[1]); const total = entries.reduce((a, e) => a + e[1], 0) || 1; return `generations 1 to ${evo.length}; after the last, the ${entries[0][0]} line held ${Math.round(100 * entries[0][1] / total)} % of the places`; })()}</span></div>
         </div>
+        )}
       </div>
     </section>
   );

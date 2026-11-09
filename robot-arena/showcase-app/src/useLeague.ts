@@ -6,6 +6,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Frame, Result, Spec } from "./arena/types";
 import { getItem, removeAll, setItem } from "./store/persist";
 
+// A saved league belongs to one pack: the library version and every shipped brain's hash. A
+// pack with new brains or a new library starts a fresh league instead of restoring old brains.
+const keyOf = (manifest: any): string =>
+  [manifest?.cadence, ...(manifest?.roster || []).map((r: any) => `${r.name}:${r.brain_sha256}`)].join("|");
+
 export type FightRecord = { id: number; seed: number; moments: number; when: string; results: Result[]; elo_after: Record<string, number> };
 export type LeagueRecord = {
   version: 1; elo: Record<string, number>; fights: FightRecord[]; totalMoments: number; savedAt: string | null;
@@ -92,7 +97,7 @@ export function useLeague() {
         const started = await call("start", { pack: PACK });
         setManifest(started.manifest); setDescribe(started.describe);
         const names: string[] = started.manifest.roster.map((r: any) => r.name);
-        const rosterKey = names.join("|");
+        const rosterKey = keyOf(started.manifest);
         const saved = await getItem<LeagueRecord>("league");
         const brains = await getItem<Record<string, string>>("brains");
         let record: LeagueRecord;
@@ -216,7 +221,7 @@ export function useLeague() {
     await removeAll();
     await call("reset", {});
     const names = (manifestRef.current?.roster || []).map((r: any) => r.name);
-    const record: LeagueRecord = { version: 1, elo: Object.fromEntries(names.map((n: string) => [n, 1000])), fights: [], totalMoments: 0, savedAt: null, owed: {}, rosterKey: names.join("|") };
+    const record: LeagueRecord = { version: 1, elo: Object.fromEntries(names.map((n: string) => [n, 1000])), fights: [], totalMoments: 0, savedAt: null, owed: {}, rosterKey: keyOf(manifestRef.current) };
     setLeague(record); leagueRef.current = record; setPersisted("fresh");
     await newFight(record);
   }, [call, newFight]);

@@ -1,9 +1,8 @@
 # Cadence Showcase League · the page
 
-Six robots evolved from three champions, each with one continuing Cadence brain wired to
-every motor, fight and learn live in the browser. Python and the released Cadence library
-run in a web worker (Pyodide); the same `arena` code that ran the leagues on a laptop and
-on 192 vCPUs runs the ring here. Every brain is saved in the browser (IndexedDB) after
+Six robots, each with one continuing Cadence brain wired to every motor, fight and learn live
+in the browser. Python and the released Cadence library run in a web worker (Pyodide); the
+same `arena` code that raised the brains runs the ring here. Every brain is saved in the browser (IndexedDB) after
 every fight and restored on the next visit: the robot you watched learn yesterday is the
 robot that fights today. Click a robot to inspect its brain, moment by moment.
 
@@ -16,18 +15,18 @@ from jsDelivr at load time (about 15 MB the first time, cached afterwards).
 
 ```sh
 npm install
-../.venv/bin/python pack.py      # rebuild public/pack from ../league-evolved (optional; the pack is committed)
+../.venv/bin/python pack.py      # rebuild public/pack from ../league-live (optional; the pack is committed)
 npm run dev                      # http://localhost:8080
 npm run build && npm run preview # the production build at http://localhost:4173
 node check_page.mjs              # the page's promise, end to end in headless Chrome
 ```
 
-The pack builder downloads Cadence 0.79.0. After retraining, run `npm run pack` to
-bundle the compatible wheel, current arena sources and new checkpoints together.
-`npm run build` and `scripts/package_showcase.sh` use the existing pack; neither rebuilds
-it. The committed historical pack remains a complete older snapshot until replaced.
-Each packed brain also carries its final owed outcome into its first browser fight;
-restoring a saved browser life uses that life's own saved outcome.
+`pack.py` downloads the pinned Cadence wheel, copies the arena's sources and the brains of
+the six highest-rated robots of the league, runs their driving test and writes the
+manifest. `npm run build` uses the existing pack and does not rebuild it. Each packed brain
+carries its final owed outcome into its first browser fight; restoring a saved browser life
+uses that life's own saved outcome. A saved league belongs to one pack (the library version
+and every brain's hash), so a new pack starts a fresh league in a returning visitor's browser.
 
 `check_page.mjs` is the deploy gate: the league wakes, a fight runs, a robot's brain can be
 inspected, the fight ends at full speed, the brains land in IndexedDB, and a reload restores
@@ -47,9 +46,7 @@ Lovable projects are Vite + React + TypeScript + Tailwind, which is what this fo
 3. Publish from Lovable. The page needs no environment variables, no server and no database.
    The worker loads Pyodide from `cdn.jsdelivr.net`, so that domain must be reachable.
 
-The zip `cadence-showcase-league.zip` built by `scripts/package_showcase.sh` in the parent
-repository is the same folder without `node_modules` and `dist`, ready to upload or unzip
-into a repository. Any static host (Netlify, Vercel, GitHub Pages) serves the `dist/` build
+Any static host (Netlify, Vercel, GitHub Pages) serves the `dist/` build
 as well; the `pack/` files must be served with their paths intact.
 
 ## What the page shows
@@ -65,8 +62,8 @@ as well; the `pack/` files must be served with their paths intact.
   level against its threshold with the last 200 moments of level and reward, and the
   command it just issued.
 - **The league in this browser**: Elo over your fights, wins, mean place, damage and burn per
-  fight early against late, what each robot arrived with (lineage, generation, mutations and
-  its driving test) and the lineage shares per generation of the evolution it came from.
+  fight early against late, what each robot arrived with (its moments lived and its driving test) and, for a
+  roster bred by `python -m arena evolve`, its lineage, mutations and the lineage shares per generation.
 - **Reset**: restores the six brains to the checkpoints they arrived with.
 
 Speeds: 1×, 2× and "as fast as they settle". A brain's moment costs a few to a few tens of

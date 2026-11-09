@@ -19,7 +19,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
 PYODIDE = "314.0.7"
-CADENCE = "0.80.0"
+CADENCE = "0.95.2"
 sys.path.insert(0, str(REPO))
 from arena.brain import PAGE_STAGE as STAGE  # noqa: E402  the ring stage of a life in the page
 SOURCES = ["__init__.py", "parts.py", "world.py", "senses.py", "brain.py", "controls.py", "pool.py", "royale.py", "nursery.py", "probe.py"]
@@ -53,7 +53,8 @@ def main() -> None:
         sources_sha[name] = sha(src)
     shutil.copy(HERE / "py" / "host.py", out / "py" / "host.py")
     league = json.loads((Path(a.league) / "league.json").read_text())
-    robots = sorted(league["robots"].items(), key=lambda kv: -kv[1]["elo"])[: a.robots]
+    brains = [kv for kv in league["robots"].items() if kv[1].get("policy", "brain") == "brain"]  # never a random baseline
+    robots = sorted(brains, key=lambda kv: -kv[1]["elo"])[: a.robots]
     roster = []
     for name, e in robots:
         brain = Path(a.league) / "brains" / f"{name}.npz"
