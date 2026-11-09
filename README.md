@@ -26,10 +26,8 @@ learning or can learn every human task. The demos expose parts of that goal:
   selected, so its size and shape are earned by what they cost and return.
 - **Answers that settle.** An action is the settled state of the whole brain,
   and a brain that does not settle refuses to answer.
-- **Declared learning mechanisms.** The equilibrium candidates repair from
-  local relations and measured outcomes. Amen retains a separate record-patch
-  engine with the adjoint learning rule disclosed in its README; its results
-  do not certify the common brain's learning rule.
+- **Declared learning mechanisms.** The brains repair from local relations
+  and measured outcomes, and each README states the learning rule it uses.
 
 ## The brain in Cadence
 
@@ -55,10 +53,6 @@ interventions, novel events and an explicit repair schedule control. Account
 for initial acquisition, memory, sensing, all solves, replay and refused work.
 Neither a small residual nor a demo's `pass` or `WIN` label proves correct
 behavior, low physical energy or a performance advantage.
-
-Beside the main `Brain.compose` interface, the library keeps advanced engines
-such as record patches and the population solver, where populations of patches
-settle one joint energy and observers read prediction errors.
 
 ## How a Cadence brain differs from a feed-forward network
 
@@ -90,63 +84,22 @@ settlement, and the learning stays local at every depth.
 | Depth | More layers in the forward and the backward pass | More patches in the same settlement |
 | Lifetime in this comparison | Independent inputs and explicit supervised updates | Bootstrap, continuing settled behavior and witnessed local repair |
 
-Rover Lab and Patch World draw the patches and their prediction errors while
-they settle, Atari Arcade shows the settled state behind every action, and Eyes
-shows the whole brain settling for one eye's stream. Amen
-runs a record patch, an advanced engine whose learning rule is stated in its
-section below. The library README has
+Atari Arcade shows the settled state behind every action, and Eyes shows the
+whole brain settling for one eye's stream. The library README has
 [the full comparison](https://github.com/muellerberndt/cadence#how-a-cadence-brain-differs-from-a-feed-forward-network).
 
 ## The demos
 
 | Demo | What it shows | Runs on |
 | --- | --- | --- |
-| [Rover Lab](rover-lab/) | A live body model that adapts from measured motion after a motor bootstrap | The population solver; in the browser, a JavaScript version of it |
-| [Patch World](patch-world/) | Brains that learn in the browser and evolve across generations | A JavaScript version of the population solver |
-| [Atari Arcade](atari-arcade/) | Brains that learn Atari games from pixels: a teacher first, then reward | `Brain.compose` (System 1); in the browser, a JavaScript version of it |
-| [Amen](amen/) | A record patch composing jungle tracks in the browser | A brain trained with `RecordPatchNet`; the page runs a JavaScript version of its forward pass |
+| [Atari Arcade](atari-arcade/) | Brains that learn Atari games from pixels: a teacher first, then reward | `Brain.compose` (System 1); in the browser, the released library itself, in Pyodide |
 | [Eyes](eyes/) | One brain that follows every shape you drag with its own eye, from the page's pixels only | A hand-wired connectome run by `cadence.Brain`; in the browser, the released library itself, in Pyodide |
 | [Connectome](connectome/) | Teach a fish gaze circuit to hold, return and hold again on measured wiring; explore a larva with fixed connections | Cadence rate patches in JavaScript, with plastic fish connections and declared body models |
 | [Robot Arm](robot-arm/) | A Franka Panda that picks up a block and places it in the bin you choose, under contact physics; move the bin while it carries the block and it follows | A deep `Brain.compose` taught by a scripted teacher in MuJoCo; in the browser, MuJoCo as WebAssembly and the released library itself, in Pyodide |
 
-Rover Lab and Patch World run on the population solver, Atari Arcade and
-Robot Arm on `Brain.compose`, Amen on a record patch, and Eyes on a hand-wired
+Atari Arcade and Robot Arm run on `Brain.compose`, and Eyes on a hand-wired
 connectome run by `cadence.Brain`. Each demo's README names the Cadence version it was
 built with.
-
-## [Rover Lab](rover-lab/): a body model that keeps learning
-
-A simulated rover learns how its wheel commands turn into motion. Weaken its
-right wheel and watch a learning Cadence brain adjust its predictions and keep
-reaching targets, beside a frozen copy, an adaptive estimator and a small neural
-network. The brain is three small populations of patches that read the motor
-commands and one another's states and settle together. Error-reading observers
-are an optional extra arm. The whole lab also runs in the browser, on a
-JavaScript version of the same solver (`rover-lab/web/`).
-
-```sh
-cd rover-lab
-python3 -m venv .venv && .venv/bin/python -m pip install -r requirements.txt
-.venv/bin/python server.py        # http://localhost:8670
-python3 -m http.server 8080 --directory web   # the browser edition at http://localhost:8080/
-```
-
-See the [Rover Lab README](rover-lab/README.md).
-
-## [Patch World](patch-world/): evolution prices the brain
-
-A conserved-mass world under a moving sun, in one page. Each creature inherits
-a body plan, develops a small settling brain from it, learns within one life,
-and pays mass for every patch, relation and repair sweep. The founders have no
-observers; mutation can add observer stages, and energy and death decide whether
-they stay. Click a creature to watch its brain settle.
-
-```sh
-cd patch-world
-python3 -m http.server 8080       # http://localhost:8080/
-```
-
-See the [Patch World README](patch-world/README.md).
 
 ## [Atari Arcade](atari-arcade/): learning Atari games
 
@@ -154,9 +107,9 @@ Brains born at server start learn Atari games from the raw screen while you
 watch. Each one is a System 1 brain built with `Brain.compose`. It watches a
 scripted teacher play, takes the controls once its own answers agree often
 enough, and then keeps learning from the reward of its own actions. The page
-shows the game beside the settled brain. Freeway and Atlantis
-also run entirely in the browser, on a JavaScript version of the same brain
-(`atari-arcade/web/`).
+shows the game beside the settled brain. Freeway and Atlantis also run entirely
+in the browser: an Atari core and the released Cadence wheel, in Pyodide, in
+web workers (`atari-arcade/web/`).
 
 ```sh
 cd atari-arcade
@@ -166,23 +119,6 @@ python3 -m http.server 8080 --directory web   # the browser edition at http://lo
 ```
 
 See the [Atari Arcade README](atari-arcade/README.md).
-
-## [Amen](amen/): a jungle composer in the browser
-
-One record patch learned jungle tracks as events per half-beat: a slice of a
-drum break, a sub-bass note, a change flag and a texture. Nothing on the page is
-recorded. Press the button and the brain computes a track from silence in the
-browser, hearing each half-beat it plays, then renders it through the
-instrument. The brain was trained from random parameters in 78 CPU minutes on a
-laptop. Its slow parameters learn by a gradient step over
-32 half-beats that is kept only when a replay confirms it, and its records are
-written in one shot.
-
-```sh
-python -m http.server -d amen/web 8803   # open http://localhost:8803 and press CUT A DUB
-```
-
-See the [Amen README](amen/README.md).
 
 ## [Eyes](eyes/): one brain, an eye on every shape
 
