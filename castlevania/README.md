@@ -13,33 +13,47 @@ own dump of the cartridge.
 
 ## Watch the brain play
 
-[![The brain crossing the stage-2 underground; click for the whole run](docs/castlevania-run-poster.png)](docs/castlevania-run.mp4)
+[![The brain climbing the underground's exit stairs in stage 2; click for the highlights](docs/castlevania-highlights-poster.png)](docs/castlevania-highlights.mp4)
 
-[`docs/castlevania-run.mp4`](docs/castlevania-run.mp4) (4 min 26 s, 1280 x 720, every NES frame
-at 60 frames a second) is one whole game of the packed brain from the first frame Simon can
-move, after 49 idle decisions (one of the fresh starts): frozen, greedy, no search, no cuts.
-Beside the game, the page's brain view (below) settles on every decision.
-[`docs/castlevania-run.webm`](docs/castlevania-run.webm) is 14 s of it, the first underground
-crossing. The per-decision log is [`evidence/castlevania-run.json`](evidence/castlevania-run.json);
-[`record.py`](record.py) makes the video from your own ROM (`python record.py --idle 49`): it plays
-the game and the brain and draws every frame with the page's own renderer (`web/render.html` in a
-headless Chromium), piped to ffmpeg.
+**Highlights** ([`docs/castlevania-highlights.mp4`](docs/castlevania-highlights.mp4), 1440p, 60
+frames a second; [`720p`](docs/castlevania-highlights-720p.mp4); a short loop
+[`docs/castlevania-highlights.webm`](docs/castlevania-highlights.webm)): two stretches of one
+recorded game of the packed brain, frozen and greedy, no search, each played as recorded. A card
+marks each cut, and a caption names the start and the life:
 
-What the run shows:
+1. Start after 42 idle decisions, life 1 (0:00 to 0:57 of the game): the courtyard, the hall and
+   up its stairs into stage 2.
+2. The same game, life 3 (1:38 to 2:18): down the stage-2 staircase into the underground, across
+   it, up its exit stairs and into stage 3, the giant bat's stage.
+
+**The whole game, uncut** ([`docs/castlevania-run.mp4`](docs/castlevania-run.mp4), 1440p;
+[`720p`](docs/castlevania-run-720p.mp4)): the same game from the first frame Simon can move to the
+game over, with the page's brain view settling on every decision:
 
 | Time | |
 | --- | --- |
-| 0:00 to 0:58 | The courtyard and the hall: through the gate, along the hall, up the stairs at its end; no life lost |
-| 0:58 to 1:06 | Stage 2: the first life lost at the bottom-left staircase down into the underground |
-| 1:18 to 1:25 | Second life: down the staircase and across the underground, over the water, to its far end (world x 495) |
-| 1:25 to 2:13 | It stands at the underground's far end, past and below the staircase up and out, until enemies take the life |
-| 2:28 to 3:15 | Third life: across the underground again (2:35), then the same end |
-| 3:53 to 4:23 | Last life: across once more (4:00), the same end; game over |
+| 0:00 to 0:56 | Life 1: the courtyard and the hall, up the stairs at its end into stage 2 |
+| 1:20 | Life 1 lost in stage 2, at the bottom-left staircase |
+| 1:30 to 1:37 | Life 2: down into the underground; lost there |
+| 1:45 to 2:14 | Life 3: down into the underground, across it, up its exit stairs, through stage 2's exit and into stage 3 |
+| 2:14 to 2:53 | Life 3 in stage 3, towards the giant bat; lost there |
+| 2:53 to 4:32 | Life 4: the fight with the giant bat, which loses 36 of its 64 health; game over |
 
-The game's first block ends with the giant bat at stage 3 (the screen's STAGE 03). No brain of
-ours has reached stage 3: this one stops in stage 2. Stage numbers here are the game's RAM
-counter: stage 0 is the courtyard and stage 1 the hall (the screen shows both as STAGE 01), stage
-2 is the screen's STAGE 02.
+The game's first block ends with that bat. The brain has not beaten it. The per-decision log is
+[`evidence/castlevania-run.json`](evidence/castlevania-run.json).
+[`record.py`](record.py) makes the videos from your own ROM (`python record.py --idle 42`,
+`--scale 2` for 1440p): it plays the game and the brain and draws every frame with the page's own
+renderer (`web/render.html` in a headless Chromium), piped to ffmpeg;
+[`highlights.py`](highlights.py) cuts the highlights from that recording and its log.
+
+**The recorded run beside the brain, in your browser** ([`player/`](player/)): a static page that
+plays the game video and drives the brain view from the recorded trace, in step with play, pause,
+seek and speed changes. Its live mode runs the brain itself in the tab (Pyodide and the released
+wheel) on the recorded eye inputs and checks its buttons against the recording. See
+[Player](#player) below.
+
+Stage numbers here are the game's RAM counter: stage 0 is the courtyard and stage 1 the hall (the
+screen shows both as STAGE 01), stage 2 is the screen's STAGE 02 and stage 3 its STAGE 03.
 
 ## Run it
 
@@ -60,6 +74,40 @@ The page polls the local server, which runs the FCEUmm core and the brain in one
 game's speed (1x, 2x, 4x or as fast as the brain answers). New game powers the console on;
 "start after N idle decisions" lets the game run on for N decisions first, which changes where
 the enemies are when Simon starts.
+
+## Player
+
+[`player/`](player/) is a static page (no server, no ROM): the game video
+([`docs/castlevania-game.mp4`](docs/castlevania-game.mp4), the game alone, the same run as the
+videos above) beside the brain view, driven from a trace of that run
+([`player/pack/trace.json.gz`](player/pack/trace.json.gz), 6.7 MB). The trace holds, per decision,
+the first video frame it covers, the eye's exact input (float64), the settle (every second sweep,
+as bytes), the projections, the strongest synapses, the choice per slot and the recall slots'
+reads, and the frame each decision saw (for the recall view). The page follows the video's own
+frame (`requestVideoFrameCallback` where the browser has it): play, pause, seek and speed changes
+stay in step.
+
+![The player at 2:31, in stage 3 below the giant bat, beside the recorded brain view](docs/player.png)
+
+**Live** runs the brain itself in the tab: Pyodide, the released `cadence-net` 0.95.2 wheel, the
+demo's own player code and the brain, each checked against `player/pack/manifest.json`'s SHA-256
+(the page reads the pack from `<meta name="cadence-pack">`, else `pack/` beside it). It feeds the
+recorded eye inputs in order from the game's start, settles each one for real, draws its own
+state, and counts how many of its chosen buttons equal the recording's. If it falls behind the
+video it says by how many decisions.
+
+```sh
+cd castlevania && python -m http.server 8846     # open http://localhost:8846/player/
+python player/pack.py --trace <record.py --trace output>   # rebuild the pack
+python player/check_player.py --live 60                    # the page's promise, headless
+```
+
+[`player/check_player.py`](player/check_player.py) (`player/evidence/player_check.json`, headless
+Chromium on a c7i): the page plays, stays on the decision the video shows after a seek to 2:30, a
+pause and 2x speed; frame time 16.7 ms (median and 95th percentile); live mode loaded in 6.3 s and
+chose the recorded buttons on 60 of the first 60 decisions, 99 ms a decision (real time needs 200).
+Pyodide's NumPy is 32-bit; one shim in `player/worker.js` (the same as the Eyes demo's) casts the
+library's `np.repeat` slot counts to its index type.
 
 ## The brain view
 
@@ -148,11 +196,12 @@ starts. The brain never reads RAM beyond the eye's position readings.
 4. **Stage 2.** 125,120 more decisions of practice on this release, eight streams, with the
    draw weighted to stage 2 (the staircase down to the underground, the water jumps, the way
    out): about an hour on one core of a c7i.
-5. **Its own path (DAgger).** 124,896 decisions in which the brain drives and the teacher labels
-   every state the brain reaches, with the same stage-2 draw: the lessons now come from where
-   the brain actually goes, including its own mistakes at the staircase. 32 streams on
-   `backend="mlx"` on an Apple M4, 62 minutes. Of its checkpoints, read every 25,000 decisions,
-   the one at 450,016 is packed.
+5. **Its own path (DAgger).** 100,160 decisions in which the brain drives and the teacher labels
+   every state the brain reaches, with the same stage-2 draw: the lessons come from where the brain
+   actually goes, including its own mistakes. Eight streams on one core of a c7i. For the last
+   25,280 of them the teacher had learned to leave the low ledge past the underground's exit stairs
+   (it jumps back left onto the floor), the place where the brain used to stand until its life ran
+   out. Of the run's checkpoints, read every 25,000 decisions, the one at 425,280 is packed.
 
 ## Readings
 
@@ -161,26 +210,26 @@ is [`evidence/receipt.json`](evidence/receipt.json)). The checkpoints of the run
 nine selection starts and this one was picked there; nine fresh starts were read once, after the
 pick.
 
-| Starts (idle decisions) | Past the hall stairs | Down the stage-2 staircase and across the underground | Stage 3 |
+| Starts (idle decisions) | Past the hall stairs | Down the stage-2 staircase and across the underground | Stage 3, the giant bat's stage |
 | --- | --- | --- | --- |
-| Fresh: 1, 5, 11, 17, 25, 31, 38, 45, 49 | 9 of 9 | 8 of 9 | 0 of 9 |
-| Selection: 0, 3, 7, 10, 14, 21, 28, 35, 42 | 9 of 9 | 6 of 9 | 0 of 9 |
-| The brain before step 5, fresh starts | 9 of 9 | 7 of 9 | 0 of 9 |
-| The brain before step 5, selection starts | 9 of 9 | 4 of 9 | 0 of 9 |
-| The brain before step 4, selection starts | 9 of 9 | 0 of 9 | 0 of 9 |
+| Fresh: 1, 5, 11, 17, 25, 31, 38, 45, 49 | 9 of 9 | 8 of 9 | 2 of 9 |
+| Selection: 0, 3, 7, 10, 14, 21, 28, 35, 42 | 9 of 9 | 9 of 9 | 3 of 9 |
+| The previous brain, fresh starts | 9 of 9 | 8 of 9 | 0 of 9 |
+| The previous brain, selection starts | 9 of 9 | 6 of 9 | 0 of 9 |
 
-Every start ends with its four lives lost, nearly all of them in stage 2 (fresh starts: 33 deaths
-in stage 2, 2 in stage 1). Across the underground means down the staircase at the bottom left of
-stage 2 and on to world x 495 in the underground. A checkpoint replaces the packed brain only if
-it is no worse on both sets of starts and no start leaves the brain standing still.
+Every start ends with its four lives lost (fresh starts: 20 deaths in stage 2, 5 in stage 1, 2 in
+stage 3). Across the underground means down the staircase at the bottom left of stage 2 and on
+through the underground. Where the brain reaches stage 3 it goes on to the giant bat's arena
+(world x 664); on selection start 42 it takes 36 of the bat's 64 health before its last life ends.
+A checkpoint replaces the packed brain only if it is no worse on both sets of starts and no start
+leaves the brain standing still.
 
 ## Limits
 
-- **Stage 2.** At the bottom left of stage 2 the route goes down a staircase into the
-  underground. On some starts (1 of the 9 fresh ones) the brain stops a few pixels short of the staircase's foot and
-  holds down, which crouches, until enemies take its lives. Where it does go down, it crosses the
-  underground but walks past the staircase up and out (world x 434 to 456) and loses its lives
-  further on. It has not reached stage 3.
+- **Stage 2 and the bat.** The game's first block ends with the giant bat at stage 3. The brain
+  reaches it on 2 of 9 fresh starts and has not beaten it. Elsewhere it loses its lives in stage 2:
+  some starts stop a few pixels short of the bottom-left staircase's foot and hold down, which
+  crouches; some cross the underground and drop past the staircase up and out onto the low ledge.
 - **Imitation, not reward.** The brain learned from a teacher's labels; the world's reward
   played no part, and nothing is learned while you watch.
 - **RAM in the eye.** Simon's position, facing, stage, block and body state come from RAM; the
