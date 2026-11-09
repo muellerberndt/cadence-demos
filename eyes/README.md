@@ -15,6 +15,8 @@ named.
 python -m http.server -d eyes/web 8797     # open http://localhost:8797/
 ```
 
+The brain and its control are described in the [model card](MODEL_CARD.md).
+
 The page shows a raised visual brain at work; it does not learn. The brain was raised offline
 with a lesson on every frame (an open-loop bootstrap), and the page runs it frozen. In
 development, continuing to learn in closed loop from witnessed misses made every raised eye

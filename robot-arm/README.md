@@ -11,6 +11,8 @@ it.
 
 Runs on `cadence-net==0.95.2` and `mujoco==3.17.0`.
 
+The brain's [model card](MODEL_CARD.md) states what it senses, how it was trained and measured, and its limits.
+
 ## The page
 
 ```sh

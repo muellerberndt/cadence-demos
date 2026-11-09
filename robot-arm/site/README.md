@@ -58,7 +58,7 @@ band the brain was tested to place 19 or 20 of 20 blocks. In the far corners it 
 - `tools/check_page.py` runs the page in headless Chrome: it placed the block in bin A in 52
   decisions, exactly as the Python trial did, and with bin B as the target, moved to (0.66, −0.12)
   m once the hand held the block, it placed the block in the moved bin
-  (`../evidence/page_check.json`). The brain answered in a median of 42 ms per decision there.
+  (`../evidence/page_check.json`). The brain answered in a median of 51.3 ms per decision there.
 
 ## Run it locally
 
