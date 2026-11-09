@@ -11,6 +11,33 @@ brain plays frozen; nothing is learned while you watch.
 Runs on `cadence-net==0.95.2` and `stable-retro==1.0.1`. The game is not included: you need your
 own dump of the cartridge.
 
+## Watch the brain play
+
+[![The brain crossing the stage-2 underground; click for the whole run](docs/castlevania-run-poster.png)](docs/castlevania-run.mp4)
+
+[`docs/castlevania-run.mp4`](docs/castlevania-run.mp4) (4 min 30 s, 1280 x 720, every NES frame
+at 60 frames a second) is one whole game of the packed brain from the first frame Simon can
+move, after 1 idle decision: frozen, greedy, no search, no cuts. Beside the game: what the eye
+sees, the answer per slot, the settled regions, the recall memory.
+[`docs/castlevania-run.webm`](docs/castlevania-run.webm) is 14 s of it, the underground crossing.
+The per-decision log is [`evidence/castlevania-run.json`](evidence/castlevania-run.json);
+[`record.py`](record.py) makes the video from your own ROM (`python record.py --idle 1`).
+
+What the run shows:
+
+| Time | |
+| --- | --- |
+| 0:00 to 1:19 | The courtyard and the hall: through the gate, along the hall, up the stairs at its end; no life lost |
+| 1:19 to 2:19 | Stage 2: two lives lost at the bottom-left staircase down into the underground |
+| 2:26 to 2:36 | Third life: down the staircase and across the underground, over the water, to its far end (world x 495) |
+| 2:36 to 3:30 | It stands at the underground's far end, past and below the staircase up and out, pressing right and up, until enemies take the life |
+| 3:30 to 4:27 | Last life: lost at the bottom-left staircase again; game over |
+
+The game's first block ends with the giant bat at stage 3 (the screen's STAGE 03). No brain of
+ours has reached stage 3: this one stops in stage 2. Stage numbers here are the game's RAM
+counter: stage 0 is the courtyard and stage 1 the hall (the screen shows both as STAGE 01), stage
+2 is the screen's STAGE 02.
+
 ## Run it
 
 ```sh

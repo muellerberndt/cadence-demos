@@ -63,6 +63,18 @@ the underground.
 
 The teacher it imitated, on ten power-on starts: stage 4 on 10 of 10.
 
+## The video
+
+[`docs/castlevania-run.mp4`](docs/castlevania-run.mp4): one whole game from the first frame Simon
+can move (start after 1 idle decision, one of the fresh starts: it crosses the underground and loses no
+life before stage 2), frozen, greedy, no search, no cuts, made by [`record.py`](record.py); per-decision
+log in [`evidence/castlevania-run.json`](evidence/castlevania-run.json). It shows the courtyard and
+hall passed with no life lost (1:19), two lives lost at the stage-2 staircase, the third life
+going down the staircase and across the underground to world x 495 (2:26 to 2:36), standing
+there below the staircase up and out until that life is lost (3:30), and the last life lost at
+the staircase (game over, 4:27). The game's first block ends with the giant bat at stage 3; this
+brain does not reach stage 3.
+
 ## In the page
 
 Frozen: nothing is learned while the visitor watches. The visitor can start a new game after 0
