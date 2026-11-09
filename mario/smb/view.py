@@ -37,6 +37,7 @@ class BrainView:
         self.brain = brain
         self.idx = {k: np.asarray(getattr(brain, f"{k}_index")) for k in ("sensory", "association", "prefrontal", "motor")}
         self.decisions = self.agree = 0
+        self.sweeps, self.seconds = [], 0.0  # per settle; time spent on the view (settle + draw)
         try:
             self.font = ImageFont.load_default(size=13)
         except TypeError:
@@ -44,7 +45,9 @@ class BrainView:
 
     def settle(self, obs: np.ndarray, played: int) -> dict:
         """Settle obs again under the recorder; return the final state and the sweep count."""
+        import time
         from cadence.recording import record_settlements
+        t0 = time.perf_counter()
         recs = []
         with record_settlements(recs.append, label="view"):
             seen = int(np.asarray(self.brain.predict(obs[None])).reshape(-1)[0])
@@ -52,6 +55,8 @@ class BrainView:
         final = np.asarray(r.activation)[-1, 0, :]
         self.decisions += 1
         self.agree += seen == played
+        self.sweeps.append(int(r.steps))
+        self.seconds += time.perf_counter() - t0
         return dict(final=final, steps=int(r.steps), played=played, obs=obs)
 
     def draw(self, s: dict):

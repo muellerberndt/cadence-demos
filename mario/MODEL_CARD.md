@@ -36,7 +36,7 @@
 `tests/answers.npz` the answers in forward and in reversed order are identical
 (`tests/test_brain.py`). By this repository's AGENTS.md the layout is close to a control (a window
 of input, one processing region, a readout taught on every presentation). It is packed because it
-is the brain that got furthest in this game.
+cleared all of World 1 in one greedy five-life run.
 
 ## How it was trained
 
@@ -105,8 +105,8 @@ by `play.py --video` on this release: the game beside the brain view, every fram
 (the console skips idle starts, deaths, pipes and flagpole slides, as in training).
 `docs/mario-1-3.webm` is 15 s of it, the fourth try at 1-3. The brain view settles each
 observation a second time under `cadence.recording.record_settlements` (the library's NumPy path);
-its answer agreed with the played one on 1,394 of 1,394 decisions. The played answers never come
-from the recording.
+its answer agreed with the played one on 1,394 of 1,394 decisions (100%, cadence-net 0.95.2,
+`evidence/gauntlet.json`). The played answers never come from the recording.
 
 ## Console parity
 
@@ -116,8 +116,9 @@ step on nes-py; none of its code is copied. With the training dump, the 9 gauntl
 the 200 held-out attempts give identical screens, RAM, observations and buttons at every decision
 (32,402 decisions), on 0.91.1 with that package and on 0.95.2 with this console; cadence-net
 0.95.2 answers the same as 0.91.1 on every one of those observations (0.91.1 and 0.91.3 had
-answered identically on 18,000 observations when the line moved to 0.91.3). `tests/test_brain.py`
-keeps 32 of them.
+answered identically on 18,000 observations when the line moved to 0.91.3). The comparison is in
+[`evidence/parity.json`](evidence/parity.json); `tests/test_brain.py` keeps 32 of the observations
+with their answers.
 
 ## Limits
 

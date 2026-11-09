@@ -63,23 +63,48 @@ class Screen:
         return np.asarray(img)
 
 
+class Timed:
+    """The brain, with the time its played answers take."""
+    def __init__(self, brain):
+        self.brain, self.seconds, self.calls = brain, 0.0, 0
+
+    def predict(self, x):
+        t0 = time.perf_counter()
+        out = self.brain.predict(x)
+        self.seconds += time.perf_counter() - t0; self.calls += 1
+        return out
+
+
 def run(a, screen_cb, scr: Screen):
+    import hashlib
+    import platform
+    import cadence
     from cadence import Brain
     brain = Brain.load(str(BRAIN), backend="cpu")
+    timed = Timed(brain)
     if not a.no_view:
         from smb.view import BrainView
         scr.view = BrainView(brain)
     if a.level:
         scr.on_attempt(a.level, 1, 1)
-        log = [attempt(brain, ROM, a.level, a.idle, on_frame=screen_cb, on_decision=scr.on_decision)]
+        log = [attempt(timed, ROM, a.level, a.idle, on_frame=screen_cb, on_decision=scr.on_decision, trace=True)]
     else:
-        log = gauntlet(brain, ROM, on_frame=screen_cb, on_attempt=scr.on_attempt, on_decision=scr.on_decision)
+        log = gauntlet(timed, ROM, on_frame=screen_cb, on_attempt=scr.on_attempt, on_decision=scr.on_decision)
     for e in log:
         print(f"{e['level']} idle {e['idle']}: {e['end']} at x {e['x']} after {e['decisions']} decisions", flush=True)
     if scr.view:
         print(f"brain view agreed with the played answer on {scr.view.agree} of {scr.view.decisions} decisions", flush=True)
     if a.log:
-        Path(a.log).write_text(json.dumps(log, indent=1))
+        rec = dict(library=f"cadence-net {cadence.__version__}", backend="cpu",
+                   brain_sha256=hashlib.sha256(BRAIN.read_bytes()).hexdigest(), cpu=platform.processor(),
+                   decisions=timed.calls, ms_per_decision=round(1000 * timed.seconds / max(1, timed.calls), 1),
+                   attempts=log)
+        if scr.view:
+            v = scr.view
+            rec["brain_view"] = dict(agree=v.agree, decisions=v.decisions, sweeps_min=min(v.sweeps), sweeps_max=max(v.sweeps),
+                                     ms_per_decision=round(1000 * v.seconds / max(1, v.decisions), 1),
+                                     note="the view's second settle under cadence.recording; played answers never come from it")
+        Path(a.log).write_text(json.dumps(rec, indent=1))
     return log
 
 

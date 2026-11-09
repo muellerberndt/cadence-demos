@@ -1,6 +1,6 @@
 """The shipped brain loads and answers on the released library, without a ROM: a synthetic screen
-and RAM go through the eye, and 32 recorded observations from the gauntlet get the answers the
-brain gave when it played it (on cadence-net 0.91.1, the gauntlet's library line)."""
+and RAM go through the eye, and 32 recorded observations from the five-life run get the answers the
+brain gave on the training stack (cadence-net 0.91.1 with gym-super-mario-bros)."""
 from __future__ import annotations
 
 import sys

@@ -27,8 +27,8 @@ every button.
 
 The run's rules: the real start of 1-1 and five lives. A flag moves on to the next level. A death,
 or 40 decisions (2.7 s of game time) without getting further right, costs a life and restarts that
-level with small Mario a few idle frames later (0, 37, 83, 110, 131), because the emulator is
-deterministic and an identical restart replays the identical death.
+level with small Mario a few idle frames later (tries 1 to 5 start after 0, 37, 83, 110 and 131),
+because the emulator is deterministic and an identical restart replays the identical death.
 
 | Level | Tries | What happened |
 | --- | --- | --- |
@@ -63,8 +63,9 @@ as No-Intro's "Super Mario Bros. (World)" (PRG+CHR CRC32 D445F698), differ from 
 `python -m smb.rom --any <file>` accepts one, but the brain is unchecked there.
 
 The window runs at the game's speed (`--speed 2` or `4` for faster, `0` for as fast as the brain
-answers; `--no-view` for the game alone). One decision takes about 14 ms on an i7-9700K, 27 ms
-with the brain view, inside the 67 ms a decision lasts at the game's speed. nes-py 8.2.1 needs
+answers; `--no-view` for the game alone). Over the five-life run a decision took 2.1 ms on an
+i7-9700K and the brain view 8.7 ms more, with four training runs busy in the background
+([`evidence/gauntlet.json`](evidence/gauntlet.json)); a decision lasts 67 ms at the game's speed. nes-py 8.2.1 needs
 NumPy 1 (`requirements.txt` pins it) and pulls in the old `gym`, which prints a deprecation notice
 on import. The window uses tkinter.
 
@@ -74,14 +75,15 @@ Every decision the brain answers with `Brain.predict`. For the view, the same ob
 settled a second time inside `cadence.recording.record_settlements`, which records every neuron at
 every sweep; the played answer never comes from the recording (the recorder runs the library's
 NumPy path, which can differ at round-off). The view counts how often its answer agrees with the
-played one: 1,394 of 1,394 decisions over the five-life run.
+played one: 100%, 1,394 of 1,394 decisions over the five-life run on cadence-net 0.95.2
+([`evidence/gauntlet.json`](evidence/gauntlet.json)).
 
 - **Eye**: the two grey maps the brain gets, this decision and the last, 26 x 32 blocks each.
 - **Body**: the 42 body readings below, one copy.
 - **Association**: the 256 neurons of the brain's one module after the settle, warm for active.
 - **Prefrontal**: the composed working-memory region; `predict` does not read it, so it stays dark.
 - **Buttons**: the 7 motor neurons at the end of the settle on their real scale (-0.1 to 1), the
-  pressed one marked, and the settle's sweep count (32 on every decision of the run).
+  pressed one marked, and the settle's sweep count (32 on every decision of the run, same file).
 
 ## The brain
 
@@ -103,8 +105,8 @@ the shipped file, which reports the teaching as "custom" after the step change).
   the answers are the same in forward and in reversed order (`tests/test_brain.py`).
 
 By this repository's guidance that layout is close to a control: a window of input, one processing
-region and a readout. It is shown here as what it is, the brain that got furthest in this game so
-far; the [model card](MODEL_CARD.md) declares each memory.
+region and a readout. It is shown here as what it is: a small screen brain that cleared all of
+World 1 in one greedy five-life run. The [model card](MODEL_CARD.md) declares each memory.
 
 ## What the brain sees
 
@@ -168,8 +170,8 @@ this release.
 Every attempt that does not reach the flag ends in a death, except on 1-1, where most end with
 Mario standing still for 40 decisions. 1-2 drops from 8 held-out clears to 1 fresh one: its
 held-out number was partly the luck of the pick. Of the eight other checkpoints of the same run
-scored on the held-out starts, some are stronger on single levels (one clears 1-1 on all 50), and
-none is at least as good on all four.
+scored on the held-out starts (cadence-arcade `mario/concepts/runs/p4/held_F2ck*.json`), some are
+stronger on single levels (one clears 1-1 on all 50), and none is at least as good on all four.
 
 ## Limits
 
@@ -177,8 +179,9 @@ none is at least as good on all four.
   50 starts.
 - **Not consistent.** 1-4 is the strongest level (27 and 34 of 50); 1-2 is cleared on 1 fresh start
   of 50. On 1-1 it mostly stops and stands still.
-- **Imitation, not reward.** The brain learned from a coach's labels; the score and the world's
-  outcomes played no part, and nothing is learned while you watch.
+- **Imitation, not reward.** The brain learned from a coach's labels. The coach picks them by
+  outcome (how far right, alive), but the brain never sees the score or an outcome, and nothing is
+  learned while you watch.
 - **RAM in the body readings.** Mario's speeds, float state, facing, power, timers and the level
   timer come from RAM; the world is pixels.
 - **A short memory.** The only past the brain sees is the last decision's screen and buttons.
@@ -193,8 +196,9 @@ The coach, the piles, the trainer and the evaluation are in
 logs and notes. They run on gym-super-mario-bros (Christian Kauten), so they stay there.
 [`smb/console.py`](smb/console.py) follows that package's single-level start and frame handling
 step by step, rewritten on nes-py: on the training dump it gives this brain the same screens, RAM
-and answers at every decision of the five-life run and of the 200 held-out attempts (32,402
-decisions), so a brain trained there plays the same here.
+and answers at every decision of the five-life run and of the 200 held-out attempts (209 attempts,
+32,402 decisions, [`evidence/parity.json`](evidence/parity.json)), so this brain plays here as it
+played there.
 
 ## Layout
 
@@ -204,7 +208,7 @@ decisions), so a brain trained there plays the same here.
 | `evaluate.py` | the readings, into `evidence/receipt.json` |
 | `smb/` | the console on nes-py (`console.py`), the eye and the body (`eye.py`), the player (`player.py`), the brain view (`view.py`), the ROM import (`rom.py`) |
 | `brain/brain.npz` | the brain |
-| `evidence/` | the receipt of the readings (every attempt) and the five-life run's log |
+| `evidence/` | the receipt of the readings (every attempt), the five-life run's log with the brain view's checks and timings, the parity of this console with the training stack |
 | `docs/` | the screenshot, the full run and the 1-3 clip |
 | `tests/` | the brain loads and answers as it played, the eye's layout and the start sets, without a ROM |
 

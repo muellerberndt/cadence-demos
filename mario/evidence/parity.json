@@ -1,0 +1,56 @@
+{
+ "brain": "brain/brain.npz (W1b), sha256 c2309a13b99638470fbe399225d864aa292e47363149d762cd52b0fa27802472",
+ "what": "The same attempts played twice, start for start: the training stack and this folder's. Per decision compared: the button, the SHA-1 of the screen and of the RAM after the decision, and the observation. Then this release's answers on the training stack's observations.",
+ "reference": "cadence-net 0.91.1 (the line moved 0.91.1 -> 0.91.3 with 0 of 18,000 answers different), gym-super-mario-bros 7.4.0 on nes-py 8.2.1, cadence-arcade mario/ (game.py, dagger.py, concepts/cplay.py), stuck limit 40",
+ "this_release": "cadence-net 0.95.2, smb/console.py on nes-py 8.2.1, stuck limit 40",
+ "rom_prg_chr_sha1": "0c4992fc08d2278697339d3b48066e7b5f943598",
+ "date": "2026-11-09",
+ "sets": [
+  {
+   "set": "five-life run",
+   "attempts": 9,
+   "attempts_mismatched": 0,
+   "decisions": 1394,
+   "observation_max_abs_diff": 0.0,
+   "answers_differ": 0
+  },
+  {
+   "set": "held-out 1-1",
+   "attempts": 50,
+   "attempts_mismatched": 0,
+   "decisions": 6820,
+   "observation_max_abs_diff": 0.0,
+   "answers_differ": 0
+  },
+  {
+   "set": "held-out 1-2",
+   "attempts": 50,
+   "attempts_mismatched": 0,
+   "decisions": 7623,
+   "observation_max_abs_diff": 0.0,
+   "answers_differ": 0
+  },
+  {
+   "set": "held-out 1-3",
+   "attempts": 50,
+   "attempts_mismatched": 0,
+   "decisions": 7402,
+   "observation_max_abs_diff": 0.0,
+   "answers_differ": 0
+  },
+  {
+   "set": "held-out 1-4",
+   "attempts": 50,
+   "attempts_mismatched": 0,
+   "decisions": 9163,
+   "observation_max_abs_diff": 0.0,
+   "answers_differ": 0
+  }
+ ],
+ "totals": {
+  "attempts": 209,
+  "decisions": 32402,
+  "mismatched_attempts": 0,
+  "answers_differ": 0
+ }
+}
