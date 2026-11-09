@@ -205,6 +205,12 @@ it with them:
 - `--tactics-weight 3`: `lesson(x, labels, weights=w)` weighs rows with a win to take or a win to
   block three times.
 
+Continued from the packed brain for 5,000 lessons on an A10G with exactly these options, the brain
+alone took more immediate wins (68% to 83% of held-out positions) and made more forced blocks (85%
+to 95%), but kept the theoretical result less often (92.3% to 90.9%) and, moving first against the
+perfect solver, scored 13-13-14 in 40 games; at three times the rate it fell to 84.9% and 0-25-15.
+The packed brain is the one before that continuation.
+
 `runs/continue/receipt.json` holds every reading; `policy_best.npz` is the brain with the best
 `keep + 0.25 × (wins + blocks)` so far. Pack a brain for the page:
 
