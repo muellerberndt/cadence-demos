@@ -69,19 +69,48 @@ The previous packed brain (C2sd at 450,016): fresh 9 of 9 past the stairs, 8 of 
 underground, 0 of 9 in stage 3; selection 9, 6 and 0. Gate for replacing the packed brain: no worse
 on both sets, no start standing still. All readings with `backend="cpu"` on a c7i (Linux).
 
-## The video
+## The videos
 
-[`docs/castlevania-run.mp4`](docs/castlevania-run.mp4): one whole game from the first frame Simon
+Brain alone: [`docs/castlevania-brain-alone-run.mp4`](docs/castlevania-brain-alone-run.mp4): one whole game from the first frame Simon
 can move, start after 42 idle decisions (a selection start), frozen, greedy, no search, no cuts,
 every frame drawn by the page's own brain view (`web/render.html`, [`record.py`](record.py));
-per-decision log in [`evidence/castlevania-run.json`](evidence/castlevania-run.json). Life 1 clears
+per-decision log in [`evidence/castlevania-brain-alone-run.json`](evidence/castlevania-brain-alone-run.json). Life 1 clears
 the courtyard and the hall and climbs into stage 2 (0:56). Lives 1 and 2 are lost in stage 2. Life 3
 goes down into the underground, across it, up its exit stairs and into stage 3 (2:14), and is lost
 there. Life 4 fights the giant bat, which loses 36 of its 64 health, until the game over (4:32).
-[`docs/castlevania-highlights.mp4`](docs/castlevania-highlights.mp4) cuts two stretches of that game
+[`docs/castlevania-brain-alone-highlights.mp4`](docs/castlevania-brain-alone-highlights.mp4) cuts two stretches of that game
 together (life 1 to stage 2; life 3 through the underground into stage 3), each captioned with its
 start and life and preceded by a card marking the cut. The game's first block ends with the giant
 bat at stage 3; this brain has not beaten it.
+
+Brain + look-ahead: [`docs/castlevania-run.mp4`](docs/castlevania-run.mp4) (start after 21 idle
+decisions, 1,500 decisions, no life lost, the bat not beaten; log
+[`evidence/castlevania-run.json`](evidence/castlevania-run.json)) and
+[`docs/castlevania-highlights.mp4`](docs/castlevania-highlights.mp4) (three clips from starts 21
+and 10), each decision marked as the brain's move, the look-ahead overruling it (amber) or route
+recovery (teal). These are not brain-alone results; see below.
+
+## With the look-ahead (`--lookahead`)
+
+[`simon/lookahead.py`](simon/lookahead.py) plays this brain frozen with a look-ahead over the
+emulator's savestates beside it: near enemies and at two stage-2 trouble spots it plays the brain's
+proposal and the damage-averse teacher's candidates out 12 decisions on the emulator and overrules
+the brain only when a candidate loses clearly less health (the brain's proposal carries a two-point
+bonus); after 40 decisions without progress (outside the bat fight) the route's move stands in for
+30 decisions (route recovery). Measured on the same starts, 1,500 decisions each
+([`evidence/lookahead_receipt.json`](evidence/lookahead_receipt.json)):
+
+| Reading | Selection, brain alone | Selection, + look-ahead | Fresh, brain alone | Fresh, + look-ahead |
+| --- | --- | --- | --- | --- |
+| Health lost (all stages) | 1,648 | 664 | 1,848 | 616 |
+| Lives lost (of 36) | 36 | 5 | 36 | 4 |
+| Past the hall stairs / across the underground / stage 3 | 9 / 9 / 3 | 9 / 9 / 9 | 9 / 8 / 2 | 9 / 9 / 9 |
+| Direction reversals, jumps per 100 decisions | 4.32, 0.50 | 3.22, 2.01 | 3.55, 0.40 | 3.47, 1.81 |
+| Decisions: brain's move / look-ahead overruled / route recovery | 100% / – / – | 93.2% / 4.2% / 2.7% | 100% / – / – | 93.2% / 4.1% / 2.7% |
+
+Five starts of each set end in a standoff with the giant bat (Simon alive at the arena's right
+wall, the bat not beaten), which the reading flags as no progress. Not a brain-alone result: the
+overrules and route-recovery moves come from search over the emulator and the teacher's route.
 
 ## In the page
 
@@ -96,6 +125,9 @@ trace and recall memory are cleared at each new game. Nothing is saved. One deci
   on 2 of 9 fresh starts. On the other starts it loses its lives in stage 2, at the bottom-left
   staircase or on the low ledge past the underground's exit.
 - It learned from a teacher's labels; reward played no part.
+- With `--lookahead`, about 7% of decisions are not the brain's (look-ahead overrules and route
+  recovery); the look-ahead spends most of its starts in stage 3, jumps about four times as often
+  as the brain alone, ends in a standoff with the bat, and slows the page near enemies.
 - Simon's position, facing, stage, block and body state come from RAM, not from pixels.
 - Checked on the PRG1 printing and stable-retro's FCEUmm core only.
 - The readings are nine starts of one brain; they certify nothing beyond them.

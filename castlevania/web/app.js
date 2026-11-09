@@ -61,7 +61,7 @@ function draw(s) {
   }
   if (!b.slots) return;
   drawOverlay(b.fovea);
-  document.querySelectorAll("#pad [data-b]").forEach((el) => el.classList.toggle("lit", b.buttons.includes(el.dataset.b)));
+  document.querySelectorAll("#pad [data-b]").forEach((el) => el.classList.toggle("lit", (b.look ? b.look.played : b.buttons).includes(el.dataset.b)));
   drawSlots(b.slots, b.act);
   $("settle").textContent = `${b.sweeps ?? "?"} sweeps, ${b.act_ms} ms${b.qualified === false ? ", not settled" : ""}`;
 }
@@ -90,6 +90,10 @@ async function loadMeta() {
     const m = await (await fetch("/api/meta")).json();
     const d = m.describe || {};
     const rc = m.receipt || {};
+    if (m.lookahead) {
+      document.querySelector("header h1").textContent = "Castlevania, played by a Cadence brain + look-ahead";
+      document.querySelector("header .about").textContent = "The frozen brain proposes every press. Near enemies a look-ahead over the emulator's savestates plays its move and a few safer ones out and overrules it only when another loses clearly less health; the brain view marks those decisions amber.";
+    }
     const rows = [
       ["brain file", m.brain], ["inputs", d.inputs], ["modules", JSON.stringify(d.modules)], ["neurons", d.neurons], ["synapses", d.synapses],
       ...(rc.summary ? Object.entries(rc.summary) : []),

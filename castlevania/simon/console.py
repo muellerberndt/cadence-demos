@@ -79,6 +79,18 @@ class Console:
             pass
         return frame, self.env.get_ram().copy(), done
 
+    def step(self, action: int):
+        """One decision (the look-ahead's rollouts play the console through this)."""
+        return self.decide(int(action))
+
+    def snapshot(self) -> bytes:
+        """A savestate (the look-ahead saves, plays its candidates out, and restores)."""
+        return self.env.em.get_state()
+
+    def restore(self, state: bytes) -> np.ndarray:
+        self.env.em.set_state(state)
+        return self.env.get_ram().copy()
+
     def ram(self) -> np.ndarray:
         return self.env.get_ram().copy()
 

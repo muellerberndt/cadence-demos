@@ -7,6 +7,10 @@ decision: the settle sweep by sweep (``cadence.recording.record_settlements``), 
 every projection between populations (|weight x presynaptic activation| summed, excitatory and
 inhibitory apart), the strongest synapses, the motor slots' choice probabilities, and which
 recall slots the read attended, each slot tied to the decision that wrote it.
+
+With a look-ahead (``simon/lookahead.py``, ``player.look`` and ``player.console`` set), the
+brain's choice is a proposal the look-ahead may overrule near enemies; the snapshot then keeps the
+brain's own choice (``act``, ``probs``) apart from what was played (``played``, ``look``).
 """
 from __future__ import annotations
 
@@ -74,6 +78,8 @@ class Player:
         self.decisions = 0
         self.last = None
         self.thumbs: dict[int, str] = {}  # decision -> the frame it saw (small PNG), for the recall view
+        self.look = None  # an optional simon.lookahead.Lookahead, with self.console for its savestates
+        self.console = None
 
     def new_game(self) -> None:
         self.brain.reset()
@@ -81,10 +87,16 @@ class Player:
         self.decisions = 0
         self.last = None
         self.thumbs = {}
+        if self.look is not None:
+            self.look.reset()
 
     def decide(self, frame, ram, thumb: str | None = None) -> int:
         x = self.eye.observe(frame, ram)
         action = self.decide_input(x, ram, thumb)
+        if self.look is not None:
+            played, info = self.look.decide(self.console, ram, action)
+            self.last["played"], self.last["look"] = played, info
+            action = played
         self.eye.executed(action)
         return action
 
@@ -165,7 +177,15 @@ class Player:
             fovea = {"left": left, "top": top, "right": right, "bottom": bottom, "facing": facing}
             game = readings(ram)
         settle = self.last["settle"]
-        return {"decisions": self.decisions, "action": self.last["action"],
+        look = None
+        if self.look is not None and "look" in self.last:
+            c = self.look.counts
+            n = max(1, c["decisions"])
+            look = {**self.last["look"], "played": buttons_of(self.last["played"]),
+                    "played_act": list(ACTIONS[self.last["played"]]), "decisions_total": c["decisions"],
+                    "counts": {k: c[k] for k in ("brain", "overruled", "recovery")},
+                    "shares": {k: round(c[k] / n, 4) for k in ("brain", "overruled", "recovery")}}
+        return {"decisions": self.decisions, "action": self.last["action"], "look": look,
                 "buttons": buttons_of(self.last["action"]), "act": list(ACTIONS[self.last["action"]]),
                 "act_ms": round(self.last["ms"], 1), "sweeps": settle.get("steps"),
                 "qualified": settle.get("qualified"), "residual": settle.get("max_residual"),

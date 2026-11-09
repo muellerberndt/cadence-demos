@@ -1,0 +1,514 @@
+{
+ "schema": "cadence-castlevania-lookahead-receipt/1",
+ "player": "Cadence brain + look-ahead over the emulator (savestates), frozen brain (simon/lookahead.py, bonus 48, commit 2, horizon 12, patience 8/8 px/rest 6, stuck 40, recover 30)",
+ "brain_sha256": "5911d26942b72a2702990654b56ead4082b53c9fd4e97c6cb0315792959a557a",
+ "decisions_per_start": 1500,
+ "selection": {
+  "starts": [
+   0,
+   3,
+   7,
+   10,
+   14,
+   21,
+   28,
+   35,
+   42
+  ],
+  "brain_alone": {
+   "past_hall_stairs": 9,
+   "underground": 9,
+   "stage3": 3,
+   "stuck_flag": 0,
+   "hp_lost": {
+    "0": 0,
+    "1": 520,
+    "2": 952,
+    "3": 176
+   },
+   "hp_lost_total": 1648,
+   "lives_lost": {
+    "0": 0,
+    "1": 2,
+    "2": 30,
+    "3": 4
+   },
+   "lives_lost_total": 36,
+   "reversals_per_100": 4.32,
+   "jumps_per_100": 0.5
+  },
+  "brain_lookahead": {
+   "past_hall_stairs": 9,
+   "underground": 9,
+   "stage3": 9,
+   "stuck_flag": 5,
+   "hp_lost": {
+    "0": 0,
+    "1": 96,
+    "2": 136,
+    "3": 432
+   },
+   "hp_lost_total": 664,
+   "lives_lost": {
+    "0": 0,
+    "1": 0,
+    "2": 0,
+    "3": 5
+   },
+   "lives_lost_total": 5,
+   "decisions": 13500,
+   "reversals_per_100": 3.22,
+   "jumps_per_100": 2.01,
+   "shares": {
+    "brain": 0.9316,
+    "overruled": 0.0415,
+    "recovery": 0.027
+   },
+   "runs": [
+    {
+     "start": 0,
+     "decisions": 1500,
+     "furthest_stage": 3,
+     "underground": 1,
+     "stuck_flag": 1,
+     "hp_lost": {
+      "0": 0,
+      "1": 0,
+      "2": 48,
+      "3": 8
+     },
+     "lives_lost": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     },
+     "overruled": 69,
+     "recovery": 31
+    },
+    {
+     "start": 10,
+     "decisions": 1500,
+     "furthest_stage": 3,
+     "underground": 1,
+     "stuck_flag": 0,
+     "hp_lost": {
+      "0": 0,
+      "1": 0,
+      "2": 16,
+      "3": 88
+     },
+     "lives_lost": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 1
+     },
+     "overruled": 52,
+     "recovery": 40
+    },
+    {
+     "start": 14,
+     "decisions": 1500,
+     "furthest_stage": 3,
+     "underground": 1,
+     "stuck_flag": 0,
+     "hp_lost": {
+      "0": 0,
+      "1": 0,
+      "2": 8,
+      "3": 80
+     },
+     "lives_lost": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 1
+     },
+     "overruled": 56,
+     "recovery": 36
+    },
+    {
+     "start": 21,
+     "decisions": 1500,
+     "furthest_stage": 3,
+     "underground": 1,
+     "stuck_flag": 1,
+     "hp_lost": {
+      "0": 0,
+      "1": 0,
+      "2": 24,
+      "3": 32
+     },
+     "lives_lost": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     },
+     "overruled": 65,
+     "recovery": 28
+    },
+    {
+     "start": 28,
+     "decisions": 1500,
+     "furthest_stage": 3,
+     "underground": 1,
+     "stuck_flag": 1,
+     "hp_lost": {
+      "0": 0,
+      "1": 0,
+      "2": 8,
+      "3": 32
+     },
+     "lives_lost": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     },
+     "overruled": 63,
+     "recovery": 26
+    },
+    {
+     "start": 3,
+     "decisions": 1500,
+     "furthest_stage": 3,
+     "underground": 1,
+     "stuck_flag": 1,
+     "hp_lost": {
+      "0": 0,
+      "1": 8,
+      "2": 8,
+      "3": 40
+     },
+     "lives_lost": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     },
+     "overruled": 58,
+     "recovery": 25
+    },
+    {
+     "start": 35,
+     "decisions": 1500,
+     "furthest_stage": 3,
+     "underground": 1,
+     "stuck_flag": 0,
+     "hp_lost": {
+      "0": 0,
+      "1": 32,
+      "2": 8,
+      "3": 56
+     },
+     "lives_lost": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 1
+     },
+     "overruled": 67,
+     "recovery": 72
+    },
+    {
+     "start": 42,
+     "decisions": 1500,
+     "furthest_stage": 3,
+     "underground": 1,
+     "stuck_flag": 0,
+     "hp_lost": {
+      "0": 0,
+      "1": 48,
+      "2": 8,
+      "3": 56
+     },
+     "lives_lost": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 2
+     },
+     "overruled": 73,
+     "recovery": 80
+    },
+    {
+     "start": 7,
+     "decisions": 1500,
+     "furthest_stage": 3,
+     "underground": 1,
+     "stuck_flag": 1,
+     "hp_lost": {
+      "0": 0,
+      "1": 8,
+      "2": 8,
+      "3": 40
+     },
+     "lives_lost": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     },
+     "overruled": 57,
+     "recovery": 26
+    }
+   ]
+  }
+ },
+ "fresh": {
+  "starts": [
+   1,
+   5,
+   11,
+   17,
+   25,
+   31,
+   38,
+   45,
+   49
+  ],
+  "brain_alone": {
+   "past_hall_stairs": 9,
+   "underground": 8,
+   "stage3": 2,
+   "stuck_flag": 0,
+   "hp_lost": {
+    "0": 0,
+    "1": 712,
+    "2": 1080,
+    "3": 56
+   },
+   "hp_lost_total": 1848,
+   "lives_lost": {
+    "0": 0,
+    "1": 5,
+    "2": 29,
+    "3": 2
+   },
+   "lives_lost_total": 36,
+   "reversals_per_100": 3.55,
+   "jumps_per_100": 0.4
+  },
+  "brain_lookahead": {
+   "past_hall_stairs": 9,
+   "underground": 9,
+   "stage3": 9,
+   "stuck_flag": 5,
+   "hp_lost": {
+    "0": 0,
+    "1": 80,
+    "2": 152,
+    "3": 384
+   },
+   "hp_lost_total": 616,
+   "lives_lost": {
+    "0": 0,
+    "1": 0,
+    "2": 0,
+    "3": 4
+   },
+   "lives_lost_total": 4,
+   "decisions": 13500,
+   "reversals_per_100": 3.47,
+   "jumps_per_100": 1.81,
+   "shares": {
+    "brain": 0.9324,
+    "overruled": 0.0407,
+    "recovery": 0.0269
+   },
+   "runs": [
+    {
+     "start": 1,
+     "decisions": 1500,
+     "furthest_stage": 3,
+     "underground": 1,
+     "stuck_flag": 1,
+     "hp_lost": {
+      "0": 0,
+      "1": 0,
+      "2": 8,
+      "3": 48
+     },
+     "lives_lost": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     },
+     "overruled": 63,
+     "recovery": 31
+    },
+    {
+     "start": 11,
+     "decisions": 1500,
+     "furthest_stage": 3,
+     "underground": 1,
+     "stuck_flag": 1,
+     "hp_lost": {
+      "0": 0,
+      "1": 8,
+      "2": 24,
+      "3": 24
+     },
+     "lives_lost": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     },
+     "overruled": 56,
+     "recovery": 67
+    },
+    {
+     "start": 17,
+     "decisions": 1500,
+     "furthest_stage": 3,
+     "underground": 1,
+     "stuck_flag": 0,
+     "hp_lost": {
+      "0": 0,
+      "1": 8,
+      "2": 32,
+      "3": 16
+     },
+     "lives_lost": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     },
+     "overruled": 54,
+     "recovery": 33
+    },
+    {
+     "start": 25,
+     "decisions": 1500,
+     "furthest_stage": 3,
+     "underground": 1,
+     "stuck_flag": 0,
+     "hp_lost": {
+      "0": 0,
+      "1": 16,
+      "2": 8,
+      "3": 96
+     },
+     "lives_lost": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 2
+     },
+     "overruled": 69,
+     "recovery": 38
+    },
+    {
+     "start": 31,
+     "decisions": 1500,
+     "furthest_stage": 3,
+     "underground": 1,
+     "stuck_flag": 1,
+     "hp_lost": {
+      "0": 0,
+      "1": 8,
+      "2": 16,
+      "3": 32
+     },
+     "lives_lost": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     },
+     "overruled": 67,
+     "recovery": 35
+    },
+    {
+     "start": 38,
+     "decisions": 1500,
+     "furthest_stage": 3,
+     "underground": 1,
+     "stuck_flag": 1,
+     "hp_lost": {
+      "0": 0,
+      "1": 0,
+      "2": 8,
+      "3": 48
+     },
+     "lives_lost": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     },
+     "overruled": 43,
+     "recovery": 31
+    },
+    {
+     "start": 45,
+     "decisions": 1500,
+     "furthest_stage": 3,
+     "underground": 1,
+     "stuck_flag": 0,
+     "hp_lost": {
+      "0": 0,
+      "1": 32,
+      "2": 24,
+      "3": 48
+     },
+     "lives_lost": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 2
+     },
+     "overruled": 62,
+     "recovery": 80
+    },
+    {
+     "start": 49,
+     "decisions": 1500,
+     "furthest_stage": 3,
+     "underground": 1,
+     "stuck_flag": 1,
+     "hp_lost": {
+      "0": 0,
+      "1": 8,
+      "2": 16,
+      "3": 32
+     },
+     "lives_lost": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     },
+     "overruled": 71,
+     "recovery": 19
+    },
+    {
+     "start": 5,
+     "decisions": 1500,
+     "furthest_stage": 3,
+     "underground": 1,
+     "stuck_flag": 0,
+     "hp_lost": {
+      "0": 0,
+      "1": 0,
+      "2": 16,
+      "3": 40
+     },
+     "lives_lost": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     },
+     "overruled": 65,
+     "recovery": 29
+    }
+   ]
+  }
+ }
+}

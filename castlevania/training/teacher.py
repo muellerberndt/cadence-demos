@@ -351,6 +351,162 @@ def note_executed(memory: dict, label: int, executed: int) -> None:
         memory.pop("plan", None)
 
 
+# --------------------------------------------------------------------------- the damage-averse teacher
+#
+# The bat arena's savestate lookahead, everywhere: when a hostile object is near, the teacher saves
+# the emulator state and tries a few short prefixes (the route's own move, waiting, whipping,
+# turning to whip, a crouching whip, jumping on or away, stepping back, crouching), each followed by
+# the heuristic, and keeps the prefix that loses least health (lives far more), with a small credit
+# for progress along the route and a tie-break towards the route's move, so it only leaves the route
+# to avoid damage. Two actions of the best rollout are committed (no jitter between plans). The
+# first action of each prefix keeps its best score (``memory["values"]``), for soft lesson targets.
+
+SAFE_RANGE, SAFE_BAND = 100, 64   # plan while a hostile object is this near (px across, up/down)
+SAFE_HORIZON = 12                 # decisions per rollout
+SAFE_COMMIT = 2
+SAFE_HIT = 24.0                   # per point of health lost
+SAFE_LIFE = 1500.0                # per life lost
+SAFE_PROGRESS = 0.1               # per px of progress along the route's heading
+SAFE_ROUTE_BONUS = 1.0            # tie-break for the route's own move
+SAFE_CANDIDATES: tuple[tuple, ...] = (
+    (),                                        # the heuristic (route and whip rule) throughout
+    (NOOP,), (NOOP, NOOP),                     # wait
+    (action(0, 0, 1, 0),),                     # whip as faced
+    ("t_turn_whip",),                          # turn to the threat and whip
+    (action(0, 1, 1, 0),),                     # crouch and whip
+    ("t_jump_on",),                            # jump along the route's heading
+    ("t_away", "t_away"),                      # step away from the threat
+    ("t_jump_away",),                          # jump away from it
+    (action(0, 1, 0, 0), action(0, 1, 0, 0)),  # crouch
+)
+
+SAFE_CANDIDATES = SAFE_CANDIDATES + (  # waiting longer, whipping twice, jumping on later
+    (NOOP, NOOP, NOOP), (action(0, 0, 1, 0), NOOP, action(0, 0, 1, 0)), (NOOP, "t_turn_whip"),
+    (NOOP, "t_jump_on"), ("t_away", "t_turn_whip"), (action(0, 1, 1, 0), NOOP, action(0, 1, 1, 0)))
+
+
+def nearest_threat(ram):
+    """The nearest hostile object (the giant bat included) as (dx, dy), or None."""
+    sx, sy = int(ram[OBJ_X]), int(ram[OBJ_Y])
+    best = None
+    for _, kind, x, y in objects(ram):
+        if kind in HARMLESS:
+            continue
+        dx, dy = x - sx, y - sy
+        if abs(dx) <= SAFE_RANGE and abs(dy) <= SAFE_BAND and (best is None or abs(dx) < abs(best[0])):
+            best = (dx, dy)
+    return best
+
+
+def safe_resolve(step, ram, side: int, heading_dir: int) -> int:
+    if not isinstance(step, str):
+        return int(step)
+    facing = -1 if ram[OBJ_LEFT] else 1
+    turn = side if side != facing else 0
+    if step == "t_turn_whip":
+        return action(turn, 0, 1, 0)
+    if step == "t_jump_on":
+        return action(heading_dir, 0, 0, 1)
+    if step == "t_away":
+        return action(-side)
+    if step == "t_jump_away":
+        return action(-side, 0, 0, 1)
+    raise ValueError(step)
+
+
+def safe_rollout(body, ram, memory: dict, prefix, side: int, heading_dir: int) -> tuple[float, list[int]]:
+    ram = np.asarray(ram).astype(int)
+    hp0, health0, lives0 = int(ram[BOSS_HP]), int(ram[0x44]), int(ram[0x2A])
+    stage0, block0, wx0 = int(ram[STAGE]), int(ram[BLOCK]), world_x(ram)
+    actions, score, progress = [], 0.0, 0.0
+    for k in range(SAFE_HORIZON):
+        a = safe_resolve(prefix[k], ram, side, heading_dir) if k < len(prefix) else heuristic_action(ram, memory)
+        memory["whipped"] = bool(ACTIONS[a][2])
+        actions.append(a)
+        _, ram, done = body.step(a)
+        ram = np.asarray(ram).astype(int)
+        if int(ram[0x2A]) < lives0 or int(ram[0x44]) == 0 or done:
+            score -= SAFE_LIFE
+            break
+        if int(ram[STAGE]) == stage0 and int(ram[BLOCK]) == block0:
+            progress = max(progress, (world_x(ram) - wx0) * heading_dir)
+        elif int(ram[STAGE]) != 20:
+            progress = max(progress, 200.0)  # a new block or stage on the way
+    score -= SAFE_HIT * max(health0 - int(ram[0x44]), 0)
+    score += HIT_GAIN * max(hp0 - int(ram[BOSS_HP]), 0) + SAFE_PROGRESS * progress
+    if prefix == ():
+        score += SAFE_ROUTE_BONUS
+    return score, actions
+
+
+def plan_safe(body, ram, memory: dict, threat_at) -> int:
+    snapshot = body.snapshot()
+    side = 1 if threat_at[0] >= 0 else -1
+    heading_dir = heading(int(ram[STAGE]), int(ram[BLOCK]), world_x(ram), int(ram[OBJ_Y]))
+    best, values = None, {}
+    for prefix in SAFE_CANDIDATES:
+        body.restore(snapshot)
+        trial = copy.deepcopy(memory)
+        trial.pop("plan", None)
+        score, actions = safe_rollout(body, ram, trial, prefix, side, heading_dir)
+        if not actions:
+            continue
+        values[actions[0]] = max(values.get(actions[0], -1e9), score)
+        if best is None or score > best[0]:
+            best = (score, actions)
+    body.restore(snapshot)
+    actions = best[1][:SAFE_COMMIT]
+    memory["plan"] = actions[1:]
+    memory["values"] = values
+    memory["planned"] = memory.get("planned", 0) + 1
+    return actions[0]
+
+
+def safe_teacher_action(ram, memory: dict, body=None) -> int:
+    """The damage-averse teacher: the bat arena's lookahead (``teacher_action``) and, wherever else a
+    hostile object is near, ``plan_safe``. Without a body it is ``teacher_action``."""
+    ram = np.asarray(ram).astype(int)
+    memory.pop("values", None)
+    plan = memory.get("plan")
+    if plan:
+        choice = int(plan.pop(0))
+        memory["whipped"] = bool(ACTIONS[choice][2])
+        return choice
+    if body is not None and not (memory.get("bat_awake") and int(ram[BOSS_HP]) > 0):
+        near = nearest_threat(ram)
+        if near is not None:
+            choice = plan_safe(body, ram, memory, near)
+            memory["whipped"] = bool(ACTIONS[choice][2])
+            return choice
+    return teacher_action(ram, memory, body)
+
+
+def reactive_teacher_action(ram, memory: dict, body=None) -> int:
+    """The route teacher with a reactive enemy layer that depends only on the present state: an
+    enemy inside whip reach (``threat``: ahead, or just behind) is whipped, turning to face it,
+    every other decision (the whip's wind-up); a low enemy (below Simon's middle, a crouching
+    panther or a low bat) gets a crouching whip. Everything else, the bat arena's lookahead
+    included, is ``teacher_action``."""
+    ram = np.asarray(ram).astype(int)
+    if not memory.get("plan") and not memory.get("bat_awake"):
+        target = threat(ram)
+        state = int(ram[OBJ_STATE])
+        if target is not None and state in (0, ON_STAIRS) and not memory.get("whipped", False):
+            dx, dy, _ = target
+            facing = -1 if ram[OBJ_LEFT] else 1
+            side = 1 if dx >= 0 else -1
+            if state == ON_STAIRS:
+                side = facing
+            turn = side if side != facing else 0
+            low = dy > 10 and state == 0
+            choice = action(turn, 1 if low else 0, 1, 0)
+            memory["whipped"] = True
+            memory["reacted"] = True
+            return choice
+    memory["reacted"] = False
+    return teacher_action(ram, memory, body)
+
+
 # ----------------------------------------------------------------------------- evaluation
 
 def progress_of(ram) -> int:

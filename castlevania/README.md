@@ -4,20 +4,62 @@ A Cadence brain plays NES Castlevania from the screen. Every 12 frames its eye r
 picture and a few RAM readings, the whole brain settles, and the settled motor slots press the
 pad: left or right, up or down, whip, jump. The page shows the game beside what the eye sees,
 the settled regions, the answer per slot and the recall memory filling as the game goes. The
-brain plays frozen; nothing is learned while you watch.
+brain plays frozen; nothing is learned while you watch. Started with `--lookahead`, a look-ahead
+over the emulator's savestates checks the brain's moves near enemies and overrules the few it
+finds clearly worse, marked on the page.
 
 ![The brain jumping across the stage-2 underground, beside its brain view: eye maps, cortex, tracts, motor choice and recall memory](docs/castlevania.png)
 
 Runs on `cadence-net==0.95.2` and `stable-retro==1.0.1`. The game is not included: you need your
 own dump of the cartridge.
 
-## Watch the brain play
+## Watch it play
 
-[![The brain climbing the underground's exit stairs in stage 2; click for the highlights](docs/castlevania-highlights-poster.png)](docs/castlevania-highlights.mp4)
+The videos on top play the brain with a look-ahead over the emulator beside it (see [Cadence
+brain + look-ahead over the emulator](#cadence-brain--look-ahead-over-the-emulator)): the frozen
+brain proposes every move, and near enemies the look-ahead checks it against a few safer moves on
+the emulator's savestates and overrules it when another loses clearly less. The brain alone, the
+brain's own record, follows below them.
 
-**Highlights** ([`docs/castlevania-highlights.mp4`](docs/castlevania-highlights.mp4), 1440p, 60
-frames a second; [`720p`](docs/castlevania-highlights-720p.mp4); a short loop
-[`docs/castlevania-highlights.webm`](docs/castlevania-highlights.webm)): two stretches of one
+[![Brain + look-ahead on the stage-2 underground's exit stairs: the look-ahead overrules the brain's step (amber) and Simon waits; click for the highlights](docs/castlevania-highlights-poster.png)](docs/castlevania-highlights.mp4)
+
+**Highlights, brain + look-ahead** ([`docs/castlevania-highlights.mp4`](docs/castlevania-highlights.mp4),
+1440p, 60 frames a second; [`720p`](docs/castlevania-highlights-720p.mp4); a short loop
+[`docs/castlevania-highlights.webm`](docs/castlevania-highlights.webm)): three stretches of two
+recorded games, each played as recorded. A card marks each cut, and a caption names the start, the
+life and the clip's three shares (the brain's own move, the look-ahead overruling it, route
+recovery); the brain view marks each overruled decision amber and each route-recovery decision teal:
+
+1. Start after 21 idle decisions, life 1 (0:13 to 0:52 of that game): the hall, its zombies and a
+   bat, up its stairs into stage 2, no health lost.
+2. Start after 10 idle decisions, life 1 (1:19 to 1:58): past a fishman, through the
+   underground, up its exit stairs into stage 3.
+3. Start after 21 idle decisions, life 1 (2:00 to 2:36): the giant bat wakes; Simon keeps out of its
+   swoops.
+
+**The whole game, uncut** ([`docs/castlevania-run.mp4`](docs/castlevania-run.mp4), 1440p;
+[`720p`](docs/castlevania-run-720p.mp4)): start after 21 idle decisions, 1,500 decisions from the
+first frame Simon can move, brain + look-ahead, every decision's kind marked; per-decision log in
+[`evidence/castlevania-run.json`](evidence/castlevania-run.json). Of its 1,500 decisions the brain's
+own move was played on 1,407 (93.8%), the look-ahead overruled it on 65 (4.3%), route recovery
+played 28 (1.9%).
+
+| Time | |
+| --- | --- |
+| 0:00 to 0:52 | The courtyard and the hall, up the stairs at its end into stage 2; no health lost |
+| 0:52 to 1:46 | Stage 2: down the bottom-left staircase, through the underground, up its exit stairs and into stage 3; three hits |
+| by 2:00 | The giant bat wakes |
+| 2:00 to 5:02 | The bat fight: Simon holds the arena's right side (world x 751) from about 2:20, takes four hits (2:07, 2:44, 3:20, 3:53) and the bat loses 8 of its 64 health; after the fourth hit, at two bars of health, the bat does not reach him again before decision 1,500 |
+
+No life is lost in this game; it does not beat the bat.
+
+### The brain alone
+
+[![The brain alone climbing the underground's exit stairs in stage 2; click for its highlights](docs/castlevania-brain-alone-highlights-poster.png)](docs/castlevania-brain-alone-highlights.mp4)
+
+**Highlights** ([`docs/castlevania-brain-alone-highlights.mp4`](docs/castlevania-brain-alone-highlights.mp4), 1440p, 60
+frames a second; [`720p`](docs/castlevania-brain-alone-highlights-720p.mp4); a short loop
+[`docs/castlevania-brain-alone-highlights.webm`](docs/castlevania-brain-alone-highlights.webm)): two stretches of one
 recorded game of the packed brain, frozen and greedy, no search, each played as recorded. A card
 marks each cut, and a caption names the start and the life:
 
@@ -26,8 +68,8 @@ marks each cut, and a caption names the start and the life:
 2. The same game, life 3 (1:38 to 2:18): down the stage-2 staircase into the underground, across
    it, up its exit stairs and into stage 3, the giant bat's stage.
 
-**The whole game, uncut** ([`docs/castlevania-run.mp4`](docs/castlevania-run.mp4), 1440p;
-[`720p`](docs/castlevania-run-720p.mp4)): the same game from the first frame Simon can move to the
+**The whole game, uncut** ([`docs/castlevania-brain-alone-run.mp4`](docs/castlevania-brain-alone-run.mp4), 1440p;
+[`720p`](docs/castlevania-brain-alone-run-720p.mp4)): the same game from the first frame Simon can move to the
 game over, with the page's brain view settling on every decision:
 
 | Time | |
@@ -40,9 +82,9 @@ game over, with the page's brain view settling on every decision:
 | 2:53 to 4:32 | Life 4: the fight with the giant bat, which loses 36 of its 64 health; game over |
 
 The game's first block ends with that bat. The brain has not beaten it. The per-decision log is
-[`evidence/castlevania-run.json`](evidence/castlevania-run.json).
+[`evidence/castlevania-brain-alone-run.json`](evidence/castlevania-brain-alone-run.json).
 [`record.py`](record.py) makes the videos from your own ROM (`python record.py --idle 42`,
-`--scale 2` for 1440p): it plays the game and the brain and draws every frame with the page's own
+`--scale 2` for 1440p, `--lookahead` for the brain + look-ahead): it plays the game and the brain and draws every frame with the page's own
 renderer (`web/render.html` in a headless Chromium), piped to ffmpeg;
 [`highlights.py`](highlights.py) cuts the highlights from that recording and its log.
 
@@ -62,6 +104,7 @@ cd castlevania
 python3 -m venv .venv && .venv/bin/python -m pip install -r requirements.txt
 .venv/bin/python -m simon.rom ~/roms        # finds your Castlevania (U) (PRG1) dump and copies it in
 .venv/bin/python server.py                  # open http://localhost:8846/
+.venv/bin/python server.py --lookahead      # the brain + look-ahead over the emulator
 ```
 
 `simon.rom` checks every `.nes` file it is given (a file or a folder) and copies the one whose
@@ -79,7 +122,7 @@ the enemies are when Simon starts.
 
 [`player/`](player/) is a static page (no server, no ROM): the game video
 ([`docs/castlevania-game.mp4`](docs/castlevania-game.mp4), the game alone, the same run as the
-videos above) beside the brain view, driven from a trace of that run
+brain-alone videos above) beside the brain view, driven from a trace of that run
 ([`player/pack/trace.json.gz`](player/pack/trace.json.gz), 6.7 MB). The trace holds, per decision,
 the first video frame it covers, the eye's exact input (float64), the settle (every second sweep,
 as bytes), the projections, the strongest synapses, the choice per slot and the recall slots'
@@ -131,6 +174,10 @@ is that decision's real state. Hover a region for the population that plays its 
   when this decision's read attends them, and a thread runs from the brightest slot to the frame it
   holds. Below are the scene parts of what each read head recalls and of what each expects next.
 - **The settle**: the sweep count and the largest change per sweep falling to the tolerance.
+- **With the look-ahead** (`--lookahead`), beside the striatum: an amber arc and the move played
+  when the look-ahead overruled the brain's choice, a teal arc when a route-recovery move was played,
+  and the running shares of the three kinds of decision. The motor strip and striatum always show
+  the brain's own choice; the page's pad lights what was played.
 - **Dopamine, arousal, plasticity** are shown at their true state in frozen play: silent, off,
   zero synapses changed.
 
@@ -224,6 +271,74 @@ through the underground. Where the brain reaches stage 3 it goes on to the giant
 A checkpoint replaces the packed brain only if it is no worse on both sets of starts and no start
 leaves the brain standing still.
 
+## Cadence brain + look-ahead over the emulator
+
+`python server.py --lookahead` (and `record.py --lookahead`) plays the same frozen brain with a
+look-ahead beside it, the pattern of the Connect Four and Tron demos
+([`simon/lookahead.py`](simon/lookahead.py)). Every decision the brain settles and proposes its
+buttons. Where a hostile object is near (100 px across, 64 px up or down) or Simon stands at one
+of two known trouble spots (the foot of stage 2's bottom-left staircase and the low ledge past the
+underground's exit), the look-ahead saves the emulator state and plays the brain's proposal and a
+few candidates of the damage-averse teacher in [`training/teacher.py`](training/teacher.py) (wait,
+whip, turn and whip, crouch and whip, jump on, step or jump away) out 12
+decisions each, the route heuristic after each, scoring health and lives lost with a small credit
+for progress. It restores the state and plays the brain's move unless a candidate loses clearly
+less (the proposal carries a bonus of two health points); an overruling candidate's first two
+moves are played. Elsewhere the brain plays alone. The look-ahead reads the console's object
+table and savestates; the brain sees only through its eye, as always, and nothing is learned.
+
+Two guards keep it moving. A wait can only postpone a hit the horizon cannot see past (a panther
+on its ledge leaps when Simon walks up), so after 8 decisions of overruling without 8 px of
+progress the look-ahead stands down for 6 decisions and overrules only to save a life. And where
+the brain has made no progress along the route for 40 decisions (outside the giant bat's fight),
+the route heuristic's move stands in for the brain's proposal for 30 decisions, still checked by
+the look-ahead: **route recovery**.
+
+Every decision is one of three, counted separately everywhere (the receipt, the captions, the
+brain view: amber for the look-ahead, teal for route recovery):
+
+| Starts (1,500 decisions each) | Brain's own move played | Look-ahead overruled the brain | Route recovery |
+| --- | --- | --- | --- |
+| Selection: 0, 3, 7, 10, 14, 21, 28, 35, 42 | 93.2% | 4.2% | 2.7% |
+| Fresh: 1, 5, 11, 17, 25, 31, 38, 45, 49 | 93.2% | 4.1% | 2.7% |
+
+Against the same brain alone, on the same starts and the same damage reading
+([`evidence/lookahead_receipt.json`](evidence/lookahead_receipt.json)):
+
+| Reading | Selection, brain alone | Selection, + look-ahead | Fresh, brain alone | Fresh, + look-ahead |
+| --- | --- | --- | --- | --- |
+| Health lost: hall / stage 2 / stage 3 | 520 / 952 / 176 | 96 / 136 / 432 | 712 / 1,080 / 56 | 80 / 152 / 384 |
+| Health lost, all | 1,648 | 664 | 1,848 | 616 |
+| Lives lost: hall / stage 2 / stage 3 | 2 / 30 / 4 | 0 / 0 / 5 | 5 / 29 / 2 | 0 / 0 / 4 |
+| Lives lost, all (of 36) | 36 | 5 | 36 | 4 |
+| Past the hall stairs | 9 of 9 | 9 of 9 | 9 of 9 | 9 of 9 |
+| Across the underground | 9 of 9 | 9 of 9 | 8 of 9 | 9 of 9 |
+| Stage 3 reached | 3 of 9 | 9 of 9 | 2 of 9 | 9 of 9 |
+| Direction reversals per 100 decisions | 4.32 | 3.22 | 3.55 | 3.47 |
+| Jumps per 100 decisions | 0.50 | 2.01 | 0.40 | 1.81 |
+| Starts flagged still (no progress and no life lost in the last 600 decisions) | 0 | 5 | 0 | 5 |
+
+The starts flagged still are a standoff at the giant bat, not a stall on the route. On the two
+probed (selection starts 7 and 21) Simon reaches the bat's arena in stage 3 by decision 600 to
+700; the bat loses 16 and 8 of its 64 health; Simon's health falls to two of its sixteen bars; and
+from about decision 1,100 the look-ahead keeps him at the arena's right wall (world x 751) out of
+the bat's way, neither side losing more, until decision 1,500. The look-ahead has not beaten the
+bat either.
+
+Limits of this mode:
+
+- **Not a brain-alone result.** Every move the look-ahead overrules, and every route-recovery move,
+  comes from a search over the emulator's savestates and the teacher's route, not from the brain.
+  The brain-alone readings above and in [Readings](#readings) are the brain's own record.
+- **More time and damage in stage 3, and no win at the bat.** Every start reaches stage 3 and
+  spends most of its 1,500 decisions there, so stage 3 loses more health and about as many lives
+  as with the brain alone (which reaches it on 3 and 2 of 9 starts). It ends in a standoff with the
+  giant bat, not a win.
+- **More jumps.** Jumping on and away are candidates, so it jumps about four times as often as the
+  brain alone (2 against 0.5 per 100 decisions).
+- **Slower.** A checked decision plays 16 rollouts of 12 decisions on the emulator (about a second
+  on a busy c7i core), so near enemies the page falls behind the game's speed.
+
 ## Limits
 
 - **Stage 2 and the bat.** The game's first block ends with the giant bat at stage 3. The brain
@@ -234,6 +349,10 @@ leaves the brain standing still.
   played no part, and nothing is learned while you watch.
 - **RAM in the eye.** Simon's position, facing, stage, block and body state come from RAM; the
   rest is pixels.
+- **The look-ahead is not the brain.** The top videos and `--lookahead` mix the brain's moves
+  (93% of decisions) with the look-ahead's overrules and route-recovery moves (about 4% and 3%).
+  Their damage and progress belong to that mix; the brain's own record is the brain-alone video
+  and the readings above. See [its limits](#cadence-brain--look-ahead-over-the-emulator).
 - **One cartridge.** Raised and checked on the PRG1 printing on stable-retro's FCEUmm core only.
 
 ## Train your own
@@ -273,19 +392,19 @@ out 16 decisions by the teacher's heuristic; the rollouts' progress (world x, a 
 stage clear; less lost health and lives) and PUCT visits over the priors give visit shares, and
 `Brain.lesson(x, targets=shares)` teaches them. Where the rollouts cannot tell the candidates
 apart, the row is taught the teacher's label. The most visited action is executed. The search
-is used in training only; the page plays the brain alone.
+is used in training only; the page plays the brain alone unless started with `--lookahead`.
 
 ## Layout
 
 | Path | What |
 | --- | --- |
 | `server.py`, `web/` | the local server and the page |
-| `simon/` | the pad, the eye, the console (`Console`), the player, the ROM import |
+| `simon/` | the pad, the eye, the console (`Console`, with savestates), the player, the look-ahead (`lookahead.py`), the ROM import |
 | `brain/brain.npz` | the brain the page plays |
 | `integration/Castlevania-Nes-v0/` | stable-retro's description of the game, with the PRG1 hash; your `rom.nes` goes here |
 | `training/` | the teacher, the pools, the trainer with the search, the widening of a brain's eye, the evaluation |
-| `evidence/` | the receipt of the shipped brain and its readings |
-| `tests/` | the brain loads and answers on the released library, without a ROM |
+| `evidence/` | the receipt of the shipped brain and its readings, the look-ahead's receipt, the per-decision logs of both full games |
+| `tests/` | the brain loads and answers on the released library, and the look-ahead overrules and restores on a toy console, without a ROM |
 
 ```sh
 .venv/bin/python -m pip install pytest && .venv/bin/python -m pytest tests -q

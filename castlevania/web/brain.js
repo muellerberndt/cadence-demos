@@ -291,6 +291,26 @@
         });
         ctx.fillStyle = PAL.dim; ctx.fillText("striatum: the choice", STRI.x - 70, STRI.y + 66);
         this.regionsForHover.push([STRI.x - 70, STRI.y - 40, STRI.x + 30, STRI.y + 70, STRI.role]);
+        // the look-ahead (not part of the brain): an amber arc when it overruled the brain's choice
+        // what was played (not part of the brain): amber when the look-ahead overruled the brain's
+        // choice, teal when a stall-recovery stand-in (the route's move) was played instead
+        const look = snap.look;
+        if (look) {
+          const pct = (k) => (100 * ((look.shares || {})[k] || 0)).toFixed(1);
+          if ((look.overruled || look.recovery) && settled) {
+            const col = look.recovery ? "#3cc8b4" : "#ffb028";
+            ctx.strokeStyle = col; ctx.lineWidth = 5;
+            ctx.beginPath(); ctx.arc(STRI.x - 22, STRI.y + 3, 62, -Math.PI * 0.95, Math.PI * 0.95); ctx.stroke();
+            ctx.fillStyle = col; ctx.font = "600 14px system-ui";
+            const what = look.recovery ? "route recovery" : "look-ahead overruled";
+            ctx.fillText(`${what}: played ${(look.played || []).join("+") || "nothing"}`, 30, 584);
+          }
+          ctx.font = "12px system-ui";
+          ctx.fillStyle = PAL.dim; ctx.fillText(`of ${look.decisions_total} decisions: brain's move ${pct("brain")}%`, 30, 602);
+          ctx.fillStyle = "#ffb028"; ctx.fillText(`look-ahead overruled ${pct("overruled")}%`, 30, 618);
+          ctx.fillStyle = "#3cc8b4"; ctx.fillText(`route recovery ${pct("recovery")}%`, 190, 618);
+          this.regionsForHover.push([30, 568, 330, 622, "what was played (not the brain): near enemies a look-ahead over the emulator's savestates plays the brain's proposal and a few safer candidates out and overrules the brain only when a candidate loses clearly less health (amber); where the brain has made no progress for 40 decisions, the route's move stands in for 30 decisions (teal, route recovery)"]);
+        }
       }
 
       // 7. thalamus: where the eye's readings enter

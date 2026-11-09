@@ -55,11 +55,30 @@ window.renderFrame = async (gameB64, phase, clock, caption, extra) => {
         ctx.fillStyle = "#e9e3ee"; ctx.fillText(`${lab} ${p.toFixed(2)}`, x + 6, y + 15);
       });
     });
+    // with the look-ahead: the move it played instead of the brain's, outlined amber
+    const L = snap.look;
+    if (L && (L.overruled || L.recovery) && L.played_act) {
+      const played = [L.played_act[0] + 1, L.played_act[1] + 1, L.played_act[2], L.played_act[3]];
+      ctx.strokeStyle = L.recovery ? "#3cc8b4" : "#ffb028"; ctx.lineWidth = 2.5;
+      played.forEach((j, g) => { if (j !== chosen[g]) ctx.strokeRect(104 + j * 168, 592 + g * 22 + 2, 160, 17); });
+    }
+  }
+  if (snap && snap.look) {
+    const L = snap.look, S = L.shares || {}, pct = (k) => (100 * (S[k] || 0)).toFixed(1);
+    ctx.font = "14px system-ui, Arial";
+    ctx.fillStyle = L.recovery ? "#3cc8b4" : L.overruled ? "#ffb028" : "#9c90a8";
+    ctx.fillText(L.recovery ? `route recovery: played ${(L.played || []).join("+") || "nothing"}`
+                 : L.overruled ? `look-ahead overruled the brain: played ${(L.played || []).join("+") || "nothing"}`
+                 : "the brain's move played", 640, 640);
+    ctx.fillStyle = "#9c90a8";
+    ctx.fillText(`brain ${pct("brain")}% · look-ahead ${pct("overruled")}% · route recovery ${pct("recovery")}% of ${L.decisions_total}`, 640, 660);
   }
   ctx.fillStyle = "#e9e3ee"; ctx.font = "15px system-ui, Arial";
   if (extra) ctx.fillText(extra, 640, 612);
-  ctx.fillStyle = "#9c90a8"; ctx.font = "14px system-ui, Arial";
-  ctx.fillText(caption, 14, 708);
+  ctx.fillStyle = "#9c90a8";
+  const lines = caption.split("\n");  // a two-line caption keeps clear of the right half
+  ctx.font = lines.length > 1 ? "13px system-ui, Arial" : "14px system-ui, Arial";
+  lines.forEach((line, i) => ctx.fillText(line, 14, 708 - 17 * (lines.length - 1 - i)));
   return out.toDataURL("image/jpeg", 0.92);
 };
 window.ready = true;

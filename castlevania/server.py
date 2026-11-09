@@ -48,11 +48,14 @@ class Game(threading.Thread):
     """The console and the player; ``speed`` is a multiple of the NES's 60 frames a second
     (0 = as fast as the brain answers)."""
 
-    def __init__(self, brain_path: Path, backend: str) -> None:
+    def __init__(self, brain_path: Path, backend: str, lookahead: bool = False) -> None:
         super().__init__(daemon=True)
         self.lock = threading.Lock()
         self.console = Console()
         self.player = Player(load_brain(brain_path, backend), populations(brain_path))
+        if lookahead:  # the brain proposes, a savestate look-ahead may overrule it near enemies
+            from simon.lookahead import Lookahead
+            self.player.look, self.player.console = Lookahead(), self.console
         self.brain_file = brain_path.name
         self.speed, self.paused, self.idle = 1.0, False, 0
         self.restart_requested = True
@@ -169,11 +172,15 @@ def main() -> None:
     p.add_argument("--port", type=int, default=8846)
     p.add_argument("--brain", type=Path, default=BRAIN)
     p.add_argument("--backend", default="cpu", help="cpu, or a device backend cadence-net offers")
+    p.add_argument("--lookahead", action="store_true",
+                   help="brain + look-ahead: near enemies a savestate look-ahead over the emulator checks the "
+                        "brain's move and overrules it when another is clearly safer (simon/lookahead.py)")
     a = p.parse_args()
-    game = Game(a.brain, a.backend)
+    game = Game(a.brain, a.backend, a.lookahead)
     receipt = HERE / "evidence" / "receipt.json"
     meta = {"brain": a.brain.name, "describe": game.player.brain.describe().get("layout", {}),
-            "receipt": json.loads(receipt.read_text()) if receipt.exists() else None}
+            "receipt": json.loads(receipt.read_text()) if receipt.exists() else None,
+            "lookahead": bool(a.lookahead)}
     meta["describe"].pop("populations", None)
     game.start()
     server = ThreadingHTTPServer(("127.0.0.1", a.port), handler_for(game, meta))

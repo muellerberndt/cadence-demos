@@ -2,7 +2,8 @@
 60 frames a second, the game large on the left and, on the right, the page's own brain view
 (``web/brain.js``) settling on each decision. Frozen and greedy, no search, no cuts.
 
-    python record.py --idle 49 --out docs/castlevania-run.mp4 --log evidence/castlevania-run.json
+    python record.py --idle 42 --out docs/castlevania-brain-alone-run.mp4 --log evidence/castlevania-brain-alone-run.json
+    python record.py --lookahead --idle 21 --out docs/castlevania-run.mp4 --log evidence/castlevania-run.json
 
 Needs your ROM imported (``python -m simon.rom``), ffmpeg (H.264), and Playwright's Chromium
 (``pip install playwright && playwright install chromium``): the frames are drawn by
@@ -49,12 +50,14 @@ def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--idle", type=int, default=49, help="decisions of nothing after the start screen")
     p.add_argument("--decisions", type=int, default=1500)
-    p.add_argument("--out", type=Path, default=Path("docs/castlevania-run.mp4"))
+    p.add_argument("--out", type=Path, default=Path("docs/castlevania-brain-alone-run.mp4"))
     p.add_argument("--log", type=Path, default=None, help="per-decision readings as JSON")
     p.add_argument("--crf", type=int, default=30)
     p.add_argument("--scale", type=int, default=1, help="2: draw the frames natively at 2560 x 1440")
     p.add_argument("--trace", type=Path, default=None, help="the player page's trace (gzip JSON)")
     p.add_argument("--game-video", type=Path, default=None, help="the game alone at 3x, for the player page")
+    p.add_argument("--lookahead", action="store_true",
+                   help="brain + look-ahead over the emulator's savestates (simon/lookahead.py); overruled decisions amber")
     a = p.parse_args()
     import cadence
     from playwright.sync_api import sync_playwright
@@ -62,6 +65,12 @@ def main() -> None:
                f"Start after {a.idle} idle decision{'s' if a.idle != 1 else ''}. No ROM included.")
     player = Player(load_brain(BRAIN), populations(BRAIN))
     console = Console()
+    if a.lookahead:
+        from simon.lookahead import LABEL, Lookahead
+        player.look, player.console = Lookahead(), console
+        caption = (f"{LABEL}, cadence-net {cadence.__version__}\n"
+                   f"Amber: look-ahead overruled the brain · teal: route recovery · no cuts · "
+                   f"start after {a.idle} idle decision{'s' if a.idle != 1 else ''} · no ROM included")
     frame, ram = console.power_on(a.idle)
     player.new_game()
     import shutil
@@ -114,7 +123,8 @@ def main() -> None:
             g = readings(ram)
             log.append({"decision": t, "frame": frames, "second": round(frames / 60, 2), "stage": g["stage"],
                         "block": g["block"], "world_x": g["world_x"], "y": g["y"], "health": g["health"],
-                        "lives": g["lives"], "buttons": snap["buttons"], "died": g["lives"] < lives})
+                        "lives": g["lives"], "buttons": snap["buttons"], "died": g["lives"] < lives,
+                        **({"played": snap["look"]["played"], "kind": snap["look"]["kind"]} if snap.get("look") else {})})
             lives = g["lives"]
             if done or g["lives"] == 0:
                 break
@@ -136,7 +146,8 @@ def main() -> None:
         with gzip.open(a.trace, "wt", compresslevel=9) as handle:
             json.dump(body, handle, separators=(",", ":"))
     if a.log is not None:
-        a.log.write_text(json.dumps({"idle": a.idle, "frames": frames, "decisions": len(log), "log": log}) + "\n")
+        looked = {"lookahead": dict(player.look.counts)} if player.look is not None else {}
+        a.log.write_text(json.dumps({"idle": a.idle, "frames": frames, "decisions": len(log), **looked, "log": log}) + "\n")
     print(json.dumps({"out": str(a.out), "frames": frames, "seconds": round(frames / 60, 1), "decisions": len(log)}))
 
 
