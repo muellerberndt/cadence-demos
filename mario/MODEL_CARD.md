@@ -32,10 +32,11 @@
 | Hippocampus (composed, consolidating) | 0 (none in training or play) | - | - | - |
 | Recall memory | not composed | - | - | - |
 
-`predict` carries nothing from one call to the next: on 32 recorded observations the answers in
-forward and in reversed order are identical. By this repository's AGENTS.md the layout is close to
-a control (a window of input, one processing region, a readout taught on every presentation).
-It is packed because it is the brain that got furthest in this game.
+`predict` carries nothing from one call to the next: on the 32 recorded observations in
+`tests/answers.npz` the answers in forward and in reversed order are identical
+(`tests/test_brain.py`). By this repository's AGENTS.md the layout is close to a control (a window
+of input, one processing region, a readout taught on every presentation). It is packed because it
+is the brain that got furthest in this game.
 
 ## How it was trained
 
@@ -59,19 +60,22 @@ Lineage, all on screen input plus the body readings above:
    8 chunks, 16 attempts, half from the start, half from points on the coach's 1-3 paths),
    checkpoint 35, 77 minutes in, 4 worker processes.
 
-The training code is in [cadence-arcade](https://github.com/sean-mcclane832/cadence-arcade/tree/main/mario)
+The training code is in
+[cadence-arcade](https://github.com/sean-mcclane832/cadence-arcade/tree/main/mario)
 (`concepts/csteady.py`, `concepts/cplay.py`, `dagger.py`, `game.py`); it runs on
 gym-super-mario-bros, whose licence is not an open one, so it is not part of this folder.
 
 ## How it was picked
 
-Start sets are idle frames before the first decision (the emulator is deterministic). Training
-and DAgger drew from starts 0 to 79 except 32 to 41. Each chunk's checkpoint was compared on
-selection starts from that pool (every third start), and the run's log also read the held-out
-starts for each new best. Several F2 checkpoints were scored on the 50 held-out starts (32 to 41, 80 to 99, even 100 to 138), and this one was taken as the most balanced (every
-level at least 7 of 50). Six F2 checkpoints played the five-life gauntlet; this is the one that
-got past 1-1 (one cleared nothing, four cleared only 1-1). So the held-out column is the set it
-was picked on; the fresh column (starts 140 to 189) was read once, after the pick, for this card.
+Start sets are idle frames before the first decision (the emulator is deterministic). Training and
+DAgger drew from starts 0 to 79 except 32 to 41. Each chunk's checkpoint was compared on selection
+starts from that pool (every third start), and the run's log also read the held-out starts for
+each new best. Several F2 checkpoints were scored on the 50 held-out starts (32 to 41, 80 to 99,
+even 100 to 138), and at that point (02:20, 77 minutes in) this one was the most balanced of those
+scored (every level at least 7 of 50; checkpoint 87, scored later, also reached 7 on every level,
+with 22 / 7 / 15 / 27). Six F2 checkpoints played the five-life gauntlet; this is the one that got
+past 1-1 (one cleared nothing, four cleared only 1-1). So the held-out column is the set it was
+picked on; the fresh column (starts 140 to 189) was read once, after the pick, for this card.
 
 ## How it was measured
 
@@ -94,17 +98,19 @@ training pool.
 
 ## Console parity
 
-The brain was raised on gym-super-mario-bros 7.4.0. [`smb/console.py`](smb/console.py) reproduces
-its single-level start and frame handling on nes-py. With the training dump, the 9 gauntlet
-attempts and the 200 held-out attempts give identical screens, RAM, observations and buttons at
-every decision (32,402 decisions), on 0.91.1 with that package and on 0.95.2 with this console;
-cadence-net 0.95.2 answers the same as 0.91.1 on every one of those observations (0.91.1 and
-0.91.3 had answered identically on 18,000 observations when the line moved to 0.91.3).
-`tests/test_brain.py` keeps 32 of them.
+The brain was raised on gym-super-mario-bros 7.4.0 (Christian Kauten).
+[`smb/console.py`](smb/console.py) re-implements its single-level start and frame handling step by
+step on nes-py; none of its code is copied. With the training dump, the 9 gauntlet attempts and
+the 200 held-out attempts give identical screens, RAM, observations and buttons at every decision
+(32,402 decisions), on 0.91.1 with that package and on 0.95.2 with this console; cadence-net
+0.95.2 answers the same as 0.91.1 on every one of those observations (0.91.1 and 0.91.3 had
+answered identically on 18,000 observations when the line moved to 0.91.3). `tests/test_brain.py`
+keeps 32 of them.
 
 ## Limits
 
-- World 1 only. It has never been trained on any other world; in 2-1 it dies within 350 px.
+- World 1 only. It has never been trained on any other world: in 2-1 it got no further than x 722
+  on 50 starts (0 flags) and died at x 343 and 346 in the gauntlet.
 - None of the four levels is consistent. 1-4 is the strongest (27 and 34 of 50); 1-2 drops from
   8 held-out clears to 1 fresh one, so its held-out number was partly the pick.
 - On 1-1 most failures are standing still, not deaths.

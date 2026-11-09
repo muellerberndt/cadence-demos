@@ -52,3 +52,6 @@ def test_brain_answers_as_it_played():
     rec = np.load(ROOT / "tests" / "answers.npz")
     got = [int(np.asarray(brain.predict(o.astype(np.float64)[None])).reshape(-1)[0]) for o in rec["obs"]]
     assert got == rec["actions"].tolist()
+    # predict carries no state between calls: the same answers in reversed order
+    back = [int(np.asarray(brain.predict(o.astype(np.float64)[None])).reshape(-1)[0]) for o in rec["obs"][::-1]]
+    assert back[::-1] == got

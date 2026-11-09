@@ -29,7 +29,8 @@ def payload(path: Path) -> bytes | None:
     if len(b) < 16 or b[:4] != b"NES\x1a":
         return None
     prg, chr_, trainer = b[4] * 16384, b[5] * 8192, 512 if b[6] & 0x04 else 0
-    mapper = (b[6] >> 4) | (b[7] & 0xF0)
+    # old dumps carry text (e.g. "DiskDude!") in bytes 7 to 15: then only byte 6 holds the mapper
+    mapper = (b[6] >> 4) | ((b[7] & 0xF0) if not any(b[12:16]) else 0)
     if (prg, chr_, mapper) != (32768, 8192, 0):
         return None
     data = b[16 + trainer:16 + trainer + prg + chr_]
@@ -42,7 +43,10 @@ def main(argv=None) -> int:
     ap.add_argument("--any", action="store_true", help="accept a Super Mario Bros. dump other than the one the brain was raised on")
     a = ap.parse_args(argv)
     p = Path(a.path).expanduser()
-    files = sorted(p.rglob("*.nes")) if p.is_dir() else [p]
+    if not p.exists():
+        print(f"{p}: no such file or folder")
+        return 1
+    files = sorted(f for f in p.rglob("*") if f.suffix.lower() == ".nes") if p.is_dir() else [p]
     other = None
     for f in files:
         data = payload(f)

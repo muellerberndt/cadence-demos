@@ -16,8 +16,9 @@ trained, and its [Mario page](https://sean-mcclane832.github.io/cadence-arcade/m
 
 ## Watch the brain play
 
-[`docs/mario-gauntlet.mp4`](docs/mario-gauntlet.mp4) (1 min 33 s, every NES frame at 60 frames a
-second) is the gauntlet: the real start of 1-1 and five lives. A flag moves on to the next level;
+[`docs/mario-gauntlet.mp4`](docs/mario-gauntlet.mp4) (1 min 33 s, every frame the brain plays at
+60 frames a second; idle starts, deaths, pipes and flagpole slides are skipped, as in training)
+is the gauntlet: the real start of 1-1 and five lives. A flag moves on to the next level;
 a death, or 40 decisions without getting further right, costs a life and restarts that level,
 small Mario, a few idle frames later (0, 37, 83, 110, 131), because the emulator is deterministic
 and an identical restart replays the identical death. [`evidence/gauntlet.json`](evidence/gauntlet.json)
@@ -31,9 +32,10 @@ has every attempt and every button.
 | 1-4 | 1 | Bowser's axe, 189 decisions |
 | 2-1 | 2 | Deaths at x 343 and 346: never trained on World 2; game over |
 
-The first tries of 1-1, 1-2 and 1-4 start with 0 idle frames, which is one of the starts it was
-trained on; the 1-3 clear starts at 110, which it never trained on. The held-out table below is
-the fairer reading.
+The first tries of 1-1, 1-2 and 1-4 start with 0 idle frames, one of the starts it was trained
+on; the 1-3 retries (37, 83, 110) are held-out starts it was picked on. It is also packed because
+of this run: six checkpoints of the same training run played it, and this is the only one that
+got past 1-1. The fresh column below is the fairest reading.
 
 ## Run it
 
@@ -86,10 +88,11 @@ ran on cadence-net 0.91.1 to 0.91.3 from late October to 1 November 2026: 1-1 an
 then all four World 1 levels with lesson shares weighted to 1-3. The model card has the lineage.
 
 The training code lives in [cadence-arcade](https://github.com/sean-mcclane832/cadence-arcade/tree/main/mario).
-It runs on gym-super-mario-bros, whose licence is not an open one, so it is not part of this
-folder. `smb/console.py` reproduces that package's single-level start and frame handling on
-nes-py, and on the training dump it gives the brain the same screens, RAM and answers at every
-decision of the gauntlet and of the 200 held-out attempts (32,402 decisions).
+It runs on gym-super-mario-bros (Christian Kauten), whose licence ("for educational purposes
+only") is not an open one, so it is not part of this folder. `smb/console.py` follows that
+package's single-level start and frame handling step by step, rewritten on nes-py; on the training
+dump it gives the brain the same screens, RAM and answers at every decision of the gauntlet and of
+the 200 held-out attempts (32,402 decisions).
 
 ## Results
 
@@ -105,10 +108,10 @@ frames, stuck limit 40 decisions, cap 900 ([`evidence/receipt.json`](evidence/re
 
 Every attempt that does not reach the flag ends in a death, except on 1-1, where most end with
 Mario standing still for 40 decisions (2.7 s of game time). None of the four levels is
-consistent: 1-4 on about two starts in three, 1-2 on 1 fresh start of 50 (its 8 held-out
-clears were partly the luck of the pick).
-Other checkpoints of the same run are stronger on single levels (one clears 1-1 on all 50
-held-out starts), and none is at least as good on all four.
+consistent: 1-4 on 27 and 34 of 50, 1-2 on 1 fresh start of 50 (its 8 held-out clears were
+partly the luck of the pick).
+Of the eight other checkpoints of the same run scored on held-out starts, some are stronger on
+single levels (one clears 1-1 on all 50), and none is at least as good on all four.
 
 ## Next
 
