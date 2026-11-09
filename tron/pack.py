@@ -29,7 +29,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 PYODIDE = "314.0.7"
 VERSION = "0.95.2"
-SOURCES = ["__init__.py", "world.py", "field.py", "fieldhost.py"]
+SOURCES = ["__init__.py", "world.py", "field.py", "fieldhost.py", "bots.py", "mcts.py"]
 KEEP = ("name", "title", "tagline", "sense", "size", "cadence", "play", "reading", "layout", "settle_from_rest")
 
 

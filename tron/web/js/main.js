@@ -18,6 +18,14 @@ const SLOT = (() => {
   const asked = new URLSearchParams(location.search).get("brain");
   return SLOTS.includes(asked) ? asked : "deep";
 })();
+// ?search=N: the brain guides a tree search of N simulations per move (tron/mcts.py); 0, the
+// default, plays the brain alone, one settle per move.
+const SEARCH_SIMS = 32;
+const SIMS = (() => {
+  const n = parseInt(new URLSearchParams(location.search).get("search") || "0", 10);
+  return Number.isFinite(n) && n > 0 ? Math.min(n, 200) : 0;
+})();
+const recordKey = (sha) => (SIMS ? `${sha}:search${SIMS}` : sha);
 const RESULT = { win: "loss", loss: "win", draw: "draw" }; // the host reports the brain's result
 
 const $ = (id) => document.getElementById(id);
@@ -42,13 +50,13 @@ const link = new Link((s) => { if (app.phase === "loading") els.status.textConte
 function loadRecord(sha) {
   try {
     const all = JSON.parse(localStorage.getItem(STORE) || "{}");
-    if (all[sha]) app.record = { ...app.record, ...all[sha] };
+    if (all[recordKey(sha)]) app.record = { ...app.record, ...all[recordKey(sha)] };
   } catch (_) { /* storage blocked */ }
 }
 function saveRecord() {
   try {
     const all = JSON.parse(localStorage.getItem(STORE) || "{}");
-    all[app.manifest.brain.sha256] = app.record;
+    all[recordKey(app.manifest.brain.sha256)] = app.record;
     localStorage.setItem(STORE, JSON.stringify(all));
   } catch (_) { /* storage blocked */ }
 }
@@ -231,11 +239,22 @@ requestAnimationFrame(loop);
 // ---- boot --------------------------------------------------------------------------------
 async function boot() {
   try {
-    document.querySelectorAll("#pick a").forEach((a) => a.classList.toggle("on", a.dataset.slot === SLOT));
+    document.querySelectorAll("#pick a[data-slot]").forEach((a) => {
+      a.classList.toggle("on", a.dataset.slot === SLOT);
+      a.href = `?brain=${a.dataset.slot}${SIMS ? `&search=${SIMS}` : ""}`;
+    });
+    const sw = document.getElementById("search"); // the search switch, where the page shows one
+    if (sw) {
+      sw.classList.toggle("on", SIMS > 0);
+      sw.href = `?brain=${SLOT}${SIMS ? "" : `&search=${SEARCH_SIMS}`}`;
+      sw.title = SIMS ? `The brain guides a search of ${SIMS} simulations per move; tap for the brain alone`
+        : `Let the brain guide a tree search of ${SEARCH_SIMS} simulations per move`;
+    }
     const manifest = await (await fetch(`pack/${SLOT}/manifest.json`, { cache: "no-cache" })).json();
     app.manifest = manifest;
     app.title = manifest.brain.title;
     els.name.textContent = app.title.toUpperCase();
+    if (SIMS) app.title = `${app.title} + search`;
     document.title = `Tron vs ${app.title}`;
     loadRecord(manifest.brain.sha256);
     showRecord();
@@ -244,6 +263,7 @@ async function boot() {
       ? fetch(`pack/${SLOT}/${manifest.brain.introspect}`, { cache: "no-cache" }).then((r) => (r.ok ? r.json() : null)).catch(() => null)
       : Promise.resolve(null);
     const [{ describe }, introspect] = await Promise.all([link.call("start", { pack, games: app.record.games }), intro]);
+    if (SIMS) await link.call("mode", { sims: SIMS });
     app.desc = describe;
     app.intro = introspect;
     brain.setIntrospect(introspect);
@@ -264,7 +284,7 @@ window.__tron = {
     phase: app.phase, size: arena.size, tick: app.last ? app.last.tick : 0,
     heads: app.last ? app.last.heads : null, headings: app.last ? app.last.headings : null,
     occupied: Array.from(arena.occupied), planned: steering.planned(), queued: steering.queue.length,
-    record: app.record, replays: app.replays.length, slot: SLOT, brain: app.manifest ? app.manifest.brain.id : null,
+    record: app.record, replays: app.replays.length, slot: SLOT, sims: SIMS, brain: app.manifest ? app.manifest.brain.id : null,
   }),
   call: (op, payload) => link.call(op, payload),
   timings: () => app.timings,

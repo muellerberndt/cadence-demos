@@ -106,7 +106,7 @@ readings, and a smoke-scale run of each route that takes minutes. In short:
 | `web/pack/flat/`, `web/pack/deep/` | the wheel, the host sources, the brain, its meta and its introspection, with `manifest.json` |
 | `tron/` | the arena (`world.py`), the sense (`field.py`), the page's host (`fieldhost.py`), the bots (`bots.py`, `fastbots.py`, `absearch.py`), the schools and the search |
 | `scripts/` | training, selection, self-play, the deep constructions, readings, introspection |
-| `brains/` | each brain's meta: layout, readings, lineage |
+| `brains/` | each brain's meta: layout, readings, lineage; [MODEL_CARD.md](MODEL_CARD.md) describes both |
 | `pack.py` | packs one brain into `web/pack/<slot>/` |
 | `tests/` | the rules, the bots, the packs (`pytest`), and `play_check.py`, the page tried in headless Chromium |
 | `evidence/` | readings on 0.95.2 and the page check |

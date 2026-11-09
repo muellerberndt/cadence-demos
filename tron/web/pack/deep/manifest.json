@@ -11,13 +11,17 @@
   "__init__.py",
   "world.py",
   "field.py",
-  "fieldhost.py"
+  "fieldhost.py",
+  "bots.py",
+  "mcts.py"
  ],
  "sources_sha256": {
   "__init__.py": "334d3699fc560e5b0524fdac9c752d89157f8f39f75ace5743f2675f38bedfea",
   "world.py": "671bbe234e438668975e5948130255b8e1fc0ee8168bf21a7fb4680655281d52",
   "field.py": "f96b6b014b83a6b9da79db13062e4d01f9b1c50dbe0b53f55ca71cc5700199f0",
-  "fieldhost.py": "21899f44922b3d9f5dad863adbd6cc35abad0b561413826ddb65b4afd8554464"
+  "fieldhost.py": "5be58e2f33ceeacda9369534642e28e390a50c9e219dffb09d8c41b387ef0e11",
+  "bots.py": "e866c2c308a7c446c35b2ee1536e20ba3f6f24736b84256f781be298227722af",
+  "mcts.py": "dbd68724ef1050115ed34454eb67efbfb926ab3b2b41161d42b3b15e03890359"
  },
  "brain": {
   "id": "mako-deep",

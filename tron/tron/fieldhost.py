@@ -81,6 +81,10 @@ class FieldHost:
         self.moved: list[int] | None = None  # [brain, player] of the last tick
         self.last: dict[str, Any] = {}
         self.settle: dict[str, Any] = {}
+        # Search mode (op "mode"): the brain's settle is the prior and the leaf evaluator of a
+        # brain-guided tree search (tron/mcts.py) that picks the move; 0 plays the brain alone.
+        self.sims = int(meta.get("sims", 0))
+        self._evaluator = None
 
     # ---- the move -----------------------------------------------------------------------------
     def _act(self) -> int:
@@ -101,6 +105,17 @@ class FieldHost:
                 action, refused = 1, True
                 self.refused += 1
         act_ms = 1e3 * (time.perf_counter() - t0)
+        search = None
+        if self.sims > 0 and not refused:
+            from . import mcts
+
+            if self._evaluator is None:
+                self._evaluator = mcts.Evaluator(self.brain)
+            t2 = time.perf_counter()
+            brain_move = action
+            action, visits = mcts.search(self.arena, 0, self._evaluator, sims=self.sims)
+            search = {"sims": self.sims, "visits": [round(float(v), 3) for v in visits], "brain_move": brain_move,
+                      "ms": round(1e3 * (time.perf_counter() - t2), 1)}
         t1 = time.perf_counter()
         free = [r for r in records if r.nudge is None and r.steps > 0]
         lo = self.n_in
@@ -129,8 +144,9 @@ class FieldHost:
             "motor": np.round(acts[:, np.asarray(motor) - lo], 4).tolist(),
         }
         self.last = {
-            "mode": "frozen",
+            "mode": "frozen" if search is None else "search",
             "choice": action,
+            "search": search,
             "sweeps": sweeps,
             "settles": len(records),
             "residual": residual,
@@ -273,6 +289,9 @@ class FieldHost:
             return json.dumps(self.begin(msg.get("seed")))
         if op == "tick":
             return json.dumps(self.tick(msg["move"]))
+        if op == "mode":
+            self.sims = max(0, int(msg.get("sims", 0)))
+            return json.dumps({"sims": self.sims})
         if op == "describe":
             return json.dumps(self.describe())
         if op == "snapshot":

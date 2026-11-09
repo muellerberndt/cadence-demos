@@ -6,6 +6,7 @@
 //   start    {pack, games}  -> {manifest, describe}   games: arenas continue from this count
 //   begin    {seed?}        -> the new game's state and the brain's first settle
 //   tick     {move}         -> the state after both cycles moved, the next settle
+//   mode     {sims}         -> 0: the brain alone; N: the brain guides a tree search of N simulations
 
 let pyodide = null;
 let manifest = null;
@@ -77,6 +78,7 @@ self.onmessage = async (event) => {
       const message = { op };
       if (op === "tick") message.move = event.data.move;
       if (op === "begin" && event.data.seed !== undefined) message.seed = event.data.seed;
+      if (op === "mode") message.sims = event.data.sims;
       result = JSON.parse(pyodide.globals.get("_handle")(JSON.stringify(message)));
       result.worker_ms = Math.round((performance.now() - t0) * 10) / 10;
     }

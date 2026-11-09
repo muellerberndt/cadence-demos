@@ -1,8 +1,8 @@
 {
- "url": "http://127.0.0.1:53777/index.html",
+ "url": "http://127.0.0.1:56138/index.html",
  "slots": {
   "deep": {
-   "boot_s": 7.3,
+   "boot_s": 8.4,
    "brain": "mako-deep",
    "switch_marks": [
     "deep"
@@ -27,21 +27,21 @@
    "parity_ms": {
     "round": {
      "n": 328,
-     "median": 38.2,
-     "p90": 48.7,
-     "max": 99.5
+     "median": 45.4,
+     "p90": 54.8,
+     "max": 113.3
     },
     "worker": {
      "n": 328,
-     "median": 36.8,
-     "p90": 46.1,
-     "max": 98.6
+     "median": 43.8,
+     "p90": 53.4,
+     "max": 112.3
     }
    },
    "games": [
     {
      "result_for_brain": "win",
-     "ticks": 109
+     "ticks": 147
     }
    ],
    "record": {
@@ -52,22 +52,22 @@
    },
    "play_ms": {
     "round": {
-     "n": 109,
-     "median": 54.3,
-     "p90": 77.9,
-     "max": 550
+     "n": 147,
+     "median": 61.2,
+     "p90": 95.1,
+     "max": 658.6
     },
     "worker": {
-     "n": 109,
-     "median": 42.6,
-     "p90": 64.3,
-     "max": 541.5
+     "n": 147,
+     "median": 47,
+     "p90": 72.2,
+     "max": 649.4
     },
     "python_act": {
-     "n": 109,
-     "median": 35.3,
-     "p90": 53.7,
-     "max": 490.6
+     "n": 147,
+     "median": 39.5,
+     "p90": 62.8,
+     "max": 611.2
     }
    },
    "fps_median": 30.0,
@@ -79,7 +79,7 @@
    }
   },
   "flat": {
-   "boot_s": 7.6,
+   "boot_s": 8.1,
    "brain": "mako-flat",
    "switch_marks": [
     "flat"
@@ -104,54 +104,54 @@
    "parity_ms": {
     "round": {
      "n": 328,
-     "median": 31.8,
-     "p90": 39.9,
-     "max": 46.6
+     "median": 45.8,
+     "p90": 72.4,
+     "max": 188.2
     },
     "worker": {
      "n": 328,
-     "median": 30.5,
-     "p90": 37.7,
-     "max": 46.1
+     "median": 44.3,
+     "p90": 70.5,
+     "max": 183.7
     }
    },
    "games": [
     {
-     "result_for_brain": "loss",
-     "ticks": 67
+     "result_for_brain": "win",
+     "ticks": 100
     }
    ],
    "record": {
     "games": 1,
-    "you": 1,
-    "them": 0,
+    "you": 0,
+    "them": 1,
     "draws": 0
    },
    "play_ms": {
     "round": {
-     "n": 67,
-     "median": 51,
-     "p90": 63,
-     "max": 493.9
+     "n": 100,
+     "median": 59.1,
+     "p90": 101.7,
+     "max": 1321.7
     },
     "worker": {
-     "n": 67,
-     "median": 33.5,
-     "p90": 47.3,
-     "max": 462.1
+     "n": 100,
+     "median": 37.5,
+     "p90": 79.7,
+     "max": 1319.9
     },
     "python_act": {
-     "n": 67,
-     "median": 26.2,
-     "p90": 37.9,
-     "max": 427.7
+     "n": 100,
+     "median": 29.6,
+     "p90": 56.7,
+     "max": 1260.3
     }
    },
-   "fps_median": 59.9,
+   "fps_median": 30.0,
    "record_after_reload": {
     "games": 1,
-    "you": 1,
-    "them": 0,
+    "you": 0,
+    "them": 1,
     "draws": 0
    }
   }

@@ -28,11 +28,16 @@ import math
 
 import numpy as np
 
-from . import absearch, fastbots
+from . import bots
 from .field import make_sense3
 from .world import Arena
 
 SEE = make_sense3("field")[0]
+try:  # the Numba ports of the territory leaf; the pure-Python leaf gives the same value
+    from . import absearch, fastbots
+    _FAST = (absearch, fastbots)
+except ImportError:
+    _FAST = None
 
 
 def clone(a: Arena) -> Arena:
@@ -40,10 +45,11 @@ def clone(a: Arena) -> Arena:
 
 
 class Evaluator:
-    def __init__(self, brain_path: str, value: str | None = None, lam: float = 0.5, terr_scale: float = 20.0,
+    def __init__(self, brain_path, value: str | None = None, lam: float = 0.5, terr_scale: float = 20.0,
                  backend: str = "cpu"):
         from cadence import Brain
-        self.brain = Brain.load(brain_path, backend=backend)
+        # a checkpoint path, or a loaded brain (the page's host shares its own)
+        self.brain = Brain.load(brain_path, backend=backend) if isinstance(brain_path, str) else brain_path
         self.backend = backend
         self.motor = np.asarray(self.brain.motor_index)
         self.temp = float(self.brain.learner.config.temperature)
@@ -57,8 +63,12 @@ class Evaluator:
         self.calls = 0
 
     def territory(self, arena: Arena, seat: int) -> float:
-        g, h, _ = absearch._state(arena)
-        t = fastbots._leaf(g, arena.size, h, seat, self._a, self._b, self._q)
+        if _FAST is not None:
+            absearch, fastbots = _FAST
+            g, h, _ = absearch._state(arena)
+            t = fastbots._leaf(g, arena.size, h, seat, self._a, self._b, self._q)
+        else:  # no Numba (the browser): the same leaf in pure Python
+            t = bots._leaf(arena, seat)
         return 1.0 / (1.0 + math.exp(-t / self.terr_scale))
 
     def __call__(self, arenas: list[Arena]):
