@@ -1,11 +1,231 @@
 # Connect Four
 
-Play Connect Four against a deep Cadence brain (`cadence-net` 0.95.2) that settles on its move
-and on its verdict of the position (loss, draw, win), and teach it a column. The page runs the
-released library in your browser, in Pyodide.
+Play Connect Four against a deep Cadence brain and watch every neuron settle on its move. You
+and the brain take turns dropping stones; four in a row wins. On its turn the whole brain
+settles once on the board it sees, and the page draws that settle sweep by sweep: every neuron
+and the synapses carrying its messages. Three of its motor neurons hold its verdict on the
+position (loss, draw or win for the side to move). The browser runs the actual Python brain in
+a Web Worker through Pyodide, with NumPy and the released `cadence-net==0.95.2` wheel. No
+server or model service chooses the moves.
+
+![The page mid-game: the board with the motor bars and the brain's verdict, the whole brain settling](docs/connect-four.png)
 
 ```sh
-python3 -m http.server 8790 --directory web   # from connect-four/; open http://localhost:8790/
+python -m http.server -d connect-four/web 8790   # open http://localhost:8790/
 ```
 
-The trained brain, its readings and the training instructions are being added to this folder.
+The first visit downloads Pyodide 314.0.7 and NumPy from jsDelivr and the 25 MB brain from this
+folder. The wheel, the Python host and the brain are bundled in `web/pack/`; the worker checks
+each against the SHA-256 in `web/pack/manifest.json` before anything runs.
+
+## The brain
+
+```python
+Brain.compose(126, 10, modules=(1024, 1024), slots=(7, 3), apical=0.25,
+              working_memory_amplitude=0.0, episodic=False)
+```
+
+taught at the normalized teaching point with a projection-relative floor of 0.1 and nudged
+phases of a fixed 32 sweeps. 3,208 neurons and 3,295,232 synapses.
+
+- **Senses:** 126 inputs in {0, 1}, row-major from the bottom left (cell `r*7 + c`, row 0 at the
+  bottom): the 42 cells of the side to move (on its turn, the brain), the opponent's 42 cells,
+  and the 42 cells where a stone dropped in each column would land.
+- **Acts:** `state = brain.learner.free(brain.stimulus(x, memory=False))`. The motor activations
+  are `state.activation[:, brain.learner.output_index]`: seven column neurons, then three
+  verdict neurons. The move is the strongest column neuron among the columns that still have
+  room. The verdict is taught beside the move; the move does not read it.
+- **Settles:** every move settles the whole brain from rest, without memory. A position is fully
+  observed, so nothing is carried from one move to the next. The settle stops at the first sweep
+  in which no activation moves by 0.003, within a budget of 1,024 sweeps.
+- **Populations:** sensory (126), `module_0` (1,024), association (1,024), prefrontal (1,024) and
+  motor (10). The synapses run sensory→`module_0` (dense), `module_0`↔association and
+  association↔motor (reciprocal, a quarter of them on the apical compartment), and
+  prefrontal→association. The prefrontal region is where Cadence's working trace enters; in a
+  memory-free settle it stays at rest and the page shows it as silent.
+
+## What the page shows
+
+- **The board,** with the seven column neurons as bars above their columns, rising sweep by
+  sweep, and after each of its moves the brain's verdict on the position it moved from.
+- **The whole brain.** Every neuron sits in its population's place: the sensory neurons as three
+  6 × 7 boards (its stones, yours, the playable cells); `module_0` as a field placed by the board
+  cells each neuron reads; the association field above it, placed by the columns each neuron
+  drives; the silent prefrontal region; the column and verdict neurons on top. A synapse glows
+  with the message it carries, |weight × presynaptic activation|: cyan when it excites, violet
+  when it inhibits. Blocks of more than 150,000 synapses are drawn by the eight strongest
+  synapses into each neuron (174,080 of the 3.3 million are drawn). Hover or tap a neuron to see
+  its activation, its bias and its strongest inputs now.
+- **The settle, sweep by sweep,** in chunks of 12 sweeps posted as soon as they exist, with a
+  sparkline of the largest activation change against the tolerance. Chunking changes nothing:
+  the tests check the sweep count, the last frame and the move against one `Learner.free` call.
+- **What it imagines you would reply** (off by default; tick *imagine*). Before its move,
+  `Brain.imagine` privately settles the brain on the board each column would leave, read from
+  your seat, and draws the reply it would make there. Nothing in the brain changes, and its move
+  does not read these replies. It settles seven boards together, which adds several seconds a
+  move in the browser.
+- **Teach it.** After a brain move, tap the column it should have played. The worker runs one
+  `brain.lesson` on that board, labelled with your column and the verdict the brain holds now.
+  Only a column the brain does not already play is taught. The page's lessons step at 0.0033
+  (the bias at a tenth of that), so one or two lessons show; the brain's own moves do not depend
+  on that rate. The largest synaptic changes flash gold. Columns the brain does not play often
+  rest at the activation floor (−0.1); a lesson then shows as the taught column becoming the
+  move rather than as a rising bar. Lessons live in the tab; *Reset brain* or a reload restores
+  the shipped brain.
+- **Game controls:** new game, who starts, undo, keys 1–7, and a collapsed model card with the
+  sizes, the training, the readings, the timings in this tab and the provenance.
+
+## How it learned
+
+Offline, from a perfect Connect Four solver ([Pascal Pons'
+solver](https://github.com/PascalPons/connect4)), in stages, each continuing the brain of the
+one before:
+
+| Stage | Lessons | Rows a lesson | What was taught |
+| --- | --- | --- | --- |
+| 1 | 2,000 | 256 | from a fresh brain: the solver's centre-most optimal column, or the brain's own column where it keeps the theoretical result; the verdict |
+| 2 | 58,000 | 256 | the same, on the GPU in float32 |
+| 3 | 20,000 | 512 | the same at a third of the rate, annealed once more at a plateau |
+
+Every lesson taught every row of its batch. A batch draws from three million positions of games
+of the solver against itself (deliberate mistakes, short random openings, each position also
+mirrored): a quarter of it positions with a win to take or a win to block, an eighth finished
+boards seen by the loser (verdict: loss). Every 1,000 lessons the brain plays 64 games against
+the solver and 16 more from the empty board; their positions join the pool, and each move that
+slipped is shown four more times.
+
+## Measured
+
+`training/c4train/reading.py` on the packed brain, loaded on the CPU (record:
+`evidence/reading.json`):
+
+| Reading, the brain alone | |
+| --- | --- |
+| The solver's optimal move, 3,000 held-out positions | 77.3% |
+| A move that keeps the theoretical result, where the mover is not already lost | 92.3% |
+| An immediate win taken | 68.0% |
+| A forced block made | 85.3% |
+| The verdict agrees with the solver's result | 89.2% |
+| First move against the perfect solver, 200 games from the empty board | 119 won, 50 drawn, 31 lost |
+| Second move against the solver at 90% (random moves otherwise), 200 games | 46 won, 36 drawn, 118 lost |
+
+The held-out positions come from solver games that were never taught. The perfect solver wins
+every game it starts, so the brain's games as the second player are played against a solver
+that plays a random column one move in ten.
+
+`check_page.py` ran the page in headless Chromium on an Apple M4 (record:
+`evidence/page_check.json`), while the machine ran other jobs: starting Pyodide, NumPy, Cadence
+and the brain took 32 s; over a whole game a settle took 43–85 sweeps and 0.9–2.9 s in the
+worker, and from a click to the brain's stone on the board took 2.8–4.9 s, animation included.
+With imagination on, the seven imagined replies took 8.6 s more.
+
+## Train it further
+
+The training code is in `training/`. It needs the solver:
+
+```sh
+cd connect-four/training
+git clone https://github.com/PascalPons/connect4 pons
+curl -L -o pons/7x6.book https://github.com/PascalPons/connect4/releases/download/book/7x6.book
+cp bridge.cpp pons/ && (cd pons && make c4solver && g++ --std=c++11 -O3 -DNDEBUG -o c4bridge bridge.cpp Solver.o)
+python -m venv .venv && .venv/bin/pip install "cadence-net[fast]==0.95.2"
+```
+
+A pool of solver-labelled positions (one solver per worker):
+
+```sh
+.venv/bin/python -m c4train.gen_pool --positions 1000000 --workers 8 --seed 1 --out runs/pool_1m.npz
+```
+
+Continue the packed brain on a CUDA GPU (1,000 lessons of 512 rows with their games and readings
+took about 18 minutes on an A10G shared by two runs):
+
+```sh
+.venv/bin/pip install torch
+.venv/bin/python -m c4train.train --arm cadence --modules 8 --init ../web/pack/brain.npz \
+  --backend torch --device cuda:0 --precision float32 \
+  --planes 3 --verdict --every-row --batch 512 --pool-file runs/pool_1m.npz \
+  --target keepwin --soft 0.5 --tactics-weight 3 --tactics-share 0.25 --terminal-share 0.125 \
+  --slip-weight 4 --own-every 1000 --own-games 64 --first-games 16 --first-weight 2 \
+  --eval-every 1000 --games-every 5000 --games 40 --first-eval 40 \
+  --patience-on score --lessons 20000 --out runs/continue
+```
+
+or on Apple silicon with MLX (`--backend mlx --precision float32`, after
+`.venv/bin/pip install "cadence-net[apple,fast]==0.95.2"`). `--modules` is ignored when `--init` loads a brain; a fresh brain takes
+`--modules 1024 1024 --apical 0.25 --relative 0.1 --nudged-steps 32 --nudged-fixed`.
+
+The shipped brain was trained without the lesson options of 0.95.x; the command above continues
+it with them:
+
+- `--target keepwin`: as the brain's own column where it keeps the result, but a position with a
+  win now is labelled with the winning column (a slower win also keeps the result, so the plain
+  target never teaches taking it).
+- `--soft 0.5`: `lesson(x, targets=p)` teaches a distribution per row: half on the label, half
+  spread over the columns that keep the result (the winning columns where one wins now).
+- `--tactics-weight 3`: `lesson(x, labels, weights=w)` weighs rows with a win to take or a win to
+  block three times.
+
+`runs/continue/receipt.json` holds every reading; `policy_best.npz` is the brain with the best
+`keep + 0.25 × (wins + blocks)` so far. Pack a brain for the page:
+
+```sh
+.venv/bin/python -m c4train.page_copy runs/continue/policy_best.npz page.npz
+.venv/bin/python -m c4train.reading page.npz > ../evidence/reading.json
+cd .. && python pack.py --brain training/page.npz --receipt training/runs/continue/receipt.json
+```
+
+`page_copy` zeroes the optimizer's running moments and stores the efficacies in float32 (the
+precision the brain was trained in): the moves are unchanged and the file is a quarter of the
+size. `pack.py` copies the brain, the receipt's numbers and the host into `web/pack/` with the
+released wheel and a manifest of hashes.
+
+## What it does not claim
+
+- **No search and no memory.** It plays from one settle per move: no search, no opening book, no
+  memory of earlier moves. It shows the settle, the verdict and lessons on mismatch, not a
+  continuing life with retained state.
+- **Not a perfect player.** The readings above are the claim; a game in the page is one sample.
+  It misses about a third of the immediate wins it could take.
+- **The imagined replies** are the brain's private responses, not a model of you or of the game,
+  and its move does not read them.
+- **A settled state** certifies the settle's equations at the tolerance, not the quality of the
+  move.
+- **Brightness** is scaled per population, relative to its most active neuron in that settle;
+  the tooltip shows raw values.
+
+## Check
+
+```sh
+python -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python -m playwright install --only-shell chromium
+.venv/bin/python -m pytest tests -q
+.venv/bin/python check_page.py
+```
+
+The tests check the rules and the three-plane encoding, that the drawn settle is the
+`Learner.free` readout sweep for sweep, the verdict readout, that a full column is never played,
+the layout, the silent population at rest, an imagination that changes nothing, and a lesson that
+changes synapses while a reset restores them. `check_page.py` serves `web/`, plays a whole game
+by clicking, checks every answer is legal and the settle and answer times, the brain view while
+it settles, hover details, imagination when ticked, two lessons, undo, a new game with the brain
+first, the model card, a reset, a phone-width layout and a browser without fast WebGL. Console
+errors, page errors and failed requests fail it.
+
+Pyodide's NumPy has a 32-bit index type; `connect4/host.fit_32_bit_numpy` gives the library's
+learning module a NumPy whose `repeat` casts its counts. The shim does nothing on a 64-bit NumPy.
+
+| Path | What |
+| --- | --- |
+| `connect4/` | what the page's worker runs: the rules and encoding (`game.py`), the drawn settle, the verdict, imagination, lessons and the layout (`host.py`) |
+| `web/` | the page: `app.js` (game, controls, readouts), `board.js`, `brain.js` (WebGL2 and Canvas2D), `worker.js` (Pyodide), `pack/` (wheel, host, brain, receipt, manifest) |
+| `pack.py` | packs the wheel, the brain, the receipt's numbers and the host into `web/pack/` |
+| `training/` | the trainer (`c4train`), the solver bridge, the readings and the page copy |
+| `tests/`, `check_page.py` | the rules and the host; the page's promise in headless Chromium |
+| `evidence/` | `reading.json`, `page_check.json` |
+| `MODEL_CARD.md` | the brain: composition, training, readings, limits |
+| `docs/` | the screenshot |
+
+Cadence and this example are GPL-3.0. Pascal Pons' solver, which the training uses and this
+folder does not include, is AGPL-3.0.

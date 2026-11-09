@@ -1,0 +1,34 @@
+{
+ "brain": "web/pack/brain.npz",
+ "heldout": {
+  "positions": 3000,
+  "optimal": 0.773,
+  "keep_not_lost": 0.9234,
+  "wins_now": 0.68,
+  "blocks": 0.8525,
+  "verdict": 0.8923
+ },
+ "games": [
+  {
+   "policy_first": true,
+   "strength": 1.0,
+   "games": 200,
+   "win": 119,
+   "draw": 50,
+   "loss": 31,
+   "blunder_free_games": 0.595
+  },
+  {
+   "policy_first": false,
+   "strength": 0.9,
+   "games": 200,
+   "win": 46,
+   "draw": 36,
+   "loss": 118,
+   "blunder_free_games": 0.62
+  }
+ ],
+ "seconds": 2139.0,
+ "command": "python -m c4train.reading web/pack/brain.npz 200 20991",
+ "library": "cadence-net 0.95.2, CPU, float64"
+}

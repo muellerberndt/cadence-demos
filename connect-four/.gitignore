@@ -2,3 +2,8 @@ __pycache__/
 *.pyc
 .pytest_cache/
 evidence/*.png
+training/pons/
+training/runs/
+training/.venv/
+training/*.npz
+.venv/

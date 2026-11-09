@@ -1,4 +1,4 @@
-cadence-net==0.89.0
+cadence-net==0.95.2
 numpy
 pytest>=8
 playwright>=1.40

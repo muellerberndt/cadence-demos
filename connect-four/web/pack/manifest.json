@@ -1,0 +1,1145 @@
+{
+ "schema": "cadence-connect-four-pack/1",
+ "packed": "2026-11-09",
+ "pyodide": "314.0.7",
+ "cadence": "0.95.2",
+ "wheel": "cadence_net-0.95.2-py3-none-any.whl",
+ "wheel_sha256": "734487b6a821ef0d39441dc59817f67e6f6ac070a8cbbe45243a12193ea2d090",
+ "wheel_source": "local copy of the released wheel",
+ "sources": [
+  "__init__.py",
+  "game.py",
+  "host.py"
+ ],
+ "sources_sha256": {
+  "__init__.py": "47414a7c3f0cef23e5ca009aca12cac476701baf9dbdbe89400c3b542fbffe7b",
+  "game.py": "e357894a7bc0ce3678209941f6aa7b3faa365ba15291a13a014439ae66c8a395",
+  "host.py": "e53b6080112873ee40e0eb9ac4434756ac50cd9fc590e8659e3a2b2ed344d0a2"
+ },
+ "brain": "brain.npz",
+ "brain_sha256": "29bac892de8fd1cd12005dd8936a43a39263bc652ccd8cc03fd26cfdd3f8ae95",
+ "brain_bytes": 24955463,
+ "brain_size": {
+  "neurons": 3208,
+  "synapses": 3295232,
+  "populations": {
+   "association": 1024,
+   "module_0": 1024,
+   "motor": 10,
+   "motor/actions": 10,
+   "prefrontal": 1024,
+   "sensory": 126
+  },
+  "modules": [
+   1024,
+   1024
+  ],
+  "inputs": 126,
+  "motor": 10
+ },
+ "receipt": "receipt.json",
+ "receipt_sha256": "b1b5f1da782d94d2c88439a51a9484d40d82dce7e6d25c550b4392c827b04cea",
+ "training": {
+  "args": {
+   "arm": "cadence",
+   "modules": [
+    1024,
+    1024
+   ],
+   "seed": 4,
+   "every_row": true,
+   "batch": 512,
+   "lessons": 200000,
+   "own_every": 1000,
+   "own_games": 64,
+   "first_games": 16,
+   "first_weight": 2,
+   "eval_every": 1000,
+   "games_every": 5000,
+   "games": 40,
+   "first_eval": 40,
+   "apical": 0.25,
+   "relative": 0.1,
+   "nudged_steps": 32,
+   "nudged_fixed": true,
+   "precision": "float32",
+   "planes": 3,
+   "verdict": true,
+   "target": "keep",
+   "tactics_share": 0.25,
+   "terminal_share": 0.125,
+   "slip_weight": 4,
+   "eta_scale": 0.33,
+   "patience_on": "keep",
+   "anneal": 2,
+   "anneal_factor": 0.33
+  },
+  "size": {
+   "neurons": 3208,
+   "synapses": 3295232,
+   "apical": {
+    "synapses": 1058816,
+    "pools": 2,
+    "fraction": 0.25,
+    "floor": 1.0
+   },
+   "dt": 0.5,
+   "learning": {
+    "beta": 0.1,
+    "eta": 0.00099,
+    "eta_bias": 9.9e-05,
+    "free_steps": 1024,
+    "nudged_steps": 32,
+    "tolerance": 0.003,
+    "nudge": "cross_entropy",
+    "temperature": 0.2,
+    "normalize": 0.99,
+    "normalize_floor": 0.0001,
+    "momentum": 0.9,
+    "scale_cap": 8.0,
+    "qualified": false,
+    "damping": 3,
+    "surprise": false,
+    "initial_damping": 0,
+    "normalize_relative": 0.1,
+    "nudged_fixed": true
+   }
+  },
+  "pool_start": 6000000,
+  "curve": [
+   {
+    "lesson": 1000,
+    "pool": 6003548,
+    "taught_share": 1.0,
+    "seconds": 1189.2,
+    "optimal": 0.7616666666666667,
+    "blunder": 0.06833333333333333,
+    "blunder_not_lost": 0.10128458498023715,
+    "keep_not_lost": 0.8987,
+    "illegal": 0.0,
+    "wins_now": 0.66,
+    "blocks": 0.825,
+    "verdict": 0.8683,
+    "phases": {
+     "opening (0-8 stones)": {
+      "optimal": 0.8499,
+      "blunder": 0.0184,
+      "n": 1086
+     },
+     "early middle (9-16)": {
+      "optimal": 0.6984,
+      "blunder": 0.0822,
+      "n": 766
+     },
+     "late middle (17-24)": {
+      "optimal": 0.6823,
+      "blunder": 0.0975,
+      "n": 554
+     },
+     "end (25-42)": {
+      "optimal": 0.7559,
+      "blunder": 0.1145,
+      "n": 594
+     }
+    }
+   },
+   {
+    "lesson": 2000,
+    "pool": 6007264,
+    "taught_share": 1.0,
+    "seconds": 2144.5,
+    "optimal": 0.7626666666666667,
+    "blunder": 0.066,
+    "blunder_not_lost": 0.09782608695652174,
+    "keep_not_lost": 0.9022,
+    "illegal": 0.0,
+    "wins_now": 0.68,
+    "blocks": 0.835,
+    "verdict": 0.8693,
+    "phases": {
+     "opening (0-8 stones)": {
+      "optimal": 0.8471,
+      "blunder": 0.0184,
+      "n": 1086
+     },
+     "early middle (9-16)": {
+      "optimal": 0.6997,
+      "blunder": 0.077,
+      "n": 766
+     },
+     "late middle (17-24)": {
+      "optimal": 0.6841,
+      "blunder": 0.1029,
+      "n": 554
+     },
+     "end (25-42)": {
+      "optimal": 0.7626,
+      "blunder": 0.1044,
+      "n": 594
+     }
+    }
+   },
+   {
+    "lesson": 3000,
+    "pool": 6010846,
+    "taught_share": 1.0,
+    "seconds": 3188.0,
+    "optimal": 0.765,
+    "blunder": 0.057666666666666665,
+    "blunder_not_lost": 0.08547430830039526,
+    "keep_not_lost": 0.9145,
+    "illegal": 0.0,
+    "wins_now": 0.6533,
+    "blocks": 0.8475,
+    "verdict": 0.871,
+    "phases": {
+     "opening (0-8 stones)": {
+      "optimal": 0.8508,
+      "blunder": 0.0129,
+      "n": 1086
+     },
+     "early middle (9-16)": {
+      "optimal": 0.7115,
+      "blunder": 0.0627,
+      "n": 766
+     },
+     "late middle (17-24)": {
+      "optimal": 0.6787,
+      "blunder": 0.0993,
+      "n": 554
+     },
+     "end (25-42)": {
+      "optimal": 0.7576,
+      "blunder": 0.0943,
+      "n": 594
+     }
+    }
+   },
+   {
+    "lesson": 4000,
+    "pool": 6014384,
+    "taught_share": 1.0,
+    "seconds": 4229.8,
+    "optimal": 0.7643333333333333,
+    "blunder": 0.061,
+    "blunder_not_lost": 0.09041501976284586,
+    "keep_not_lost": 0.9096,
+    "illegal": 0.0,
+    "wins_now": 0.6667,
+    "blocks": 0.8475,
+    "verdict": 0.8797,
+    "phases": {
+     "opening (0-8 stones)": {
+      "optimal": 0.8517,
+      "blunder": 0.0147,
+      "n": 1086
+     },
+     "early middle (9-16)": {
+      "optimal": 0.6893,
+      "blunder": 0.0796,
+      "n": 766
+     },
+     "late middle (17-24)": {
+      "optimal": 0.6841,
+      "blunder": 0.0993,
+      "n": 554
+     },
+     "end (25-42)": {
+      "optimal": 0.7761,
+      "blunder": 0.0859,
+      "n": 594
+     }
+    }
+   },
+   {
+    "lesson": 5000,
+    "pool": 6018030,
+    "taught_share": 1.0,
+    "seconds": 5279.8,
+    "optimal": 0.7646666666666667,
+    "blunder": 0.06233333333333333,
+    "blunder_not_lost": 0.09239130434782608,
+    "keep_not_lost": 0.9076,
+    "illegal": 0.0,
+    "wins_now": 0.6667,
+    "blocks": 0.8375,
+    "verdict": 0.8773,
+    "phases": {
+     "opening (0-8 stones)": {
+      "optimal": 0.8389,
+      "blunder": 0.0157,
+      "n": 1086
+     },
+     "early middle (9-16)": {
+      "optimal": 0.7115,
+      "blunder": 0.0705,
+      "n": 766
+     },
+     "late middle (17-24)": {
+      "optimal": 0.6823,
+      "blunder": 0.1065,
+      "n": 554
+     },
+     "end (25-42)": {
+      "optimal": 0.7744,
+      "blunder": 0.096,
+      "n": 594
+     }
+    }
+   },
+   {
+    "lesson": 6000,
+    "pool": 6021510,
+    "taught_share": 1.0,
+    "seconds": 6641.5,
+    "optimal": 0.7666666666666667,
+    "blunder": 0.062,
+    "blunder_not_lost": 0.09189723320158102,
+    "keep_not_lost": 0.9081,
+    "illegal": 0.0,
+    "wins_now": 0.6733,
+    "blocks": 0.8325,
+    "verdict": 0.8777,
+    "phases": {
+     "opening (0-8 stones)": {
+      "optimal": 0.8453,
+      "blunder": 0.0129,
+      "n": 1086
+     },
+     "early middle (9-16)": {
+      "optimal": 0.7063,
+      "blunder": 0.0757,
+      "n": 766
+     },
+     "late middle (17-24)": {
+      "optimal": 0.6968,
+      "blunder": 0.1065,
+      "n": 554
+     },
+     "end (25-42)": {
+      "optimal": 0.766,
+      "blunder": 0.0926,
+      "n": 594
+     }
+    }
+   },
+   {
+    "lesson": 7000,
+    "pool": 6025132,
+    "taught_share": 1.0,
+    "seconds": 7713.6,
+    "optimal": 0.7666666666666667,
+    "blunder": 0.06133333333333333,
+    "blunder_not_lost": 0.09090909090909091,
+    "keep_not_lost": 0.9091,
+    "illegal": 0.0,
+    "wins_now": 0.6933,
+    "blocks": 0.84,
+    "verdict": 0.8777,
+    "phases": {
+     "opening (0-8 stones)": {
+      "optimal": 0.8499,
+      "blunder": 0.0157,
+      "n": 1086
+     },
+     "early middle (9-16)": {
+      "optimal": 0.705,
+      "blunder": 0.077,
+      "n": 766
+     },
+     "late middle (17-24)": {
+      "optimal": 0.6859,
+      "blunder": 0.0975,
+      "n": 554
+     },
+     "end (25-42)": {
+      "optimal": 0.7694,
+      "blunder": 0.0909,
+      "n": 594
+     }
+    }
+   },
+   {
+    "lesson": 8000,
+    "pool": 6028944,
+    "taught_share": 1.0,
+    "seconds": 8809.9,
+    "optimal": 0.7723333333333333,
+    "blunder": 0.05466666666666667,
+    "blunder_not_lost": 0.08102766798418973,
+    "keep_not_lost": 0.919,
+    "illegal": 0.0,
+    "wins_now": 0.6933,
+    "blocks": 0.835,
+    "verdict": 0.8797,
+    "phases": {
+     "opening (0-8 stones)": {
+      "optimal": 0.8481,
+      "blunder": 0.012,
+      "n": 1086
+     },
+     "early middle (9-16)": {
+      "optimal": 0.7023,
+      "blunder": 0.0757,
+      "n": 766
+     },
+     "late middle (17-24)": {
+      "optimal": 0.7076,
+      "blunder": 0.0884,
+      "n": 554
+     },
+     "end (25-42)": {
+      "optimal": 0.7845,
+      "blunder": 0.0741,
+      "n": 594
+     }
+    }
+   },
+   {
+    "lesson": 9000,
+    "pool": 6032648,
+    "taught_share": 1.0,
+    "seconds": 9910.9,
+    "optimal": 0.7636666666666667,
+    "blunder": 0.057666666666666665,
+    "blunder_not_lost": 0.08547430830039526,
+    "keep_not_lost": 0.9145,
+    "illegal": 0.0,
+    "wins_now": 0.7,
+    "blocks": 0.8525,
+    "verdict": 0.875,
+    "phases": {
+     "opening (0-8 stones)": {
+      "optimal": 0.8471,
+      "blunder": 0.011,
+      "n": 1086
+     },
+     "early middle (9-16)": {
+      "optimal": 0.6906,
+      "blunder": 0.0731,
+      "n": 766
+     },
+     "late middle (17-24)": {
+      "optimal": 0.6949,
+      "blunder": 0.1011,
+      "n": 554
+     },
+     "end (25-42)": {
+      "optimal": 0.7694,
+      "blunder": 0.0825,
+      "n": 594
+     }
+    }
+   },
+   {
+    "lesson": 10000,
+    "pool": 6036372,
+    "taught_share": 1.0,
+    "seconds": 11011.7,
+    "optimal": 0.776,
+    "blunder": 0.054,
+    "blunder_not_lost": 0.0800395256916996,
+    "keep_not_lost": 0.92,
+    "illegal": 0.0,
+    "wins_now": 0.66,
+    "blocks": 0.8475,
+    "verdict": 0.8837,
+    "phases": {
+     "opening (0-8 stones)": {
+      "optimal": 0.8564,
+      "blunder": 0.0092,
+      "n": 1086
+     },
+     "early middle (9-16)": {
+      "optimal": 0.7102,
+      "blunder": 0.0679,
+      "n": 766
+     },
+     "late middle (17-24)": {
+      "optimal": 0.6986,
+      "blunder": 0.0957,
+      "n": 554
+     },
+     "end (25-42)": {
+      "optimal": 0.7862,
+      "blunder": 0.0791,
+      "n": 594
+     }
+    }
+   },
+   {
+    "lesson": 11000,
+    "pool": 6039988,
+    "taught_share": 1.0,
+    "seconds": 12308.4,
+    "optimal": 0.777,
+    "blunder": 0.05266666666666667,
+    "blunder_not_lost": 0.07806324110671936,
+    "keep_not_lost": 0.9219,
+    "illegal": 0.0,
+    "wins_now": 0.6667,
+    "blocks": 0.865,
+    "verdict": 0.8867,
+    "phases": {
+     "opening (0-8 stones)": {
+      "optimal": 0.8471,
+      "blunder": 0.0129,
+      "n": 1086
+     },
+     "early middle (9-16)": {
+      "optimal": 0.7141,
+      "blunder": 0.0627,
+      "n": 766
+     },
+     "late middle (17-24)": {
+      "optimal": 0.7184,
+      "blunder": 0.0903,
+      "n": 554
+     },
+     "end (25-42)": {
+      "optimal": 0.7845,
+      "blunder": 0.0774,
+      "n": 594
+     }
+    }
+   },
+   {
+    "lesson": 12000,
+    "pool": 6043494,
+    "taught_share": 1.0,
+    "seconds": 13395.9,
+    "optimal": 0.7693333333333333,
+    "blunder": 0.059333333333333335,
+    "blunder_not_lost": 0.08794466403162056,
+    "keep_not_lost": 0.9121,
+    "illegal": 0.0,
+    "wins_now": 0.6667,
+    "blocks": 0.845,
+    "verdict": 0.8823,
+    "phases": {
+     "opening (0-8 stones)": {
+      "optimal": 0.8435,
+      "blunder": 0.0129,
+      "n": 1086
+     },
+     "early middle (9-16)": {
+      "optimal": 0.7102,
+      "blunder": 0.0692,
+      "n": 766
+     },
+     "late middle (17-24)": {
+      "optimal": 0.6986,
+      "blunder": 0.1065,
+      "n": 554
+     },
+     "end (25-42)": {
+      "optimal": 0.7761,
+      "blunder": 0.0875,
+      "n": 594
+     }
+    }
+   },
+   {
+    "lesson": 13000,
+    "pool": 6047146,
+    "taught_share": 1.0,
+    "seconds": 14515.2,
+    "optimal": 0.772,
+    "blunder": 0.05733333333333333,
+    "blunder_not_lost": 0.08498023715415019,
+    "keep_not_lost": 0.915,
+    "illegal": 0.0,
+    "wins_now": 0.7067,
+    "blocks": 0.8525,
+    "verdict": 0.8927,
+    "phases": {
+     "opening (0-8 stones)": {
+      "optimal": 0.8435,
+      "blunder": 0.0147,
+      "n": 1086
+     },
+     "early middle (9-16)": {
+      "optimal": 0.7167,
+      "blunder": 0.0627,
+      "n": 766
+     },
+     "late middle (17-24)": {
+      "optimal": 0.7022,
+      "blunder": 0.0975,
+      "n": 554
+     },
+     "end (25-42)": {
+      "optimal": 0.7778,
+      "blunder": 0.0909,
+      "n": 594
+     }
+    }
+   },
+   {
+    "lesson": 14000,
+    "pool": 6050914,
+    "taught_share": 1.0,
+    "seconds": 15641.1,
+    "optimal": 0.7763333333333333,
+    "blunder": 0.05533333333333333,
+    "blunder_not_lost": 0.08201581027667984,
+    "keep_not_lost": 0.918,
+    "illegal": 0.0,
+    "wins_now": 0.6733,
+    "blocks": 0.86,
+    "verdict": 0.8907,
+    "phases": {
+     "opening (0-8 stones)": {
+      "optimal": 0.8435,
+      "blunder": 0.0129,
+      "n": 1086
+     },
+     "early middle (9-16)": {
+      "optimal": 0.7023,
+      "blunder": 0.0744,
+      "n": 766
+     },
+     "late middle (17-24)": {
+      "optimal": 0.722,
+      "blunder": 0.0957,
+      "n": 554
+     },
+     "end (25-42)": {
+      "optimal": 0.7997,
+      "blunder": 0.0707,
+      "n": 594
+     }
+    }
+   },
+   {
+    "lesson": 15000,
+    "pool": 6054518,
+    "taught_share": 1.0,
+    "seconds": 16767.0,
+    "optimal": 0.771,
+    "blunder": 0.05566666666666667,
+    "blunder_not_lost": 0.0825098814229249,
+    "keep_not_lost": 0.9175,
+    "illegal": 0.0,
+    "wins_now": 0.6533,
+    "blocks": 0.8475,
+    "verdict": 0.892,
+    "phases": {
+     "opening (0-8 stones)": {
+      "optimal": 0.8444,
+      "blunder": 0.0129,
+      "n": 1086
+     },
+     "early middle (9-16)": {
+      "optimal": 0.705,
+      "blunder": 0.077,
+      "n": 766
+     },
+     "late middle (17-24)": {
+      "optimal": 0.6968,
+      "blunder": 0.0921,
+      "n": 554
+     },
+     "end (25-42)": {
+      "optimal": 0.7912,
+      "blunder": 0.0724,
+      "n": 594
+     }
+    }
+   },
+   {
+    "lesson": 16000,
+    "pool": 6058046,
+    "taught_share": 1.0,
+    "seconds": 18272.7,
+    "optimal": 0.7713333333333333,
+    "blunder": 0.057666666666666665,
+    "blunder_not_lost": 0.08547430830039526,
+    "keep_not_lost": 0.9145,
+    "illegal": 0.0,
+    "wins_now": 0.6933,
+    "blocks": 0.85,
+    "verdict": 0.8893,
+    "phases": {
+     "opening (0-8 stones)": {
+      "optimal": 0.849,
+      "blunder": 0.0101,
+      "n": 1086
+     },
+     "early middle (9-16)": {
+      "optimal": 0.7037,
+      "blunder": 0.0718,
+      "n": 766
+     },
+     "late middle (17-24)": {
+      "optimal": 0.7022,
+      "blunder": 0.1029,
+      "n": 554
+     },
+     "end (25-42)": {
+      "optimal": 0.7811,
+      "blunder": 0.0842,
+      "n": 594
+     }
+    }
+   },
+   {
+    "lesson": 17000,
+    "pool": 6061510,
+    "taught_share": 1.0,
+    "seconds": 19402.0,
+    "optimal": 0.768,
+    "blunder": 0.056,
+    "blunder_not_lost": 0.08300395256916997,
+    "keep_not_lost": 0.917,
+    "illegal": 0.0,
+    "wins_now": 0.6667,
+    "blocks": 0.87,
+    "verdict": 0.8963,
+    "phases": {
+     "opening (0-8 stones)": {
+      "optimal": 0.8425,
+      "blunder": 0.0138,
+      "n": 1086
+     },
+     "early middle (9-16)": {
+      "optimal": 0.7037,
+      "blunder": 0.0705,
+      "n": 766
+     },
+     "late middle (17-24)": {
+      "optimal": 0.6931,
+      "blunder": 0.1011,
+      "n": 554
+     },
+     "end (25-42)": {
+      "optimal": 0.7845,
+      "blunder": 0.0724,
+      "n": 594
+     }
+    }
+   },
+   {
+    "lesson": 18000,
+    "pool": 6065076,
+    "taught_share": 1.0,
+    "seconds": 20521.9,
+    "optimal": 0.7636666666666667,
+    "blunder": 0.05633333333333333,
+    "blunder_not_lost": 0.08349802371541502,
+    "keep_not_lost": 0.9165,
+    "illegal": 0.0,
+    "wins_now": 0.6733,
+    "blocks": 0.85,
+    "verdict": 0.8833,
+    "phases": {
+     "opening (0-8 stones)": {
+      "optimal": 0.8379,
+      "blunder": 0.0129,
+      "n": 1086
+     },
+     "early middle (9-16)": {
+      "optimal": 0.6945,
+      "blunder": 0.0679,
+      "n": 766
+     },
+     "late middle (17-24)": {
+      "optimal": 0.6968,
+      "blunder": 0.1029,
+      "n": 554
+     },
+     "end (25-42)": {
+      "optimal": 0.7795,
+      "blunder": 0.0774,
+      "n": 594
+     }
+    }
+   },
+   {
+    "lesson": 19000,
+    "pool": 6068496,
+    "taught_share": 1.0,
+    "seconds": 21544.7,
+    "optimal": 0.767,
+    "blunder": 0.05466666666666667,
+    "blunder_not_lost": 0.08102766798418973,
+    "keep_not_lost": 0.919,
+    "illegal": 0.0,
+    "wins_now": 0.6867,
+    "blocks": 0.8375,
+    "verdict": 0.8913,
+    "phases": {
+     "opening (0-8 stones)": {
+      "optimal": 0.8379,
+      "blunder": 0.0101,
+      "n": 1086
+     },
+     "early middle (9-16)": {
+      "optimal": 0.7063,
+      "blunder": 0.0679,
+      "n": 766
+     },
+     "late middle (17-24)": {
+      "optimal": 0.704,
+      "blunder": 0.0957,
+      "n": 554
+     },
+     "end (25-42)": {
+      "optimal": 0.7744,
+      "blunder": 0.0808,
+      "n": 594
+     }
+    }
+   },
+   {
+    "lesson": 20000,
+    "pool": 6072164,
+    "taught_share": 1.0,
+    "seconds": 22644.7,
+    "optimal": 0.773,
+    "blunder": 0.051666666666666666,
+    "blunder_not_lost": 0.07658102766798419,
+    "keep_not_lost": 0.9234,
+    "illegal": 0.0,
+    "wins_now": 0.68,
+    "blocks": 0.8525,
+    "verdict": 0.8923,
+    "phases": {
+     "opening (0-8 stones)": {
+      "optimal": 0.8435,
+      "blunder": 0.0101,
+      "n": 1086
+     },
+     "early middle (9-16)": {
+      "optimal": 0.7167,
+      "blunder": 0.0627,
+      "n": 766
+     },
+     "late middle (17-24)": {
+      "optimal": 0.6986,
+      "blunder": 0.0975,
+      "n": 554
+     },
+     "end (25-42)": {
+      "optimal": 0.7862,
+      "blunder": 0.0707,
+      "n": 594
+     }
+    }
+   }
+  ],
+  "games": [
+   {
+    "lesson": 5000,
+    "strength": 1.0,
+    "games": 40,
+    "win": 9,
+    "draw": 7,
+    "loss": 24,
+    "blunder_free_games": 0.75,
+    "blunder_rate": 0.016778523489932886
+   },
+   {
+    "lesson": 5000,
+    "strength": 0.9,
+    "games": 40,
+    "win": 14,
+    "draw": 8,
+    "loss": 18,
+    "blunder_free_games": 0.475,
+    "blunder_rate": 0.04384485666104553
+   },
+   {
+    "lesson": 10000,
+    "strength": 1.0,
+    "games": 40,
+    "win": 12,
+    "draw": 8,
+    "loss": 20,
+    "blunder_free_games": 0.725,
+    "blunder_rate": 0.02027027027027027
+   },
+   {
+    "lesson": 10000,
+    "strength": 0.9,
+    "games": 40,
+    "win": 13,
+    "draw": 10,
+    "loss": 17,
+    "blunder_free_games": 0.45,
+    "blunder_rate": 0.049679487179487176
+   },
+   {
+    "lesson": 15000,
+    "strength": 1.0,
+    "games": 40,
+    "win": 3,
+    "draw": 11,
+    "loss": 26,
+    "blunder_free_games": 0.575,
+    "blunder_rate": 0.03292894280762565
+   },
+   {
+    "lesson": 15000,
+    "strength": 0.9,
+    "games": 40,
+    "win": 14,
+    "draw": 8,
+    "loss": 18,
+    "blunder_free_games": 0.475,
+    "blunder_rate": 0.0453125
+   },
+   {
+    "lesson": 20000,
+    "strength": 1.0,
+    "games": 40,
+    "win": 4,
+    "draw": 7,
+    "loss": 29,
+    "blunder_free_games": 0.775,
+    "blunder_rate": 0.020872865275142316
+   },
+   {
+    "lesson": 20000,
+    "strength": 0.9,
+    "games": 40,
+    "win": 11,
+    "draw": 14,
+    "loss": 15,
+    "blunder_free_games": 0.65,
+    "blunder_rate": 0.038128249566724434
+   }
+  ],
+  "first": [
+   {
+    "lesson": 5000,
+    "chooser": "brain",
+    "policy_first": true,
+    "strength": 1.0,
+    "games": 40,
+    "win": 17,
+    "draw": 15,
+    "loss": 8,
+    "blunder_free_games": 0.425
+   },
+   {
+    "lesson": 5000,
+    "chooser": "brain",
+    "policy_first": false,
+    "strength": 0.9,
+    "games": 40,
+    "win": 6,
+    "draw": 6,
+    "loss": 28,
+    "blunder_free_games": 0.45
+   },
+   {
+    "lesson": 5000,
+    "chooser": "imagined",
+    "policy_first": true,
+    "strength": 1.0,
+    "games": 40,
+    "win": 3,
+    "draw": 5,
+    "loss": 32,
+    "blunder_free_games": 0.075
+   },
+   {
+    "lesson": 5000,
+    "chooser": "imagined",
+    "policy_first": false,
+    "strength": 0.9,
+    "games": 40,
+    "win": 5,
+    "draw": 1,
+    "loss": 34,
+    "blunder_free_games": 0.725
+   },
+   {
+    "lesson": 10000,
+    "chooser": "brain",
+    "policy_first": true,
+    "strength": 1.0,
+    "games": 40,
+    "win": 19,
+    "draw": 10,
+    "loss": 11,
+    "blunder_free_games": 0.475
+   },
+   {
+    "lesson": 10000,
+    "chooser": "brain",
+    "policy_first": false,
+    "strength": 0.9,
+    "games": 40,
+    "win": 5,
+    "draw": 7,
+    "loss": 28,
+    "blunder_free_games": 0.675
+   },
+   {
+    "lesson": 10000,
+    "chooser": "imagined",
+    "policy_first": true,
+    "strength": 1.0,
+    "games": 40,
+    "win": 3,
+    "draw": 5,
+    "loss": 32,
+    "blunder_free_games": 0.075
+   },
+   {
+    "lesson": 10000,
+    "chooser": "imagined",
+    "policy_first": false,
+    "strength": 0.9,
+    "games": 40,
+    "win": 4,
+    "draw": 0,
+    "loss": 36,
+    "blunder_free_games": 0.725
+   },
+   {
+    "lesson": 15000,
+    "chooser": "brain",
+    "policy_first": true,
+    "strength": 1.0,
+    "games": 40,
+    "win": 22,
+    "draw": 12,
+    "loss": 6,
+    "blunder_free_games": 0.55
+   },
+   {
+    "lesson": 15000,
+    "chooser": "brain",
+    "policy_first": false,
+    "strength": 0.9,
+    "games": 40,
+    "win": 12,
+    "draw": 5,
+    "loss": 23,
+    "blunder_free_games": 0.6
+   },
+   {
+    "lesson": 15000,
+    "chooser": "imagined",
+    "policy_first": true,
+    "strength": 1.0,
+    "games": 40,
+    "win": 5,
+    "draw": 5,
+    "loss": 30,
+    "blunder_free_games": 0.125
+   },
+   {
+    "lesson": 15000,
+    "chooser": "imagined",
+    "policy_first": false,
+    "strength": 0.9,
+    "games": 40,
+    "win": 8,
+    "draw": 1,
+    "loss": 31,
+    "blunder_free_games": 0.575
+   },
+   {
+    "lesson": 20000,
+    "chooser": "brain",
+    "policy_first": true,
+    "strength": 1.0,
+    "games": 40,
+    "win": 26,
+    "draw": 9,
+    "loss": 5,
+    "blunder_free_games": 0.65
+   },
+   {
+    "lesson": 20000,
+    "chooser": "brain",
+    "policy_first": false,
+    "strength": 0.9,
+    "games": 40,
+    "win": 10,
+    "draw": 10,
+    "loss": 20,
+    "blunder_free_games": 0.475
+   },
+   {
+    "lesson": 20000,
+    "chooser": "imagined",
+    "policy_first": true,
+    "strength": 1.0,
+    "games": 40,
+    "win": 8,
+    "draw": 2,
+    "loss": 30,
+    "blunder_free_games": 0.2
+   },
+   {
+    "lesson": 20000,
+    "chooser": "imagined",
+    "policy_first": false,
+    "strength": 0.9,
+    "games": 40,
+    "win": 6,
+    "draw": 0,
+    "loss": 34,
+    "blunder_free_games": 0.65
+   }
+  ],
+  "anneals": [
+   {
+    "lesson": 19000,
+    "eta": 0.0003267
+   }
+  ],
+  "lineage": [
+   {
+    "lessons": 2000,
+    "what": "of 256 rows from a fresh brain (float64)"
+   },
+   {
+    "lessons": 58000,
+    "what": "of 256 rows (float32)"
+   },
+   {
+    "lessons": 20000,
+    "what": "of 512 rows at a third of the rate, annealed once more at a plateau (float32)"
+   }
+  ],
+  "readings": {
+   "heldout": {
+    "positions": 3000,
+    "optimal": 0.773,
+    "keep_not_lost": 0.9234,
+    "wins_now": 0.68,
+    "blocks": 0.8525,
+    "verdict": 0.8923
+   },
+   "games": [
+    {
+     "policy_first": true,
+     "strength": 1.0,
+     "games": 200,
+     "win": 119,
+     "draw": 50,
+     "loss": 31,
+     "blunder_free_games": 0.595
+    },
+    {
+     "policy_first": false,
+     "strength": 0.9,
+     "games": 200,
+     "win": 46,
+     "draw": 36,
+     "loss": 118,
+     "blunder_free_games": 0.62
+    }
+   ],
+   "record": "evidence/reading.json"
+  }
+ },
+ "source": "https://github.com/muellerberndt/cadence",
+ "license": "GPL-3.0-only"
+}
