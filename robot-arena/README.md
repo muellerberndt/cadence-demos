@@ -14,8 +14,8 @@ brain there.
 cd showcase-app && npm install && npm run build && npx vite preview --port 4173
 ```
 
-Open http://localhost:4173/. `public/pack/` holds six licensed brains, the arena's Python and
-the cadence-net wheel; Pyodide runs them in a worker. What to watch:
+Open http://localhost:4173/. `public/pack/` holds the six brains, the arena's Python and the
+cadence-net wheel; Pyodide runs them in a worker. What to watch:
 
 - the ladder's last column, the driving test each brain arrived with (eight marks: approach,
   escape, the closing ring, engagement, chase, facing, no spinning, no stalling);
@@ -27,10 +27,14 @@ the cadence-net wheel; Pyodide runs them in a worker. What to watch:
 Returning visitors get their own league back; "Reset the brains to how they arrived" starts
 over.
 
-The committed browser pack is the source-pinned 0.79.0 showcase. Native source and new
-packs use 0.80.0, whose public `compose` and `retune` arguments replace the arena's manual
-genome and configuration edits. The historical browser pack and its measurements are
-retained unchanged. Rebuild a pack with `pack.py` to use the current adapter and wheel.
+The brains run on cadence-net 0.95.2, the same wheel in the page and in the native code.
+
+The six packed robots and how they were raised are in [MODEL_CARD.md](MODEL_CARD.md). In
+short, from the world's pay alone over 100,000 nursery moments, the packed brains closed 433 to
+1,858 m on their targets, against -22 to -80 m for uniform random with the same bodies. In 20
+royales Dozer won 11 of its 12 fights. The uniform-random Mantis twin rated above five brains
+by staying alive. The packed brains score +0.54 to -0.39 on the driving test (random: about
+-0.04).
 
 ## How a robot learns
 
@@ -41,7 +45,7 @@ the brain which motor is which.
 
 **Driving test.** A frozen greedy copy of the brain is tested in open space: approach from
 eight bearings, escape, come in when the ring closes, engage, chase, face the rival, no
-spinning, no stalling. The score ranks brains and picks the roster; the marks are in the
+spinning, no stalling. The score picks the best of a body's seeds; the marks are in the
 page's manifest.
 
 **Ring.** Six robots, a ring closing to 3.5 m over 2000 moments; damage dealt pays, damage
@@ -58,16 +62,21 @@ constant is a gene, so evolution changes them too.
 ## Train your own league
 
 ```sh
-python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
-export OMP_NUM_THREADS=1
+python3 -m venv .venv && .venv/bin/pip install -r requirements.txt "cadence-net[fast]==0.95.2"
+export OMP_NUM_THREADS=1 NUMBA_NUM_THREADS=1
 STAGE=$(.venv/bin/python -c 'import json; from arena.brain import PAGE_STAGE; print(json.dumps(PAGE_STAGE))')
 .venv/bin/python -m arena --league league init                    # the stock bodies and two random twins
-.venv/bin/python -m arena --league league nursery --moments 100000 --workers 8
-.venv/bin/python -m arena --league league licence --all --workers 8
+.venv/bin/python -m arena --league league nursery --moments 100000 --workers 8 --controls
+.venv/bin/python -m arena --league league licence --all --random --workers 8
 .venv/bin/python -m arena --league league royale --fights 20 --size 6 --duration 2400 --zone-moments 2000 --zone-end 3.5 --stage "$STAGE"
 .venv/bin/python -m arena --league league dashboard               # league/index.html, replays with the inspector
 cd showcase-app && ../.venv/bin/python pack.py --league ../league --robots 6 && npm run build
 ```
+
+`cadence-net[fast]` adds the compiled CPU path: one nursery moment took 14.5 ms against 81 ms
+without it on the same loaded machine. On an Apple M4 a batch of eight 100,000-moment nursery
+lives took 36 to 43 minutes and the 20 royales 7. The shipped roster raised three seeds of
+each body (the blueprint's `seed`) this way and kept the seed with the best driving test.
 
 `python -m arena evolve --help` breeds lineages: mutants of body and genes are born with
 newborn brains, raised, fought on the stage and ranked by the driving test; the best of
