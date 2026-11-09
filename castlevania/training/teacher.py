@@ -70,7 +70,8 @@ STAIRS = {
     (2, 0): [(434, 456, 112, -1)],              # underground: up and out
 }
 JUMPS = {
-    (2, 0): [(216, 228, 112), (276, 288, 112)],  # two gaps over the water
+    (2, 0): [(216, 228, 112), (276, 288, 112),   # two gaps over the water
+             (470, 500, 144, -1)],                  # off the low ledge past the exit stairs, back up left
     (2, 1): [(395, 412, 128)],                   # stair landing onto the exit ledge
 }
 # Walking direction overrides (stage, block): list of (x low, x high, y low, y high, direction);

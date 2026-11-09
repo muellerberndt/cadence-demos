@@ -10,7 +10,8 @@
 <header>
   <h1>Castlevania, played by a Cadence brain</h1>
   <p class="about">The brain sees the screen through its eye and presses the pad every 12 frames.
-    Each press is the settled state of the whole brain. It plays frozen: nothing is learned here.</p>
+    Each press is the settled state of the whole brain, drawn on the right as it settles. It plays
+    frozen: nothing is learned here.</p>
 </header>
 <main>
   <section class="game">
@@ -28,9 +29,7 @@
     </div>
     <div class="stats" id="stats"></div>
     <p class="legend"><span class="sw ahead"></span> the fovea ahead of Simon <span class="sw behind"></span> the fovea behind him</p>
-  </section>
-  <section class="brain">
-    <div class="card">
+    <div class="card answer-card">
       <h2>The answer <span class="note" id="settle"></span></h2>
       <div class="answer">
         <div class="pad" id="pad">
@@ -40,25 +39,16 @@
         <div class="slots" id="slots"></div>
       </div>
     </div>
-    <div class="card">
-      <h2>What the eye sees</h2>
-      <div class="eyes">
-        <figure><canvas id="eye-scene" width="16" height="12"></canvas><figcaption>scene</figcaption></figure>
-        <figure><canvas id="eye-motion" width="16" height="12"></canvas><figcaption>motion</figcaption></figure>
-        <figure><canvas id="eye-ahead" width="16" height="12"></canvas><figcaption>fovea ahead</figcaption></figure>
-        <figure><canvas id="eye-behind" width="16" height="12"></canvas><figcaption>fovea behind</figcaption></figure>
-      </div>
-      <div class="readings" id="readings"></div>
-    </div>
-    <div class="card">
-      <h2>The settled brain</h2>
-      <div class="regions">
-        <figure><canvas id="r-module_0" width="16" height="16"></canvas><figcaption>module 0 <small>256</small></figcaption></figure>
-        <figure><canvas id="r-association" width="16" height="8"></canvas><figcaption>association <small>128</small></figcaption></figure>
-        <figure><canvas id="r-prefrontal" width="16" height="8"></canvas><figcaption>prefrontal <small>128</small></figcaption></figure>
-      </div>
-      <h3>Recall memory</h3>
-      <div class="memory" id="memory"></div>
+  </section>
+  <section class="brain">
+    <div class="card brain-card">
+      <h2>The brain <span class="note">hover a region for the population that plays its role</span></h2>
+      <canvas id="brainview" width="1000" height="900" aria-label="the brain, region by region, settling"></canvas>
+      <p class="caption">Every mark is this decision's real state: the eye's input maps, each
+        neuron's activity sweep by sweep through the settle, the projections between regions
+        (warm: excitatory flow, cool: inhibitory; width: |weight × activity| summed), the strongest
+        synapses as threads, the choice per slot, and the recall memory's slots, lit when this
+        decision's read attends them, with the moment the brightest one holds.</p>
     </div>
     <details class="card" id="card">
       <summary>About this brain</summary>
@@ -66,6 +56,7 @@
     </details>
   </section>
 </main>
+<script src="brain.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

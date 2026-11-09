@@ -307,7 +307,7 @@ def main() -> None:
         for k in range(K):
             x = np.stack([s.x for s in streams])
             labels, rams, search_rows = [], [], {}
-            prior = priors(brain, x) if searching else None
+            prior = priors(brain, x) if searching and cfg["search_share"] > 0 else None
             for i, s in enumerate(streams):
                 ram = body.restore(s.emu)
                 rams.append(ram)

@@ -38,6 +38,12 @@ def png(frame: np.ndarray) -> bytes:
             + chunk(b"IDAT", zlib.compress(raw, 3)) + chunk(b"IEND", b""))
 
 
+def thumbnail(frame: np.ndarray) -> str:
+    """The core's picture at a quarter size, for the recall memory's view of a held moment."""
+    small = frame[8:232:4, 8:248:4]
+    return base64.b64encode(png(small)).decode()
+
+
 class Game(threading.Thread):
     """The console and the player; ``speed`` is a multiple of the NES's 60 frames a second
     (0 = as fast as the brain answers)."""
@@ -77,7 +83,7 @@ class Game(threading.Thread):
                 time.sleep(0.05)
                 continue
             frame = self.frame
-            action = self.player.decide(frame, self.ram)
+            action = self.player.decide(frame, self.ram, thumb=thumbnail(frame))
             snap = self.player.snapshot()
             t0 = time.perf_counter()
             done = False
@@ -106,9 +112,11 @@ class Game(threading.Thread):
     def run(self) -> None:
         self.run_loop()
 
-    def state(self) -> dict:
+    def state(self, since: int = -1) -> dict:
         with self.lock:
-            frame, snap, run = self.frame, dict(self.snap), dict(self.stats)
+            frame, snap, run = self.frame, self.snap, dict(self.stats)
+        if snap.get("decisions", 0) == since:
+            snap = {"decisions": since, "same": True}  # the page already has this decision
         # the page shows the core's own 240 x 224 picture (the eye reads it edge-padded by 8)
         shown = frame[8:232, 8:248] if frame is not None else None
         return {"frame": base64.b64encode(png(shown)).decode() if shown is not None else None,
@@ -135,7 +143,9 @@ def handler_for(game: Game, meta: dict):
 
         def do_GET(self):
             if self.path.startswith("/api/state"):
-                return self._json(game.state())
+                from urllib.parse import parse_qs, urlparse
+                since = int(parse_qs(urlparse(self.path).query).get("since", ["-1"])[0])
+                return self._json(game.state(since))
             if self.path.startswith("/api/meta"):
                 return self._json(meta)
             return super().do_GET()

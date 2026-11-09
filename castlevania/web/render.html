@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cadence Castlevania, video frames</title>
+<style>html, body { margin: 0; background: #0d0b10; } canvas { display: block; }</style>
+</head>
+<body>
+<canvas id="out" width="1280" height="720"></canvas>
+<canvas id="brainview" width="1320" height="1188" style="display:none"></canvas>
+<script src="brain.js"></script>
+<script>
+// Video frames for record.py: the game large on the left, the brain view (brain.js, the page's
+// own renderer) on the right, the answer and the run's numbers below. Each call draws one NES
+// frame with the newest decision's state and returns it as a JPEG.
+const out = document.getElementById("out"), ctx = out.getContext("2d");
+const view = new BrainView(document.getElementById("brainview"), { offline: true });
+const SLOT = [["horizontal", ["left", "-", "right"]], ["vertical", ["up", "-", "down"]], ["whip", ["no", "yes"]], ["jump", ["no", "yes"]]];
+let snap = null;
+window.setSnap = (s) => { snap = s; view.setSnap(s); };
+function load(b64) { return new Promise((ok) => { const im = new Image(); im.onload = () => ok(im); im.src = "data:image/png;base64," + b64; }); }
+window.renderFrame = async (gameB64, phase, clock, caption, extra) => {
+  ctx.fillStyle = "#0d0b10"; ctx.fillRect(0, 0, 1280, 720);
+  const game = await load(gameB64);
+  ctx.imageSmoothingEnabled = false;
+  const gx = 12, gy = 12, gw = 600, gh = 560;   // the core's 240 x 224 picture at 2.5x
+  ctx.drawImage(game, gx, gy, gw, gh);
+  if (snap && snap.fovea && phase !== null) {
+    const f = snap.fovea, k = gw / 240, X = (v) => gx + (v - 8) * k, Y = (v) => gy + (v - 8) * k;
+    const shift = f.facing > 0 ? -32 : 32;
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "#4fa3e0"; ctx.strokeRect(X(f.left + shift), Y(f.top), (f.right - f.left) * k, (f.bottom - f.top) * k);
+    ctx.strokeStyle = "#e0444f"; ctx.strokeRect(X(f.left), Y(f.top), (f.right - f.left) * k, (f.bottom - f.top) * k);
+  }
+  view.draw(phase === null ? 1 : phase, clock);
+  const bv = document.getElementById("brainview");
+  ctx.drawImage(bv, 622, 4, 652, 588);
+  // the answer: one row per slot, the chosen choice red; the run's numbers
+  ctx.font = "15px system-ui, Arial";
+  if (snap && snap.probs) {
+    const chosen = [snap.act[0] + 1, snap.act[1] + 1, snap.act[2], snap.act[3]];
+    SLOT.forEach(([name, labels], g) => {
+      const y = 592 + g * 22;
+      ctx.fillStyle = "#9c90a8"; ctx.fillText(name, 14, y + 15);
+      labels.forEach((lab, j) => {
+        const x = 104 + j * 168, p = snap.probs[g][j] || 0;
+        ctx.fillStyle = "#221c28"; ctx.fillRect(x, y + 2, 160, 17);
+        ctx.fillStyle = j === chosen[g] ? "#e0444f" : "#5b4a68"; ctx.fillRect(x, y + 2, Math.max(2, 160 * p), 17);
+        ctx.fillStyle = "#e9e3ee"; ctx.fillText(`${lab} ${p.toFixed(2)}`, x + 6, y + 15);
+      });
+    });
+  }
+  ctx.fillStyle = "#e9e3ee"; ctx.font = "15px system-ui, Arial";
+  if (extra) ctx.fillText(extra, 640, 612);
+  ctx.fillStyle = "#9c90a8"; ctx.font = "14px system-ui, Arial";
+  ctx.fillText(caption, 14, 708);
+  return out.toDataURL("image/jpeg", 0.92);
+};
+window.ready = true;
+</script>
+</body>
+</html>

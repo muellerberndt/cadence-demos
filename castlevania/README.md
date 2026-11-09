@@ -6,7 +6,7 @@ pad: left or right, up or down, whip, jump. The page shows the game beside what 
 the settled regions, the answer per slot and the recall memory filling as the game goes. The
 brain plays frozen; nothing is learned while you watch.
 
-![The brain jumping across the stage-2 underground, beside its eye, its settled regions and its answer](docs/castlevania.png)
+![The brain jumping across the stage-2 underground, beside its brain view: eye maps, cortex, tracts, motor choice and recall memory](docs/castlevania.png)
 
 Runs on `cadence-net==0.95.2` and `stable-retro==1.0.1`. The game is not included: you need your
 own dump of the cartridge.
@@ -18,10 +18,12 @@ own dump of the cartridge.
 [`docs/castlevania-run.mp4`](docs/castlevania-run.mp4) (4 min 26 s, 1280 x 720, every NES frame
 at 60 frames a second) is one whole game of the packed brain from the first frame Simon can
 move, after 49 idle decisions (one of the fresh starts): frozen, greedy, no search, no cuts.
-Beside the game: what the eye sees, the answer per slot, the settled regions, the recall memory.
+Beside the game, the page's brain view (below) settles on every decision.
 [`docs/castlevania-run.webm`](docs/castlevania-run.webm) is 14 s of it, the first underground
 crossing. The per-decision log is [`evidence/castlevania-run.json`](evidence/castlevania-run.json);
-[`record.py`](record.py) makes the video from your own ROM (`python record.py --idle 49`).
+[`record.py`](record.py) makes the video from your own ROM (`python record.py --idle 49`): it plays
+the game and the brain and draws every frame with the page's own renderer (`web/render.html` in a
+headless Chromium), piped to ffmpeg.
 
 What the run shows:
 
@@ -58,6 +60,31 @@ The page polls the local server, which runs the FCEUmm core and the brain in one
 game's speed (1x, 2x, 4x or as fast as the brain answers). New game powers the console on;
 "start after N idle decisions" lets the game run on for N decisions first, which changes where
 the enemies are when Simon starts.
+
+## The brain view
+
+The page draws the brain as an animal brain seen from the left, front on the left, and every mark
+is that decision's real state. Hover a region for the population that plays its role.
+
+- **Visual cortex** (back): the eye's four input maps, scene, motion, fovea ahead and fovea behind,
+  and beside them the **body-sense strip**: the body readings and the one-hot stage, block, body
+  state and floor. They are the sensory population, 827 neurons, clamped each decision. Their glow
+  at the **thalamus** is the mean input.
+- **Module 0** (256 neurons), the **association** region (128), the hub every other region reads
+  and writes, and the **prefrontal** region (128), which carries the working trace. Each neuron is
+  drawn at its activity sweep by sweep through the settle, coloured over its region's range at that
+  decision.
+- **Tracts** between regions: bundled curves whose width is |weight × presynaptic activity| summed
+  over the projection, warm for excitatory flow and cool for inhibitory. Thin threads are the
+  strongest single synapses of each projection.
+- **Motor strip and striatum**: the ten motor neurons in their four slots, each choice's softmax
+  probability, and the chosen one in red once the settle has finished.
+- **Hippocampus**: the recall memory's 128 slots, one moment of this game each. Slots light gold
+  when this decision's read attends them, and a thread runs from the brightest slot to the frame it
+  holds. Below are the scene parts of what each read head recalls and of what each expects next.
+- **The settle**: the sweep count and the largest change per sweep falling to the tolerance.
+- **Dopamine, arousal, plasticity** are shown at their true state in frozen play: silent, off,
+  zero synapses changed.
 
 ## The brain
 

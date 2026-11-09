@@ -71,8 +71,8 @@ M4, the fresh starts on a c7i (Linux).
 
 [`docs/castlevania-run.mp4`](docs/castlevania-run.mp4): one whole game from the first frame Simon
 can move (start after 49 idle decisions, one of the fresh starts: no life lost before stage 2, the
-earliest crossing of the underground among them), frozen, greedy, no search, no cuts, made by
-[`record.py`](record.py); per-decision log in [`evidence/castlevania-run.json`](evidence/castlevania-run.json).
+earliest crossing of the underground among them), frozen, greedy, no search, no cuts, drawn
+frame by frame by the page's own brain view (`web/render.html`, [`record.py`](record.py)); per-decision log in [`evidence/castlevania-run.json`](evidence/castlevania-run.json).
 It shows the courtyard and hall passed with no life lost (0:58), the first life lost at the
 stage-2 staircase, then on each of the three other lives the brain going down the staircase and
 across the underground to world x 495 (1:18, 2:28, 3:53) and standing there below the staircase

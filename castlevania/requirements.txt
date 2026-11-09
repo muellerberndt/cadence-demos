@@ -1,0 +1,5 @@
+cadence-net[fast]==0.95.2
+stable-retro==1.0.1
+numpy>=1.26
+# record.py only (the video): playwright, with `playwright install chromium`, and ffmpeg on the PATH
+playwright>=1.45
