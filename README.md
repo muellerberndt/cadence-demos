@@ -97,6 +97,7 @@ Every demo runs on `cadence-net` 0.95.2.
 | [Tron](tron/) | Ride a light cycle against a flat or a deep brain that sees the whole arena, and watch every neuron settle on its move | `Brain.compose`, flat (256) and deep (256-128-32); in the browser, the released library itself, in Pyodide |
 | [Connect Four](connect-four/) | Play a deep brain that judges every position (loss, draw, win) beside its move, and teach it a column | A deep `Brain.compose` (1024, 1024) with a verdict slot; in the browser, the released library itself, in Pyodide |
 | [Castlevania](castlevania/) | A brain plays the NES game from what its eye sees on the screen, on your own copy of the game | A deep `Brain.compose` with recall, raised by a savestate teacher and search; a local server runs the emulator |
+| [Patch World](patch-world/) | Creatures with Cadence brains forage, get poisoned when the season turns, relearn and evolve; click one to watch its brain | One continuing `Brain.live` brain per creature, bred by evolution; in the browser, the released library itself, in Pyodide |
 | [Atari Arcade](atari-arcade/) | Brains that learn Atari games from pixels: a teacher first, then reward | `Brain.compose` (System 1); in the browser, the released library itself, in Pyodide |
 | [Robot Arena](robot-arena/) | Robots built from parts, one continuing brain per robot, raised in a nursery and fighting live in the browser with a brain inspector | `Brain.compose` with one motor slot per motor, learning through `Brain.live`; in the browser, in Pyodide |
 | [Robot Arm](robot-arm/) | A Franka Panda that picks up a block and places it in the bin you choose, under contact physics; move the bin while it carries the block and it follows | A deep `Brain.compose` taught by a scripted teacher in MuJoCo; in the browser, MuJoCo as WebAssembly and the library in Pyodide |
@@ -156,6 +157,23 @@ cd castlevania && python -m simon.rom ~/roms && python server.py   # opens http:
 ```
 
 See the [Castlevania README](castlevania/README.md).
+
+## [Patch World](patch-world/): creatures that learn the seasons
+
+Berries nourish in summer and sicken in winter, and nothing a creature senses says which season it
+is. Each learner is one continuing Cadence brain that learns from what its own actions bring: a
+poisoning surprises it, and the surprise wakes its learning. Beside the learners live frozen twins
+(the same brains, never learning) and random walkers. Learners outlive their frozen twins (3,117
+against 365 moments on fresh seeds), stop eating berries within a winter, and learn the second
+winter faster than the first. A well-fed learner bears a child that inherits its brain and mutated
+genes, so evolution runs in the page. Click a creature to watch its brain settle, its dopamine
+and arousal, and the synapses a lesson changes.
+
+```sh
+python3 -m http.server 8793 --directory patch-world/web   # open http://localhost:8793/
+```
+
+See the [Patch World README](patch-world/README.md).
 
 ## [Atari Arcade](atari-arcade/): learning Atari games
 

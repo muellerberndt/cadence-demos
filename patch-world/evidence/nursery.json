@@ -1,0 +1,110 @@
+[
+ {
+  "folder": "nursery",
+  "creatures": 256,
+  "senses": {
+   "nausea": false,
+   "cold": false
+  },
+  "winter_berries_per_1000_each_winter": [
+   4.555,
+   4.266,
+   4.094,
+   3.133,
+   3.539,
+   2.984,
+   3.031,
+   2.992,
+   3.0,
+   2.562
+  ],
+  "summer_berries_per_1000_each_summer": [
+   12.359,
+   8.328,
+   7.836,
+   6.734,
+   7.031,
+   6.352,
+   6.82,
+   7.07,
+   7.125,
+   6.191
+  ],
+  "intake_per_1000_first_5000": 100.99,
+  "intake_per_1000_last_5000": 109.12,
+  "recall_pairs": 128,
+  "recall_on_minus_off_nuts_per_1000_last_5000": -0.117
+ },
+ {
+  "folder": "nursery-w1",
+  "creatures": 256,
+  "senses": {
+   "nausea": true,
+   "cold": false
+  },
+  "winter_berries_per_1000_each_winter": [
+   4.367,
+   3.629,
+   3.363,
+   3.434,
+   3.391,
+   3.105,
+   2.648,
+   2.707,
+   2.664,
+   2.516
+  ],
+  "summer_berries_per_1000_each_summer": [
+   12.043,
+   7.469,
+   7.852,
+   5.977,
+   6.992,
+   6.574,
+   6.801,
+   6.418,
+   6.652,
+   4.863
+  ],
+  "intake_per_1000_first_5000": 102.02,
+  "intake_per_1000_last_5000": 110.14,
+  "recall_pairs": 128,
+  "recall_on_minus_off_nuts_per_1000_last_5000": 0.064
+ },
+ {
+  "folder": "nursery-w2",
+  "creatures": 256,
+  "senses": {
+   "nausea": true,
+   "cold": true
+  },
+  "winter_berries_per_1000_each_winter": [
+   4.906,
+   3.996,
+   3.461,
+   3.461,
+   3.242,
+   2.957,
+   3.207,
+   2.863,
+   2.68,
+   2.77
+  ],
+  "summer_berries_per_1000_each_summer": [
+   12.02,
+   7.457,
+   7.754,
+   7.656,
+   6.223,
+   5.738,
+   6.078,
+   5.484,
+   5.828,
+   6.277
+  ],
+  "intake_per_1000_first_5000": 102.07,
+  "intake_per_1000_last_5000": 111.04,
+  "recall_pairs": 128,
+  "recall_on_minus_off_nuts_per_1000_last_5000": 0.097
+ }
+]

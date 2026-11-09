@@ -1,0 +1,287 @@
+{
+ "scenario": "competition",
+ "seeds": [
+  100000,
+  100001,
+  100002,
+  100003,
+  100004,
+  100005,
+  100006,
+  100007,
+  100008,
+  100009,
+  100010,
+  100011,
+  100012,
+  100013,
+  100014,
+  100015,
+  100016,
+  100017,
+  100018,
+  100019,
+  100020,
+  100021,
+  100022,
+  100023,
+  100024,
+  100025,
+  100026,
+  100027,
+  100028,
+  100029,
+  100030,
+  100031
+ ],
+ "sources_sha256": {
+  "patchworld/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "patchworld/brain.py": "8f4f53e03322e55160c86879cf16659833e13067339045de673611657eb3f12c",
+  "patchworld/ecosystem.py": "b619b2035eac60a7ac5022ae30c8801a7f93f5d43b6447399ebc79fe58944dd0",
+  "patchworld/genes.py": "4907476f2ebfcc3d58ec05251ec83fdfeefc13242b4d81e4a31c444b6f23606e",
+  "patchworld/host.py": "92b3fb6484ac9460c643ef491bee4d5263fedaa14344820df1dd8ff575f2c71d",
+  "patchworld/inspect.py": "7e1fe73045cb63d3d0b871a678948df0f4b6632006d77d4369b220de95d157d8",
+  "patchworld/scenarios.py": "520e771f9ea7581255e5e7f06d1c3599f2aa123b5a1873d434fd2db24cd390e2",
+  "patchworld/world.py": "58171a2eabde3593561f05e18b5f2cac5853933ba406684d1441e6ea9a209f64"
+ },
+ "rules": {
+  "width": 48,
+  "height": 32,
+  "day": 240,
+  "season": 1500,
+  "berry_summer": 5.0,
+  "berry_winter": -6.0,
+  "sick_moments": 20,
+  "sick_burn": 0.15,
+  "root": 2.5,
+  "leaf": 0.8,
+  "nut": 6.0,
+  "berry_regrow": 0.02,
+  "leaf_regrow": 0.004,
+  "root_regrow": 0.00015,
+  "cache_count": 4,
+  "cache_capacity": 3,
+  "cache_refill": 120,
+  "thirst_rate": 0.005,
+  "drink_value": 2.0,
+  "dry_burn": 0.05,
+  "metabolism": 0.005,
+  "wasted_act": 0.1,
+  "predators": 1,
+  "predator_sense": 7,
+  "predator_bite": 7.0,
+  "predator_rest": 40,
+  "predator_pace": 2,
+  "max_age": 8000,
+  "nausea_sense": true,
+  "temperature_sense": true,
+  "temperature_lag": 250.0,
+  "immortal": false
+ },
+ "date": "2026-11-09",
+ "cadence": "0.95.2",
+ "brains": {
+  "before": [
+   {
+    "name": "n25-1",
+    "file": "n25-1.npz",
+    "sha256": "3cfe649ece7d2f8d91e71ab83eecbeee49cb196ee35e871fbe91266e266d1440"
+   },
+   {
+    "name": "n06-6",
+    "file": "n06-6.npz",
+    "sha256": "5295880527163e01a5e0105cd130d65eeff4cea471f310a8e401327e02fad9d3"
+   },
+   {
+    "name": "n00-0",
+    "file": "n00-0.npz",
+    "sha256": "07f5eb71707d57cc8fc9b2250ce22f8564cfae512a637c6e56f1d94d058eceb8"
+   },
+   {
+    "name": "n23-6",
+    "file": "n23-6.npz",
+    "sha256": "19af47adc0b240cf0a9502b4438c1775b8b0c2d855158d6fbcc2ccd33014a008"
+   },
+   {
+    "name": "n28-0",
+    "file": "n28-0.npz",
+    "sha256": "acbcdbdcbbfb419a4b98a7deff11254cd411c73c557c0775cfb384aaa85eec7a"
+   },
+   {
+    "name": "n02-6",
+    "file": "n02-6.npz",
+    "sha256": "158697eae8bd6edd9fb0b6d7da3e0b34714396f796492d48529e686a2f68833e"
+   },
+   {
+    "name": "n15-7",
+    "file": "n15-7.npz",
+    "sha256": "fa0ad08909759f2f29e6164d999e55a1292a09c7b2b2556e32ab613109785439"
+   },
+   {
+    "name": "n25-0",
+    "file": "n25-0.npz",
+    "sha256": "f5c79566743d99c621338e14eb2983a14cabf9fce8b4d91bee3bb53737be86cc"
+   }
+  ],
+  "after": [
+   {
+    "name": "evolved-1",
+    "file": "evolved-1.npz",
+    "sha256": "35fbd1fc31adb6eb579c25153722fe6c0c2cf20152af94f9e6ed5913bb53bf9a"
+   },
+   {
+    "name": "evolved-2",
+    "file": "evolved-2.npz",
+    "sha256": "72fa8d1fc0b993d159570ee30df4085c8d897e34eb14cf6dd6afe7948ffed368"
+   },
+   {
+    "name": "evolved-3",
+    "file": "evolved-3.npz",
+    "sha256": "40c635f1938b0c7657412ac77a11823961f8bb0157913444bd6795fa50128965"
+   },
+   {
+    "name": "evolved-4",
+    "file": "evolved-4.npz",
+    "sha256": "c4e97dda2132cbc8fca31beb74b23d53f7ddd43ff88a4e48c3322dbeb123cacf"
+   },
+   {
+    "name": "evolved-5",
+    "file": "evolved-5.npz",
+    "sha256": "5a9cfe8fca6d2744fe24cda2d7df2f6cf47af95927265d9b023f874109ae474c"
+   },
+   {
+    "name": "evolved-6",
+    "file": "evolved-6.npz",
+    "sha256": "28237d7e01f207bb4870d3dca0a4162b22892805097fb9b432b7fb11cc84b9a0"
+   },
+   {
+    "name": "evolved-7",
+    "file": "evolved-7.npz",
+    "sha256": "65f447bad980f90eda108c73b7ea063e017b69c6ac809aaae5c019ef32f78e9f"
+   },
+   {
+    "name": "evolved-8",
+    "file": "evolved-8.npz",
+    "sha256": "693b0b757b9a20cc85c5222da6ccf3132d7b15aa5c4413d5d81a016fa95cff91"
+   }
+  ]
+ },
+ "settings": {
+  "moments": 12000,
+  "world": "mortal, births on, cap 16, 8 founders a side",
+  "before_genes": {
+   "heat": 0.0,
+   "need": 0.0
+  }
+ },
+ "summary": {
+  "worlds": 32,
+  "evolved_share_of_learners_at_end": 0.5575757575757575,
+  "ci95": [
+   0.3909090909090909,
+   0.7242424242424242
+  ],
+  "worlds_evolved_hold_all": 16,
+  "worlds_generation0_hold_all": 13,
+  "births_after": 2395,
+  "births_before": 3997,
+  "mean_curve": [
+   {
+    "t": 1000,
+    "after": 10.5625,
+    "before": 5.4375
+   },
+   {
+    "t": 2000,
+    "after": 2.65625,
+    "before": 5.46875
+   },
+   {
+    "t": 3000,
+    "after": 4.21875,
+    "before": 9.09375
+   },
+   {
+    "t": 4000,
+    "after": 6.53125,
+    "before": 9.46875
+   },
+   {
+    "t": 5000,
+    "after": 4.03125,
+    "before": 7.0
+   },
+   {
+    "t": 6000,
+    "after": 6.59375,
+    "before": 7.625
+   },
+   {
+    "t": 7000,
+    "after": 7.875,
+    "before": 8.125
+   },
+   {
+    "t": 8000,
+    "after": 5.03125,
+    "before": 5.09375
+   },
+   {
+    "t": 9000,
+    "after": 7.09375,
+    "before": 7.1875
+   },
+   {
+    "t": 10000,
+    "after": 8.125,
+    "before": 7.875
+   },
+   {
+    "t": 11000,
+    "after": 6.1875,
+    "before": 6.0625
+   },
+   {
+    "t": 12000,
+    "after": 7.225806451612903,
+    "before": 6.161290322580645
+   }
+  ]
+ },
+ "seconds": 1122.8,
+ "retune": null,
+ "per_seed": [
+{"seed":100000,"seconds":484.9,"rows":[{"curve":[{"t":1000,"before":4,"after":12},{"t":2000,"before":5,"after":1},{"t":3000,"before":8,"after":0},{"t":4000,"before":16,"after":0},{"t":5000,"before":16,"after":0},{"t":6000,"before":16,"after":0},{"t":7000,"before":16,"after":0},{"t":8000,"before":4,"after":0},{"t":9000,"before":13,"after":0},{"t":10000,"before":16,"after":0},{"t":11000,"before":16,"after":0},{"t":12000,"before":15,"after":0}],"births":{"before":236,"after":11}}]},
+{"seed":100001,"seconds":474.5,"rows":[{"curve":[{"t":1000,"before":6,"after":10},{"t":2000,"before":5,"after":1},{"t":3000,"before":0,"after":12},{"t":4000,"before":0,"after":16},{"t":5000,"before":0,"after":5},{"t":6000,"before":0,"after":13},{"t":7000,"before":0,"after":16},{"t":8000,"before":0,"after":10},{"t":9000,"before":0,"after":12},{"t":10000,"before":0,"after":16},{"t":11000,"before":0,"after":7},{"t":12000,"before":0,"after":8}],"births":{"before":9,"after":182}}]},
+{"seed":100002,"seconds":486.7,"rows":[{"curve":[{"t":1000,"before":6,"after":10},{"t":2000,"before":6,"after":3},{"t":3000,"before":12,"after":4},{"t":4000,"before":9,"after":7},{"t":5000,"before":7,"after":6},{"t":6000,"before":13,"after":3},{"t":7000,"before":6,"after":10},{"t":8000,"before":7,"after":0},{"t":9000,"before":16,"after":0},{"t":10000,"before":16,"after":0},{"t":11000,"before":13,"after":0},{"t":12000,"before":16,"after":0}],"births":{"before":151,"after":40}}]},
+{"seed":100003,"seconds":689.7,"rows":[{"curve":[{"t":1000,"before":4,"after":12},{"t":2000,"before":8,"after":0},{"t":3000,"before":11,"after":0},{"t":4000,"before":16,"after":0},{"t":5000,"before":5,"after":0},{"t":6000,"before":13,"after":0},{"t":7000,"before":16,"after":0},{"t":8000,"before":9,"after":0},{"t":9000,"before":16,"after":0},{"t":10000,"before":16,"after":0},{"t":11000,"before":7,"after":0},{"t":12000,"before":16,"after":0}],"births":{"before":268,"after":14}}]},
+{"seed":100004,"seconds":445.3,"rows":[{"curve":[{"t":1000,"before":7,"after":9},{"t":2000,"before":9,"after":3},{"t":3000,"before":12,"after":3},{"t":4000,"before":9,"after":7},{"t":5000,"before":6,"after":10},{"t":6000,"before":0,"after":16},{"t":7000,"before":0,"after":16},{"t":8000,"before":0,"after":12},{"t":9000,"before":0,"after":16},{"t":10000,"before":0,"after":16},{"t":11000,"before":0,"after":15},{"t":12000,"before":0,"after":16}],"births":{"before":57,"after":119}}]},
+{"seed":100005,"seconds":606.9,"rows":[{"curve":[{"t":1000,"before":6,"after":10},{"t":2000,"before":4,"after":6},{"t":3000,"before":14,"after":2},{"t":4000,"before":10,"after":6},{"t":5000,"before":9,"after":6},{"t":6000,"before":7,"after":9},{"t":7000,"before":4,"after":12},{"t":8000,"before":1,"after":15},{"t":9000,"before":1,"after":15},{"t":10000,"before":1,"after":15},{"t":11000,"before":0,"after":16},{"t":12000,"before":0,"after":16}],"births":{"before":56,"after":70}}]},
+{"seed":100006,"seconds":564.6,"rows":[{"curve":[{"t":1000,"before":5,"after":11},{"t":2000,"before":9,"after":2},{"t":3000,"before":16,"after":0},{"t":4000,"before":16,"after":0},{"t":5000,"before":16,"after":0},{"t":6000,"before":16,"after":0},{"t":7000,"before":16,"after":0},{"t":8000,"before":16,"after":0},{"t":9000,"before":16,"after":0},{"t":10000,"before":16,"after":0},{"t":11000,"before":16,"after":0},{"t":12000,"before":16,"after":0}],"births":{"before":73,"after":6}}]},
+{"seed":100007,"seconds":726.0,"rows":[{"curve":[{"t":1000,"before":6,"after":10},{"t":2000,"before":15,"after":1},{"t":3000,"before":13,"after":0},{"t":4000,"before":16,"after":0},{"t":5000,"before":16,"after":0},{"t":6000,"before":16,"after":0},{"t":7000,"before":16,"after":0},{"t":8000,"before":16,"after":0},{"t":9000,"before":16,"after":0},{"t":10000,"before":16,"after":0},{"t":11000,"before":16,"after":0},{"t":12000,"before":16,"after":0}],"births":{"before":250,"after":10}}]},
+{"seed":100008,"seconds":465.8,"rows":[{"curve":[{"t":1000,"before":6,"after":10},{"t":2000,"before":4,"after":2},{"t":3000,"before":15,"after":1},{"t":4000,"before":10,"after":6},{"t":5000,"before":9,"after":6},{"t":6000,"before":7,"after":9},{"t":7000,"before":6,"after":10},{"t":8000,"before":1,"after":8},{"t":9000,"before":0,"after":16},{"t":10000,"before":0,"after":16},{"t":11000,"before":0,"after":14},{"t":12000,"before":0,"after":16}],"births":{"before":58,"after":121}}]},
+{"seed":100009,"seconds":504.7,"rows":[{"curve":[{"t":1000,"before":6,"after":10},{"t":2000,"before":2,"after":2},{"t":3000,"before":5,"after":0},{"t":4000,"before":16,"after":0},{"t":5000,"before":3,"after":0},{"t":6000,"before":8,"after":0},{"t":7000,"before":16,"after":0},{"t":8000,"before":4,"after":0},{"t":9000,"before":9,"after":0},{"t":10000,"before":16,"after":0},{"t":11000,"before":2,"after":0},{"t":12000,"before":3,"after":0}],"births":{"before":188,"after":11}}]},
+{"seed":100010,"seconds":512.1,"rows":[{"curve":[{"t":1000,"before":7,"after":9},{"t":2000,"before":1,"after":0},{"t":3000,"before":15,"after":0},{"t":4000,"before":16,"after":0},{"t":5000,"before":16,"after":0},{"t":6000,"before":15,"after":0},{"t":7000,"before":16,"after":0},{"t":8000,"before":5,"after":0},{"t":9000,"before":11,"after":0},{"t":10000,"before":16,"after":0},{"t":11000,"before":12,"after":0},{"t":12000,"before":11,"after":0}],"births":{"before":249,"after":17}}]},
+{"seed":100011,"seconds":423.7,"rows":[{"curve":[{"t":1000,"before":7,"after":9},{"t":2000,"before":8,"after":1},{"t":3000,"before":12,"after":4},{"t":4000,"before":13,"after":3},{"t":5000,"before":4,"after":1},{"t":6000,"before":1,"after":13},{"t":7000,"before":3,"after":13},{"t":8000,"before":1,"after":3},{"t":9000,"before":0,"after":14},{"t":10000,"before":0,"after":16},{"t":11000,"before":0,"after":6},{"t":12000,"before":0,"after":13}],"births":{"before":70,"after":136}}]},
+{"seed":100012,"seconds":464.4,"rows":[{"curve":[{"t":1000,"before":5,"after":11},{"t":2000,"before":3,"after":4},{"t":3000,"before":15,"after":1},{"t":4000,"before":14,"after":2},{"t":5000,"before":15,"after":1},{"t":6000,"before":15,"after":1},{"t":7000,"before":13,"after":3},{"t":8000,"before":9,"after":3},{"t":9000,"before":14,"after":2},{"t":10000,"before":11,"after":5},{"t":11000,"before":8,"after":8},{"t":12000,"before":3,"after":8}],"births":{"before":147,"after":47}}]},
+{"seed":100013,"seconds":268.1,"rows":[{"curve":[{"t":1000,"before":4,"after":12},{"t":2000,"before":0,"after":2},{"t":3000,"before":0,"after":14},{"t":4000,"before":0,"after":16},{"t":5000,"before":0,"after":5},{"t":6000,"before":0,"after":14},{"t":7000,"before":0,"after":16},{"t":8000,"before":0,"after":9},{"t":9000,"before":0,"after":16},{"t":10000,"before":0,"after":16},{"t":11000,"before":0,"after":8},{"t":12000,"before":0,"after":15}],"births":{"before":0,"after":112}}]},
+{"seed":100014,"seconds":274.5,"rows":[{"curve":[{"t":1000,"before":7,"after":9},{"t":2000,"before":1,"after":2},{"t":3000,"before":15,"after":0},{"t":4000,"before":16,"after":0},{"t":5000,"before":10,"after":0},{"t":6000,"before":9,"after":0},{"t":7000,"before":16,"after":0},{"t":8000,"before":13,"after":0},{"t":9000,"before":11,"after":0},{"t":10000,"before":16,"after":0},{"t":11000,"before":15,"after":0},{"t":12000,"before":16,"after":0}],"births":{"before":185,"after":10}}]},
+{"seed":100015,"seconds":298.3,"rows":[{"curve":[{"t":1000,"before":7,"after":9},{"t":2000,"before":9,"after":1},{"t":3000,"before":8,"after":6},{"t":4000,"before":5,"after":11},{"t":5000,"before":7,"after":9},{"t":6000,"before":5,"after":11},{"t":7000,"before":4,"after":12},{"t":8000,"before":0,"after":11},{"t":9000,"before":0,"after":14},{"t":10000,"before":0,"after":16},{"t":11000,"before":0,"after":12},{"t":12000,"before":0,"after":16}],"births":{"before":51,"after":145}}]},
+{"seed":100016,"seconds":514.1,"rows":[{"curve":[{"t":1000,"before":4,"after":12},{"t":2000,"before":10,"after":3},{"t":3000,"before":16,"after":0},{"t":4000,"before":16,"after":0},{"t":5000,"before":16,"after":0},{"t":6000,"before":16,"after":0},{"t":7000,"before":16,"after":0},{"t":8000,"before":16,"after":0},{"t":9000,"before":16,"after":0},{"t":10000,"before":16,"after":0},{"t":11000,"before":16,"after":0},{"t":12000,"before":16,"after":0}],"births":{"before":245,"after":13}}]},
+{"seed":100017,"seconds":300.8,"rows":[{"curve":[{"t":1000,"before":3,"after":13},{"t":2000,"before":7,"after":4},{"t":3000,"before":16,"after":0},{"t":4000,"before":16,"after":0},{"t":5000,"before":16,"after":0},{"t":6000,"before":16,"after":0},{"t":7000,"before":16,"after":0},{"t":8000,"before":4,"after":0},{"t":9000,"before":15,"after":0},{"t":10000,"before":16,"after":0},{"t":11000,"before":16,"after":0},{"t":12000,"before":16,"after":0}],"births":{"before":219,"after":14}}]},
+{"seed":100018,"seconds":307.5,"rows":[{"curve":[{"t":1000,"before":6,"after":10},{"t":2000,"before":0,"after":5},{"t":3000,"before":0,"after":15},{"t":4000,"before":0,"after":16},{"t":5000,"before":0,"after":16},{"t":6000,"before":0,"after":16},{"t":7000,"before":0,"after":16},{"t":8000,"before":0,"after":10},{"t":9000,"before":0,"after":15},{"t":10000,"before":0,"after":16},{"t":11000,"before":0,"after":15},{"t":12000,"before":0,"after":16}],"births":{"before":2,"after":186}}]},
+{"seed":100019,"seconds":522.7,"rows":[{"curve":[{"t":1000,"before":4,"after":12},{"t":2000,"before":12,"after":0},{"t":3000,"before":16,"after":0},{"t":4000,"before":16,"after":0},{"t":5000,"before":11,"after":0},{"t":6000,"before":16,"after":0},{"t":7000,"before":16,"after":0},{"t":8000,"before":16,"after":0},{"t":9000,"before":16,"after":0},{"t":10000,"before":16,"after":0},{"t":11000,"before":16,"after":0},{"t":12000,"before":16,"after":0}],"births":{"before":322,"after":11}}]},
+{"seed":100020,"seconds":380.1,"rows":[{"curve":[{"t":1000,"before":7,"after":9},{"t":2000,"before":5,"after":1},{"t":3000,"before":11,"after":0},{"t":4000,"before":16,"after":0},{"t":5000,"before":16,"after":0},{"t":6000,"before":16,"after":0},{"t":7000,"before":16,"after":0},{"t":8000,"before":8,"after":0},{"t":9000,"before":16,"after":0},{"t":10000,"before":16,"after":0},{"t":11000,"before":11,"after":0},{"t":11646,"before":0,"after":0}],"births":{"before":271,"after":7}}]},
+{"seed":100021,"seconds":399.9,"rows":[{"curve":[{"t":1000,"before":6,"after":10},{"t":2000,"before":12,"after":0},{"t":3000,"before":16,"after":0},{"t":4000,"before":16,"after":0},{"t":5000,"before":6,"after":0},{"t":6000,"before":15,"after":0},{"t":7000,"before":16,"after":0},{"t":8000,"before":16,"after":0},{"t":9000,"before":16,"after":0},{"t":10000,"before":16,"after":0},{"t":10745,"before":0,"after":0}],"births":{"before":311,"after":9}}]},
+{"seed":100022,"seconds":165.0,"rows":[{"curve":[{"t":1000,"before":5,"after":11},{"t":2000,"before":0,"after":1},{"t":3000,"before":0,"after":11},{"t":4000,"before":0,"after":16},{"t":5000,"before":0,"after":8},{"t":6000,"before":0,"after":14},{"t":7000,"before":0,"after":16},{"t":8000,"before":0,"after":11},{"t":9000,"before":0,"after":16},{"t":10000,"before":0,"after":16},{"t":11000,"before":0,"after":16},{"t":12000,"before":0,"after":16}],"births":{"before":0,"after":131}}]},
+{"seed":100023,"seconds":238.5,"rows":[{"curve":[{"t":1000,"before":4,"after":12},{"t":2000,"before":6,"after":7},{"t":3000,"before":1,"after":7},{"t":4000,"before":1,"after":15},{"t":5000,"before":0,"after":2},{"t":6000,"before":0,"after":9},{"t":7000,"before":0,"after":16},{"t":8000,"before":0,"after":5},{"t":9000,"before":0,"after":8},{"t":10000,"before":0,"after":16},{"t":11000,"before":0,"after":5},{"t":12000,"before":0,"after":6}],"births":{"before":14,"after":129}}]},
+{"seed":100024,"seconds":368.2,"rows":[{"curve":[{"t":1000,"before":7,"after":9},{"t":2000,"before":7,"after":1},{"t":3000,"before":13,"after":0},{"t":4000,"before":16,"after":0},{"t":5000,"before":11,"after":0},{"t":6000,"before":16,"after":0},{"t":7000,"before":16,"after":0},{"t":8000,"before":10,"after":0},{"t":9000,"before":15,"after":0},{"t":10000,"before":16,"after":0},{"t":11000,"before":14,"after":0},{"t":12000,"before":16,"after":0}],"births":{"before":243,"after":10}}]},
+{"seed":100025,"seconds":372.1,"rows":[{"curve":[{"t":1000,"before":6,"after":10},{"t":2000,"before":10,"after":2},{"t":3000,"before":16,"after":0},{"t":4000,"before":16,"after":0},{"t":5000,"before":9,"after":0},{"t":6000,"before":8,"after":0},{"t":7000,"before":16,"after":0},{"t":8000,"before":7,"after":0},{"t":9000,"before":13,"after":0},{"t":10000,"before":16,"after":0},{"t":11000,"before":16,"after":0},{"t":12000,"before":15,"after":0}],"births":{"before":260,"after":10}}]},
+{"seed":100026,"seconds":247.2,"rows":[{"curve":[{"t":1000,"before":6,"after":10},{"t":2000,"before":2,"after":5},{"t":3000,"before":9,"after":6},{"t":4000,"before":4,"after":12},{"t":5000,"before":0,"after":6},{"t":6000,"before":0,"after":16},{"t":7000,"before":0,"after":16},{"t":8000,"before":0,"after":12},{"t":9000,"before":0,"after":16},{"t":10000,"before":0,"after":16},{"t":11000,"before":0,"after":13},{"t":12000,"before":0,"after":16}],"births":{"before":22,"after":124}}]},
+{"seed":100027,"seconds":248.6,"rows":[{"curve":[{"t":1000,"before":4,"after":12},{"t":2000,"before":0,"after":8},{"t":3000,"before":0,"after":4},{"t":4000,"before":0,"after":16},{"t":5000,"before":0,"after":4},{"t":6000,"before":0,"after":12},{"t":7000,"before":0,"after":16},{"t":8000,"before":0,"after":5},{"t":9000,"before":0,"after":12},{"t":10000,"before":0,"after":16},{"t":11000,"before":0,"after":8},{"t":12000,"before":0,"after":8}],"births":{"before":1,"after":151}}]},
+{"seed":100028,"seconds":197.8,"rows":[{"curve":[{"t":1000,"before":6,"after":10},{"t":2000,"before":12,"after":3},{"t":3000,"before":6,"after":9},{"t":4000,"before":4,"after":12},{"t":5000,"before":0,"after":16},{"t":6000,"before":0,"after":16},{"t":7000,"before":0,"after":16},{"t":8000,"before":0,"after":16},{"t":9000,"before":0,"after":16},{"t":10000,"before":0,"after":16},{"t":11000,"before":0,"after":16},{"t":12000,"before":0,"after":16}],"births":{"before":33,"after":83}}]},
+{"seed":100029,"seconds":192.1,"rows":[{"curve":[{"t":1000,"before":5,"after":11},{"t":2000,"before":0,"after":2},{"t":3000,"before":0,"after":16},{"t":4000,"before":0,"after":16},{"t":5000,"before":0,"after":10},{"t":6000,"before":0,"after":16},{"t":7000,"before":0,"after":16},{"t":8000,"before":0,"after":16},{"t":9000,"before":0,"after":16},{"t":10000,"before":0,"after":16},{"t":11000,"before":0,"after":16},{"t":12000,"before":0,"after":16}],"births":{"before":1,"after":137}}]},
+{"seed":100030,"seconds":195.4,"rows":[{"curve":[{"t":1000,"before":4,"after":12},{"t":2000,"before":3,"after":7},{"t":3000,"before":0,"after":8},{"t":4000,"before":0,"after":16},{"t":5000,"before":0,"after":8},{"t":6000,"before":0,"after":12},{"t":7000,"before":0,"after":16},{"t":8000,"before":0,"after":6},{"t":9000,"before":0,"after":7},{"t":10000,"before":0,"after":16},{"t":11000,"before":0,"after":7},{"t":12000,"before":0,"after":6}],"births":{"before":2,"after":182}}]},
+{"seed":100031,"seconds":175.6,"rows":[{"curve":[{"t":1000,"before":4,"after":12},{"t":2000,"before":0,"after":5},{"t":3000,"before":0,"after":12},{"t":4000,"before":0,"after":16},{"t":5000,"before":0,"after":10},{"t":6000,"before":0,"after":11},{"t":7000,"before":0,"after":16},{"t":8000,"before":0,"after":9},{"t":9000,"before":0,"after":16},{"t":10000,"before":0,"after":16},{"t":11000,"before":0,"after":16},{"t":12000,"before":0,"after":16}],"births":{"before":3,"after":147}}]}
+ ]
+}
