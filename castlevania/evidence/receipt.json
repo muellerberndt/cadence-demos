@@ -1,9 +1,9 @@
 {
  "brain": {
   "file": "brain/brain.npz",
-  "sha256": "58225f8f15911ae4102f54f1d548bf8a05ce0039eb371bc87e2c915e6d7ef2e7",
-  "bytes": 26284422,
-  "source_sha256": "07a8ea61c8d777fae3d885a55be0facc645718613540238c26c8c112df353890",
+  "sha256": "553d33987a6ae00b307375a581de372e06b39802ca52892d55ad1df78e49952c",
+  "bytes": 36596367,
+  "source_sha256": "005ec4cc79c9264cef7eb00c289016d0266289acaf32b7da04bd715974f6f20e",
   "cadence": "0.95.2",
   "inputs": 827,
   "modules": [
@@ -37,7 +37,7 @@
  },
  "readings": [
   {
-   "brain": "runs/init/W6_s0_d200000_v2.brain.npz",
+   "brain": "C2s/d325120.brain.npz",
    "eye": "v2",
    "starts": [
     0,
@@ -54,15 +54,15 @@
    "progress": [
     200248,
     200248,
+    200495,
     200248,
-    200248,
-    200248,
-    200248,
-    200248,
+    200495,
+    200495,
+    200495,
     200248,
     200248
    ],
-   "mean_progress": 200248.0,
+   "mean_progress": 200357.77777777778,
    "min_progress": 200248,
    "stage": [
     2,
@@ -92,7 +92,7 @@
     {
      "0": 712,
      "1": 1584,
-     "2": 248
+     "2": 495
     },
     {
      "0": 712,
@@ -102,17 +102,17 @@
     {
      "0": 712,
      "1": 1584,
-     "2": 248
+     "2": 495
     },
     {
      "0": 712,
      "1": 1584,
-     "2": 248
+     "2": 495
     },
     {
      "0": 712,
      "1": 1584,
-     "2": 248
+     "2": 495
     },
     {
      "0": 712,
@@ -137,19 +137,19 @@
     0
    ],
    "deaths_by_stage": {
-    "2": 17,
-    "1": 3
+    "2": 29,
+    "1": 7
    },
    "score": [
-    4800,
-    2600,
-    4600,
-    2400,
-    4800,
-    2200,
-    4800,
-    4800,
-    2400
+    5000,
+    2000,
+    4000,
+    5100,
+    1400,
+    500,
+    3400,
+    5100,
+    2100
    ],
    "lives_lost": [
     4,
@@ -165,7 +165,7 @@
    "games": [
     {
      "noops": 0,
-     "decisions": 1112,
+     "decisions": 1146,
      "furthest_stage": 2,
      "progress": 200248,
      "lives_lost": 4,
@@ -175,19 +175,18 @@
       "2": 248
      },
      "deaths_by_stage": {
-      "2": 3
+      "2": 4
      },
      "bat_hp_dealt": 0,
      "max_wx": {
       "0.0": 712,
       "1.0": 1584,
-      "2.1": 368,
-      "2.0": 243
+      "2.1": 368
      }
     },
     {
      "noops": 7,
-     "decisions": 1044,
+     "decisions": 1131,
      "furthest_stage": 2,
      "progress": 200248,
      "lives_lost": 4,
@@ -197,41 +196,41 @@
       "2": 248
      },
      "deaths_by_stage": {
-      "2": 1
+      "1": 2,
+      "2": 2
      },
      "bat_hp_dealt": 0,
      "max_wx": {
       "0.0": 712,
       "1.0": 1584,
-      "2.1": 368,
-      "2.0": 289
+      "2.1": 304
      }
     },
     {
      "noops": 14,
-     "decisions": 1084,
+     "decisions": 1351,
      "furthest_stage": 2,
-     "progress": 200248,
+     "progress": 200495,
      "lives_lost": 4,
      "world_x": {
       "0": 712,
       "1": 1584,
-      "2": 248
+      "2": 495
      },
      "deaths_by_stage": {
-      "2": 3
+      "2": 4
      },
      "bat_hp_dealt": 0,
      "max_wx": {
       "0.0": 712,
       "1.0": 1584,
-      "2.1": 368,
-      "2.0": 243
+      "2.1": 248,
+      "2.0": 495
      }
     },
     {
      "noops": 3,
-     "decisions": 978,
+     "decisions": 1140,
      "furthest_stage": 2,
      "progress": 200248,
      "lives_lost": 4,
@@ -241,86 +240,86 @@
       "2": 248
      },
      "deaths_by_stage": {
-      "1": 1
+      "2": 4
      },
      "bat_hp_dealt": 0,
      "max_wx": {
       "0.0": 712,
       "1.0": 1584,
-      "2.1": 304,
-      "2.0": 257
+      "2.1": 248
      }
     },
     {
      "noops": 10,
-     "decisions": 1112,
+     "decisions": 1296,
      "furthest_stage": 2,
-     "progress": 200248,
+     "progress": 200495,
      "lives_lost": 4,
      "world_x": {
       "0": 712,
       "1": 1584,
-      "2": 248
+      "2": 495
      },
      "deaths_by_stage": {
+      "1": 1,
       "2": 3
      },
      "bat_hp_dealt": 0,
      "max_wx": {
       "0.0": 712,
       "1.0": 1584,
-      "2.1": 368,
-      "2.0": 243
+      "2.1": 248,
+      "2.0": 495
      }
     },
     {
      "noops": 21,
-     "decisions": 947,
+     "decisions": 1156,
      "furthest_stage": 2,
-     "progress": 200248,
+     "progress": 200495,
      "lives_lost": 4,
      "world_x": {
       "0": 712,
       "1": 1584,
-      "2": 248
+      "2": 495
      },
      "deaths_by_stage": {
-      "1": 1,
-      "2": 1
+      "1": 2,
+      "2": 2
      },
      "bat_hp_dealt": 0,
      "max_wx": {
       "0.0": 712,
       "1.0": 1584,
-      "2.1": 368,
-      "2.0": 243
+      "2.1": 336,
+      "2.0": 495
      }
     },
     {
      "noops": 28,
-     "decisions": 1112,
+     "decisions": 1225,
      "furthest_stage": 2,
-     "progress": 200248,
+     "progress": 200495,
      "lives_lost": 4,
      "world_x": {
       "0": 712,
       "1": 1584,
-      "2": 248
+      "2": 495
      },
      "deaths_by_stage": {
-      "2": 3
+      "2": 4
      },
      "bat_hp_dealt": 0,
      "max_wx": {
       "0.0": 712,
       "1.0": 1584,
-      "2.1": 368,
-      "2.0": 243
+      "2.1": 248,
+      "2.0": 495
      }
     },
     {
      "noops": 35,
-     "decisions": 1112,
+     "decisions": 1066,
      "furthest_stage": 2,
      "progress": 200248,
      "lives_lost": 4,
@@ -330,19 +329,18 @@
       "2": 248
      },
      "deaths_by_stage": {
-      "2": 3
+      "2": 4
      },
      "bat_hp_dealt": 0,
      "max_wx": {
       "0.0": 712,
       "1.0": 1584,
-      "2.1": 368,
-      "2.0": 243
+      "2.1": 248
      }
     },
     {
      "noops": 42,
-     "decisions": 978,
+     "decisions": 1097,
      "furthest_stage": 2,
      "progress": 200248,
      "lives_lost": 4,
@@ -352,18 +350,211 @@
       "2": 248
      },
      "deaths_by_stage": {
-      "1": 1
+      "1": 2,
+      "2": 2
      },
      "bat_hp_dealt": 0,
      "max_wx": {
       "0.0": 712,
       "1.0": 1584,
-      "2.1": 304,
-      "2.0": 257
+      "2.1": 248
      }
     }
    ],
-   "seconds": 145.3
+   "seconds": 169.0
   }
+ ],
+ "run": {
+  "config": {
+   "name": "C2s",
+   "seed": 3,
+   "modules": [
+    256,
+    128
+   ],
+   "eye": "v2",
+   "genes": {
+    "memory_choice": true,
+    "recall_heads": 2,
+    "recall_action": true,
+    "recall_boundary": true
+   },
+   "streams": 8,
+   "segment": 40,
+   "budget": 450000,
+   "draw": {
+    "all": 0.1,
+    "start": 0.03,
+    "stairs1": 0.07,
+    "stage2_start": 0.15,
+    "stage2_left": 0.2,
+    "water_jumps": 0.08,
+    "under_stairs": 0.08,
+    "stage2_exit": 0.12,
+    "stage3": 0.07,
+    "bat": 0.05,
+    "stage4": 0.05
+   },
+   "critical_weight": 3.0,
+   "eval_every": 25000,
+   "eval_starts": [
+    0,
+    7,
+    14
+   ],
+   "eval_decisions": 1500,
+   "search_at": 0,
+   "search_share": 0.5,
+   "search_k": 5,
+   "search_horizon": 16,
+   "search_sims": 48,
+   "c_puct": 1.5,
+   "search_min_spread": 16.0,
+   "noise": 0.25,
+   "noise_alpha": 0.3,
+   "wall_hours": 0,
+   "practice": "runs/pool/practice.pkl",
+   "validation": "runs/pool/validation.npz",
+   "load": "W6_s0 at 200,000 decisions, widened to eye v2 (training/widen.py)",
+   "backend": null,
+   "load_decisions": 200000
+  },
+  "counters": {
+   "decisions": 325120,
+   "lessons": 125120,
+   "lesson_refused": 0,
+   "act_refused": 0,
+   "searched": 0,
+   "search_changed": 0,
+   "search_informative": 0,
+   "own_ran": 0,
+   "teacher_ran": 125120,
+   "segments": 3128,
+   "weighted_rows": 96792
+  },
+  "seconds": 3434.4,
+  "library": {
+   "cadence": "0.95.2",
+   "cadence_source_sha256": "917857fdcb62b08b",
+   "numpy": "2.5.4",
+   "python": "/home/ec2-user/venv/bin/python"
+  },
+  "evaluations": [
+   {
+    "decision": 225280,
+    "stage": [
+     2,
+     2,
+     2
+    ],
+    "past_stairs": 3,
+    "stage3": 0,
+    "stage4": 0,
+    "lives_lost": [
+     4,
+     4,
+     4
+    ],
+    "progress": [
+     200248,
+     200248,
+     200248
+    ],
+    "predict": 0.6566552901023891
+   },
+   {
+    "decision": 250240,
+    "stage": [
+     2,
+     2,
+     2
+    ],
+    "past_stairs": 3,
+    "stage3": 0,
+    "stage4": 0,
+    "lives_lost": [
+     4,
+     4,
+     4
+    ],
+    "progress": [
+     200248,
+     200248,
+     200248
+    ],
+    "predict": 0.6689419795221843
+   },
+   {
+    "decision": 275200,
+    "stage": [
+     2,
+     2,
+     2
+    ],
+    "past_stairs": 3,
+    "stage3": 0,
+    "stage4": 0,
+    "lives_lost": [
+     4,
+     4,
+     4
+    ],
+    "progress": [
+     200248,
+     200495,
+     200248
+    ],
+    "predict": 0.6686006825938566
+   },
+   {
+    "decision": 300160,
+    "stage": [
+     2,
+     2,
+     2
+    ],
+    "past_stairs": 3,
+    "stage3": 0,
+    "stage4": 0,
+    "lives_lost": [
+     4,
+     4,
+     4
+    ],
+    "progress": [
+     200248,
+     200248,
+     200248
+    ],
+    "predict": 0.6675767918088737
+   },
+   {
+    "decision": 325120,
+    "stage": [
+     2,
+     2,
+     2
+    ],
+    "past_stairs": 3,
+    "stage3": 0,
+    "stage4": 0,
+    "lives_lost": [
+     4,
+     4,
+     4
+    ],
+    "progress": [
+     200248,
+     200248,
+     200495
+    ],
+    "predict": 0.6706484641638225
+   }
+  ]
+ },
+ "lineage": [
+  "200,000 decisions of practice on the first 588 inputs (earlier library release, one stream)",
+  "carried to cadence-net 0.95.2 and widened to 827 inputs (training/widen.py)",
+  "125,120 decisions of practice on 0.95.2 with eight streams, the draw weighted to stage 2 (run C2s)"
  ]
 }

@@ -90,26 +90,33 @@ starts. The brain never reads RAM beyond the eye's position readings.
    carried to this release, and [`training/widen.py`](training/widen.py) carried every learned
    array onto the full 827-input eye, the new inputs' synapses at zero: on 400 held-out
    positions the widened brain answers as before on every one.
-
+4. **Stage 2.** 125,120 more decisions of practice on this release, eight streams, with the
+   draw weighted to stage 2 (the staircase down to the underground, the water jumps, the way
+   out): about an hour on one core of a c7i. Of the checkpoints read every 25,000 decisions, the
+   one at 325,120 is packed.
 
 ## Readings
 
 Frozen and greedy from power-on, 1,500 decisions on each of nine idle offsets (0, 3, 7, 10, 14,
 21, 28, 35, 42), `training/evaluate.py`; the receipt is [`evidence/receipt.json`](evidence/receipt.json).
 
-| Start | Furthest stage | Lives lost | Where the lives went |
-| --- | --- | --- | --- |
-| 0, 7, 10, 14, 28, 35 | 2 | 4 | stage 2, at the bottom-left staircase |
-| 3, 42 | 2 | 4 | stage 1 once, then stage 2 |
-| 21 | 2 | 4 | stage 1 and stage 2 |
+| Start | Hall stairs passed | Down the stage-2 staircase and across the underground |
+| --- | --- | --- |
+| 0, 3, 7, 35, 42 | yes | no |
+| 10, 14, 21, 28 | yes | yes, to x 495 |
 
-Every start passes the hall's stairs at the end of stage 1 (9 of 9); none reaches stage 3.
+Every start passes the hall's stairs at the end of stage 1 (9 of 9), and on 4 of 9 the brain
+goes down the staircase into stage 2's underground and crosses it. None reaches stage 3; every
+start ends with its four lives lost (36 deaths: 29 in stage 2, 7 in stage 1). The brain this
+one continued from crossed the underground on 0 of the same 9 starts.
 
 ## Limits
 
 - **Stage 2.** At the bottom left of stage 2 the route goes down a staircase into the
-  underground. The brain walks there but stops a few pixels short of the staircase's foot and
-  holds down, which crouches, until enemies take its lives.
+  underground. On 5 of 9 starts the brain stops a few pixels short of the staircase's foot and
+  holds down, which crouches, until enemies take its lives. Where it does go down, it crosses the
+  underground but walks past the staircase up and out (world x 434 to 456) and loses its lives
+  further on. It has not reached stage 3.
 - **Imitation, not reward.** The brain learned from a teacher's labels; the world's reward
   played no part, and nothing is learned while you watch.
 - **RAM in the eye.** Simon's position, facing, stage, block and body state come from RAM; the

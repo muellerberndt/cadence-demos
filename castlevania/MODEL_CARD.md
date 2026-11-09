@@ -1,9 +1,9 @@
-# Model card: Simon (W6, eye v2)
+# Model card: Simon (C2s at 325,120 decisions)
 
 | | |
 | --- | --- |
 | Demo | Castlevania (`castlevania/`) |
-| File | `brain/brain.npz` · 26.3 MB · SHA-256 `58225f8f15911ae4…` |
+| File | `brain/brain.npz` · 36.6 MB · SHA-256 `553d33987a6ae00b…` |
 | Library | `cadence-net` 0.95.2 (`Brain.load(path, backend="cpu")`, float64, as `server.py` loads it) |
 | Composition | 827 inputs, 10 motor neurons in slots (3, 3, 2, 2), modules (256, 128), apical 0.25, recall memory (128 slots, 2 heads, the executed command and the boundary in its keys, position 32, no recency), `memory_choice=True`, arousal; learner set by `LearnerConfig` (raw step 0.2, bias step 0.02, 32 nudged sweeps run whole, unqualified, every row taught) |
 | Size | 4,697 neurons (the recall memory's regions included), 724,736 synapses |
@@ -37,6 +37,10 @@ The teacher alone reaches stage 4 on ten of ten starts.
    0.95 runs), then [`training/widen.py`](training/widen.py) copied every learned array onto the
    827-input eye with the new inputs' synapses at zero. On 400 held-out positions the widened
    brain's memory-free answers equal the original's on every one.
+4. 125,120 decisions of practice on 0.95.2 (run C2s): eight streams side by side in one
+   emulator, `Brain.lesson(x, labels, weights=w)` on all eight rows (rows at critical places
+   weigh 3), then `Brain.act`; the draw weighted to stage 2. 57 minutes on one c7i core.
+   Checkpoints were read every 25,000 decisions; the one at 325,120 is packed.
 
 The commands are in the README's "Train your own" (`training/train.py`, `training/pack.py`).
 
@@ -48,9 +52,10 @@ decisions, 1,500 decisions each (`training/evaluate.py`; [`evidence/receipt.json
 | Reading | Value |
 | --- | --- |
 | Past the hall's stairs (stage 2 reached) | 9 of 9 starts |
+| Down the stage-2 staircase and across the underground (block 0, world x 495) | 4 of 9 (starts 10, 14, 21, 28) |
 | Stage 3 reached | 0 of 9 |
-| Lives lost | 4 of 4 on every start |
-| Where the lives went | 17 in stage 2 (the bottom-left staircase), 3 in stage 1 |
+| Lives lost | 4 of 4 on every start (36 deaths: 29 in stage 2, 7 in stage 1) |
+| The brain it continued from, same starts | 9 of 9 past the stairs, 0 of 9 across the underground |
 
 The teacher it imitated, on ten power-on starts: stage 4 on 10 of 10.
 
@@ -63,9 +68,9 @@ trace and recall memory are cleared at each new game. Nothing is saved. One deci
 
 ## Limits
 
-- It does not get past stage 2: at the bottom-left staircase down into the underground it stops
-  a few pixels short of the staircase's foot and holds down, which crouches, until enemies take
-  its lives.
+- It does not get past stage 2. On 5 of 9 starts it stops a few pixels short of the bottom-left
+  staircase's foot and holds down, which crouches, until enemies take its lives; on the other 4
+  it crosses the underground but walks past the staircase up and out.
 - It learned from a teacher's labels; reward played no part.
 - Simon's position, facing, stage, block and body state come from RAM, not from pixels.
 - Checked on the PRG1 printing and stable-retro's FCEUmm core only.
