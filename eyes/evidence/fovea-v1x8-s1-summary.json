@@ -1,56 +1,56 @@
 {
  "lessons": 100000,
- "seconds": 5352.7,
+ "seconds": 4462.0,
  "world": {
-  "scenes": 4976,
+  "scenes": 4975,
   "lost": 0,
-  "darts": 28333
+  "darts": 27940
  },
  "assays": {
   "glance": {
    "trials": 300,
    "all": {
     "trials": 300,
-    "hit": 0.87,
-    "exact": 0.59,
-    "err_px_median": 1.62,
-    "centre": 0.3733,
-    "random": 0.07
+    "hit": 0.89,
+    "exact": 0.6167,
+    "err_px_median": 1.73,
+    "centre": 0.3767,
+    "random": 0.04
    },
    "near": {
     "trials": 100,
-    "hit": 1.0,
-    "exact": 0.77,
-    "err_px_median": 1.1,
+    "hit": 0.99,
+    "exact": 0.73,
+    "err_px_median": 1.05,
     "centre": 1.0,
     "random": 0.04
    },
    "mid": {
     "trials": 100,
-    "hit": 0.88,
-    "exact": 0.51,
+    "hit": 0.94,
+    "exact": 0.62,
     "err_px_median": 1.81,
-    "centre": 0.07,
-    "random": 0.07
+    "centre": 0.1,
+    "random": 0.05
    },
    "far": {
     "trials": 100,
-    "hit": 0.73,
-    "exact": 0.49,
-    "err_px_median": 3.23,
-    "centre": 0.05,
-    "random": 0.1
+    "hit": 0.74,
+    "exact": 0.5,
+    "err_px_median": 3.73,
+    "centre": 0.03,
+    "random": 0.03
    },
    "by_kind": {
-    "bar": 0.7857,
-    "cross": 0.875,
-    "diamond": 0.8182,
-    "disc": 0.9268,
-    "face": 0.8125,
-    "frame": 0.907,
-    "ring": 0.8462,
-    "square": 0.9167,
-    "triangle": 0.9286
+    "bar": 0.7561,
+    "cross": 0.8333,
+    "diamond": 0.9333,
+    "disc": 0.9667,
+    "face": 0.963,
+    "frame": 0.8611,
+    "ring": 0.8889,
+    "square": 0.9444,
+    "triangle": 0.907
    },
    "still_zero_share": 1.0
   },
@@ -58,70 +58,70 @@
    "trials": 300,
    "all": {
     "trials": 300,
-    "hit": 0.8333,
-    "exact": 0.4067,
-    "err_px_median": 2.17,
-    "centre": 0.3767,
-    "random": 0.0533
+    "hit": 0.82,
+    "exact": 0.44,
+    "err_px_median": 2.41,
+    "centre": 0.3633,
+    "random": 0.07
    },
    "near": {
     "trials": 100,
-    "hit": 0.97,
-    "exact": 0.47,
-    "err_px_median": 1.44,
+    "hit": 0.93,
+    "exact": 0.44,
+    "err_px_median": 1.65,
     "centre": 1.0,
-    "random": 0.06
+    "random": 0.04
    },
    "mid": {
     "trials": 100,
-    "hit": 0.85,
-    "exact": 0.35,
-    "err_px_median": 2.29,
-    "centre": 0.12,
-    "random": 0.04
+    "hit": 0.82,
+    "exact": 0.4,
+    "err_px_median": 2.27,
+    "centre": 0.07,
+    "random": 0.11
    },
    "far": {
     "trials": 100,
-    "hit": 0.68,
-    "exact": 0.4,
-    "err_px_median": 3.75,
-    "centre": 0.01,
+    "hit": 0.71,
+    "exact": 0.48,
+    "err_px_median": 4.37,
+    "centre": 0.02,
     "random": 0.06
    },
    "by_kind": {
-    "ell": 0.8526,
-    "star": 0.8351,
-    "tee": 0.8148
+    "ell": 0.7455,
+    "star": 0.8333,
+    "tee": 0.8936
    },
    "still_zero_share": 1.0
   },
   "dart": {
    "10.0": {
-    "1": 0.9167,
-    "2": 0.9333,
-    "3": 0.9333
+    "1": 0.8667,
+    "2": 0.9167,
+    "3": 0.9
    },
    "20.0": {
     "1": 0.1167,
-    "2": 0.6667,
-    "3": 0.6833
+    "2": 0.6833,
+    "3": 0.7167
    },
    "30.0": {
-    "1": 0.15,
-    "2": 0.55,
-    "3": 0.5333
+    "1": 0.2667,
+    "2": 0.4667,
+    "3": 0.4667
    }
   },
   "dart_distractor": {
    "10.0": {
-    "1": 0.9833,
-    "2": 0.9833,
-    "3": 0.9833
-   },
-   "20.0": {
     "1": 1.0,
     "2": 1.0,
     "3": 1.0
+   },
+   "20.0": {
+    "1": 0.9833,
+    "2": 0.9833,
+    "3": 0.9833
    },
    "30.0": {
     "1": 1.0,
@@ -133,20 +133,20 @@
    "4": {
     "objects": 4,
     "frames": 600,
-    "on_own_shape": 0.6512,
-    "hit": 0.6517,
-    "in_reach": 0.99,
-    "losses_per_eye_minute": 2.0,
-    "sweeps_mean": 52.37
+    "on_own_shape": 0.5942,
+    "hit": 0.5954,
+    "in_reach": 0.8883,
+    "losses_per_eye_minute": 4.5,
+    "sweeps_mean": 48.64
    },
    "8": {
     "objects": 8,
     "frames": 600,
-    "on_own_shape": 0.7481,
-    "hit": 0.7492,
+    "on_own_shape": 0.7348,
+    "hit": 0.7344,
     "in_reach": 1.0,
-    "losses_per_eye_minute": 3.5,
-    "sweeps_mean": 78.29
+    "losses_per_eye_minute": 1.75,
+    "sweeps_mean": 72.11
    }
   }
  }

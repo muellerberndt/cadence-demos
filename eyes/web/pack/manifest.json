@@ -25,9 +25,9 @@
   "eye_host.py": "a1c3c403e1933fa9141701cfc643879f37a0fca9c1964f4303742f70316bd074"
  },
  "brain": "brain.npz",
- "brain_sha256": "40a36d28e2748e643ca4dab22c2de4ecb0c5d5b6615a0cb2b6d9751c6e0bd62d",
+ "brain_sha256": "9f3228d881ba0098e35fbbcea379a58f2e605a45f09473f5196f44150a34ed42",
  "atlas": "atlas.json",
- "run": "ED100-s1",
+ "run": "c5ED100-s4",
  "phase": "bootstrap",
  "eye": "fovea",
  "window": 0,

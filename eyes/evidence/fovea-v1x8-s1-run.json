@@ -95,9 +95,11 @@
   "tolerance": 0.003,
   "free_steps": 1024
  },
- "seed": 1,
+ "seed": 4,
  "lessons": 100000,
  "cadence": "0.95.2",
+ "init": null,
+ "eta": null,
  "world_changes": {
   "own_dart": 0.2,
   "dart_px": [
