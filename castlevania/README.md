@@ -6,7 +6,7 @@ pad: left or right, up or down, whip, jump. The page shows the game beside what 
 the settled regions, the answer per slot and the recall memory filling as the game goes. The
 brain plays frozen; nothing is learned while you watch.
 
-![The brain in the castle hall, beside its eye, its settled regions and its answer](docs/castlevania.png)
+![The brain jumping across the stage-2 underground, beside its eye, its settled regions and its answer](docs/castlevania.png)
 
 Runs on `cadence-net==0.95.2` and `stable-retro==1.0.1`. The game is not included: you need your
 own dump of the cartridge.

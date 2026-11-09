@@ -58,13 +58,15 @@ class Game(threading.Thread):
             self.idle, self.restart_requested = int(idle), True
 
     def _new_game(self) -> None:
-        frame, ram = self.console.power_on(self.idle)
+        with self.lock:  # take the request: a restart posted from here on starts another game
+            idle, self.restart_requested = self.idle, False
+        frame, ram = self.console.power_on(idle)
         self.player.new_game()
         r = self.console.readings()
-        self.stats = {"idle": self.idle, "furthest_stage": r["stage"], "best_world_x": r["world_x"],
-                    "lives_lost": 0, "lives": r["lives"], "started": time.time(), "over": False}
+        self.stats = {"idle": idle, "furthest_stage": r["stage"], "lives_lost": 0, "lives": r["lives"],
+                      "started": time.time(), "over": False}
         with self.lock:
-            self.frame, self.restart_requested = frame, False
+            self.frame = frame
         self.ram = ram
 
     def run_loop(self) -> None:
@@ -94,11 +96,8 @@ class Game(threading.Thread):
             if r["lives"] < self.stats["lives"]:
                 self.stats["lives_lost"] += 1
             self.stats["lives"] = r["lives"]
-            if r["stage"] != 20 and r["stage"] >= self.stats["furthest_stage"]:
-                if r["stage"] > self.stats["furthest_stage"]:
-                    self.stats["best_world_x"] = 0
+            if r["stage"] != 20 and r["stage"] > self.stats["furthest_stage"]:
                 self.stats["furthest_stage"] = r["stage"]
-                self.stats["best_world_x"] = max(self.stats["best_world_x"], r["world_x"])
             if done or r["lives"] == 0:
                 self.stats["over"] = True
             with self.lock:

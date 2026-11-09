@@ -88,6 +88,8 @@ function draw(s) {
   const r = s.run || {};
   const g = b.game || {};
   $("pause").textContent = s.paused ? "Resume" : "Pause";
+  document.querySelectorAll("[data-speed]").forEach((x) => x.classList.toggle("on", Number(x.dataset.speed) === s.speed));
+  if (r.idle !== undefined && document.activeElement !== $("idle")) $("idle").value = String(r.idle);
   $("stats").innerHTML = [
     ["stage", g.stage ?? "-"], ["world x", g.world_x ?? "-"], ["health", g.health ?? "-"], ["lives", g.lives ?? "-"],
     ["furthest stage", r.furthest_stage ?? "-"], ["lives lost", r.lives_lost ?? 0], ["decisions", b.decisions ?? 0],

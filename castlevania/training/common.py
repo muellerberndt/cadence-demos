@@ -186,6 +186,7 @@ def frozen_play(brain: Brain, body: Body, noops: int, decisions: int, *, eye: st
     brain.reset()
     frame, ram = body.power_on(noops)
     sensor, progress = make_sensor(eye), Progress()
+    max_wx: dict[str, int] = {}  # the furthest world x per stage.block, on living frames
     step = 0
     for step in range(decisions):
         x = sensor.observe(frame, ram)[None, :]
@@ -197,13 +198,18 @@ def frozen_play(brain: Brain, body: Body, noops: int, decisions: int, *, eye: st
         before = readings(ram)
         frame, ram, done = body.step(action)
         progress.update(before, readings(ram), ram, step)
+        p = place(ram)
+        if p["lives"] == before["lives"] and p["health"] > 0 and p["stage"] != 20 and abs(p["wx"]) < 4000:
+            key = f'{p["stage"]}.{p["block"]}'
+            max_wx[key] = max(max_wx.get(key, -1), p["wx"])
         if done:
             break
     return {"noops": noops, "decisions": step + 1, "progress": progress.best,
             "furthest_stage": progress.furthest, "lives_lost": progress.lives_lost,
             "score": readings(ram)["score"], "first_stage": progress.first_stage,
             "world_x": progress.world_x, "deaths_by_stage": progress.deaths_by_stage,
-            "bat_hp_dealt": progress.bat_hp_dealt, "passed_stairs": progress.furthest >= 2}
+            "bat_hp_dealt": progress.bat_hp_dealt, "passed_stairs": progress.furthest >= 2,
+            "max_wx": max_wx}
 
 
 def frozen_evaluation(brain: Brain, body: Body, starts, decisions: int, *, eye: str = DEFAULT_EYE) -> dict:
