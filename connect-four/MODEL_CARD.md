@@ -89,11 +89,12 @@ verdict the brain holds now, only when the brain does not already play that colu
 0.0033 (the bias a tenth of it). Lessons live in the tab; a reload or *Reset brain* restores the
 file. The visitor's record and lessons are not saved.
 
-Measured by `check_page.py` in headless Chromium on an Apple M4 at a load average near 200
-(`evidence/page_check.json`), with brain + search: startup 42 s; a settle 54–116 sweeps and
-0.9–3.0 s in the worker; the search, in JavaScript (`web/search.js`, identical to
-`connect4/search.py` on 200 recorded positions), 0.28–0.97 s; a click to the brain's stone on the
-board 3.7–7.6 s with the animations; the brain view at 29 frames per second.
+Measured by `check_page.py` in headless Chromium on an Apple M4 running other jobs (load average
+13 to 18; `evidence/page_check.json`), with brain + search: startup 25 s; a settle 54–116 sweeps
+and 1.2–3.0 s in the worker; the search, in JavaScript (`web/search.js`, identical to
+`connect4/search.py` on 200 recorded positions), 0.30–0.53 s; a whole move 1.6–3.0 s; a click to
+the brain's stone on the board 3.9–5.2 s with the animations; the brain view at 51 frames per
+second.
 
 ## Limits
 

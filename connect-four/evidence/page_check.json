@@ -1,7 +1,7 @@
 {
  "schema": "connect-four-page-check/1",
- "url": "http://127.0.0.1:59160/",
- "checked_utc": "2026-11-09T13:43:27.879865+00:00",
+ "url": "http://127.0.0.1:49595/",
+ "checked_utc": "2026-11-09T15:00:45.843833+00:00",
  "checks": [
   {
    "name": "runtime_is_released_cadence",
@@ -12,13 +12,13 @@
      "synapses": 3295232,
      "cadence": "0.95.2"
     },
-    "startup_ms": 41648
+    "startup_ms": 25301
    }
   },
   {
    "name": "startup_measured",
    "passed": true,
-   "detail": 41648
+   "detail": 25301
   },
   {
    "name": "brain_view_renderer",
@@ -111,13 +111,13 @@
    "detail": {
     "player": "search",
     "search_ms": [
-     361.7,
-     965.6,
-     297.5,
-     291.7,
-     284.2,
-     281,
-     312.9,
+     413.9,
+     298.7,
+     338.8,
+     323,
+     530.6,
+     462.5,
+     361.8,
      0
     ],
     "search_depth": [
@@ -139,24 +139,24 @@
    "detail": {
     "bound_ms": 8000.0,
     "worker_ms": [
-     1707.3,
-     4042.2,
-     1830.7,
-     1829.8,
-     1309.6,
-     2202,
-     1207.2,
-     2388.8
+     2442.1,
+     1583.9,
+     2180.1,
+     1929.1,
+     2011,
+     2821.5,
+     1597,
+     3023.8
     ],
     "settle_ms": [
-     1328.6,
-     2966.3,
-     1512.6,
-     1520.3,
-     1012.2,
-     1896.8,
-     878.7,
-     2353.2
+     2014.5,
+     1274.3,
+     1823.5,
+     1592.3,
+     1469.2,
+     2333.4,
+     1216.1,
+     2985.1
     ],
     "sweeps": [
      65,
@@ -176,14 +176,14 @@
    "detail": {
     "bound_s": 10.0,
     "seconds": [
-     7.58,
-     6.18,
-     3.91,
-     4.08,
-     3.68,
-     5.0,
-     3.78,
-     4.92
+     4.81,
+     3.86,
+     4.23,
+     4.25,
+     4.43,
+     4.95,
+     3.86,
+     5.16
     ]
    }
   },
@@ -200,20 +200,36 @@
    "passed": true,
    "detail": [
     {
-     "mean": 39.8171026368316,
-     "litShare": 0.17176173967853767,
-     "hash": 2910005437,
-     "playhead": 6.830000000000109,
-     "frames": 32,
-     "t": 3.346
+     "mean": 45.9244849683573,
+     "litShare": 0.20615755784257256,
+     "hash": 1213576384,
+     "playhead": 1.8324999999999818,
+     "frames": 14,
+     "t": 0.943
     },
     {
-     "mean": 41.29166349696252,
-     "litShare": 0.17283762782964018,
-     "hash": 356755881,
-     "playhead": 60.83099166666672,
-     "frames": 97,
-     "t": 5.618
+     "mean": 47.00275673697976,
+     "litShare": 0.2073855917928209,
+     "hash": 3877271090,
+     "playhead": 8.5,
+     "frames": 30,
+     "t": 1.155
+    },
+    {
+     "mean": 48.390261219847055,
+     "litShare": 0.208907049784279,
+     "hash": 2697918652,
+     "playhead": 33.50249999999996,
+     "frames": 90,
+     "t": 2.39
+    },
+    {
+     "mean": 48.42646467500571,
+     "litShare": 0.2088853146701153,
+     "hash": 2032468058,
+     "playhead": 45.93249999999998,
+     "frames": 114,
+     "t": 2.915
     }
    ]
   },
@@ -221,7 +237,7 @@
    "name": "brain_view_frame_rate_while_settling",
    "passed": true,
    "detail": {
-    "frames_per_second": 28.6,
+    "frames_per_second": 50.7,
     "renderer": "webgl2"
    }
   },
@@ -235,8 +251,8 @@
    "detail": {
     "candidates": 7,
     "sweeps": 96,
-    "ms": 7180.2,
-    "seconds_to_answer": 9.54
+    "ms": 8327.5,
+    "seconds_to_answer": 12.2
    }
   },
   {
@@ -256,7 +272,7 @@
     "max_change": 0.0032887870068269154,
     "choice_before": 3,
     "choice_after": 3,
-    "ms": 2438.7
+    "ms": 2759.8
    }
   },
   {
@@ -357,47 +373,47 @@
    "detail": {
     "page": "software",
     "visitor": 0,
-    "seconds_to_answer": 3.51,
+    "seconds_to_answer": 2.72,
     "brain": 3,
     "legal": true,
-    "settle_ms": 875.6,
-    "worker_ms": 1132.3,
+    "settle_ms": 358.2,
+    "worker_ms": 502.5,
     "sweeps": 58,
     "brain_column": 3,
-    "search_ms": 247.2,
+    "search_ms": 139.4,
     "search_depth": 9,
     "samples": [
      {
-      "mean": 17.381538194029364,
-      "litShare": 0.10247019572470305,
-      "hash": 2860548679,
-      "playhead": 1.369999999999982,
-      "frames": 14,
-      "t": 1.025
+      "mean": 16.348931900264805,
+      "litShare": 0.09454774661203907,
+      "hash": 4154941687,
+      "playhead": 1.8678846153846247,
+      "frames": 10,
+      "t": 0.787
      },
      {
-      "mean": 19.155398821232307,
-      "litShare": 0.11535911842376952,
-      "hash": 713041509,
-      "playhead": 12.6,
-      "frames": 30,
-      "t": 1.56
+      "mean": 17.463341918703428,
+      "litShare": 0.10356781898996925,
+      "hash": 1468998749,
+      "playhead": 6.857884615384633,
+      "frames": 16,
+      "t": 1.007
      },
      {
-      "mean": 20.06022800134758,
-      "litShare": 0.11958659812860667,
-      "hash": 414349100,
-      "playhead": 20.744999999999983,
-      "frames": 43,
-      "t": 1.899
+      "mean": 19.017449674154413,
+      "litShare": 0.1147288001130226,
+      "hash": 3347491254,
+      "playhead": 14.426249084249118,
+      "frames": 27,
+      "t": 1.204
      },
      {
-      "mean": 22.616889632712798,
-      "litShare": 0.12983470445678516,
-      "hash": 3541249727,
-      "playhead": 30.63268666666666,
-      "frames": 56,
-      "t": 2.119
+      "mean": 20.232319390257597,
+      "litShare": 0.12048860536639969,
+      "hash": 196085920,
+      "playhead": 22.905076923076958,
+      "frames": 37,
+      "t": 1.401
      }
     ]
    }
@@ -427,102 +443,102 @@
   {
    "page": "desktop",
    "visitor": 2,
-   "seconds_to_answer": 7.58,
+   "seconds_to_answer": 4.81,
    "brain": 3,
    "legal": true,
-   "settle_ms": 1328.6,
-   "worker_ms": 1707.3,
+   "settle_ms": 2014.5,
+   "worker_ms": 2442.1,
    "sweeps": 65,
    "brain_column": 3,
-   "search_ms": 361.7,
+   "search_ms": 413.9,
    "search_depth": 9
   },
   {
    "page": "desktop",
    "visitor": 1,
-   "seconds_to_answer": 6.18,
+   "seconds_to_answer": 3.86,
    "brain": 3,
    "legal": true,
-   "settle_ms": 2966.3,
-   "worker_ms": 4042.2,
+   "settle_ms": 1274.3,
+   "worker_ms": 1583.9,
    "sweeps": 58,
    "brain_column": 3,
-   "search_ms": 965.6,
+   "search_ms": 298.7,
    "search_depth": 9
   },
   {
    "page": "desktop",
    "visitor": 3,
-   "seconds_to_answer": 3.91,
+   "seconds_to_answer": 4.23,
    "brain": 3,
    "legal": true,
-   "settle_ms": 1512.6,
-   "worker_ms": 1830.7,
+   "settle_ms": 1823.5,
+   "worker_ms": 2180.1,
    "sweeps": 85,
    "brain_column": 3,
-   "search_ms": 297.5,
+   "search_ms": 338.8,
    "search_depth": 10
   },
   {
    "page": "desktop",
    "visitor": 5,
-   "seconds_to_answer": 4.08,
+   "seconds_to_answer": 4.25,
    "brain": 1,
    "legal": true,
-   "settle_ms": 1520.3,
-   "worker_ms": 1829.8,
+   "settle_ms": 1592.3,
+   "worker_ms": 1929.1,
    "sweeps": 73,
    "brain_column": 3,
-   "search_ms": 291.7,
+   "search_ms": 323,
    "search_depth": 10
   },
   {
    "page": "desktop",
    "visitor": 0,
-   "seconds_to_answer": 3.68,
+   "seconds_to_answer": 4.43,
    "brain": 2,
    "legal": true,
-   "settle_ms": 1012.2,
-   "worker_ms": 1309.6,
+   "settle_ms": 1469.2,
+   "worker_ms": 2011,
    "sweeps": 54,
    "brain_column": 3,
-   "search_ms": 284.2,
+   "search_ms": 530.6,
    "search_depth": 11
   },
   {
    "page": "desktop",
    "visitor": 0,
-   "seconds_to_answer": 5.0,
+   "seconds_to_answer": 4.95,
    "brain": 3,
    "legal": true,
-   "settle_ms": 1896.8,
-   "worker_ms": 2202,
+   "settle_ms": 2333.4,
+   "worker_ms": 2821.5,
    "sweeps": 97,
    "brain_column": 3,
-   "search_ms": 281,
+   "search_ms": 462.5,
    "search_depth": 12
   },
   {
    "page": "desktop",
    "visitor": 6,
-   "seconds_to_answer": 3.78,
+   "seconds_to_answer": 3.86,
    "brain": 1,
    "legal": true,
-   "settle_ms": 878.7,
-   "worker_ms": 1207.2,
+   "settle_ms": 1216.1,
+   "worker_ms": 1597,
    "sweeps": 54,
    "brain_column": 1,
-   "search_ms": 312.9,
+   "search_ms": 361.8,
    "search_depth": 12
   },
   {
    "page": "desktop",
    "visitor": 4,
-   "seconds_to_answer": 4.92,
+   "seconds_to_answer": 5.16,
    "brain": 4,
    "legal": true,
-   "settle_ms": 2353.2,
-   "worker_ms": 2388.8,
+   "settle_ms": 2985.1,
+   "worker_ms": 3023.8,
    "sweeps": 116,
    "brain_column": 3,
    "search_ms": 0,
@@ -531,14 +547,14 @@
   {
    "page": "desktop",
    "visitor": 0,
-   "seconds_to_answer": 18.21,
+   "seconds_to_answer": 25.19,
    "brain": 3,
    "legal": true,
-   "settle_ms": 830.2,
-   "worker_ms": 1035.8,
+   "settle_ms": 1351.7,
+   "worker_ms": 1637.8,
    "sweeps": 82,
    "brain_column": 3,
-   "search_ms": 186.7,
+   "search_ms": 267.2,
    "search_depth": 10
   },
   {
@@ -546,32 +562,32 @@
    "visitor": 2,
    "brain": 3,
    "legal": true,
-   "settle_ms": 1113.4,
-   "worker_ms": 1533.4,
+   "settle_ms": 807,
+   "worker_ms": 1060.6,
    "sweeps": 65,
-   "seconds_to_answer": 3.77
+   "seconds_to_answer": 3.21
   },
   {
    "page": "mobile",
    "visitor": 4,
    "brain": 3,
    "legal": true,
-   "settle_ms": 1407.8,
-   "worker_ms": 1676,
+   "settle_ms": 495.6,
+   "worker_ms": 660.7,
    "sweeps": 70,
-   "seconds_to_answer": 3.85
+   "seconds_to_answer": 2.72
   },
   {
    "page": "software",
    "visitor": 0,
-   "seconds_to_answer": 3.51,
+   "seconds_to_answer": 2.72,
    "brain": 3,
    "legal": true,
-   "settle_ms": 875.6,
-   "worker_ms": 1132.3,
+   "settle_ms": 358.2,
+   "worker_ms": 502.5,
    "sweeps": 58,
    "brain_column": 3,
-   "search_ms": 247.2,
+   "search_ms": 139.4,
    "search_depth": 9
   }
  ],
@@ -593,14 +609,14 @@
  "source_sha256": {
   "web/app.js": "8908b7532e88fd8cfa9b4d77011283e7209dd7c010c1d54b946a8bafa22b4424",
   "web/board.js": "c168ef435f37d9d9b1b372fe1750ab7d55a93808706e002dbdf39e651f2463d1",
-  "web/brain.js": "fa8805c71a40e76dc57581640293b54c11b895bf5cae3f1c4a71ea3d59d22b24",
+  "web/brain.js": "fa7a6f2fb2dce3c4f3abb9f3d296e9d3274efc533e9c7d2800fb20a1fabc185f",
   "web/index.html": "d10c0b6994ebb885489416beb70994b323bb6125a49c2beb0caa75a1e88f763f",
   "web/styles.css": "e4b33bff5599674c8d4179811a1ea7b61d6851539681329f7255f0cdb60ae8ed",
   "web/worker.js": "934dded2fb13bff58b937c1120786ff80423f0fb99ae90d69756f819a94add2b",
   "web/pack/manifest.json": "97b487893ae6e3d43e272a8e7a4965ce2db60370a396697316003a17aadfe8c1"
  },
  "desktop_renderer": "webgl2",
- "settle_frames_per_second": 28.6,
- "seconds": 272.2,
+ "settle_frames_per_second": 50.7,
+ "seconds": 180.6,
  "passed": true
 }

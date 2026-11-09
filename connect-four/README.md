@@ -172,12 +172,12 @@ side or the other with the depth it reaches. Natively the search at 120,000 took
 0.6 s a move.
 
 `check_page.py` ran the page in headless Chromium on an Apple M4 (record:
-`evidence/page_check.json`) while the machine ran other jobs at a load average near 200, so the
-times are an upper bound. With brain + search: starting Pyodide, NumPy, Cadence and the brain took
-42 s; over a whole game a settle took 54–116 sweeps and 0.9–3.0 s in the worker, the search
-0.28–0.97 s (9 to 12 moves ahead), and from a click to the brain's stone on the board 3.7–7.6 s,
-animation included; the brain view drew 29 frames per second while the brain settled (64 in an
-earlier run of the same page at a lower load).
+`evidence/page_check.json`) while the machine ran other jobs (load average 13 to 18). With brain +
+search: starting Pyodide, NumPy, Cadence and the brain took 25 s; over a whole game a settle took
+54–116 sweeps and 1.2–3.0 s in the worker, the search 0.30–0.53 s (9 to 12 moves ahead), a whole
+move 1.6–3.0 s, and from a click to the brain's stone on the board 3.9–5.2 s, about 2 s of it the
+animation of the two stones and the settle; the brain view drew 51 frames per second while the
+brain settled.
 
 ## Train it further
 

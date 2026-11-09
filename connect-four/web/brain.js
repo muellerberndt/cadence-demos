@@ -123,8 +123,17 @@ in vec2 uv;
 uniform sampler2D light;
 uniform float exposure;
 out vec4 color;
+uniform vec2 texel;
 void main() {
   vec3 x = texture(light, uv).rgb * exposure;
+  // bloom: the same light, gathered from a ring around the pixel, adds a soft glow to bright tracts
+  vec3 b = vec3(0.0);
+  for (int k = 0; k < 12; k++) {
+    float a = 6.2831853 * float(k) / 12.0;
+    vec2 d = vec2(cos(a), sin(a)) * texel;
+    b += texture(light, uv + d * 3.0).rgb + 0.6 * texture(light, uv + d * 7.0).rgb;
+  }
+  x += b * exposure * 0.035;
   float l = max(max(x.r, x.g), x.b);
   vec3 c = l > 0.0 ? x * ((1.0 - exp(-l)) / l) : vec3(0.0);
   color = vec4(c, 1.0);
@@ -580,7 +589,7 @@ export class BrainView {
     if (this.fboSize[0] === w && this.fboSize[1] === h) return true;
     gl.bindTexture(gl.TEXTURE_2D, this.lightTex);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA16F, w, h, 0, gl.RGBA, gl.HALF_FLOAT, null);
-    for (const p of [gl.TEXTURE_MIN_FILTER, gl.TEXTURE_MAG_FILTER]) gl.texParameteri(gl.TEXTURE_2D, p, gl.NEAREST);
+    for (const p of [gl.TEXTURE_MIN_FILTER, gl.TEXTURE_MAG_FILTER]) gl.texParameteri(gl.TEXTURE_2D, p, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.fbo);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.lightTex, 0);
@@ -682,6 +691,7 @@ export class BrainView {
       gl.blendFunc(gl.ONE, gl.ONE);
       gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, this.lightTex);
       gl.uniform1i(cp.u.light, 1); gl.uniform1f(cp.u.exposure, 1.35);
+      gl.uniform2f(cp.u.texel, 1 / this.canvas.width, 1 / this.canvas.height);
       gl.bindVertexArray(this.quadVAO);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       gl.activeTexture(gl.TEXTURE0);

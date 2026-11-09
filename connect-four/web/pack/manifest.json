@@ -16,7 +16,7 @@
   "__init__.py": "47414a7c3f0cef23e5ca009aca12cac476701baf9dbdbe89400c3b542fbffe7b",
   "game.py": "e357894a7bc0ce3678209941f6aa7b3faa365ba15291a13a014439ae66c8a395",
   "host.py": "7b769070ab322240f7c2d1f4a6371688f327826f7f090c82e53ba0ca896adde9",
-  "search.py": "5e9bd05ffb58ff2fe26d9450c29aae2b59a1e5ed0833f32acab384df450f6755"
+  "search.py": "3babcdcb99b3cfd3757faf86f3a6b3a45b12f5664cee714b6d0549c2627ddb11"
  },
  "brain": "brain.npz",
  "brain_sha256": "29bac892de8fd1cd12005dd8936a43a39263bc652ccd8cc03fd26cfdd3f8ae95",

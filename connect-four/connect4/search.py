@@ -146,8 +146,10 @@ class Searcher:
         self.table[key] = (depth, best, flag, best_move)
         return best
 
-    def root(self, board: Board) -> dict:
-        """Every legal column's value from the side to move, at the deepest finished depth."""
+    def root(self, board: Board, parity: int | None = None) -> dict:
+        """Every legal column's value from the side to move, at the deepest finished depth (with
+        ``parity`` 0 or 1, the deepest finished depth of that parity; shallower depths of the
+        other parity still run and fill the table)."""
         position, mask, stones = bits(board)
         began = time.perf_counter()
         self.nodes = 0
@@ -165,8 +167,10 @@ class Searcher:
                     col = ((mask + BOTTOM) & BOARD) & (((1 << ROWS) - 1) << (c * H))
                     found[c] = -self._negamax(position ^ mask, mask | col, stones + 1, depth - 1,
                                               -2 * WIN, 2 * WIN, 1)
-                values, depth_done = found, depth
-                if all(abs(v) >= WIN - 50 for v in found.values()) or max(found.values()) >= WIN - 50:
+                decided = all(abs(v) >= WIN - 50 for v in found.values()) or max(found.values()) >= WIN - 50
+                if parity is None or depth % 2 == parity or decided or not values:
+                    values, depth_done = found, depth
+                if decided:
                     break  # every column decided, or a win proven
         except _Timeout:
             pass
@@ -182,12 +186,12 @@ def priors(motor: np.ndarray, legal: np.ndarray, temperature: float) -> np.ndarr
     return p / p.sum()
 
 
-def choose(board: Board, motor: np.ndarray, temperature: float, nodes: int = NODES) -> dict:
+def choose(board: Board, motor: np.ndarray, temperature: float, nodes: int = NODES, parity: int | None = None) -> dict:
     """The brain-plus-search move on ``board`` given the brain's settled motor activations."""
     legal = board.legal()
     p = priors(motor, legal, temperature)
     brain = int(np.argmax(np.where(legal, motor[:COLUMNS], -np.inf)))
-    s = Searcher(nodes).root(board)
+    s = Searcher(nodes).root(board, parity)
     values = s["values"]
     if not values:  # the budget did not cover depth 1: the brain's move
         return {"column": brain, "brain": brain, "reason": "brain", "priors": p.tolist(), **s}
