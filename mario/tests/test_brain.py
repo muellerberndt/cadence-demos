@@ -55,3 +55,17 @@ def test_brain_answers_as_it_played():
     # predict carries no state between calls: the same answers in reversed order
     back = [int(np.asarray(brain.predict(o.astype(np.float64)[None])).reshape(-1)[0]) for o in rec["obs"][::-1]]
     assert back[::-1] == got
+
+
+def test_brain_view():
+    """The view settles an observation under the recorder, agrees with the played answer and draws."""
+    from cadence import Brain
+    from smb.view import H, W, BrainView
+    brain = Brain.load(str(BRAIN), backend="cpu")
+    rec = np.load(ROOT / "tests" / "answers.npz")
+    view = BrainView(brain)
+    for o, a in zip(rec["obs"][:4], rec["actions"][:4]):
+        s = view.settle(o.astype(np.float64), int(a))
+        assert s["final"].shape == (2519,) and s["steps"] > 0
+    assert view.agree == view.decisions == 4
+    assert view.draw(s).size == (W, H)

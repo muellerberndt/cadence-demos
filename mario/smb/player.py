@@ -26,14 +26,17 @@ def choose(brain, obs: np.ndarray) -> int:
 
 
 def attempt(brain, rom, level: str, idle: int, console: Console | None = None, on_frame=None,
-            trace: bool = False) -> dict:
-    """One attempt at `level` ("1-3") after `idle` idle frames. on_frame(screen, action) is called for
-    every emulator frame (for a window or a video)."""
+            trace: bool = False, on_decision=None) -> dict:
+    """One attempt at `level` ("1-3") after `idle` idle frames. on_decision(obs, action) is called once
+    per decision and on_frame(screen, action) for every emulator frame (for a window or a video)."""
     w, s = (int(v) for v in level.split("-"))
     m = Mario(rom, w, s, idle, console)
     acts = []
     while not m.done and m.decisions < CAP and m.stuck < STUCK:
-        a = choose(brain, m.observation())
+        obs = m.observation()
+        a = choose(brain, obs)
+        if on_decision:
+            on_decision(obs, a)
         frames = [] if on_frame else None
         m.step(a, frames)
         acts.append(a)
@@ -46,7 +49,7 @@ def attempt(brain, rom, level: str, idle: int, console: Console | None = None, o
     return out
 
 
-def gauntlet(brain, rom, lives: int = 5, on_frame=None, on_attempt=None) -> list[dict]:
+def gauntlet(brain, rom, lives: int = 5, on_frame=None, on_attempt=None, on_decision=None) -> list[dict]:
     """The real start of 1-1 and five lives. A flag moves on to the next level; a death or standing
     still costs a life and restarts the current level (later idle frames, small Mario)."""
     log, li = [], 0
@@ -55,7 +58,8 @@ def gauntlet(brain, rom, lives: int = 5, on_frame=None, on_attempt=None) -> list
         tries = sum(1 for e in log if e["level"] == level)
         if on_attempt:
             on_attempt(level, tries + 1, lives)
-        r = attempt(brain, rom, level, RETRY_IDLE[min(tries, len(RETRY_IDLE) - 1)], on_frame=on_frame, trace=True)
+        r = attempt(brain, rom, level, RETRY_IDLE[min(tries, len(RETRY_IDLE) - 1)], on_frame=on_frame, trace=True,
+                    on_decision=on_decision)
         r["lives_before"] = lives
         log.append(r)
         if r["end"] == "flag":

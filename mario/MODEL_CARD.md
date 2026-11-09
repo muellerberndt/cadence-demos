@@ -82,6 +82,8 @@ picked on; the fresh column (starts 140 to 189) was read once, after the pick, f
 Brain alone, frozen and greedy, one attempt per start, small Mario, stuck limit 40 decisions
 without a new furthest x, cap 900 decisions ([`evaluate.py`](evaluate.py);
 [`evidence/receipt.json`](evidence/receipt.json)).
+The held-out column was first read on 2026-11-01 on the training stack (cadence-arcade
+`mario/concepts/runs/p4/held_F2ck35_39.json`, 7 / 8 / 9 / 27); this release reproduces it exactly.
 
 | Level | Held-out (picked on) | Fresh 140 to 189 (read once) |
 | --- | --- | --- |
@@ -95,6 +97,16 @@ The five-life gauntlet ([`evidence/gauntlet.json`](evidence/gauntlet.json), the 
 and 1-4 on the first try, 1-3 on the fourth (deaths at x 747, 1,200, 1,202), then game over in
 2-1 (x 343, 346), never trained on. The first tries start at 0 idle frames, which is in the
 training pool.
+
+## The videos
+
+`docs/mario-gauntlet.mp4` is the five-life run (1 min 33 s, 912 x 520, 60 frames a second), recorded
+by `play.py --video` on this release: the game beside the brain view, every frame the brain plays
+(the console skips idle starts, deaths, pipes and flagpole slides, as in training).
+`docs/mario-1-3.webm` is 15 s of it, the fourth try at 1-3. The brain view settles each
+observation a second time under `cadence.recording.record_settlements` (the library's NumPy path);
+its answer agreed with the played one on 1,394 of 1,394 decisions. The played answers never come
+from the recording.
 
 ## Console parity
 
@@ -115,3 +127,8 @@ keeps 32 of them.
   8 held-out clears to 1 fresh one, so its held-out number was partly the pick.
 - On 1-1 most failures are standing still, not deaths.
 - The dump: measured on one dump of the cartridge; other dumps are unchecked.
+
+## Licence
+
+GPL-3.0, as Cadence ([`LICENSE`](LICENSE)). The game and its ROM are Nintendo's and are not
+distributed here.
