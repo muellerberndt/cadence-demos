@@ -6,17 +6,10 @@
  "summary": {
   "brain + search, 120000 nodes (the page)": {
    "solver100_first": {
-    "games": 200,
-    "win": 184,
-    "draw": 10,
-    "loss": 6,
-    "runs": [
-     "s120_solver100_first",
-     "s120_first_1",
-     "s120_first_2",
-     "s120_first_3",
-     "s120_first_4"
-    ]
+    "games": 400,
+    "win": 363,
+    "draw": 25,
+    "loss": 12
    },
    "solver100_second": {
     "games": 40,
@@ -39,13 +32,10 @@
     ]
    },
    "solver090_second": {
-    "games": 40,
-    "win": 19,
-    "draw": 4,
-    "loss": 17,
-    "runs": [
-     "s120_solver090_second"
-    ]
+    "games": 120,
+    "win": 62,
+    "draw": 13,
+    "loss": 45
    },
    "solver070_first": {
     "games": 40,
@@ -267,6 +257,38 @@
     "runs": [
      "a_solver070_second"
     ]
+   }
+  },
+  "other budgets and depth rules, first against the perfect solver": {
+   "300000 nodes": {
+    "games": 200,
+    "win": 170,
+    "draw": 4,
+    "loss": 26
+   },
+   "120000 even depths": {
+    "games": 200,
+    "win": 172,
+    "draw": 12,
+    "loss": 16
+   },
+   "120000 odd depths": {
+    "games": 200,
+    "win": 181,
+    "draw": 5,
+    "loss": 14
+   },
+   "300000 even depths": {
+    "games": 200,
+    "win": 174,
+    "draw": 7,
+    "loss": 19
+   },
+   "300000 odd depths": {
+    "games": 200,
+    "win": 170,
+    "draw": 0,
+    "loss": 30
    }
   }
  },
@@ -1200,6 +1222,766 @@
     "ms_median": 461.2,
     "ms_max": 522.1,
     "depth_median": 10.0
+   }
+  },
+  "s120_more_first_5": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "parity": null,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 37,
+     "draw": 3,
+     "loss": 0
+    }
+   ],
+   "search": {
+    "moves": 840,
+    "overruled_share": 0.0417,
+    "ms_median": 792.7,
+    "ms_max": 1914.4,
+    "depth_median": 9.0
+   }
+  },
+  "s120_more_first_6": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "parity": null,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 35,
+     "draw": 4,
+     "loss": 1
+    }
+   ],
+   "search": {
+    "moves": 838,
+    "overruled_share": 0.0298,
+    "ms_median": 781.5,
+    "ms_max": 1891.7,
+    "depth_median": 10.0
+   }
+  },
+  "s120_more_first_7": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "parity": null,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 38,
+     "draw": 2,
+     "loss": 0
+    }
+   ],
+   "search": {
+    "moves": 840,
+    "overruled_share": 0.0429,
+    "ms_median": 752.7,
+    "ms_max": 1884.2,
+    "depth_median": 9.0
+   }
+  },
+  "s120_more_first_8": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "parity": null,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 35,
+     "draw": 3,
+     "loss": 2
+    }
+   ],
+   "search": {
+    "moves": 836,
+    "overruled_share": 0.0502,
+    "ms_median": 777.5,
+    "ms_max": 1883.4,
+    "depth_median": 9.0
+   }
+  },
+  "s120_more_first_9": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "parity": null,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 34,
+     "draw": 3,
+     "loss": 3
+    }
+   ],
+   "search": {
+    "moves": 835,
+    "overruled_share": 0.0228,
+    "ms_median": 772.0,
+    "ms_max": 1917.8,
+    "depth_median": 9.0
+   }
+  },
+  "s120_more_s090_5": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "parity": null,
+   "conditions": [
+    {
+     "name": "solver090_second",
+     "win": 20,
+     "draw": 4,
+     "loss": 16
+    }
+   ],
+   "search": {
+    "moves": 704,
+    "overruled_share": 0.125,
+    "ms_median": 814.4,
+    "ms_max": 1894.5,
+    "depth_median": 10.0
+   }
+  },
+  "s120_more_s090_6": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "parity": null,
+   "conditions": [
+    {
+     "name": "solver090_second",
+     "win": 23,
+     "draw": 5,
+     "loss": 12
+    }
+   ],
+   "search": {
+    "moves": 698,
+    "overruled_share": 0.1232,
+    "ms_median": 800.9,
+    "ms_max": 1884.0,
+    "depth_median": 10.0
+   }
+  },
+  "parity_p0_n120000_0": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "parity": 0,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 31,
+     "draw": 4,
+     "loss": 5
+    }
+   ],
+   "search": {
+    "moves": 822,
+    "overruled_share": 0.0389,
+    "ms_median": 876.1,
+    "ms_max": 1977.5,
+    "depth_median": 9.0
+   }
+  },
+  "parity_p0_n120000_1": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "parity": 0,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 38,
+     "draw": 2,
+     "loss": 0
+    }
+   ],
+   "search": {
+    "moves": 840,
+    "overruled_share": 0.0298,
+    "ms_median": 867.0,
+    "ms_max": 2004.3,
+    "depth_median": 9.0
+   }
+  },
+  "parity_p0_n120000_2": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "parity": 0,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 32,
+     "draw": 1,
+     "loss": 7
+    }
+   ],
+   "search": {
+    "moves": 811,
+    "overruled_share": 0.0456,
+    "ms_median": 888.6,
+    "ms_max": 1983.4,
+    "depth_median": 9.0
+   }
+  },
+  "parity_p0_n120000_3": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "parity": 0,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 37,
+     "draw": 1,
+     "loss": 2
+    }
+   ],
+   "search": {
+    "moves": 837,
+    "overruled_share": 0.0323,
+    "ms_median": 864.8,
+    "ms_max": 1980.5,
+    "depth_median": 9.0
+   }
+  },
+  "parity_p0_n120000_4": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "parity": 0,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 34,
+     "draw": 4,
+     "loss": 2
+    }
+   ],
+   "search": {
+    "moves": 838,
+    "overruled_share": 0.0346,
+    "ms_median": 866.6,
+    "ms_max": 2005.9,
+    "depth_median": 9.0
+   }
+  },
+  "parity_p0_n300000_0": {
+   "player": "brain + search",
+   "nodes": 300000,
+   "parity": 0,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 38,
+     "draw": 1,
+     "loss": 1
+    }
+   ],
+   "search": {
+    "moves": 838,
+    "overruled_share": 0.0394,
+    "ms_median": 1154.8,
+    "ms_max": 4865.1,
+    "depth_median": 10.0
+   }
+  },
+  "parity_p0_n300000_1": {
+   "player": "brain + search",
+   "nodes": 300000,
+   "parity": 0,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 35,
+     "draw": 2,
+     "loss": 3
+    }
+   ],
+   "search": {
+    "moves": 835,
+    "overruled_share": 0.0527,
+    "ms_median": 1487.6,
+    "ms_max": 4905.0,
+    "depth_median": 10.0
+   }
+  },
+  "parity_p0_n300000_2": {
+   "player": "brain + search",
+   "nodes": 300000,
+   "parity": 0,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 34,
+     "draw": 1,
+     "loss": 5
+    }
+   ],
+   "search": {
+    "moves": 832,
+    "overruled_share": 0.0673,
+    "ms_median": 1528.0,
+    "ms_max": 4898.3,
+    "depth_median": 10.0
+   }
+  },
+  "parity_p0_n300000_3": {
+   "player": "brain + search",
+   "nodes": 300000,
+   "parity": 0,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 32,
+     "draw": 2,
+     "loss": 6
+    }
+   ],
+   "search": {
+    "moves": 829,
+    "overruled_share": 0.0531,
+    "ms_median": 1132.4,
+    "ms_max": 4890.7,
+    "depth_median": 10.0
+   }
+  },
+  "parity_p0_n300000_4": {
+   "player": "brain + search",
+   "nodes": 300000,
+   "parity": 0,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 35,
+     "draw": 1,
+     "loss": 4
+    }
+   ],
+   "search": {
+    "moves": 833,
+    "overruled_share": 0.0384,
+    "ms_median": 1454.5,
+    "ms_max": 4881.9,
+    "depth_median": 10.0
+   }
+  },
+  "parity_p1_n120000_0": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "parity": 1,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 34,
+     "draw": 2,
+     "loss": 4
+    }
+   ],
+   "search": {
+    "moves": 836,
+    "overruled_share": 0.0383,
+    "ms_median": 888.0,
+    "ms_max": 2005.9,
+    "depth_median": 9.0
+   }
+  },
+  "parity_p1_n120000_1": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "parity": 1,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 36,
+     "draw": 1,
+     "loss": 3
+    }
+   ],
+   "search": {
+    "moves": 835,
+    "overruled_share": 0.0383,
+    "ms_median": 853.4,
+    "ms_max": 1982.6,
+    "depth_median": 9.0
+   }
+  },
+  "parity_p1_n120000_2": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "parity": 1,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 36,
+     "draw": 2,
+     "loss": 2
+    }
+   ],
+   "search": {
+    "moves": 837,
+    "overruled_share": 0.0382,
+    "ms_median": 889.3,
+    "ms_max": 1968.4,
+    "depth_median": 9.0
+   }
+  },
+  "parity_p1_n120000_3": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "parity": 1,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 37,
+     "draw": 0,
+     "loss": 3
+    }
+   ],
+   "search": {
+    "moves": 836,
+    "overruled_share": 0.0311,
+    "ms_median": 864.1,
+    "ms_max": 1976.2,
+    "depth_median": 9.0
+   }
+  },
+  "parity_p1_n120000_4": {
+   "player": "brain + search",
+   "nodes": 120000,
+   "parity": 1,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 38,
+     "draw": 0,
+     "loss": 2
+    }
+   ],
+   "search": {
+    "moves": 837,
+    "overruled_share": 0.0406,
+    "ms_median": 908.7,
+    "ms_max": 2001.6,
+    "depth_median": 9.0
+   }
+  },
+  "parity_p1_n300000_0": {
+   "player": "brain + search",
+   "nodes": 300000,
+   "parity": 1,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 34,
+     "draw": 0,
+     "loss": 6
+    }
+   ],
+   "search": {
+    "moves": 829,
+    "overruled_share": 0.0748,
+    "ms_median": 1391.7,
+    "ms_max": 4930.1,
+    "depth_median": 11.0
+   }
+  },
+  "parity_p1_n300000_1": {
+   "player": "brain + search",
+   "nodes": 300000,
+   "parity": 1,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 35,
+     "draw": 0,
+     "loss": 5
+    }
+   ],
+   "search": {
+    "moves": 834,
+    "overruled_share": 0.0588,
+    "ms_median": 1373.5,
+    "ms_max": 4926.7,
+    "depth_median": 11.0
+   }
+  },
+  "parity_p1_n300000_2": {
+   "player": "brain + search",
+   "nodes": 300000,
+   "parity": 1,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 33,
+     "draw": 0,
+     "loss": 7
+    }
+   ],
+   "search": {
+    "moves": 829,
+    "overruled_share": 0.0724,
+    "ms_median": 1474.8,
+    "ms_max": 4952.0,
+    "depth_median": 11.0
+   }
+  },
+  "parity_p1_n300000_3": {
+   "player": "brain + search",
+   "nodes": 300000,
+   "parity": 1,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 33,
+     "draw": 0,
+     "loss": 7
+    }
+   ],
+   "search": {
+    "moves": 829,
+    "overruled_share": 0.07,
+    "ms_median": 1037.8,
+    "ms_max": 4885.4,
+    "depth_median": 11.0
+   }
+  },
+  "parity_p1_n300000_4": {
+   "player": "brain + search",
+   "nodes": 300000,
+   "parity": 1,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 35,
+     "draw": 0,
+     "loss": 5
+    }
+   ],
+   "search": {
+    "moves": 835,
+    "overruled_share": 0.0503,
+    "ms_median": 1110.8,
+    "ms_max": 4912.0,
+    "depth_median": 11.0
+   }
+  },
+  "s300_first_0": {
+   "player": "brain + search",
+   "nodes": 300000,
+   "parity": null,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 37,
+     "draw": 0,
+     "loss": 3
+    }
+   ],
+   "search": {
+    "moves": 835,
+    "overruled_share": 0.0539,
+    "ms_median": 530.0,
+    "ms_max": 4800.8,
+    "depth_median": 11.0
+   }
+  },
+  "s300_first_1": {
+   "player": "brain + search",
+   "nodes": 300000,
+   "parity": null,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 35,
+     "draw": 2,
+     "loss": 3
+    }
+   ],
+   "search": {
+    "moves": 835,
+    "overruled_share": 0.0359,
+    "ms_median": 755.3,
+    "ms_max": 4857.6,
+    "depth_median": 11.0
+   }
+  },
+  "s300_first_2": {
+   "player": "brain + search",
+   "nodes": 300000,
+   "parity": null,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 30,
+     "draw": 2,
+     "loss": 8
+    }
+   ],
+   "search": {
+    "moves": 827,
+    "overruled_share": 0.0677,
+    "ms_median": 1251.4,
+    "ms_max": 4755.1,
+    "depth_median": 11.0
+   }
+  },
+  "s300_first_3": {
+   "player": "brain + search",
+   "nodes": 300000,
+   "parity": null,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 35,
+     "draw": 0,
+     "loss": 5
+    }
+   ],
+   "search": {
+    "moves": 832,
+    "overruled_share": 0.0517,
+    "ms_median": 535.1,
+    "ms_max": 4759.6,
+    "depth_median": 11.0
+   }
+  },
+  "s300_first_4": {
+   "player": "brain + search",
+   "nodes": 300000,
+   "parity": null,
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 33,
+     "draw": 0,
+     "loss": 7
+    }
+   ],
+   "search": {
+    "moves": 831,
+    "overruled_share": 0.0505,
+    "ms_median": 637.3,
+    "ms_max": 4859.2,
+    "depth_median": 11.0
+   }
+  },
+  "s300_solver070_first": {
+   "player": "brain + search",
+   "nodes": 300000,
+   "parity": null,
+   "conditions": [
+    {
+     "name": "solver070_first",
+     "win": 40,
+     "draw": 0,
+     "loss": 0
+    }
+   ],
+   "search": {
+    "moves": 575,
+    "overruled_share": 0.113,
+    "ms_median": 1540.6,
+    "ms_max": 4843.2,
+    "depth_median": 11.0
+   }
+  },
+  "s300_solver070_second": {
+   "player": "brain + search",
+   "nodes": 300000,
+   "parity": null,
+   "conditions": [
+    {
+     "name": "solver070_second",
+     "win": 39,
+     "draw": 1,
+     "loss": 0
+    }
+   ],
+   "search": {
+    "moves": 523,
+    "overruled_share": 0.1663,
+    "ms_median": 1531.0,
+    "ms_max": 4747.8,
+    "depth_median": 11.0
+   }
+  },
+  "s300_solver090_first": {
+   "player": "brain + search",
+   "nodes": 300000,
+   "parity": null,
+   "conditions": [
+    {
+     "name": "solver090_first",
+     "win": 36,
+     "draw": 2,
+     "loss": 2
+    }
+   ],
+   "search": {
+    "moves": 723,
+    "overruled_share": 0.0982,
+    "ms_median": 1494.2,
+    "ms_max": 4814.8,
+    "depth_median": 11.0
+   }
+  },
+  "s300_solver090_second": {
+   "player": "brain + search",
+   "nodes": 300000,
+   "parity": null,
+   "conditions": [
+    {
+     "name": "solver090_second",
+     "win": 22,
+     "draw": 3,
+     "loss": 15
+    }
+   ],
+   "search": {
+    "moves": 703,
+    "overruled_share": 0.128,
+    "ms_median": 1398.8,
+    "ms_max": 4728.1,
+    "depth_median": 11.0
+   }
+  },
+  "s300_vs_brain_first": {
+   "player": "brain + search",
+   "nodes": 300000,
+   "parity": null,
+   "conditions": [
+    {
+     "name": "vs_brain_first",
+     "win": 33,
+     "draw": 5,
+     "loss": 2
+    }
+   ],
+   "search": {
+    "moves": 524,
+    "overruled_share": 0.1489,
+    "ms_median": 1034.3,
+    "ms_max": 4767.3,
+    "depth_median": 11.0
+   }
+  },
+  "s300_vs_brain_second": {
+   "player": "brain + search",
+   "nodes": 300000,
+   "parity": null,
+   "conditions": [
+    {
+     "name": "vs_brain_second",
+     "win": 25,
+     "draw": 4,
+     "loss": 11
+    }
+   ],
+   "search": {
+    "moves": 617,
+    "overruled_share": 0.1929,
+    "ms_median": 1066.2,
+    "ms_max": 4713.5,
+    "depth_median": 12.0
    }
   }
  }

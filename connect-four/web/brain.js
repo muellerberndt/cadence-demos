@@ -320,6 +320,7 @@ export class BrainView {
     const size = this.size = new Float32Array(n);
     const hue = this.hue = new Float32Array(3 * n);
     this.regions = [];
+    this.glows = [];
     const pad = Math.max(10, Math.round(W * 0.02));
     // the brain's box: aspect 1.45, centred, a little room above for the motor labels
     const bw = Math.min(W - 2 * pad, (H - 2 * pad - 18) * 1.45), bh = bw / 1.45;
@@ -375,19 +376,23 @@ export class BrainView {
         pos[2 * i] = x0 + (c + 0.5) * cell; pos[2 * i + 1] = y0 + (ROWS - 1 - r + 0.5) * cell; size[i] = cell * 0.3;
       }
     });
+    this.glows.push({ group: 'own', x: vx, y: vy, rx: boardW * 0.9, ry: (sides.length * boardH) * 0.55, hue: COLOR.own, also: ['opp', 'play'] });
     this.regions.push({ name: 'sensory', label: `visual cortex · sensory ${42 * sides.length}`, short: 'sensory', x: vx - boardW / 2, y: top - 30,
       role: 'Where the board enters: one neuron per cell of its stones, your stones and the playable cells (the role of a primary visual area).' });
     // the first module of a deep brain: the next stage of vision, placed by the cells it reads
     const first = ellipse(this.firstSorted || [], 0.70, 0.36, 0.10, 0.25);
+    if (first) this.glows.push({ group: 'module_0', ...first, hue: COLOR.module_0 });
     if (first) this.regions.push({ name: 'module_0', label: `module 0 · ${(this.groups.module_0 || []).length}`, short: 'module 0', x: first.x - first.rx, y: first.y - first.ry - 16,
       role: 'Reads the board cells directly and feeds the association field (the role of a higher visual area). Placed by the cells each neuron reads.' });
     // the association field, placed by the columns it drives
     const assoc = ellipse(this.assocSorted || [], 0.48, 0.42, 0.115, 0.26);
+    if (assoc) this.glows.push({ group: 'association', ...assoc, hue: COLOR.association });
     if (assoc) this.regions.push({ name: 'association', label: `association · ${(this.groups.association || []).length}`, short: 'association', x: assoc.x - assoc.rx * 0.6, y: assoc.y - assoc.ry - 16,
       role: 'Reciprocal with the first module and the motor neurons: where the settle agrees on a move (the role of association cortex). Placed by the columns each neuron drives.' });
     // prefrontal: the working trace's target, silent in a memory-free settle
     const pf = this.groups.prefrontal || [];
     const pre = ellipse(pf.map((i, k) => ({ i, x: k % 32, y: Math.floor(k / 32) })), 0.17, 0.43, 0.115, 0.23);
+    if (pre) this.glows.push({ group: 'prefrontal', ...pre, hue: COLOR.prefrontal });
     if (pre) this.regions.push({ name: 'prefrontal', label: `prefrontal · ${pf.length} · silent`, short: 'prefrontal · silent', x: pre.x - pre.rx, y: pre.y - pre.ry - 16, silent: true,
       role: 'Where Cadence’s working trace enters (the role of prefrontal cortex). This brain settles without memory, so it stays at rest.' });
     // the motor strip: one neuron per column along an arc in front of the association field
@@ -397,6 +402,7 @@ export class BrainView {
       const [x, y] = at(0.33 + 0.06 * Math.sin(Math.PI * t) - 0.02 * t, 0.12 + 0.52 * t);
       pos[2 * i] = x; pos[2 * i + 1] = y; size[i] = mR;
     });
+    { const [x, y] = at(0.335, 0.38); this.glows.push({ group: 'motor', x, y, rx: bw * 0.05, ry: bh * 0.3, hue: COLOR.motor }); }
     {
       const [x, y] = at(0.27, 0.06);
       this.regions.push({ name: 'motor', label: 'motor strip · 7 columns', short: 'motor', x, y,
@@ -409,6 +415,7 @@ export class BrainView {
       pos[2 * i] = x; pos[2 * i + 1] = y; size[i] = mR * 1.05;
     });
     if (verdict.length) {
+      { const [gx, gy] = at(0.455, 0.79); this.glows.push({ group: 'verdict', x: gx, y: gy, rx: bw * 0.06, ry: bh * 0.05, hue: COLOR.verdict }); }
       const [x, y] = at(0.53, 0.78);
       this.regions.push({ name: 'verdict', label: 'verdict', short: 'verdict', x, y: y - 6,
         role: 'Three motor neurons taught the solver’s result for the side to move (the role of a value judgement, as in orbitofrontal cortex and striatum). The move does not read them.' });
@@ -462,6 +469,29 @@ export class BrainView {
       ctrl[4 * k] = P0[0] + (T1[0] - P0[0]) * 0.85 + jx; ctrl[4 * k + 1] = P0[1] + (T1[1] - P0[1]) * 0.85 + jy;
       ctrl[4 * k + 2] = P3[0] + (T2[0] - P3[0]) * 0.85 + jx; ctrl[4 * k + 3] = P3[1] + (T2[1] - P3[1]) * 0.85 + jy;
     }
+  }
+
+  // Each region glows with its population's mean activation now, relative to its most active
+  // neuron in this settle: the settle spreading from the eyes through the regions and back.
+  drawGlows(c) {
+    if (!this.glows || !this.display) return;
+    c.save();
+    c.globalCompositeOperation = 'lighter';
+    for (const g of this.glows) {
+      const members = [g.group, ...(g.also || [])].flatMap((k) => this.groups[k] || []);
+      if (!members.length || this.silent.has(g.group)) continue;
+      let sum = 0;
+      for (const i of members) sum += Math.max(0, this.display[i] / this.levelScale[this.popOf[i]]);
+      const level = clamp(sum / members.length, 0, 1);
+      if (level < 0.01) continue;
+      const r = Math.max(g.rx, g.ry) * 1.25;
+      const grad = c.createRadialGradient(g.x, g.y, 0, g.x, g.y, r);
+      grad.addColorStop(0, css(g.hue, 0.28 * level));
+      grad.addColorStop(1, css(g.hue, 0));
+      c.fillStyle = grad;
+      c.beginPath(); c.ellipse(g.x, g.y, g.rx * 1.25, g.ry * 1.25, 0, 0, Math.PI * 2); c.fill();
+    }
+    c.restore();
   }
 
   // The outline of a brain seen from the side (front to the left), the frame the regions sit in.
@@ -830,6 +860,7 @@ export class BrainView {
     this.overlayDirty = false;
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
     c.clearRect(0, 0, this.width, this.height);
+    this.drawGlows(c);
     this.silhouette(c);
     c.font = '600 10.5px Inter, system-ui, sans-serif';
     c.textBaseline = 'alphabetic';

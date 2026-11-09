@@ -71,10 +71,10 @@ stated; the solver at 0.9 and 0.7 plays a random column one move in ten and thre
 
 | Opponent | Brain alone | Brain + search |
 | --- | --- | --- |
-| The perfect solver, the brain first | 119-50-31 (200 games, `evidence/reading.json`) | 184-10-6 (200 games) |
+| The perfect solver, the brain first | 119-50-31 (200 games, `evidence/reading.json`) | 363-25-12 (400 games) |
 | The perfect solver, the brain second | 0-0-40 | 0-0-40 |
 | The solver at 0.9, the brain first | 29-10-1 | 38-1-1 |
-| The solver at 0.9, the brain second | 12-7-21 | 19-4-17 |
+| The solver at 0.9, the brain second | 12-7-21 | 62-13-45 (120 games) |
 | The solver at 0.7, the brain first | 30-6-4 | 36-2-2 |
 | The solver at 0.7, the brain second | 27-4-9 | 37-2-1 |
 | Brain + search against the brain alone (search first, search second) | | 34-5-1, 24-3-13 |

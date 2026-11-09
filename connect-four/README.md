@@ -86,8 +86,9 @@ phases of a fixed 32 sweeps. 3,208 neurons and 3,295,232 synapses.
   the tract to its target region and leaving it at its target. A synapse glows with the message it
   carries, |weight × presynaptic activation|: warm when it excites, cool when it inhibits. Blocks
   of more than 150,000 synapses are drawn by the eight strongest synapses into each neuron (174,080
-  of the 3.3 million are drawn). Hover or tap a neuron to see its activation, its bias and its
-  strongest inputs now. After a move a deliberation panel shows the verdict and what the search
+  of the 3.3 million are drawn). Each region glows with its population's mean activation in the
+  current sweep, so the settle shows as activity spreading from the boards through the regions and
+  back. Hover or tap a neuron to see its activation, its bias and its strongest inputs now. After a move a deliberation panel shows the verdict and what the search
   (labelled as rules, not neurons) found for each column: proven wins and losses, the horizon's
   scores, the column it played, and a dashed arc where it overruled the brain's column neuron.
 - **The settle, sweep by sweep,** in chunks of 12 sweeps posted as soon as they exist, with a
@@ -152,10 +153,10 @@ brain's side:
 
 | Opponent | Brain alone | Brain + search |
 | --- | --- | --- |
-| The perfect solver, the brain first | 119-50-31 (200 games, `evidence/reading.json`) | 184-10-6 (200 games) |
+| The perfect solver, the brain first | 119-50-31 (200 games, `evidence/reading.json`) | 363-25-12 (400 games) |
 | The perfect solver, the brain second | 0-0-40 | 0-0-40 |
 | The solver at 0.9, the brain first | 29-10-1 | 38-1-1 |
-| The solver at 0.9, the brain second | 12-7-21 | 19-4-17 |
+| The solver at 0.9, the brain second | 12-7-21 | 62-13-45 (120 games) |
 | The solver at 0.7, the brain first | 30-6-4 | 36-2-2 |
 | The solver at 0.7, the brain second | 27-4-9 | 37-2-1 |
 | Brain + search against the brain alone, search first | | 34-5-1 |
@@ -163,9 +164,12 @@ brain's side:
 
 The perfect solver wins every game it starts. Each row is 40 games unless it says otherwise;
 games against the brain alone begin with two random moves, since both players are otherwise
-deterministic. The record also holds the same games at budgets of 40,000 and 80,000 positions:
-moving first against the perfect solver they read 163-14-23 and 135-5-20 (160 games at 80,000).
-Natively the search at 120,000 took a median of 0.6 s a move.
+deterministic. The record also holds other budgets and depth rules, moving first against the
+perfect solver (200 games each unless stated): 40,000 positions 163-14-23, 80,000 135-5-20 (160
+games), 300,000 170-4-26; at 120,000 with only even or only odd finished depths 172-12-16 and
+181-5-14. A larger budget does not read stronger here: the horizon's threat count favours one
+side or the other with the depth it reaches. Natively the search at 120,000 took a median of
+0.6 s a move.
 
 `check_page.py` ran the page in headless Chromium on an Apple M4 (record:
 `evidence/page_check.json`) while the machine ran other jobs at a load average near 200, so the
