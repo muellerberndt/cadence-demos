@@ -130,13 +130,19 @@ def play(page, shots, prefix, buttons=False):
     return page.evaluate("window.__tron.view()"), page.evaluate("window.__tron.last()")
 
 
-def reference(slot: str, seeds: list[int]) -> list[dict]:
-    """The brain against `voronoi`, played natively as the readings play it."""
+def reference(slot: str, seeds: list[int], sims: int = 0) -> list[dict]:
+    """The brain (with `sims` > 0: the brain guiding the tree search) against `voronoi`, played
+    natively as the readings play it."""
     from cadence import Brain
-    from tron import r3
+    from tron import mcts, r3
 
     brain = Brain.load(str(ROOT / "web" / "pack" / slot / "brain" / "brain.npz"), backend="cpu")
-    pol = r3.policy(brain, "field")
+    if sims > 0:
+        mcts._FAST = None  # the page's pure-Python leaf (the same values)
+        ev = mcts.Evaluator(brain)
+        pol = lambda a, seat: mcts.search(a, seat, ev, sims=sims)[0]  # noqa: E731
+    else:
+        pol = r3.policy(brain, "field")
     out = []
     for s in seeds:
         a = Arena(24, seed=s)
@@ -157,16 +163,17 @@ def check_slot(browser, url, slot, a, shots, errors):
     page.on("console", lambda m: errors.append(f"[{slot}] console.{m.type}: {m.text}") if m.type == "error" else None)
     page.on("pageerror", lambda e: errors.append(f"[{slot}] pageerror: {e}"))
     t0 = time.time()
-    page.goto(f"{url}?brain={slot}")
+    page.goto(f"{url}?brain={slot}" + (f"&search={a.sims}" if a.sims else ""))
     wait_phase(page, ("ready",))
     report["boot_s"] = round(time.time() - t0, 1)
     view = page.evaluate("window.__tron.view()")
     report["brain"] = view["brain"]
+    report["sims"] = view.get("sims")
     report["switch_marks"] = page.evaluate("[...document.querySelectorAll('#pick a.on')].map(a => a.dataset.slot)")
     page.screenshot(path=str(shots / f"{slot}-start.png"))
 
     seeds = [9_300_000 + k for k in range(a.parity)]
-    ref = reference(slot, seeds)
+    ref = reference(slot, seeds, a.sims)
     parity, rounds, worker = [], [], []
     for g in ref:
         s = page.evaluate(BEGIN_JS, g["seed"])
@@ -218,13 +225,14 @@ def main() -> int:
     ap.add_argument("--slots", nargs="+", default=["deep", "flat"])
     ap.add_argument("--shots", default=str(ROOT / "evidence" / "screens"))
     ap.add_argument("--out", default=None)
+    ap.add_argument("--sims", type=int, default=0, help="the page's search mode (?search=N); 0: the brain alone")
     a = ap.parse_args()
     shots = Path(a.shots)
     shots.mkdir(parents=True, exist_ok=True)
     server, port = serve(ROOT / "web")
     url = f"http://127.0.0.1:{port}/index.html"
     errors: list[str] = []
-    report: dict = {"url": url, "slots": {}}
+    report: dict = {"url": url, "sims": a.sims, "slots": {}}
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         report["chromium"] = browser.version
@@ -234,7 +242,7 @@ def main() -> int:
         page = phone.new_page()
         page.on("console", lambda m: errors.append(f"[phone] console.{m.type}: {m.text}") if m.type == "error" else None)
         page.on("pageerror", lambda e: errors.append(f"[phone] pageerror: {e}"))
-        page.goto(url)
+        page.goto(url + (f"?search={a.sims}" if a.sims else ""))
         wait_phase(page, ("ready",))
         v, last = play(page, shots, "phone-game", buttons=True)
         ov = page.evaluate("[document.documentElement.scrollWidth, document.documentElement.clientWidth]")

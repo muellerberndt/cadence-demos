@@ -67,6 +67,8 @@ every move settled from rest, greedy.
 | On cadence-net 0.95.2: `voronoi`, 32 pairs, seeds 2,200,000+ | 48-16, 0.75 | 40-24, 0.63 | `evidence/reading-0952.json` |
 | The deep pathway cut (its 73,920 synapses at zero) | | changes 75% of moves, 0.00 against `voronoi` | `brains/deep.json` |
 | Page: the same moves as the native brain, 2 games each | identical | identical | `evidence/page_check.json` |
+| Brain + search, 8 / 16 simulations (not on the page): `voronoi`, 32 pairs | 0.63 / 0.66 | 0.63 / 0.63 | `evidence/search-0952.json` |
+| Brain + search, 8 / 16 simulations: `voronoi3`, 32 pairs (brain alone 0.27 / 0.09) | 0.25 / 0.09 | 0.22 / 0.09 | the same |
 
 `voronoi` moves to the cell that leaves it the most cells it reaches first, one move ahead for both
 riders; `voronoi2` and `voronoi3` look two and three rounds ahead; `ab5` is a 10-ply alpha-beta.
@@ -85,8 +87,9 @@ before running. Measured in headless Chromium on an Apple M4 (`evidence/page_che
 ## Limits
 
 - The brain alone loses most games to bots that look further ahead (`voronoi2`, `voronoi3`,
-  `ab5`). A tree search the brain guides is stronger and is not on the page yet
-  ([TRAINING.md](TRAINING.md#a-brain-guided-search)).
+  `ab5`). A tree search the brain guides is stronger at 200 simulations a move and does not fit the
+  page: at 8 and 16 simulations a move takes 0.4 to 0.8 s in Pyodide against the 120 ms tick, and
+  is no stronger than the brain alone (`evidence/search-0952.json`).
 - Readings are against bots, not people; a person who walls the brain in early can beat it.
 - It does not learn from your games, and it has no memory between moves.
 - A settled state certifies the settle's equations at the tolerance, not the quality of the move.

@@ -1,0 +1,191 @@
+{
+ "what": "the brain guiding a tree search (tron/mcts.py, territory leaves, batch 8) against the brain alone, as the page would play it; every settle from rest",
+ "strength": {
+  "cadence": "0.95.2",
+  "python": "3.13.7",
+  "pairs": 32,
+  "seeds": "2,200,000+",
+  "play": "brain.reset() then brain.act(field, greedy=True) each move; with sims > 0 the move is the root's most visited of a tree search the brain guides",
+  "seconds": 1058.8,
+  "readings": {
+   "flat": {
+    "voronoi": {
+     "wins": 48,
+     "losses": 16,
+     "draws": 0,
+     "score": 0.75,
+     "ci95": 0.106,
+     "ms_per_move": 8.4
+    },
+    "voronoi3": {
+     "wins": 16,
+     "losses": 46,
+     "draws": 2,
+     "score": 0.266,
+     "ci95": 0.108,
+     "ms_per_move": 9.1
+    }
+   },
+   "flat+search8": {
+    "voronoi": {
+     "wins": 40,
+     "losses": 24,
+     "draws": 0,
+     "score": 0.625,
+     "ci95": 0.119,
+     "ms_per_move": 54.6
+    },
+    "voronoi3": {
+     "wins": 14,
+     "losses": 46,
+     "draws": 4,
+     "score": 0.25,
+     "ci95": 0.106,
+     "ms_per_move": 47.3
+    }
+   },
+   "flat+search16": {
+    "voronoi": {
+     "wins": 42,
+     "losses": 22,
+     "draws": 0,
+     "score": 0.656,
+     "ci95": 0.116,
+     "ms_per_move": 102.3
+    },
+    "voronoi3": {
+     "wins": 6,
+     "losses": 58,
+     "draws": 0,
+     "score": 0.094,
+     "ci95": 0.071,
+     "ms_per_move": 56.2
+    }
+   },
+   "deep": {
+    "voronoi": {
+     "wins": 40,
+     "losses": 24,
+     "draws": 0,
+     "score": 0.625,
+     "ci95": 0.119,
+     "ms_per_move": 20.6
+    },
+    "voronoi3": {
+     "wins": 6,
+     "losses": 58,
+     "draws": 0,
+     "score": 0.094,
+     "ci95": 0.071,
+     "ms_per_move": 15.8
+    }
+   },
+   "deep+search8": {
+    "voronoi": {
+     "wins": 40,
+     "losses": 24,
+     "draws": 0,
+     "score": 0.625,
+     "ci95": 0.119,
+     "ms_per_move": 47.0
+    },
+    "voronoi3": {
+     "wins": 14,
+     "losses": 50,
+     "draws": 0,
+     "score": 0.219,
+     "ci95": 0.101,
+     "ms_per_move": 31.2
+    }
+   },
+   "deep+search16": {
+    "voronoi": {
+     "wins": 40,
+     "losses": 24,
+     "draws": 0,
+     "score": 0.625,
+     "ci95": 0.119,
+     "ms_per_move": 43.0
+    },
+    "voronoi3": {
+     "wins": 6,
+     "losses": 58,
+     "draws": 0,
+     "score": 0.094,
+     "ci95": 0.071,
+     "ms_per_move": 36.1
+    }
+   }
+  }
+ },
+ "strength_command": "python scripts/reading.py --slots flat deep --sims 0 8 16 --opponents voronoi voronoi3 --pairs 32 --workers 6",
+ "pyodide_worker_ms_per_move": {
+  "8": {
+   "deep": {
+    "parity_identical_to_native_search": true,
+    "parity_game": {
+     "n": 144,
+     "median": 492.4,
+     "p90": 750.3,
+     "max": 1279.9
+    },
+    "played_game": {
+     "n": 85,
+     "median": 484.2,
+     "p90": 788.1,
+     "max": 2269.6
+    }
+   },
+   "flat": {
+    "parity_identical_to_native_search": true,
+    "parity_game": {
+     "n": 144,
+     "median": 376.2,
+     "p90": 442.6,
+     "max": 3360.4
+    },
+    "played_game": {
+     "n": 25,
+     "median": 505.5,
+     "p90": 953.7,
+     "max": 3192.3
+    }
+   }
+  },
+  "16": {
+   "deep": {
+    "parity_identical_to_native_search": true,
+    "parity_game": {
+     "n": 144,
+     "median": 750.0,
+     "p90": 1148,
+     "max": 1460
+    },
+    "played_game": {
+     "n": 85,
+     "median": 832.1,
+     "p90": 1339.9,
+     "max": 2215.4
+    }
+   },
+   "flat": {
+    "parity_identical_to_native_search": true,
+    "parity_game": {
+     "n": 144,
+     "median": 471.9,
+     "p90": 648.6,
+     "max": 2501.3
+    },
+    "played_game": {
+     "n": 25,
+     "median": 646.9,
+     "p90": 2726.8,
+     "max": 4796.5
+    }
+   }
+  }
+ },
+ "pyodide_command": "python tests/play_check.py --games 1 --parity 1 --sims N",
+ "page_tick_ms": 120,
+ "verdict": "not enabled on the page: at 8 and 16 simulations the search is not stronger than the brain alone, and in Pyodide a move takes 3 to 7 ticks"
+}

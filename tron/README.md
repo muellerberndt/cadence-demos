@@ -90,8 +90,13 @@ readings, and a smoke-scale run of each route that takes minutes. In short:
 - **The brain alone, no search.** The page plays one settle per move. Bots that look further
   ahead beat it: the flat brain scores 0.20 against `voronoi2`, 0.25 against `voronoi3` (two and
   three rounds of look-ahead) and 0.14 against `ab5` (a 10-ply alpha-beta), 128 games each; the
-  deep brain is weaker than the flat one against `voronoi`. A tree search guided by the brain is
-  in [TRAINING.md](TRAINING.md#a-brain-guided-search) as work in progress.
+  deep brain is weaker than the flat one against `voronoi`. A tree search the brain guides
+  (`tron/mcts.py`) lifts the flat brain at 200 simulations a move (0.92 against `voronoi`, 0.59
+  against `voronoi3`), at about 0.4 s a move natively. In the page it does not fit: at 8 and 16
+  simulations a move takes 0.4 to 0.8 s in Pyodide against the 120 ms tick, and at those sizes
+  the search is no stronger than the brain alone (flat against `voronoi3`: 0.27 alone, 0.25 with
+  8 simulations, 0.09 with 16; [`evidence/search-0952.json`](evidence/search-0952.json)). The host
+  keeps the mode (`?search=N`) for experiments; the page does not offer it.
 - **Frozen while you play.** These brains do not learn from your games.
 - **Settled is not right.** A settled state certifies the settle's equations at the tolerance,
   not the quality of the move.
