@@ -30,6 +30,8 @@ import cadence
 from cadence import Brain
 
 from .game import COLUMNS, replay
+from .search import NODES as SEARCH_NODES
+from .search import choose as search_choose
 
 FULL_BLOCK = 150_000  # a block with more synapses is drawn by its strongest few per neuron
 SAMPLED_PER_NEURON = 8
@@ -257,7 +259,7 @@ class Host:
         elif command == "position":
             reply = {"game": replay(payload.get("moves", [])).summary()}
         elif command == "think":
-            reply = self.think(payload.get("moves", []))
+            reply = self.think(payload.get("moves", []), search=bool(payload.get("search", False)))
         elif command == "more":
             reply = self.more(payload.get("id"))
         elif command == "check":
@@ -277,7 +279,7 @@ class Host:
 
     # -- the brain's move, sweep by sweep
 
-    def think(self, moves: list[int]) -> dict[str, Any]:
+    def think(self, moves: list[int], search: bool = False) -> dict[str, Any]:
         game = replay(moves)
         if game.over:
             raise ValueError("the game is over")
@@ -289,7 +291,7 @@ class Host:
         self.settle = {
             "id": self.settle_id, "game": game, "drive": drive, "state": None, "sweeps": 0,
             "last": np.asarray(b.brain.neuron_model.activation(np.zeros((1, n))))[0],
-            "movement": [], "compute": 0.0,
+            "movement": [], "compute": 0.0, "search": search,
         }
         return self._advance()
 
@@ -330,7 +332,12 @@ class Host:
             outputs = s["last"][b.learner.output_index]
             motor = outputs[:COLUMNS]
             legal = game.board.legal()
-            column = _strongest_legal(motor, legal)
+            column = brain_column = _strongest_legal(motor, legal)
+            searched = None
+            if s["search"]:
+                # the brain proposes, the search vets (connect4/search.py); the brain is unchanged
+                searched = search_choose(game.board, motor, cfg.temperature, nodes=SEARCH_NODES)
+                column = searched["column"]
             began = time.perf_counter()
             residual = float(np.asarray(g.residual(s["drive"], s["state"]))[0])
             s["compute"] += time.perf_counter() - began
@@ -346,6 +353,8 @@ class Host:
                 "sweeps": s["sweeps"],
                 "ms": round(s["compute"] * 1000.0, 2),
                 "after": replay(list(game.moves) + [column]).summary(),
+                "brain_column": brain_column,
+                "search": searched,
             }
             self.settle = None
         return reply

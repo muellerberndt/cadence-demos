@@ -11,7 +11,7 @@ const app = {
   ready: false, phase: 'loading', error: null,
   moves: [], game: null, empty: null, first: 'you', nextFirst: 'you',
   brain: null, manifest: null, startup: null,
-  turn: 0, thinkRid: null, lastBrain: null, imagined: null,
+  turn: 0, thinkRid: null, lastBrain: null, imagined: null, player: 'search',
   timings: [], lessons: 0, lastLesson: null, settle: null, lastFinal: null,
   settles: [], // every brain move of this game: its board, settle and readout, for undo
 };
@@ -62,6 +62,7 @@ function refresh() {
   board.setPlayable(teachable ? app.teachLegal : g?.legal, human || teachable, teachable ? 'teach' : 'play');
   $('new-game').disabled = !app.ready;
   document.querySelectorAll('[data-first]').forEach((b) => { b.disabled = !app.ready; b.setAttribute('aria-pressed', String(b.dataset.first === app.nextFirst)); });
+  document.querySelectorAll('[data-player]').forEach((b) => { b.disabled = !app.ready; b.setAttribute('aria-pressed', String(b.dataset.player === app.player)); });
   $('undo').disabled = !(app.ready && (human || p === 'over') && canUndo());
   const teaching = ['teach', 'teaching', 'taught'].includes(p);
   $('teach').disabled = !(app.ready && (((human || p === 'over') && app.lastBrain) || p === 'teach' || p === 'taught'));
@@ -94,7 +95,7 @@ async function newGame() {
   app.turn++;
   app.first = app.nextFirst;
   app.moves = []; app.game = app.empty; app.lastBrain = null; app.imagined = null; app.lastFinal = null; app.settles = [];
-  board.set(owners(app.game)); board.setMarks(); board.setMotor(null); board.setGhosts(null); setVerdict(null);
+  board.set(owners(app.game)); board.setMarks(); board.setMotor(null); board.setGhosts(null); setVerdict(null); setSearch(null);
   view.rest(); view.setChosen(null); setReadout('at rest');
   drawSpark([]);
   if (app.first === 'brain') return brainTurn();
@@ -134,7 +135,7 @@ async function brainTurn() {
     view.setChosen(null);
     view.beginSettle();
     app.settle = { sweeps: 0, movement: [] };
-    const { reply: final } = await request('think', { moves: movesBefore }, (progress, arrays) => {
+    const { reply: final } = await request('think', { moves: movesBefore, search: app.player === 'search' }, (progress, arrays) => {
       if (token !== app.turn) return;
       view.pushFrames(arrays.frames, progress.movement);
       app.settle.movement.push(...progress.movement);
@@ -144,11 +145,13 @@ async function brainTurn() {
     await view.finished();
     if (token !== app.turn) return;
     app.lastFinal = final;
-    app.timings.push({ ms: final.ms, wall_ms: final.wall_ms, sweeps: final.sweeps, column: final.column, legal: final.legal[final.column] });
+    app.timings.push({ ms: final.ms, wall_ms: final.wall_ms, sweeps: final.sweeps, column: final.column, legal: final.legal[final.column],
+      brain_column: final.brain_column, search_ms: final.search ? final.search.ms : null, search_depth: final.search ? final.search.depth : null });
     view.setChosen(final.column);
     board.setMotor(final.motor, { chosen: final.column, legal: final.legal });
     setVerdict(final.verdict);
     setReadout(final.settled ? `settled in ${final.sweeps} sweeps · ${final.ms.toFixed(0)} ms` : `stopped at ${final.sweeps} sweeps · ${final.ms.toFixed(0)} ms`, final.settled ? 'settled' : 'settling');
+    setSearch(final);
     drawSpark(app.settle.movement, final.sweeps);
     app.moves = final.after.moves; app.game = final.after;
     const cell = newCell(before, app.game);
@@ -283,6 +286,23 @@ async function resetBrain() {
 
 // -- readouts
 
+// What the search did with the brain's proposal.
+function setSearch(final) {
+  const el = $('search-note'), s = final?.search;
+  if (!s) { el.hidden = true; return; }
+  const brain = final.brain_column + 1, played = final.column + 1;
+  if (s.immediate) {
+    el.innerHTML = `<b>Search</b> column ${played} wins now${final.column === final.brain_column ? '' : ` (the brain preferred column ${brain})`}`;
+    el.hidden = false;
+    return;
+  }
+  const why = s.reason === 'win' ? `found a forced win: column ${played}`
+    : final.column === final.brain_column ? `kept the brain's column ${brain}`
+    : `overruled the brain's column ${brain}: column ${played}`;
+  el.innerHTML = `<b>Search</b> ${why} · ${s.depth} moves ahead · ${(s.nodes || 0).toLocaleString()} positions · ${Math.round(s.ms)} ms`;
+  el.hidden = false;
+}
+
 // The verdict slot: the brain's judgement of the position it moved from, for itself.
 function setVerdict(v) {
   const el = $('verdict');
@@ -396,7 +416,7 @@ function renderCard() {
     <section>
       <h3>Licence and limits</h3>
       <p>Cadence and this example are GPL-3.0; source at <a href="${m.source}" target="_blank" rel="noreferrer">github.com/muellerberndt/cadence</a>.</p>
-      <p>It plays from one settle per move: no search, no opening book, no memory of earlier moves. The imagined replies are not used for its move. It is not a perfect player; its measured rates are above. A settled state certifies the settle’s equations, not the move’s quality.</p>
+      <p><b>Brain alone</b> plays from one settle per move: no search, no opening book, no memory of earlier moves. <b>Brain + search</b> settles the brain the same way and then looks ahead over the game’s rules (connect4/search.py): a proven win is played; columns proven lost are dropped; among the rest the brain’s strongest column is played unless the search scores another clearly higher. The search reads threats at its horizon, not the brain, and it does not know the solver’s scores. The imagined replies are not used for the move. Neither is a perfect player; the measured rates are above. A settled state certifies the settle’s equations, not the move’s quality.</p>
     </section>`;
 }
 
@@ -452,6 +472,7 @@ async function boot() {
 
 $('new-game').addEventListener('click', guard(newGame));
 document.querySelectorAll('[data-first]').forEach((b) => b.addEventListener('click', () => { app.nextFirst = b.dataset.first; guard(newGame)(); }));
+document.querySelectorAll('[data-player]').forEach((b) => b.addEventListener('click', () => { app.player = b.dataset.player; refresh(); }));
 $('undo').addEventListener('click', guard(undo));
 $('teach').addEventListener('click', () => (app.phase === 'teach' || app.phase === 'taught' ? finishTeach() : guard(startTeach)()));
 $('reset-brain').addEventListener('click', guard(resetBrain));
@@ -470,7 +491,7 @@ window.c4 = {
   state: () => ({
     ready: app.ready, phase: app.phase, error: app.error, moves: app.moves.slice(), game: app.game,
     first: app.first, brainPlayer: brainPlayer(), timings: app.timings.slice(), lessons: app.lessons,
-    lastLesson: app.lastLesson, imagined: app.imagined, lastFinal: app.lastFinal, startup: app.startup,
+    lastLesson: app.lastLesson, imagined: app.imagined, lastFinal: app.lastFinal, startup: app.startup, player: app.player,
     view: view.stats(), brain: app.brain && { neurons: app.brain.neurons, synapses: app.brain.synapses, cadence: app.brain.cadence },
   }),
   request: (command, payload) => request(command, payload).then((r) => r.reply),

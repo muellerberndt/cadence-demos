@@ -18,8 +18,13 @@
   judgement of the position for the side to move (loss, draw, win).
 - **A decision:** one memory-free settle from rest,
   `brain.learner.free(brain.stimulus(x, memory=False))`, until no activation moves by 0.003 in a
-  sweep (budget 1,024 sweeps). The move is the strongest column neuron among the columns with
-  room (greedy). The verdict is read beside it; the move does not read it. No search.
+  sweep (budget 1,024 sweeps). *Brain alone:* the strongest column neuron among the columns with
+  room (greedy). *Brain + search* (the page's default): the column neurons, as a softmax at the
+  temperature 0.2, rank the columns for a negamax search with alpha-beta pruning over the game's
+  rules (`connect4/search.py`, 40,000 positions a move, a threat count at its horizon); a proven
+  win is played, columns proven lost are dropped, and among the rest the brain's column is played
+  unless the search scores another higher by more than 0.25. The verdict is read beside the move
+  and enters neither.
 
 ## How it was trained
 
@@ -50,20 +55,31 @@ most 2e-6, with the same moves.
 ## How it was measured
 
 `python -m c4train.reading web/pack/brain.npz 200 20991` (record: `evidence/reading.json`), the
-brain alone:
+brain alone, on 3,000 held-out positions from solver games never taught:
 
 | Reading | Result |
 | --- | --- |
-| The solver's optimal move, 3,000 held-out positions from solver games never taught | 77.3% |
+| The solver's optimal move | 77.3% |
 | A move that keeps the theoretical result, where the mover is not already lost | 92.3% |
 | An immediate win taken (positions that have one) | 68.0% |
 | A forced block made (positions that need one) | 85.3% |
 | The verdict agrees with the solver's result | 89.2% |
-| Moving first against the perfect solver, 200 games from the empty board | 119 won, 50 drawn, 31 lost |
-| Moving second against the solver at 90% (a random column one move in ten), 200 games | 46 won, 36 drawn, 118 lost |
 
-The perfect solver wins every game it starts, so the second-seat games are against a solver that
-makes random moves. The page plays the brain alone.
+Games from the empty board, `python -m c4train.play_search` (record:
+`evidence/search_reading.json`); won-drawn-lost for the brain's side, 40 games a row unless
+stated; the solver at 0.9 and 0.7 plays a random column one move in ten and three in ten:
+
+| Opponent | Brain alone | Brain + search |
+| --- | --- | --- |
+| The perfect solver, the brain first | 119-50-31 (200 games, `evidence/reading.json`) | 163-14-23 (200 games) |
+| The perfect solver, the brain second | 0-0-40 | 0-0-40 |
+| The solver at 0.9, the brain first | 29-10-1 | 35-0-5 |
+| The solver at 0.9, the brain second | 12-7-21 | 22-4-14 |
+| The solver at 0.7, the brain first | 30-6-4 | 39-1-0 |
+| The solver at 0.7, the brain second | 27-4-9 | 34-4-2 |
+| Brain + search against the brain alone (search first, search second) | | 34-5-1, 23-7-10 |
+
+The perfect solver wins every game it starts.
 
 ## In the page
 
@@ -73,16 +89,20 @@ verdict the brain holds now, only when the brain does not already play that colu
 0.0033 (the bias a tenth of it). Lessons live in the tab; a reload or *Reset brain* restores the
 file. The visitor's record and lessons are not saved.
 
-Measured by `check_page.py` in headless Chromium on an Apple M4 (`evidence/page_check.json`):
-startup (Pyodide, NumPy, Cadence, the brain) 32 s; a settle 43–85 sweeps and 0.9–2.9 s in the
-worker; a click to the brain's stone on the board 2.8–4.9 s with the animations; the seven
-imagined replies, when ticked, 8.6 s more. The machine was running other jobs at the time.
+Measured by `check_page.py` in headless Chromium on an Apple M4 running other jobs
+(`evidence/page_check.json`), with brain + search: startup (Pyodide, NumPy, Cadence, the brain)
+13.5 s; a settle 54–116 sweeps and 0.5–2.2 s in the worker; the search 1.1–1.4 s (depth 8 to
+10); a click to the brain's stone on the board 3.6–5.1 s with the animations; the seven imagined
+replies, when ticked, 3.2 s more.
 
 ## Limits
 
-- It misses about a third of the immediate wins it could take and about one forced block in
-  seven.
-- It plays from one settle: no search, no opening book, no memory of the game so far.
+- Alone, it misses about a third of the immediate wins it could take and about one forced block
+  in seven. With the search it takes every win the search proves and avoids every column
+  the search proves lost while another remains; it still loses some games it starts against
+  perfect play.
+- The search is a hand-written look-ahead over the rules, not the brain; its horizon score is
+  a threat count. Neither player has an opening book or a memory of the game so far.
 - The verdict is a judgement read beside the move, not a proof; it agrees with the solver's
   result on 89% of held-out positions.
 - The readings certify these sets and seeds, not every game; a settled state certifies the

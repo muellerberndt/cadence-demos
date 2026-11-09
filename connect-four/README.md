@@ -4,11 +4,13 @@ Play Connect Four against a deep Cadence brain and watch every neuron settle on 
 and the brain take turns dropping stones; four in a row wins. On its turn the whole brain
 settles once on the board it sees, and the page draws that settle sweep by sweep: every neuron
 and the synapses carrying its messages. Three of its motor neurons hold its verdict on the
-position (loss, draw or win for the side to move). The browser runs the actual Python brain in
-a Web Worker through Pyodide, with NumPy and the released `cadence-net==0.95.2` wheel. No
-server or model service chooses the moves.
+position (loss, draw or win for the side to move). By default the brain plays with a search:
+it proposes its columns, and a look-ahead over the rules of the game vets them. *Brain alone*
+plays the settle's strongest column. The browser runs the actual Python brain in a Web Worker
+through Pyodide, with NumPy and the released `cadence-net==0.95.2` wheel. No server or model
+service chooses the moves.
 
-![The page mid-game: the board with the motor bars and the brain's verdict, the whole brain settling](docs/connect-four.png)
+![The end of a game won by brain + search: the search plays the win the brain's column neurons missed; the whole brain after its last settle](docs/connect-four.png)
 
 ```sh
 python -m http.server -d connect-four/web 8790   # open http://localhost:8790/
@@ -44,10 +46,27 @@ phases of a fixed 32 sweeps. 3,208 neurons and 3,295,232 synapses.
   prefrontal→association. The prefrontal region is where Cadence's working trace enters; in a
   memory-free settle it stays at rest and the page shows it as silent.
 
+## The two players
+
+- **Brain alone:** the strongest column neuron among the columns with room, from one settle.
+- **Brain + search** (the default, labelled on the page): the same settle, then a negamax search
+  with alpha-beta pruning over the game's rules (`connect4/search.py`): bitboards, a
+  transposition table and iterative deepening within a budget of 40,000 positions a move. At
+  its horizon it counts threats, the empty cells where a stone would complete four for either
+  side, weighted by the row parity that lets that side use them; wins and losses inside the
+  horizon are exact. The move: a win the search proves is played; columns it proves lost are
+  dropped while any other remains; among the rest the brain's strongest column is played unless
+  the search scores another higher by more than 0.25 (on a scale where a proven result is
+  ±1,000 and a horizon score lies within ±0.9). The brain's seven column neurons, as a softmax
+  at its temperature, rank the columns; its verdict is reported and does not enter the search.
+  The search knows the rules, not the solver's scores, and nothing in it learns.
+
 ## What the page shows
 
 - **The board,** with the seven column neurons as bars above their columns, rising sweep by
-  sweep, and after each of its moves the brain's verdict on the position it moved from.
+  sweep, and after each of its moves the brain's verdict on the position it moved from and,
+  with the search, what the search did: kept the brain's column, overruled it, or found a forced
+  win, how many moves ahead it read and how many positions it visited.
 - **The whole brain.** Every neuron sits in its population's place: the sensory neurons as three
   6 × 7 boards (its stones, yours, the playable cells); `module_0` as a field placed by the board
   cells each neuron reads; the association field above it, placed by the columns each neuron
@@ -72,8 +91,9 @@ phases of a fixed 32 sweeps. 3,208 neurons and 3,295,232 synapses.
   rest at the activation floor (−0.1); a lesson then shows as the taught column becoming the
   move rather than as a rising bar. Lessons live in the tab; *Reset brain* or a reload restores
   the shipped brain.
-- **Game controls:** new game, who starts, undo, keys 1–7, and a collapsed model card with the
-  sizes, the training, the readings, the timings in this tab and the provenance.
+- **Game controls:** *Brain + search* or *Brain alone*, new game, who starts, undo, keys 1–7,
+  and a collapsed model card with the sizes, the training, the readings, the timings in this tab
+  and the provenance.
 
 ## How it learned
 
@@ -96,28 +116,46 @@ slipped is shown four more times.
 
 ## Measured
 
-`training/c4train/reading.py` on the packed brain, loaded on the CPU (record:
+The brain alone, `training/c4train/reading.py` on the packed brain, loaded on the CPU (record:
 `evidence/reading.json`):
 
-| Reading, the brain alone | |
+| Reading | |
 | --- | --- |
 | The solver's optimal move, 3,000 held-out positions | 77.3% |
 | A move that keeps the theoretical result, where the mover is not already lost | 92.3% |
 | An immediate win taken | 68.0% |
 | A forced block made | 85.3% |
 | The verdict agrees with the solver's result | 89.2% |
-| First move against the perfect solver, 200 games from the empty board | 119 won, 50 drawn, 31 lost |
-| Second move against the solver at 90% (random moves otherwise), 200 games | 46 won, 36 drawn, 118 lost |
 
-The held-out positions come from solver games that were never taught. The perfect solver wins
-every game it starts, so the brain's games as the second player are played against a solver
-that plays a random column one move in ten.
+The held-out positions come from solver games that were never taught.
+
+Games from the empty board, both players, `training/c4train/play_search.py` (record:
+`evidence/search_reading.json`). The solver at 1.0 is the perfect solver; at 0.9 and 0.7 it
+plays a random column one move in ten and three in ten. Counts are won, drawn, lost for the
+brain's side:
+
+| Opponent | Brain alone | Brain + search |
+| --- | --- | --- |
+| The perfect solver, the brain first | 119-50-31 (200 games, `evidence/reading.json`) | 163-14-23 (200 games) |
+| The perfect solver, the brain second | 0-0-40 | 0-0-40 |
+| The solver at 0.9, the brain first | 29-10-1 | 35-0-5 |
+| The solver at 0.9, the brain second | 12-7-21 | 22-4-14 |
+| The solver at 0.7, the brain first | 30-6-4 | 39-1-0 |
+| The solver at 0.7, the brain second | 27-4-9 | 34-4-2 |
+| Brain + search against the brain alone, search first | | 34-5-1 |
+| Brain + search against the brain alone, search second | | 23-7-10 |
+
+The perfect solver wins every game it starts. Each row is 40 games unless it says otherwise;
+games against the brain alone begin with two random moves, since both players are otherwise
+deterministic. With the search, the player overruled the brain's column on 5% of its moves
+against the perfect solver; natively the search took a median of 0.22 s a move (depth 8).
 
 `check_page.py` ran the page in headless Chromium on an Apple M4 (record:
-`evidence/page_check.json`), while the machine ran other jobs: starting Pyodide, NumPy, Cadence
-and the brain took 32 s; over a whole game a settle took 43–85 sweeps and 0.9–2.9 s in the
-worker, and from a click to the brain's stone on the board took 2.8–4.9 s, animation included.
-With imagination on, the seven imagined replies took 8.6 s more.
+`evidence/page_check.json`), while the machine ran other jobs. With brain + search: starting
+Pyodide, NumPy, Cadence and the brain took 13.5 s; over a whole game a settle took 54–116 sweeps
+and 0.5–2.2 s in the worker, the search 1.1–1.4 s (depth 8 to 10), and from a click to the
+brain's stone on the board 3.6–5.1 s, animation included. With imagination on, the seven
+imagined replies took 3.2 s more.
 
 ## Train it further
 
@@ -182,11 +220,14 @@ released wheel and a manifest of hashes.
 
 ## What it does not claim
 
-- **No search and no memory.** It plays from one settle per move: no search, no opening book, no
-  memory of earlier moves. It shows the settle, the verdict and lessons on mismatch, not a
-  continuing life with retained state.
+- **The search is not the brain.** *Brain alone* plays from one settle per move. *Brain + search*
+  adds a look-ahead over the rules with a hand-written threat count at its horizon; the brain
+  ranks the columns, and the search vetoes the ones it proves lost and plays the wins it proves.
+  Neither has an opening book or a memory of earlier moves; this is a settled policy over the
+  board, not a continuing life with retained state.
 - **Not a perfect player.** The readings above are the claim; a game in the page is one sample.
-  It misses about a third of the immediate wins it could take.
+  The brain alone misses about a third of the immediate wins it could take; with the search it
+  takes every win inside the horizon, and still loses some games it starts against perfect play.
 - **The imagined replies** are the brain's private responses, not a model of you or of the game,
   and its move does not read them.
 - **A settled state** certifies the settle's equations at the tolerance, not the quality of the
@@ -204,11 +245,13 @@ python -m venv .venv
 .venv/bin/python check_page.py
 ```
 
-The tests check the rules and the three-plane encoding, that the drawn settle is the
+The tests check the rules and the three-plane encoding, the search (wins it must take, blocks it
+must make, cells it must not open, the brain's column where the search sees no difference), that the drawn settle is the
 `Learner.free` readout sweep for sweep, the verdict readout, that a full column is never played,
 the layout, the silent population at rest, an imagination that changes nothing, and a lesson that
 changes synapses while a reset restores them. `check_page.py` serves `web/`, plays a whole game
-by clicking, checks every answer is legal and the settle and answer times, the brain view while
+by clicking with brain + search (the default), checks every answer is legal and the settle,
+search and answer times, the brain view while
 it settles, hover details, imagination when ticked, two lessons, undo, a new game with the brain
 first, the model card, a reset, a phone-width layout and a browser without fast WebGL. Console
 errors, page errors and failed requests fail it.
@@ -218,12 +261,12 @@ learning module a NumPy whose `repeat` casts its counts. The shim does nothing o
 
 | Path | What |
 | --- | --- |
-| `connect4/` | what the page's worker runs: the rules and encoding (`game.py`), the drawn settle, the verdict, imagination, lessons and the layout (`host.py`) |
+| `connect4/` | what the page's worker runs: the rules and encoding (`game.py`), the drawn settle, the verdict, imagination, lessons and the layout (`host.py`), the search (`search.py`) |
 | `web/` | the page: `app.js` (game, controls, readouts), `board.js`, `brain.js` (WebGL2 and Canvas2D), `worker.js` (Pyodide), `pack/` (wheel, host, brain, receipt, manifest) |
 | `pack.py` | packs the wheel, the brain, the receipt's numbers and the host into `web/pack/` |
 | `training/` | the trainer (`c4train`), the solver bridge, the readings and the page copy |
 | `tests/`, `check_page.py` | the rules and the host; the page's promise in headless Chromium |
-| `evidence/` | `reading.json`, `page_check.json` |
+| `evidence/` | `reading.json`, `search_reading.json`, `page_check.json` |
 | `MODEL_CARD.md` | the brain: composition, training, readings, limits |
 | `docs/` | the screenshot |
 

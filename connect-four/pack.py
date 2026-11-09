@@ -26,7 +26,7 @@ HERE = Path(__file__).resolve().parent
 OUT = HERE / "web" / "pack"
 VERSION = "0.95.2"
 PYODIDE = "314.0.7"
-SOURCES = ["__init__.py", "game.py", "host.py"]
+SOURCES = ["__init__.py", "game.py", "host.py", "search.py"]
 
 ARGS = ("arm", "modules", "seed", "every_row", "batch", "lessons", "own_every", "own_games",
         "first_games", "first_weight", "eval_every", "games_every", "games", "first_eval", "apical",

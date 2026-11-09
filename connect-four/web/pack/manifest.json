@@ -9,12 +9,14 @@
  "sources": [
   "__init__.py",
   "game.py",
-  "host.py"
+  "host.py",
+  "search.py"
  ],
  "sources_sha256": {
   "__init__.py": "47414a7c3f0cef23e5ca009aca12cac476701baf9dbdbe89400c3b542fbffe7b",
   "game.py": "e357894a7bc0ce3678209941f6aa7b3faa365ba15291a13a014439ae66c8a395",
-  "host.py": "e53b6080112873ee40e0eb9ac4434756ac50cd9fc590e8659e3a2b2ed344d0a2"
+  "host.py": "e68442c8a38e7d6da13b0fd643725075f567e19e2ef6f0ec635a93a1427b5fc8",
+  "search.py": "7249eeb3ba04154bbb297accfe2ddc8efe7a71bed1f4b19ffee7d6d7a80802d4"
  },
  "brain": "brain.npz",
  "brain_sha256": "29bac892de8fd1cd12005dd8936a43a39263bc652ccd8cc03fd26cfdd3f8ae95",

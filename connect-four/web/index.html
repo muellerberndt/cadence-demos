@@ -21,7 +21,7 @@
   <main>
     <section class="intro">
       <h1>Play Connect Four against a Cadence brain and watch every neuron settle on its move.</h1>
-      <p class="task">Take turns dropping stones; four in a row wins. The brain sees the stones and the cells where a stone would land. On its turn the whole brain settles once: its strongest column neuron is its move, and three more motor neurons hold its verdict on the position.</p>
+      <p class="task">Take turns dropping stones; four in a row wins. The brain sees the stones and the cells where a stone would land. On its turn the whole brain settles once: its column neurons propose the move, and three more hold its verdict on the position. With <b>Brain + search</b> a look-ahead over the rules vets the proposal; <b>Brain alone</b> plays the strongest column neuron.</p>
     </section>
 
     <div class="stage">
@@ -29,6 +29,7 @@
         <div class="board-wrap" id="board-wrap">
           <div class="motor-head"><span>Motor neurons</span><span class="hint" id="motor-hint">one per column</span></div>
           <div class="verdict" id="verdict" aria-live="polite" hidden></div>
+          <div class="search-note" id="search-note" aria-live="polite" hidden></div>
           <div class="motor" id="motor" aria-label="The brain's seven motor neurons, one above each column"></div>
           <div class="board" id="board"></div>
           <div class="ghost-head"><span>What it imagines you would reply</span><span class="ghost-tools"><label class="toggle"><input type="checkbox" id="imagine-toggle"> imagine</label><button class="info" id="ghost-info" type="button" aria-expanded="false" aria-controls="ghost-note">?</button></span></div>
@@ -38,6 +39,10 @@
         <div class="status" id="status" role="status" aria-live="polite">Starting Python in your browser…</div>
         <div class="controls">
           <button class="primary" id="new-game" type="button" disabled>New game</button>
+          <div class="segmented" role="group" aria-label="Who plays">
+            <button type="button" data-player="search" aria-pressed="true" title="The brain proposes its columns, a look-ahead over the rules vets them">Brain + search</button>
+            <button type="button" data-player="brain" aria-pressed="false" title="One settle of the brain, its strongest column">Brain alone</button>
+          </div>
           <div class="segmented" role="group" aria-label="Who moves first">
             <button type="button" data-first="you" aria-pressed="true">You start</button>
             <button type="button" data-first="brain" aria-pressed="false">Brain starts</button>

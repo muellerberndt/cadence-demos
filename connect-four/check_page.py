@@ -137,7 +137,8 @@ def main() -> int:
         if len(after["timings"]) > len(before["timings"]):
             t = after["timings"][-1]
             record.update({"brain": t["column"], "legal": t["legal"], "settle_ms": t["ms"],
-                           "worker_ms": t["wall_ms"], "sweeps": t["sweeps"]})
+                           "worker_ms": t["wall_ms"], "sweeps": t["sweeps"], "brain_column": t.get("brain_column"),
+                           "search_ms": t.get("search_ms"), "search_depth": t.get("search_depth")})
         evidence["moves"].append(record)
         return before, after, record, samples
 
@@ -196,6 +197,10 @@ def main() -> int:
             check("result_is_shown", any(w in status for w in ("You win", "brain wins", "draw")), status)
             check("brain_answers_are_legal", brain_moves and all(m["legal"] for m in brain_moves),
                   [m["brain"] for m in brain_moves])
+            check("player_is_brain_plus_search_by_default", s["player"] == "search" and all(m.get("search_ms") is not None for m in brain_moves),
+                  {"player": s["player"], "search_ms": [m.get("search_ms") for m in brain_moves],
+                   "search_depth": [m.get("search_depth") for m in brain_moves],
+                   "overruled": sum(1 for m in brain_moves if m.get("brain_column") is not None and m["brain_column"] != m["brain"])})
             check("settle_within_latency_bound", brain_moves and all(m["worker_ms"] < LATENCY_MS for m in brain_moves),
                   {"bound_ms": LATENCY_MS, "worker_ms": [m["worker_ms"] for m in brain_moves],
                    "settle_ms": [m["settle_ms"] for m in brain_moves], "sweeps": [m["sweeps"] for m in brain_moves]})

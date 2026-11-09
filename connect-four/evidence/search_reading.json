@@ -1,0 +1,533 @@
+{
+ "player_search": "connect4/search.py, nodes 40000",
+ "brain": "web/pack/brain.npz",
+ "command": "python -m c4train.play_search web/pack/brain.npz --games 40 --nodes 40000 --only <condition> [--seed S] [--alone]",
+ "first_vs_perfect_solver_search_200": {
+  "games": 200,
+  "win": 163,
+  "draw": 14,
+  "loss": 23
+ },
+ "runs": {
+  "a_solver070_first": {
+   "player": "brain alone",
+   "nodes": 40000,
+   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
+   "conditions": [
+    {
+     "name": "solver070_first",
+     "win": 30,
+     "draw": 6,
+     "loss": 4
+    }
+   ],
+   "search": {
+    "moves": 0,
+    "overruled_share": 0.0,
+    "ms_median": 0.0,
+    "ms_max": 0.0,
+    "depth_median": 0
+   }
+  },
+  "a_solver070_second": {
+   "player": "brain alone",
+   "nodes": 40000,
+   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
+   "conditions": [
+    {
+     "name": "solver070_second",
+     "win": 27,
+     "draw": 4,
+     "loss": 9
+    }
+   ],
+   "search": {
+    "moves": 0,
+    "overruled_share": 0.0,
+    "ms_median": 0.0,
+    "ms_max": 0.0,
+    "depth_median": 0
+   }
+  },
+  "a_solver090_first": {
+   "player": "brain alone",
+   "nodes": 40000,
+   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
+   "conditions": [
+    {
+     "name": "solver090_first",
+     "win": 29,
+     "draw": 10,
+     "loss": 1
+    }
+   ],
+   "search": {
+    "moves": 0,
+    "overruled_share": 0.0,
+    "ms_median": 0.0,
+    "ms_max": 0.0,
+    "depth_median": 0
+   }
+  },
+  "a_solver090_second": {
+   "player": "brain alone",
+   "nodes": 40000,
+   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
+   "conditions": [
+    {
+     "name": "solver090_second",
+     "win": 12,
+     "draw": 7,
+     "loss": 21
+    }
+   ],
+   "search": {
+    "moves": 0,
+    "overruled_share": 0.0,
+    "ms_median": 0.0,
+    "ms_max": 0.0,
+    "depth_median": 0
+   }
+  },
+  "a_solver100_first": {
+   "player": "brain alone",
+   "nodes": 40000,
+   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 19,
+     "draw": 13,
+     "loss": 8
+    }
+   ],
+   "search": {
+    "moves": 0,
+    "overruled_share": 0.0,
+    "ms_median": 0.0,
+    "ms_max": 0.0,
+    "depth_median": 0
+   }
+  },
+  "a_solver100_second": {
+   "player": "brain alone",
+   "nodes": 40000,
+   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
+   "conditions": [
+    {
+     "name": "solver100_second",
+     "win": 0,
+     "draw": 0,
+     "loss": 40
+    }
+   ],
+   "search": {
+    "moves": 0,
+    "overruled_share": 0.0,
+    "ms_median": 0.0,
+    "ms_max": 0.0,
+    "depth_median": 0
+   }
+  },
+  "s15_solver070_first": {
+   "player": "brain + search",
+   "nodes": 15000,
+   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
+   "conditions": [
+    {
+     "name": "solver070_first",
+     "win": 36,
+     "draw": 0,
+     "loss": 4
+    }
+   ],
+   "search": {
+    "moves": 569,
+    "overruled_share": 0.1195,
+    "ms_median": 93.9,
+    "ms_max": 216.6,
+    "depth_median": 7.0
+   }
+  },
+  "s15_solver070_second": {
+   "player": "brain + search",
+   "nodes": 15000,
+   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
+   "conditions": [
+    {
+     "name": "solver070_second",
+     "win": 39,
+     "draw": 1,
+     "loss": 0
+    }
+   ],
+   "search": {
+    "moves": 561,
+    "overruled_share": 0.139,
+    "ms_median": 93.9,
+    "ms_max": 253.5,
+    "depth_median": 7.0
+   }
+  },
+  "s15_solver090_first": {
+   "player": "brain + search",
+   "nodes": 15000,
+   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
+   "conditions": [
+    {
+     "name": "solver090_first",
+     "win": 36,
+     "draw": 2,
+     "loss": 2
+    }
+   ],
+   "search": {
+    "moves": 714,
+    "overruled_share": 0.0966,
+    "ms_median": 93.3,
+    "ms_max": 214.3,
+    "depth_median": 7.0
+   }
+  },
+  "s15_solver090_second": {
+   "player": "brain + search",
+   "nodes": 15000,
+   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
+   "conditions": [
+    {
+     "name": "solver090_second",
+     "win": 22,
+     "draw": 5,
+     "loss": 13
+    }
+   ],
+   "search": {
+    "moves": 678,
+    "overruled_share": 0.09,
+    "ms_median": 93.5,
+    "ms_max": 217.1,
+    "depth_median": 7.0
+   }
+  },
+  "s15_solver100_first": {
+   "player": "brain + search",
+   "nodes": 15000,
+   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 27,
+     "draw": 3,
+     "loss": 10
+    }
+   ],
+   "search": {
+    "moves": 811,
+    "overruled_share": 0.0456,
+    "ms_median": 90.1,
+    "ms_max": 432.4,
+    "depth_median": 7.0
+   }
+  },
+  "s15_solver100_second": {
+   "player": "brain + search",
+   "nodes": 15000,
+   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
+   "conditions": [
+    {
+     "name": "solver100_second",
+     "win": 0,
+     "draw": 0,
+     "loss": 40
+    }
+   ],
+   "search": {
+    "moves": 719,
+    "overruled_share": 0.1349,
+    "ms_median": 90.8,
+    "ms_max": 215.0,
+    "depth_median": 7.0
+   }
+  },
+  "s15_vs_brain_first": {
+   "player": "brain + search",
+   "nodes": 15000,
+   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
+   "conditions": [
+    {
+     "name": "vs_brain_first",
+     "win": 24,
+     "draw": 8,
+     "loss": 8
+    }
+   ],
+   "search": {
+    "moves": 531,
+    "overruled_share": 0.162,
+    "ms_median": 93.2,
+    "ms_max": 210.4,
+    "depth_median": 7.0
+   }
+  },
+  "s15_vs_brain_second": {
+   "player": "brain + search",
+   "nodes": 15000,
+   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
+   "conditions": [
+    {
+     "name": "vs_brain_second",
+     "win": 16,
+     "draw": 7,
+     "loss": 17
+    }
+   ],
+   "search": {
+    "moves": 681,
+    "overruled_share": 0.1806,
+    "ms_median": 92.2,
+    "ms_max": 215.5,
+    "depth_median": 8.0
+   }
+  },
+  "s40_solver070_first": {
+   "player": "brain + search",
+   "nodes": 40000,
+   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
+   "conditions": [
+    {
+     "name": "solver070_first",
+     "win": 39,
+     "draw": 1,
+     "loss": 0
+    }
+   ],
+   "search": {
+    "moves": 566,
+    "overruled_share": 0.1219,
+    "ms_median": 247.7,
+    "ms_max": 541.7,
+    "depth_median": 8.0
+   }
+  },
+  "s40_solver070_second": {
+   "player": "brain + search",
+   "nodes": 40000,
+   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
+   "conditions": [
+    {
+     "name": "solver070_second",
+     "win": 34,
+     "draw": 4,
+     "loss": 2
+    }
+   ],
+   "search": {
+    "moves": 557,
+    "overruled_share": 0.1131,
+    "ms_median": 246.9,
+    "ms_max": 567.2,
+    "depth_median": 9.0
+   }
+  },
+  "s40_solver090_first": {
+   "player": "brain + search",
+   "nodes": 40000,
+   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
+   "conditions": [
+    {
+     "name": "solver090_first",
+     "win": 35,
+     "draw": 0,
+     "loss": 5
+    }
+   ],
+   "search": {
+    "moves": 733,
+    "overruled_share": 0.0723,
+    "ms_median": 236.0,
+    "ms_max": 547.6,
+    "depth_median": 8.0
+   }
+  },
+  "s40_solver090_second": {
+   "player": "brain + search",
+   "nodes": 40000,
+   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
+   "conditions": [
+    {
+     "name": "solver090_second",
+     "win": 22,
+     "draw": 4,
+     "loss": 14
+    }
+   ],
+   "search": {
+    "moves": 682,
+    "overruled_share": 0.0982,
+    "ms_median": 236.6,
+    "ms_max": 544.9,
+    "depth_median": 9.0
+   }
+  },
+  "s40_solver100_first": {
+   "player": "brain + search",
+   "nodes": 40000,
+   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 31,
+     "draw": 3,
+     "loss": 6
+    }
+   ],
+   "search": {
+    "moves": 825,
+    "overruled_share": 0.0509,
+    "ms_median": 222.9,
+    "ms_max": 747.9,
+    "depth_median": 8.0
+   }
+  },
+  "s40_solver100_second": {
+   "player": "brain + search",
+   "nodes": 40000,
+   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
+   "conditions": [
+    {
+     "name": "solver100_second",
+     "win": 0,
+     "draw": 0,
+     "loss": 40
+    }
+   ],
+   "search": {
+    "moves": 738,
+    "overruled_share": 0.1247,
+    "ms_median": 230.6,
+    "ms_max": 543.2,
+    "depth_median": 9.0
+   }
+  },
+  "s40_vs_brain_first": {
+   "player": "brain + search",
+   "nodes": 40000,
+   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
+   "conditions": [
+    {
+     "name": "vs_brain_first",
+     "win": 34,
+     "draw": 5,
+     "loss": 1
+    }
+   ],
+   "search": {
+    "moves": 507,
+    "overruled_share": 0.1617,
+    "ms_median": 244.0,
+    "ms_max": 540.6,
+    "depth_median": 8.0
+   }
+  },
+  "s40_vs_brain_second": {
+   "player": "brain + search",
+   "nodes": 40000,
+   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
+   "conditions": [
+    {
+     "name": "vs_brain_second",
+     "win": 23,
+     "draw": 7,
+     "loss": 10
+    }
+   ],
+   "search": {
+    "moves": 643,
+    "overruled_share": 0.1866,
+    "ms_median": 237.7,
+    "ms_max": 543.7,
+    "depth_median": 9.0
+   }
+  },
+  "s40b_first_1": {
+   "player": "brain + search",
+   "nodes": 40000,
+   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 32,
+     "draw": 4,
+     "loss": 4
+    }
+   ],
+   "search": {
+    "moves": 830,
+    "overruled_share": 0.0506,
+    "ms_median": 224.9,
+    "ms_max": 267.1,
+    "depth_median": 8.0
+   }
+  },
+  "s40b_first_2": {
+   "player": "brain + search",
+   "nodes": 40000,
+   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 34,
+     "draw": 2,
+     "loss": 4
+    }
+   ],
+   "search": {
+    "moves": 833,
+    "overruled_share": 0.0504,
+    "ms_median": 227.8,
+    "ms_max": 267.0,
+    "depth_median": 8.0
+   }
+  },
+  "s40b_first_3": {
+   "player": "brain + search",
+   "nodes": 40000,
+   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 32,
+     "draw": 5,
+     "loss": 3
+    }
+   ],
+   "search": {
+    "moves": 831,
+    "overruled_share": 0.0445,
+    "ms_median": 225.6,
+    "ms_max": 292.2,
+    "depth_median": 8.0
+   }
+  },
+  "s40b_first_4": {
+   "player": "brain + search",
+   "nodes": 40000,
+   "seed_note": "default 31337 unless named *_1..4 (31337 + 1000 k)",
+   "conditions": [
+    {
+     "name": "solver100_first",
+     "win": 34,
+     "draw": 0,
+     "loss": 6
+    }
+   ],
+   "search": {
+    "moves": 822,
+    "overruled_share": 0.0718,
+    "ms_median": 225.9,
+    "ms_max": 301.8,
+    "depth_median": 8.0
+   }
+  }
+ }
+}
