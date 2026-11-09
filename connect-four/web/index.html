@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#06080e">
+  <meta name="description" content="Play Connect Four against a Cadence brain and watch every neuron settle on its move.">
+  <title>Connect Four · Cadence</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="masthead">
+    <a class="brand" href="../" aria-label="Cadence demos"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 17h5l4-10 7 20 4-13h6"/></svg><span>cadence</span><span class="slash">/</span><span class="sub">connect four</span></a>
+    <span class="runtime" id="runtime"><i id="runtime-dot"></i><span id="runtime-text">Starting the brain…</span><span class="runtime-more" id="runtime-more"></span></span>
+  </header>
+
+  <main>
+    <section class="intro">
+      <h1>Play Connect Four against a Cadence brain and watch every neuron settle on its move.</h1>
+      <p class="task">Take turns dropping stones; four in a row wins. The brain sees the stones and the cells where a stone would land. On its turn the whole brain settles once: its strongest column neuron is its move, and three more motor neurons hold its verdict on the position.</p>
+    </section>
+
+    <div class="stage">
+      <section class="game" aria-label="The game">
+        <div class="board-wrap" id="board-wrap">
+          <div class="motor-head"><span>Motor neurons</span><span class="hint" id="motor-hint">one per column</span></div>
+          <div class="verdict" id="verdict" aria-live="polite" hidden></div>
+          <div class="motor" id="motor" aria-label="The brain's seven motor neurons, one above each column"></div>
+          <div class="board" id="board"></div>
+          <div class="ghost-head"><span>What it imagines you would reply</span><span class="ghost-tools"><label class="toggle"><input type="checkbox" id="imagine-toggle"> imagine</label><button class="info" id="ghost-info" type="button" aria-expanded="false" aria-controls="ghost-note">?</button></span></div>
+          <p class="ghost-note" id="ghost-note" hidden>Before it moves, the brain privately settles on the board each column would leave and reads the reply it would make in your seat (<code>Brain.imagine</code>). Its move comes from one settle on the real board; it does not search these. Off by default: imagining settles seven boards before each move, which adds several seconds in the browser.</p>
+          <div class="ghosts" id="ghosts"></div>
+        </div>
+        <div class="status" id="status" role="status" aria-live="polite">Starting Python in your browser…</div>
+        <div class="controls">
+          <button class="primary" id="new-game" type="button" disabled>New game</button>
+          <div class="segmented" role="group" aria-label="Who moves first">
+            <button type="button" data-first="you" aria-pressed="true">You start</button>
+            <button type="button" data-first="brain" aria-pressed="false">Brain starts</button>
+          </div>
+          <button id="undo" type="button" disabled>Undo</button>
+          <button id="teach" type="button" disabled title="Show the brain a better move for its last turn">Teach it</button>
+        </div>
+      </section>
+
+      <section class="brain" aria-label="The whole brain">
+        <div class="brain-head">
+          <div class="brain-title"><h2>The whole brain</h2><p id="brain-size">loading…</p></div>
+          <div class="readout" aria-live="off"><span id="settle-text">at rest</span><canvas id="spark" aria-label="Largest activation change in each sweep"></canvas></div>
+        </div>
+        <div class="brain-stage" id="brain-stage">
+          <canvas id="brain-gl" aria-label="Every neuron of the brain and the synapses carrying its messages"></canvas>
+          <canvas id="brain-overlay" aria-hidden="true"></canvas>
+          <div class="tooltip" id="tooltip" hidden></div>
+        </div>
+        <div class="brain-foot">
+          <span class="legend"><span><i class="sw own"></i>its stones</span><span><i class="sw opp"></i>your stones</span><span><i class="sw play"></i>playable</span><span><i class="sw first"></i>module 0</span><span><i class="sw assoc"></i>association</span><span><i class="sw motor"></i>motor</span><span><i class="sw verdict"></i>verdict</span><span><i class="ln exc"></i>excites</span><span><i class="ln inh"></i>inhibits</span></span>
+          <span class="lessons"><span id="lessons-note"></span><button type="button" id="reset-brain" hidden>Reset brain</button></span>
+        </div>
+      </section>
+    </div>
+
+    <details class="model-card" id="model-card">
+      <summary><span>Model card</span><span class="summary-line" id="card-summary">numbers, training, provenance and licence</span></summary>
+      <div class="card-body" id="card-body"><p>Loading…</p></div>
+    </details>
+  </main>
+
+  <footer class="footer">Made with <a href="https://github.com/muellerberndt/cadence" target="_blank" rel="noreferrer">Cadence</a>. The brain runs in this tab, in Python, through Pyodide. GPL-3.0.</footer>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
