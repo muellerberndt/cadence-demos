@@ -28,7 +28,28 @@ const SIMS = (() => {
   const n = parseInt(new URLSearchParams(location.search).get("search") || "0", 10);
   return Number.isFinite(n) && n > 0 ? Math.min(n, 200) : 0;
 })();
-const recordKey = (sha) => (SIMS ? `${sha}:search${SIMS}` : sha);
+// ?player=alone: the brain alone, one settle per move. The default: the brain proposes, a
+// look-ahead over the rules (js/search.js, the alpha-beta of tron/absearch.py) checks it.
+const PLAYER = new URLSearchParams(location.search).get("player") === "alone" ? "alone" : "search";
+const LOOK = { maxDepth: 4, budgetMs: 60, bonus: 8 }; // 4 rounds: the measured player (evidence/search-readings.json)
+const recordKey = (sha) => `${sha}${SIMS ? `:search${SIMS}` : ""}${PLAYER === "search" ? ":look" : ""}`;
+const looker = new Worker(new URL("./search_worker.js", import.meta.url), { type: "module" });
+const lookWaiting = new Map();
+let lookId = 0;
+looker.onmessage = (event) => {
+  const done = lookWaiting.get(event.data.id);
+  if (done) { lookWaiting.delete(event.data.id); done(event.data); }
+};
+// Start the look-ahead for the brain's next move as soon as the state arrives; awaited at the next tick.
+function lookAhead(state) {
+  if (PLAYER !== "search" || SIMS || state.over || !state.brain || !Number.isInteger(state.brain.choice) || !state.grid) return null;
+  const id = ++lookId;
+  const prior = state.brain.choice;
+  return new Promise((resolve) => {
+    lookWaiting.set(id, (r) => resolve({ ...r, prior }));
+    looker.postMessage({ id, grid: state.grid, heads: state.heads, headings: state.headings, prior, ...LOOK });
+  });
+}
 const RESULT = { win: "loss", loss: "win", draw: "draw" }; // the host reports the brain's result
 
 const $ = (id) => document.getElementById(id);
@@ -40,7 +61,7 @@ const app = {
   phase: "loading", // loading | ready | countdown | playing | over | error
   manifest: null, desc: null, last: null, title: "Mako",
   record: { games: 0, you: 0, them: 0, draws: 0 },
-  timings: [], frameGaps: [], replays: [],
+  timings: [], frameGaps: [], replays: [], looks: [], look: null, decision: null,
 };
 
 const arena = new ArenaView($("arena"));
@@ -87,7 +108,8 @@ function overlay(html, dim = true) {
 }
 function showStart() {
   overlay(`<div class="big"><span class="you">RIDE</span></div>
-    <div class="sub">You are blue. ${app.title} is pink, a brain that sees the whole field.<br>Don't hit a wall or a trail.</div>
+    <div class="sub">You are blue. ${app.title} is pink, a brain that sees the whole field${PLAYER === "search"
+      ? ";<br>the brain proposes, a look-ahead over the rules checks it" : ", playing alone"}.<br>Don't hit a wall or a trail.</div>
     <div class="go-hint">${touch() ? "TAP TO RIDE" : "SPACE TO RIDE"}</div>`);
 }
 function showResult(result, ticks) {
@@ -113,6 +135,7 @@ async function startGame() {
   steering.enabled = true;
   brain.push(state);
   app.last = state;
+  app.look = lookAhead(state);
   app.replay = { brain: app.manifest.brain.id, brain_sha256: app.manifest.brain.sha256, cadence: app.manifest.cadence,
     seed: state.seed, moves: [], result: null, started: Date.now() };
   for (const n of ["3", "2", "1"]) {
@@ -139,9 +162,18 @@ async function play() {
     const move = steering.next();
     const before = app.last.headings.slice();
     let state;
+    let decided = null;
+    if (app.look) {
+      const d = await app.look;
+      decided = d.move;
+      app.decision = d;
+      app.looks.push({ depth: d.depth, ms: Math.round(d.ms * 10) / 10, overruled: d.move !== d.prior });
+      if (brain.deliberate) brain.deliberate(d);
+    }
     try {
-      state = await link.call("tick", { move });
+      state = await link.call("tick", Number.isInteger(decided) ? { move, decided } : { move });
     } catch (error) { fail(error); return; }
+    app.look = lookAhead(state);
     const now = performance.now();
     app.timings.push({ round: now - sent, worker: state.worker_ms, act: state.brain && state.brain.act_ms });
     if (state.moved) app.replay.moves.push(state.moved);
@@ -244,14 +276,18 @@ requestAnimationFrame(loop);
 // ---- boot --------------------------------------------------------------------------------
 async function boot() {
   try {
-    const extra = (SIMS ? `&search=${SIMS}` : "") + (VIEW === "layers" ? "&view=layers" : "");
+    const extra = (SIMS ? `&search=${SIMS}` : "") + (VIEW === "layers" ? "&view=layers" : "") + (PLAYER === "alone" ? "&player=alone" : "");
     document.querySelectorAll("#pick a[data-slot]").forEach((a) => {
       a.classList.toggle("on", a.dataset.slot === SLOT);
       a.href = `?brain=${a.dataset.slot}${extra}`;
     });
     document.querySelectorAll("#views a[data-view]").forEach((a) => {
       a.classList.toggle("on", a.dataset.view === VIEW);
-      a.href = `?brain=${SLOT}${SIMS ? `&search=${SIMS}` : ""}${a.dataset.view === "layers" ? "&view=layers" : ""}`;
+      a.href = `?brain=${SLOT}${SIMS ? `&search=${SIMS}` : ""}${a.dataset.view === "layers" ? "&view=layers" : ""}${PLAYER === "alone" ? "&player=alone" : ""}`;
+    });
+    document.querySelectorAll("#players a[data-player]").forEach((a) => {
+      a.classList.toggle("on", a.dataset.player === PLAYER);
+      a.href = `?brain=${SLOT}${VIEW === "layers" ? "&view=layers" : ""}${a.dataset.player === "alone" ? "&player=alone" : ""}`;
     });
     const sw = document.getElementById("search"); // the search switch, where the page shows one
     if (sw) {
@@ -294,10 +330,13 @@ window.__tron = {
     phase: app.phase, size: arena.size, tick: app.last ? app.last.tick : 0,
     heads: app.last ? app.last.heads : null, headings: app.last ? app.last.headings : null,
     occupied: Array.from(arena.occupied), planned: steering.planned(), queued: steering.queue.length,
-    record: app.record, replays: app.replays.length, slot: SLOT, sims: SIMS, view: VIEW, brain: app.manifest ? app.manifest.brain.id : null,
+    record: app.record, replays: app.replays.length, slot: SLOT, sims: SIMS, view: VIEW, player: PLAYER, brain: app.manifest ? app.manifest.brain.id : null,
   }),
   call: (op, payload) => link.call(op, payload),
   timings: () => app.timings,
+  looks: () => app.looks,
+  // The page's look-ahead on a given state (for the parity check against tron/absearch.py).
+  decide: (state) => lookAhead(state),
   frameGaps: () => app.frameGaps,
   last: () => app.last,
   replays: () => app.replays,

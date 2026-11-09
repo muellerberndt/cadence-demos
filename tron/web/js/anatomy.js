@@ -429,9 +429,74 @@ export class AnatomyView extends DeepView {
     g.globalAlpha = 1;
   }
 
+  // The look-ahead's verdict on the brain's last proposal (main.js hands it over each tick):
+  // its value for each move beside the motor strip, and an arc where it overruled the brain.
+  deliberate(d) {
+    this.decision = { ...d, t: performance.now() };
+  }
+
+  drawDecision(g, now) {
+    const d = this.decision;
+    if (!d || !d.values || !this.motor) return;
+    const { dpr } = this;
+    const age = now - d.t;
+    if (age > 1400) return;
+    const fade = age < 1000 ? 1 : 1 - (age - 1000) / 400;
+    const vals = d.values;
+    const lo = Math.min(...vals), hi = Math.max(...vals);
+    const top = this.motor.start;
+    // A small panel to the right of the motor strip: one bar per move, the chosen one framed.
+    const right = this.px[top + 2] + this.pr[top + 2] * 3.2;
+    const colW = 14 * dpr, bandH = 22 * dpr;
+    const x0 = Math.min(this.W - 3 * colW - 8 * dpr, right + 10 * dpr), y0 = this.py[top + 1] - bandH / 2;
+    g.globalCompositeOperation = "source-over";
+    g.fillStyle = `rgba(0,0,0,${0.55 * fade})`;
+    const over = d.prior !== d.move && Number.isInteger(d.prior);
+    g.fillRect(x0 - 6 * dpr, y0 - 16 * dpr, Math.max(3 * colW + 12 * dpr, over ? 104 * dpr : 0), bandH + (over ? 42 : 30) * dpr);
+    g.font = `500 ${7.5 * dpr}px ${MONO}`;
+    g.textAlign = "left";
+    g.fillStyle = `rgba(200,215,240,${0.75 * fade})`;
+    g.fillText(`look-ahead · ${d.depth} rounds`, x0 - 4 * dpr, y0 - 6 * dpr);
+    for (let k = 0; k < 3; k++) {
+      const x = x0 + (k + 0.5) * colW, y = y0;
+      const t = hi > lo ? (vals[k] - lo) / (hi - lo) : 1;
+      const dead = vals[k] < -(1 << 22);
+      g.fillStyle = dead ? `rgba(255,90,120,${0.7 * fade})` : rgba(MOTOR_RGB[k], (0.3 + 0.65 * t) * fade);
+      const w = 7 * dpr, h = Math.max(2 * dpr, bandH * (dead ? 0.12 : 0.15 + 0.85 * t));
+      g.fillRect(x - w / 2, y + bandH - h, w, h);
+      if (k === d.move) {
+        g.strokeStyle = `rgba(255,255,255,${0.85 * fade})`;
+        g.lineWidth = dpr;
+        g.strokeRect(x - w / 2 - 2 * dpr, y - 2 * dpr, w + 4 * dpr, bandH + 4 * dpr);
+      }
+      g.textAlign = "center";
+      g.fillStyle = `rgba(220,230,255,${(k === d.prior ? 0.9 : 0.45) * fade})`;
+      g.fillText(ARROWS[k], x, y + bandH + 11 * dpr);
+    }
+    g.textAlign = "center";
+    this.decisionX = x0 - 4 * dpr;
+    this.decisionY = y0 + bandH + 23 * dpr;
+    if (d.prior !== d.move && Number.isInteger(d.prior)) {
+      const a = top + d.prior, b = top + d.move;
+      const x0 = this.px[a], y0 = this.py[a] - this.pr[a] - 4 * dpr, x1 = this.px[b], y1 = this.py[b] - this.pr[b] - 4 * dpr;
+      g.strokeStyle = rgba(AMBER, 0.85 * fade);
+      g.lineWidth = 2 * dpr;
+      g.beginPath();
+      g.moveTo(x0, y0);
+      g.quadraticCurveTo((x0 + x1) / 2, Math.min(y0, y1) - 26 * dpr, x1, y1);
+      g.stroke();
+      g.fillStyle = rgba(AMBER, 0.9 * fade);
+      g.beginPath(); g.arc(x1, y1, 2.6 * dpr, 0, Math.PI * 2); g.fill();
+      g.textAlign = "left";
+      g.fillText("overruled the brain", this.decisionX, this.decisionY);
+      g.textAlign = "center";
+    }
+  }
+
   // On top: the settle's largest repair per sweep, falling as the wave plays.
   overlay(g, now) {
     super.overlay(g, now);
+    this.drawDecision(g, now);
     const r = this.repair;
     if (!r || !this.box) return;
     const { dpr, box } = this;

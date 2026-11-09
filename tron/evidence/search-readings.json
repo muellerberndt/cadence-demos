@@ -1,0 +1,216 @@
+{
+ "cadence": "0.95.2",
+ "python": "3.13.7",
+ "pairs": 64,
+ "seeds": "2,200,000+",
+ "play": "brain.reset() then brain.act(field, greedy=True) each move; with sims > 0 the move is the root's most visited of a tree search the brain guides",
+ "seconds": 2570.3,
+ "readings": {
+  "flat": {
+   "voronoi": {
+    "wins": 102,
+    "losses": 26,
+    "draws": 0,
+    "score": 0.797,
+    "ci95": 0.07,
+    "ms_per_move": 5.7
+   },
+   "voronoi2": {
+    "wins": 24,
+    "losses": 100,
+    "draws": 4,
+    "score": 0.203,
+    "ci95": 0.07,
+    "ms_per_move": 6.2
+   },
+   "voronoi3": {
+    "wins": 30,
+    "losses": 94,
+    "draws": 4,
+    "score": 0.25,
+    "ci95": 0.075,
+    "ms_per_move": 5.3
+   },
+   "ab5": {
+    "wins": 16,
+    "losses": 108,
+    "draws": 4,
+    "score": 0.141,
+    "ci95": 0.06,
+    "ms_per_move": 6.8
+   }
+  },
+  "flat+ab4": {
+   "voronoi": {
+    "wins": 116,
+    "losses": 12,
+    "draws": 0,
+    "score": 0.906,
+    "ci95": 0.05,
+    "ms_per_move": 13.0
+   },
+   "voronoi2": {
+    "wins": 84,
+    "losses": 44,
+    "draws": 0,
+    "score": 0.656,
+    "ci95": 0.082,
+    "ms_per_move": 15.4
+   },
+   "voronoi3": {
+    "wins": 80,
+    "losses": 42,
+    "draws": 6,
+    "score": 0.648,
+    "ci95": 0.083,
+    "ms_per_move": 11.8
+   },
+   "ab5": {
+    "wins": 64,
+    "losses": 62,
+    "draws": 2,
+    "score": 0.508,
+    "ci95": 0.087,
+    "ms_per_move": 10.8
+   }
+  },
+  "flat+ab5": {
+   "voronoi": {
+    "wins": 128,
+    "losses": 0,
+    "draws": 0,
+    "score": 1.0,
+    "ci95": 0.0,
+    "ms_per_move": 26.6
+   },
+   "voronoi2": {
+    "wins": 102,
+    "losses": 24,
+    "draws": 2,
+    "score": 0.805,
+    "ci95": 0.069,
+    "ms_per_move": 21.0
+   },
+   "voronoi3": {
+    "wins": 56,
+    "losses": 56,
+    "draws": 16,
+    "score": 0.5,
+    "ci95": 0.087,
+    "ms_per_move": 23.7
+   },
+   "ab5": {
+    "wins": 48,
+    "losses": 74,
+    "draws": 6,
+    "score": 0.398,
+    "ci95": 0.085,
+    "ms_per_move": 18.9
+   }
+  },
+  "deep": {
+   "voronoi": {
+    "wins": 102,
+    "losses": 26,
+    "draws": 0,
+    "score": 0.797,
+    "ci95": 0.07,
+    "ms_per_move": 7.0
+   },
+   "voronoi2": {
+    "wins": 10,
+    "losses": 106,
+    "draws": 12,
+    "score": 0.125,
+    "ci95": 0.057,
+    "ms_per_move": 6.1
+   },
+   "voronoi3": {
+    "wins": 24,
+    "losses": 102,
+    "draws": 2,
+    "score": 0.195,
+    "ci95": 0.069,
+    "ms_per_move": 5.1
+   },
+   "ab5": {
+    "wins": 8,
+    "losses": 116,
+    "draws": 4,
+    "score": 0.078,
+    "ci95": 0.046,
+    "ms_per_move": 5.4
+   }
+  },
+  "deep+ab4": {
+   "voronoi": {
+    "wins": 118,
+    "losses": 8,
+    "draws": 2,
+    "score": 0.93,
+    "ci95": 0.044,
+    "ms_per_move": 12.0
+   },
+   "voronoi2": {
+    "wins": 90,
+    "losses": 38,
+    "draws": 0,
+    "score": 0.703,
+    "ci95": 0.079,
+    "ms_per_move": 13.1
+   },
+   "voronoi3": {
+    "wins": 88,
+    "losses": 38,
+    "draws": 2,
+    "score": 0.695,
+    "ci95": 0.08,
+    "ms_per_move": 13.9
+   },
+   "ab5": {
+    "wins": 58,
+    "losses": 70,
+    "draws": 0,
+    "score": 0.453,
+    "ci95": 0.086,
+    "ms_per_move": 12.2
+   }
+  },
+  "deep+ab5": {
+   "voronoi": {
+    "wins": 124,
+    "losses": 4,
+    "draws": 0,
+    "score": 0.969,
+    "ci95": 0.03,
+    "ms_per_move": 24.1
+   },
+   "voronoi2": {
+    "wins": 100,
+    "losses": 26,
+    "draws": 2,
+    "score": 0.789,
+    "ci95": 0.071,
+    "ms_per_move": 18.4
+   },
+   "voronoi3": {
+    "wins": 70,
+    "losses": 50,
+    "draws": 8,
+    "score": 0.578,
+    "ci95": 0.086,
+    "ms_per_move": 17.8
+   },
+   "ab5": {
+    "wins": 30,
+    "losses": 82,
+    "draws": 16,
+    "score": 0.297,
+    "ci95": 0.079,
+    "ms_per_move": 17.4
+   }
+  }
+ },
+ "what": "brain alone against brain + search (the brain's move +8 leaf units at the root of tron/absearch.py, 4 or 5 rounds); the page plays brain + search at 4 rounds (web/js/main.js LOOK)",
+ "command": "python scripts/reading.py --slots flat deep --depths 0 4 5 --opponents voronoi voronoi2 voronoi3 ab5 --pairs 64 --workers 8"
+}

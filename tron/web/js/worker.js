@@ -76,7 +76,10 @@ self.onmessage = async (event) => {
     else {
       const t0 = performance.now();
       const message = { op };
-      if (op === "tick") message.move = event.data.move;
+      if (op === "tick") {
+        message.move = event.data.move;
+        if (Number.isInteger(event.data.decided)) message.decided = event.data.decided;
+      }
       if (op === "begin" && event.data.seed !== undefined) message.seed = event.data.seed;
       if (op === "mode") message.sims = event.data.sims;
       result = JSON.parse(pyodide.globals.get("_handle")(JSON.stringify(message)));

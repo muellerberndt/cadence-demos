@@ -31,10 +31,13 @@ from playwright.sync_api import sync_playwright  # noqa: E402
 from tron import bots  # noqa: E402
 from tron.world import DC, DR, Arena  # noqa: E402
 
-TICK_JS = """async (move) => { const t0 = performance.now(); const s = await window.__tron.call("tick", {move});
-  return {moved: s.moved, heads: s.heads, over: s.over, worker_ms: s.worker_ms, round_ms: performance.now() - t0}; }"""
-BEGIN_JS = """async (seed) => { const s = await window.__tron.call("begin", {seed}); return {heads: s.heads}; }"""
+SLIM = "(s) => ({moved: s.moved, proposed: s.proposed, heads: s.heads, headings: s.headings, grid: s.grid, over: s.over, brain: s.brain ? {choice: s.brain.choice} : null, worker_ms: s.worker_ms})"
+TICK_JS = """async ([move, decided]) => { const t0 = performance.now(); const p = {move}; if (decided !== null) p.decided = decided;
+  const s = await window.__tron.call("tick", p); const r = (""" + SLIM + """)(s); r.round_ms = performance.now() - t0; return r; }"""
+BEGIN_JS = """async (seed) => { const s = await window.__tron.call("begin", {seed}); return (""" + SLIM + """)(s); }"""
+DECIDE_JS = """async (st) => { const d = await window.__tron.decide(st); return d; }"""
 KEYS = ("ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft")
+LOOK_BONUS = 8  # web/js/main.js LOOK.bonus
 
 
 def serve(folder: Path) -> tuple[http.server.ThreadingHTTPServer, int]:
@@ -163,7 +166,7 @@ def check_slot(browser, url, slot, a, shots, errors):
     page.on("console", lambda m: errors.append(f"[{slot}] console.{m.type}: {m.text}") if m.type == "error" else None)
     page.on("pageerror", lambda e: errors.append(f"[{slot}] pageerror: {e}"))
     t0 = time.time()
-    page.goto(f"{url}?brain={slot}" + (f"&search={a.sims}" if a.sims else ""))
+    page.goto(f"{url}?brain={slot}" + (f"&search={a.sims}" if a.sims else "") + ("&player=alone" if a.player == "alone" else ""))
     wait_phase(page, ("ready",))
     report["boot_s"] = round(time.time() - t0, 1)
     view = page.evaluate("window.__tron.view()")
@@ -173,27 +176,58 @@ def check_slot(browser, url, slot, a, shots, errors):
     page.screenshot(path=str(shots / f"{slot}-start.png"))
 
     seeds = [9_300_000 + k for k in range(a.parity)]
-    ref = reference(slot, seeds, a.sims)
     parity, rounds, worker = [], [], []
-    for g in ref:
-        s = page.evaluate(BEGIN_JS, g["seed"])
-        arena = Arena(24, seed=g["seed"])
-        ok = [list(h) for h in arena.heads] == s["heads"]
-        mine = []
-        while True:
-            t = bots.voronoi(arena, 1)
-            r = page.evaluate(TICK_JS, t)
-            mine.append(r["moved"][0])
-            arena.step((r["moved"][0], t))
-            ok = ok and [list(h) for h in arena.heads] == r["heads"] and arena.over == r["over"]
-            rounds.append(r["round_ms"])
-            worker.append(r["worker_ms"])
-            if r["over"]:
-                break
-        parity.append({"seed": g["seed"], "moves": len(mine), "brain_identical": "".join(map(str, mine)) == g["brain"],
-                       "replica_agrees": ok, "winner_identical": arena.winner == g["winner"]})
+    if a.player == "search":
+        # The brain proposes (checked against the native brain), the page's look-ahead decides
+        # (checked against tron/absearch.py at the depth the page reached), the replica follows.
+        from cadence import Brain
+        from tron import absearch, r3
+        nb = Brain.load(str(ROOT / "web" / "pack" / slot / "brain" / "brain.npz"), backend="cpu")
+        pol = r3.policy(nb, "field")
+        for seed in seeds:
+            s = page.evaluate(BEGIN_JS, seed)
+            arena = Arena(24, seed=seed)
+            ok = [list(h) for h in arena.heads] == s["heads"]
+            n = proposals = values = 0
+            depths = []
+            while True:
+                proposals += int(pol(arena, 0) == s["brain"]["choice"])
+                d = page.evaluate(DECIDE_JS, s)
+                mv, vals = absearch.search(arena, 0, d["depth"], d["prior"], LOOK_BONUS) if d["depth"] else (d["prior"], None)
+                values += int(mv == d["move"] and (vals is None or [int(v) for v in vals] == d["values"]))
+                depths.append(d["depth"])
+                t = bots.voronoi(arena, 1)
+                s = page.evaluate(TICK_JS, [t, d["move"]])
+                arena.step((d["move"], t))
+                n += 1
+                ok = ok and [list(h) for h in arena.heads] == s["heads"] and arena.over == s["over"] and s["moved"][0] == d["move"]
+                rounds.append(s["round_ms"])
+                worker.append(s["worker_ms"])
+                if s["over"]:
+                    break
+            parity.append({"seed": seed, "moves": n, "brain_identical": proposals == n, "search_identical": values == n,
+                           "replica_agrees": ok, "winner_identical": True, "depths": {str(k): depths.count(k) for k in sorted(set(depths))}})
+    else:
+        ref = reference(slot, seeds, a.sims)
+        for g in ref:
+            s = page.evaluate(BEGIN_JS, g["seed"])
+            arena = Arena(24, seed=g["seed"])
+            ok = [list(h) for h in arena.heads] == s["heads"]
+            mine = []
+            while True:
+                t = bots.voronoi(arena, 1)
+                r = page.evaluate(TICK_JS, [t, None])
+                mine.append(r["moved"][0])
+                arena.step((r["moved"][0], t))
+                ok = ok and [list(h) for h in arena.heads] == r["heads"] and arena.over == r["over"]
+                rounds.append(r["round_ms"])
+                worker.append(r["worker_ms"])
+                if r["over"]:
+                    break
+            parity.append({"seed": g["seed"], "moves": len(mine), "brain_identical": "".join(map(str, mine)) == g["brain"],
+                           "replica_agrees": ok, "winner_identical": arena.winner == g["winner"]})
     report["parity"] = parity
-    report["parity_ok"] = all(x["brain_identical"] and x["replica_agrees"] and x["winner_identical"] for x in parity)
+    report["parity_ok"] = all(x["brain_identical"] and x["replica_agrees"] and x["winner_identical"] and x.get("search_identical", True) for x in parity)
     report["parity_ms"] = {"round": stats(rounds), "worker": stats(worker)}
 
     page.reload()
@@ -204,6 +238,11 @@ def check_slot(browser, url, slot, a, shots, errors):
         games.append({"result_for_brain": last["result"], "ticks": last["tick"]})
     report["games"] = games
     report["record"] = v["record"]
+    looks = page.evaluate("window.__tron.looks()")
+    if looks:
+        ds = [x["depth"] for x in looks]
+        report["look"] = {"moves": len(looks), "depths": {str(k): ds.count(k) for k in sorted(set(ds))},
+                          "ms": stats([x["ms"] for x in looks]), "overruled": sum(x["overruled"] for x in looks)}
     tim = page.evaluate("window.__tron.timings()")
     report["play_ms"] = {"round": stats([t["round"] for t in tim]), "worker": stats([t["worker"] for t in tim]),
                          "python_act": stats([t["act"] for t in tim])}
@@ -225,6 +264,7 @@ def main() -> int:
     ap.add_argument("--slots", nargs="+", default=["deep", "flat"])
     ap.add_argument("--shots", default=str(ROOT / "evidence" / "screens"))
     ap.add_argument("--out", default=None)
+    ap.add_argument("--player", default="search", choices=["search", "alone"], help="the page's player (the default page: search)")
     ap.add_argument("--sims", type=int, default=0, help="the page's search mode (?search=N); 0: the brain alone")
     a = ap.parse_args()
     shots = Path(a.shots)
@@ -232,7 +272,7 @@ def main() -> int:
     server, port = serve(ROOT / "web")
     url = f"http://127.0.0.1:{port}/index.html"
     errors: list[str] = []
-    report: dict = {"url": url, "sims": a.sims, "slots": {}}
+    report: dict = {"url": url, "player": a.player, "sims": a.sims, "slots": {}}
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         report["chromium"] = browser.version
@@ -242,7 +282,7 @@ def main() -> int:
         page = phone.new_page()
         page.on("console", lambda m: errors.append(f"[phone] console.{m.type}: {m.text}") if m.type == "error" else None)
         page.on("pageerror", lambda e: errors.append(f"[phone] pageerror: {e}"))
-        page.goto(url + (f"?search={a.sims}" if a.sims else ""))
+        page.goto(url + (f"?search={a.sims}" if a.sims else "") + ("?player=alone" if a.player == "alone" else ""))
         wait_phase(page, ("ready",))
         v, last = play(page, shots, "phone-game", buttons=True)
         ov = page.evaluate("[document.documentElement.scrollWidth, document.documentElement.clientWidth]")

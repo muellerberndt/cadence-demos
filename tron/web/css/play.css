@@ -104,3 +104,8 @@ button { font: inherit; color: inherit; }
 
 .brain-wrap { position: relative; }
 .views { position: absolute; left: 8px; top: 8px; z-index: 2; background: rgba(0,0,0,0.45); }
+@media (max-width: 640px) {
+  .bar { grid-template-columns: 1fr auto; row-gap: 8px; }
+  .bar .right { grid-column: 1 / -1; justify-self: stretch; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
+  .pick a { padding: 4px 6px; font-size: 9px; letter-spacing: 0.12em; }
+}

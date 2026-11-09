@@ -1,9 +1,10 @@
 {
- "url": "http://127.0.0.1:59755/index.html",
+ "url": "http://127.0.0.1:58315/index.html",
+ "player": "search",
  "sims": 0,
  "slots": {
   "deep": {
-   "boot_s": 10.3,
+   "boot_s": 3.1,
    "brain": "mako-deep-3",
    "sims": 0,
    "switch_marks": [
@@ -12,38 +13,46 @@
    "parity": [
     {
      "seed": 9300000,
-     "moves": 144,
+     "moves": 158,
      "brain_identical": true,
+     "search_identical": true,
      "replica_agrees": true,
-     "winner_identical": true
+     "winner_identical": true,
+     "depths": {
+      "4": 158
+     }
     },
     {
      "seed": 9300001,
-     "moves": 184,
+     "moves": 154,
      "brain_identical": true,
+     "search_identical": true,
      "replica_agrees": true,
-     "winner_identical": true
+     "winner_identical": true,
+     "depths": {
+      "4": 154
+     }
     }
    ],
    "parity_ok": true,
    "parity_ms": {
     "round": {
-     "n": 328,
-     "median": 39.4,
-     "p90": 47.2,
-     "max": 85.4
+     "n": 312,
+     "median": 13.4,
+     "p90": 29.1,
+     "max": 59.3
     },
     "worker": {
-     "n": 328,
-     "median": 38.5,
-     "p90": 44.6,
-     "max": 85.2
+     "n": 312,
+     "median": 12.9,
+     "p90": 28.8,
+     "max": 58.9
     }
    },
    "games": [
     {
      "result_for_brain": "win",
-     "ticks": 32
+     "ticks": 54
     }
    ],
    "record": {
@@ -52,24 +61,37 @@
     "them": 1,
     "draws": 0
    },
+   "look": {
+    "moves": 54,
+    "depths": {
+     "4": 54
+    },
+    "ms": {
+     "n": 54,
+     "median": 11.6,
+     "p90": 22.9,
+     "max": 31.5
+    },
+    "overruled": 20
+   },
    "play_ms": {
     "round": {
-     "n": 32,
-     "median": 55.2,
-     "p90": 87.2,
-     "max": 126.2
+     "n": 54,
+     "median": 17.1,
+     "p90": 32.9,
+     "max": 46.2
     },
     "worker": {
-     "n": 32,
-     "median": 44.7,
-     "p90": 71.8,
-     "max": 120.5
+     "n": 54,
+     "median": 13.4,
+     "p90": 23.5,
+     "max": 31.6
     },
     "python_act": {
-     "n": 32,
-     "median": 38.4,
-     "p90": 62.9,
-     "max": 104.5
+     "n": 54,
+     "median": 11.1,
+     "p90": 20.4,
+     "max": 27.9
     }
    },
    "fps_median": 59.9,
@@ -81,7 +103,7 @@
    }
   },
   "flat": {
-   "boot_s": 8.6,
+   "boot_s": 3.8,
    "brain": "mako-flat",
    "sims": 0,
    "switch_marks": [
@@ -90,71 +112,92 @@
    "parity": [
     {
      "seed": 9300000,
-     "moves": 144,
+     "moves": 158,
      "brain_identical": true,
+     "search_identical": true,
      "replica_agrees": true,
-     "winner_identical": true
+     "winner_identical": true,
+     "depths": {
+      "4": 158
+     }
     },
     {
      "seed": 9300001,
-     "moves": 184,
+     "moves": 154,
      "brain_identical": true,
+     "search_identical": true,
      "replica_agrees": true,
-     "winner_identical": true
+     "winner_identical": true,
+     "depths": {
+      "4": 154
+     }
     }
    ],
    "parity_ok": true,
    "parity_ms": {
     "round": {
-     "n": 328,
-     "median": 33.2,
-     "p90": 37.8,
-     "max": 43.2
+     "n": 312,
+     "median": 14.6,
+     "p90": 19.2,
+     "max": 184.1
     },
     "worker": {
-     "n": 328,
-     "median": 32.0,
-     "p90": 36.1,
-     "max": 42.3
+     "n": 312,
+     "median": 13.2,
+     "p90": 18.2,
+     "max": 183.9
     }
    },
    "games": [
     {
-     "result_for_brain": "loss",
-     "ticks": 66
+     "result_for_brain": "win",
+     "ticks": 34
     }
    ],
    "record": {
     "games": 1,
-    "you": 1,
-    "them": 0,
+    "you": 0,
+    "them": 1,
     "draws": 0
+   },
+   "look": {
+    "moves": 34,
+    "depths": {
+     "4": 34
+    },
+    "ms": {
+     "n": 34,
+     "median": 4.7,
+     "p90": 26.1,
+     "max": 34.4
+    },
+    "overruled": 5
    },
    "play_ms": {
     "round": {
-     "n": 66,
-     "median": 41.2,
-     "p90": 53.1,
-     "max": 430.8
+     "n": 34,
+     "median": 16.4,
+     "p90": 18,
+     "max": 170.3
     },
     "worker": {
-     "n": 66,
-     "median": 32.9,
-     "p90": 38.8,
-     "max": 430.1
+     "n": 34,
+     "median": 11.9,
+     "p90": 13,
+     "max": 149.8
     },
     "python_act": {
-     "n": 66,
-     "median": 26.6,
-     "p90": 32.7,
-     "max": 398.8
+     "n": 34,
+     "median": 9.4,
+     "p90": 10.1,
+     "max": 135.1
     }
    },
    "fps_median": 59.9,
    "record_after_reload": {
     "games": 1,
-    "you": 1,
-    "them": 0,
+    "you": 0,
+    "them": 1,
     "draws": 0
    }
   }
@@ -162,7 +205,7 @@
  "chromium": "156.0.8078.4",
  "phone": {
   "result_for_brain": "win",
-  "ticks": 13,
+  "ticks": 55,
   "no_overflow": true,
   "scroll_vs_client": [
    390,

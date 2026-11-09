@@ -173,17 +173,24 @@ class FieldHost:
         self.arena = Arena(self.size, seed=game_seed(self.name, self.games) if seed is None else int(seed))
         self.brain.reset()
         self.moved = None
+        self.proposed = None
         self.pending = self._act()
         return self.state(full=True)
 
-    def tick(self, player: int) -> dict[str, Any]:
+    def tick(self, player: int, decided: int | None = None) -> dict[str, Any]:
+        """One round. `decided`: the move the page's player chose for the brain's cycle (the
+        look-ahead over the rules, seeded with the brain's pick); None plays the brain's pick."""
         if self.arena is None or self.arena.over:
             raise RuntimeError("no game in progress")
         player = int(player)
         if player not in (0, 1, 2):
             raise ValueError("a move is 0 (left), 1 (straight) or 2 (right)")
-        self.moved = [self.pending, player]
-        self.arena.step((self.pending, player))
+        mine = self.pending if decided is None else int(decided)
+        if mine not in (0, 1, 2):
+            raise ValueError("a decided move is 0, 1 or 2")
+        self.moved = [mine, player]
+        self.proposed = self.pending
+        self.arena.step((mine, player))
         if self.arena.over:
             self.games += 1
             self.pending = None
@@ -210,6 +217,8 @@ class FieldHost:
             "result": self.result() if a.over else None,
             "lessons": 0,
             "moved": self.moved,
+            "proposed": getattr(self, "proposed", None),
+            "grid": list(a.grid),
             "brain": self.last if not a.over else {**self.last, "choice": None},
             "nframes": 0,
             "frames": "",
@@ -288,7 +297,7 @@ class FieldHost:
         if op == "begin":
             return json.dumps(self.begin(msg.get("seed")))
         if op == "tick":
-            return json.dumps(self.tick(msg["move"]))
+            return json.dumps(self.tick(msg["move"], msg.get("decided")))
         if op == "mode":
             self.sims = max(0, int(msg.get("sims", 0)))
             return json.dumps({"sims": self.sims})

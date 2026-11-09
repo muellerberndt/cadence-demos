@@ -246,6 +246,17 @@ over 288 pairs, an argmax child at 0.0009/40): 0.75 / 0.74 against `voronoi`, 0.
 `voronoi3`, the shipped Mako Deep. The same route lowered every child of the flat
 brain, at 200 and 800 simulations and rates down to 0.0009/800.
 
+## The page's player
+
+Nothing is trained for it: the shipped brain proposes a move and the alpha-beta of
+`tron/absearch.py` (4 rounds, the brain's move +8 cells at the root, Voronoi territory at the
+leaves) decides; the page runs the same search in JavaScript (`web/js/search.js`). Read it with
+
+```sh
+python scripts/reading.py --slots flat deep --depths 0 4 5 --opponents voronoi voronoi2 voronoi3 ab5 --pairs 64
+node tests/parity_search.mjs tests/fixtures/search.json   # the page's search against absearch.py
+```
+
 ## A brain-guided search
 
 `tron/mcts.py` is a PUCT search over rounds (my move, then the opponent's reply knowing it): the

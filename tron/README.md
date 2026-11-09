@@ -4,9 +4,11 @@ Ride a light cycle against a Cadence brain that runs in your browser tab. The br
 whole arena and answers every move with one settle of the whole brain; the panel beside the arena
 draws every neuron of it as a brain seen from the side, sweep by sweep. Two brains are on the page:
 a flat one of one region and a deep one of three regions whose deep layers decide four in five of
-its moves. Pick one with the switch in the header.
+its moves. By default the brain proposes and a look-ahead over the rules checks it; BRAIN ALONE
+plays the brain's settle and nothing else. Pick the brain and the player with the switches in the
+header.
 
-![A game against the deep brain: the arena on the left, the brain seen from the side on the right, the settle running from the visual cortex through L1, L2 and L3 to the motor strip](docs/tron-deep.png)
+![A game against the deep brain + look-ahead: the arena on the left; on the right the brain seen from the side, the settle running from the visual cortex through L1, L2 and L3 to the motor strip, and beside it the look-ahead's value for each move, overruling the brain's pick (the amber arc)](docs/tron-deep.png)
 
 ![The flat brain: one association region of 256 neurons between the visual cortex and the motor strip](docs/tron-flat.png)
 
@@ -18,13 +20,41 @@ Runs on `cadence-net==0.95.2`.
 python3 -m http.server 8831 --directory web   # from tron/; open http://localhost:8831/
 ```
 
-`?brain=deep` (the default) or `?brain=flat` picks the brain. Arrows or WASD steer, space starts a
-round, M mutes; on a phone, swipe to steer and tap to ride. Your record against each brain is kept
-in this browser, apart for each brain.
+`?brain=deep` (the default) or `?brain=flat` picks the brain, `?player=alone` the brain alone.
+Arrows or WASD steer, space starts a round, M mutes; on a phone, swipe to steer and tap to ride.
+Your record against each brain and player is kept in this browser, apart for each.
 
 The first visit downloads Pyodide 314.0.7 and NumPy from jsDelivr. The wheel, the host sources and
 the brain are in `web/pack/<flat|deep>/`; the worker checks each file against the SHA-256 in that
 pack's `manifest.json` before anything runs. No server chooses the moves.
+
+## The player: the brain proposes, a look-ahead checks it
+
+Every tick the brain settles from rest on the field and its strongest motor neuron is its
+proposal. Then a look-ahead over the game's rules ([`web/js/search.js`](web/js/search.js), in its
+own worker) searches 4 rounds: each of its three moves, every reply of yours knowing it, and so on,
+scoring the positions it reaches by the Voronoi territory (cells it reaches before you, less those
+you reach first; the difference of the rooms once you are walled apart) and by who crashes first.
+The brain's proposal gets a bonus of 8 cells at the root, so the look-ahead keeps it unless another
+move is clearly better. No neural evaluation runs inside the search; it knows only the rules. It is
+the alpha-beta of [`tron/absearch.py`](tron/absearch.py), checked value for value
+([`tests/parity_search.mjs`](tests/parity_search.mjs): 2,632 searches, no difference), and it takes
+6 ms at the median and at most 70 ms a move in the browser. The brain view shows its value for each
+move beside the motor strip, and an amber arc when it overrules the brain.
+
+Readings, 64 mirror pairs each, every move settled from rest
+([`evidence/search-readings.json`](evidence/search-readings.json)):
+
+| Player | `voronoi` | `voronoi2` | `voronoi3` | `ab5` |
+| --- | --- | --- | --- | --- |
+| Deep brain alone | 0.80 | 0.13 | 0.20 | 0.08 |
+| Deep brain + look-ahead (the page) | 0.93 | 0.70 | 0.70 | 0.45 |
+| Flat brain alone | 0.80 | 0.20 | 0.25 | 0.14 |
+| Flat brain + look-ahead | 0.91 | 0.66 | 0.65 | 0.51 |
+
+`voronoi2` and `voronoi3` look two and three rounds ahead, `ab5` is the same alpha-beta at 5
+rounds with no brain. A 5-round look-ahead reads higher against `voronoi` and `voronoi2` but lower
+against `voronoi3` and `ab5` (deep: 0.97, 0.79, 0.58, 0.30), so the page searches 4.
 
 ## The brains
 
@@ -112,16 +142,13 @@ readings, and a smoke-scale run of each route that takes minutes. In short:
 
 ## Limits
 
-- **The brain alone, no search.** The page plays one settle per move. Bots that look further
-  ahead beat it: the flat brain scores 0.20 against `voronoi2`, 0.25 against `voronoi3` (two and
-  three rounds of look-ahead) and 0.14 against `ab5` (a 10-ply alpha-beta), 128 games each; the
-  deep brain matches the flat one against `voronoi` and is weaker against `voronoi3`. A tree search the brain guides
-  (`tron/mcts.py`) lifts the flat brain at 200 simulations a move (0.92 against `voronoi`, 0.59
-  against `voronoi3`), at about 0.4 s a move natively. In the page it does not fit: at 8 and 16
-  simulations a move takes 0.4 to 0.8 s in Pyodide against the 120 ms tick, and at those sizes
-  the search is no stronger than the brain alone (flat against `voronoi3`: 0.27 alone, 0.25 with
-  8 simulations, 0.09 with 16; [`evidence/search-0952.json`](evidence/search-0952.json)). The host
-  keeps the mode (`?search=N`) for experiments; the page does not offer it.
+- **The look-ahead knows the rules.** The default player's strength against the bots comes from
+  the brain and the search together; the brain alone loses most games to bots that look two or more
+  rounds ahead (the table above). The look-ahead is pessimistic: it assumes you answer each of its
+  moves knowing it, and it scores positions by territory, not by a learned value.
+- **A tree search guided by the brain's values** (`tron/mcts.py`) does not fit the page: at 8 and 16
+  simulations a move takes 0.4 to 0.8 s in Pyodide against the 120 ms tick, and at those sizes it is
+  no stronger than the brain alone ([`evidence/search-0952.json`](evidence/search-0952.json)).
 - **Frozen while you play.** These brains do not learn from your games.
 - **Settled is not right.** A settled state certifies the settle's equations at the tolerance,
   not the quality of the move.
@@ -132,13 +159,13 @@ readings, and a smoke-scale run of each route that takes minutes. In short:
 
 | Path | What |
 | --- | --- |
-| `web/` | the page: `js/main.js` (game, clock, record), `js/arena.js`, `js/anatomy.js`, `js/deep.js` and `js/ripple.js` (the brain views), `js/worker.js` (Pyodide) |
+| `web/` | the page: `js/main.js` (game, clock, record), `js/arena.js`, `js/anatomy.js`, `js/deep.js` and `js/ripple.js` (the brain views), `js/worker.js` (Pyodide), `js/search.js` and `js/search_worker.js` (the look-ahead) |
 | `web/pack/flat/`, `web/pack/deep/` | the wheel, the host sources, the brain, its meta and its introspection, with `manifest.json` |
 | `tron/` | the arena (`world.py`), the sense (`field.py`), the page's host (`fieldhost.py`), the bots (`bots.py`, `fastbots.py`, `absearch.py`), the schools and the search |
 | `scripts/` | training, selection, self-play, the deep constructions, readings, introspection |
 | `brains/` | each brain's meta: layout, readings, lineage; [MODEL_CARD.md](MODEL_CARD.md) describes both |
 | `pack.py` | packs one brain into `web/pack/<slot>/` |
-| `tests/` | the rules, the bots, the packs (`pytest`), and `play_check.py`, the page tried in headless Chromium |
+| `tests/` | the rules, the bots, the packs (`pytest`), `parity_search.mjs` (the page's look-ahead against `tron/absearch.py` on `fixtures/search.json`, made by `make_search_fixture.py`), and `play_check.py`, the page tried in headless Chromium |
 | `evidence/` | readings on 0.95.2 and the page check |
 
 ```sh

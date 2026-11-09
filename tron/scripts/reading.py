@@ -28,10 +28,11 @@ PACK = HERE.parents[1] / "web" / "pack"
 
 def _chunk(args):
     """Mirror pairs lo..hi of one brain (and search size) against one bot."""
-    slot, sims, opp, lo, hi, base = args
+    slot, sims, opp, lo, hi, base = args[:6]
+    depth, bonus = (args[6], args[7]) if len(args) > 6 else (0, 0)
     from cadence import Brain
     from phasec import OPP
-    from tron import mcts, r3
+    from tron import absearch, mcts, r3
     from tron.world import Arena, mulberry32
 
     brain = Brain.load(str(PACK / slot / "brain" / "brain.npz"), backend="cpu")
@@ -40,6 +41,9 @@ def _chunk(args):
         pol = lambda a, seat: mcts.search(a, seat, ev, sims=sims)[0]  # noqa: E731
     else:
         pol = r3.policy(brain, "field")
+    if depth > 0:  # the page's player: the brain proposes, the alpha-beta over the rules decides
+        alone = pol
+        pol = lambda a, seat: absearch.search(a, seat, depth, alone(a, seat), bonus)[0]  # noqa: E731
     play = OPP[opp]
     w = l = d = 0
     ms, moves = 0.0, 0
@@ -57,7 +61,7 @@ def _chunk(args):
             w += a.winner == seat
             l += a.winner == 1 - seat
             d += a.winner is None
-    return slot, sims, opp, w, l, d, ms, moves
+    return slot, sims, opp, w, l, d, ms, moves, depth
 
 
 def main() -> None:
@@ -66,14 +70,16 @@ def main() -> None:
     ap.add_argument("--opponents", nargs="+", default=["voronoi"])
     ap.add_argument("--slots", nargs="+", default=["flat", "deep"])
     ap.add_argument("--sims", nargs="+", type=int, default=[0])
+    ap.add_argument("--depths", nargs="+", type=int, default=[0], help="alpha-beta rounds after the brain (0: the brain alone)")
+    ap.add_argument("--bonus", type=int, default=8, help="leaf units added to the brain's move at the root")
     ap.add_argument("--base", type=int, default=r3eval.CHECKPOINT)
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--step", type=int, default=4, help="pairs per task")
     a = ap.parse_args()
     import cadence
 
-    tasks = [(s, n, o, lo, min(lo + a.step, a.pairs), a.base) for s in a.slots for n in a.sims for o in a.opponents
-             for lo in range(0, a.pairs, a.step)]
+    tasks = [(s, n, o, lo, min(lo + a.step, a.pairs), a.base, dp, a.bonus) for s in a.slots for n in a.sims for dp in a.depths
+             for o in a.opponents for lo in range(0, a.pairs, a.step)]
     t0 = time.time()
     with get_context(r3eval.MP).Pool(max(1, min(a.workers, len(tasks)))) as pool:
         res = pool.map(_chunk, tasks, chunksize=1)
@@ -81,8 +87,10 @@ def main() -> None:
            "seeds": f"{a.base:,}+", "play": "brain.reset() then brain.act(field, greedy=True) each move; "
            "with sims > 0 the move is the root's most visited of a tree search the brain guides",
            "seconds": round(time.time() - t0, 1), "readings": {}}
-    for slot, sims, opp, w, l, d, ms, moves in res:
+    for slot, sims, opp, w, l, d, ms, moves, depth in res:
         key = slot if sims == 0 else f"{slot}+search{sims}"
+        if depth:
+            key += f"+ab{depth}"
         t = out["readings"].setdefault(key, {}).setdefault(opp, {"wins": 0, "losses": 0, "draws": 0, "_ms": 0.0, "_moves": 0})
         t["wins"] += w
         t["losses"] += l

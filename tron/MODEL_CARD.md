@@ -26,6 +26,15 @@ whole brain settles from rest on the field and the strongest motor neuron is the
 and no memory between moves. A settle that does not qualify is refused and the cycle rides
 straight on; the page counts refusals.
 
+## The page's player
+
+By default the page plays the brain together with a look-ahead over the rules
+(`web/js/search.js`, the alpha-beta of `tron/absearch.py`, checked value for value by
+`tests/parity_search.mjs`): each tick the brain settles from rest and proposes its strongest motor
+neuron; a 4-round search (its move, your reply knowing it, four times) scores the reachable
+positions by Voronoi territory and crashes, with the brain's proposal 8 cells ahead at the root, and
+plays the best. No neural evaluation runs inside the search. `?player=alone` plays the brain alone.
+
 ## How it was trained
 
 The full route, with commands, hardware and times, is [TRAINING.md](TRAINING.md);
@@ -76,6 +85,8 @@ every move settled from rest, greedy.
 | On cadence-net 0.95.2: `voronoi`, 32 pairs, seeds 2,200,000+ | 48-16, 0.75 | (all its readings are on 0.95.2) | `evidence/reading-0952.json` |
 | The deep pathway cut (its 73,920 synapses at zero) | | changes 82% of moves, 0.00 against `voronoi` | `evidence/deep-ablation.json` |
 | Page: the same moves as the native brain, 2 games each | identical | identical | `evidence/page_check.json` |
+| Brain + look-ahead (the page's player), 64 pairs: `voronoi`, `voronoi2`, `voronoi3`, `ab5` | 0.91, 0.66, 0.65, 0.51 | 0.93, 0.70, 0.70, 0.45 | `evidence/search-readings.json` |
+| Brain alone on the same 64 pairs | 0.80, 0.20, 0.25, 0.14 | 0.80, 0.13, 0.20, 0.08 | the same |
 | Brain + search, 8 / 16 simulations (not on the page): `voronoi`, 32 pairs; deep: the previous deep brain | 0.63 / 0.66 | 0.63 / 0.63 | `evidence/search-0952.json` |
 | Brain + search, 8 / 16 simulations: `voronoi3`, 32 pairs (brain alone 0.27 / 0.09) | 0.25 / 0.09 | 0.22 / 0.09 | the same |
 
@@ -90,18 +101,20 @@ Frozen: nothing is learned while you play, and a round is fully determined by th
 moves. The visitor picks the brain (`?brain=flat|deep`); the record against each brain is kept in
 the browser's local storage, apart per brain. The worker checks every file against its SHA-256
 before running. Measured in headless Chromium on an Apple M4 with the anatomy view on
-(`evidence/page_check.json`): start 8.6 s (flat) and 10.3 s (deep: Pyodide, NumPy, the wheel and
-the brain), a settle in Python 27 ms (flat) and 38 ms (deep) at the median, the whole move in the
-worker 33 and 45 ms, the brain view at 60 frames per second; the page ticks every 120 ms. The
+(`evidence/page_check.json`, the page's default player): the brain's settle and the whole tick in
+the worker 12 ms (flat) and 13 ms (deep) at the median, the look-ahead 5 and 12 ms (at most 34 ms,
+always the full 4 rounds), the brain view at 60 frames per second; the page ticks every 120 ms.
+Every brain proposal equals the native brain's move and every look-ahead equals
+`tron/absearch.py` at 4 rounds over the check's 4 games (612 moves). The
 panel draws the brain from the side by default (`?view=layers` for the layers): every neuron
 replays its recorded sweeps, and every tract is as bright as its live |weight x activation|.
 
 ## Limits
 
 - The brain alone loses most games to bots that look further ahead (`voronoi2`, `voronoi3`,
-  `ab5`). A tree search the brain guides is stronger at 200 simulations a move and does not fit the
-  page: at 8 and 16 simulations a move takes 0.4 to 0.8 s in Pyodide against the 120 ms tick, and
-  is no stronger than the brain alone (`evidence/search-0952.json`).
+  `ab5`); the page's default player gets its strength against them from the brain and the
+  look-ahead over the rules together. A tree search guided by the brain's values (`tron/mcts.py`)
+  does not fit the page (`evidence/search-0952.json`).
 - Readings are against bots, not people; a person who walls the brain in early can beat it.
 - It does not learn from your games, and it has no memory between moves.
 - A settled state certifies the settle's equations at the tolerance, not the quality of the move.
