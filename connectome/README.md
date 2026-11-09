@@ -8,6 +8,10 @@ The mathematical background: [Agreement and Surprise: Global Equilibrium from Lo
 Repair](https://philpapers.org/rec/MUEAAS-2) and [Cadence: Learning Through Local Patch
 Settlement](https://philpapers.org/rec/MUECAP-2).
 
+![The fish page: the tank, the teaching panel and the compiled brain lit by its activity](docs/fish.png)
+
+![The larva page: the whole-body connectome in the loop](docs/larva.png)
+
 ## Run
 
 ```sh
