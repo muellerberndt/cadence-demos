@@ -103,6 +103,22 @@ Every demo runs on `cadence-net` 0.95.2.
 | [Eyes](eyes/) | One brain that follows every shape you drag with its own eye, from the page's pixels only | A raised visual brain run by `cadence.Brain`; in the browser, the released library itself, in Pyodide |
 | [Connectome](connectome/) | Teach a fish gaze circuit to hold, return and hold again on measured wiring; explore a larva with fixed connections | Cadence rate patches in JavaScript, with plastic fish connections and declared body models |
 
+## Putting a demo on your own site
+
+Each browser demo is a static folder: its page, its scripts and a `pack/` folder holding the
+released `cadence-net` wheel, the brain and a manifest of SHA-256 hashes, which the page's worker
+checks before it runs anything. Serve the folder unchanged (for example under `public/` of a
+site), and link to its page or embed it in an iframe. A site that builds a page into its own
+bundle names the pack's address in the host page's `<head>`:
+
+```html
+<meta name="cadence-pack" content="/demos/connect-four/pack/">
+```
+
+Without the tag a page uses `pack/` beside itself (Robot Arena: `/pack/`). The pack must be served
+as files, not answered by a single-page app's fallback page. Pyodide and NumPy load from
+jsDelivr on the first visit.
+
 ## [Tron](tron/): light cycles against a brain that sees the whole field
 
 Each move is one settle of the whole brain on the 24 × 24 arena, turned so that the rider's

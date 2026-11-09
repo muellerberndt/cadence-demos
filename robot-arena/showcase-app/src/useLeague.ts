@@ -18,7 +18,8 @@ export type LeagueRecord = {
 };
 export type Speed = 1 | 2 | 0; // 0 = as fast as the brains settle
 
-const PACK = "/pack/";
+// Where the pack lives: <meta name="cadence-pack"> if the host page sets one, else /pack/ at the site root.
+const PACK = new URL(document.querySelector('meta[name="cadence-pack"]')?.getAttribute("content") || "/pack/", document.baseURI).href;
 // the training ring: the fight lasts up to 2400 moments and the ring closes to 3.5 m over 2000
 const DURATION = 2400, ZONE = 2000, ZONE_END = 3.5, BATCH = 6;
 

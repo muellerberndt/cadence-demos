@@ -13,6 +13,8 @@ const TICK_MS = 120;
 const KEYS = { ArrowUp: 0, KeyW: 0, ArrowRight: 1, KeyD: 1, ArrowDown: 2, KeyS: 2, ArrowLeft: 3, KeyA: 3 };
 const STORE = "cadence-tron-play.record";
 // Two brains share the page: ?brain=flat or ?brain=deep (the default) picks web/pack/<slot>/.
+// Where the packs live: <meta name="cadence-pack"> if the host page sets one, else pack/ beside this page.
+const PACK_ROOT = new URL(document.querySelector('meta[name="cadence-pack"]')?.content || "pack/", document.baseURI).href;
 const SLOTS = ["flat", "deep"];
 const SLOT = (() => {
   const asked = new URLSearchParams(location.search).get("brain");
@@ -250,7 +252,7 @@ async function boot() {
       sw.title = SIMS ? `The brain guides a search of ${SIMS} simulations per move; tap for the brain alone`
         : `Let the brain guide a tree search of ${SEARCH_SIMS} simulations per move`;
     }
-    const manifest = await (await fetch(`pack/${SLOT}/manifest.json`, { cache: "no-cache" })).json();
+    const manifest = await (await fetch(`${PACK_ROOT}${SLOT}/manifest.json`, { cache: "no-cache" })).json();
     app.manifest = manifest;
     app.title = manifest.brain.title;
     els.name.textContent = app.title.toUpperCase();
@@ -258,9 +260,9 @@ async function boot() {
     document.title = `Tron vs ${app.title}`;
     loadRecord(manifest.brain.sha256);
     showRecord();
-    const pack = new URL(`pack/${SLOT}/`, location.href).href;
+    const pack = new URL(`${SLOT}/`, PACK_ROOT).href;
     const intro = manifest.brain.introspect
-      ? fetch(`pack/${SLOT}/${manifest.brain.introspect}`, { cache: "no-cache" }).then((r) => (r.ok ? r.json() : null)).catch(() => null)
+      ? fetch(`${PACK_ROOT}${SLOT}/${manifest.brain.introspect}`, { cache: "no-cache" }).then((r) => (r.ok ? r.json() : null)).catch(() => null)
       : Promise.resolve(null);
     const [{ describe }, introspect] = await Promise.all([link.call("start", { pack, games: app.record.games }), intro]);
     if (SIMS) await link.call("mode", { sims: SIMS });
