@@ -41,6 +41,7 @@ def main() -> None:
     p.add_argument("--width", type=int, default=160)
     p.add_argument("--height", type=int, default=100)
     p.add_argument("--tolerance", type=float, default=0.03)
+    p.add_argument("--wheel", default=None, help="a local wheel instead of the released one")
     a = p.parse_args()
 
     import cadence
@@ -57,15 +58,22 @@ def main() -> None:
     (out / "py" / "tracker").mkdir(parents=True)
 
     brain_path = out / "brain.npz"
-    raised = Brain.load(run / a.brain)
+    # the page runs the brain on the CPU in float64, wherever it was raised
+    raised = Brain.load(run / a.brain, backend="cpu", precision="float64")
     raised_tolerance = raised.learner.config.tolerance
     raised.learner.config = replace(raised.learner.config, tolerance=a.tolerance)
     raised.basal_ganglia.learner.config = raised.learner.config
     raised.save(brain_path)
     version = cadence.__version__
-    subprocess.run([sys.executable, "-m", "pip", "download", f"cadence-net=={version}", "--no-deps",
-                    "--only-binary", ":all:", "-d", str(out), "-q"], check=True)
-    wheel = next(out.glob(f"cadence_net-{version}-py3-none-any.whl"))
+    if a.wheel:
+        wheel = out / Path(a.wheel).name
+        shutil.copy(a.wheel, wheel)
+        source = "local build"
+    else:
+        subprocess.run([sys.executable, "-m", "pip", "download", f"cadence-net=={version}",
+                        "--no-deps", "--only-binary", ":all:", "-d", str(out), "-q"], check=True)
+        wheel = next(out.glob(f"cadence_net-{version}-py3-none-any.whl"))
+        source = "PyPI"
     for name in SOURCES:
         shutil.copy(HERE / "tracker" / name, out / "py" / "tracker" / name)
 
@@ -79,6 +87,7 @@ def main() -> None:
         "cadence": version,
         "wheel": wheel.name,
         "wheel_sha256": sha(wheel),
+        "wheel_source": source,
         "sources": SOURCES,
         "sources_sha256": {n: sha(out / "py" / "tracker" / n) for n in SOURCES},
         "brain": brain_path.name,

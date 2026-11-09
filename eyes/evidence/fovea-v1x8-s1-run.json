@@ -1,18 +1,4 @@
 {
- "argv": [
-  "--out",
-  "runs/fovea2/v1x8-s1",
-  "--bootstrap",
-  "20000",
-  "--live",
-  "3000",
-  "--live-eta",
-  "0.02",
-  "--seed",
-  "1",
-  "--stages",
-  "8x5/2"
- ],
  "fovea": {
   "receptors": 25,
   "inner": 6,
@@ -91,21 +77,6 @@
   "motor_lateral": null,
   "init": 1.0,
   "density": 1.0,
-  "tie_rate": "sum",
-  "trace": null,
-  "learning": {
-   "eta": 0.1,
-   "eta_bias": 0.01,
-   "momentum": 0.0,
-   "beta": 0.1,
-   "temperature": 0.2,
-   "free_steps": 1024,
-   "decay": 0.0,
-   "nudge": "quadratic",
-   "nudged_steps": 12,
-   "tolerance": 0.003,
-   "normalize": 0.0
-  },
   "neurons": 2413,
   "synapses": 74612,
   "populations": {
@@ -116,7 +87,26 @@
    "visual": 2218
   }
  },
- "cadence": "0.74.0",
- "numpy": "2.4.6",
- "python": "3.11.16"
+ "learning": {
+  "eta": 0.1,
+  "eta_bias": 0.01,
+  "momentum": 0.0,
+  "nudge": "quadratic",
+  "tolerance": 0.003,
+  "free_steps": 1024
+ },
+ "seed": 1,
+ "lessons": 20000,
+ "cadence": "0.95.2",
+ "placement": {
+  "backend": "mlx",
+  "device": null,
+  "precision": "float32",
+  "chosen_by": "named",
+  "why": "the backend was named",
+  "refused": [],
+  "pending": false
+ },
+ "numpy": "2.5.4",
+ "python": "3.13.7"
 }

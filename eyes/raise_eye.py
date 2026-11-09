@@ -12,6 +12,10 @@ shape and moves it as a competent eye would, and every frame is a lesson on wher
 shape is (``Learner.step``, the library's local contrast rule, warm from the answer's own free
 state). Faces are among the shapes it is raised on; stars, tees and ells are never shown.
 
+The lessons use the quadratic nudge, which the library keeps on a standalone ``Learner``; a
+``Brain`` checkpoint takes the cross-entropy nudge only. The raised brain is saved under the
+cross-entropy nudge: the assays and the page never teach it, so its answers are the same.
+
 The assays run on the raised brain, frozen: first glance from rest; the dart test (the eye's own
 shape jumps 10, 20 or 30 px while everything else stays still); another shape's jump; and every
 shape followed by its own eye on a surface where all of them move. ``summary.json`` holds them.
@@ -37,12 +41,12 @@ from tracker.shapes import HELD_OUT
 UNSEEN = tuple(k for k in HELD_OUT if k != "face")
 
 
-def make_eye(seed: int, features: int = 8) -> tuple[cadence.Brain, Anatomy]:
+def make_eye(seed: int, features: int = 8, backend: str | None = None) -> tuple[cadence.Brain, Anatomy]:
     """The eye's brain at birth, with the learning settings it is raised with."""
     anatomy = Anatomy(size=25, bins=13, channels=2, stages=(Stage(features, 5, 2),), kernels="tied",
                       sheet=13, sheet_input="topographic", reach=1.5, lateral=None, memory=None,
                       readout="topographic")
-    brain = build(anatomy, seed=seed, trace=None, tie_rate="sum")
+    brain = build(anatomy, seed=seed, trace=None, tie_rate="sum", **({"backend": backend} if backend else {}))
     brain.learner.config = replace(brain.learner.config, eta=0.1, eta_bias=None, momentum=0.0,
                                    nudge="quadratic")
     return brain, anatomy
@@ -70,15 +74,17 @@ def main() -> None:
     p.add_argument("--dart-trials", dest="dart", type=int, default=60)
     p.add_argument("--scene-frames", dest="scene", type=int, default=600)
     p.add_argument("--report-every", dest="report_every", type=int, default=1000)
+    p.add_argument("--backend", default=None, help='e.g. "mlx" on a Mac (float32): faster lessons; the page runs the brain on the CPU')
     a = p.parse_args()
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     cfg = FovealConfig()
-    brain, anatomy = make_eye(a.seed, a.features)
+    brain, anatomy = make_eye(a.seed, a.features, a.backend)
     meta = {"fovea": cfg.__dict__, "anatomy": {**anatomy.to_dict(), **describe(brain)},
             "learning": {k: getattr(brain.learner.config, k) for k in
                          ("eta", "eta_bias", "momentum", "nudge", "tolerance", "free_steps")},
             "seed": a.seed, "lessons": a.lessons, "cadence": cadence.__version__,
+            "placement": getattr(brain, "placement", None),
             "numpy": np.__version__, "python": platform.python_version()}
     (out / "run.json").write_text(json.dumps(meta, indent=1, default=str))
     print(f"brain {brain.connectome.n} neurons, {brain.connectome.synapses} synapses", flush=True)
@@ -95,6 +101,8 @@ def main() -> None:
                   f"sweeps {np.mean([r['sweeps'] for r in window]):5.1f}  "
                   f"ms {np.mean([r['ms'] for r in window]):5.1f}", flush=True)
             window.clear()
+    # saved under the nudge a Brain checkpoint takes; nothing teaches the brain after this
+    brain.learner.config = replace(brain.learner.config, nudge="cross_entropy")
     path = brain.save(out / "brain.npz")
     summary = {"lessons": a.lessons, "seconds": round(time.time() - t0, 1),
                "world": dict(world.counts),
