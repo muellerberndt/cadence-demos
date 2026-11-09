@@ -2,7 +2,10 @@
 // The wheel, the Python host and the brain are checked against the pack manifest's SHA-256
 // before anything runs. A settle is computed in chunks of sweeps; each chunk is posted as soon
 // as it exists, so the page can draw the brain settling while the next chunk is computed.
+import { choose as searchChoose, NODES as SEARCH_NODES } from './search.js';
+
 let python = null;
+let temperature = 0.2;
 let manifest = null;
 let chain = Promise.resolve();
 const cancelled = new Set();
@@ -58,6 +61,7 @@ def _c4_buffer(name):
     return _c4_host.buffers[name]
 `);
   const out = call({ command: 'init' });
+  temperature = out.reply.brain.temperature ?? temperature;
   out.reply.startup_ms = Math.round(performance.now() - began);
   out.reply.manifest = manifest;
   return out;
@@ -92,9 +96,12 @@ function post(rid, kind, payload) {
 
 const pause = () => new Promise((resolve) => setTimeout(resolve, 0));
 
+// The brain settles in Python; with the search on, the search (search.js, the same search as
+// connect4/search.py, ported for speed) then vets the column neurons' proposal here.
 async function think(rid, payload) {
   const began = performance.now();
-  let step = call({ command: 'think', payload });
+  const searching = !!payload.search;
+  let step = call({ command: 'think', payload: { ...payload, search: false } });
   post(rid, 'progress', step);
   while (!step.reply.done) {
     await pause(); // lets a cancel message in between chunks
@@ -102,8 +109,19 @@ async function think(rid, payload) {
     step = call({ command: 'more', payload: { id: step.reply.id } });
     post(rid, 'progress', step);
   }
-  step.reply.final.wall_ms = Math.round((performance.now() - began) * 100) / 100;
-  return { reply: step.reply.final };
+  const final = step.reply.final;
+  if (searching) {
+    const s = searchChoose(payload.moves || [], final.motor_raw || final.motor, temperature, SEARCH_NODES);
+    final.brain_column = s.brain;
+    final.search = { column: s.column, brain: s.brain, reason: s.reason, priors: s.priors, values: s.values,
+      depth: s.depth, nodes: s.nodes, ms: s.ms, immediate: s.immediate, engine: 'javascript' };
+    if (s.column !== final.column) {
+      final.column = s.column;
+      final.after = call({ command: 'position', payload: { moves: [...(payload.moves || []), s.column] } }).reply.game;
+    }
+  }
+  final.wall_ms = Math.round((performance.now() - began) * 100) / 100;
+  return { reply: final };
 }
 
 self.onmessage = ({ data }) => {

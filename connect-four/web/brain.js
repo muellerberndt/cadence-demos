@@ -19,8 +19,8 @@ const COLOR = {
   module_0: [0.4, 0.74, 1.0],
   verdict: [1.0, 0.8, 0.42],
   other: [0.72, 0.72, 0.82],
-  excite: [0.28, 0.78, 0.95],
-  inhibit: [0.72, 0.42, 1.0],
+  excite: [1.0, 0.62, 0.28],
+  inhibit: [0.32, 0.58, 1.0],
   pulse: [1.0, 0.95, 0.86],
 };
 const css = (rgb, a = 1) => `rgba(${rgb.map((v) => Math.round(v * 255)).join(',')},${a})`;
@@ -28,7 +28,7 @@ const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 const ease = (f) => f * f * (3 - 2 * f);
 const ROWS = 6, COLUMNS = 7;
 const BRIGHTNESS = { 'sensory>association': 0.55, 'association>motor': 0.9, 'motor>association': 0.45,
-  'sensory>module_0': 0.5, 'module_0>association': 0.55, 'association>module_0': 0.35 };
+  'sensory>module_0': 0.22, 'module_0>association': 0.45, 'association>module_0': 0.3 };
 const SIDES = ['own', 'opp', 'play'];
 const VERDICT = ['loss', 'draw', 'win'];
 const LEVEL_FLOOR = 0.08; // a population this quiet is drawn at its true, dim level
@@ -37,7 +37,8 @@ const SYNAPSE_VS = `#version 300 es
 precision highp float; precision highp int;
 layout(location=0) in float t;
 layout(location=1) in vec4 ends;
-layout(location=2) in vec4 info;   // weight, presynaptic index, bend, brightness
+layout(location=2) in vec4 info;   // weight, presynaptic index, unused, brightness
+layout(location=3) in vec4 ctrl;   // the curve's two control points: the bundle it joins
 uniform sampler2D state;
 uniform int stateWidth;
 uniform vec2 viewport;
@@ -48,9 +49,9 @@ void main() {
   int i = int(info.y + 0.5);
   vec4 s = texelFetch(state, ivec2(i % stateWidth, i / stateWidth), 0);
   float message = info.x * s.r;
-  vec2 a = ends.xy, b = ends.zw, d = b - a;
-  vec2 c = (a + b) * 0.5 + vec2(-d.y, d.x) * info.z;
-  vec2 p = mix(mix(a, c, t), mix(c, b, t), t);
+  vec2 a = ends.xy, b = ends.zw, c1 = ctrl.xy, c2 = ctrl.zw;
+  float u = 1.0 - t;
+  vec2 p = u * u * u * a + 3.0 * u * u * t * c1 + 3.0 * u * t * t * c2 + t * t * t * b;
   vec2 clip = p / viewport * 2.0 - 1.0;
   gl_Position = vec4(clip.x, -clip.y, 0.0, 1.0);
   vGlow = clamp(abs(message) * info.w, 0.0, 1.0) + abs(info.x) * anatomy;
@@ -308,85 +309,194 @@ export class BrainView {
     if (this.brain) this.layout();
   }
 
+  // The brain seen from the side, front to the left: each population sits in the region whose
+  // role it plays (the page names the role, not an identity). Places come from the brain's own
+  // weights: the first module by the board cells it reads, the association field by the columns
+  // it drives.
   layout() {
     if (!this.width) { this.resize(); return; }
     const W = this.width, H = this.height, n = this.n;
-    const pad = Math.max(12, Math.round(W * 0.03)), label = 15;
     const pos = this.pos = new Float32Array(2 * n);
     const size = this.size = new Float32Array(n);
     const hue = this.hue = new Float32Array(3 * n);
     this.regions = [];
-    const narrow = W < 520;
-    const motorTop = pad + 2 * label, motorH = Math.max(26, H * 0.07);
-    const fieldX = pad, fieldW = W - 2 * pad, colW = fieldW / COLUMNS;
-    const motorR = clamp(colW * 0.13, 6, 13);
-    const verdict = this.groups.verdict || [];
-    const motorW = verdict.length ? fieldW * 0.74 : fieldW, mColW = motorW / COLUMNS;
-    this.groups.motor.forEach((i, c) => { pos[2 * i] = fieldX + (c + 0.5) * mColW; pos[2 * i + 1] = motorTop + motorH * 0.5; size[i] = motorR; });
-    this.regions.push({ name: 'motor', label: `motor · ${this.groups.motor.length} columns`, short: 'motor', x: fieldX, y: pad - 2 });
-    if (verdict.length) {
-      const vx = fieldX + motorW + Math.max(10, fieldW * 0.03), vw = fieldX + fieldW - vx;
-      verdict.forEach((i, k) => { pos[2 * i] = vx + (k + 0.5) * vw / verdict.length; pos[2 * i + 1] = motorTop + motorH * 0.5; size[i] = motorR; });
-      this.regions.push({ name: 'verdict', label: 'verdict · 3', short: 'verdict', x: vx, y: pad - 2 });
-    }
-    // bottom band: the two sensory boards, then the other populations
-    const bottomH = clamp(H * (narrow ? 0.27 : 0.29), 96, 220);
-    const bottomTop = H - pad - bottomH;
-    const others = Object.keys(this.groups).filter((k) => ![...SIDES, 'motor', 'verdict', 'association', 'module_0', 'sensory'].includes(k));
+    const pad = Math.max(10, Math.round(W * 0.02));
+    // the brain's box: aspect 1.45, centred, a little room above for the motor labels
+    const bw = Math.min(W - 2 * pad, (H - 2 * pad - 18) * 1.45), bh = bw / 1.45;
+    const bx = (W - bw) / 2, by = (H - bh) / 2 + 8;
+    const at = (u, v) => [bx + u * bw, by + v * bh];
+    this.brainBox = { x: bx, y: by, w: bw, h: bh };
+    const ellipse = (members, cx, cy, rx, ry, key) => {
+      // a hexagonal grid clipped to the ellipse, with at least as many places as members
+      const N = members.length;
+      if (!N) return;
+      const [X, Y] = at(cx, cy), RX = rx * bw, RY = ry * bh;
+      let step = Math.sqrt((Math.PI * RX * RY) / (N * 0.866)) * 1.02, places = [];
+      for (let tries = 0; tries < 12; tries++) {
+        places = [];
+        const k = 0.866 * step;
+        for (let y = -RY; y <= RY; y += k) {
+          const odd = Math.round((y + RY) / k) % 2;
+          for (let x = -RX + (odd ? step / 2 : 0); x <= RX; x += step) {
+            if ((x * x) / (RX * RX) + (y * y) / (RY * RY) <= 1) places.push([X + x, Y + y]);
+          }
+        }
+        if (places.length >= N) break;
+        step *= 0.95;
+      }
+      // pair members and places column by column: x orders the columns, y the rows
+      places.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+      const sorted = members.slice().sort((a, b) => a.x - b.x || a.i - b.i);
+      const cols = Math.max(1, Math.round(Math.sqrt(N * (RX / RY))));
+      for (let c = 0; c < cols; c++) {
+        const lo = Math.floor((c * N) / cols), hi = Math.floor(((c + 1) * N) / cols);
+        const plo = Math.floor((c * places.length) / cols), phi = Math.floor(((c + 1) * places.length) / cols);
+        const ms = sorted.slice(lo, hi).sort((a, b) => b.y - a.y || a.i - b.i);
+        const ps = places.slice(plo, phi).sort((a, b) => a[1] - b[1]);
+        ms.forEach((m, r) => {
+          const q = ps[Math.min(ps.length - 1, Math.floor((r * ps.length) / Math.max(1, ms.length)))];
+          pos[2 * m.i] = q[0]; pos[2 * m.i + 1] = q[1]; size[m.i] = Math.max(1.1, step * 0.34);
+        });
+      }
+      return { x: X, y: Y, rx: RX, ry: RY };
+    };
+    // the three input boards: the back of the brain, where vision is (one 6 x 7 patch each)
     const sides = SIDES.filter((side) => this.groups[side]);
-    const boardsW = others.length ? fieldW * (narrow ? 0.7 : 0.66) : fieldW;
-    const gap = Math.max(8, fieldW * 0.025);
-    const cell = Math.min((boardsW - (sides.length - 1) * gap) / (sides.length * COLUMNS), (bottomH - label) / ROWS);
+    const cell = Math.min(bw * 0.034, (bh * 0.62) / (sides.length * ROWS + (sides.length - 1) * 1.2));
     const boardW = cell * COLUMNS, boardH = cell * ROWS;
-    const boardsLeft = fieldX + (boardsW - (sides.length * boardW + (sides.length - 1) * gap)) / 2;
-    const boardTop = bottomTop + label + (bottomH - label - boardH) / 2;
+    const [vx, vy] = at(0.885, 0.47);
+    const top = vy - (sides.length * boardH + (sides.length - 1) * cell * 1.2) / 2;
     this.boards = [];
     sides.forEach((side, b) => {
-      const x0 = boardsLeft + b * (boardW + gap);
-      this.boards.push({ side, x: x0, y: boardTop, w: boardW, h: boardH, cell });
+      const x0 = vx - boardW / 2, y0 = top + b * (boardH + cell * 1.2);
+      this.boards.push({ side, x: x0, y: y0, w: boardW, h: boardH, cell });
       for (const i of this.groups[side]) {
         const k = this.cell[i], r = Math.floor(k / COLUMNS), c = k % COLUMNS;
-        pos[2 * i] = x0 + (c + 0.5) * cell; pos[2 * i + 1] = boardTop + (ROWS - 1 - r + 0.5) * cell; size[i] = cell * 0.3;
+        pos[2 * i] = x0 + (c + 0.5) * cell; pos[2 * i + 1] = y0 + (ROWS - 1 - r + 0.5) * cell; size[i] = cell * 0.3;
       }
-      this.regions.push({ name: side, label: { own: 'its stones', opp: 'your stones', play: 'playable' }[side], x: x0, y: boardTop - label });
     });
-    this.regions.push({ name: 'sensory', label: `sensory · ${42 * sides.length}`, x: boardsLeft, y: boardTop - 2 * label - 4, faint: true });
-    if (others.length) {
-      const ox = fieldX + boardsW + gap, ow = fieldX + fieldW - ox;
-      const each = (bottomH - label * others.length) / others.length;
-      others.forEach((name, k) => {
-        const members = this.groups[name];
-        const top = bottomTop + k * (each + label) + label;
-        const g = this.grid(members.length, ow, each);
-        members.forEach((i, j) => {
-          const [x, y] = g.place(j % g.cols, Math.floor(j / g.cols));
-          pos[2 * i] = ox + x; pos[2 * i + 1] = top + y; size[i] = Math.max(1.2, g.step * 0.32);
-        });
-        const silent = this.silent.has(name);
-        this.regions.push({ name, label: `${name} · ${members.length}${silent ? ' · silent' : ''}`, short: silent ? `${name} · silent` : name, x: ox, y: top - label, silent });
-      });
+    this.regions.push({ name: 'sensory', label: `visual cortex · sensory ${42 * sides.length}`, short: 'sensory', x: vx - boardW / 2, y: top - 30,
+      role: 'Where the board enters: one neuron per cell of its stones, your stones and the playable cells (the role of a primary visual area).' });
+    // the first module of a deep brain: the next stage of vision, placed by the cells it reads
+    const first = ellipse(this.firstSorted || [], 0.70, 0.36, 0.10, 0.25);
+    if (first) this.regions.push({ name: 'module_0', label: `module 0 · ${(this.groups.module_0 || []).length}`, short: 'module 0', x: first.x - first.rx, y: first.y - first.ry - 16,
+      role: 'Reads the board cells directly and feeds the association field (the role of a higher visual area). Placed by the cells each neuron reads.' });
+    // the association field, placed by the columns it drives
+    const assoc = ellipse(this.assocSorted || [], 0.48, 0.42, 0.115, 0.26);
+    if (assoc) this.regions.push({ name: 'association', label: `association · ${(this.groups.association || []).length}`, short: 'association', x: assoc.x - assoc.rx * 0.6, y: assoc.y - assoc.ry - 16,
+      role: 'Reciprocal with the first module and the motor neurons: where the settle agrees on a move (the role of association cortex). Placed by the columns each neuron drives.' });
+    // prefrontal: the working trace's target, silent in a memory-free settle
+    const pf = this.groups.prefrontal || [];
+    const pre = ellipse(pf.map((i, k) => ({ i, x: k % 32, y: Math.floor(k / 32) })), 0.17, 0.43, 0.115, 0.23);
+    if (pre) this.regions.push({ name: 'prefrontal', label: `prefrontal · ${pf.length} · silent`, short: 'prefrontal · silent', x: pre.x - pre.rx, y: pre.y - pre.ry - 16, silent: true,
+      role: 'Where Cadence’s working trace enters (the role of prefrontal cortex). This brain settles without memory, so it stays at rest.' });
+    // the motor strip: one neuron per column along an arc in front of the association field
+    const mR = clamp(bw * 0.014, 5, 11);
+    this.groups.motor.forEach((i, c) => {
+      const t = c / Math.max(1, COLUMNS - 1);
+      const [x, y] = at(0.33 + 0.06 * Math.sin(Math.PI * t) - 0.02 * t, 0.12 + 0.52 * t);
+      pos[2 * i] = x; pos[2 * i + 1] = y; size[i] = mR;
+    });
+    {
+      const [x, y] = at(0.27, 0.06);
+      this.regions.push({ name: 'motor', label: 'motor strip · 7 columns', short: 'motor', x, y,
+        role: 'One neuron per column; the strongest one whose column has room is the brain’s move (the role of the motor cortex).' });
     }
-    // the association field between them; in a deep brain the first module below it
-    const fieldTop = motorTop + motorH + label + Math.max(14, H * 0.05);
-    const fieldBottom = bottomTop - Math.max(22, H * 0.065);
-    const deep = (this.firstSorted || []).length > 0;
-    const split = deep ? fieldTop + (fieldBottom - fieldTop) * 0.5 : fieldBottom;
-    const field = (sorted, name, top, bottom) => {
-      if (!sorted.length) return;
-      const g = this.grid(sorted.length, fieldW, bottom - top);
-      const byX = sorted.slice().sort((a, b) => a.x - b.x || a.i - b.i);
-      for (let c = 0; c < g.cols; c++) {
-        const chunk = byX.slice(c * g.rows, (c + 1) * g.rows).sort((a, b) => b.y - a.y || a.i - b.i);
-        chunk.forEach((m, r) => { const [x, y] = g.place(c, r); pos[2 * m.i] = fieldX + x; pos[2 * m.i + 1] = top + y; size[m.i] = Math.max(1.2, g.step * 0.36); });
-      }
-      this.regions.push({ name, label: `${name.replace('_', ' ')} · ${sorted.length}`, x: fieldX, y: top - label });
-    };
-    field(this.assocSorted || [], 'association', fieldTop, deep ? split - label : fieldBottom);
-    if (deep) field(this.firstSorted, 'module_0', split + label * 0.5, fieldBottom);
+    // the verdict: three neurons deep under the cortex, its judgement of the position
+    const verdict = this.groups.verdict || [];
+    verdict.forEach((i, k) => {
+      const [x, y] = at(0.40 + 0.055 * k, 0.80 - 0.02 * Math.abs(k - 1));
+      pos[2 * i] = x; pos[2 * i + 1] = y; size[i] = mR * 1.05;
+    });
+    if (verdict.length) {
+      const [x, y] = at(0.53, 0.78);
+      this.regions.push({ name: 'verdict', label: 'verdict', short: 'verdict', x, y: y - 6,
+        role: 'Three motor neurons taught the solver’s result for the side to move (the role of a value judgement, as in orbitofrontal cortex and striatum). The move does not read them.' });
+    }
+    // any other population of another brain: a field under the association cortex
+    const placed = new Set(['own', 'opp', 'play', 'module_0', 'association', 'prefrontal', 'motor', 'verdict']);
+    const rest = Object.keys(this.groups).filter((g) => !placed.has(g));
+    rest.forEach((g, k) => {
+      const f = ellipse(this.groups[g].map((i, j) => ({ i, x: j, y: 0 })), 0.62 + 0.1 * k, 0.70, 0.06, 0.07);
+      if (f) this.regions.push({ name: g, label: `${g} · ${this.groups[g].length}`, short: g, x: f.x - f.rx, y: f.y + f.ry + 3, role: 'A population of this brain.' });
+    });
     for (let i = 0; i < n; i++) hue.set(COLOR[this.roles[i]] || COLOR.other, 3 * i);
+    this.regionCentroids();
     if (this.gl) { this.uploadLayout(); this.uploadSynapses(); }
     this.drawOverlay();
     this.wake();
+  }
+
+  // The centre of each region, and the bundled path every synapse takes between two regions: a
+  // tract from one region to the other, curving to one side so that the reciprocal tract runs
+  // beside it; a synapse leaves its neuron, joins the tract and leaves it at its target.
+  region(i) { const r = this.roles[i]; return SIDES.includes(r) ? 'sensory' : r; }
+
+  regionCentroids() {
+    const sum = new Map();
+    for (let i = 0; i < this.n; i++) {
+      const r = this.region(i);
+      const s = sum.get(r) || [0, 0, 0];
+      s[0] += this.pos[2 * i]; s[1] += this.pos[2 * i + 1]; s[2]++; sum.set(r, s);
+    }
+    this.centroid = new Map([...sum].map(([r, s]) => [r, [s[0] / s[2], s[1] / s[2]]]));
+    const order = ['sensory', 'module_0', 'association', 'motor', 'verdict', 'prefrontal', 'other'];
+    const m = this.pre.length, ctrl = this.ctrl = new Float32Array(4 * m);
+    for (let k = 0; k < m; k++) {
+      const p = this.pre[k], q = this.post[k];
+      const ra = this.region(p), rb = this.region(q);
+      const A = this.centroid.get(ra), B = this.centroid.get(rb);
+      const P0 = [this.pos[2 * p], this.pos[2 * p + 1]], P3 = [this.pos[2 * q], this.pos[2 * q + 1]];
+      if (ra === rb || !A || !B) {
+        ctrl[4 * k] = P0[0] + (P3[0] - P0[0]) / 3; ctrl[4 * k + 1] = P0[1] + (P3[1] - P0[1]) / 3;
+        ctrl[4 * k + 2] = P0[0] + 2 * (P3[0] - P0[0]) / 3; ctrl[4 * k + 3] = P0[1] + 2 * (P3[1] - P0[1]) / 3;
+        continue;
+      }
+      const dx = B[0] - A[0], dy = B[1] - A[1], len = Math.hypot(dx, dy) || 1;
+      const side = order.indexOf(ra) < order.indexOf(rb) ? 1 : -1;
+      const nx = -dy / len, ny = dx / len, bulge = 0.16 * len * side;
+      const M = [(A[0] + B[0]) / 2 + nx * bulge, (A[1] + B[1]) / 2 + ny * bulge];
+      const bez = (t) => [(1 - t) * (1 - t) * A[0] + 2 * (1 - t) * t * M[0] + t * t * B[0], (1 - t) * (1 - t) * A[1] + 2 * (1 - t) * t * M[1] + t * t * B[1]];
+      const T1 = bez(0.3), T2 = bez(0.7);
+      const j = (hash(k) - 0.5) * Math.min(14, len * 0.06), jx = nx * j, jy = ny * j;
+      ctrl[4 * k] = P0[0] + (T1[0] - P0[0]) * 0.85 + jx; ctrl[4 * k + 1] = P0[1] + (T1[1] - P0[1]) * 0.85 + jy;
+      ctrl[4 * k + 2] = P3[0] + (T2[0] - P3[0]) * 0.85 + jx; ctrl[4 * k + 3] = P3[1] + (T2[1] - P3[1]) * 0.85 + jy;
+    }
+  }
+
+  // The outline of a brain seen from the side (front to the left), the frame the regions sit in.
+  silhouette(c) {
+    const b = this.brainBox;
+    if (!b) return;
+    const P = (u, v) => [b.x + u * b.w, b.y + v * b.h];
+    const curve = (pts) => {
+      c.beginPath();
+      c.moveTo(...P(...pts[0]));
+      for (let k = 1; k < pts.length; k++) {
+        const [u0, v0] = pts[k - 1], [u1, v1] = pts[k];
+        c.quadraticCurveTo(...P(u0, v0), ...P((u0 + u1) / 2, (v0 + v1) / 2));
+      }
+    };
+    c.save();
+    c.lineWidth = 1.2;
+    // the cortex
+    curve([[0.06, 0.52], [0.02, 0.36], [0.08, 0.16], [0.24, 0.04], [0.46, 0.0], [0.68, 0.03], [0.86, 0.14], [0.97, 0.34],
+      [0.98, 0.56], [0.93, 0.72], [0.80, 0.80], [0.62, 0.82], [0.50, 0.92], [0.36, 0.86], [0.22, 0.80], [0.10, 0.70], [0.06, 0.52]]);
+    c.closePath();
+    const g = c.createRadialGradient(...P(0.5, 0.42), 10, ...P(0.5, 0.42), b.w * 0.6);
+    g.addColorStop(0, 'rgba(60,70,110,0.10)'); g.addColorStop(1, 'rgba(20,24,40,0.02)');
+    c.fillStyle = g; c.fill();
+    c.strokeStyle = 'rgba(150,165,210,0.22)'; c.stroke();
+    // the cerebellum and the brainstem (no populations of this brain sit there)
+    curve([[0.70, 0.84], [0.82, 0.80], [0.92, 0.84], [0.90, 0.95], [0.76, 0.98], [0.66, 0.92], [0.70, 0.84]]);
+    c.strokeStyle = 'rgba(150,165,210,0.12)'; c.stroke();
+    curve([[0.56, 0.90], [0.60, 1.02], [0.64, 1.06]]);
+    c.stroke();
+    // the central and lateral sulci
+    c.setLineDash([3, 5]);
+    curve([[0.40, 0.02], [0.37, 0.24], [0.36, 0.48]]); c.strokeStyle = 'rgba(150,165,210,0.16)'; c.stroke();
+    curve([[0.30, 0.62], [0.48, 0.64], [0.66, 0.58]]); c.stroke();
+    c.restore();
   }
 
   // A hexagonally packed field of `count` places in a w x h box: odd rows shift half a step.
@@ -421,7 +531,7 @@ export class BrainView {
     this.stateWidth = 1024;
     this.synapseVAO = gl.createVertexArray();
     this.neuronVAO = gl.createVertexArray();
-    this.buffers = { t: gl.createBuffer(), ends: gl.createBuffer(), info: gl.createBuffer(), position: gl.createBuffer(), meta: gl.createBuffer(), hue: gl.createBuffer() };
+    this.buffers = { t: gl.createBuffer(), ends: gl.createBuffer(), info: gl.createBuffer(), ctrl: gl.createBuffer(), position: gl.createBuffer(), meta: gl.createBuffer(), hue: gl.createBuffer() };
     this.maxPoint = gl.getParameter(gl.ALIASED_POINT_SIZE_RANGE)[1] || 64;
     this.hdr = !!(gl.getExtension('EXT_color_buffer_float') || gl.getExtension('EXT_color_buffer_half_float'));
     if (this.hdr) {
@@ -475,7 +585,7 @@ export class BrainView {
   uploadSynapses() {
     const gl = this.gl, m = this.pre.length;
     if (!this.pos || !gl) return;
-    this.segments = m > 60000 ? 3 : m > 30000 ? 4 : 6;
+    this.segments = m > 120000 ? 6 : 8;
     const t = new Float32Array(2 * this.segments);
     for (let k = 0; k < this.segments; k++) { t[2 * k] = k / this.segments; t[2 * k + 1] = (k + 1) / this.segments; }
     const ends = new Float32Array(4 * m), info = new Float32Array(4 * m);
@@ -493,6 +603,8 @@ export class BrainView {
     gl.enableVertexAttribArray(1); gl.vertexAttribPointer(1, 4, gl.FLOAT, false, 0, 0); gl.vertexAttribDivisor(1, 1);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.info); gl.bufferData(gl.ARRAY_BUFFER, info, gl.STATIC_DRAW);
     gl.enableVertexAttribArray(2); gl.vertexAttribPointer(2, 4, gl.FLOAT, false, 0, 0); gl.vertexAttribDivisor(2, 1);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.ctrl); gl.bufferData(gl.ARRAY_BUFFER, this.ctrl, gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(3); gl.vertexAttribPointer(3, 4, gl.FLOAT, false, 0, 0); gl.vertexAttribDivisor(3, 1);
     gl.bindVertexArray(null);
     this.synapseCount = m;
   }
@@ -581,7 +693,8 @@ export class BrainView {
       const level = Math.min(levels - 1, Math.floor(levels * Math.abs(v) / scale));
       if (Math.abs(v) < scale * 0.03) continue;
       const path = paths[v >= 0 ? 0 : 1][level];
-      path.moveTo(this.pos[2 * this.pre[k]], this.pos[2 * this.pre[k] + 1]); path.lineTo(this.pos[2 * this.post[k]], this.pos[2 * this.post[k] + 1]);
+      path.moveTo(this.pos[2 * this.pre[k]], this.pos[2 * this.pre[k] + 1]);
+      path.bezierCurveTo(this.ctrl[4 * k], this.ctrl[4 * k + 1], this.ctrl[4 * k + 2], this.ctrl[4 * k + 3], this.pos[2 * this.post[k]], this.pos[2 * this.post[k] + 1]);
     }
     c.globalCompositeOperation = 'lighter'; c.lineWidth = 0.7;
     for (let b = 0; b < levels; b++) {
@@ -648,10 +761,10 @@ export class BrainView {
 
   rest() { this.show(new Float32Array(this.n)); }
 
-  flash(changed, delta) {
+  flash(changed, delta, count = 0) {
     let max = 0;
     for (const d of delta) max = Math.max(max, Math.abs(d));
-    this.flashes = { changed, delta, max: max || 1, start: performance.now() };
+    this.flashes = { changed, delta, max: max || 1, start: performance.now(), count };
     this.wake();
   }
 
@@ -717,6 +830,7 @@ export class BrainView {
     this.overlayDirty = false;
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
     c.clearRect(0, 0, this.width, this.height);
+    this.silhouette(c);
     c.font = '600 10.5px Inter, system-ui, sans-serif';
     c.textBaseline = 'alphabetic';
     for (const r of this.regions) {
@@ -736,10 +850,13 @@ export class BrainView {
       c.beginPath(); c.roundRect(b.x - 3, b.y - 3, b.w + 6, b.h + 6, 5); c.stroke();
     }
     c.font = '600 10px Inter, system-ui, sans-serif'; c.textAlign = 'center';
+    c.textAlign = 'right';
     this.groups.motor.forEach((i, col) => {
       c.fillStyle = col === this.chosen ? 'rgba(120,255,235,0.98)' : 'rgba(150,165,200,0.7)';
-      c.fillText(String(col + 1), this.pos[2 * i], this.pos[2 * i + 1] - this.size[i] - 7);
+      c.fillText(String(col + 1), this.pos[2 * i] - this.size[i] - 6, this.pos[2 * i + 1] + 3.5);
     });
+    c.textAlign = 'center';
+    this.drawDeliberation(c);
     (this.groups.verdict || []).forEach((i, k) => {
       c.fillStyle = 'rgba(255,214,140,0.85)';
       c.fillText(VERDICT[k], this.pos[2 * i], this.pos[2 * i + 1] - this.size[i] - 7);
@@ -747,14 +864,22 @@ export class BrainView {
     c.textAlign = 'left';
     if (this.flashes) {
       const age = (now - this.flashes.start) / 3600, fade = Math.pow(1 - clamp(age, 0, 1), 1.4);
-      c.globalCompositeOperation = 'lighter'; c.lineWidth = 0.9;
+      c.globalCompositeOperation = 'lighter';
       const { changed, delta, max } = this.flashes;
-      for (let j = 0; j < Math.min(changed.length, 320); j++) {
-        const k = changed[j], p = this.pre[k], q = this.post[k];
-        c.strokeStyle = `rgba(255,206,102,${(0.08 + 0.6 * Math.abs(delta[j]) / max) * fade})`;
-        c.beginPath(); c.moveTo(this.pos[2 * p], this.pos[2 * p + 1]); c.lineTo(this.pos[2 * q], this.pos[2 * q + 1]); c.stroke();
+      for (let j = 0; j < Math.min(changed.length, 480); j++) {
+        const k = changed[j], p = this.pre[k], q = this.post[k], r = Math.abs(delta[j]) / max;
+        c.lineWidth = 0.6 + 2.4 * r;
+        c.strokeStyle = delta[j] >= 0 ? `rgba(255,206,102,${(0.1 + 0.7 * r) * fade})` : `rgba(150,200,255,${(0.1 + 0.7 * r) * fade})`;
+        c.beginPath(); c.moveTo(this.pos[2 * p], this.pos[2 * p + 1]);
+        c.bezierCurveTo(this.ctrl[4 * k], this.ctrl[4 * k + 1], this.ctrl[4 * k + 2], this.ctrl[4 * k + 3], this.pos[2 * q], this.pos[2 * q + 1]);
+        c.stroke();
       }
       c.globalCompositeOperation = 'source-over';
+      if (this.flashes.count) {
+        c.font = '600 11px Inter, system-ui, sans-serif';
+        c.fillStyle = `rgba(255,214,140,${0.95 * fade})`;
+        c.fillText(`lesson · ${this.flashes.count.toLocaleString()} synapses changed (strongest drawn: gold stronger, blue weaker)`, 12, this.height - 12);
+      }
     }
     if (this.hover >= 0) this.drawHover(c);
   }
@@ -845,6 +970,8 @@ export class BrainView {
     if (this.silent.has(role)) note = '<p class="note">Cadence’s working trace drives this region. This brain settles without memory (a Connect Four position is fully observed), so the region stays at rest and its synapses carry nothing. Drawn: its strongest synapses.</p>';
     if (role === 'motor') note = `<p class="note">Drives column ${this.column[i] + 1}. The strongest motor neuron whose column has room is the move.</p>`;
     if (role === 'verdict') note = '<p class="note">The brain’s judgement of the position for the side to move, taught beside the move from the perfect solver’s result. The move does not read it.</p>';
+    const region = (this.regions || []).find((r) => r.name === (SIDES.includes(role) ? 'sensory' : role));
+    if (region && region.role) note += `<p class="note">${region.role}</p>`;
     tip.innerHTML = `<h4>${this.name(i)}</h4><p class="act">activation <b>${this.display[i].toFixed(3)}</b> · bias ${Number(this.bias[i]).toFixed(3)}</p>`
       + `<p class="sub">${outward ? 'strongest outputs now' : 'strongest inputs now'} <span>(of ${count.toLocaleString()} drawn)</span></p><ul>${lines}</ul>${note}`;
     tip.hidden = false;
@@ -859,6 +986,54 @@ export class BrainView {
   }
 
   setChosen(column) { this.chosen = column; this.overlayDirty = true; this.wake(); }
+
+  // The deliberation after a settle: the verdict neurons' judgement, and what the search (a
+  // look-ahead over the rules, not neurons) did with the column neurons' proposal.
+  setDeliberation(final) { this.deliberation = final || null; this.overlayDirty = true; this.wake(); }
+
+  drawDeliberation(c) {
+    const d = this.deliberation, b = this.brainBox;
+    if (!d || !b) return;
+    const x0 = b.x + b.w * 0.02, y0 = b.y + b.h * 0.86, w = Math.min(210, b.w * 0.3);
+    c.save();
+    c.textAlign = 'left';
+    c.font = '600 10px Inter, system-ui, sans-serif';
+    if (d.verdict) {
+      const [loss, draw, win] = d.verdict;
+      c.fillStyle = 'rgba(255,214,140,0.9)';
+      c.fillText(`verdict  win ${Math.round(100 * win)}% · draw ${Math.round(100 * draw)}% · loss ${Math.round(100 * loss)}%`, x0, y0);
+    }
+    const s = d.search;
+    if (s && s.values) {
+      const top = y0 + 8, h = 26, bw = w / 7;
+      // values short of a proven result are scaled to the largest of them
+      const soft = Object.values(s.values).filter((v) => Math.abs(v) < 950).map(Math.abs);
+      const scale = Math.max(1e-3, ...soft);
+      c.fillStyle = 'rgba(190,200,228,0.75)';
+      c.fillText(s.immediate ? 'search (rules, not neurons): a win now' : `search (rules, not neurons): ${s.depth} moves ahead · ${(s.nodes || 0).toLocaleString()} positions`, x0, top + h + 14);
+      for (let col = 0; col < 7; col++) {
+        const v = s.values[col];
+        if (v === undefined) continue;
+        if (s.immediate && v < 950) continue; // a win now: the other columns were not searched
+        const proven = Math.abs(v) >= 950, val = proven ? Math.sign(v) : Math.max(-1, Math.min(1, v / scale)) * 0.8;
+        const hgt = Math.abs(val) * h / 2, mid = top + h / 2;
+        c.fillStyle = proven ? (val > 0 ? 'rgba(120,255,200,0.9)' : 'rgba(255,110,120,0.85)') : (val >= 0 ? 'rgba(255,170,90,0.75)' : 'rgba(110,160,255,0.75)');
+        c.fillRect(x0 + col * bw + 2, val >= 0 ? mid - hgt : mid, bw - 4, Math.max(1, hgt));
+        if (col === d.column) { c.strokeStyle = 'rgba(120,255,235,0.95)'; c.lineWidth = 1.2; c.strokeRect(x0 + col * bw + 1, top - 1, bw - 2, h + 2); }
+        if (col === d.brain_column && d.brain_column !== d.column) { c.setLineDash([2, 2]); c.strokeStyle = 'rgba(255,214,140,0.9)'; c.strokeRect(x0 + col * bw + 1, top - 1, bw - 2, h + 2); c.setLineDash([]); }
+      }
+      c.strokeStyle = 'rgba(150,165,210,0.25)'; c.beginPath(); c.moveTo(x0, top + h / 2); c.lineTo(x0 + w, top + h / 2); c.stroke();
+      // an overruled proposal: a line from the brain's column neuron to the played one
+      if (d.brain_column !== d.column && this.groups.motor[d.brain_column] !== undefined) {
+        const a = this.groups.motor[d.brain_column], z = this.groups.motor[d.column];
+        c.strokeStyle = 'rgba(255,214,140,0.85)'; c.lineWidth = 1.5; c.setLineDash([4, 3]);
+        c.beginPath(); c.moveTo(this.pos[2 * a] - 10, this.pos[2 * a + 1]);
+        c.quadraticCurveTo(this.pos[2 * a] - 40, (this.pos[2 * a + 1] + this.pos[2 * z + 1]) / 2, this.pos[2 * z] - 10, this.pos[2 * z + 1]);
+        c.stroke(); c.setLineDash([]);
+      }
+    }
+    c.restore();
+  }
 
   // For the page check: draw now and read the pixels back (a fresh frame, so no preserved buffer).
   sample() {

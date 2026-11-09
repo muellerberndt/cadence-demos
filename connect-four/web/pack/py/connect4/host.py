@@ -344,6 +344,7 @@ class Host:
             reply["final"] = {
                 "column": column,
                 "motor": _round(motor),
+                "motor_raw": [float(v) for v in motor],  # full precision, for the page's search
                 "verdict": _verdict(outputs, cfg.temperature),
                 "legal": [bool(v) for v in legal],
                 "settled": quiet,

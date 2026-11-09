@@ -99,7 +99,7 @@ async function newGame() {
   app.first = app.nextFirst;
   app.moves = []; app.game = app.empty; app.lastBrain = null; app.imagined = null; app.lastFinal = null; app.settles = [];
   board.set(owners(app.game)); board.setMarks(); board.setMotor(null); board.setGhosts(null); setVerdict(null); setSearch(null);
-  view.rest(); view.setChosen(null); setReadout('at rest');
+  view.rest(); view.setChosen(null); view.setDeliberation(null); setReadout('at rest');
   drawSpark([]);
   if (app.first === 'brain') return brainTurn();
   app.phase = 'human'; refresh();
@@ -151,6 +151,7 @@ async function brainTurn() {
     app.timings.push({ ms: final.ms, wall_ms: final.wall_ms, sweeps: final.sweeps, column: final.column, legal: final.legal[final.column],
       brain_column: final.brain_column, search_ms: final.search ? final.search.ms : null, search_depth: final.search ? final.search.depth : null });
     view.setChosen(final.column);
+    view.setDeliberation(final);
     board.setMotor(final.motor, { chosen: final.column, legal: final.legal });
     setVerdict(final.verdict);
     setReadout(final.settled ? `settled in ${final.sweeps} sweeps · ${final.ms.toFixed(0)} ms` : `stopped at ${final.sweeps} sweeps · ${final.ms.toFixed(0)} ms`, final.settled ? 'settled' : 'settling');
@@ -236,7 +237,7 @@ async function teachColumn(column) {
   } else {
     app.lessons = reply.lessons;
     view.setWeights(arrays.weight, arrays.bias);
-    view.flash(arrays.changed, arrays.delta);
+    view.flash(arrays.changed, arrays.delta, reply.changed);
     board.setMarks({ ghostCell: app.lastBrain.cell, taught: landing(app.teachGame, column) });
     // the same board, settled again under the changed synapses
     view.beginSettle();

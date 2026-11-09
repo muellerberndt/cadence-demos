@@ -10,7 +10,7 @@ plays the settle's strongest column. The browser runs the actual Python brain in
 through Pyodide, with NumPy and the released `cadence-net==0.95.2` wheel. No server or model
 service chooses the moves.
 
-![The end of a game won by brain + search: the search plays the win the brain's column neurons missed; the whole brain after its last settle](docs/connect-four.png)
+![The end of a game won by brain + search: the search plays the win the brain's column neurons missed; the brain seen from the side, its regions joined by fibre tracts](docs/connect-four.png)
 
 ```sh
 python -m http.server -d connect-four/web 8790   # open http://localhost:8790/
@@ -59,7 +59,11 @@ phases of a fixed 32 sweeps. 3,208 neurons and 3,295,232 synapses.
   the search scores another higher by more than 0.25 (on a scale where a proven result is
   ±1,000 and a horizon score lies within ±0.9). The brain's seven column neurons, as a softmax
   at its temperature, rank the columns; its verdict is reported and does not enter the search.
-  The search knows the rules, not the solver's scores, and nothing in it learns.
+  The search knows the rules, not the solver's scores, and nothing in it learns. In the page it
+  runs in JavaScript in the worker, after the brain's settle (`web/search.js`, a port of
+  `connect4/search.py` that returns the same values, depth and positions visited on every one of
+  200 recorded positions: `tests/parity_search.mjs`), so the measured games below hold for the
+  page.
 
 ## What the page shows
 
@@ -67,14 +71,25 @@ phases of a fixed 32 sweeps. 3,208 neurons and 3,295,232 synapses.
   sweep, and after each of its moves the brain's verdict on the position it moved from and,
   with the search, what the search did: kept the brain's column, overruled it, or found a forced
   win, how many moves ahead it read and how many positions it visited.
-- **The whole brain.** Every neuron sits in its population's place: the sensory neurons as three
-  6 × 7 boards (its stones, yours, the playable cells); `module_0` as a field placed by the board
-  cells each neuron reads; the association field above it, placed by the columns each neuron
-  drives; the silent prefrontal region; the column and verdict neurons on top. A synapse glows
-  with the message it carries, |weight × presynaptic activation|: cyan when it excites, violet
-  when it inhibits. Blocks of more than 150,000 synapses are drawn by the eight strongest
-  synapses into each neuron (174,080 of the 3.3 million are drawn). Hover or tap a neuron to see
-  its activation, its bias and its strongest inputs now.
+- **The whole brain, as a brain seen from the side** (front to the left). Each population sits in
+  the region whose role it plays, and hovering a neuron names that role; the roles are analogies,
+  not claims that the populations are those regions:
+  - the three 6 × 7 input boards (its stones, yours, the playable cells) at the back, where vision
+    is;
+  - `module_0`, which reads the boards, beside them, each neuron placed by the board cells it reads;
+  - the association field in the middle, each neuron placed by the column it drives;
+  - the prefrontal region at the front, silent (the working trace's target, unused in a
+    memory-free settle);
+  - the seven column neurons along a motor strip; the three verdict neurons deep below.
+
+  The synapses run as bundled fibre tracts between the regions, each leaving its neuron, joining
+  the tract to its target region and leaving it at its target. A synapse glows with the message it
+  carries, |weight × presynaptic activation|: warm when it excites, cool when it inhibits. Blocks
+  of more than 150,000 synapses are drawn by the eight strongest synapses into each neuron (174,080
+  of the 3.3 million are drawn). Hover or tap a neuron to see its activation, its bias and its
+  strongest inputs now. After a move a deliberation panel shows the verdict and what the search
+  (labelled as rules, not neurons) found for each column: proven wins and losses, the horizon's
+  scores, the column it played, and a dashed arc where it overruled the brain's column neuron.
 - **The settle, sweep by sweep,** in chunks of 12 sweeps posted as soon as they exist, with a
   sparkline of the largest activation change against the tolerance. Chunking changes nothing:
   the tests check the sweep count, the last frame and the move against one `Learner.free` call.
@@ -89,8 +104,9 @@ phases of a fixed 32 sweeps. 3,208 neurons and 3,295,232 synapses.
   (the bias at a tenth of that), so one or two lessons show; the brain's own moves do not depend
   on that rate. The largest synaptic changes flash gold. Columns the brain does not play often
   rest at the activation floor (−0.1); a lesson then shows as the taught column becoming the
-  move rather than as a rising bar. Lessons live in the tab; *Reset brain* or a reload restores
-  the shipped brain.
+  move rather than as a rising bar. The changed synapses flash along their tracts, gold where they
+  strengthened and blue where they weakened, with the number changed. Lessons live in the tab;
+  *Reset brain* or a reload restores the shipped brain.
 - **Game controls:** *Brain + search* or *Brain alone*, new game, who starts, undo, keys 1–7,
   and a collapsed model card with the sizes, the training, the readings, the timings in this tab
   and the provenance.
@@ -152,11 +168,12 @@ moving first against the perfect solver they read 163-14-23 and 135-5-20 (160 ga
 Natively the search at 120,000 took a median of 0.6 s a move.
 
 `check_page.py` ran the page in headless Chromium on an Apple M4 (record:
-`evidence/page_check.json`), while the machine ran other jobs. With brain + search: starting
-Pyodide, NumPy, Cadence and the brain took 13.2 s; over a whole game a settle took 54–116 sweeps
-and 0.4–1.3 s in the worker, the search 3.3–4.2 s (9 to 12 moves ahead), and from a click to the
-brain's stone on the board 4.8–6.5 s, animation included. With imagination on, the seven
-imagined replies took 3.3 s more.
+`evidence/page_check.json`) while the machine ran other jobs at a load average near 200, so the
+times are an upper bound. With brain + search: starting Pyodide, NumPy, Cadence and the brain took
+42 s; over a whole game a settle took 54–116 sweeps and 0.9–3.0 s in the worker, the search
+0.28–0.97 s (9 to 12 moves ahead), and from a click to the brain's stone on the board 3.7–7.6 s,
+animation included; the brain view drew 29 frames per second while the brain settled (64 in an
+earlier run of the same page at a lower load).
 
 ## Train it further
 
@@ -250,6 +267,7 @@ python -m venv .venv
 .venv/bin/python -m playwright install --only-shell chromium
 .venv/bin/python -m pytest tests -q
 .venv/bin/python check_page.py
+node tests/parity_search.mjs        # the page's search against connect4/search.py
 ```
 
 The tests check the rules and the three-plane encoding, the search (wins it must take, blocks it
@@ -269,10 +287,10 @@ learning module a NumPy whose `repeat` casts its counts. The shim does nothing o
 | Path | What |
 | --- | --- |
 | `connect4/` | what the page's worker runs: the rules and encoding (`game.py`), the drawn settle, the verdict, imagination, lessons and the layout (`host.py`), the search (`search.py`) |
-| `web/` | the page: `app.js` (game, controls, readouts), `board.js`, `brain.js` (WebGL2 and Canvas2D), `worker.js` (Pyodide), `pack/` (wheel, host, brain, receipt, manifest) |
+| `web/` | the page: `app.js` (game, controls, readouts), `board.js`, `brain.js` (the brain view, WebGL2 and Canvas2D), `worker.js` (Pyodide), `search.js` and `squash.js` (the search, ported), `pack/` (wheel, host, brain, receipt, manifest) |
 | `pack.py` | packs the wheel, the brain, the receipt's numbers and the host into `web/pack/` |
 | `training/` | the trainer (`c4train`), the solver bridge, the readings and the page copy |
-| `tests/`, `check_page.py` | the rules and the host; the page's promise in headless Chromium |
+| `tests/`, `check_page.py` | the rules, the host and the search (Python), the search's port (`parity_search.mjs` with `fixtures/`); the page's promise in headless Chromium |
 | `evidence/` | `reading.json`, `search_reading.json`, `page_check.json` |
 | `MODEL_CARD.md` | the brain: composition, training, readings, limits |
 | `docs/` | the screenshot |

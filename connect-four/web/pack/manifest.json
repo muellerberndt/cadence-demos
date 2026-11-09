@@ -15,7 +15,7 @@
  "sources_sha256": {
   "__init__.py": "47414a7c3f0cef23e5ca009aca12cac476701baf9dbdbe89400c3b542fbffe7b",
   "game.py": "e357894a7bc0ce3678209941f6aa7b3faa365ba15291a13a014439ae66c8a395",
-  "host.py": "e68442c8a38e7d6da13b0fd643725075f567e19e2ef6f0ec635a93a1427b5fc8",
+  "host.py": "7b769070ab322240f7c2d1f4a6371688f327826f7f090c82e53ba0ca896adde9",
   "search.py": "5e9bd05ffb58ff2fe26d9450c29aae2b59a1e5ed0833f32acab384df450f6755"
  },
  "brain": "brain.npz",
