@@ -1,21 +1,22 @@
-// The arcade's loop, shared by the browser workers and the headless runner: the retina, the scripted teachers, the
-// brain side (watching, the takeover, living on reward) and the game side (episodes, scores, the skill badge). It
-// follows atari-arcade/server.py; the Python server remains the reference.
-import { Brain, Generator, Refusal } from './cadence.js';
+// The arcade's game side, shared by the emulator worker: the retina, the scripted teachers and the game loop
+// (episodes, scores, the skill badge). The brain runs in brain_worker.js: the released cadence-net wheel and
+// ../arcade_brain.py in Pyodide. It follows atari-arcade/server.py.
 
 export const N_SCREEN = 84 * 84;
 export const RETINA_FRAMES = 300;       // screens of random play averaged into the background
 export const RETINA_GAIN = 2.0;
-export const MIN_LESSONS = 500;
-export const MAX_LESSONS = 2000;
-export const AGREE_WINDOW = 120;
-export const AGREE_TO_PLAY = {};
-export const AGREE_DEFAULT = 0.9;
-// The server's settings: Brain.compose defaults, with each synapse stepping on its own running mean over its own
-// running size.
-export const LEARNING = { beta: 0.1, temperature: 0.2, tolerance: 3e-3, free_steps: 1024, nudged_steps: 12,
-                          eta_bias: 0.02, eta: 0.003, momentum: 0.9, normalize: 0.99, normalize_floor: 1e-4 };
-export const REWARD = { gamma: 0.97, lam: 0.9, eta: 0.001, eta_critic: 0.3, momentum: 0.9, normalize: 0.99 };
+
+// A small seeded generator for the background's random play (mulberry32).
+export class Generator {
+  constructor(seed) { this.a = seed >>> 0; }
+  next() {
+    let t = (this.a = (this.a + 0x6D2B79F5) >>> 0);
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  }
+  integers(n) { return Math.floor(this.next() * n); }
+}
 
 export const AGENT_HINTS = {
   Atlantis: 'the brain fires the three gun bases',
@@ -27,10 +28,6 @@ export function teacherAction(game, meanings) {
   const name = TEACHER[game];
   if (!name) throw new Error(`no teacher for ${game}`);
   return meanings.indexOf(name);
-}
-
-export function buildBrain(nActions, seed = 0) {
-  return Brain.compose(N_SCREEN, nActions, { seed, learning: LEARNING, reward: REWARD });
 }
 
 // 210 x 160 RGBA pixels to the 84 x 84 luminance retina; the brain's input is what differs from a fixed background.
@@ -98,200 +95,6 @@ export class Perception {
 
 const mean = values => values.reduce((a, b) => a + b, 0) / values.length;
 const round = (value, digits) => Math.round(value * 10 ** digits) / 10 ** digits;
-
-// The brain's side of a runner: a lesson per watched screen, the takeover gate, then one decision per screen it gets
-// to see, learning from the reward since its last decision. One serial owner calls iterate(); the game side never
-// waits for it.
-export class BrainSide {
-  constructor(game, meanings, { seed = 0, lifeLearn = true } = {}) {
-    this.game = game;
-    this.meanings = meanings;
-    this.nActions = meanings.length;
-    this.seed = seed;
-    this.lifeLearn = lifeLearn;
-    this.brain = buildBrain(this.nActions, seed);
-    this.phase = 'watching';
-    this.lessons = 0;
-    this.agreement = [];
-    this.agreeHist = [];
-    this.sweepsHist = [];
-    this.lastSweeps = null;
-    this.decisions = 0;
-    this.outcomes = 0;       // outcomes of its own actions learned from
-    this.rewarded = 0;       // those with a reward in them
-    this.refused = 0;
-    this.value = 0;
-    this.dopamine = 0;
-    this.pending = false;    // an own executed action awaits its outcome
-    this.currentAction = 0;
-    this.faults = 0;
-    this.lastError = null;
-    this.beat = Date.now();
-    this.thinkMs = [];
-    this.prevState = null;
-    this.viz = null;
-    this.vizT = 0;
-    this.takeoverAt = null;
-    this.born = Date.now();
-  }
-
-  // The page's nodes: association cortex, working trace, motor cortex, memory, value.
-  populations() {
-    const n = this.brain.nH, a = this.nActions;
-    return [{ name: 'association', count: n, start: 0 }, { name: 'trace', count: n, start: n },
-            { name: 'motor', count: a, start: 2 * n }, { name: 'memory', count: a, start: 2 * n + a },
-            { name: 'value', count: 1, start: 2 * n + 2 * a }];
-  }
-
-  // Synapses as [kind, source, target, weight]; kind 0 starts at a retina pixel, kind 1 at another node. The
-  // strongest of a random tenth, with their current weights.
-  graphSample(perKind = 260) {
-    const brain = this.brain, nH = brain.nH, nA = this.nActions, rng = new Generator(7);
-    const trim = e => [e[0], e[1], e[2], round(e[3], 3)];
-    const fromPixels = [];
-    for (let k = 0; k < 10 * perKind; k++) {
-      const i = rng.integers(brain.nS), h = rng.integers(nH);
-      fromPixels.push([0, i, h, brain.w.sa[i * nH + h]]);
-    }
-    fromPixels.sort((x, y) => Math.abs(y[3]) - Math.abs(x[3]));
-    const inner = [];
-    for (let p = 0; p < nH; p++) for (let h = 0; h < nH; h++) inner.push([1, nH + p, h, brain.w.pa[p * nH + h]]);
-    for (let h = 0; h < nH; h++) for (let m = 0; m < nA; m++) inner.push([1, h, 2 * nH + m, brain.w.am[h * nA + m]]);
-    for (let m = 0; m < nA; m++) for (let h = 0; h < nH; h++) inner.push([1, 2 * nH + m, h, brain.w.ma[m * nH + h]]);
-    for (let i = 0; i < nA; i++) for (let j = 0; j < nA; j++) if (i !== j) inner.push([1, 2 * nH + i, 2 * nH + j, brain.w.mm[i * nA + j]]);
-    inner.sort((x, y) => Math.abs(y[3]) - Math.abs(x[3]));
-    return [...fromPixels.slice(0, perKind).map(trim), ...inner.slice(0, 2 * perKind).map(trim)];
-  }
-
-  // What the page sees of one settled state.
-  _show(state, sweeps, x, wrongAction = null) {
-    const brain = this.brain, memory = brain.recall(x);
-    const vec = [...state.sH, ...state.sP, ...state.sM, ...memory, this.value];
-    const prev = this.prevState;
-    const delta = prev && prev.length === vec.length ? vec.map((v, i) => Math.abs(v - prev[i])) : vec.map(() => 0);
-    this.prevState = vec;
-    const errors = vec.map(() => 0);
-    errors[errors.length - 1] = Math.min(1, Math.abs(this.dopamine));
-    if (wrongAction !== null) errors[2 * brain.nH + wrongAction] = 1;
-    this.lastSweeps = sweeps;
-    this.sweepsHist.push(sweeps);
-    this.sweepsHist = this.sweepsHist.slice(-48);
-    this.viz = { state: vec.map(v => round(v, 3)), errors: errors.map(v => round(v, 3)), delta: delta.map(v => round(v, 3)), q: true };
-    this.vizT = Date.now();
-  }
-
-  // One watched screen. First the brain's own answer, read greedily from its settled state: the teacher is at the
-  // controls, so that answer is not executed and carries no eligibility. Then the lesson: the teacher's action as
-  // the label of this screen.
-  _watch(snap) {
-    const brain = this.brain, x = snap.drive;
-    const drive = brain.stimulus(x);
-    let own = null;
-    try {
-      own = brain.act(x, { greedy: true });
-    } catch (error) {
-      if (!(error instanceof Refusal)) throw error;
-      this.refused++;
-      this.lastError = `refused: ${error.message}`;
-    }
-    this.agreement.push(own === snap.teacher ? 1 : 0);
-    this.agreement = this.agreement.slice(-AGREE_WINDOW);
-    if (own !== null && this.lessons % 3 === 0) {
-      this.value = brain.value(brain.free);
-      this._show(brain.free, brain.free.steps, x, own === snap.teacher ? null : snap.teacher);
-    }
-    brain.teach(drive, snap.teacher);
-    this.lessons++;
-    if (this.lessons % 10 === 0) {
-      this.agreeHist.push(round(mean(this.agreement), 3));
-      this.agreeHist = this.agreeHist.slice(-60);
-    }
-    const agree = mean(this.agreement), gate = AGREE_TO_PLAY[this.game] ?? AGREE_DEFAULT;
-    // The badge measures the brain against the teacher's own games, so it watches at least one whole game.
-    const ready = (this.lessons >= MIN_LESSONS && this.agreement.length >= AGREE_WINDOW && agree >= gate) || this.lessons >= MAX_LESSONS;
-    if (ready && (snap.teacherGames ?? 1) >= 1) {
-      console.log(`${this.game}: TAKEOVER at ${this.lessons} lessons, agreement ${agree.toFixed(2)}`);
-      this.takeoverAt = { lessons: this.lessons, agreement: round(agree, 3), seconds: round((Date.now() - this.born) / 1000, 1), time: Date.now() };
-      this.currentAction = snap.teacher;
-      this.pending = false;
-      this.phase = 'playing';
-      return { takeover: true, action: this.currentAction, consumed: true };
-    }
-    return {};
-  }
-
-  // One decision of the brain at the controls: the outcome of its last action (the reward since then, whether an
-  // episode ended), then the next action.
-  _play(snap) {
-    const brain = this.brain, x = snap.drive;
-    try {
-      let action;
-      if (!this.lifeLearn) {          // the frozen twin: no outcome reaches it
-        if (snap.done) brain.reset();
-        action = brain.act(x);
-      } else if (this.pending) {
-        const signal = Math.sign(snap.reward);
-        action = brain.step(x, { reward: signal, done: !!snap.done });
-        this.outcomes++;
-        if (signal !== 0) this.rewarded++;
-        this.dopamine = brain.lastLearning.dopamine ?? 0;
-      } else {
-        action = brain.step(x);
-      }
-      this.currentAction = action;
-    } catch (error) {
-      if (!(error instanceof Refusal)) throw error;
-      // The brain did not settle: no action was issued. The body keeps holding its last action and that stretch
-      // is never credited.
-      this.refused++;
-      this.lastError = `refused: ${error.message}`;
-      this.pending = false;
-      if (snap.done) brain.reset();
-      return { consumed: true };
-    }
-    this.pending = true;
-    this.decisions++;
-    this.agreement.push(this.currentAction === snap.teacher ? 1 : 0);
-    this.agreement = this.agreement.slice(-AGREE_WINDOW);
-    this.value = brain.value(brain.free);
-    if (this.decisions % 3 === 0) this._show(brain.free, brain.free.steps + (brain.lastLearning.free_steps ?? 0), x);
-    if (this.decisions % 10 === 0) {
-      this.agreeHist.push(round(mean(this.agreement), 3));
-      this.agreeHist = this.agreeHist.slice(-60);
-    }
-    return { action: this.currentAction, consumed: true };
-  }
-
-  // One brain iteration over the latest snapshot {drive, teacher, reward, done, teacherGames}; `reward` is the
-  // reward since the brain's last decision and `done` whether an episode ended since then. The caller clears both
-  // when `consumed` is reported.
-  iterate(snap) {
-    this.beat = Date.now();
-    const started = performance.now();
-    const out = this.phase === 'watching' ? this._watch(snap) : this._play(snap);
-    this.thinkMs.push(performance.now() - started);
-    if (this.thinkMs.length > 20000) this.thinkMs = this.thinkMs.slice(-20000);
-    return out;
-  }
-
-  // The server's /state view of the brain side.
-  state() {
-    const agree = this.agreement.length ? round(mean(this.agreement), 2) : null;
-    const gate = AGREE_TO_PLAY[this.game] ?? AGREE_DEFAULT;
-    const recent = this.thinkMs.slice(-200).sort((a, b) => a - b);
-    return {
-      phase: this.phase,
-      watch: { lessons: this.lessons, to_takeover: round(Math.min(1, this.lessons / MIN_LESSONS) * Math.min(1, (agree || 0) / gate), 2),
-               sweeps: this.lastSweeps, agreement: agree, sweeps_hist: this.sweepsHist, agree_hist: this.agreeHist,
-               takeover: this.takeoverAt },
-      brain: { beat_age: Math.round((Date.now() - this.beat) / 100) / 10, faults: this.faults, last_error: this.lastError },
-      life: { decisions: this.decisions, outcomes: this.outcomes, refused: this.refused, rewarded: this.rewarded,
-              think_ms: recent.length ? round(recent[Math.floor(recent.length / 2)], 1) : null,
-              think_ms_scope: 'median of latest 200 brain handlers; watching and play, including handled refusals; excludes uncaught faults',
-              value: round(this.value, 3), dopamine: round(this.dopamine, 3) },
-    };
-  }
-}
 
 // The game's side of a runner: the emulator loop that never waits for the brain, the scores and the badge.
 export class GameSide {

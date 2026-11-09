@@ -1,13 +1,15 @@
 {
  "seed": 2,
  "identity": {
-  "cadence_net": "0.70.0",
-  "python": "3.11.16",
-  "numpy": "2.4.6",
-  "machine": "x86_64",
+  "cadence_net": "0.95.2",
+  "python": "3.13.7",
+  "numpy": "2.5.4",
+  "machine": "arm64",
+  "recall": false,
   "sources_sha256": {
-   "server.py": "ccb22a0ea12a2a27ae3c381fbccba8f3fee288bdd4ef39313673aadc5a488462",
-   "headless_control.py": "d3e96893cc0996cb01d982e4770db0d9617f97e766a96e6d1d49f2db42efc3a1"
+   "server.py": "99608c8f48c29150518f0dfc4e53d7f66f51f3852a3bc32929a471353405e509",
+   "arcade_brain.py": "de9a517b494cfe4416a6c9cd1b98cab929e41edb59a597649bb0fd91309c8095",
+   "headless_control.py": "6f185d84af0ad8d8c6e13d8c4c09c2a6167bb4745b6b370212bf7cd0f591a9d9"
   }
  },
  "report": {
@@ -17,10 +19,11 @@
    "takeover": {
     "lessons": 500,
     "agreement": 1.0,
-    "seconds": 33.5
+    "seconds": 59.6
    },
-   "agreement_with_teacher_now": 0.967,
+   "agreement_with_teacher_now": 0.983,
    "teacher_returns": [
+    2000.0,
     2000.0,
     2000.0,
     2000.0,
@@ -30,10 +33,9 @@
     2000.0
    ],
    "teacher_mean": 2000.0,
-   "episodes_lived": 13,
+   "episodes_lived": 12,
    "returns": [
     2000.0,
-    1600.0,
     2000.0,
     2000.0,
     2000.0,
@@ -51,16 +53,17 @@
    "faults": 0,
    "refused": 0,
    "last_error": null,
-   "decisions": 1258,
-   "env_steps": 7999,
-   "outcomes_learned": 1257,
-   "seconds": 136.4,
+   "decisions": 1432,
+   "env_steps": 7784,
+   "outcomes_learned": 1431,
+   "seconds": 217.2,
    "think_seconds": {
-    "p50": 0.0745,
-    "p95": 0.1096,
-    "p99": 0.1266,
-    "max": 0.5746
-   }
+    "p50": 0.0698,
+    "p95": 0.3251,
+    "p99": 0.5273,
+    "max": 4.1801
+   },
+   "think_seconds_scope": "last 20000 whole brain handlers; watching and play, including refusals/fault backoff; excludes emulator, retina, waiting and rendering"
   },
   "Atlantis:frozen": {
    "phase": "playing",
@@ -68,9 +71,9 @@
    "takeover": {
     "lessons": 500,
     "agreement": 1.0,
-    "seconds": 34.3
+    "seconds": 54.7
    },
-   "agreement_with_teacher_now": 0.975,
+   "agreement_with_teacher_now": 0.958,
    "teacher_returns": [
     2000.0,
     2000.0,
@@ -81,9 +84,11 @@
     2000.0
    ],
    "teacher_mean": 2000.0,
-   "episodes_lived": 13,
+   "episodes_lived": 12,
    "returns": [
-    1600.0,
+    2000.0,
+    2000.0,
+    2100.0,
     2000.0,
     2000.0,
     2000.0,
@@ -92,26 +97,24 @@
     2000.0,
     2000.0,
     2000.0,
-    2000.0,
-    2000.0,
-    2000.0,
-    1600.0
+    2000.0
    ],
-   "late_mean": 1920.0,
-   "best": 2000.0,
+   "late_mean": 2000.0,
+   "best": 2100.0,
    "faults": 0,
    "refused": 0,
    "last_error": null,
-   "decisions": 5649,
-   "env_steps": 7969,
+   "decisions": 4965,
+   "env_steps": 7649,
    "outcomes_learned": 0,
-   "seconds": 135.0,
+   "seconds": 210.1,
    "think_seconds": {
-    "p50": 0.0146,
-    "p95": 0.0574,
-    "p99": 0.0909,
-    "max": 0.4056
-   }
+    "p50": 0.0058,
+    "p95": 0.1201,
+    "p99": 0.2362,
+    "max": 1.1361
+   },
+   "think_seconds_scope": "last 20000 whole brain handlers; watching and play, including refusals/fault backoff; excludes emulator, retina, waiting and rendering"
   }
  },
  "verdicts": {

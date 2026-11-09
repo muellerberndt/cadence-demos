@@ -69,8 +69,8 @@
 </head>
 <body>
 <header><h1>CADENCE ARCADE</h1>
-  <span>two Cadence 0.70.0 System 1 brains born in your browser, learning live ·
-  an Atari 2600 core and the brain run in web workers ·
+  <span>two Cadence 0.95.2 System 1 brains born in your browser, learning live ·
+  an Atari 2600 core and the released library run in web workers ·
   every fiber and number is measured, nothing is staged</span>
   <span class="pace">speed
     <input id="pace" type="range" min="0" max="0.4" step="0.05" value="0"
@@ -79,14 +79,14 @@
 <div id="rows"></div>
 <section class="about" id="about">
   <p><b>What runs here.</b> Each game is an Atari 2600 emulated in a worker. Its brain is born in a second worker with
-  a fixed seed: a Cadence 0.70.0 System 1 brain, 7,056 sensory neurons for the 84 × 84 screen, an association cortex
+  a fixed seed: a Cadence 0.95.2 System 1 brain, 7,056 sensory neurons for the 84 × 84 screen, an association cortex
   with a working trace, a motor cortex with one neuron per action, a critic and an associative memory, 456,000
   synapses that settle together for every answer. It watches a scripted teacher play (Freeway: always up; Atlantis:
   always fire) and takes each watched screen as a lesson. Once its own answers agree with the teacher's often enough
   and it has watched one whole game, it takes the controls, and from then on it learns from the reward of its own
-  actions. The brain is a JavaScript version of <code>Brain.compose</code>, checked against the Python library on
-  recorded fixtures; the emulator is the 6502.ts core.
-  <a href="https://github.com/muellerberndt/cadence-demos/tree/main/atari-arcade">Source, parity harness and receipts.</a></p>
+  actions. The brain is the released <code>cadence-net</code> wheel running in Python in your browser (Pyodide), the
+  same <code>Brain.compose</code> call as the Python edition; the emulator is the 6502.ts core.
+  <a href="https://github.com/muellerberndt/cadence-demos/tree/main/atari-arcade">Source and receipts.</a></p>
 </section>
 <script type="module">
 import { AGENT_HINTS } from './arcade.js';
@@ -511,6 +511,8 @@ function startGame(name, game, row) {
       }
       admitted = admitted || (m.rewarded || 0) > lastAdm;
       lastAdm = Math.max(lastAdm, m.rewarded || 0);
+    } else if (m.type === "status") {
+      life.textContent = m.text;
     } else if (m.type === "state") {
       brainState = m.state;
       hud();

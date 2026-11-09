@@ -1,79 +1,81 @@
-"""The current native factory keeps the archived explicit recipe on Cadence 0.80.
-
-The old Python recipe is evaluated on the candidate runtime. This does not rewrite
-the browser's 0.70 fixture or establish numerical parity with older runtimes.
-"""
+"""The arcade's brain on the released library: the recipe, a watched-then-rewarded tape that
+continues across save and load, the browser's brain side through a takeover, and the pack."""
 
 import hashlib
-import importlib.util
+import json
 from pathlib import Path
 
 import numpy as np
 import pytest
 from cadence import Brain
 
+import arcade_brain
 import server
 
-
-@pytest.fixture(scope="module")
-def previous_recipe():
-    path = Path(__file__).resolve().parents[1] / "web/tools/make_parity_fixture.py"
-    assert hashlib.sha256(path.read_bytes()).hexdigest() == (
-        "46b266194bc8a88f42f816a13373f2fb68f891e428473862dc933948f1b7345e"
-    )
-    spec = importlib.util.spec_from_file_location("arcade_previous_recipe", path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+HERE = Path(__file__).resolve().parents[1]
 
 
-def same_checkpoint(left, right, directory):
-    with (
-        np.load(left.save(directory / "left.npz"), allow_pickle=False) as a,
-        np.load(right.save(directory / "right.npz"), allow_pickle=False) as b,
-    ):
-        assert set(a.files) == set(b.files)
-        for name in a.files:
-            np.testing.assert_array_equal(a[name], b[name], err_msg=name)
+def screen(t, n):
+    rng = np.random.default_rng(t)
+    return ((rng.random(n) - 0.5) * 0.4).reshape(1, n)
+
+
+def test_recipe_on_the_screen():
+    brain = server.build_brain(3)
+    assert len(brain.sensory_index) == 7056
+    assert len(brain.motor_index) == 3
+    assert "recall" not in brain.connectome.populations  # off unless ARCADE_RECALL=1
+    config = brain.learner.config
+    assert (config.eta, config.nudged_steps, config.normalize) == (0.003, 12, 0.99)
+    assert brain.placement["backend"] == "cpu"
 
 
 @pytest.mark.parametrize("actions", [3, 4])
-def test_pixel_sized_factory_keeps_explicit_recipe(previous_recipe, actions):
-    before, after = previous_recipe.compose(server.N_SCREEN, actions), server.build_brain(actions)
-    assert before.learner.config == after.learner.config
-    assert before.basal_ganglia.config == after.basal_ganglia.config
-    for name in ("pre", "post", "count", "sign"):
-        np.testing.assert_array_equal(getattr(before.connectome, name), getattr(after.connectome, name))
-    np.testing.assert_array_equal(before.brain.efficacy, after.brain.efficacy)
-    assert len(after.sensory_index) == 7056
-
-
-@pytest.mark.parametrize("actions", [3, 4])
-def test_watched_rewarded_and_saved_tape_keeps_owned_continuation(
-    previous_recipe, actions, monkeypatch, tmp_path
-):
-    monkeypatch.setattr(server, "N_SCREEN", 12)
-    before, after = previous_recipe.compose(12, actions), server.build_brain(actions)
+def test_watched_rewarded_and_saved_tape_continues(actions, tmp_path):
+    brain = arcade_brain.build_brain(actions, n_screen=12)
     for t in range(3):
-        screen, label = previous_recipe.screen(t, 12), np.array([(2 * t + 1) % actions])
-        own = []
-        for brain in (before, after):
-            drive = brain.stimulus(screen)
-            own.append(brain.act(screen, greedy=True))
-            brain.learner.step(drive, label)
-        np.testing.assert_array_equal(*own)
+        x = screen(t, 12)
+        drive = brain.stimulus(x)
+        brain.act(x, greedy=True)
+        brain.learner.step(drive, np.array([(2 * t + 1) % actions]))
     for t in range(3, 7):
-        screen = previous_recipe.screen(t, 12)
         feedback = {} if t == 3 else {"reward": [(-1.0, 0.0, 1.0)[t % 3]], "done": [t == 5]}
-        np.testing.assert_array_equal(before.step(screen, **feedback), after.step(screen, **feedback))
-    assert after.pending_feedback and after.basal_ganglia.updates == 3
-    same_checkpoint(before, after, tmp_path)
-
-    restored = Brain.load(after.save(tmp_path / "acquired.npz"))
+        brain.step(screen(t, 12), **feedback)
+    assert brain.pending_feedback
+    restored = Brain.load(brain.save(tmp_path / "acquired.npz"))
     for t in range(7, 10):
-        screen, reward = previous_recipe.screen(t, 12), [float(t % 2)]
-        expected = before.step(screen, reward=reward)
-        np.testing.assert_array_equal(after.step(screen, reward=reward), expected)
-        np.testing.assert_array_equal(restored.step(screen, reward=reward), expected)
-    same_checkpoint(before, after, tmp_path)
-    same_checkpoint(after, restored, tmp_path)
+        x, reward = screen(t, 12), [float(t % 2)]
+        np.testing.assert_array_equal(restored.step(x, reward=reward), brain.step(x, reward=reward))
+
+
+def test_brain_side_takes_over_from_the_teacher(monkeypatch):
+    monkeypatch.setattr(arcade_brain, "MIN_LESSONS", 20)
+    monkeypatch.setattr(arcade_brain, "AGREE_WINDOW", 10)
+    side = arcade_brain.BrainSide("Freeway", ["NOOP", "UP", "DOWN"], seed=0)
+    drive = screen(0, 7056)[0]
+    out = {}
+    for _ in range(arcade_brain.MAX_LESSONS):
+        out = side.iterate(drive, 1, 0.0, False, 1)
+        if out.get("takeover"):
+            break
+    assert side.phase == "playing" and side.faults == 0
+    assert side.takeover["lessons"] >= 20
+    for k in range(6):
+        out = side.iterate(drive, 1, float(k % 2), False, 1)
+        assert out.get("consumed") and "fault" not in out
+    assert side.decisions == 6 and side.outcomes == 5
+    state = side.state()
+    assert state["life"]["decisions"] == 6
+    assert side.viz and len(side.viz["state"]) == sum(p["count"] for p in side.populations())
+    assert len(side.graph_sample()) > 0
+
+
+def test_pack_matches_its_sources():
+    pack = HERE / "web" / "pack"
+    manifest = json.loads((pack / "manifest.json").read_text())
+    sha = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
+    assert manifest["cadence"] == "0.95.2"
+    assert sha(pack / manifest["wheel"]) == manifest["wheel_sha256"]
+    for name in manifest["sources"]:
+        assert sha(pack / "py" / name) == manifest["sources_sha256"][name]
+        assert (pack / "py" / name).read_bytes() == (HERE / name).read_bytes()

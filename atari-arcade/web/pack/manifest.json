@@ -1,0 +1,13 @@
+{
+ "schema": "cadence-arcade-pack/1",
+ "pyodide": "314.0.7",
+ "cadence": "0.95.2",
+ "wheel": "cadence_net-0.95.2-py3-none-any.whl",
+ "wheel_sha256": "734487b6a821ef0d39441dc59817f67e6f6ac070a8cbbe45243a12193ea2d090",
+ "sources": [
+  "arcade_brain.py"
+ ],
+ "sources_sha256": {
+  "arcade_brain.py": "26a9c090a8c4f97beeeee2dcc38bdd82734d619562eaf5457cb8a56a0a00d1f9"
+ }
+}

@@ -112,9 +112,10 @@ def identity():
         "python": platform.python_version(),
         "numpy": np.__version__,
         "machine": platform.machine(),
+        "recall": server.RECALL,
         "sources_sha256": {
             name: hashlib.sha256((here / name).read_bytes()).hexdigest()
-            for name in ("server.py", "headless_control.py")},
+            for name in ("server.py", "arcade_brain.py", "headless_control.py")},
     }
 
 

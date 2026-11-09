@@ -1,0 +1,133 @@
+{
+ "seed": 0,
+ "identity": {
+  "cadence_net": "0.95.2",
+  "python": "3.13.7",
+  "numpy": "2.5.4",
+  "machine": "arm64",
+  "recall": true,
+  "sources_sha256": {
+   "server.py": "99608c8f48c29150518f0dfc4e53d7f66f51f3852a3bc32929a471353405e509",
+   "arcade_brain.py": "26a9c090a8c4f97beeeee2dcc38bdd82734d619562eaf5457cb8a56a0a00d1f9",
+   "headless_control.py": "6f185d84af0ad8d8c6e13d8c4c09c2a6167bb4745b6b370212bf7cd0f591a9d9"
+  }
+ },
+ "report": {
+  "Freeway:living": {
+   "phase": "playing",
+   "lessons": 500,
+   "takeover": {
+    "lessons": 500,
+    "agreement": 1.0,
+    "seconds": 378.8
+   },
+   "agreement_with_teacher_now": 1.0,
+   "teacher_returns": [
+    21.0,
+    21.0,
+    23.0,
+    21.0,
+    21.0,
+    23.0,
+    21.0
+   ],
+   "teacher_mean": 21.6,
+   "episodes_lived": 13,
+   "returns": [
+    28.0,
+    21.0,
+    21.0,
+    25.0,
+    21.0,
+    21.0,
+    21.0,
+    23.0,
+    21.0,
+    21.0,
+    21.0,
+    23.0,
+    21.0
+   ],
+   "late_mean": 21.4,
+   "best": 28.0,
+   "faults": 0,
+   "refused": 0,
+   "last_error": null,
+   "decisions": 1150,
+   "env_steps": 37881,
+   "outcomes_learned": 1149,
+   "seconds": 1351.8,
+   "think_seconds": {
+    "p50": 0.717,
+    "p95": 1.5642,
+    "p99": 2.4253,
+    "max": 5.6964
+   },
+   "think_seconds_scope": "last 20000 whole brain handlers; watching and play, including refusals/fault backoff; excludes emulator, retina, waiting and rendering"
+  },
+  "Freeway:frozen": {
+   "phase": "playing",
+   "lessons": 500,
+   "takeover": {
+    "lessons": 500,
+    "agreement": 1.0,
+    "seconds": 393.7
+   },
+   "agreement_with_teacher_now": 0.983,
+   "teacher_returns": [
+    21.0,
+    21.0,
+    23.0,
+    21.0,
+    21.0,
+    23.0,
+    21.0,
+    21.0
+   ],
+   "teacher_mean": 21.5,
+   "episodes_lived": 12,
+   "returns": [
+    27.0,
+    22.0,
+    20.0,
+    22.0,
+    20.0,
+    21.0,
+    23.0,
+    21.0,
+    20.0,
+    22.0,
+    23.0,
+    22.0
+   ],
+   "late_mean": 21.6,
+   "best": 27.0,
+   "faults": 0,
+   "refused": 0,
+   "last_error": null,
+   "decisions": 2795,
+   "env_steps": 36965,
+   "outcomes_learned": 0,
+   "seconds": 1321.9,
+   "think_seconds": {
+    "p50": 0.3123,
+    "p95": 0.9613,
+    "p99": 1.5917,
+    "max": 9.6994
+   },
+   "think_seconds_scope": "last 20000 whole brain handlers; watching and play, including refusals/fault backoff; excludes emulator, retina, waiting and rendering"
+  }
+ },
+ "verdicts": {
+  "Freeway": {
+   "takeover_living": true,
+   "takeover_frozen": true,
+   "no_faults": true,
+   "lived_episodes": true,
+   "no_collapse": true,
+   "expert_via_selfplay": true,
+   "living_holds_or_beats_frozen": true,
+   "PASS": true
+  }
+ }
+}
