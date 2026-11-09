@@ -19,8 +19,9 @@ async function checked(url, expected) {
   return bytes;
 }
 
-async function loadBrain(game, meanings, seed) {
-  const base = new URL('pack/', self.location.href);
+async function loadBrain(game, meanings, seed, pack) {
+  // The page names the pack's address (absolute): a bundler may move this script elsewhere.
+  const base = new URL(pack || 'pack/', self.location.href);
   status('opening the runtime pack…');
   const response = await fetch(new URL('manifest.json', base), { cache: 'no-cache' });
   if (!response.ok) throw new Error('the runtime pack is missing: run pack.py');
@@ -81,7 +82,7 @@ self.onmessage = async event => {
       inbox.rewardAcc += d.reward;
       inbox.done = inbox.done || d.done;
     };
-    const { py, manifest } = await loadBrain(m.game, m.meanings, m.seed ?? 0);
+    const { py, manifest } = await loadBrain(m.game, m.meanings, m.seed ?? 0, m.pack);
     const g = JSON.parse(py.globals.get('_graph')());
     self.postMessage({ type: 'ready', graph: { populations: g.populations, n_screen: 84 * 84,
                                                 n_action: m.meanings.length, meanings: m.meanings, edges: g.edges,

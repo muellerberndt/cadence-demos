@@ -34,6 +34,9 @@ function toast(text, kind = '', ms = 2200) {
   if (ms) toastTimer = setTimeout(() => { ui.toast.hidden = true; }, ms);
 }
 
+// Where the runtime pack lives: <meta name="cadence-pack"> if the host page sets one, else pack/ beside this page.
+const PACK = new URL(document.querySelector('meta[name="cadence-pack"]')?.content || 'pack/', document.baseURI).href;
+
 // --- the brain worker ---------------------------------------------------------------------------
 class BrainWorker {
   constructor() {
@@ -539,7 +542,7 @@ async function start() {
   view = new BrainView($('brain'), $('brain-tip'));
   brain = new BrainWorker();
   try {
-    const desc = await brain.call('init');
+    const desc = await brain.call('init', { pack: PACK });
     view.setup(desc);
     const r = desc.recipe || {};
     ui.sub.textContent = `Deep, three layers (${(r.modules || []).join(', ')}) · ${desc.neurons} neurons · ${desc.synapses.toLocaleString('en')} synapses`;

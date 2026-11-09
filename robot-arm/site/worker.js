@@ -18,9 +18,10 @@ async function checked(url, expected) {
   return bytes;
 }
 
-async function initialize() {
+async function initialize(pack) {
   const began = performance.now();
-  const base = new URL('pack/', self.location.href);
+  // The page names the pack's address (absolute): a bundler may move this script elsewhere.
+  const base = new URL(pack || 'pack/', self.location.href);
   status('Opening the brain pack');
   const response = await fetch(new URL('manifest.json', base));
   if (!response.ok) throw new Error('The brain pack is missing.');
@@ -72,7 +73,7 @@ self.onmessage = ({ data }) => {
   chain = chain.then(async () => {
     const { rid, command, payload } = data;
     try {
-      const result = command === 'init' ? await initialize() : call({ command, ...(payload || {}) });
+      const result = command === 'init' ? await initialize(payload?.pack) : call({ command, ...(payload || {}) });
       self.postMessage({ rid, result });
     } catch (error) {
       if (command === 'init') python = null;

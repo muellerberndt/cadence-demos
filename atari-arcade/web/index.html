@@ -92,7 +92,9 @@
 import { AGENT_HINTS } from './arcade.js';
 
 const GAME_LIST = ['Freeway', 'Atlantis'];
-const base = new URL('./', location.href).href;
+const base = new URL('./', document.baseURI).href;
+// Where the runtime pack lives: <meta name="cadence-pack"> if the host page sets one, else pack/ beside this page.
+const PACK = new URL(document.querySelector('meta[name="cadence-pack"]')?.content || 'pack/', document.baseURI).href;
 const emulators = [];
 
 document.addEventListener('input', (e) => {
@@ -476,7 +478,7 @@ function startGame(name, game, row) {
     const m = e.data;
     if (m.type === "ready") {
       life.textContent = "the brain is being born…";
-      brain.postMessage({type: "boot", game, meanings: m.meanings, seed: 0, port: channel.port2}, [channel.port2]);
+      brain.postMessage({type: "boot", game, meanings: m.meanings, seed: 0, pack: PACK, port: channel.port2}, [channel.port2]);
     } else if (m.type === "frame") {
       gameState = m.state;
       latestAction = m.state.action || "NOOP";

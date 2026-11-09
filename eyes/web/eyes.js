@@ -6,7 +6,8 @@ import { BrainScan, decodeAtlas } from "./brain_scan.js";
 import { HELD_OUT, KINDS, ROTATES, TRAINED, backdrop, render } from "./shapes.js";
 
 const $ = (id) => document.getElementById(id);
-const PACK = new URL("pack/", import.meta.url).href;
+// Where the runtime pack lives: <meta name="cadence-pack"> if the host page sets one, else pack/ beside this page.
+const PACK = new URL(document.querySelector('meta[name="cadence-pack"]')?.content || 'pack/', document.baseURI).href;
 const COLOURS = ["#46d07a", "#6aa8ff", "#ffb347", "#e07bd8", "#f2e15b", "#5fd3d3", "#ff7b72", "#b39dff"];
 const MAX_EYES = 8;
 const LABELS = {
