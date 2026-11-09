@@ -156,9 +156,9 @@ from 0.1 to 0.02 over the second half (`--eta-final 0.02 --decay-from 0.5`); the
 default world. Seed 4 (`--seed 4`); it took 4,462 s on one core of a 64-core cloud machine
 (Python 3.12, NumPy 2.5, `cadence-net[fast]`) that raised other eyes at the same time. The
 20,000-lesson eye of the default world reads 0.61 far and 0.48 and 0.27 after 20 and 30 px jumps.
-The recipe was raised on 12 seeds; 3 of them read at least the 20,000-lesson eye's value on every
-reading of the comparison below (the others fall short by one to three trials in 60 on a 10 px
-jump or a scene), and seed 4 is the one of those three with the best moving scenes and faces. On
+The recipe was raised on 24 seeds; 4 of them read at least the 20,000-lesson eye's value on every
+reading of the comparison below (most others fall short by one to three trials in 60 on a 10 px
+jump or a scene), and seed 4 is the one of those four with the best moving scenes and faces. On
 other seeds of the same tests than the comparison's (120 trials per jump) it reads 0.97, 0.78 and
 0.54 after 10, 20 and 30 px jumps and 0.95 and 0.94 with eight moving shapes; the seed was chosen
 with these readings in view, so they are not a held-out confirmation. `--backend mlx` raises on a Mac's GPU in float32; `pack.py` stores

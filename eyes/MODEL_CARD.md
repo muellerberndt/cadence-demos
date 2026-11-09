@@ -35,7 +35,7 @@ darts, seed 4, on nine shapes (disc, ring, square, frame, triangle, diamond, cro
 CPU, float64 (`evidence/fovea-v1x8-s1-run.json`): 4,462 s on one core of a 64-core cloud machine
 (Python 3.12, NumPy 2.5, `cadence-net[fast]`) that raised other eyes at the same time.
 `pack.py` stores it for the CPU in float64 with the cross-entropy nudge and answer tolerance
-0.03. The recipe was chosen from 24 recipes on two seeds each, then raised on 12 seeds; 3 seeds
+0.03. The recipe was chosen from 24 recipes on two seeds each, then raised on 24 seeds; 4 seeds
 read at least the 20,000-lesson eye's value on every `compare.py` reading (that eye: first
 glance far 0.61; 20 / 30 px jumps 0.48 / 0.23 at the page's tolerance), and seed 4 is the one
 of those with the best moving scenes and faces.
