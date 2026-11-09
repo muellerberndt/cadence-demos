@@ -12,6 +12,7 @@ through every fight of its life. Each brain then takes the driving test. Fitness
 
     mean placement score against the pool (-1 to +1) + LICENCE_WEIGHT * driving test
     + DAMAGE_WEIGHT * min(1, damage dealt per fight / DAMAGE_FULL)
+    + TWIN_WEIGHT * share of the fights with a random twin in which it placed above every twin
     - COST_WEIGHT * (the layout's measured cost per moment / the founder's - 1, above zero)
 
 The elite (with ``--niche``, the best of every lineage first) keep their brains and their lives; offspring of the elite (body and gene mutations,
@@ -54,6 +55,7 @@ LICENCE_WEIGHT = 1.0
 DAMAGE_WEIGHT = 0.25  # times min(1, damage dealt per fight / DAMAGE_FULL): a survivor that never fights earns no part
 DAMAGE_FULL = 200.0
 COST_WEIGHT = 0.2
+TWIN_WEIGHT = 0.5  # times the share of fights with a random twin in which the robot placed above every twin
 EXTRA_BOUNDS = {"eta_bias": (0.0002, 0.1)}
 
 
@@ -195,8 +197,10 @@ def generation(league: League, pool: list[dict[str, Any]], *, population: int, e
             # owed outcomes must be current at submission: rebuild candidates' owed per wave
             wave = [([{**c, "owed": data["robots"][c["name"]].get("owed")} for c in j[0]], *j[1:]) for j in wave]
             for job, out in zip(wave, ex.map(_pool_fight, wave), strict=True):
+                twins = [out["stats"][a["name"]]["place"] for a in job[1] if a["policy"] != "brain"]
                 for c in job[0]:
                     st = out["stats"][c["name"]]
+                    st = {**st, "above_twins": None if not twins else bool(st["place"] < min(twins))}
                     entry = data["robots"][c["name"]]
                     entry["fights"] += 1
                     entry["wins"] += int(st["place"] == 1)
@@ -225,11 +229,14 @@ def generation(league: League, pool: list[dict[str, Any]], *, population: int, e
         lic = float(tests[n]["licence"])
         c = cost({**FOUNDER, **genes})
         dealt = sum(x["dealt"] for x in r) / max(1, len(r))
+        tw = [x["above_twins"] for x in r if x.get("above_twins") is not None]
+        above = sum(tw) / len(tw) if tw else 0.5
         fit = (score + LICENCE_WEIGHT * lic + DAMAGE_WEIGHT * min(1.0, dealt / DAMAGE_FULL)
-               - COST_WEIGHT * max(0.0, c - 1.0))
+               + TWIN_WEIGHT * above - COST_WEIGHT * max(0.0, c - 1.0))
         ranking.append({"name": n, "fitness": round(fit, 4), "score": round(score, 3), "licence": round(lic, 3),
                         "passes": int(tests[n]["passes"]), "cost": round(c, 2), "fights": len(r),
                         "dealt": round(sum(x["dealt"] for x in r) / max(1, len(r)), 1),
+                        "above_twins": round(above, 3), "twin_fights": len(tw),
                         "aroused": round(sum(x["aroused_share"] for x in r) / max(1, len(r)), 3),
                         "ms": round(sum(x["ms_per_moment"] for x in r) / max(1, len(r)), 2),
                         "lineage": data["robots"][n].get("lineage", n), "born": data["robots"][n].get("generation", 0),
