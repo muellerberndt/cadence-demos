@@ -229,6 +229,42 @@ What they do not show:
 .venv/bin/python headless_control.py --seed 0 --games Freeway --episodes 12 --out report.json
 ```
 
+## The settings search
+
+The recipe above is the one the demo ships after a search for a recipe whose living brain
+beats its teacher and its frozen twin more often. `headless_control.py` ran about 1,950 lives
+(a living brain and its frozen twin per game and seed) on one 96-core machine, with the recipe
+patched by `ARCADE_RECIPE`, in seven stages on fresh seeds each, every stage with its own base
+arm on the same seeds. The arms and every stage's readings are in
+[evidence/search-0952.json](evidence/search-0952.json). A recipe would ship only if, on fresh
+seeds, it passed more seeds than the base recipe in Carnival and Space Invaders and no fewer in
+any game. None did.
+
+| Arm, on the 20 seeds of stage 5 | Carnival | Space Invaders | Freeway | Atlantis |
+| --- | --- | --- | --- | --- |
+| The shipped recipe | 4 | 12 | 20 | 20 |
+| `actor_eta` 5e-4, teaching until 1,500 lessons and 0.95 agreement (at most 4,000) | 5 | 13 | 19 | 20 |
+| the same with the efference copy | 5 | 11 | 19 | 20 |
+| the efference copy and the longer teaching | 2 | 14 | 19 | 19 |
+| `actor_eta` 5e-4, the longer teaching, a teaching bias step of 0.002 | 2 | 14 | 20 | 20 |
+
+- **Selection on a few seeds does not hold.** The best arm of stage 6 (`actor_eta` 5e-4, the
+  longer teaching, `actor_gamma` 0.99 and `actor_lam` 0.95) passed Carnival 5 of 12 seeds
+  against the base recipe's 2; on the fresh seeds of stage 7 it passed 0 of 13 against 4 of 16.
+- **What the arms do change.** With `actor_eta` 5e-4 and the longer teaching the living brain
+  ends nearer its frozen twin in Carnival (last five lives 0.85 to 1.04 of the twin's, against
+  0.74) and further above it in Space Invaders (1.23 against 1.08); the pass counts stay within
+  the seeds' spread.
+- **What did not help.** Lower actor rates (3e-4, 2e-4, 1e-4), a slower or faster critic, a
+  longer reward horizon, faster or slower teaching, a lower temperature and the efference copy,
+  each alone. `Brain.live` (calm moments learn nothing) raises Atlantis above its teacher and
+  costs Freeway (it passed 1 to 3 seeds of 3 to 12). A wider (96, 128) or deeper (64, 32 with
+  `teaching="deep"`) association region costs 1.3 to 3 times as much per screen and passes no
+  more seeds. The recall memory costs about six times as much per screen and was left out.
+- **Carnival's limit is its teacher.** It fires three screens of four and moves on the fourth,
+  by a clock no single screen shows, so a brain that reads one screen agrees with it about 0.9
+  at best and both brains stay near 0.6 of its score.
+
 ## The brain view
 
 The page draws each brain as a stylized brain seen from the left side, front to the left. Every

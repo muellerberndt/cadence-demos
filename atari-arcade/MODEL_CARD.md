@@ -87,6 +87,11 @@ lessons) and then played at a median of 79 to 81 ms per screen, the brain view d
 
 ## Limits
 
+- A settings search over about 1,950 headless lives (README, "The settings search";
+  [evidence/search-0952.json](evidence/search-0952.json)) found no recipe that passes more
+  seeds than this one in Carnival and Space Invaders on fresh seeds without passing fewer in
+  another game; the recipe is unchanged.
+
 - Reward adds no measured gain: the frozen twin does as well as the living brain in Freeway
   and Atlantis and better in Carnival; in Carnival and one Space Invaders seed the living
   brain drifts into holding one action.

@@ -1,0 +1,1912 @@
+{
+ "what": "headless_control.py runs (a living brain and its frozen twin per game and seed) with arcade_brain.py's recipe patched by ARCADE_RECIPE; cadence-net 0.95.2, numba on, one c7i.24xlarge running 46 to 76 runs at once; each stage has its own base arm on its seeds",
+ "arms": {
+  "A00_base": {},
+  "A01_eta3e-4": {
+   "actor": {
+    "eta": 0.0003,
+    "eta_bias": 3e-05
+   }
+  },
+  "A02_eta1e-4": {
+   "actor": {
+    "eta": 0.0001,
+    "eta_bias": 1e-05
+   }
+  },
+  "A03_live": {
+   "life": "live"
+  },
+  "A04_live_eta3e-4": {
+   "life": "live",
+   "actor": {
+    "eta": 0.0003,
+    "eta_bias": 3e-05
+   }
+  },
+  "A05_live_critic1": {
+   "life": "live",
+   "actor": {
+    "eta_critic": 1.0
+   }
+  },
+  "A06_critic0.05": {
+   "actor": {
+    "eta_critic": 0.05
+   }
+  },
+  "A07_gamma99": {
+   "actor": {
+    "gamma": 0.99,
+    "lam": 0.95
+   }
+  },
+  "A08_longteach": {
+   "min_lessons": 1500,
+   "agree": 0.95,
+   "max_lessons": 4000
+  },
+  "A09_longteach_live": {
+   "min_lessons": 1500,
+   "agree": 0.95,
+   "max_lessons": 4000,
+   "life": "live"
+  },
+  "A10_wide128": {
+   "modules": [
+    128
+   ]
+  },
+  "A11_deep64x32": {
+   "modules": [
+    64,
+    32
+   ],
+   "teaching": "deep"
+  },
+  "A12_deep64x32_live": {
+   "modules": [
+    64,
+    32
+   ],
+   "teaching": "deep",
+   "life": "live"
+  },
+  "A13_efference": {
+   "efference_amplitude": 1.0
+  },
+  "A14_live_calmer": {
+   "life": "live",
+   "arousal": {
+    "threshold": 0.4
+   }
+  },
+  "A15_longteach_live_eta3e-4": {
+   "min_lessons": 1500,
+   "agree": 0.95,
+   "max_lessons": 4000,
+   "life": "live",
+   "actor": {
+    "eta": 0.0003,
+    "eta_bias": 3e-05
+   }
+  },
+  "B01_eta3e-4": {
+   "actor": {
+    "eta": 0.0003,
+    "eta_bias": 3e-05
+   }
+  },
+  "B02_eta2e-4": {
+   "actor": {
+    "eta": 0.0002,
+    "eta_bias": 2e-05
+   }
+  },
+  "B03_eta5e-4": {
+   "actor": {
+    "eta": 0.0005,
+    "eta_bias": 5e-05
+   }
+  },
+  "B04_eta3e-4_longteach": {
+   "actor": {
+    "eta": 0.0003,
+    "eta_bias": 3e-05
+   },
+   "min_lessons": 1500,
+   "agree": 0.95,
+   "max_lessons": 4000
+  },
+  "B05_eta3e-4_efference": {
+   "actor": {
+    "eta": 0.0003,
+    "eta_bias": 3e-05
+   },
+   "efference_amplitude": 1.0
+  },
+  "B06_eta3e-4_gamma99": {
+   "actor": {
+    "eta": 0.0003,
+    "eta_bias": 3e-05,
+    "gamma": 0.99,
+    "lam": 0.95
+   }
+  },
+  "B07_eta3e-4_critic0.05": {
+   "actor": {
+    "eta": 0.0003,
+    "eta_bias": 3e-05,
+    "eta_critic": 0.05
+   }
+  },
+  "B08_live_eta3e-4": {
+   "life": "live",
+   "actor": {
+    "eta": 0.0003,
+    "eta_bias": 3e-05
+   }
+  },
+  "C01_teach_eta6e-3": {
+   "learning": {
+    "eta": 0.006,
+    "eta_bias": 0.04
+   }
+  },
+  "C02_teach_eta1.5e-3": {
+   "learning": {
+    "eta": 0.0015,
+    "eta_bias": 0.01
+   }
+  },
+  "C03_teach_bias2e-3": {
+   "learning": {
+    "eta_bias": 0.002
+   }
+  },
+  "C04_verylongteach": {
+   "min_lessons": 3000,
+   "agree": 0.95,
+   "max_lessons": 6000
+  },
+  "C05_efference_longteach": {
+   "efference_amplitude": 1.0,
+   "min_lessons": 1500,
+   "agree": 0.95,
+   "max_lessons": 4000
+  },
+  "C06_wide96": {
+   "modules": [
+    96
+   ]
+  },
+  "C07_eta5e-4_longteach": {
+   "actor": {
+    "eta": 0.0005,
+    "eta_bias": 5e-05
+   },
+   "min_lessons": 1500,
+   "agree": 0.95,
+   "max_lessons": 4000
+  },
+  "C08_temp0.1": {
+   "learning": {
+    "temperature": 0.1
+   }
+  },
+  "D01_eta5e-4_long": {
+   "actor": {
+    "eta": 0.0005,
+    "eta_bias": 5e-05
+   },
+   "min_lessons": 1500,
+   "agree": 0.95,
+   "max_lessons": 4000
+  },
+  "D02_eta5e-4_long_teach6e-3": {
+   "actor": {
+    "eta": 0.0005,
+    "eta_bias": 5e-05
+   },
+   "min_lessons": 1500,
+   "agree": 0.95,
+   "max_lessons": 4000,
+   "learning": {
+    "eta": 0.006,
+    "eta_bias": 0.04
+   }
+  },
+  "D03_eta5e-4_teach6e-3": {
+   "actor": {
+    "eta": 0.0005,
+    "eta_bias": 5e-05
+   },
+   "learning": {
+    "eta": 0.006,
+    "eta_bias": 0.04
+   }
+  },
+  "D04_eta7e-4_long": {
+   "actor": {
+    "eta": 0.0007,
+    "eta_bias": 7e-05
+   },
+   "min_lessons": 1500,
+   "agree": 0.95,
+   "max_lessons": 4000
+  },
+  "D05_eta5e-4_verylong": {
+   "actor": {
+    "eta": 0.0005,
+    "eta_bias": 5e-05
+   },
+   "min_lessons": 3000,
+   "agree": 0.95,
+   "max_lessons": 6000
+  },
+  "D06_eta5e-4_long_bias2e-3": {
+   "actor": {
+    "eta": 0.0005,
+    "eta_bias": 5e-05
+   },
+   "min_lessons": 1500,
+   "agree": 0.95,
+   "max_lessons": 4000,
+   "learning": {
+    "eta_bias": 0.002
+   }
+  },
+  "D07_long_teach6e-3": {
+   "min_lessons": 1500,
+   "agree": 0.95,
+   "max_lessons": 4000,
+   "learning": {
+    "eta": 0.006,
+    "eta_bias": 0.04
+   }
+  },
+  "E01_efference_long": {
+   "efference_amplitude": 1.0,
+   "min_lessons": 1500,
+   "agree": 0.95,
+   "max_lessons": 4000
+  },
+  "E02_eta5e-4_long": {
+   "actor": {
+    "eta": 0.0005,
+    "eta_bias": 5e-05
+   },
+   "min_lessons": 1500,
+   "agree": 0.95,
+   "max_lessons": 4000
+  },
+  "E03_eta5e-4_efference_long": {
+   "actor": {
+    "eta": 0.0005,
+    "eta_bias": 5e-05
+   },
+   "efference_amplitude": 1.0,
+   "min_lessons": 1500,
+   "agree": 0.95,
+   "max_lessons": 4000
+  },
+  "E04_eta5e-4_long_bias2e-3": {
+   "actor": {
+    "eta": 0.0005,
+    "eta_bias": 5e-05
+   },
+   "min_lessons": 1500,
+   "agree": 0.95,
+   "max_lessons": 4000,
+   "learning": {
+    "eta_bias": 0.002
+   }
+  },
+  "F01_eta5e-4_long_live": {
+   "actor": {
+    "eta": 0.0005,
+    "eta_bias": 5e-05
+   },
+   "min_lessons": 1500,
+   "agree": 0.95,
+   "max_lessons": 4000,
+   "life": "live"
+  },
+  "F02_eta3e-4_long_efference": {
+   "actor": {
+    "eta": 0.0003,
+    "eta_bias": 3e-05
+   },
+   "min_lessons": 1500,
+   "agree": 0.95,
+   "max_lessons": 4000,
+   "efference_amplitude": 1.0
+  },
+  "F03_eta5e-4_long_critic1": {
+   "actor": {
+    "eta": 0.0005,
+    "eta_bias": 5e-05,
+    "eta_critic": 1.0
+   },
+   "min_lessons": 1500,
+   "agree": 0.95,
+   "max_lessons": 4000
+  },
+  "F04_eta5e-4_long_gamma99": {
+   "actor": {
+    "eta": 0.0005,
+    "eta_bias": 5e-05,
+    "gamma": 0.99,
+    "lam": 0.95
+   },
+   "min_lessons": 1500,
+   "agree": 0.95,
+   "max_lessons": 4000
+  },
+  "F05_eta5e-4_long_efference_bias2e-3": {
+   "actor": {
+    "eta": 0.0005,
+    "eta_bias": 5e-05
+   },
+   "min_lessons": 1500,
+   "agree": 0.95,
+   "max_lessons": 4000,
+   "efference_amplitude": 1.0,
+   "learning": {
+    "eta_bias": 0.002
+   }
+  },
+  "G01_eta5e-4_long_gamma99_critic1": {
+   "actor": {
+    "eta": 0.0005,
+    "eta_bias": 5e-05,
+    "gamma": 0.99,
+    "lam": 0.95,
+    "eta_critic": 1.0
+   },
+   "min_lessons": 1500,
+   "agree": 0.95,
+   "max_lessons": 4000
+  }
+ },
+ "stages": {
+  "1": {
+   "seeds": [
+    100,
+    102
+   ],
+   "arms": {
+    "A00_base": {
+     "Freeway": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.033,
+      "living_over_frozen": 0.963
+     },
+     "Atlantis": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.007,
+      "living_over_frozen": 1.064
+     },
+     "SpaceInvaders": {
+      "pass": 2,
+      "of": 3,
+      "living_over_teacher": 1.277,
+      "living_over_frozen": 1.028
+     },
+     "Carnival": {
+      "pass": 0,
+      "of": 3,
+      "living_over_teacher": 0.528,
+      "living_over_frozen": 0.908
+     }
+    },
+    "A01_eta3e-4": {
+     "Freeway": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.067,
+      "living_over_frozen": 1.024
+     },
+     "Atlantis": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.0,
+      "living_over_frozen": 1.014
+     },
+     "SpaceInvaders": {
+      "pass": 2,
+      "of": 3,
+      "living_over_teacher": 1.161,
+      "living_over_frozen": 1.342
+     },
+     "Carnival": {
+      "pass": 2,
+      "of": 3,
+      "living_over_teacher": 0.795,
+      "living_over_frozen": 1.37
+     }
+    },
+    "A02_eta1e-4": {
+     "Freeway": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.07,
+      "living_over_frozen": 1.03
+     },
+     "Atlantis": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.003,
+      "living_over_frozen": 1.0
+     },
+     "SpaceInvaders": {
+      "pass": 2,
+      "of": 3,
+      "living_over_teacher": 1.233,
+      "living_over_frozen": 1.149
+     },
+     "Carnival": {
+      "pass": 1,
+      "of": 3,
+      "living_over_teacher": 0.565,
+      "living_over_frozen": 0.958
+     }
+    },
+    "A03_live": {
+     "Freeway": {
+      "pass": 1,
+      "of": 3,
+      "living_over_teacher": 0.896,
+      "living_over_frozen": 0.843
+     },
+     "Atlantis": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.1,
+      "living_over_frozen": 1.111
+     },
+     "SpaceInvaders": {
+      "pass": 2,
+      "of": 3,
+      "living_over_teacher": 0.948,
+      "living_over_frozen": 1.189
+     },
+     "Carnival": {
+      "pass": 1,
+      "of": 3,
+      "living_over_teacher": 0.869,
+      "living_over_frozen": 1.05
+     }
+    },
+    "A04_live_eta3e-4": {
+     "Freeway": {
+      "pass": 2,
+      "of": 3,
+      "living_over_teacher": 0.958,
+      "living_over_frozen": 0.901
+     },
+     "Atlantis": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.25,
+      "living_over_frozen": 1.25
+     },
+     "SpaceInvaders": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.13,
+      "living_over_frozen": 1.976
+     },
+     "Carnival": {
+      "pass": 2,
+      "of": 3,
+      "living_over_teacher": 0.588,
+      "living_over_frozen": 0.743
+     }
+    },
+    "A05_live_critic1": {
+     "Freeway": {
+      "pass": 1,
+      "of": 3,
+      "living_over_teacher": 0.949,
+      "living_over_frozen": 0.908
+     },
+     "Atlantis": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.113,
+      "living_over_frozen": 1.077
+     },
+     "SpaceInvaders": {
+      "pass": 1,
+      "of": 3,
+      "living_over_teacher": 0.961,
+      "living_over_frozen": 0.828
+     },
+     "Carnival": {
+      "pass": 1,
+      "of": 3,
+      "living_over_teacher": 0.827,
+      "living_over_frozen": 1.522
+     }
+    },
+    "A06_critic0.05": {
+     "Freeway": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.079,
+      "living_over_frozen": 1.006
+     },
+     "Atlantis": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.0,
+      "living_over_frozen": 1.014
+     },
+     "SpaceInvaders": {
+      "pass": 2,
+      "of": 3,
+      "living_over_teacher": 1.184,
+      "living_over_frozen": 1.269
+     },
+     "Carnival": {
+      "pass": 0,
+      "of": 3,
+      "living_over_teacher": 0.523,
+      "living_over_frozen": 0.773
+     }
+    },
+    "A07_gamma99": {
+     "Freeway": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.039,
+      "living_over_frozen": 0.994
+     },
+     "Atlantis": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 0.99,
+      "living_over_frozen": 0.954
+     },
+     "SpaceInvaders": {
+      "pass": 2,
+      "of": 3,
+      "living_over_teacher": 1.071,
+      "living_over_frozen": 1.148
+     },
+     "Carnival": {
+      "pass": 1,
+      "of": 3,
+      "living_over_teacher": 0.686,
+      "living_over_frozen": 1.163
+     }
+    },
+    "A08_longteach": {
+     "Freeway": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.04,
+      "living_over_frozen": 0.98
+     },
+     "Atlantis": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 0.963,
+      "living_over_frozen": 0.93
+     },
+     "SpaceInvaders": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.083,
+      "living_over_frozen": 1.569
+     },
+     "Carnival": {
+      "pass": 0,
+      "of": 3,
+      "living_over_teacher": 0.405,
+      "living_over_frozen": 0.647
+     }
+    },
+    "A09_longteach_live": {
+     "Freeway": {
+      "pass": 1,
+      "of": 3,
+      "living_over_teacher": 0.9,
+      "living_over_frozen": 0.848
+     },
+     "Atlantis": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.337,
+      "living_over_frozen": 1.326
+     },
+     "SpaceInvaders": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.117,
+      "living_over_frozen": 1.18
+     },
+     "Carnival": {
+      "pass": 2,
+      "of": 3,
+      "living_over_teacher": 0.79,
+      "living_over_frozen": 0.951
+     }
+    },
+    "A10_wide128": {
+     "Freeway": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.034,
+      "living_over_frozen": 0.975
+     },
+     "Atlantis": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.0,
+      "living_over_frozen": 1.0
+     },
+     "SpaceInvaders": {
+      "pass": 2,
+      "of": 3,
+      "living_over_teacher": 1.074,
+      "living_over_frozen": 1.006
+     },
+     "Carnival": {
+      "pass": 0,
+      "of": 3,
+      "living_over_teacher": 0.531,
+      "living_over_frozen": 0.533
+     }
+    },
+    "A11_deep64x32": {
+     "Freeway": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.047,
+      "living_over_frozen": 0.997
+     },
+     "Atlantis": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.003,
+      "living_over_frozen": 1.003
+     },
+     "SpaceInvaders": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.446,
+      "living_over_frozen": 1.881
+     },
+     "Carnival": {
+      "pass": 0,
+      "of": 3,
+      "living_over_teacher": 0.346,
+      "living_over_frozen": 0.376
+     }
+    },
+    "A12_deep64x32_live": {
+     "Freeway": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.037,
+      "living_over_frozen": 0.983
+     },
+     "Atlantis": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.013,
+      "living_over_frozen": 1.027
+     },
+     "SpaceInvaders": {
+      "pass": 2,
+      "of": 3,
+      "living_over_teacher": 1.052,
+      "living_over_frozen": 1.08
+     },
+     "Carnival": {
+      "pass": 1,
+      "of": 3,
+      "living_over_teacher": 0.568,
+      "living_over_frozen": 0.707
+     }
+    },
+    "A13_efference": {
+     "Freeway": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.042,
+      "living_over_frozen": 0.957
+     },
+     "Atlantis": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.0,
+      "living_over_frozen": 1.028
+     },
+     "SpaceInvaders": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.175,
+      "living_over_frozen": 1.402
+     },
+     "Carnival": {
+      "pass": 0,
+      "of": 3,
+      "living_over_teacher": 0.383,
+      "living_over_frozen": 0.567
+     }
+    },
+    "A14_live_calmer": {
+     "Freeway": {
+      "pass": 1,
+      "of": 3,
+      "living_over_teacher": 0.915,
+      "living_over_frozen": 0.845
+     },
+     "Atlantis": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.223,
+      "living_over_frozen": 1.238
+     },
+     "SpaceInvaders": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 0.917,
+      "living_over_frozen": 1.027
+     },
+     "Carnival": {
+      "pass": 1,
+      "of": 3,
+      "living_over_teacher": 0.788,
+      "living_over_frozen": 1.124
+     }
+    },
+    "A15_longteach_live_eta3e-4": {
+     "Freeway": {
+      "pass": 2,
+      "of": 3,
+      "living_over_teacher": 0.94,
+      "living_over_frozen": 0.891
+     },
+     "Atlantis": {
+      "pass": 3,
+      "of": 3,
+      "living_over_teacher": 1.247,
+      "living_over_frozen": 1.244
+     },
+     "SpaceInvaders": {
+      "pass": 2,
+      "of": 3,
+      "living_over_teacher": 1.201,
+      "living_over_frozen": 1.394
+     },
+     "Carnival": {
+      "pass": 2,
+      "of": 3,
+      "living_over_teacher": 0.76,
+      "living_over_frozen": 1.035
+     }
+    }
+   }
+  },
+  "2": {
+   "seeds": [
+    200,
+    207
+   ],
+   "arms": {
+    "A00_base": {
+     "Carnival": {
+      "pass": 0,
+      "of": 8,
+      "living_over_teacher": 0.605,
+      "living_over_frozen": 0.767
+     },
+     "SpaceInvaders": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.128,
+      "living_over_frozen": 1.186
+     },
+     "Freeway": {
+      "pass": 7,
+      "of": 8,
+      "living_over_teacher": 1.052,
+      "living_over_frozen": 0.985
+     },
+     "Atlantis": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.009,
+      "living_over_frozen": 1.024
+     }
+    },
+    "B01_eta3e-4": {
+     "Carnival": {
+      "pass": 1,
+      "of": 8,
+      "living_over_teacher": 0.584,
+      "living_over_frozen": 0.758
+     },
+     "SpaceInvaders": {
+      "pass": 5,
+      "of": 8,
+      "living_over_teacher": 1.078,
+      "living_over_frozen": 1.135
+     },
+     "Freeway": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.052,
+      "living_over_frozen": 0.996
+     },
+     "Atlantis": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.0,
+      "living_over_frozen": 1.004
+     }
+    },
+    "B02_eta2e-4": {
+     "Carnival": {
+      "pass": 2,
+      "of": 8,
+      "living_over_teacher": 0.666,
+      "living_over_frozen": 0.96
+     },
+     "SpaceInvaders": {
+      "pass": 5,
+      "of": 8,
+      "living_over_teacher": 1.117,
+      "living_over_frozen": 1.147
+     },
+     "Freeway": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.035,
+      "living_over_frozen": 0.96
+     },
+     "Atlantis": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 0.98,
+      "living_over_frozen": 0.966
+     }
+    },
+    "B03_eta5e-4": {
+     "Carnival": {
+      "pass": 3,
+      "of": 8,
+      "living_over_teacher": 0.646,
+      "living_over_frozen": 0.809
+     },
+     "SpaceInvaders": {
+      "pass": 5,
+      "of": 8,
+      "living_over_teacher": 1.134,
+      "living_over_frozen": 1.257
+     },
+     "Freeway": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.051,
+      "living_over_frozen": 0.996
+     },
+     "Atlantis": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 0.996,
+      "living_over_frozen": 1.0
+     }
+    },
+    "B04_eta3e-4_longteach": {
+     "Carnival": {
+      "pass": 2,
+      "of": 8,
+      "living_over_teacher": 0.632,
+      "living_over_frozen": 0.942
+     },
+     "SpaceInvaders": {
+      "pass": 6,
+      "of": 8,
+      "living_over_teacher": 1.187,
+      "living_over_frozen": 1.289
+     },
+     "Freeway": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.073,
+      "living_over_frozen": 1.012
+     },
+     "Atlantis": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.0,
+      "living_over_frozen": 1.004
+     }
+    },
+    "B05_eta3e-4_efference": {
+     "Carnival": {
+      "pass": 2,
+      "of": 8,
+      "living_over_teacher": 0.704,
+      "living_over_frozen": 1.045
+     },
+     "SpaceInvaders": {
+      "pass": 4,
+      "of": 8,
+      "living_over_teacher": 0.932,
+      "living_over_frozen": 1.084
+     },
+     "Freeway": {
+      "pass": 7,
+      "of": 8,
+      "living_over_teacher": 1.031,
+      "living_over_frozen": 0.959
+     },
+     "Atlantis": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 0.995,
+      "living_over_frozen": 0.985
+     }
+    },
+    "B06_eta3e-4_gamma99": {
+     "Carnival": {
+      "pass": 0,
+      "of": 8,
+      "living_over_teacher": 0.528,
+      "living_over_frozen": 0.957
+     },
+     "SpaceInvaders": {
+      "pass": 5,
+      "of": 8,
+      "living_over_teacher": 1.001,
+      "living_over_frozen": 1.102
+     },
+     "Freeway": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.066,
+      "living_over_frozen": 0.996
+     },
+     "Atlantis": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.0,
+      "living_over_frozen": 1.016
+     }
+    },
+    "B07_eta3e-4_critic0.05": {
+     "Carnival": {
+      "pass": 2,
+      "of": 8,
+      "living_over_teacher": 0.629,
+      "living_over_frozen": 0.804
+     },
+     "SpaceInvaders": {
+      "pass": 3,
+      "of": 8,
+      "living_over_teacher": 0.961,
+      "living_over_frozen": 0.926
+     },
+     "Freeway": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.063,
+      "living_over_frozen": 0.989
+     },
+     "Atlantis": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 0.995,
+      "living_over_frozen": 1.004
+     }
+    },
+    "B08_live_eta3e-4": {
+     "Carnival": {
+      "pass": 2,
+      "of": 8,
+      "living_over_teacher": 0.806,
+      "living_over_frozen": 1.0
+     },
+     "SpaceInvaders": {
+      "pass": 4,
+      "of": 8,
+      "living_over_teacher": 0.952,
+      "living_over_frozen": 1.103
+     },
+     "Freeway": {
+      "pass": 2,
+      "of": 8,
+      "living_over_teacher": 0.915,
+      "living_over_frozen": 0.859
+     },
+     "Atlantis": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.062,
+      "living_over_frozen": 1.061
+     }
+    }
+   }
+  },
+  "3": {
+   "seeds": [
+    300,
+    307
+   ],
+   "arms": {
+    "A00_base": {
+     "Carnival": {
+      "pass": 0,
+      "of": 8,
+      "living_over_teacher": 0.484,
+      "living_over_frozen": 0.536
+     },
+     "SpaceInvaders": {
+      "pass": 5,
+      "of": 8,
+      "living_over_teacher": 1.109,
+      "living_over_frozen": 0.919
+     },
+     "Freeway": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.023,
+      "living_over_frozen": 0.976
+     },
+     "Atlantis": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.0,
+      "living_over_frozen": 0.998
+     }
+    },
+    "C01_teach_eta6e-3": {
+     "Carnival": {
+      "pass": 1,
+      "of": 8,
+      "living_over_teacher": 0.571,
+      "living_over_frozen": 0.676
+     },
+     "SpaceInvaders": {
+      "pass": 6,
+      "of": 8,
+      "living_over_teacher": 1.137,
+      "living_over_frozen": 1.08
+     },
+     "Freeway": {
+      "pass": 7,
+      "of": 8,
+      "living_over_teacher": 1.034,
+      "living_over_frozen": 0.982
+     },
+     "Atlantis": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.008,
+      "living_over_frozen": 1.006
+     }
+    },
+    "C02_teach_eta1.5e-3": {
+     "Carnival": {
+      "pass": 0,
+      "of": 8,
+      "living_over_teacher": 0.426,
+      "living_over_frozen": 0.565
+     },
+     "SpaceInvaders": {
+      "pass": 4,
+      "of": 8,
+      "living_over_teacher": 0.988,
+      "living_over_frozen": 1.077
+     },
+     "Freeway": {
+      "pass": 7,
+      "of": 8,
+      "living_over_teacher": 1.066,
+      "living_over_frozen": 0.993
+     },
+     "Atlantis": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 0.995,
+      "living_over_frozen": 1.0
+     }
+    },
+    "C03_teach_bias2e-3": {
+     "Carnival": {
+      "pass": 1,
+      "of": 8,
+      "living_over_teacher": 0.67,
+      "living_over_frozen": 0.757
+     },
+     "SpaceInvaders": {
+      "pass": 5,
+      "of": 8,
+      "living_over_teacher": 0.976,
+      "living_over_frozen": 1.063
+     },
+     "Freeway": {
+      "pass": 7,
+      "of": 8,
+      "living_over_teacher": 1.026,
+      "living_over_frozen": 0.951
+     },
+     "Atlantis": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 0.995,
+      "living_over_frozen": 0.995
+     }
+    },
+    "C04_verylongteach": {
+     "Carnival": {
+      "pass": 0,
+      "of": 8,
+      "living_over_teacher": 0.475,
+      "living_over_frozen": 0.771
+     },
+     "SpaceInvaders": {
+      "pass": 6,
+      "of": 8,
+      "living_over_teacher": 1.238,
+      "living_over_frozen": 1.589
+     },
+     "Freeway": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.07,
+      "living_over_frozen": 0.996
+     },
+     "Atlantis": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 0.99,
+      "living_over_frozen": 0.994
+     }
+    },
+    "C05_efference_longteach": {
+     "Carnival": {
+      "pass": 0,
+      "of": 8,
+      "living_over_teacher": 0.466,
+      "living_over_frozen": 0.684
+     },
+     "SpaceInvaders": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.162,
+      "living_over_frozen": 1.323
+     },
+     "Freeway": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.044,
+      "living_over_frozen": 0.974
+     },
+     "Atlantis": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 0.99,
+      "living_over_frozen": 1.004
+     }
+    },
+    "C06_wide96": {
+     "Carnival": {
+      "pass": 0,
+      "of": 8,
+      "living_over_teacher": 0.368,
+      "living_over_frozen": 0.488
+     },
+     "SpaceInvaders": {
+      "pass": 4,
+      "of": 8,
+      "living_over_teacher": 1.129,
+      "living_over_frozen": 1.111
+     },
+     "Freeway": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.036,
+      "living_over_frozen": 0.963
+     },
+     "Atlantis": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 0.995,
+      "living_over_frozen": 0.987
+     }
+    },
+    "C07_eta5e-4_longteach": {
+     "Carnival": {
+      "pass": 1,
+      "of": 8,
+      "living_over_teacher": 0.581,
+      "living_over_frozen": 0.951
+     },
+     "SpaceInvaders": {
+      "pass": 7,
+      "of": 8,
+      "living_over_teacher": 1.292,
+      "living_over_frozen": 1.427
+     },
+     "Freeway": {
+      "pass": 7,
+      "of": 8,
+      "living_over_teacher": 1.015,
+      "living_over_frozen": 0.961
+     },
+     "Atlantis": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.001,
+      "living_over_frozen": 1.017
+     }
+    },
+    "C08_temp0.1": {
+     "Carnival": {
+      "pass": 0,
+      "of": 8,
+      "living_over_teacher": 0.563,
+      "living_over_frozen": 0.706
+     },
+     "SpaceInvaders": {
+      "pass": 5,
+      "of": 8,
+      "living_over_teacher": 1.266,
+      "living_over_frozen": 1.215
+     },
+     "Freeway": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 0.994,
+      "living_over_frozen": 0.988
+     },
+     "Atlantis": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.0,
+      "living_over_frozen": 1.0
+     }
+    }
+   }
+  },
+  "4": {
+   "seeds": [
+    400,
+    407
+   ],
+   "arms": {
+    "A00_base": {
+     "Carnival": {
+      "pass": 2,
+      "of": 8,
+      "living_over_teacher": 0.657,
+      "living_over_frozen": 0.8
+     },
+     "Atlantis": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.001,
+      "living_over_frozen": 1.011
+     },
+     "Freeway": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.044,
+      "living_over_frozen": 0.995
+     },
+     "SpaceInvaders": {
+      "pass": 3,
+      "of": 8,
+      "living_over_teacher": 0.988,
+      "living_over_frozen": 0.947
+     }
+    },
+    "D01_eta5e-4_long": {
+     "Carnival": {
+      "pass": 1,
+      "of": 8,
+      "living_over_teacher": 0.449,
+      "living_over_frozen": 0.586
+     },
+     "Atlantis": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.0,
+      "living_over_frozen": 0.998
+     },
+     "Freeway": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.045,
+      "living_over_frozen": 0.973
+     },
+     "SpaceInvaders": {
+      "pass": 7,
+      "of": 8,
+      "living_over_teacher": 1.071,
+      "living_over_frozen": 1.391
+     }
+    },
+    "D02_eta5e-4_long_teach6e-3": {
+     "Carnival": {
+      "pass": 1,
+      "of": 8,
+      "living_over_teacher": 0.485,
+      "living_over_frozen": 0.521
+     },
+     "Atlantis": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 0.995,
+      "living_over_frozen": 1.006
+     },
+     "Freeway": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.034,
+      "living_over_frozen": 0.992
+     },
+     "SpaceInvaders": {
+      "pass": 6,
+      "of": 8,
+      "living_over_teacher": 1.094,
+      "living_over_frozen": 1.389
+     }
+    },
+    "D03_eta5e-4_teach6e-3": {
+     "Carnival": {
+      "pass": 1,
+      "of": 8,
+      "living_over_teacher": 0.489,
+      "living_over_frozen": 0.578
+     },
+     "Atlantis": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.009,
+      "living_over_frozen": 1.014
+     },
+     "Freeway": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.048,
+      "living_over_frozen": 0.997
+     },
+     "SpaceInvaders": {
+      "pass": 4,
+      "of": 8,
+      "living_over_teacher": 1.029,
+      "living_over_frozen": 0.964
+     }
+    },
+    "D04_eta7e-4_long": {
+     "Carnival": {
+      "pass": 0,
+      "of": 8,
+      "living_over_teacher": 0.465,
+      "living_over_frozen": 0.697
+     },
+     "Atlantis": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.0,
+      "living_over_frozen": 1.01
+     },
+     "Freeway": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.04,
+      "living_over_frozen": 0.979
+     },
+     "SpaceInvaders": {
+      "pass": 6,
+      "of": 8,
+      "living_over_teacher": 1.285,
+      "living_over_frozen": 1.518
+     }
+    },
+    "D05_eta5e-4_verylong": {
+     "Carnival": {
+      "pass": 1,
+      "of": 8,
+      "living_over_teacher": 0.501,
+      "living_over_frozen": 0.678
+     },
+     "Atlantis": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 0.995,
+      "living_over_frozen": 0.996
+     },
+     "Freeway": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.054,
+      "living_over_frozen": 0.985
+     },
+     "SpaceInvaders": {
+      "pass": 5,
+      "of": 8,
+      "living_over_teacher": 1.013,
+      "living_over_frozen": 1.033
+     }
+    },
+    "D06_eta5e-4_long_bias2e-3": {
+     "Carnival": {
+      "pass": 2,
+      "of": 8,
+      "living_over_teacher": 0.631,
+      "living_over_frozen": 0.89
+     },
+     "Atlantis": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 0.995,
+      "living_over_frozen": 1.002
+     },
+     "Freeway": {
+      "pass": 7,
+      "of": 8,
+      "living_over_teacher": 1.027,
+      "living_over_frozen": 0.95
+     },
+     "SpaceInvaders": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.164,
+      "living_over_frozen": 1.481
+     }
+    },
+    "D07_long_teach6e-3": {
+     "Carnival": {
+      "pass": 1,
+      "of": 8,
+      "living_over_teacher": 0.517,
+      "living_over_frozen": 0.669
+     },
+     "Atlantis": {
+      "pass": 8,
+      "of": 8,
+      "living_over_teacher": 1.0,
+      "living_over_frozen": 0.999
+     },
+     "Freeway": {
+      "pass": 7,
+      "of": 8,
+      "living_over_teacher": 1.035,
+      "living_over_frozen": 0.974
+     },
+     "SpaceInvaders": {
+      "pass": 6,
+      "of": 8,
+      "living_over_teacher": 1.023,
+      "living_over_frozen": 1.215
+     }
+    }
+   }
+  },
+  "5 (confirmation)": {
+   "seeds": [
+    500,
+    519
+   ],
+   "arms": {
+    "A00_base": {
+     "Atlantis": {
+      "pass": 20,
+      "of": 20,
+      "living_over_teacher": 1.0,
+      "living_over_frozen": 1.003
+     },
+     "Carnival": {
+      "pass": 4,
+      "of": 20,
+      "living_over_teacher": 0.576,
+      "living_over_frozen": 0.739
+     },
+     "SpaceInvaders": {
+      "pass": 12,
+      "of": 20,
+      "living_over_teacher": 1.083,
+      "living_over_frozen": 1.084
+     },
+     "Freeway": {
+      "pass": 20,
+      "of": 20,
+      "living_over_teacher": 1.054,
+      "living_over_frozen": 0.996
+     }
+    },
+    "E01_efference_long": {
+     "Atlantis": {
+      "pass": 19,
+      "of": 20,
+      "living_over_teacher": 1.0,
+      "living_over_frozen": 0.993
+     },
+     "Carnival": {
+      "pass": 2,
+      "of": 20,
+      "living_over_teacher": 0.456,
+      "living_over_frozen": 0.635
+     },
+     "SpaceInvaders": {
+      "pass": 14,
+      "of": 20,
+      "living_over_teacher": 1.036,
+      "living_over_frozen": 1.267
+     },
+     "Freeway": {
+      "pass": 19,
+      "of": 20,
+      "living_over_teacher": 1.047,
+      "living_over_frozen": 0.974
+     }
+    },
+    "E02_eta5e-4_long": {
+     "Atlantis": {
+      "pass": 20,
+      "of": 20,
+      "living_over_teacher": 1.0,
+      "living_over_frozen": 1.006
+     },
+     "Carnival": {
+      "pass": 5,
+      "of": 20,
+      "living_over_teacher": 0.562,
+      "living_over_frozen": 0.848
+     },
+     "SpaceInvaders": {
+      "pass": 13,
+      "of": 20,
+      "living_over_teacher": 1.062,
+      "living_over_frozen": 1.227
+     },
+     "Freeway": {
+      "pass": 19,
+      "of": 20,
+      "living_over_teacher": 1.035,
+      "living_over_frozen": 0.979
+     }
+    },
+    "E03_eta5e-4_efference_long": {
+     "Atlantis": {
+      "pass": 20,
+      "of": 20,
+      "living_over_teacher": 0.994,
+      "living_over_frozen": 0.993
+     },
+     "Carnival": {
+      "pass": 5,
+      "of": 20,
+      "living_over_teacher": 0.606,
+      "living_over_frozen": 1.037
+     },
+     "SpaceInvaders": {
+      "pass": 11,
+      "of": 20,
+      "living_over_teacher": 1.011,
+      "living_over_frozen": 1.226
+     },
+     "Freeway": {
+      "pass": 19,
+      "of": 20,
+      "living_over_teacher": 1.029,
+      "living_over_frozen": 0.97
+     }
+    },
+    "E04_eta5e-4_long_bias2e-3": {
+     "Atlantis": {
+      "pass": 20,
+      "of": 20,
+      "living_over_teacher": 0.999,
+      "living_over_frozen": 1.003
+     },
+     "Carnival": {
+      "pass": 2,
+      "of": 20,
+      "living_over_teacher": 0.54,
+      "living_over_frozen": 0.755
+     },
+     "SpaceInvaders": {
+      "pass": 14,
+      "of": 20,
+      "living_over_teacher": 1.034,
+      "living_over_frozen": 1.217
+     },
+     "Freeway": {
+      "pass": 20,
+      "of": 20,
+      "living_over_teacher": 1.043,
+      "living_over_frozen": 0.988
+     }
+    }
+   }
+  },
+  "6": {
+   "seeds": [
+    600,
+    611
+   ],
+   "arms": {
+    "A00_base": {
+     "Carnival": {
+      "pass": 2,
+      "of": 12,
+      "living_over_teacher": 0.599,
+      "living_over_frozen": 0.853
+     },
+     "SpaceInvaders": {
+      "pass": 8,
+      "of": 12,
+      "living_over_teacher": 1.076,
+      "living_over_frozen": 1.118
+     },
+     "Freeway": {
+      "pass": 12,
+      "of": 12,
+      "living_over_teacher": 1.051,
+      "living_over_frozen": 0.983
+     },
+     "Atlantis": {
+      "pass": 12,
+      "of": 12,
+      "living_over_teacher": 0.994,
+      "living_over_frozen": 1.0
+     }
+    },
+    "F01_eta5e-4_long_live": {
+     "Carnival": {
+      "pass": 5,
+      "of": 12,
+      "living_over_teacher": 0.852,
+      "living_over_frozen": 1.328
+     },
+     "SpaceInvaders": {
+      "pass": 7,
+      "of": 12,
+      "living_over_teacher": 0.881,
+      "living_over_frozen": 0.947
+     },
+     "Freeway": {
+      "pass": 3,
+      "of": 12,
+      "living_over_teacher": 0.932,
+      "living_over_frozen": 0.871
+     },
+     "Atlantis": {
+      "pass": 12,
+      "of": 12,
+      "living_over_teacher": 1.157,
+      "living_over_frozen": 1.172
+     }
+    },
+    "F02_eta3e-4_long_efference": {
+     "Carnival": {
+      "pass": 0,
+      "of": 12,
+      "living_over_teacher": 0.537,
+      "living_over_frozen": 0.854
+     },
+     "SpaceInvaders": {
+      "pass": 5,
+      "of": 12,
+      "living_over_teacher": 1.082,
+      "living_over_frozen": 1.086
+     },
+     "Freeway": {
+      "pass": 12,
+      "of": 12,
+      "living_over_teacher": 1.059,
+      "living_over_frozen": 0.999
+     },
+     "Atlantis": {
+      "pass": 12,
+      "of": 12,
+      "living_over_teacher": 1.0,
+      "living_over_frozen": 1.014
+     }
+    },
+    "F03_eta5e-4_long_critic1": {
+     "Carnival": {
+      "pass": 2,
+      "of": 12,
+      "living_over_teacher": 0.568,
+      "living_over_frozen": 0.962
+     },
+     "SpaceInvaders": {
+      "pass": 12,
+      "of": 12,
+      "living_over_teacher": 1.284,
+      "living_over_frozen": 1.522
+     },
+     "Freeway": {
+      "pass": 12,
+      "of": 12,
+      "living_over_teacher": 1.04,
+      "living_over_frozen": 0.986
+     },
+     "Atlantis": {
+      "pass": 12,
+      "of": 12,
+      "living_over_teacher": 0.997,
+      "living_over_frozen": 0.999
+     }
+    },
+    "F04_eta5e-4_long_gamma99": {
+     "Carnival": {
+      "pass": 5,
+      "of": 12,
+      "living_over_teacher": 0.687,
+      "living_over_frozen": 1.135
+     },
+     "SpaceInvaders": {
+      "pass": 10,
+      "of": 12,
+      "living_over_teacher": 1.177,
+      "living_over_frozen": 1.317
+     },
+     "Freeway": {
+      "pass": 12,
+      "of": 12,
+      "living_over_teacher": 1.048,
+      "living_over_frozen": 1.0
+     },
+     "Atlantis": {
+      "pass": 12,
+      "of": 12,
+      "living_over_teacher": 0.99,
+      "living_over_frozen": 0.991
+     }
+    },
+    "F05_eta5e-4_long_efference_bias2e-3": {
+     "Carnival": {
+      "pass": 0,
+      "of": 12,
+      "living_over_teacher": 0.478,
+      "living_over_frozen": 0.823
+     },
+     "SpaceInvaders": {
+      "pass": 9,
+      "of": 12,
+      "living_over_teacher": 1.125,
+      "living_over_frozen": 1.29
+     },
+     "Freeway": {
+      "pass": 12,
+      "of": 12,
+      "living_over_teacher": 1.035,
+      "living_over_frozen": 1.0
+     },
+     "Atlantis": {
+      "pass": 12,
+      "of": 12,
+      "living_over_teacher": 1.006,
+      "living_over_frozen": 1.014
+     }
+    }
+   }
+  },
+  "7 (confirmation, stopped at 238 of 320 runs)": {
+   "seeds": [
+    700,
+    719
+   ],
+   "arms": {
+    "A00_base": {
+     "Carnival": {
+      "pass": 4,
+      "of": 16,
+      "living_over_teacher": 0.655,
+      "living_over_frozen": 0.895
+     },
+     "SpaceInvaders": {
+      "pass": 13,
+      "of": 17,
+      "living_over_teacher": 1.121,
+      "living_over_frozen": 1.142
+     },
+     "Freeway": {
+      "pass": 13,
+      "of": 14,
+      "living_over_teacher": 1.053,
+      "living_over_frozen": 0.993
+     },
+     "Atlantis": {
+      "pass": 18,
+      "of": 18,
+      "living_over_teacher": 1.001,
+      "living_over_frozen": 1.011
+     }
+    },
+    "F03_eta5e-4_long_critic1": {
+     "Carnival": {
+      "pass": 1,
+      "of": 13,
+      "living_over_teacher": 0.504,
+      "living_over_frozen": 0.732
+     },
+     "SpaceInvaders": {
+      "pass": 13,
+      "of": 16,
+      "living_over_teacher": 1.098,
+      "living_over_frozen": 1.195
+     },
+     "Freeway": {
+      "pass": 13,
+      "of": 13,
+      "living_over_teacher": 1.029,
+      "living_over_frozen": 0.956
+     },
+     "Atlantis": {
+      "pass": 15,
+      "of": 16,
+      "living_over_teacher": 1.0,
+      "living_over_frozen": 1.003
+     }
+    },
+    "F04_eta5e-4_long_gamma99": {
+     "Carnival": {
+      "pass": 0,
+      "of": 13,
+      "living_over_teacher": 0.473,
+      "living_over_frozen": 0.657
+     },
+     "SpaceInvaders": {
+      "pass": 11,
+      "of": 16,
+      "living_over_teacher": 1.076,
+      "living_over_frozen": 1.07
+     },
+     "Freeway": {
+      "pass": 13,
+      "of": 13,
+      "living_over_teacher": 1.037,
+      "living_over_frozen": 0.983
+     },
+     "Atlantis": {
+      "pass": 16,
+      "of": 16,
+      "living_over_teacher": 0.999,
+      "living_over_frozen": 1.002
+     }
+    },
+    "G01_eta5e-4_long_gamma99_critic1": {
+     "Carnival": {
+      "pass": 1,
+      "of": 14,
+      "living_over_teacher": 0.508,
+      "living_over_frozen": 0.639
+     },
+     "SpaceInvaders": {
+      "pass": 8,
+      "of": 16,
+      "living_over_teacher": 1.041,
+      "living_over_frozen": 1.081
+     },
+     "Freeway": {
+      "pass": 13,
+      "of": 13,
+      "living_over_teacher": 1.026,
+      "living_over_frozen": 0.981
+     },
+     "Atlantis": {
+      "pass": 16,
+      "of": 16,
+      "living_over_teacher": 0.999,
+      "living_over_frozen": 0.998
+     }
+    }
+   }
+  }
+ }
+}
