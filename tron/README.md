@@ -2,13 +2,13 @@
 
 Ride a light cycle against a Cadence brain that runs in your browser tab. The brain sees the
 whole arena and answers every move with one settle of the whole brain; the panel beside the arena
-draws every neuron of it, layer by layer, sweep by sweep. Two brains are on the page: a flat one
-of one region and a deep one of three regions whose deep layers decide three quarters of its
-moves. Pick one with the switch in the header.
+draws every neuron of it as a brain seen from the side, sweep by sweep. Two brains are on the page:
+a flat one of one region and a deep one of three regions whose deep layers decide four in five of
+its moves. Pick one with the switch in the header.
 
-![A game against the deep brain: the arena on the left, its three layers settling on the right](docs/tron-deep.png)
+![A game against the deep brain: the arena on the left, the brain seen from the side on the right, the settle running from the visual cortex through L1, L2 and L3 to the motor strip](docs/tron-deep.png)
 
-![The flat brain: one region of 256 neurons between the field and the three motor neurons](docs/tron-flat.png)
+![The flat brain: one association region of 256 neurons between the visual cortex and the motor strip](docs/tron-flat.png)
 
 Runs on `cadence-net==0.95.2`.
 
@@ -50,19 +50,39 @@ opponent's heading relative to its own.
 | --- | --- | --- |
 | Layout | one region of 256 | 256 → 128 → 32 |
 | Neurons, synapses | 2,985 · 699,398 | 2,921 · 708,806 |
-| Against `voronoi`, 256 games on seeds 2,200,000+ | 186-68-2, 0.73 | 160-96, 0.63 |
-| Against `voronoi`, 256 games on seeds 7,000,000+ | 182-74, 0.71 | 170-86, 0.66 |
-| Read again on 0.95.2, 64 games on seeds 2,200,000+ | 48-16, 0.75 | 40-24, 0.63 |
+| Against `voronoi`, 256 games on seeds 2,200,000+ | 186-68-2, 0.73 | 182-74, 0.71 |
+| Against `voronoi`, 256 games on seeds 7,000,000+ | 182-74, 0.71 | 188-68, 0.73 |
+| Against Mako 1.0 and Mako 1.5, 256 games each | 0.54, 0.60 | 0.50, 0.48 |
+| Against `voronoi3`, 128 games | 0.25 | 0.12 |
 
 A mirror pair plays one arena seed twice, the brain in either seat; draws count half. `voronoi`
 moves to the cell that leaves it the most cells it reaches before its opponent, one move ahead for
-both riders. The original readings are in [`brains/`](brains/); the 0.95.2 re-reading is
-[`evidence/reading-0952.json`](evidence/reading-0952.json).
+both riders; `voronoi3` looks three rounds ahead; Mako 1.0 and 1.5 are earlier flat brains of the
+same line. The readings are in [`brains/`](brains/); the deep brain's were taken on 0.95.2
+([`evidence/deep-g3-readings.json`](evidence/deep-g3-readings.json)), and the flat brain reads
+48-16 on 0.95.2 over the first 32 pairs of the same seeds
+([`evidence/reading-0952.json`](evidence/reading-0952.json)).
 
 **The deep brain's deep layers play.** It was built from the flat line with a skip connection from
-its first layer to the motor neurons, and the skip was weakened in stages while the deep pathway
-learned the moves. With the deep pathway cut (its 73,920 synapses at zero) it changes 75% of its
-moves and loses every game against `voronoi`.
+its first layer to the motor neurons, the skip weakened in stages while the deep pathway learned
+the moves, and then taught by its own brain + tree search (below). With the deep pathway cut (its
+73,920 synapses at zero) it changes 81% of its moves and loses every game against `voronoi`
+([`evidence/deep-g3-ablation.json`](evidence/deep-g3-ablation.json)).
+
+**The brain view.** By default the panel lays the brain out as seen from the side, front to the
+left ([`web/js/anatomy.js`](web/js/anatomy.js)). Each population sits where the region whose role
+it plays would: the field, the foveas and the heading as the visual cortex at the back; L1, L2
+and L3 as association cortex from the back to the front; the prefrontal population, the working
+trace, dark at the front pole because the trace is off; the three motor neurons as the motor strip.
+Every pathway of the connectome is a curved tract, warm for excitatory and cool for inhibitory
+synapses, as bright as the live sum of |weight x presynaptic activation| over its drawn synapses;
+the field's projection into L1 runs through a relay drawn where the thalamus would sit. Below,
+a selection nucleus shows the three motor neurons' activations and the greedy pick, the role the
+basal ganglia play in an animal; the dopamine nucleus stays dark, since nothing rewards the brain
+while you play. Each move plays as a wave: region by region, every neuron replays its own
+recorded sweeps, and a curve shows the largest potential repair per sweep falling to rest. The
+names say which role a population plays, not that it is that structure. `?view=layers` (the
+LAYERS switch) shows the same brain layer by layer with what each layer knows.
 
 The brain view draws what each layer computes: for each neuron, the event or number its firing
 tracks best in played positions (a wall within two cells ahead, the opponent close on the right,
@@ -83,14 +103,19 @@ readings, and a smoke-scale run of each route that takes minutes. In short:
 - **Deep:** a flat brain of the same line (Mako 1.6) grafted into the first layer of a
   (256, 128, 32) brain with a skip from that layer to the motor neurons, so it starts with the
   flat brain's play; self-play; then, five times, the skip halved and the deep pathway taught that
-  brain's moves with the first layer and the skip frozen.
+  brain's moves with the first layer and the skip frozen. Last, two generations of distillation
+  from its own brain + tree search (200 simulations): the search's choice at each position the
+  brain reaches is the lesson, and a generation is kept only if the brain alone beats its parent
+  through a sequential test and holds against the previous deep brain
+  ([`scripts/distil.py`](scripts/distil.py)). Against `voronoi` it went from 0.63 / 0.66 to
+  0.71 / 0.73.
 
 ## Limits
 
 - **The brain alone, no search.** The page plays one settle per move. Bots that look further
   ahead beat it: the flat brain scores 0.20 against `voronoi2`, 0.25 against `voronoi3` (two and
   three rounds of look-ahead) and 0.14 against `ab5` (a 10-ply alpha-beta), 128 games each; the
-  deep brain is weaker than the flat one against `voronoi`. A tree search the brain guides
+  deep brain matches the flat one against `voronoi` and is weaker against `voronoi3`. A tree search the brain guides
   (`tron/mcts.py`) lifts the flat brain at 200 simulations a move (0.92 against `voronoi`, 0.59
   against `voronoi3`), at about 0.4 s a move natively. In the page it does not fit: at 8 and 16
   simulations a move takes 0.4 to 0.8 s in Pyodide against the 120 ms tick, and at those sizes
@@ -107,7 +132,7 @@ readings, and a smoke-scale run of each route that takes minutes. In short:
 
 | Path | What |
 | --- | --- |
-| `web/` | the page: `js/main.js` (game, clock, record), `js/arena.js`, `js/deep.js` and `js/ripple.js` (the brain view), `js/worker.js` (Pyodide) |
+| `web/` | the page: `js/main.js` (game, clock, record), `js/arena.js`, `js/anatomy.js`, `js/deep.js` and `js/ripple.js` (the brain views), `js/worker.js` (Pyodide) |
 | `web/pack/flat/`, `web/pack/deep/` | the wheel, the host sources, the brain, its meta and its introspection, with `manifest.json` |
 | `tron/` | the arena (`world.py`), the sense (`field.py`), the page's host (`fieldhost.py`), the bots (`bots.py`, `fastbots.py`, `absearch.py`), the schools and the search |
 | `scripts/` | training, selection, self-play, the deep constructions, readings, introspection |

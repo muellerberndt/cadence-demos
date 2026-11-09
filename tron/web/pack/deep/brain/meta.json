@@ -1,22 +1,23 @@
 {
- "name": "mako-deep",
+ "name": "mako-deep-2",
  "title": "Mako Deep",
- "tagline": "deep: 256 → 128 → 32, the deep layers decide 75% of moves · 0.64 vs voronoi (512 games)",
+ "tagline": "deep: 256 → 128 → 32, the deep layers decide 81% of moves · 0.72 vs voronoi (512 games)",
  "sense": "field",
  "size": 24,
  "cadence": "0.95.2",
- "play": "frozen, every move settled from rest: brain.reset() then brain.act(field(arena, 0)[None, :], greedy=True), as tron.r3.policy plays it; nothing is learned while you play",
+ "play": "frozen, every move settled from rest: brain.reset() then brain.act(field(arena, 0)[None, :], greedy=True); nothing is learned while you play",
  "reading": {
   "opponent": "voronoi",
   "games": 512,
-  "wins": 330,
-  "losses": 182,
+  "wins": 370,
+  "losses": 142,
   "draws": 0,
-  "score": 0.645,
-  "seeds": "2,200,000+ and 7,000,000+, 128 mirror pairs each (160-96 and 170-86)",
-  "vs_mako_1_0": "108-122-26, 0.47",
-  "vs_mako_1_5": "104-104-48, 0.50",
-  "deep_share": "cutting the deep pathway changes 75% of moves and drops it to 0.00 vs voronoi"
+  "score": 0.723,
+  "seeds": "2,200,000+ and 7,000,000+, 128 mirror pairs each (182-74 and 188-68)",
+  "vs_mako_1_0": "122-120-14, 0.50",
+  "vs_mako_1_5": "102-114-40, 0.48",
+  "voronoi3_64_pairs": "14-112-2, 0.12",
+  "deep_share": "cutting the deep pathway (73,920 synapses) changes 81% of moves and drops it to 0.00 vs voronoi (64 pairs)"
  },
  "layout": [
   256,

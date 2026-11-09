@@ -7,6 +7,7 @@ import { Link } from "./link.js";
 import { ArenaView } from "./arena.js";
 import { Steering, bindSwipe } from "./input.js";
 import { DeepView } from "./deep.js";
+import { AnatomyView } from "./anatomy.js";
 import { Sound } from "./sound.js";
 
 const TICK_MS = 120;
@@ -43,7 +44,9 @@ const app = {
 };
 
 const arena = new ArenaView($("arena"));
-const brain = new DeepView($("brain"), $("zoom"));
+// The brain view: the anatomy (default) or the layers (?view=layers); the same neurons and sweeps.
+const VIEW = new URLSearchParams(location.search).get("view") === "layers" ? "layers" : "anatomy";
+const brain = VIEW === "layers" ? new DeepView($("brain"), $("zoom")) : new AnatomyView($("brain"), $("zoom"));
 const sound = new Sound();
 const steering = new Steering();
 const link = new Link((s) => { if (app.phase === "loading") els.status.textContent = s; });
@@ -241,9 +244,14 @@ requestAnimationFrame(loop);
 // ---- boot --------------------------------------------------------------------------------
 async function boot() {
   try {
+    const extra = (SIMS ? `&search=${SIMS}` : "") + (VIEW === "layers" ? "&view=layers" : "");
     document.querySelectorAll("#pick a[data-slot]").forEach((a) => {
       a.classList.toggle("on", a.dataset.slot === SLOT);
-      a.href = `?brain=${a.dataset.slot}${SIMS ? `&search=${SIMS}` : ""}`;
+      a.href = `?brain=${a.dataset.slot}${extra}`;
+    });
+    document.querySelectorAll("#views a[data-view]").forEach((a) => {
+      a.classList.toggle("on", a.dataset.view === VIEW);
+      a.href = `?brain=${SLOT}${SIMS ? `&search=${SIMS}` : ""}${a.dataset.view === "layers" ? "&view=layers" : ""}`;
     });
     const sw = document.getElementById("search"); // the search switch, where the page shows one
     if (sw) {
@@ -286,7 +294,7 @@ window.__tron = {
     phase: app.phase, size: arena.size, tick: app.last ? app.last.tick : 0,
     heads: app.last ? app.last.heads : null, headings: app.last ? app.last.headings : null,
     occupied: Array.from(arena.occupied), planned: steering.planned(), queued: steering.queue.length,
-    record: app.record, replays: app.replays.length, slot: SLOT, sims: SIMS, brain: app.manifest ? app.manifest.brain.id : null,
+    record: app.record, replays: app.replays.length, slot: SLOT, sims: SIMS, view: VIEW, brain: app.manifest ? app.manifest.brain.id : null,
   }),
   call: (op, payload) => link.call(op, payload),
   timings: () => app.timings,

@@ -176,7 +176,8 @@ brain with the flat brain's function, then move the play into the deep layers in
 | 1. Function-preserving growth | `net2net.py` | minutes | (256, 128, 32) skip brain = Mako 1.6 within 0.001; 0.65 |
 | 2. Self-play | `select_exit.py --selfplay` | L4, about 25 minutes per generation | 0.64 / 0.59; the deep pathway decides 0.1% of moves |
 | 3. Distil the deep pathway | `skip_scale.py`, `deep_raise.py` | L4, 2,500 moments, under an hour | skip x 0.5: 0.64, the deep pathway decides 3.4% |
-| 4. Anneal the skip | the same, five times | L4, overnight | skip x 0.016: **Mako Deep**, 0.63 / 0.66, the deep pathway decides 75% |
+| 4. Anneal the skip | the same, five times | L4, overnight | skip x 0.016: 0.63 / 0.66, the deep pathway decides 75% |
+| 5. Distil the brain + search | `distil.py` | one c7i.48xlarge, about 35 minutes for two kept generations | **Mako Deep**: 0.71 / 0.73, the deep pathway decides 81% |
 
 ### 1. Function-preserving growth
 
@@ -220,6 +221,27 @@ Repeat stage 3 from each stage's `final.npz` with the skip halved again, until t
 3.4% → 53% → 71% → 75%. The final brain decides 75% of its moves in the deep pathway; with the
 pathway cut it scores 0.00 against `voronoi`. Read from rest over 128 pairs per set: 160-96 and
 170-86 against `voronoi`, 0.47 against Mako 1.0, 0.50 against Mako 1.5.
+
+### 5. Distil the brain + search into the brain alone
+
+```sh
+python scripts/distil.py --start deep-stage4.npz --out runs/distil/deep --league deep-stage4.npz \
+    --sims 200 --positions 24000 --workers 90 --children 8 --eta-divs 20,30,50 --lessons 1200
+```
+
+Each generation the current best rides alone, half its games against bots (`voronoi`, `voronoi2`,
+`voronoi3`, some `ab5`), the rest against itself, its kept generations and the league; a quarter
+of the games follow the teacher's moves. At each position the brain reaches, the teacher (the
+same brain guiding `tron/mcts.py` at 200 simulations, territory leaves) gives the root's visit
+shares; about 30,000 positions a generation. Eight children learn from the last two generations'
+positions at rates 0.0009 divided by 20, 30 or 50 (a fixed reference), even children the visit
+shares (`lesson(x, targets=...)`), odd children their argmax, sharp positions weighted 2.5
+(`weights=`), every act and lesson from rest. A child is kept only through the brain-alone gate:
+the sequential test against its parent over mirror pairs against `voronoi` (cap 512, undecided:
+128 fresh pairs), then head to head against its parent and each league brain. Kept: generation 0
+(+0.086 over 128 pairs) and generation 2 (+0.069 over 288), both argmax children at rate
+0.0009/20; generations 3 to 8 found no child ahead. The same route lowered every child of the flat
+brain, at 200 and 800 simulations and rates down to 0.0009/800.
 
 ## A brain-guided search
 

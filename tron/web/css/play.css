@@ -101,3 +101,6 @@ button { font: inherit; color: inherit; }
   .hint .desk { display: none; }
   .hint .mob { display: inline; }
 }
+
+.brain-wrap { position: relative; }
+.views { position: absolute; left: 8px; top: 8px; z-index: 2; background: rgba(0,0,0,0.45); }
