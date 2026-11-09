@@ -4,6 +4,9 @@ import { Board } from './board.js';
 import { BrainView } from './brain.js';
 
 const $ = (id) => document.getElementById(id);
+// Where the runtime pack lives: <meta name="cadence-pack" content="..."> if the host page sets one,
+// else pack/ beside this page. Passed to the worker as an absolute URL.
+const PACK = new URL(document.querySelector('meta[name="cadence-pack"]')?.content || 'pack/', document.baseURI).href;
 const fmt = (n) => Number(n).toLocaleString('en-US');
 const pct = (v) => `${(100 * v).toFixed(1)}%`;
 
@@ -411,7 +414,7 @@ function renderCard() {
         <dt>Packed</dt><dd>${m.packed}</dd>
       </dl>
       <p class="hash">wheel sha256 ${m.wheel_sha256}<br>brain sha256 ${m.brain_sha256} (${(m.brain_bytes / 1e6).toFixed(1)} MB)</p>
-      <p>The worker checks these hashes before it runs anything. Training receipt: <a href="pack/receipt.json" target="_blank" rel="noreferrer">pack/receipt.json</a>.</p>
+      <p>The worker checks these hashes before it runs anything. Training receipt: <a href="${PACK}receipt.json" target="_blank" rel="noreferrer">pack/receipt.json</a>.</p>
     </section>
     <section>
       <h3>Licence and limits</h3>
@@ -452,7 +455,7 @@ async function boot() {
   };
   worker.onerror = (event) => { for (const task of pending.values()) task.reject(new Error(event.message || 'The Python worker could not start.')); pending.clear(); };
   try {
-    const { reply, arrays } = await request('init');
+    const { reply, arrays } = await request('init', { pack: PACK });
     app.brain = reply.brain; app.manifest = reply.manifest; app.startup = reply.startup_ms;
     app.empty = reply.game; app.game = reply.game;
     view.setBrain(reply.brain, arrays);

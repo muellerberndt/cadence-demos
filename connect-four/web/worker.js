@@ -20,10 +20,11 @@ async function checked(url, expected) {
   return bytes;
 }
 
-async function initialize() {
+async function initialize(pack) {
   if (python) return call({ command: 'init' });
   const began = performance.now();
-  const base = new URL('pack/', self.location.href);
+  // The page names the pack's address (absolute): a bundler may move this script elsewhere.
+  const base = new URL(pack || 'pack/', self.location.href);
   status('Opening the runtime pack…');
   const response = await fetch(new URL('manifest.json', base));
   if (!response.ok) throw new Error('The Cadence runtime pack is missing. Run pack.py first.');
@@ -113,7 +114,7 @@ self.onmessage = ({ data }) => {
       if (cancelled.has(rid)) { cancelled.delete(rid); post(rid, 'result', { reply: { cancelled: true } }); return; }
       let outcome;
       if (data.command === 'init') {
-        outcome = await initialize();
+        outcome = await initialize(data.payload?.pack);
       } else if (data.command === 'think') {
         outcome = await think(rid, data.payload);
       } else {
