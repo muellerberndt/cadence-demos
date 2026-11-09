@@ -163,8 +163,8 @@ See the [Castlevania README](castlevania/README.md).
 Berries nourish in summer and sicken in winter, and nothing a creature senses says which season it
 is. Each learner is one continuing Cadence brain that learns from what its own actions bring: a
 poisoning surprises it, and the surprise wakes its learning. Beside the learners live frozen twins
-(the same brains, never learning) and random walkers. Learners outlive their frozen twins (3,117
-against 365 moments on fresh seeds), stop eating berries within a winter, and learn the second
+(the same brains, never learning) and random walkers. Learners outlive their frozen twins (3,933
+against 284 moments on fresh seeds), stop eating berries within a winter, and learn the second
 winter faster than the first. A well-fed learner bears a child that inherits its brain and mutated
 genes, so evolution runs in the page. Click a creature to watch its brain settle, its dopamine
 and arousal, and the synapses a lesson changes.

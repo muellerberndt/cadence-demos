@@ -107,11 +107,13 @@ six actions uniformly. Controls do not bear young; a dead control is replaced.
 ## How the founders were bred
 
 [TRAINING.md](TRAINING.md) gives every stage with its command; all of it ran on one 64-vCPU
-cloud machine in about 40 minutes of wall time. In short: a nursery raised 256 brains for
+cloud machine in about 105 minutes of wall time. In short: a nursery raised 256 brains for
 30,000 moments each in worlds where nobody dies; the eight best founded 32 islands of the
-mortal world, where they lived, bred and died for 58,500 moments (their survivors 39
-generations from a founder on average); the page's eight founders are the best survivors, one
-per island.
+mortal world, where they lived, bred and died for 58,500 moments (round 1); the eight best
+survivors of round 1 founded 48 islands for 118,500 moments more (round 2). The page's eight
+founders are the best survivors of round 2, one per island, 35 to 67 generations after the
+round-1 founders. They replaced the round-1 founders because they beat them on the same
+fresh-seed readings (below and `evidence/round2-vs-round1-*.json`).
 
 ## Measured
 
@@ -124,14 +126,15 @@ frozen twin, beside a random walker; 32 worlds, up to 12,000 moments.
 
 | | Learners | Frozen twins | Random walkers |
 | --- | --- | --- | --- |
-| Mean age at death (95% CI) | 3,117 (2,809 to 3,426) | 365 (323 to 410) | 303 |
-| Intake per moment | 0.220 | 0.100 | 0.037 |
-| Moments of 1,000 spent eating or drinking where there is nothing | 94 | 632 | 313 |
+| Mean age at death (95% CI) | 3,933 (3,554 to 4,290) | 284 (248 to 324) | 300 |
+| Intake per moment | 0.209 | 0.069 | 0.037 |
+| Moments of 1,000 spent eating or drinking where there is nothing | 131 | 731 | 313 |
 
-250 of the 256 learners outlived their own twin (paired difference 2,752 moments, 95% CI 2,443
-to 3,067). The twins starve long before the first winter: a twin keeps the habits its brain had
-when it was frozen and eats on bare ground at most moments, while a learner, whose wasted eating
-costs it energy, keeps correcting that within its life.
+253 of the 256 learners outlived their own twin (paired difference 3,648 moments, 95% CI 3,277
+to 4,005); 81 of the learners lived to the end of their lifespan (8,000 moments). The twins
+starve long before the first winter: a twin keeps the habits its brain had when it was frozen
+and eats on bare ground at most moments, while a learner, whose wasted eating costs it energy,
+keeps correcting that within its life.
 
 **After the season turns, learners stop eating the berries; frozen twins do not**
 (`evidence/flip.json`). Learners and twins live through 1,000 moments of summer, then 1,500 of
@@ -139,44 +142,49 @@ winter, in a world where nobody dies; 32 worlds. The share of berries eaten when
 
 | | Last 100 of summer | Winter, 0-100 | 100-200 | 200-300 | 400-500 | 700-800 | Last 100 |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Learners | 98% | 48% | 32% | 25% | 13% | 5% | 4% |
-| Frozen twins | 96% | 98% | 98% | 99% | 100% | 100% | 92% |
+| Learners | 99% | 45% | 33% | 23% | 18% | 11% | 5% |
+| Frozen twins | 97% | 98% | 100% | 100% | 97% | 100% | 96% |
 
 A learner's first winter berry poisons it; the surprise rouses it, and the lessons of the next
-few hundred moments take its acceptance below a tenth. Twins ate fewer berries in summer (0.94
-per 100 moments against the learners' 2.53), and kept eating every one they stood on.
+few hundred moments take its acceptance towards a twentieth. The twins found fewer berries in
+summer (0.35 per 100 moments against the learners' 1.95), and ate every one they stood on.
 
 **The second winter goes better than the first** (`evidence/seasons.json`). Summer, winter,
 summer, winter (1,000, 1,500, 1,500, 1,500 moments), 32 worlds, nobody dies. Berries eaten per
-100 moments in the first 300 moments of each winter: learners 0.72 in the first winter and 0.38
-in the second; the share of berries they ate when standing on one, 9.5% over the first winter
-and 4.9% over the second. The frozen twins: 0.50 and 0.47, 98% and 98%. The learners came back
-to the berries slowly in the second summer: they ate 24% of those they stood on, against 98% in
-the first.
+100 moments in the first 300 moments of each winter: learners 0.60 (95% CI 0.55 to 0.66) in the
+first winter and 0.32 (0.27 to 0.38) in the second; the share of berries they ate when standing
+on one, 9.8% over the first winter and 6.1% over the second. The frozen twins: 0.15 and 0.15,
+98% and 97%. The learners came back to the berries slowly in the second summer: they ate 27% of
+those they stood on, against 98% in the first.
 
-**Evolution raised intake; in a shared world neither group of lineages wins reliably**
-(`evidence/evolution.json`, `evidence/competition.json`, `evidence/islands.json`). The founders
-the islands started from (generation 0, arousal heat and need at zero as the islands received
-them) against the page's evolved founders, each group in its own mortal world without births,
+**Evolution: the evolved lineages take over a shared world** (`evidence/evolution.json`,
+`evidence/competition.json`, `evidence/round2-vs-round1-*.json`, `evidence/islands.json`). The
+founders the islands started from (generation 0, arousal heat and need at zero as the islands
+received them) against the page's founders, each group in its own mortal world without births,
 32 worlds:
 
-| | Generation 0 | Evolved |
+| | Generation 0 | Page founders (round 2) |
 | --- | --- | --- |
-| Intake per moment (95% CI) | 0.162 (0.155 to 0.169) | 0.231 (0.223 to 0.238) |
-| Mean age at death (95% CI) | 2,968 (2,722 to 3,223) | 2,494 (2,292 to 2,703) |
-| Brain cost, energy per moment | 0.0092 | 0.0128 |
+| Intake per moment (95% CI) | 0.162 (0.155 to 0.169) | 0.212 (0.205 to 0.219) |
+| Mean age at death (95% CI) | 2,968 (2,722 to 3,223) | 3,249 (2,982 to 3,506) |
+| Brain cost, energy per moment | 0.0092 | 0.0122 |
 
-Evolution selects whoever bears young, not whoever lives longest alone: the evolved founders
-take in 43% more and carry bigger bodies and recall memories that burn more, so without births
-they live shorter. Put together in one mortal world with births (8 founders a side, up to 16
-learners, 12,000 moments, 32 worlds), the evolved lineages held 56% of the learners at the end
-(95% CI 39% to 72%): every learner in 16 worlds, none in 13. They led through the first summer
-(10.6 learners against 5.4 after 1,000 moments) and lost most of it in the first winter; the
-evolved founders were frozen at the end of a summer and came into that winter eating berries,
-while the generation-0 brains had ended their nursery in a winter. Across the 32 islands the
-survivors' sampling temperature fell (0.26 to 0.15), their associative store rate rose (0.19 to
-0.30), their bodies grew (size 1.02 to 1.26), their sense range shrank (3.6 to 2.9 cells), and
-the share carrying a recall memory rose from 0.25 to 0.55.
+Put together in one mortal world with births (8 founders a side, up to 16 learners, 12,000
+moments, 32 worlds), the page founders' lineages held 89% of the learners at the end (95% CI
+76% to 99%): every learner in 25 worlds, none in 3; they bore 4,363 young against 1,069. Both
+sides lose learners in the first winter (the page founders from 11.6 after 1,000 moments to 5.7
+after 2,000, generation 0 from 4.4 to 1.9); the page founders' lineages recover to between 9 and
+14 for the rest of the run.
+
+The founders of round 1 did less well. Against generation 0 in the same shared world they held
+56% of the learners (95% CI 39% to 72%) and fell from 10.6 to 2.7 in the first winter; the round-2
+founders held 82% (95% CI 68% to 96%) of a world shared with the round-1 founders. Without
+births the round-1 founders took in 0.231 per moment and lived 2,494 moments. Across round 1
+the survivors' sampling temperature fell (0.26 to 0.15), their associative store rate rose (0.19
+to 0.30), their bodies grew (size 1.02 to 1.26), their sense range shrank (3.6 to 2.9 cells) and
+the share carrying a recall memory rose from 0.25 to 0.55; across round 2 the actor step fell
+(0.029 to 0.019), the sense range grew back (2.1 to 3.0), the bodies grew again (1.26 to 1.44),
+the need rose (0.06 to 0.11) and the recall share fell to 0.51.
 
 **Arousal heat: why the founders started without it** (`evidence/heat-on.json`,
 `evidence/heat-off.json`). Heat widens the sampling of a brain in want. With the generation-0
@@ -185,7 +193,7 @@ their frozen twins (paired difference -451 moments, 95% CI -728 to -172); the sa
 heat and need set to zero outlived their twins (925, 95% CI 629 to 1,217). A hungry learner
 with heat samples its policy hotter and wanders where it should eat. The islands started with
 heat and need at zero; mutation raised heat again in some lineages (the page's founders carry
-0 to 1.67), and those learners still outlive their twins above.
+0.38 to 1.62), and those learners still outlive their twins above.
 
 **A recall memory did not help find the hidden caches** (`evidence/caches.json`). Sixteen
 nursery pairs (same genes, same brain seed, raised 30,000 moments with and without the memory),
@@ -193,26 +201,29 @@ each pair in 16 fresh worlds for 3,000 moments where nobody dies: 0.98 nuts per 
 with the memory, 1.05 without (paired difference -0.07, 95% CI -0.22 to 0.07); the memory did
 better in 102 of 256 pairs, worse in 112.
 
-**The page** (`evidence/page-check.json`, headless Chromium on an Apple M4 shared with other
-jobs): the page booted in 8.2 s with Pyodide cached; it ran 13.3 moments a second at full speed
-(77 ms a moment) with 12 learners, 2 frozen twins and 2 random walkers in four brain workers,
-the inspected learner's brain recorded sweep by sweep; the brain view drew a frame in 4.0 ms;
+**The page** (`evidence/page-check.json`, headless Chromium on an Apple M4): the page booted in 2.6 s with Pyodide cached; it ran 43.7 moments a second at full speed
+(36 ms a moment) with 12 learners, 2 frozen twins and 2 random walkers in four brain workers,
+the inspected learner's brain recorded sweep by sweep; the brain view drew a frame in 2.5 ms;
 through a flip the learners kept living and the inspected learner's aroused moments grew; no
 console errors.
 
 ## Limits
 
 - The creatures' intake is far from what the world offers: learners still eat on bare ground
-  94 moments in 1,000 and walk past food they sense. They are reward-trained from scratch
+  131 moments in 1,000 and walk past food they sense. They are reward-trained from scratch
   without a teacher; competence is measured against the controls, not against an optimal
   forager.
 - The frozen twins lose mostly through a stuck habit (eating where there is nothing), not
   through winter berries: they starve before the first winter in the mortal world. The winter
   readings come from worlds where nobody dies.
-- After a winter the learners come back to the berries slowly (24% acceptance in the second
+- After a winter the learners come back to the berries slowly (27% acceptance in the second
   summer against 98% in the first): what a poisoning taught outlasts the season that taught it.
-- The recall memory gave no measurable advantage on the caches; selection spread it anyway,
-  and its role in that spread is not identified.
+- The recall memory gave no measurable advantage on the caches; selection spread it in round 1
+  (0.25 to 0.55 of the survivors) and held it near half in round 2, and its role in that spread
+  is not identified.
+- Both groups in the shared-world reading lose learners in the first winter; the page founders
+  recover, and how much of their lead comes from their summer habits at the start is not
+  separated from what they learned over the rounds.
 - Evolution here is selection of genes over brains that are inherited as copies (a child starts
   from its parent's brain), not evolution of newborn brains; the readings compare groups of
   founders, not single genes.

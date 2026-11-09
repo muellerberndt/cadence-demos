@@ -3,7 +3,8 @@
 Everything below runs the same `patchworld` package the page runs in Pyodide, on
 `cadence-net[fast]==0.95.2` (Numba) with one thread per process. The founders in
 `web/pack/founders/` were bred on one 64-vCPU cloud machine (c7i.16xlarge, Amazon Linux 2023,
-Python 3.12); the nursery took 11 minutes and the evolution 29 minutes of wall time there, and the measurements another half hour.
+Python 3.12); the nursery took 11 minutes, the first evolution 29 minutes and the second 65
+minutes of wall time there, and the measurements about an hour.
 
 ```sh
 python -m pip install "cadence-net[fast]==0.95.2" pytest
@@ -69,16 +70,30 @@ Survivors of the main evolution are 39 generations from their founders on averag
 each island at its cap of 12 learners, and founders re-entered 26 times in all (when fewer than
 three learners were left).
 
-## 3. Select the page's founders
+## 3. Select, and a second round
 
 ```sh
 python training/breed.py select --evolve runs/evolve --nursery runs/nursery --founders 8 --out runs/founders
-python pack.py --founders runs/founders/after
+python training/breed.py evolve --nursery runs/founders/after --islands 48 --moments 118500 --founders 8 \
+    --cap 12 --seed 31 --procs 48 --out runs/evolve-r2
+python training/breed.py select --evolve runs/evolve-r2 --nursery runs/founders/after --founders 8 \
+    --prefix round2 --out runs/founders-r2
+python pack.py --founders runs/founders-r2/after
 ```
 
-The founders are the survivors with the highest intake per moment among those older than 1,500
-moments, at most one per island. `runs/founders/before` keeps the generation-0 founders the
-islands started from, for the evolution reading.
+`select` keeps the survivors with the highest intake per moment among those older than 1,500
+moments, at most one per island; `runs/founders/before` keeps the founders the islands started
+from. Round 2 starts 48 islands from the eight round-1 founders with the genes they evolved and
+runs 118,500 moments (65 minutes beside other runs on the same machine); its survivors are 55
+generations from the round-1 founders on average (at most 136). The page's founders are round
+2's; on the readings below they beat the round-1 founders (`evidence/round2-vs-round1-*.json`):
+in a world with births shared with the round-1 founders their lineages held 82% of the learners
+after 12,000 moments (95% CI 68% to 96%), and against generation 0 89% where the round-1
+founders held 56%; learners against twins lived 3,933 against 284 moments where round 1's lived
+3,117 against 365.
+
+A third evolution (56 islands from the round-1 founders, mutation chance 0.4,
+`--mutation 0.4`) ran beside round 2; it was not measured and its brains are not packed.
 
 ## 4. Measure
 
@@ -87,6 +102,10 @@ python training/evaluate.py controls  --founders web/pack/founders --seeds 32 --
 python training/evaluate.py flip      --founders web/pack/founders --seeds 32
 python training/evaluate.py caches    --nursery runs/nursery --seeds 16 --pairs 16 --moments 3000
 python training/evaluate.py seasons   --founders web/pack/founders --seeds 32
+python training/evaluate.py evolution --founders runs/founders-r2/after --before runs/founders-r2/before --seeds 32 \
+    --name round2-vs-round1-evolution
+python training/evaluate.py competition --founders runs/founders-r2/after --before runs/founders-r2/before --seeds 32 \
+    --moments 12000 --name round2-vs-round1-competition
 python training/evaluate.py evolution --founders web/pack/founders --before runs/founders/before --seeds 32 \
     --retune-before '{"arousal": {"heat": 0.0, "need": 0.0}}'
 python training/evaluate.py competition --founders web/pack/founders --before runs/founders/before --seeds 32 \

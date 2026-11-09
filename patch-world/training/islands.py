@@ -29,6 +29,8 @@ def main() -> None:
     p.add_argument("runs", type=Path, nargs="+")
     p.add_argument("--nursery", type=Path, required=True)
     p.add_argument("--out", type=Path)
+    p.add_argument("--founders-dirs", type=Path, nargs="*", default=None,
+                   help="founders folders (select's output) that a later round started from")
     p.add_argument("--genes", type=json.loads, nargs="*", default=None,
                    help="per run, the genes evolve --genes set on the founders (JSON; {} for none)")
     a = p.parse_args()
@@ -36,6 +38,9 @@ def main() -> None:
     for f in sorted(a.nursery.glob("world*.json")):
         for r in json.loads(f.read_text())["creatures"]:
             nursery[r["name"]] = r
+    for f in a.founders_dirs or []:  # a later round started from a select's founders
+        for r in json.loads((f / "founders.json").read_text())["founders"]:
+            nursery[Path(r["file"]).stem] = r
     report = {}
     for k, run in enumerate(a.runs):
         override = a.genes[k] if a.genes else {}

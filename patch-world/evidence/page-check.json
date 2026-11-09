@@ -1,15 +1,15 @@
 {
  "schema": "patch-world-page-check/1",
- "url": "http://127.0.0.1:59946/",
- "checked_utc": "2026-11-09T13:51:11.750995+00:00",
+ "url": "http://127.0.0.1:64960/",
+ "checked_utc": "2026-11-09T14:46:04.257352+00:00",
  "checks": [
   {
    "check": "boots: world and brain workers ready",
    "ok": true,
-   "seconds": 8.2,
-   "runtime": "Cadence 0.95.2 in 4 brain workers\n\u00b7 67 ms a moment",
+   "seconds": 2.6,
+   "runtime": "Cadence 0.95.2 in 4 brain workers\n\u00b7 ready in 2.3 s",
    "creatures": {
-    "live": 9,
+    "live": 8,
     "frozen": 2,
     "random": 2
    }
@@ -17,9 +17,9 @@
   {
    "check": "runs the world",
    "ok": true,
-   "moments": 312,
-   "moments_per_second": 13.29,
-   "ms_per_moment": 76.9,
+   "moments": 302,
+   "moments_per_second": 43.71,
+   "ms_per_moment": 35.6,
    "creatures": {
     "live": 12,
     "frozen": 2,
@@ -29,74 +29,76 @@
   {
    "check": "inspector opens on a learner and draws its brain from its real state",
    "ok": true,
-   "title": "learner #2",
-   "settle": "settled in 32 sweeps, residual 4.8e-4; did: east",
+   "title": "learner #4",
+   "settle": "settled in 32 sweeps, residual 2.0e-6; did: north",
    "brain_view": {
-    "frame_ms": 3.95142543530855,
-    "frames": 139,
+    "frame_ms": 2.4694818077570613,
+    "frames": 156,
     "sweeps": 32,
     "settle_frames": 18,
-    "tracts": 8,
+    "tracts": 10,
     "populations": {
      "association": 24,
      "motor": 6,
+     "next": 38,
      "prefrontal": 24,
+     "recall": 38,
      "sensory": 38
     },
-    "slots": 0,
-    "changed_total": 28961,
+    "slots": 128,
+    "changed_total": 92485,
     "mode": "aroused"
    }
   },
   {
    "check": "brain view draws within a 60 fps frame budget",
    "ok": true,
-   "frame_ms": 3.95
+   "frame_ms": 2.47
   },
   {
    "check": "creatures keep living through the flip",
    "ok": true,
-   "moments": 699,
+   "moments": 709,
    "creatures": {
-    "live": 10,
-    "frozen": 2,
-    "random": 2
+    "live": 8,
+    "random": 2,
+    "frozen": 2
    },
    "tally": {
+    "frozen": {
+     "lives": 8,
+     "ended": 6,
+     "mean_age_at_death": 215.7,
+     "poisonings_per_1000": 4.231,
+     "good_berries_per_1000": 5.642,
+     "income_per_moment": 0.0905
+    },
     "live": {
-     "lives": 21,
-     "ended": 11,
-     "mean_age_at_death": 358.4,
-     "poisonings_per_1000": 2.497,
-     "good_berries_per_1000": 11.61,
-     "income_per_moment": 0.1441
+     "lives": 18,
+     "ended": 10,
+     "mean_age_at_death": 386.3,
+     "poisonings_per_1000": 3.301,
+     "good_berries_per_1000": 10.27,
+     "income_per_moment": 0.156
     },
     "random": {
-     "lives": 9,
-     "ended": 7,
-     "mean_age_at_death": 165.3,
-     "poisonings_per_1000": 2.861,
-     "good_berries_per_1000": 1.431,
-     "income_per_moment": 0.0309
-    },
-    "frozen": {
-     "lives": 5,
-     "ended": 3,
-     "mean_age_at_death": 403.7,
-     "poisonings_per_1000": 1.431,
-     "good_berries_per_1000": 2.146,
-     "income_per_moment": 0.0736
+     "lives": 7,
+     "ended": 5,
+     "mean_age_at_death": 225,
+     "poisonings_per_1000": 0,
+     "good_berries_per_1000": 3.526,
+     "income_per_moment": 0.0282
     }
    }
   },
   {
    "check": "the inspected learner learns after the flip (its aroused, learning moments grow)",
    "ok": true,
-   "alive": true,
-   "aroused_before": 21068,
-   "aroused_after": 21383,
-   "aroused_in_last_160": 160,
-   "learner_winter_poisonings": 18
+   "alive": false,
+   "aroused_before": 152747,
+   "aroused_after": null,
+   "aroused_in_last_160": 156,
+   "learner_winter_poisonings": 27
   },
   {
    "check": "visitor tools: drop berries, add a predator",

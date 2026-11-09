@@ -427,7 +427,7 @@ function renderTally() {
     return `<tr class="${k}"><td>${KIND_NAME[k]}s</td><td>${alive[k]}</td><td><b>${fmt(r.income_per_moment, 3)}</b></td><td>${fmt(r.poisonings_per_1000, 1)}</td><td>${fmt(r.ended)}</td><td>${fmt(r.mean_age_at_death)}</td></tr>`;
   }).join('');
   const gens = s.creatures.filter((c) => c.kind === 'live').map((c) => c.generation);
-  $('tally-foot').textContent = `Intake: the food and water a creature's own actions brought it, per moment of its life. Learners bear young when well fed: each child takes half its parent's energy, a copy of its brain and mutated genes, so in a full world learners' lives end younger than they would alone (alone, without births, learners lived 3,117 moments on average, twins 365, random walkers 303; see the card below). Generation now up to ${gens.length ? Math.max(...gens) : 0}${s.reseeded ? `; founders re-entered ${s.reseeded} times after the learners died out` : ''}. Dead controls are replaced.`;
+  $('tally-foot').textContent = `Intake: the food and water a creature's own actions brought it, per moment of its life. Learners bear young when well fed: each child takes half its parent's energy, a copy of its brain and mutated genes, so in a full world learners' lives end younger than they would alone (alone, without births, learners lived 3,933 moments on average, twins 284, random walkers 300; see the card below). Generation now up to ${gens.length ? Math.max(...gens) : 0}${s.reseeded ? `; founders re-entered ${s.reseeded} times after the learners died out` : ''}. Dead controls are replaced.`;
 }
 
 function renderChart() {
