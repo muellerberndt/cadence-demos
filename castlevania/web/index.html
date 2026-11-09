@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cadence Castlevania</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Castlevania, played by a Cadence brain</h1>
+  <p class="about">The brain sees the screen through its eye and presses the pad every 12 frames.
+    Each press is the settled state of the whole brain. It plays frozen: nothing is learned here.</p>
+</header>
+<main>
+  <section class="game">
+    <div class="screen-wrap">
+      <canvas id="screen" width="240" height="224" aria-label="the game"></canvas>
+      <canvas id="overlay" width="240" height="224" aria-hidden="true"></canvas>
+    </div>
+    <div class="controls">
+      <button id="pause">Pause</button>
+      <label>start after <select id="idle"></select> idle decisions</label>
+      <button id="restart">New game</button>
+      <span class="speed">speed
+        <button data-speed="1" class="on">1x</button><button data-speed="2">2x</button><button data-speed="4">4x</button><button data-speed="0">max</button>
+      </span>
+    </div>
+    <div class="stats" id="stats"></div>
+    <p class="legend"><span class="sw ahead"></span> the fovea ahead of Simon <span class="sw behind"></span> the fovea behind him</p>
+  </section>
+  <section class="brain">
+    <div class="card">
+      <h2>The answer <span class="note" id="settle"></span></h2>
+      <div class="answer">
+        <div class="pad" id="pad">
+          <div class="dpad"><span data-b="UP">&#9650;</span><span data-b="LEFT">&#9664;</span><span data-b="RIGHT">&#9654;</span><span data-b="DOWN">&#9660;</span></div>
+          <div class="ab"><span data-b="B">B<small>whip</small></span><span data-b="A">A<small>jump</small></span></div>
+        </div>
+        <div class="slots" id="slots"></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>What the eye sees</h2>
+      <div class="eyes">
+        <figure><canvas id="eye-scene" width="16" height="12"></canvas><figcaption>scene</figcaption></figure>
+        <figure><canvas id="eye-motion" width="16" height="12"></canvas><figcaption>motion</figcaption></figure>
+        <figure><canvas id="eye-ahead" width="16" height="12"></canvas><figcaption>fovea ahead</figcaption></figure>
+        <figure><canvas id="eye-behind" width="16" height="12"></canvas><figcaption>fovea behind</figcaption></figure>
+      </div>
+      <div class="readings" id="readings"></div>
+    </div>
+    <div class="card">
+      <h2>The settled brain</h2>
+      <div class="regions">
+        <figure><canvas id="r-module_0" width="16" height="16"></canvas><figcaption>module 0 <small>256</small></figcaption></figure>
+        <figure><canvas id="r-association" width="16" height="8"></canvas><figcaption>association <small>128</small></figcaption></figure>
+        <figure><canvas id="r-prefrontal" width="16" height="8"></canvas><figcaption>prefrontal <small>128</small></figcaption></figure>
+      </div>
+      <h3>Recall memory</h3>
+      <div class="memory" id="memory"></div>
+    </div>
+    <details class="card" id="card">
+      <summary>About this brain</summary>
+      <div id="about-brain"></div>
+    </details>
+  </section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>

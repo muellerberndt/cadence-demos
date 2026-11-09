@@ -1,0 +1,5 @@
+integration/*/rom.nes
+__pycache__/
+*.pyc
+.venv/
+runs/
