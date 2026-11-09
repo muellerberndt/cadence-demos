@@ -1,0 +1,3398 @@
+{
+ "brain": {
+  "file": "brain/brain.npz",
+  "sha256": "c2309a13b99638470fbe399225d864aa292e47363149d762cd52b0fa27802472"
+ },
+ "library": "cadence-net 0.95.2",
+ "backend": "cpu",
+ "python": "3.11.17",
+ "rom_prg_chr_sha1": "0c4992fc08d2278697339d3b48066e7b5f943598",
+ "protocol": {
+  "frames_per_decision": 4,
+  "stuck_limit": 40,
+  "cap": 900,
+  "greedy": true,
+  "frozen": true,
+  "start": "small Mario at the level's start, the given number of idle frames first"
+ },
+ "start_sets": {
+  "held": [
+   32,
+   33,
+   34,
+   35,
+   36,
+   37,
+   38,
+   39,
+   40,
+   41,
+   80,
+   81,
+   82,
+   83,
+   84,
+   85,
+   86,
+   87,
+   88,
+   89,
+   90,
+   91,
+   92,
+   93,
+   94,
+   95,
+   96,
+   97,
+   98,
+   99,
+   100,
+   102,
+   104,
+   106,
+   108,
+   110,
+   112,
+   114,
+   116,
+   118,
+   120,
+   122,
+   124,
+   126,
+   128,
+   130,
+   132,
+   134,
+   136,
+   138
+  ],
+  "fresh": [
+   140,
+   141,
+   142,
+   143,
+   144,
+   145,
+   146,
+   147,
+   148,
+   149,
+   150,
+   151,
+   152,
+   153,
+   154,
+   155,
+   156,
+   157,
+   158,
+   159,
+   160,
+   161,
+   162,
+   163,
+   164,
+   165,
+   166,
+   167,
+   168,
+   169,
+   170,
+   171,
+   172,
+   173,
+   174,
+   175,
+   176,
+   177,
+   178,
+   179,
+   180,
+   181,
+   182,
+   183,
+   184,
+   185,
+   186,
+   187,
+   188,
+   189
+  ]
+ },
+ "table": {
+  "held": {
+   "1-1": {
+    "starts": 50,
+    "flags": 7,
+    "died": 3,
+    "stood_still": 40,
+    "cap": 0,
+    "mean_x": 1173
+   },
+   "1-2": {
+    "starts": 50,
+    "flags": 8,
+    "died": 42,
+    "stood_still": 0,
+    "cap": 0,
+    "mean_x": 1398
+   },
+   "1-3": {
+    "starts": 50,
+    "flags": 9,
+    "died": 41,
+    "stood_still": 0,
+    "cap": 0,
+    "mean_x": 1468
+   },
+   "1-4": {
+    "starts": 50,
+    "flags": 27,
+    "died": 23,
+    "stood_still": 0,
+    "cap": 0,
+    "mean_x": 2165
+   }
+  },
+  "fresh": {
+   "1-1": {
+    "starts": 50,
+    "flags": 11,
+    "died": 12,
+    "stood_still": 27,
+    "cap": 0,
+    "mean_x": 1694
+   },
+   "1-2": {
+    "starts": 50,
+    "flags": 1,
+    "died": 49,
+    "stood_still": 0,
+    "cap": 0,
+    "mean_x": 1040
+   },
+   "1-3": {
+    "starts": 50,
+    "flags": 15,
+    "died": 35,
+    "stood_still": 0,
+    "cap": 0,
+    "mean_x": 1613
+   },
+   "1-4": {
+    "starts": 50,
+    "flags": 34,
+    "died": 16,
+    "stood_still": 0,
+    "cap": 0,
+    "mean_x": 2190
+   }
+  }
+ },
+ "attempts": [
+  {
+   "level": "1-1",
+   "idle": 32,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 33,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 34,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 35,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 36,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 37,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 38,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 39,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 40,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 41,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 80,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 81,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 82,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 83,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 84,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 85,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 86,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 87,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 88,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 89,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 90,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 91,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 92,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 93,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 94,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 95,
+   "end": "flag",
+   "x": 3161,
+   "decisions": 284,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 96,
+   "end": "flag",
+   "x": 3161,
+   "decisions": 284,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 97,
+   "end": "flag",
+   "x": 3161,
+   "decisions": 314,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 98,
+   "end": "stood still",
+   "x": 3154,
+   "decisions": 360,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 99,
+   "end": "died",
+   "x": 2040,
+   "decisions": 175,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 100,
+   "end": "stood still",
+   "x": 3154,
+   "decisions": 360,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 102,
+   "end": "died",
+   "x": 2754,
+   "decisions": 238,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 104,
+   "end": "died",
+   "x": 2754,
+   "decisions": 238,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 106,
+   "end": "flag",
+   "x": 3161,
+   "decisions": 284,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 108,
+   "end": "flag",
+   "x": 3161,
+   "decisions": 284,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 110,
+   "end": "flag",
+   "x": 3161,
+   "decisions": 293,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 112,
+   "end": "flag",
+   "x": 3161,
+   "decisions": 286,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 114,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 116,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 118,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 120,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 122,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 124,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 126,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 128,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 130,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 132,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 134,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 136,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 138,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 32,
+   "end": "died",
+   "x": 890,
+   "decisions": 86,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 33,
+   "end": "died",
+   "x": 889,
+   "decisions": 97,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 34,
+   "end": "flag",
+   "x": 3161,
+   "decisions": 301,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 35,
+   "end": "died",
+   "x": 889,
+   "decisions": 97,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 36,
+   "end": "died",
+   "x": 860,
+   "decisions": 109,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 37,
+   "end": "died",
+   "x": 859,
+   "decisions": 109,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 38,
+   "end": "died",
+   "x": 860,
+   "decisions": 109,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 39,
+   "end": "died",
+   "x": 919,
+   "decisions": 109,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 40,
+   "end": "died",
+   "x": 919,
+   "decisions": 109,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 41,
+   "end": "died",
+   "x": 919,
+   "decisions": 109,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 80,
+   "end": "died",
+   "x": 1646,
+   "decisions": 192,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 81,
+   "end": "died",
+   "x": 936,
+   "decisions": 98,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 82,
+   "end": "died",
+   "x": 885,
+   "decisions": 94,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 83,
+   "end": "died",
+   "x": 1321,
+   "decisions": 156,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 84,
+   "end": "died",
+   "x": 1744,
+   "decisions": 201,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 85,
+   "end": "flag",
+   "x": 3161,
+   "decisions": 309,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 86,
+   "end": "died",
+   "x": 1744,
+   "decisions": 201,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 87,
+   "end": "died",
+   "x": 1336,
+   "decisions": 160,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 88,
+   "end": "died",
+   "x": 877,
+   "decisions": 100,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 89,
+   "end": "died",
+   "x": 1336,
+   "decisions": 160,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 90,
+   "end": "died",
+   "x": 877,
+   "decisions": 100,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 91,
+   "end": "died",
+   "x": 1336,
+   "decisions": 160,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 92,
+   "end": "died",
+   "x": 871,
+   "decisions": 102,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 93,
+   "end": "died",
+   "x": 1336,
+   "decisions": 160,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 94,
+   "end": "died",
+   "x": 871,
+   "decisions": 102,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 95,
+   "end": "died",
+   "x": 1345,
+   "decisions": 174,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 96,
+   "end": "died",
+   "x": 1339,
+   "decisions": 174,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 97,
+   "end": "died",
+   "x": 1345,
+   "decisions": 174,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 98,
+   "end": "died",
+   "x": 1339,
+   "decisions": 174,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 99,
+   "end": "died",
+   "x": 883,
+   "decisions": 85,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 100,
+   "end": "died",
+   "x": 877,
+   "decisions": 96,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 102,
+   "end": "died",
+   "x": 967,
+   "decisions": 100,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 104,
+   "end": "died",
+   "x": 886,
+   "decisions": 85,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 106,
+   "end": "died",
+   "x": 886,
+   "decisions": 85,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 108,
+   "end": "died",
+   "x": 886,
+   "decisions": 85,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 110,
+   "end": "died",
+   "x": 886,
+   "decisions": 85,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 112,
+   "end": "died",
+   "x": 850,
+   "decisions": 107,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 114,
+   "end": "died",
+   "x": 1321,
+   "decisions": 157,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 116,
+   "end": "died",
+   "x": 1339,
+   "decisions": 156,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 118,
+   "end": "died",
+   "x": 872,
+   "decisions": 98,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 120,
+   "end": "flag",
+   "x": 3161,
+   "decisions": 306,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 122,
+   "end": "flag",
+   "x": 3161,
+   "decisions": 306,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 124,
+   "end": "flag",
+   "x": 3161,
+   "decisions": 306,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 126,
+   "end": "flag",
+   "x": 3161,
+   "decisions": 306,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 128,
+   "end": "flag",
+   "x": 3161,
+   "decisions": 309,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 130,
+   "end": "flag",
+   "x": 3161,
+   "decisions": 309,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 132,
+   "end": "died",
+   "x": 868,
+   "decisions": 104,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 134,
+   "end": "died",
+   "x": 868,
+   "decisions": 104,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 136,
+   "end": "died",
+   "x": 868,
+   "decisions": 104,
+   "set": "held"
+  },
+  {
+   "level": "1-2",
+   "idle": 138,
+   "end": "died",
+   "x": 868,
+   "decisions": 104,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 32,
+   "end": "died",
+   "x": 1202,
+   "decisions": 118,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 33,
+   "end": "died",
+   "x": 1202,
+   "decisions": 118,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 34,
+   "end": "died",
+   "x": 1202,
+   "decisions": 118,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 35,
+   "end": "died",
+   "x": 1570,
+   "decisions": 166,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 36,
+   "end": "died",
+   "x": 1202,
+   "decisions": 118,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 37,
+   "end": "died",
+   "x": 1200,
+   "decisions": 117,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 38,
+   "end": "died",
+   "x": 1200,
+   "decisions": 117,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 39,
+   "end": "died",
+   "x": 1200,
+   "decisions": 117,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 40,
+   "end": "died",
+   "x": 1570,
+   "decisions": 164,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 41,
+   "end": "died",
+   "x": 1676,
+   "decisions": 172,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 80,
+   "end": "died",
+   "x": 1202,
+   "decisions": 118,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 81,
+   "end": "died",
+   "x": 1202,
+   "decisions": 118,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 82,
+   "end": "died",
+   "x": 1202,
+   "decisions": 118,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 83,
+   "end": "died",
+   "x": 1202,
+   "decisions": 118,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 84,
+   "end": "died",
+   "x": 1202,
+   "decisions": 118,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 85,
+   "end": "died",
+   "x": 1200,
+   "decisions": 117,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 86,
+   "end": "died",
+   "x": 1200,
+   "decisions": 117,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 87,
+   "end": "died",
+   "x": 1200,
+   "decisions": 117,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 88,
+   "end": "died",
+   "x": 1570,
+   "decisions": 164,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 89,
+   "end": "died",
+   "x": 1723,
+   "decisions": 175,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 90,
+   "end": "died",
+   "x": 1904,
+   "decisions": 201,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 91,
+   "end": "died",
+   "x": 747,
+   "decisions": 63,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 92,
+   "end": "died",
+   "x": 747,
+   "decisions": 63,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 93,
+   "end": "died",
+   "x": 747,
+   "decisions": 63,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 94,
+   "end": "died",
+   "x": 747,
+   "decisions": 63,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 95,
+   "end": "died",
+   "x": 747,
+   "decisions": 63,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 96,
+   "end": "died",
+   "x": 747,
+   "decisions": 63,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 97,
+   "end": "died",
+   "x": 747,
+   "decisions": 63,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 98,
+   "end": "died",
+   "x": 747,
+   "decisions": 63,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 99,
+   "end": "flag",
+   "x": 2425,
+   "decisions": 260,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 100,
+   "end": "died",
+   "x": 1882,
+   "decisions": 204,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 102,
+   "end": "flag",
+   "x": 2425,
+   "decisions": 261,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 104,
+   "end": "died",
+   "x": 1882,
+   "decisions": 204,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 106,
+   "end": "flag",
+   "x": 2425,
+   "decisions": 255,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 108,
+   "end": "died",
+   "x": 1911,
+   "decisions": 203,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 110,
+   "end": "flag",
+   "x": 2425,
+   "decisions": 261,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 112,
+   "end": "flag",
+   "x": 2425,
+   "decisions": 257,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 114,
+   "end": "flag",
+   "x": 2425,
+   "decisions": 243,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 116,
+   "end": "flag",
+   "x": 2425,
+   "decisions": 256,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 118,
+   "end": "flag",
+   "x": 2425,
+   "decisions": 243,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 120,
+   "end": "flag",
+   "x": 2425,
+   "decisions": 255,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 122,
+   "end": "died",
+   "x": 1202,
+   "decisions": 118,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 124,
+   "end": "died",
+   "x": 1202,
+   "decisions": 118,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 126,
+   "end": "died",
+   "x": 1202,
+   "decisions": 118,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 128,
+   "end": "died",
+   "x": 1202,
+   "decisions": 118,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 130,
+   "end": "died",
+   "x": 1202,
+   "decisions": 118,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 132,
+   "end": "died",
+   "x": 1202,
+   "decisions": 118,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 134,
+   "end": "died",
+   "x": 1200,
+   "decisions": 117,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 136,
+   "end": "died",
+   "x": 1570,
+   "decisions": 164,
+   "set": "held"
+  },
+  {
+   "level": "1-3",
+   "idle": 138,
+   "end": "died",
+   "x": 1904,
+   "decisions": 201,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 32,
+   "end": "died",
+   "x": 2069,
+   "decisions": 174,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 33,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 34,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 35,
+   "end": "flag",
+   "x": 2247,
+   "decisions": 207,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 36,
+   "end": "died",
+   "x": 2069,
+   "decisions": 174,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 37,
+   "end": "died",
+   "x": 2078,
+   "decisions": 175,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 38,
+   "end": "died",
+   "x": 2069,
+   "decisions": 174,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 39,
+   "end": "flag",
+   "x": 2255,
+   "decisions": 197,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 40,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 41,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 80,
+   "end": "flag",
+   "x": 2245,
+   "decisions": 189,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 81,
+   "end": "died",
+   "x": 2072,
+   "decisions": 174,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 82,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 83,
+   "end": "died",
+   "x": 2078,
+   "decisions": 175,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 84,
+   "end": "died",
+   "x": 2069,
+   "decisions": 174,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 85,
+   "end": "died",
+   "x": 2078,
+   "decisions": 175,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 86,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 87,
+   "end": "died",
+   "x": 2072,
+   "decisions": 174,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 88,
+   "end": "flag",
+   "x": 2245,
+   "decisions": 189,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 89,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 90,
+   "end": "died",
+   "x": 2069,
+   "decisions": 174,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 91,
+   "end": "flag",
+   "x": 2255,
+   "decisions": 197,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 92,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 93,
+   "end": "died",
+   "x": 2078,
+   "decisions": 175,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 94,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 95,
+   "end": "flag",
+   "x": 2247,
+   "decisions": 207,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 96,
+   "end": "died",
+   "x": 2069,
+   "decisions": 174,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 97,
+   "end": "died",
+   "x": 2078,
+   "decisions": 175,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 98,
+   "end": "died",
+   "x": 2069,
+   "decisions": 174,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 99,
+   "end": "died",
+   "x": 2078,
+   "decisions": 175,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 100,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 102,
+   "end": "died",
+   "x": 2069,
+   "decisions": 174,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 104,
+   "end": "flag",
+   "x": 2245,
+   "decisions": 189,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 106,
+   "end": "died",
+   "x": 2069,
+   "decisions": 174,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 108,
+   "end": "flag",
+   "x": 2245,
+   "decisions": 189,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 110,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 112,
+   "end": "flag",
+   "x": 2245,
+   "decisions": 189,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 114,
+   "end": "died",
+   "x": 2069,
+   "decisions": 174,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 116,
+   "end": "died",
+   "x": 2069,
+   "decisions": 174,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 118,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 120,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 122,
+   "end": "died",
+   "x": 2069,
+   "decisions": 174,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 124,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 126,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 128,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 130,
+   "end": "died",
+   "x": 2069,
+   "decisions": 174,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 132,
+   "end": "died",
+   "x": 2069,
+   "decisions": 174,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 134,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 136,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "held"
+  },
+  {
+   "level": "1-4",
+   "idle": 138,
+   "end": "died",
+   "x": 2069,
+   "decisions": 174,
+   "set": "held"
+  },
+  {
+   "level": "1-1",
+   "idle": 140,
+   "end": "died",
+   "x": 2471,
+   "decisions": 250,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 141,
+   "end": "died",
+   "x": 1821,
+   "decisions": 153,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 142,
+   "end": "flag",
+   "x": 3161,
+   "decisions": 304,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 143,
+   "end": "died",
+   "x": 2040,
+   "decisions": 175,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 144,
+   "end": "flag",
+   "x": 3161,
+   "decisions": 304,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 145,
+   "end": "died",
+   "x": 2040,
+   "decisions": 175,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 146,
+   "end": "stood still",
+   "x": 3154,
+   "decisions": 360,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 147,
+   "end": "stood still",
+   "x": 3154,
+   "decisions": 360,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 148,
+   "end": "stood still",
+   "x": 3154,
+   "decisions": 360,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 149,
+   "end": "flag",
+   "x": 3161,
+   "decisions": 319,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 150,
+   "end": "flag",
+   "x": 3161,
+   "decisions": 319,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 151,
+   "end": "flag",
+   "x": 3161,
+   "decisions": 319,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 152,
+   "end": "flag",
+   "x": 3161,
+   "decisions": 319,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 153,
+   "end": "died",
+   "x": 1796,
+   "decisions": 159,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 154,
+   "end": "flag",
+   "x": 3161,
+   "decisions": 298,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 155,
+   "end": "died",
+   "x": 1796,
+   "decisions": 159,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 156,
+   "end": "flag",
+   "x": 3161,
+   "decisions": 298,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 157,
+   "end": "stood still",
+   "x": 594,
+   "decisions": 90,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 158,
+   "end": "stood still",
+   "x": 594,
+   "decisions": 90,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 159,
+   "end": "stood still",
+   "x": 594,
+   "decisions": 90,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 160,
+   "end": "stood still",
+   "x": 594,
+   "decisions": 90,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 161,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 162,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 163,
+   "end": "stood still",
+   "x": 594,
+   "decisions": 90,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 164,
+   "end": "stood still",
+   "x": 594,
+   "decisions": 90,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 165,
+   "end": "died",
+   "x": 2471,
+   "decisions": 246,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 166,
+   "end": "died",
+   "x": 2469,
+   "decisions": 250,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 167,
+   "end": "flag",
+   "x": 3161,
+   "decisions": 306,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 168,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 169,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 170,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 171,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 172,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 173,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 174,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 175,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 176,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 177,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 178,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 179,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 180,
+   "end": "stood still",
+   "x": 596,
+   "decisions": 90,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 181,
+   "end": "died",
+   "x": 2022,
+   "decisions": 170,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 182,
+   "end": "stood still",
+   "x": 595,
+   "decisions": 90,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 183,
+   "end": "stood still",
+   "x": 595,
+   "decisions": 90,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 184,
+   "end": "stood still",
+   "x": 595,
+   "decisions": 90,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 185,
+   "end": "died",
+   "x": 2763,
+   "decisions": 248,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 186,
+   "end": "flag",
+   "x": 3161,
+   "decisions": 306,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 187,
+   "end": "flag",
+   "x": 3161,
+   "decisions": 295,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 188,
+   "end": "died",
+   "x": 2473,
+   "decisions": 246,
+   "set": "fresh"
+  },
+  {
+   "level": "1-1",
+   "idle": 189,
+   "end": "died",
+   "x": 2040,
+   "decisions": 175,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 140,
+   "end": "flag",
+   "x": 3161,
+   "decisions": 311,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 141,
+   "end": "died",
+   "x": 870,
+   "decisions": 119,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 142,
+   "end": "died",
+   "x": 872,
+   "decisions": 119,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 143,
+   "end": "died",
+   "x": 883,
+   "decisions": 85,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 144,
+   "end": "died",
+   "x": 886,
+   "decisions": 85,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 145,
+   "end": "died",
+   "x": 883,
+   "decisions": 85,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 146,
+   "end": "died",
+   "x": 886,
+   "decisions": 85,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 147,
+   "end": "died",
+   "x": 883,
+   "decisions": 85,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 148,
+   "end": "died",
+   "x": 886,
+   "decisions": 85,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 149,
+   "end": "died",
+   "x": 883,
+   "decisions": 85,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 150,
+   "end": "died",
+   "x": 886,
+   "decisions": 85,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 151,
+   "end": "died",
+   "x": 874,
+   "decisions": 114,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 152,
+   "end": "died",
+   "x": 865,
+   "decisions": 92,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 153,
+   "end": "died",
+   "x": 964,
+   "decisions": 121,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 154,
+   "end": "died",
+   "x": 873,
+   "decisions": 113,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 155,
+   "end": "died",
+   "x": 858,
+   "decisions": 106,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 156,
+   "end": "died",
+   "x": 864,
+   "decisions": 116,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 157,
+   "end": "died",
+   "x": 865,
+   "decisions": 116,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 158,
+   "end": "died",
+   "x": 864,
+   "decisions": 116,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 159,
+   "end": "died",
+   "x": 1646,
+   "decisions": 195,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 160,
+   "end": "died",
+   "x": 860,
+   "decisions": 105,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 161,
+   "end": "died",
+   "x": 1345,
+   "decisions": 159,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 162,
+   "end": "died",
+   "x": 860,
+   "decisions": 105,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 163,
+   "end": "died",
+   "x": 853,
+   "decisions": 109,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 164,
+   "end": "died",
+   "x": 878,
+   "decisions": 100,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 165,
+   "end": "died",
+   "x": 853,
+   "decisions": 109,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 166,
+   "end": "died",
+   "x": 878,
+   "decisions": 100,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 167,
+   "end": "died",
+   "x": 857,
+   "decisions": 107,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 168,
+   "end": "died",
+   "x": 878,
+   "decisions": 99,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 169,
+   "end": "died",
+   "x": 857,
+   "decisions": 107,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 170,
+   "end": "died",
+   "x": 878,
+   "decisions": 99,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 171,
+   "end": "died",
+   "x": 854,
+   "decisions": 108,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 172,
+   "end": "died",
+   "x": 878,
+   "decisions": 99,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 173,
+   "end": "died",
+   "x": 854,
+   "decisions": 108,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 174,
+   "end": "died",
+   "x": 878,
+   "decisions": 99,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 175,
+   "end": "died",
+   "x": 981,
+   "decisions": 105,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 176,
+   "end": "died",
+   "x": 878,
+   "decisions": 99,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 177,
+   "end": "died",
+   "x": 854,
+   "decisions": 108,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 178,
+   "end": "died",
+   "x": 878,
+   "decisions": 99,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 179,
+   "end": "died",
+   "x": 858,
+   "decisions": 106,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 180,
+   "end": "died",
+   "x": 878,
+   "decisions": 99,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 181,
+   "end": "died",
+   "x": 858,
+   "decisions": 106,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 182,
+   "end": "died",
+   "x": 878,
+   "decisions": 99,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 183,
+   "end": "died",
+   "x": 1745,
+   "decisions": 194,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 184,
+   "end": "died",
+   "x": 1646,
+   "decisions": 188,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 185,
+   "end": "died",
+   "x": 1745,
+   "decisions": 194,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 186,
+   "end": "died",
+   "x": 889,
+   "decisions": 84,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 187,
+   "end": "died",
+   "x": 886,
+   "decisions": 84,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 188,
+   "end": "died",
+   "x": 2154,
+   "decisions": 238,
+   "set": "fresh"
+  },
+  {
+   "level": "1-2",
+   "idle": 189,
+   "end": "died",
+   "x": 1742,
+   "decisions": 196,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 140,
+   "end": "died",
+   "x": 747,
+   "decisions": 63,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 141,
+   "end": "died",
+   "x": 747,
+   "decisions": 63,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 142,
+   "end": "died",
+   "x": 747,
+   "decisions": 63,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 143,
+   "end": "died",
+   "x": 747,
+   "decisions": 63,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 144,
+   "end": "died",
+   "x": 747,
+   "decisions": 63,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 145,
+   "end": "died",
+   "x": 747,
+   "decisions": 63,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 146,
+   "end": "died",
+   "x": 747,
+   "decisions": 63,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 147,
+   "end": "flag",
+   "x": 2425,
+   "decisions": 260,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 148,
+   "end": "died",
+   "x": 1911,
+   "decisions": 203,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 149,
+   "end": "died",
+   "x": 1911,
+   "decisions": 203,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 150,
+   "end": "flag",
+   "x": 2425,
+   "decisions": 261,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 151,
+   "end": "died",
+   "x": 1848,
+   "decisions": 200,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 152,
+   "end": "died",
+   "x": 1882,
+   "decisions": 204,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 153,
+   "end": "died",
+   "x": 1911,
+   "decisions": 203,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 154,
+   "end": "flag",
+   "x": 2425,
+   "decisions": 255,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 155,
+   "end": "died",
+   "x": 1494,
+   "decisions": 153,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 156,
+   "end": "died",
+   "x": 1911,
+   "decisions": 203,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 157,
+   "end": "flag",
+   "x": 2425,
+   "decisions": 260,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 158,
+   "end": "flag",
+   "x": 2425,
+   "decisions": 260,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 159,
+   "end": "flag",
+   "x": 2425,
+   "decisions": 254,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 160,
+   "end": "flag",
+   "x": 2425,
+   "decisions": 257,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 161,
+   "end": "flag",
+   "x": 2425,
+   "decisions": 251,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 162,
+   "end": "flag",
+   "x": 2425,
+   "decisions": 243,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 163,
+   "end": "flag",
+   "x": 2425,
+   "decisions": 255,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 164,
+   "end": "flag",
+   "x": 2425,
+   "decisions": 257,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 165,
+   "end": "flag",
+   "x": 2425,
+   "decisions": 251,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 166,
+   "end": "flag",
+   "x": 2425,
+   "decisions": 243,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 167,
+   "end": "flag",
+   "x": 2425,
+   "decisions": 255,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 168,
+   "end": "flag",
+   "x": 2425,
+   "decisions": 255,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 169,
+   "end": "died",
+   "x": 1202,
+   "decisions": 118,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 170,
+   "end": "died",
+   "x": 1202,
+   "decisions": 118,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 171,
+   "end": "died",
+   "x": 1202,
+   "decisions": 118,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 172,
+   "end": "died",
+   "x": 1202,
+   "decisions": 118,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 173,
+   "end": "died",
+   "x": 1202,
+   "decisions": 118,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 174,
+   "end": "died",
+   "x": 1202,
+   "decisions": 118,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 175,
+   "end": "died",
+   "x": 1202,
+   "decisions": 118,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 176,
+   "end": "died",
+   "x": 1202,
+   "decisions": 118,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 177,
+   "end": "died",
+   "x": 1202,
+   "decisions": 118,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 178,
+   "end": "died",
+   "x": 1202,
+   "decisions": 118,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 179,
+   "end": "died",
+   "x": 1202,
+   "decisions": 118,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 180,
+   "end": "died",
+   "x": 1202,
+   "decisions": 118,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 181,
+   "end": "died",
+   "x": 1200,
+   "decisions": 117,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 182,
+   "end": "died",
+   "x": 1200,
+   "decisions": 117,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 183,
+   "end": "died",
+   "x": 1571,
+   "decisions": 164,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 184,
+   "end": "died",
+   "x": 1571,
+   "decisions": 164,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 185,
+   "end": "died",
+   "x": 1570,
+   "decisions": 164,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 186,
+   "end": "died",
+   "x": 1570,
+   "decisions": 164,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 187,
+   "end": "died",
+   "x": 747,
+   "decisions": 63,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 188,
+   "end": "died",
+   "x": 747,
+   "decisions": 63,
+   "set": "fresh"
+  },
+  {
+   "level": "1-3",
+   "idle": 189,
+   "end": "died",
+   "x": 1570,
+   "decisions": 164,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 140,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 141,
+   "end": "died",
+   "x": 2072,
+   "decisions": 174,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 142,
+   "end": "flag",
+   "x": 2246,
+   "decisions": 194,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 143,
+   "end": "flag",
+   "x": 2247,
+   "decisions": 195,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 144,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 145,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 146,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 147,
+   "end": "died",
+   "x": 2072,
+   "decisions": 174,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 148,
+   "end": "flag",
+   "x": 2245,
+   "decisions": 189,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 149,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 150,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 151,
+   "end": "flag",
+   "x": 2247,
+   "decisions": 195,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 152,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 153,
+   "end": "died",
+   "x": 2072,
+   "decisions": 174,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 154,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 155,
+   "end": "died",
+   "x": 2078,
+   "decisions": 175,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 156,
+   "end": "died",
+   "x": 2069,
+   "decisions": 174,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 157,
+   "end": "died",
+   "x": 2078,
+   "decisions": 175,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 158,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 159,
+   "end": "flag",
+   "x": 2247,
+   "decisions": 207,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 160,
+   "end": "died",
+   "x": 2069,
+   "decisions": 174,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 161,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 162,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 163,
+   "end": "flag",
+   "x": 2255,
+   "decisions": 197,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 164,
+   "end": "flag",
+   "x": 2245,
+   "decisions": 189,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 165,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 166,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 167,
+   "end": "died",
+   "x": 2072,
+   "decisions": 174,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 168,
+   "end": "flag",
+   "x": 2245,
+   "decisions": 189,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 169,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 170,
+   "end": "died",
+   "x": 2069,
+   "decisions": 174,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 171,
+   "end": "flag",
+   "x": 2255,
+   "decisions": 197,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 172,
+   "end": "flag",
+   "x": 2245,
+   "decisions": 189,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 173,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 174,
+   "end": "died",
+   "x": 2069,
+   "decisions": 174,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 175,
+   "end": "flag",
+   "x": 2255,
+   "decisions": 197,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 176,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 177,
+   "end": "died",
+   "x": 2078,
+   "decisions": 175,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 178,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 179,
+   "end": "flag",
+   "x": 2247,
+   "decisions": 195,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 180,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 181,
+   "end": "died",
+   "x": 2072,
+   "decisions": 174,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 182,
+   "end": "flag",
+   "x": 2246,
+   "decisions": 194,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 183,
+   "end": "died",
+   "x": 2072,
+   "decisions": 174,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 184,
+   "end": "flag",
+   "x": 2245,
+   "decisions": 189,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 185,
+   "end": "died",
+   "x": 2072,
+   "decisions": 174,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 186,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 187,
+   "end": "died",
+   "x": 2078,
+   "decisions": 175,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 188,
+   "end": "died",
+   "x": 2069,
+   "decisions": 174,
+   "set": "fresh"
+  },
+  {
+   "level": "1-4",
+   "idle": 189,
+   "end": "flag",
+   "x": 2244,
+   "decisions": 189,
+   "set": "fresh"
+  }
+ ],
+ "seconds": 263,
+ "when": "2026-11-09 16:49"
+}
