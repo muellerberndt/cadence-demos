@@ -99,6 +99,7 @@ Every demo runs on `cadence-net` 0.95.2.
 | [Tron](tron/) · [live](https://cadence.floatingpragma.io/demos/tron) | Ride a light cycle against a flat or a deep brain that sees the whole arena, and watch every neuron settle on its move | `Brain.compose`, flat (256) and deep (256-128-32); in the browser, the released library itself, in Pyodide |
 | [Connect Four](connect-four/) · [live](https://cadence.floatingpragma.io/demos/connect-four) | Play a deep brain that judges every position (loss, draw, win) beside its move, and teach it a column | A deep `Brain.compose` (1024, 1024) with a verdict slot; in the browser, the released library itself, in Pyodide |
 | [Castlevania](castlevania/) · [watch](https://cadence.floatingpragma.io/demos/castlevania) | A brain plays the NES game from what its eye sees on the screen, on your own copy of the game | A deep `Brain.compose` with recall, raised by a savestate teacher and search; a local server runs the emulator |
+| [Super Mario Bros.](mario/) | A brain plays World 1 from the screen and a few body readings, beside its brain view, on your own copy of the game: in one five-life run it cleared 1-1 to 1-4 | `Brain.compose` (256), raised by a savestate coach with DAgger; a local window runs the emulator |
 | [Patch World](patch-world/) · [live](https://cadence.floatingpragma.io/demos/patch-world) | Creatures with Cadence brains forage, get poisoned when the season turns, relearn and evolve; click one to watch its brain | One continuing `Brain.live` brain per creature, bred by evolution; in the browser, the released library itself, in Pyodide |
 | [Atari Arcade](atari-arcade/) · [live](https://cadence.floatingpragma.io/demos/atari-arcade) | Brains that learn Atari games from pixels: a teacher first, then reward | `Brain.compose` (System 1); in the browser, the released library itself, in Pyodide |
 | [Robot Arena](robot-arena/) · [live](https://cadence.floatingpragma.io/demos/robot-arena) | Robots built from parts, one continuing brain per robot, raised in a nursery and fighting live in the browser with a brain inspector | `Brain.compose` with one motor slot per motor, learning through `Brain.live`; in the browser, in Pyodide |
@@ -165,6 +166,21 @@ cd castlevania && python -m simon.rom ~/roms && python server.py   # opens http:
 ```
 
 See the [Castlevania README](castlevania/README.md).
+
+## [Super Mario Bros.](mario/): World 1 from the screen
+
+A brain plays Super Mario Bros. from grey blocks of the screen and a few readings of Mario's own
+body, choosing one of seven button combinations every four frames. In one five-life run it cleared
+1-1, 1-2, 1-3 and 1-4 with the same weights, then lost its last lives in 2-1, which it never
+trained on. It was raised by a coach that searches ahead from emulator savestates, with DAgger.
+The game is not included: the demo runs on your own ROM, which `smb/rom.py` checks against the
+dump the brain was raised on. The window shows the game beside the brain view. By Sean Hall.
+
+```sh
+cd mario && python -m smb.rom ~/roms && python play.py   # the five-life run, with the brain view
+```
+
+See the [Mario README](mario/README.md).
 
 ## [Patch World](patch-world/): creatures that learn the seasons
 
