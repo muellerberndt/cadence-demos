@@ -275,6 +275,8 @@ of the generations were played with a distilled brain as the player's prior):
 | the same, then labels from its own player | 5,000 + 4,000 | 0.810 / 0.918 | 55-18-7 | 11-10-19 | 32-3-5 / 21-6-13 | 67-2-11 |
 | labels 30% of each batch, a third of the rate | 4,000 | 0.787 / 0.925 | 39-22-19 | 12-6-22 | 23-7-10 / 11-4-25 | 62-5-13 |
 | labels 50%, a tenth of the rate | 4,000 | 0.786 / 0.922 | 52-20-8 | 6-10-24 | 25-7-8 / 11-7-22 | 67-5-8 |
+| labels 30% of each batch, a third of the rate | 6,000 | 0.793 / 0.924 | 39-23-18 | 11-4-25 | 24-7-9 / 12-6-22 | 64-5-11 |
+| labels 50%, a tenth of the rate | 6,000 | 0.792 / 0.925 | 43-24-13 | 7-10-23 | 25-6-9 / 9-7-24 | 52-6-22 |
 
 Counts are won-drawn-lost for the brain's side; "alone vs packed brain" is the new brain alone
 against the packed brain alone, after two random opening moves, 40 games from each seat; the
@@ -282,9 +284,12 @@ packed brain's row against itself shows that baseline. The records are in
 `evidence/distill_reading.json`.
 
 Every distilled brain gained optimal moves and tactics, and several played the perfect solver
-better from the first seat, but each kept the theoretical result less often on held-out positions
-or played worse from the second seat, and none beat the packed brain head to head from both seats.
-The packed brain is the one before distillation.
+better from the first seat; most kept the theoretical result less often on held-out positions or
+played worse from the second seat. At 6,000 lessons the 30%-share arm passes the gate as written,
+narrowly: it keeps the result on 0.9244 of held-out positions against 0.9234, its head-to-head score
+against the packed brain is 0.53 over both seats, within noise, and its player at 40,000 positions
+reads 64-5-11 against 66-6-8; the page's player at 120,000 positions was not measured with it, so
+the packed brain stays.
 
 ## What it does not claim
 

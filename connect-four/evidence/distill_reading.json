@@ -61,7 +61,7 @@
   "command": "python -m c4train.train --init BRAIN --label-dir LABELS... --label-share F --label-soft 0.5 --label-weight 3 [--eta-scale S]"
  },
  "gate": "held-out result-keeping must not fall; beat the packed brain alone head to head; no game reading against the solver more than 0.10 below the packed brain's",
- "outcome": "no distilled brain passed the gate; the page keeps the packed brain",
+ "outcome": "at 6,000 lessons the low-share arm passes the gate as written, narrowly (held-out keep 0.9244 vs 0.9234; head to head 0.53 combined, within noise; its player at 40,000 positions 64-5-11 vs 66-6-8); the page's player at 120,000 positions was not measured with it, so the page keeps the packed brain. No other distilled brain passed.",
  "games_note": "won-drawn-lost for the brain's side; games against the packed brain begin with two random moves",
  "brains": [
   {
@@ -1546,6 +1546,276 @@
      "win": 29,
      "draw": 6,
      "loss": 5
+    }
+   ]
+  },
+  {
+   "brain": "arm low share",
+   "continued_from": "the packed brain",
+   "lessons": 6000,
+   "heldout": {
+    "positions": 3000,
+    "optimal": 0.7927,
+    "keep_not_lost": 0.9244,
+    "wins_now": 0.6733,
+    "blocks": 0.8875,
+    "verdict": 0.8917
+   },
+   "games": [
+    {
+     "player": "the brain alone",
+     "against": "the perfect solver",
+     "seat": "first",
+     "seed": 31337,
+     "games": 40,
+     "win": 20,
+     "draw": 12,
+     "loss": 8
+    },
+    {
+     "player": "the brain alone",
+     "against": "the perfect solver",
+     "seat": "first",
+     "seed": 32337,
+     "games": 40,
+     "win": 19,
+     "draw": 11,
+     "loss": 10
+    },
+    {
+     "player": "the brain alone",
+     "against": "the solver at 0.9",
+     "seat": "first",
+     "seed": 31337,
+     "games": 40,
+     "win": 28,
+     "draw": 8,
+     "loss": 4
+    },
+    {
+     "player": "the brain alone",
+     "against": "the solver at 0.9",
+     "seat": "second",
+     "seed": 31337,
+     "games": 40,
+     "win": 11,
+     "draw": 4,
+     "loss": 25
+    },
+    {
+     "player": "the brain alone",
+     "against": "the solver at 0.7",
+     "seat": "first",
+     "seed": 31337,
+     "games": 40,
+     "win": 33,
+     "draw": 3,
+     "loss": 4
+    },
+    {
+     "player": "the brain alone",
+     "against": "the solver at 0.7",
+     "seat": "second",
+     "seed": 31337,
+     "games": 40,
+     "win": 31,
+     "draw": 3,
+     "loss": 6
+    },
+    {
+     "player": "the brain alone",
+     "against": "the packed brain alone",
+     "seat": "first",
+     "seed": 31338,
+     "games": 40,
+     "win": 24,
+     "draw": 7,
+     "loss": 9
+    },
+    {
+     "player": "the brain alone",
+     "against": "the packed brain alone",
+     "seat": "second",
+     "seed": 31338,
+     "games": 40,
+     "win": 12,
+     "draw": 6,
+     "loss": 22
+    },
+    {
+     "player": "brain + search, 40,000 positions",
+     "against": "the perfect solver",
+     "seat": "first",
+     "seed": 32337,
+     "games": 40,
+     "win": 30,
+     "draw": 3,
+     "loss": 7
+    },
+    {
+     "player": "brain + search, 40,000 positions",
+     "against": "the perfect solver",
+     "seat": "first",
+     "seed": 33337,
+     "games": 40,
+     "win": 34,
+     "draw": 2,
+     "loss": 4
+    },
+    {
+     "player": "brain + search, 15,000 positions",
+     "against": "the perfect solver",
+     "seat": "first",
+     "seed": 32337,
+     "games": 40,
+     "win": 32,
+     "draw": 3,
+     "loss": 5
+    },
+    {
+     "player": "brain + search, 15,000 positions",
+     "against": "the perfect solver",
+     "seat": "first",
+     "seed": 33337,
+     "games": 40,
+     "win": 25,
+     "draw": 2,
+     "loss": 13
+    }
+   ]
+  },
+  {
+   "brain": "arm small rate",
+   "continued_from": "the packed brain",
+   "lessons": 6000,
+   "heldout": {
+    "positions": 3000,
+    "optimal": 0.792,
+    "keep_not_lost": 0.9254,
+    "wins_now": 0.6733,
+    "blocks": 0.89,
+    "verdict": 0.8897
+   },
+   "games": [
+    {
+     "player": "the brain alone",
+     "against": "the perfect solver",
+     "seat": "first",
+     "seed": 31337,
+     "games": 40,
+     "win": 25,
+     "draw": 10,
+     "loss": 5
+    },
+    {
+     "player": "the brain alone",
+     "against": "the perfect solver",
+     "seat": "first",
+     "seed": 32337,
+     "games": 40,
+     "win": 18,
+     "draw": 14,
+     "loss": 8
+    },
+    {
+     "player": "the brain alone",
+     "against": "the solver at 0.9",
+     "seat": "first",
+     "seed": 31337,
+     "games": 40,
+     "win": 26,
+     "draw": 10,
+     "loss": 4
+    },
+    {
+     "player": "the brain alone",
+     "against": "the solver at 0.9",
+     "seat": "second",
+     "seed": 31337,
+     "games": 40,
+     "win": 7,
+     "draw": 10,
+     "loss": 23
+    },
+    {
+     "player": "the brain alone",
+     "against": "the solver at 0.7",
+     "seat": "first",
+     "seed": 31337,
+     "games": 40,
+     "win": 33,
+     "draw": 2,
+     "loss": 5
+    },
+    {
+     "player": "the brain alone",
+     "against": "the solver at 0.7",
+     "seat": "second",
+     "seed": 31337,
+     "games": 40,
+     "win": 26,
+     "draw": 6,
+     "loss": 8
+    },
+    {
+     "player": "the brain alone",
+     "against": "the packed brain alone",
+     "seat": "first",
+     "seed": 31338,
+     "games": 40,
+     "win": 25,
+     "draw": 6,
+     "loss": 9
+    },
+    {
+     "player": "the brain alone",
+     "against": "the packed brain alone",
+     "seat": "second",
+     "seed": 31338,
+     "games": 40,
+     "win": 9,
+     "draw": 7,
+     "loss": 24
+    },
+    {
+     "player": "brain + search, 40,000 positions",
+     "against": "the perfect solver",
+     "seat": "first",
+     "seed": 32337,
+     "games": 40,
+     "win": 25,
+     "draw": 5,
+     "loss": 10
+    },
+    {
+     "player": "brain + search, 40,000 positions",
+     "against": "the perfect solver",
+     "seat": "first",
+     "seed": 33337,
+     "games": 40,
+     "win": 27,
+     "draw": 1,
+     "loss": 12
+    },
+    {
+     "player": "brain + search, 15,000 positions",
+     "against": "the perfect solver",
+     "seat": "first",
+     "seed": 32337,
+     "games": 40,
+     "win": 25,
+     "draw": 3,
+     "loss": 12
+    },
+    {
+     "player": "brain + search, 15,000 positions",
+     "against": "the perfect solver",
+     "seat": "first",
+     "seed": 33337,
+     "games": 40,
+     "win": 28,
+     "draw": 3,
+     "loss": 9
     }
    ]
   }
