@@ -37,12 +37,21 @@ over.
 
 The brains run on cadence-net 0.95.2, the same wheel in the page and in the native code.
 
-The six packed robots and how they were raised are in [MODEL_CARD.md](MODEL_CARD.md). In
-short, from the world's pay alone over 100,000 nursery moments, the packed brains closed 433 to
-1,858 m on their targets, against -22 to -80 m for uniform random with the same bodies. In 20
-royales Dozer won 11 of its 12 fights. The uniform-random Mantis twin rated above five brains
-by staying alive. The packed brains score +0.54 to -0.39 on the driving test (random: about
--0.04).
+The six packed robots were bred with `python -m arena.breed` (bodies and brain genes, about
+110 generations over three populations on one 96-vCPU machine) and passed through
+`python -m arena.gate` against the previous roster; their bodies, genes and every reading are
+in [MODEL_CARD.md](MODEL_CARD.md). The gate as run:
+
+| Test | Reading | Bar |
+| --- | --- | --- |
+| Head to head: 48 royales of three new and three previous robots | new minus previous placement +0.261, 95% interval [+0.128, +0.400] | interval above zero: met |
+| Driving test, mean of the six | +0.391 (previous roster +0.22) | clearly above the previous: met |
+| No brain significantly below a random twin (72 royales with the two twins) | none | met |
+| The roster's placement minus the twins' in the same fights | +0.117, 95% interval [-0.024, +0.253], 70 fights | interval above zero: missed narrowly |
+
+The owner chose to ship this roster because it beats the previous one on every measured
+reading, including against the twins: in the previous roster's 20 royales the random Mantis
+twin rated above five of its six brains.
 
 ## How a robot learns
 

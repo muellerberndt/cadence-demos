@@ -1,6 +1,6 @@
 {
  "schema": "cadence-showcase-pack/1",
- "created": "2026-11-09",
+ "created": "2026-11-10",
  "pyodide": "314.0.7",
  "cadence": "0.95.2",
  "wheel": "cadence_net-0.95.2-py3-none-any.whl",
@@ -29,18 +29,500 @@
   "nursery.py": "97c003c39d5d6b1ede886ebd1741ec695fbf02c0ecf8f30021bdffca119821c6",
   "probe.py": "4ebbfa5134a8e1ee1d73c3ca06e5d36c5751866dca420b6374503e6ddd35e0d7"
  },
- "host_sha256": "965dc8c53907e083685e9a3ad7f3e9dd77f9823f331353d9af91be61a4d071fe",
+ "host_sha256": "6908d02f11296f4c0308147787163fe24d675a51a99d39bcfcc63b0db484e3f8",
  "roster": [
   {
-   "name": "Dozer",
+   "name": "Tumbler-44.41",
    "blueprint": {
-    "name": "Dozer",
+    "name": "Tumbler-44.41",
+    "chassis": "medium",
+    "parts": [
+     {
+      "kind": "wheel",
+      "mount": -139.6
+     },
+     {
+      "kind": "arm",
+      "mount": -62.0,
+      "weapon": "hammer"
+     },
+     {
+      "kind": "arm",
+      "mount": 43.5,
+      "weapon": "hammer"
+     },
+     {
+      "kind": "leg",
+      "mount": -43.2
+     },
+     {
+      "kind": "arm",
+      "mount": -125.1,
+      "weapon": "hammer"
+     },
+     {
+      "kind": "arm",
+      "mount": -58.9,
+      "weapon": "spike"
+     }
+    ],
+    "seed": 540821,
+    "genes": {
+     "modules": [
+      128,
+      64
+     ],
+     "recall": false,
+     "eta_critic": 7.228,
+     "eta_bias": 0.0025,
+     "teaching": "normalized",
+     "efference_amplitude": 0.2008,
+     "lam": 0.3641,
+     "trace_amplitude": 0.4045,
+     "arousal": {
+      "youth": 308,
+      "threshold": 0.2721,
+      "heat": 2.6265,
+      "decay": 0.9174
+     }
+    },
+    "policy": "brain"
+   },
+   "elo": 1118.8,
+   "fights": 0,
+   "wins": 0,
+   "lineage": "Tumbler",
+   "parent": "Tumbler-42.7",
+   "generation": 44,
+   "mutations": [
+    "trace_amplitude 0.3709 -> 0.4045",
+    "moved arm 2 to 43 deg",
+    "layout [64, 32] -> [128, 64]"
+   ],
+   "moments": 115308,
+   "owed": [
+    0.43749861593063955,
+    true
+   ],
+   "brain_sha256": "4bace3bac02eac250b088bfb31962af803575c192809dd8bb198afcd363213b3",
+   "history": [],
+   "licence": {
+    "licence": 0.156,
+    "passes": 3,
+    "approach": 0.23,
+    "escape": 0.0,
+    "closing_outside": 0.428,
+    "engage_dealt": 284.7,
+    "engage_taken": 61.7,
+    "chase": -1.0,
+    "facing": 0.044,
+    "spin": 0.0,
+    "stall": 0.002,
+    "kills": 0,
+    "marks": "---+--++",
+    "tests": [
+     "approach",
+     "escape",
+     "closing",
+     "engage",
+     "chase",
+     "facing",
+     "spin",
+     "stall"
+    ]
+   }
+  },
+  {
+   "name": "Mantis-25.44",
+   "blueprint": {
+    "name": "Mantis-25.44",
+    "chassis": "medium",
+    "parts": [
+     {
+      "kind": "leg",
+      "mount": 89.2
+     },
+     {
+      "kind": "leg",
+      "mount": -49.1
+     },
+     {
+      "kind": "leg",
+      "mount": -101.5
+     },
+     {
+      "kind": "arm",
+      "mount": 9.2,
+      "weapon": "hammer"
+     },
+     {
+      "kind": "leg",
+      "mount": -40.6
+     },
+     {
+      "kind": "arm",
+      "mount": -27.8,
+      "weapon": "hammer"
+     }
+    ],
+    "seed": 642862,
+    "genes": {
+     "modules": [
+      128
+     ],
+     "teaching": null,
+     "sensory_scale": 6.2289,
+     "lam": 0.6182,
+     "trace_amplitude": 0.2637,
+     "eta": 0.033,
+     "arousal": {
+      "threshold": 0.1469
+     }
+    },
+    "policy": "brain"
+   },
+   "elo": 1104.4,
+   "fights": 0,
+   "wins": 0,
+   "lineage": "Mantis",
+   "parent": "Mantis-24.35",
+   "generation": 25,
+   "mutations": [
+    "moved arm 5 to -28 deg",
+    "moved arm 3 to 9 deg",
+    "teaching normalized -> None"
+   ],
+   "moments": 131751,
+   "owed": [
+    3.644606688542696,
+    true
+   ],
+   "brain_sha256": "5e9c9795390f9e3b37c1689cbdf31f399ae5fc1432cb369f2ed98855912aaf3a",
+   "history": [],
+   "licence": {
+    "licence": 0.564,
+    "passes": 6,
+    "approach": 1.0,
+    "escape": 0.75,
+    "closing_outside": 0.0,
+    "engage_dealt": 429.9,
+    "engage_taken": 82.1,
+    "chase": -0.653,
+    "facing": 0.403,
+    "spin": 0.028,
+    "stall": 0.051,
+    "kills": 8,
+    "marks": "++++--++",
+    "tests": [
+     "approach",
+     "escape",
+     "closing",
+     "engage",
+     "chase",
+     "facing",
+     "spin",
+     "stall"
+    ]
+   }
+  },
+  {
+   "name": "Cart-28.4",
+   "blueprint": {
+    "name": "Cart-28.4",
+    "chassis": "medium",
+    "parts": [
+     {
+      "kind": "wheel",
+      "mount": -100.0
+     },
+     {
+      "kind": "arm",
+      "mount": -51.0,
+      "weapon": "hammer"
+     },
+     {
+      "kind": "leg",
+      "mount": -16.0
+     },
+     {
+      "kind": "wheel",
+      "mount": -84.5
+     },
+     {
+      "kind": "leg",
+      "mount": -102.0
+     },
+     {
+      "kind": "leg",
+      "mount": 146.0
+     }
+    ],
+    "seed": 740599,
+    "genes": {
+     "sensory_scale": 2.7628,
+     "recall": true,
+     "modules": [
+      64
+     ],
+     "teaching": "deep",
+     "trace_amplitude": 0.4259,
+     "efference_amplitude": 0.228,
+     "arousal": {
+      "heat": 3.578,
+      "youth": 225
+     }
+    },
+    "policy": "brain"
+   },
+   "elo": 1002.3,
+   "fights": 0,
+   "wins": 0,
+   "lineage": "Cart",
+   "parent": "Cart-26.4",
+   "generation": 28,
+   "mutations": [
+    "added a leg",
+    "moved leg 5 to 146 deg",
+    "layout [64, 32] -> [64]"
+   ],
+   "moments": 257796,
+   "owed": [
+    3.9,
+    true
+   ],
+   "brain_sha256": "34773f90ff38c304fcc6c53bea1e6d5aa51e409f0f297e6d0f1cf778f0e0fa77",
+   "history": [],
+   "licence": {
+    "licence": 0.372,
+    "passes": 4,
+    "approach": 0.795,
+    "escape": 0.5,
+    "closing_outside": 0.405,
+    "engage_dealt": 393.7,
+    "engage_taken": 100.2,
+    "chase": -1.0,
+    "facing": 0.296,
+    "spin": 0.012,
+    "stall": 0.0,
+    "kills": 5,
+    "marks": "+--+--++",
+    "tests": [
+     "approach",
+     "escape",
+     "closing",
+     "engage",
+     "chase",
+     "facing",
+     "spin",
+     "stall"
+    ]
+   }
+  },
+  {
+   "name": "Roller-32.4",
+   "blueprint": {
+    "name": "Roller-32.4",
     "chassis": "heavy",
     "parts": [
      {
       "kind": "wheel",
-      "mount": 70.0
+      "mount": 35.7
      },
+     {
+      "kind": "wheel",
+      "mount": -120.2
+     },
+     {
+      "kind": "wheel",
+      "mount": -108.8
+     },
+     {
+      "kind": "arm",
+      "mount": 34.3,
+      "weapon": "hammer"
+     },
+     {
+      "kind": "arm",
+      "mount": -46.3,
+      "weapon": "spinner"
+     },
+     {
+      "kind": "arm",
+      "mount": -129.7,
+      "weapon": "hammer"
+     },
+     {
+      "kind": "wheel",
+      "mount": -144.7
+     },
+     {
+      "kind": "leg",
+      "mount": 33.3
+     }
+    ],
+    "seed": 327060,
+    "genes": {
+     "modules": [
+      128
+     ],
+     "teaching": "deep",
+     "efference_amplitude": 0.1352,
+     "trace_amplitude": 0.1806,
+     "eta_bias": 0.0041,
+     "temperature": 0.3009,
+     "lam": 0.6063,
+     "recall": true,
+     "arousal": {
+      "heat": 0.8737
+     }
+    },
+    "policy": "brain"
+   },
+   "elo": 1001.9,
+   "fights": 0,
+   "wins": 0,
+   "lineage": "Roller",
+   "parent": "Roller-30.11",
+   "generation": 32,
+   "mutations": [
+    "trace_amplitude 0.2328 -> 0.1806",
+    "moved wheel 6 to -145 deg",
+    "layout [96, 48] -> [128]"
+   ],
+   "moments": 153189,
+   "owed": [
+    0.5592699514563022,
+    true
+   ],
+   "brain_sha256": "a979508d3b839cfc4f0eea64da16e7e9598a22f39cd20e164accbca8c5b411eb",
+   "history": [],
+   "licence": {
+    "licence": 0.44,
+    "passes": 5,
+    "approach": 0.687,
+    "escape": 0.25,
+    "closing_outside": 0.47,
+    "engage_dealt": 321.6,
+    "engage_taken": 104.7,
+    "chase": 0.574,
+    "facing": 0.147,
+    "spin": 0.001,
+    "stall": 0.002,
+    "kills": 4,
+    "marks": "+--++-++",
+    "tests": [
+     "approach",
+     "escape",
+     "closing",
+     "engage",
+     "chase",
+     "facing",
+     "spin",
+     "stall"
+    ]
+   }
+  },
+  {
+   "name": "Crab-25.33",
+   "blueprint": {
+    "name": "Crab-25.33",
+    "chassis": "medium",
+    "parts": [
+     {
+      "kind": "leg",
+      "mount": 43.6
+     },
+     {
+      "kind": "leg",
+      "mount": -60.0
+     },
+     {
+      "kind": "leg",
+      "mount": 140.2
+     },
+     {
+      "kind": "leg",
+      "mount": 168.4
+     },
+     {
+      "kind": "arm",
+      "mount": 40.8,
+      "weapon": "hammer"
+     },
+     {
+      "kind": "arm",
+      "mount": -2.6,
+      "weapon": "spike"
+     }
+    ],
+    "seed": 621752,
+    "genes": {
+     "modules": [
+      64,
+      32
+     ],
+     "lam": 0.8953,
+     "teaching": "deep",
+     "recall": false,
+     "eta": 0.0383,
+     "sensory_scale": 4.6919,
+     "eta_bias": 0.0014,
+     "arousal": {
+      "youth": 876,
+      "need": 0.0356
+     }
+    },
+    "policy": "brain"
+   },
+   "elo": 1001.7,
+   "fights": 0,
+   "wins": 0,
+   "lineage": "Crab",
+   "parent": "Crab-19.4",
+   "generation": 25,
+   "mutations": [
+    "moved arm 4 to 41 deg",
+    "layout [48, 24] -> [64, 32]"
+   ],
+   "moments": 136120,
+   "owed": [
+    0.2761023191509391,
+    true
+   ],
+   "brain_sha256": "f5994048c355902b7c7f176b8fb33a58c87bbc26c6f30dcccaa1cf86379cd238",
+   "history": [],
+   "licence": {
+    "licence": 0.041,
+    "passes": 2,
+    "approach": -0.006,
+    "escape": 0.0,
+    "closing_outside": 0.487,
+    "engage_dealt": 129.3,
+    "engage_taken": 77.4,
+    "chase": -0.859,
+    "facing": 0.218,
+    "spin": 0.16,
+    "stall": 0.0,
+    "kills": 0,
+    "marks": "---+---+",
+    "tests": [
+     "approach",
+     "escape",
+     "closing",
+     "engage",
+     "chase",
+     "facing",
+     "spin",
+     "stall"
+    ]
+   }
+  },
+  {
+   "name": "Dozer-31.27",
+   "blueprint": {
+    "name": "Dozer-31.27",
+    "chassis": "heavy",
+    "parts": [
      {
       "kind": "wheel",
       "mount": -70.0
@@ -50,1081 +532,75 @@
       "mount": 110.0
      },
      {
-      "kind": "wheel",
-      "mount": -110.0
-     },
-     {
       "kind": "arm",
       "mount": 15.0,
-      "weapon": "spike"
+      "weapon": "hammer"
      },
      {
       "kind": "arm",
-      "mount": -15.0,
-      "weapon": "spike"
+      "mount": 18.2,
+      "weapon": "hammer"
      },
      {
       "kind": "arm",
       "mount": 0.0,
       "weapon": "hammer"
+     },
+     {
+      "kind": "wheel",
+      "mount": 31.5
      }
     ],
-    "seed": 1018,
-    "genes": {},
+    "seed": 906792,
+    "genes": {
+     "trace_amplitude": 0.1733,
+     "modules": [
+      256,
+      128
+     ],
+     "temperature": 0.1603,
+     "recall": true,
+     "eta": 0.0266,
+     "efference_amplitude": 0.1202,
+     "lam": 0.6955,
+     "arousal": {
+      "decay": 0.99
+     }
+    },
     "policy": "brain"
    },
-   "elo": 1143.1,
-   "fights": 12,
-   "wins": 11,
-   "lineage": null,
-   "parent": null,
-   "generation": null,
-   "mutations": [],
-   "moments": 114615,
+   "elo": 932.1,
+   "fights": 0,
+   "wins": 0,
+   "lineage": "Dozer",
+   "parent": "Dozer-28.32",
+   "generation": 31,
+   "mutations": [
+    "lam 0.6 -> 0.6955",
+    "removed wheel",
+    "layout [96, 48] -> [256, 128]"
+   ],
+   "moments": 173997,
    "owed": [
-    1.0,
+    -0.11194612578737506,
     true
    ],
-   "brain_sha256": "08fb2c823ff01742f394784a5fd1a2539b0caa40dfbe629fbca623a67e50e1df",
-   "history": [
-    {
-     "fight": 1,
-     "place": 1,
-     "dealt": 281.8,
-     "taken": 28.7,
-     "elo_after": 1016.0,
-     "aroused_share": 0.0,
-     "learning_sweeps": 0
-    },
-    {
-     "fight": 3,
-     "place": 1,
-     "dealt": 138.8,
-     "taken": 54.0,
-     "elo_after": 1030.8,
-     "aroused_share": 0.39,
-     "learning_sweeps": 6435
-    },
-    {
-     "fight": 4,
-     "place": 2,
-     "dealt": 257.3,
-     "taken": 160.0,
-     "elo_after": 1038.6,
-     "aroused_share": 0.537,
-     "learning_sweeps": 11837
-    },
-    {
-     "fight": 6,
-     "place": 1,
-     "dealt": 321.4,
-     "taken": 52.7,
-     "elo_after": 1052.9,
-     "aroused_share": 0.488,
-     "learning_sweeps": 11557
-    },
-    {
-     "fight": 9,
-     "place": 1,
-     "dealt": 121.4,
-     "taken": 42.4,
-     "elo_after": 1065.8,
-     "aroused_share": 0.385,
-     "learning_sweeps": 9292
-    },
-    {
-     "fight": 10,
-     "place": 1,
-     "dealt": 360.4,
-     "taken": 107.4,
-     "elo_after": 1078.7,
-     "aroused_share": 0.579,
-     "learning_sweeps": 12041
-    },
-    {
-     "fight": 11,
-     "place": 1,
-     "dealt": 317.9,
-     "taken": 131.3,
-     "elo_after": 1090.5,
-     "aroused_share": 0.383,
-     "learning_sweeps": 8958
-    },
-    {
-     "fight": 12,
-     "place": 1,
-     "dealt": 191.6,
-     "taken": 104.6,
-     "elo_after": 1102.0,
-     "aroused_share": 0.485,
-     "learning_sweeps": 12021
-    },
-    {
-     "fight": 15,
-     "place": 1,
-     "dealt": 197.9,
-     "taken": 40.4,
-     "elo_after": 1113.4,
-     "aroused_share": 0.669,
-     "learning_sweeps": 16452
-    },
-    {
-     "fight": 16,
-     "place": 1,
-     "dealt": 91.9,
-     "taken": 21.2,
-     "elo_after": 1123.7,
-     "aroused_share": 0.339,
-     "learning_sweeps": 5030
-    },
-    {
-     "fight": 18,
-     "place": 1,
-     "dealt": 244.6,
-     "taken": 40.0,
-     "elo_after": 1133.7,
-     "aroused_share": 0.514,
-     "learning_sweeps": 8343
-    },
-    {
-     "fight": 19,
-     "place": 1,
-     "dealt": 75.8,
-     "taken": 26.3,
-     "elo_after": 1143.1,
-     "aroused_share": 0.491,
-     "learning_sweeps": 10166
-    }
-   ],
+   "brain_sha256": "2e6ee10c2c9e59e1bc802e00fb8bee372ffd74c3b47fc63b4a518ab040d2b889",
+   "history": [],
    "licence": {
-    "licence": 0.276,
-    "passes": 4,
+    "licence": 0.77,
+    "passes": 8,
     "approach": 1.0,
-    "escape": 0.0,
+    "escape": 1.0,
     "closing_outside": 0.0,
-    "engage_dealt": 230.3,
-    "engage_taken": 80.1,
-    "chase": -1.0,
-    "facing": 0.205,
-    "spin": 0.472,
+    "engage_dealt": 380.1,
+    "engage_taken": 90.0,
+    "chase": 0.65,
+    "facing": 0.713,
+    "spin": 0.021,
     "stall": 0.0,
     "kills": 8,
-    "marks": "+-++---+",
-    "tests": [
-     "approach",
-     "escape",
-     "closing",
-     "engage",
-     "chase",
-     "facing",
-     "spin",
-     "stall"
-    ]
-   }
-  },
-  {
-   "name": "Crab",
-   "blueprint": {
-    "name": "Crab",
-    "chassis": "medium",
-    "parts": [
-     {
-      "kind": "leg",
-      "mount": 60.0
-     },
-     {
-      "kind": "leg",
-      "mount": -60.0
-     },
-     {
-      "kind": "leg",
-      "mount": 120.0
-     },
-     {
-      "kind": "leg",
-      "mount": -120.0
-     },
-     {
-      "kind": "arm",
-      "mount": 20.0,
-      "weapon": "hammer"
-     },
-     {
-      "kind": "arm",
-      "mount": -20.0,
-      "weapon": "spike"
-     }
-    ],
-    "seed": 2015,
-    "genes": {},
-    "policy": "brain"
-   },
-   "elo": 1049.8,
-   "fights": 12,
-   "wins": 1,
-   "lineage": null,
-   "parent": null,
-   "generation": null,
-   "mutations": [],
-   "moments": 109888,
-   "owed": [
-    3.9,
-    true
-   ],
-   "brain_sha256": "2814f8d419c34d74bec780979b7d1857abf5c5cc0d818737efdce66f955584c8",
-   "history": [
-    {
-     "fight": 2,
-     "place": 5,
-     "dealt": 84.2,
-     "taken": 115.6,
-     "elo_after": 990.5,
-     "aroused_share": 0.0,
-     "learning_sweeps": 0
-    },
-    {
-     "fight": 3,
-     "place": 3,
-     "dealt": 65.4,
-     "taken": 126.7,
-     "elo_after": 993.9,
-     "aroused_share": 0.0,
-     "learning_sweeps": 0
-    },
-    {
-     "fight": 5,
-     "place": 4,
-     "dealt": 196.6,
-     "taken": 110.1,
-     "elo_after": 991.2,
-     "aroused_share": 0.0,
-     "learning_sweeps": 0
-    },
-    {
-     "fight": 7,
-     "place": 3,
-     "dealt": 152.6,
-     "taken": 110.6,
-     "elo_after": 994.5,
-     "aroused_share": 0.0,
-     "learning_sweeps": 0
-    },
-    {
-     "fight": 8,
-     "place": 2,
-     "dealt": 85.9,
-     "taken": 110.1,
-     "elo_after": 1004.2,
-     "aroused_share": 0.0,
-     "learning_sweeps": 0
-    },
-    {
-     "fight": 10,
-     "place": 3,
-     "dealt": 46.6,
-     "taken": 111.0,
-     "elo_after": 1007.6,
-     "aroused_share": 0.246,
-     "learning_sweeps": 2613
-    },
-    {
-     "fight": 11,
-     "place": 2,
-     "dealt": 62.5,
-     "taken": 122.0,
-     "elo_after": 1016.8,
-     "aroused_share": 0.579,
-     "learning_sweeps": 11197
-    },
-    {
-     "fight": 13,
-     "place": 3,
-     "dealt": 209.0,
-     "taken": 110.4,
-     "elo_after": 1018.8,
-     "aroused_share": 0.481,
-     "learning_sweeps": 5111
-    },
-    {
-     "fight": 14,
-     "place": 2,
-     "dealt": 133.4,
-     "taken": 116.9,
-     "elo_after": 1026.4,
-     "aroused_share": 0.778,
-     "learning_sweeps": 7327
-    },
-    {
-     "fight": 16,
-     "place": 2,
-     "dealt": 377.2,
-     "taken": 122.5,
-     "elo_after": 1034.8,
-     "aroused_share": 0.45,
-     "learning_sweeps": 6719
-    },
-    {
-     "fight": 19,
-     "place": 3,
-     "dealt": 283.3,
-     "taken": 117.2,
-     "elo_after": 1036.4,
-     "aroused_share": 0.46,
-     "learning_sweeps": 5568
-    },
-    {
-     "fight": 20,
-     "place": 1,
-     "dealt": 216.2,
-     "taken": 105.6,
-     "elo_after": 1049.8,
-     "aroused_share": 0.652,
-     "learning_sweeps": 14310
-    }
-   ],
-   "licence": {
-    "licence": 0.252,
-    "passes": 3,
-    "approach": 0.184,
-    "escape": 1.0,
-    "closing_outside": 0.355,
-    "engage_dealt": 147.0,
-    "engage_taken": 68.2,
-    "chase": -1.0,
-    "facing": 0.201,
-    "spin": 0.2,
-    "stall": 0.01,
-    "kills": 1,
-    "marks": "-+-+---+",
-    "tests": [
-     "approach",
-     "escape",
-     "closing",
-     "engage",
-     "chase",
-     "facing",
-     "spin",
-     "stall"
-    ]
-   }
-  },
-  {
-   "name": "Hexapod",
-   "blueprint": {
-    "name": "Hexapod",
-    "chassis": "heavy",
-    "parts": [
-     {
-      "kind": "leg",
-      "mount": 40.0
-     },
-     {
-      "kind": "leg",
-      "mount": -40.0
-     },
-     {
-      "kind": "leg",
-      "mount": 90.0
-     },
-     {
-      "kind": "leg",
-      "mount": -90.0
-     },
-     {
-      "kind": "leg",
-      "mount": 140.0
-     },
-     {
-      "kind": "leg",
-      "mount": -140.0
-     },
-     {
-      "kind": "arm",
-      "mount": 0.0,
-      "weapon": "spinner"
-     }
-    ],
-    "seed": 13,
-    "genes": {},
-    "policy": "brain"
-   },
-   "elo": 997.2,
-   "fights": 12,
-   "wins": 2,
-   "lineage": null,
-   "parent": null,
-   "generation": null,
-   "mutations": [],
-   "moments": 109356,
-   "owed": [
-    -0.3500000000000013,
-    true
-   ],
-   "brain_sha256": "00a5a8727cc363967090650746648d55d6deeb5c808f8289b9c09e62ef29b46d",
-   "history": [
-    {
-     "fight": 1,
-     "place": 2,
-     "dealt": 101.6,
-     "taken": 162.7,
-     "elo_after": 1009.6,
-     "aroused_share": 0.718,
-     "learning_sweeps": 13171
-    },
-    {
-     "fight": 2,
-     "place": 1,
-     "dealt": 124.3,
-     "taken": 110.5,
-     "elo_after": 1025.2,
-     "aroused_share": 0.854,
-     "learning_sweeps": 22943
-    },
-    {
-     "fight": 5,
-     "place": 3,
-     "dealt": 57.3,
-     "taken": 160.1,
-     "elo_after": 1027.1,
-     "aroused_share": 0.601,
-     "learning_sweeps": 9592
-    },
-    {
-     "fight": 6,
-     "place": 4,
-     "dealt": 18.1,
-     "taken": 160.4,
-     "elo_after": 1022.9,
-     "aroused_share": 0.759,
-     "learning_sweeps": 7621
-    },
-    {
-     "fight": 7,
-     "place": 1,
-     "dealt": 128.0,
-     "taken": 79.7,
-     "elo_after": 1037.2,
-     "aroused_share": 0.717,
-     "learning_sweeps": 19120
-    },
-    {
-     "fight": 9,
-     "place": 6,
-     "dealt": 49.0,
-     "taken": 166.6,
-     "elo_after": 1019.0,
-     "aroused_share": 0.0,
-     "learning_sweeps": 0
-    },
-    {
-     "fight": 11,
-     "place": 5,
-     "dealt": 49.9,
-     "taken": 160.5,
-     "elo_after": 1008.4,
-     "aroused_share": 0.0,
-     "learning_sweeps": 0
-    },
-    {
-     "fight": 14,
-     "place": 5,
-     "dealt": 23.6,
-     "taken": 161.9,
-     "elo_after": 997.4,
-     "aroused_share": 0.229,
-     "learning_sweeps": 2541
-    },
-    {
-     "fight": 15,
-     "place": 3,
-     "dealt": 101.9,
-     "taken": 160.7,
-     "elo_after": 1001.6,
-     "aroused_share": 0.79,
-     "learning_sweeps": 16230
-    },
-    {
-     "fight": 17,
-     "place": 2,
-     "dealt": 110.7,
-     "taken": 160.0,
-     "elo_after": 1010.9,
-     "aroused_share": 0.789,
-     "learning_sweeps": 22576
-    },
-    {
-     "fight": 18,
-     "place": 5,
-     "dealt": 45.1,
-     "taken": 160.5,
-     "elo_after": 1001.1,
-     "aroused_share": 0.802,
-     "learning_sweeps": 8269
-    },
-    {
-     "fight": 20,
-     "place": 4,
-     "dealt": 63.9,
-     "taken": 160.1,
-     "elo_after": 997.2,
-     "aroused_share": 0.839,
-     "learning_sweeps": 11764
-    }
-   ],
-   "licence": {
-    "licence": 0.375,
-    "passes": 4,
-    "approach": 0.745,
-    "escape": 0.75,
-    "closing_outside": 0.395,
-    "engage_dealt": 11.7,
-    "engage_taken": 98.8,
-    "chase": 0.279,
-    "facing": 0.14,
-    "spin": 0.007,
-    "stall": 0.003,
-    "kills": 1,
-    "marks": "++----++",
-    "tests": [
-     "approach",
-     "escape",
-     "closing",
-     "engage",
-     "chase",
-     "facing",
-     "spin",
-     "stall"
-    ]
-   }
-  },
-  {
-   "name": "Mantis",
-   "blueprint": {
-    "name": "Mantis",
-    "chassis": "medium",
-    "parts": [
-     {
-      "kind": "leg",
-      "mount": 50.0
-     },
-     {
-      "kind": "leg",
-      "mount": -50.0
-     },
-     {
-      "kind": "leg",
-      "mount": 130.0
-     },
-     {
-      "kind": "leg",
-      "mount": -130.0
-     },
-     {
-      "kind": "arm",
-      "mount": 0.0,
-      "weapon": "hammer"
-     }
-    ],
-    "seed": 2012,
-    "genes": {},
-    "policy": "brain"
-   },
-   "elo": 991.1,
-   "fights": 12,
-   "wins": 1,
-   "lineage": null,
-   "parent": null,
-   "generation": null,
-   "mutations": [],
-   "moments": 108705,
-   "owed": [
-    -0.27786371810605326,
-    true
-   ],
-   "brain_sha256": "9f436ab56de8147b78d97f277a1c8592f083f5b9b43da7ee9fe91246e0786307",
-   "history": [
-    {
-     "fight": 2,
-     "place": 4,
-     "dealt": 163.6,
-     "taken": 115.1,
-     "elo_after": 996.9,
-     "aroused_share": 0.586,
-     "learning_sweeps": 8131
-    },
-    {
-     "fight": 3,
-     "place": 2,
-     "dealt": 198.6,
-     "taken": 125.0,
-     "elo_after": 1006.4,
-     "aroused_share": 0.658,
-     "learning_sweeps": 11679
-    },
-    {
-     "fight": 5,
-     "place": 2,
-     "dealt": 177.2,
-     "taken": 126.1,
-     "elo_after": 1015.8,
-     "aroused_share": 0.627,
-     "learning_sweeps": 11005
-    },
-    {
-     "fight": 6,
-     "place": 5,
-     "dealt": 85.0,
-     "taken": 112.1,
-     "elo_after": 1005.8,
-     "aroused_share": 0.36,
-     "learning_sweeps": 3261
-    },
-    {
-     "fight": 8,
-     "place": 5,
-     "dealt": 116.4,
-     "taken": 110.6,
-     "elo_after": 995.7,
-     "aroused_share": 0.735,
-     "learning_sweeps": 6825
-    },
-    {
-     "fight": 10,
-     "place": 4,
-     "dealt": 144.1,
-     "taken": 110.1,
-     "elo_after": 993.2,
-     "aroused_share": 0.735,
-     "learning_sweeps": 6702
-    },
-    {
-     "fight": 12,
-     "place": 6,
-     "dealt": 20.6,
-     "taken": 124.8,
-     "elo_after": 977.8,
-     "aroused_share": 0.622,
-     "learning_sweeps": 4107
-    },
-    {
-     "fight": 14,
-     "place": 1,
-     "dealt": 145.1,
-     "taken": 48.9,
-     "elo_after": 994.1,
-     "aroused_share": 0.596,
-     "learning_sweeps": 6432
-    },
-    {
-     "fight": 15,
-     "place": 5,
-     "dealt": 166.1,
-     "taken": 115.9,
-     "elo_after": 985.7,
-     "aroused_share": 0.647,
-     "learning_sweeps": 9874
-    },
-    {
-     "fight": 17,
-     "place": 4,
-     "dealt": 126.3,
-     "taken": 110.5,
-     "elo_after": 983.1,
-     "aroused_share": 0.633,
-     "learning_sweeps": 9916
-    },
-    {
-     "fight": 18,
-     "place": 4,
-     "dealt": 200.5,
-     "taken": 115.9,
-     "elo_after": 981.1,
-     "aroused_share": 0.523,
-     "learning_sweeps": 7063
-    },
-    {
-     "fight": 20,
-     "place": 2,
-     "dealt": 182.9,
-     "taken": 119.9,
-     "elo_after": 991.1,
-     "aroused_share": 0.579,
-     "learning_sweeps": 14239
-    }
-   ],
-   "licence": {
-    "licence": 0.23,
-    "passes": 3,
-    "approach": 0.154,
-    "escape": 0.5,
-    "closing_outside": 0.327,
-    "engage_dealt": 31.9,
-    "engage_taken": 84.9,
-    "chase": 0.481,
-    "facing": 0.005,
-    "spin": 0.0,
-    "stall": 0.043,
-    "kills": 1,
-    "marks": "----+-++",
-    "tests": [
-     "approach",
-     "escape",
-     "closing",
-     "engage",
-     "chase",
-     "facing",
-     "spin",
-     "stall"
-    ]
-   }
-  },
-  {
-   "name": "Cart",
-   "blueprint": {
-    "name": "Cart",
-    "chassis": "medium",
-    "parts": [
-     {
-      "kind": "wheel",
-      "mount": 100.0
-     },
-     {
-      "kind": "wheel",
-      "mount": -100.0
-     },
-     {
-      "kind": "arm",
-      "mount": 25.0,
-      "weapon": "spike"
-     },
-     {
-      "kind": "arm",
-      "mount": -25.0,
-      "weapon": "spike"
-     }
-    ],
-    "seed": 1014,
-    "genes": {},
-    "policy": "brain"
-   },
-   "elo": 983.1,
-   "fights": 12,
-   "wins": 2,
-   "lineage": null,
-   "parent": null,
-   "generation": null,
-   "mutations": [],
-   "moments": 108191,
-   "owed": [
-    -0.6925000000000001,
-    true
-   ],
-   "brain_sha256": "b32f2276eaba1556aea9de59fea9c6afac90ecf55c49ca204f9ef5c001d0bd70",
-   "history": [
-    {
-     "fight": 2,
-     "place": 6,
-     "dealt": 79.7,
-     "taken": 121.6,
-     "elo_after": 984.1,
-     "aroused_share": 0.0,
-     "learning_sweeps": 0
-    },
-    {
-     "fight": 3,
-     "place": 4,
-     "dealt": 183.3,
-     "taken": 123.5,
-     "elo_after": 981.5,
-     "aroused_share": 0.0,
-     "learning_sweeps": 0
-    },
-    {
-     "fight": 4,
-     "place": 1,
-     "dealt": 72.3,
-     "taken": 76.0,
-     "elo_after": 998.4,
-     "aroused_share": 0.547,
-     "learning_sweeps": 26774
-    },
-    {
-     "fight": 6,
-     "place": 3,
-     "dealt": 195.4,
-     "taken": 111.4,
-     "elo_after": 1002.1,
-     "aroused_share": 0.0,
-     "learning_sweeps": 0
-    },
-    {
-     "fight": 8,
-     "place": 4,
-     "dealt": 149.0,
-     "taken": 126.2,
-     "elo_after": 998.6,
-     "aroused_share": 0.0,
-     "learning_sweeps": 0
-    },
-    {
-     "fight": 9,
-     "place": 5,
-     "dealt": 157.8,
-     "taken": 110.8,
-     "elo_after": 988.9,
-     "aroused_share": 0.0,
-     "learning_sweeps": 0
-    },
-    {
-     "fight": 11,
-     "place": 3,
-     "dealt": 277.0,
-     "taken": 110.6,
-     "elo_after": 992.8,
-     "aroused_share": 0.0,
-     "learning_sweeps": 0
-    },
-    {
-     "fight": 13,
-     "place": 1,
-     "dealt": 120.6,
-     "taken": 91.6,
-     "elo_after": 1008.9,
-     "aroused_share": 0.221,
-     "learning_sweeps": 9957
-    },
-    {
-     "fight": 14,
-     "place": 6,
-     "dealt": 71.2,
-     "taken": 115.3,
-     "elo_after": 991.5,
-     "aroused_share": 0.776,
-     "learning_sweeps": 4335
-    },
-    {
-     "fight": 16,
-     "place": 3,
-     "dealt": 76.2,
-     "taken": 111.3,
-     "elo_after": 995.4,
-     "aroused_share": 0.689,
-     "learning_sweeps": 12973
-    },
-    {
-     "fight": 17,
-     "place": 6,
-     "dealt": 79.6,
-     "taken": 111.6,
-     "elo_after": 979.4,
-     "aroused_share": 0.787,
-     "learning_sweeps": 5618
-    },
-    {
-     "fight": 20,
-     "place": 3,
-     "dealt": 123.0,
-     "taken": 112.8,
-     "elo_after": 983.1,
-     "aroused_share": 0.591,
-     "learning_sweeps": 8863
-    }
-   ],
-   "licence": {
-    "licence": 0.544,
-    "passes": 6,
-    "approach": 0.79,
-    "escape": 0.25,
-    "closing_outside": 0.0,
-    "engage_dealt": 92.0,
-    "engage_taken": 81.5,
-    "chase": 0.549,
-    "facing": 0.855,
-    "spin": 0.063,
-    "stall": 0.0,
-    "kills": 1,
-    "marks": "+-+-++++",
-    "tests": [
-     "approach",
-     "escape",
-     "closing",
-     "engage",
-     "chase",
-     "facing",
-     "spin",
-     "stall"
-    ]
-   }
-  },
-  {
-   "name": "Scorpion",
-   "blueprint": {
-    "name": "Scorpion",
-    "chassis": "medium",
-    "parts": [
-     {
-      "kind": "leg",
-      "mount": 45.0
-     },
-     {
-      "kind": "leg",
-      "mount": -45.0
-     },
-     {
-      "kind": "leg",
-      "mount": 135.0
-     },
-     {
-      "kind": "leg",
-      "mount": -135.0
-     },
-     {
-      "kind": "arm",
-      "mount": 180.0,
-      "weapon": "spinner"
-     }
-    ],
-    "seed": 17,
-    "genes": {},
-    "policy": "brain"
-   },
-   "elo": 940.7,
-   "fights": 12,
-   "wins": 0,
-   "lineage": null,
-   "parent": null,
-   "generation": null,
-   "mutations": [],
-   "moments": 107202,
-   "owed": [
-    -0.08110759166188006,
-    true
-   ],
-   "brain_sha256": "9b6a60d79a956fa42967534e2610811f4d31af906f98b5c1df6f17c3fb9390c3",
-   "history": [
-    {
-     "fight": 1,
-     "place": 4,
-     "dealt": 17.0,
-     "taken": 117.6,
-     "elo_after": 996.8,
-     "aroused_share": 0.584,
-     "learning_sweeps": 5723
-    },
-    {
-     "fight": 3,
-     "place": 5,
-     "dealt": 2.5,
-     "taken": 115.6,
-     "elo_after": 987.1,
-     "aroused_share": 0.881,
-     "learning_sweeps": 5016
-    },
-    {
-     "fight": 5,
-     "place": 5,
-     "dealt": 2.1,
-     "taken": 110.3,
-     "elo_after": 978.3,
-     "aroused_share": 0.754,
-     "learning_sweeps": 7717
-    },
-    {
-     "fight": 7,
-     "place": 6,
-     "dealt": 8.6,
-     "taken": 110.3,
-     "elo_after": 963.1,
-     "aroused_share": 0.861,
-     "learning_sweeps": 8249
-    },
-    {
-     "fight": 9,
-     "place": 4,
-     "dealt": 14.1,
-     "taken": 110.2,
-     "elo_after": 961.7,
-     "aroused_share": 0.907,
-     "learning_sweeps": 13414
-    },
-    {
-     "fight": 10,
-     "place": 6,
-     "dealt": 3.0,
-     "taken": 110.8,
-     "elo_after": 948.2,
-     "aroused_share": 0.754,
-     "learning_sweeps": 2924
-    },
-    {
-     "fight": 11,
-     "place": 4,
-     "dealt": 23.9,
-     "taken": 110.6,
-     "elo_after": 947.9,
-     "aroused_share": 0.65,
-     "learning_sweeps": 6515
-    },
-    {
-     "fight": 12,
-     "place": 4,
-     "dealt": 0.0,
-     "taken": 119.4,
-     "elo_after": 947.8,
-     "aroused_share": 0.802,
-     "learning_sweeps": 6036
-    },
-    {
-     "fight": 14,
-     "place": 4,
-     "dealt": 1.1,
-     "taken": 112.1,
-     "elo_after": 946.5,
-     "aroused_share": 0.834,
-     "learning_sweeps": 6282
-    },
-    {
-     "fight": 16,
-     "place": 6,
-     "dealt": 9.9,
-     "taken": 116.3,
-     "elo_after": 933.6,
-     "aroused_share": 0.79,
-     "learning_sweeps": 3776
-    },
-    {
-     "fight": 18,
-     "place": 3,
-     "dealt": 2.2,
-     "taken": 110.2,
-     "elo_after": 940.6,
-     "aroused_share": 0.842,
-     "learning_sweeps": 12896
-    },
-    {
-     "fight": 19,
-     "place": 4,
-     "dealt": 0.0,
-     "taken": 110.1,
-     "elo_after": 940.7,
-     "aroused_share": 0.955,
-     "learning_sweeps": 8932
-    }
-   ],
-   "licence": {
-    "licence": -0.394,
-    "passes": 1,
-    "approach": -0.622,
-    "escape": 0.0,
-    "closing_outside": 0.913,
-    "engage_dealt": 0.0,
-    "engage_taken": 69.6,
-    "chase": -1.0,
-    "facing": 0.025,
-    "spin": 0.0,
-    "stall": 0.54,
-    "kills": 0,
-    "marks": "------+-",
+    "marks": "++++++++",
     "tests": [
      "approach",
      "escape",
@@ -1146,7 +622,7 @@
   "eta": 0.001
  },
  "league": {
-  "fights": 20,
+  "fights": 0,
   "generations": 0,
   "retired": 0,
   "evolution": []

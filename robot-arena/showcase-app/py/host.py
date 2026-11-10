@@ -379,9 +379,11 @@ class Host:
                           for k in ("mode", "level", "error", "surprise", "want", "learned", "heated_slot")}
         recall = getattr(brain, "recall", None)
         if recall is not None:
-            ages = np.asarray(recall.ages)
-            heads = np.asarray(recall.attended_heads, dtype=float) if recall.attended_heads is not None else np.zeros((0, 1, 0))
-            read = heads.reshape(-1, heads.shape[-1]).max(axis=0) if heads.size else np.zeros(0)
+            ages = np.atleast_1d(np.asarray(recall.ages(), dtype=float))  # moments since each slot was written
+            # every head's attention over the slots in the latest read, (streams, slots) each, or None before
+            # a read; the strongest read of each stored moment over the heads and streams
+            heads = [np.asarray(h, dtype=float) for h in (recall.attended_heads or ()) if h is not None]
+            read = np.max([h.reshape(-1, h.shape[-1]).max(axis=0) for h in heads], axis=0) if heads else np.zeros(0)
             k = min(len(ages), len(read))
             order = np.argsort(-read[:k])[:6] if k else []
             out["recall"] = {"stored": int(len(ages)), "capacity": int(recall.capacity),
