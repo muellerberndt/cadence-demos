@@ -246,6 +246,46 @@ precision the brain was trained in): the moves are unchanged and the file is a q
 size. `pack.py` copies the brain, the receipt's numbers and the host into `web/pack/` with the
 released wheel and a manifest of hashes.
 
+### Distilling the search into the brain
+
+The player's own games can teach the brain what the search finds (expert iteration, as in
+AlphaZero). `c4train/label.py` plays games of brain + search from a few random opening moves, in
+self-play (a move drawn now and then among the columns the search keeps) and, on 40% of the games,
+against the solver at 1.0, 0.9 or 0.7, and keeps every position the player faced with the solver's
+scores, the search's values and column, and the brain's own column:
+
+```sh
+.venv/bin/python -m c4train.label ../web/pack/brain.npz --games 6000 --workers 60 --out runs/labels/g0
+```
+
+`train.py --label-dir runs/labels/g0 --label-share 0.6 --label-soft 0.5 --label-weight 3` then
+draws that share of every batch from the labelled positions: `targets=` half on the search's
+column, half spread over the columns the search and the solver both keep (a proven win one-hot),
+`weights=` 3 where the search overrode the brain or a win or block decides the position. The rest
+of the batch keeps the solver's value-keeping target, so the brain does not forget it.
+
+Measured on an A10G, with up to five generations of 6,000 labelled games (796,452 positions; two
+of the generations were played with a distilled brain as the player's prior):
+
+| Brain | Lessons | Held-out optimal / keeps the result | Alone, first vs perfect (80) | Alone vs 0.9, second | Alone vs packed brain, first / second | Brain + search 40k, first vs perfect (80) |
+| --- | --- | --- | --- | --- | --- | --- |
+| the packed brain | — | 0.773 / 0.923 | 42-25-13 | 12-7-21 | 18-9-13 / 13-9-18 | 66-6-8 |
+| search labels 60% of each batch, rate as packed | 5,000 | 0.796 / 0.914 | 46-21-13 | 17-3-20 | 27-7-6 / 19-5-16 | 61-7-12 |
+| the same | 10,000 | 0.799 / 0.916 | 55-14-11 | 12-8-20 | 30-6-4 / 14-5-21 | 59-5-16 |
+| the same, then labels from its own player | 5,000 + 4,000 | 0.810 / 0.918 | 55-18-7 | 11-10-19 | 32-3-5 / 21-6-13 | 67-2-11 |
+| labels 30% of each batch, a third of the rate | 4,000 | 0.787 / 0.925 | 39-22-19 | 12-6-22 | 23-7-10 / 11-4-25 | 62-5-13 |
+| labels 50%, a tenth of the rate | 4,000 | 0.786 / 0.922 | 52-20-8 | 6-10-24 | 25-7-8 / 11-7-22 | 67-5-8 |
+
+Counts are won-drawn-lost for the brain's side; "alone vs packed brain" is the new brain alone
+against the packed brain alone, after two random opening moves, 40 games from each seat; the
+packed brain's row against itself shows that baseline. The records are in
+`evidence/distill_reading.json`.
+
+Every distilled brain gained optimal moves and tactics, and several played the perfect solver
+better from the first seat, but each kept the theoretical result less often on held-out positions
+or played worse from the second seat, and none beat the packed brain head to head from both seats.
+The packed brain is the one before distillation.
+
 ## What it does not claim
 
 - **The search is not the brain.** *Brain alone* plays from one settle per move. *Brain + search*

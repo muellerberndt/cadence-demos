@@ -55,6 +55,39 @@ def keeps(scores: np.ndarray, chosen: np.ndarray) -> np.ndarray:
     return (got != INVALID) & (np.sign(got) == np.sign(best))
 
 
+def load_labels(dirs, soft: float, weight: float) -> dict:
+    """The labelled shards as training rows: the board (84 inputs), a target distribution over the
+    columns (``1 - soft`` on the search's column, ``soft`` spread over the columns the search keeps
+    and the solver keeps; a proven win one-hot), the solver's verdict, and a weight (``weight``
+    where the search overrode the brain or a win or block decides the position)."""
+    import glob
+    files = sorted(f for d in dirs for f in glob.glob(str(Path(d) / "*.npz")))
+    parts = [np.load(f) for f in files]
+    bits = np.concatenate([z["bits"] for z in parts])
+    x = np.unpackbits(bits, axis=1)[:, :84].astype(np.uint8)
+    scores = np.concatenate([z["scores"] for z in parts]).astype(np.int64)
+    values = np.concatenate([z["values"] for z in parts]).astype(float)
+    search = np.concatenate([z["search"] for z in parts]).astype(np.int64)
+    brain = np.concatenate([z["brain"] for z in parts]).astype(np.int64)
+    reason = np.concatenate([z["reason"] for z in parts]).astype(np.int64)
+    alive = values > -950.0
+    top = np.where(alive, values, -np.inf).max(axis=1, keepdims=True)
+    kept = alive & (values >= top - 0.25)
+    both = kept & keep_columns(scores)
+    hard = np.eye(7)[search]
+    spread = np.where(both.any(axis=1, keepdims=True), both, kept).astype(float)
+    spread = np.where(spread.any(axis=1, keepdims=True), spread, hard)  # every column lost: the search's
+    spread /= spread.sum(axis=1, keepdims=True)
+    dist = np.where((reason == 2)[:, None], hard, (1 - soft) * hard + soft * spread)
+    best = np.where(scores == INVALID, -10_000, scores).max(axis=1)
+    win, block = tactics(x)
+    tactic = (win | block).any(axis=1)
+    overrode = search != brain
+    w = np.where(overrode | tactic, weight, 1.0)
+    return {"x": x, "dist": dist, "verdict": (np.sign(best) + 1).astype(np.int64), "weight": w,
+            "count": len(x), "overrode": int(overrode.sum()), "tactic": int(tactic.sum())}
+
+
 def keep_columns(scores: np.ndarray) -> np.ndarray:
     """``(n, 7)``: the playable columns that keep each position's theoretical result."""
     best = np.where(scores == INVALID, -10_000, scores).max(axis=1, keepdims=True)
@@ -157,6 +190,14 @@ def main() -> None:
                         "the loser (verdict: loss; move label: the brain's own choice)")
     p.add_argument("--tactics-share", type=float, default=0.0,
                    help="share of each batch drawn from positions with a win now or a forced block")
+    p.add_argument("--label-dir", type=Path, nargs="*", default=[],
+                   help="shards of positions labelled by the brain-plus-search player (c4train.label)")
+    p.add_argument("--label-share", type=float, default=0.6, help="share of each batch from the labelled shards")
+    p.add_argument("--label-soft", type=float, default=0.5,
+                   help="share of a labelled row's target spread over the columns the search and the solver keep")
+    p.add_argument("--label-weight", type=float, default=3.0,
+                   help="weight of labelled rows where the search overrode the brain or a tactic decides")
+    p.add_argument("--snapshot-every", type=int, default=0, help="keep policy-m<lesson>.npz every N lessons")
     p.add_argument("--out", type=Path, required=True)
     a = p.parse_args()
     a.genes = dict(a.genes)
@@ -198,6 +239,11 @@ def main() -> None:
 
     y = labels(scores)
     solver.save()
+    lab = None
+    if a.label_dir:
+        lab = load_labels(a.label_dir, a.label_soft, a.label_weight)
+        print(json.dumps({"labelled": {k: (int(v) if not hasattr(v, "shape") else list(v.shape)) for k, v in lab.items()
+                                       if k in ("x", "count", "overrode", "tactic")}}), flush=True)
     if a.arm == "cadence":
         from .policy import CadencePolicy
         policy = CadencePolicy(modules=a.modules, seed=a.seed, surprise=not a.every_row,
@@ -244,10 +290,11 @@ def main() -> None:
     tactical = np.flatnonzero(np.concatenate(tactics(x), axis=1).any(axis=1))
     held_win, held_block = tactics(heldout.x)
     not_lost = np.where(heldout.scores == INVALID, -10_000, heldout.scores).max(axis=1) >= 0
+    k_lab = int(round(a.label_share * a.batch)) if lab is not None else 0
     for lesson in range(1, a.lessons + 1):
-        idx = rng.integers(0, len(x), a.batch)
+        idx = rng.integers(0, len(x), a.batch - k_lab)
         if a.tactics_share > 0 and len(tactical):
-            k = int(round(a.tactics_share * a.batch))
+            k = min(len(idx), int(round(a.tactics_share * a.batch)))
             idx[:k] = tactical[rng.integers(0, len(tactical), k)]
         labels_now = y[idx]
         win_now, block_now = tactics(x[idx])
@@ -266,7 +313,7 @@ def main() -> None:
         x_now = x[idx].astype(float)
         n_done = 0
         if a.verdict and a.terminal_share > 0:
-            k = int(round(a.terminal_share * a.batch))
+            k = min(len(idx) // 2, int(round(a.terminal_share * a.batch)))
             done = finished(x[tactical[rng.integers(0, len(tactical), 2 * k)]], rng)[:k]
             n_done = len(done)
             if len(done):
@@ -294,8 +341,25 @@ def main() -> None:
             if labels_now.ndim == 2:
                 dist = np.concatenate([dist, np.eye(3)[labels_now[:, 1]]], axis=1)
             targets_now = dist
-        report = policy.teach(x_now, labels_now, targets=targets_now,
-                              weights=weights_now if a.tactics_weight != 1.0 else None)
+        if lab is not None and k_lab:
+            j = rng.integers(0, len(lab["x"]), k_lab)
+            if targets_now is None:
+                move = labels_now[:, 0] if labels_now.ndim == 2 else labels_now
+                targets_now = np.eye(7)[move]
+                if labels_now.ndim == 2:
+                    targets_now = np.concatenate([targets_now, np.eye(3)[labels_now[:, 1]]], axis=1)
+            lab_targets = lab["dist"][j]
+            if targets_now.shape[1] == 10:
+                lab_targets = np.concatenate([lab_targets, np.eye(3)[lab["verdict"][j]]], axis=1)
+            x_now = np.concatenate([x_now, lab["x"][j].astype(float)])
+            targets_now = np.concatenate([targets_now, lab_targets])
+            labels_now = None
+            weights_now = np.concatenate([weights_now if a.tactics_weight != 1.0 else np.ones(len(weights_now)),
+                                          lab["weight"][j]])
+            report = policy.teach(x_now, labels_now, targets=targets_now, weights=weights_now)
+        else:
+            report = policy.teach(x_now, labels_now, targets=targets_now,
+                                  weights=weights_now if a.tactics_weight != 1.0 else None)
         offered += a.batch
         taught += int(round(report.get("accepted_presentations", a.batch)))
         if a.own_every and lesson % a.own_every == 0:
@@ -371,6 +435,8 @@ def main() -> None:
             solver.save()
             (a.out / "receipt.json").write_text(json.dumps(receipt, indent=1))
             policy.save(a.out / "policy.npz")
+            if a.snapshot_every and lesson % a.snapshot_every == 0:
+                policy.save(a.out / f"policy-m{lesson}.npz")
             # keep the best brain so far; stop once readings stop improving
             followed = (row["optimal"] if a.patience_on == "optimal" else row["keep_not_lost"]
                         if a.patience_on == "keep" else
