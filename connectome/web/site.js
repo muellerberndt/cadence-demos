@@ -62,7 +62,7 @@ export function renderParagraphs(container, page) {
   return container;
 }
 
-const credit = (options = {}) => `powered by <a href="https://github.com/muellerberndt/cadence"><b>Cadence</b></a> · <a href="https://github.com/muellerberndt/cadence-demos/tree/main/connectome">source</a> · preprints: <a href="${PAPERS[0].url}">${PAPERS[0].short}</a>, <a href="${PAPERS[1].url}">${PAPERS[1].short}</a> · made with <span style="color:#ff7850">♥</span> by <a href="https://floatingpragma.io">Pragma Research</a> · connectome: <a href="${options.connectomeUrl || PAPER_URL}">${options.connectome || "Vishwanathan et al. 2024"}</a>`;
+const credit = (options = {}) => `powered by <a href="https://github.com/muellerberndt/cadence"><b>Cadence</b></a> · <a href="https://github.com/muellerberndt/cadence-demos/tree/main/connectome">source</a> · preprints: <a href="${PAPERS[0].url}">${PAPERS[0].short}</a>, <a href="${PAPERS[1].url}">${PAPERS[1].short}</a> · made with <span style="color:#ff7850">♥</span> by <a href="https://floatingpragma.ai">Pragma Research</a> · connectome: <a href="${options.connectomeUrl || PAPER_URL}">${options.connectome || "Vishwanathan et al. 2024"}</a>`;
 
 /** Fill the masthead and the nav of the page `pageId`, append the status strip and the info card.
  *  Returns {page, status(text), card(content), open(flag)}; `card` takes html strings (one <p>

@@ -1,6 +1,6 @@
 # Cadence demos
 
-**Try them in your browser: [cadence.floatingpragma.io](https://cadence.floatingpragma.io/)**
+**Try them in your browser: [cadence.floatingpragma.ai](https://cadence.floatingpragma.ai/)**
 
 Small example applications for [Cadence](https://github.com/muellerberndt/cadence):
 brains that learn from experience through bounded patches, local relations,
@@ -96,15 +96,15 @@ Every demo runs on `cadence-net` 0.95.2.
 
 | Demo | What it shows | Runs on |
 | --- | --- | --- |
-| [Tron](tron/) · [live](https://cadence.floatingpragma.io/demos/tron) | Ride a light cycle against a flat or a deep brain that sees the whole arena, and watch every neuron settle on its move | `Brain.compose`, flat (256) and deep (256-128-32); in the browser, the released library itself, in Pyodide |
-| [Connect Four](connect-four/) · [live](https://cadence.floatingpragma.io/demos/connect-four) | Play a deep brain that judges every position (loss, draw, win) beside its move, and teach it a column | A deep `Brain.compose` (1024, 1024) with a verdict slot; in the browser, the released library itself, in Pyodide |
-| [Castlevania](castlevania/) · [watch](https://cadence.floatingpragma.io/demos/castlevania) | A brain plays the NES game from what its eye sees on the screen, on your own copy of the game | A deep `Brain.compose` with recall, raised by a savestate teacher and search; a local server runs the emulator |
-| [Patch World](patch-world/) · [live](https://cadence.floatingpragma.io/demos/patch-world) | Creatures with Cadence brains forage, get poisoned when the season turns, relearn and evolve; click one to watch its brain | One continuing `Brain.live` brain per creature, bred by evolution; in the browser, the released library itself, in Pyodide |
-| [Atari Arcade](atari-arcade/) · [live](https://cadence.floatingpragma.io/demos/atari-arcade) | Brains that learn Atari games from pixels: a teacher first, then reward | `Brain.compose` (System 1); in the browser, the released library itself, in Pyodide |
-| [Robot Arena](robot-arena/) · [live](https://cadence.floatingpragma.io/demos/robot-arena) | Robots built from parts, one continuing brain per robot, raised in a nursery and fighting live in the browser with a brain inspector | `Brain.compose` with one motor slot per motor, learning through `Brain.live`; in the browser, in Pyodide |
-| [Robot Arm](robot-arm/) · [live](https://cadence.floatingpragma.io/demos/robot-arm) | A Franka Panda that picks up a block and places it in the bin you choose, under contact physics; move the bin while it carries the block and it follows | A deep `Brain.compose` taught by a scripted teacher in MuJoCo; in the browser, MuJoCo as WebAssembly and the library in Pyodide |
-| [Eyes](eyes/) · [live](https://cadence.floatingpragma.io/demos/eyes) | One brain that follows every shape you drag with its own eye, from the page's pixels only | A raised visual brain run by `cadence.Brain`; in the browser, the released library itself, in Pyodide |
-| [Connectome](connectome/) · [live](https://cadence.floatingpragma.io/demos/connectome) | Teach a fish gaze circuit to hold, return and hold again on measured wiring; explore a larva with fixed connections | Cadence rate patches in JavaScript, with plastic fish connections and declared body models |
+| [Tron](tron/) · [live](https://cadence.floatingpragma.ai/demos/tron) | Ride a light cycle against a flat or a deep brain that sees the whole arena, and watch every neuron settle on its move | `Brain.compose`, flat (256) and deep (256-128-32); in the browser, the released library itself, in Pyodide |
+| [Connect Four](connect-four/) · [live](https://cadence.floatingpragma.ai/demos/connect-four) | Play a deep brain that judges every position (loss, draw, win) beside its move, and teach it a column | A deep `Brain.compose` (1024, 1024) with a verdict slot; in the browser, the released library itself, in Pyodide |
+| [Castlevania](castlevania/) · [watch](https://cadence.floatingpragma.ai/demos/castlevania) | A brain plays the NES game from what its eye sees on the screen, on your own copy of the game | A deep `Brain.compose` with recall, raised by a savestate teacher and search; a local server runs the emulator |
+| [Patch World](patch-world/) · [live](https://cadence.floatingpragma.ai/demos/patch-world) | Creatures with Cadence brains forage, get poisoned when the season turns, relearn and evolve; click one to watch its brain | One continuing `Brain.live` brain per creature, bred by evolution; in the browser, the released library itself, in Pyodide |
+| [Atari Arcade](atari-arcade/) · [live](https://cadence.floatingpragma.ai/demos/atari-arcade) | Brains that learn Atari games from pixels: a teacher first, then reward | `Brain.compose` (System 1); in the browser, the released library itself, in Pyodide |
+| [Robot Arena](robot-arena/) · [live](https://cadence.floatingpragma.ai/demos/robot-arena) | Robots built from parts, one continuing brain per robot, raised in a nursery and fighting live in the browser with a brain inspector | `Brain.compose` with one motor slot per motor, learning through `Brain.live`; in the browser, in Pyodide |
+| [Robot Arm](robot-arm/) · [live](https://cadence.floatingpragma.ai/demos/robot-arm) | A Franka Panda that picks up a block and places it in the bin you choose, under contact physics; move the bin while it carries the block and it follows | A deep `Brain.compose` taught by a scripted teacher in MuJoCo; in the browser, MuJoCo as WebAssembly and the library in Pyodide |
+| [Eyes](eyes/) · [live](https://cadence.floatingpragma.ai/demos/eyes) | One brain that follows every shape you drag with its own eye, from the page's pixels only | A raised visual brain run by `cadence.Brain`; in the browser, the released library itself, in Pyodide |
+| [Connectome](connectome/) · [live](https://cadence.floatingpragma.ai/demos/connectome) | Teach a fish gaze circuit to hold, return and hold again on measured wiring; explore a larva with fixed connections | Cadence rate patches in JavaScript, with plastic fish connections and declared body models |
 
 ## Putting a demo on your own site
 
@@ -124,7 +124,7 @@ jsDelivr on the first visit.
 
 ## [Tron](tron/): light cycles against a brain that sees the whole field
 
-[Open it on the site](https://cadence.floatingpragma.io/demos/tron).
+[Open it on the site](https://cadence.floatingpragma.ai/demos/tron).
 
 Each move is one settle of the whole brain on the 24 × 24 arena, turned so that the rider's
 heading points up. Two brains are on the page, picked by a switch in the header: a flat brain of
@@ -139,7 +139,7 @@ python3 -m http.server 8831 --directory tron/web   # open http://localhost:8831/
 
 ## [Connect Four](connect-four/): a deep brain with a verdict
 
-[Open it on the site](https://cadence.floatingpragma.io/demos/connect-four).
+[Open it on the site](https://cadence.floatingpragma.ai/demos/connect-four).
 
 The brain sees its own stones, yours and the cells where a stone would land, and settles on
 seven column neurons and three more that judge the position for the side to move: loss, draw or
@@ -153,7 +153,7 @@ python3 -m http.server 8790 --directory connect-four/web   # open http://localho
 
 ## [Castlevania](castlevania/): a brain on the NES
 
-[Open it on the site](https://cadence.floatingpragma.io/demos/castlevania).
+[Open it on the site](https://cadence.floatingpragma.ai/demos/castlevania).
 
 A brain plays Castlevania from a foveated eye on the screen around Simon, choosing the pad's
 buttons each decision, beside its settled state and its recall memory. It was raised by a
@@ -168,7 +168,7 @@ See the [Castlevania README](castlevania/README.md).
 
 ## [Patch World](patch-world/): creatures that learn the seasons
 
-[Open it on the site](https://cadence.floatingpragma.io/demos/patch-world).
+[Open it on the site](https://cadence.floatingpragma.ai/demos/patch-world).
 
 Berries nourish in summer and sicken in winter, and nothing a creature senses says which season it
 is. Each learner is one continuing Cadence brain that learns from what its own actions bring: a
@@ -187,7 +187,7 @@ See the [Patch World README](patch-world/README.md).
 
 ## [Atari Arcade](atari-arcade/): learning Atari games
 
-[Open it on the site](https://cadence.floatingpragma.io/demos/atari-arcade).
+[Open it on the site](https://cadence.floatingpragma.ai/demos/atari-arcade).
 
 Brains born at server start learn Atari games from the raw screen while you
 watch. Each one is a System 1 brain built with `Brain.compose`. It watches a
@@ -205,7 +205,7 @@ See the [Atari Arcade README](atari-arcade/README.md) for the Python edition and
 
 ## [Robot Arena](robot-arena/): the Cadence Showcase League
 
-[Open it on the site](https://cadence.floatingpragma.io/demos/robot-arena).
+[Open it on the site](https://cadence.floatingpragma.ai/demos/robot-arena).
 
 Robots are built from a parts catalogue: a chassis, wheels or legs, arms with a spike, a
 hammer or a spinner. Each robot is one continuing `Brain.compose` life whose motor cortex
@@ -223,7 +223,7 @@ See the [Robot Arena README](robot-arena/README.md) to raise a league and check 
 
 ## [Robot Arm](robot-arm/): pick and place under contact physics
 
-[Open it on the site](https://cadence.floatingpragma.io/demos/robot-arm).
+[Open it on the site](https://cadence.floatingpragma.ai/demos/robot-arm).
 
 A Franka Panda in MuJoCo picks up a block and places it in the bin that a lit lamp names. Its
 brain is one deep `Brain.compose` with three hidden regions and the apical compartment. It learned
@@ -240,7 +240,7 @@ See the [Robot Arm README](robot-arm/README.md) to train the brain, read it and 
 
 ## [Eyes](eyes/): one brain, an eye on every shape
 
-[Open it on the site](https://cadence.floatingpragma.io/demos/eyes).
+[Open it on the site](https://cadence.floatingpragma.ai/demos/eyes).
 
 Shapes on a large surface, each followed by its own eye, by one Cadence brain
 that runs in the browser tab and sees only the page's pixels. Each eye sees
@@ -257,7 +257,7 @@ See the [Eyes README](eyes/README.md).
 
 ## [Connectome](connectome/): teach a compiled circuit
 
-[Open it on the site](https://cadence.floatingpragma.io/demos/connectome).
+[Open it on the site](https://cadence.floatingpragma.ai/demos/connectome).
 
 Measured animal wiring becomes a running Cadence patch net. Teach the fish **hold your
 gaze**, then **let it return**, then hold again on the same brain. Its connection strengths
