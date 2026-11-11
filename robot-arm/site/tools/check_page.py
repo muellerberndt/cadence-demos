@@ -108,6 +108,24 @@ def main() -> None:
                            "passed": result.startswith("Placed in bin B") and inside,
                            "result": result, "moved_to": list(MOVED_B), "bin_b": bin_b,
                            "block": [round(v, 3) for v in block]})
+
+            # 3. smooth motion at the visitor's speed: the arm on screen keeps moving while the
+            # brain settles (the share of arm time shown against the clock's)
+            page.evaluate("document.body.dataset.result = ''; window.cadenceArm.state.frames = [];"
+                          " window.cadenceArm.play.expected = 0; window.cadenceArm.play.shown = 0;"
+                          " window.cadenceArm.setTarget('A'); window.cadenceArm.state.speed = 1;"
+                          " window.cadenceArm.run()")
+            result = wait_result(page, a.timeout)
+            shown = page.evaluate("window.cadenceArm.play.shown / Math.max(1e-9, window.cadenceArm.play.expected)")
+            frames = page.evaluate("(window.cadenceArm.state.frames || []).slice()")
+            worker = [f[0] for f in frames]
+            decisions = len(worker)
+            # the page before the playback buffer stood still for every worker call
+            before = sum(worker) / (sum(worker) + 200.0 * decisions) if decisions else None
+            checks.append({"name": "the arm moves smoothly at 1x", "passed": shown >= 0.98 and result.startswith("Placed in bin A"),
+                           "result": result, "arm_time_shown_share": round(shown, 4),
+                           "still_share_without_buffer": None if before is None else round(before, 4),
+                           "worker_ms_mean": round(sum(worker) / decisions, 1) if decisions else None})
             browser.close()
     finally:
         server.shutdown()

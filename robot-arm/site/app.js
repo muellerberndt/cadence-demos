@@ -1,5 +1,6 @@
 // The page: the cell in three.js, the visitor's placements, and the run loop that asks the brain
-// (in the worker) for one decision at a time and steps the physics in real time between them.
+// (in the worker) for one decision at a time, steps the physics between them, and plays the arm
+// back on screen from a short buffer so it moves without pauses.
 import * as THREE from 'three';
 import { OrbitControls } from './vendor/three/jsm/controls/OrbitControls.js';
 import { RoomEnvironment } from './vendor/three/jsm/environments/RoomEnvironment.js';
@@ -19,6 +20,12 @@ const BIN_ZONE = { x: [0.60, 0.72], y: [-0.33, 0.33] };
 const CAP = 120; // decisions per run
 const TRAIL = 240; // fingertip positions kept in the trail
 const PHYSICS_DT = 0.002;
+// The screen plays the arm back from a short buffer: the physics and the brain run up to LEAD
+// seconds of arm time (times the speed) ahead of what is shown, so the arm never stops on screen
+// while the brain settles. The dynamics are the training cell's exactly (the physics still waits
+// for every decision); only the picture, the brain panel and the messages lag by up to LEAD.
+const LEAD = 0.3;
+const play = { t: 0, simT: 0, snaps: [], events: [], expected: 0, shown: 0 };
 const $ = (id) => document.getElementById(id);
 
 const ui = { status: $('status'), statusText: $('status-text'), run: $('run'), reset: $('reset'), shuffle: $('shuffle'), toast: $('toast'),
@@ -247,15 +254,43 @@ async function buildPanda() {
   }
 }
 
+// One physics step's poses (the arm's bodies, then the block) and the fingertip, for the playback.
+function record() {
+  const d = cell.data, n = scenery.bodies.length + 1;
+  const pos = new Float64Array(3 * n), quat = new Float64Array(4 * n);
+  const put = (i, id) => {
+    for (let k = 0; k < 3; k++) pos[3 * i + k] = d.xpos[3 * id + k];
+    for (let k = 0; k < 4; k++) quat[4 * i + k] = d.xquat[4 * id + k];
+  };
+  scenery.bodies.forEach(({ id }, i) => put(i, id));
+  put(n - 1, cell.blockBody);
+  play.snaps.push({ t: play.simT, pos, quat, tip: cell.tip() });
+}
+// Show fn when the playback reaches the physics' present moment.
+function defer(fn) { play.events.push({ t: play.simT, fn }); }
+function clearPlay() { play.t = 0; play.simT = 0; play.snaps.length = 0; play.events.length = 0; }
+
 function syncScene() {
-  const d = cell.data, m = cell.model;
-  for (const { id, group } of scenery.bodies) {
-    group.position.set(d.xpos[3 * id], d.xpos[3 * id + 1], d.xpos[3 * id + 2]);
-    group.quaternion.set(d.xquat[4 * id + 1], d.xquat[4 * id + 2], d.xquat[4 * id + 3], d.xquat[4 * id]);
-  }
+  const d = cell.data, m = cell.model, s = play.snaps[0];
+  const pos = s ? s.pos : null, quat = s ? s.quat : null;
+  scenery.bodies.forEach(({ id, group }, i) => {
+    if (s) {
+      group.position.set(pos[3 * i], pos[3 * i + 1], pos[3 * i + 2]);
+      group.quaternion.set(quat[4 * i + 1], quat[4 * i + 2], quat[4 * i + 3], quat[4 * i]);
+    } else {
+      group.position.set(d.xpos[3 * id], d.xpos[3 * id + 1], d.xpos[3 * id + 2]);
+      group.quaternion.set(d.xquat[4 * id + 1], d.xquat[4 * id + 2], d.xquat[4 * id + 3], d.xquat[4 * id]);
+    }
+  });
   const b = cell.blockBody, block = scenery.block;
-  block.position.set(d.xpos[3 * b], d.xpos[3 * b + 1], d.xpos[3 * b + 2]);
-  block.quaternion.set(d.xquat[4 * b + 1], d.xquat[4 * b + 2], d.xquat[4 * b + 3], d.xquat[4 * b]);
+  if (s) {
+    const i = scenery.bodies.length;
+    block.position.set(pos[3 * i], pos[3 * i + 1], pos[3 * i + 2]);
+    block.quaternion.set(quat[4 * i + 1], quat[4 * i + 2], quat[4 * i + 3], quat[4 * i]);
+  } else {
+    block.position.set(d.xpos[3 * b], d.xpos[3 * b + 1], d.xpos[3 * b + 2]);
+    block.quaternion.set(d.xquat[4 * b + 1], d.xquat[4 * b + 2], d.xquat[4 * b + 3], d.xquat[4 * b]);
+  }
   block.scale.setScalar(2 * cell.half);
   for (const k of ['A', 'B']) {
     const isTarget = state.target === k;
@@ -384,7 +419,8 @@ async function resetScene() {
   cell.home();
   cell.placeBlock(...state.placement);
   cell.setOrder(state.target);
-  state.decision = 0; state.budget = 0;
+  state.decision = 0; state.ended = false;
+  clearPlay();
   scenery.aim.visible = false;
   scenery.trailCount = 0; scenery.trail.geometry.setDrawRange(0, 0);
   view?.clear();
@@ -396,7 +432,8 @@ async function run() {
   if (!state.brainReady || state.phase === 'running') return;
   if (state.phase === 'done' || state.decision > 0) await resetScene();
   else await brain.call('reset');
-  state.phase = 'running'; state.decision = 0; state.started = performance.now();
+  clearPlay();
+  state.phase = 'running'; state.decision = 0; state.ended = false; state.started = performance.now();
   ui.run.textContent = 'Stop'; ui.run.disabled = false;
   ui.toast.hidden = true;
   setStatus('Running', 'ready');
@@ -417,8 +454,8 @@ function stop(message, kind = '') {
 const WAVE_EVERY = (() => { const v = new URLSearchParams(location.search).get('wave'); return v === null ? 2 : Math.max(0, Number(v) || 0); })();
 
 async function think() {
-  if (state.phase !== 'running') return;
-  if (state.decision >= CAP) { stop(`Out of time after ${CAP} decisions`, 'bad'); return; }
+  if (state.phase !== 'running' || state.ended) return;
+  if (state.decision >= CAP) { state.ended = true; defer(() => stop(`Out of time after ${CAP} decisions`, 'bad')); return; }
   const x = cell.observe();
   state.awaiting = true;
   let reply;
@@ -427,38 +464,44 @@ async function think() {
   state.awaiting = false;
   if (state.phase !== 'running') return;
   const answer = reply.refused ? holdAnswer() : reply.answer;
-  view.update(reply, reply.refused ? null : answer);
-  if (reply.activation && view.pop?.association) {
-    const p = view.pop.association;
-    let mean = 0;
-    for (let i = 0; i < p.size; i++) mean += Math.max(0, reply.activation[p.start + i]);
-    rimState.target = 0.25 + 1.1 * Math.min(1, mean / p.size / 0.5);
-  }
-  ui.decision.textContent = String(state.decision + 1);
-  ui.sweeps.textContent = reply.refused ? 'refused' : `${reply.sweeps}`;
-  ui.ms.textContent = `${Math.round(reply.ms ?? reply.worker_ms)} ms`;
   (state.thinkMs ||= []).push(reply.ms ?? reply.worker_ms);
   (state.frames ||= []).push([reply.worker_ms ?? reply.ms, reply.wave ? 1 : 0]);
-  if (reply.wave) view.playWave(reply.wave, (k, of) => { ui.sweeps.textContent = `${k} / ${of}`; }, () => { ui.sweeps.textContent = `${reply.sweeps}`; });
   const { target, qTarget } = cell.command(answer);
-  scenery.aim.position.set(...target); scenery.aim.visible = true;
+  const number = state.decision + 1;
+  defer(() => { // the brain panel and the counters, when the arm on screen reaches this decision
+    view.update(reply, reply.refused ? null : answer);
+    if (reply.activation && view.pop?.association) {
+      const p = view.pop.association;
+      let mean = 0;
+      for (let i = 0; i < p.size; i++) mean += Math.max(0, reply.activation[p.start + i]);
+      rimState.target = 0.25 + 1.1 * Math.min(1, mean / p.size / 0.5);
+    }
+    ui.decision.textContent = String(number);
+    ui.sweeps.textContent = reply.refused ? 'refused' : `${reply.sweeps}`;
+    ui.ms.textContent = `${Math.round(reply.ms ?? reply.worker_ms)} ms`;
+    if (reply.wave) view.playWave(reply.wave, (k, of) => { ui.sweeps.textContent = `${k} / ${of}`; }, () => { ui.sweeps.textContent = `${reply.sweeps}`; });
+    scenery.aim.position.set(...target); scenery.aim.visible = true;
+  });
   cell.decideBegin(qTarget, answer[3]);
-  state.phase = 'running'; state.moving = true;
+  state.moving = true;
 }
 
 function finishDecision() {
   state.moving = false;
   const out = cell.decideEnd();
   state.decision += 1;
-  if (out.event === 'grasped') toast('Grasped', '', 1200);
-  else if (out.event === 'slipped') toast('The block slipped. The brain tries again.', 'bad', 1800);
-  else if (out.dropped) toast('Dropped outside a bin. The brain tries again.', 'bad', 1800);
-  if (out.lost) { stop('The block left the table', 'bad'); return; }
+  defer(() => {
+    if (out.event === 'grasped') toast('Grasped', '', 1200);
+    else if (out.event === 'slipped') toast('The block slipped. The brain tries again.', 'bad', 1800);
+    else if (out.dropped) toast('Dropped outside a bin. The brain tries again.', 'bad', 1800);
+  });
+  if (out.lost) { state.ended = true; defer(() => stop('The block left the table', 'bad')); return; }
   if (out.done) {
     const [, bin, verdict] = out.event.split(':');
-    const seconds = (state.decision * 0.2).toFixed(1);
-    if (verdict === 'right') stop(`Placed in bin ${bin} in ${state.decision} decisions (${seconds} s of arm time)`, 'good');
-    else stop(`Placed in bin ${bin}, the other bin`, 'bad');
+    const n = state.decision, seconds = (n * 0.2).toFixed(1);
+    state.ended = true;
+    if (verdict === 'right') defer(() => stop(`Placed in bin ${bin} in ${n} decisions (${seconds} s of arm time)`, 'good'));
+    else defer(() => stop(`Placed in bin ${bin}, the other bin`, 'bad'));
     return;
   }
   think();
@@ -488,7 +531,7 @@ document.querySelectorAll('.speed .seg').forEach((b) => b.addEventListener('clic
 
 function trailStep() {
   if (state.phase !== 'running') return;
-  const [x, y, z] = cell.tip();
+  const [x, y, z] = play.snaps[0] ? play.snaps[0].tip : cell.tip();
   const n = TRAIL, P = scenery.trailPos, C = scenery.trailCol;
   if (scenery.trailCount < n) scenery.trailCount += 1; else P.copyWithin(0, 3);
   const k = scenery.trailCount - 1;
@@ -508,11 +551,21 @@ let last = performance.now();
 function frame(now) {
   const dt = Math.min(0.05, (now - last) / 1000);
   last = now;
-  if (cell && state.phase === 'running' && state.moving) {
-    state.budget += (dt / PHYSICS_DT) * state.speed;
-    const steps = Math.min(Math.floor(state.budget), 200);
-    state.budget -= steps;
-    if (steps > 0 && cell.stepPhysics(steps) === 0) finishDecision();
+  if (cell && state.phase === 'running') {
+    // the physics: up to LEAD (times the speed) of arm time ahead of the screen
+    let room = Math.min(600, Math.floor((play.t + LEAD * Math.max(1, state.speed) - play.simT) / PHYSICS_DT));
+    while (room-- > 0 && state.moving && state.phase === 'running') {
+      const left = cell.stepPhysics(1);
+      play.simT += PHYSICS_DT;
+      record();
+      if (left === 0) finishDecision();
+    }
+    // the screen: steady arm time, unless the buffer runs dry (the brain slower than the clock)
+    const want = dt * state.speed, next = Math.min(play.t + want, play.simT);
+    if (play.simT > 0 && !state.ended) { play.expected += want; play.shown += next - play.t; }
+    play.t = next;
+    while (play.snaps.length > 1 && play.snaps[1].t <= play.t + 1e-9) play.snaps.shift();
+    while (play.events.length && play.events[0].t <= play.t + 1e-9 && state.phase === 'running') play.events.shift().fn();
   }
   if (cell) { syncScene(); trailStep(); }
   rimState.level += (rimState.target - rimState.level) * (1 - Math.exp(-dt / 0.18));
@@ -540,7 +593,7 @@ async function start() {
     setTarget('A');
     resize();
     requestAnimationFrame(frame);
-    window.cadenceArm = { cell, state, run, setTarget, resetScene, get view() { return view; }, // for the page check
+    window.cadenceArm = { cell, state, play, run, setTarget, resetScene, get view() { return view; }, // for the page check
       screenOf(x, y, z) { const v = new THREE.Vector3(x, y, z).project(camera); const r = canvas.getBoundingClientRect(); return [r.left + (v.x + 1) / 2 * r.width, r.top + (1 - v.y) / 2 * r.height]; } };
   } catch (error) {
     setStatus(`Physics failed to load: ${error.message}`, 'error');
