@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#06080e">
-  <meta name="description" content="Hide the hand behind the blind spot, and a Cadence brain keeps knowing where it is. The brain runs in your browser.">
+  <meta name="description" content="Hide the hand, and the brain knows where it is: a Cadence brain holds a map of what is where, in its own activity. The brain runs in your browser.">
   <title>Out of sight · Cadence</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,28 +26,22 @@
 
   <main class="app">
     <section class="pane world" aria-label="The scene">
-      <h1 class="promise" data-promise>Hide the hand, and the brain keeps knowing where it is.</h1>
+      <h1 class="promise" data-promise>Hide the hand, and the brain knows where it is.</h1>
       <div class="scene-wrap" id="scene-wrap">
         <canvas id="scene" tabindex="0" role="application" aria-describedby="keys"
-          aria-label="A room seen from above: a robot arm, a hand, a cup, an apple and a slice of bread. A body in the room carries a camera, which lights the part of the room it sees; a pillar and the arm cast shadows. Drag the hand, a thing or the pillar; drag the floor to turn the camera; tap a thing to knock on it; tap the body to switch the camera."></canvas>
+          aria-label="A room seen from above: a robot arm, a hand, an apple and a slice of bread. A body in the room carries a camera, which lights the part of the room it sees; a pillar and the arm cast shadows. Drag the hand, a thing or the pillar; drag the floor to turn the camera; tap a thing to ask where the brain's map holds it, or the floor to ask what is there; tap the body to switch the camera."></canvas>
         <div class="chips" aria-hidden="true">
           <span class="chip" id="chip-view" hidden>out of view</span>
-          <span class="chip" id="chip-range" hidden></span>
-          <span class="chip held" id="chip-held" hidden></span>
-          <span class="chip gone" id="chip-gone" hidden>not where the brain left it<span class="wide">: the camera sees that place, and no hand</span></span>
-          <span class="chip brainc more" id="chip-error">error –</span>
-          <span class="chip brainc more" id="chip-area">area –</span>
+        </div>
+        <div class="segmented case" role="group" aria-label="Whose hand the brain follows">
+          <button type="button" data-case="other" aria-pressed="true" title="A person's hand, which moves by itself">A person’s hand</button>
+          <button type="button" data-case="own" aria-pressed="false" title="The arm's own hand: its joint readings name its place">The arm’s own hand</button>
         </div>
         <div class="welcome" id="welcome" hidden>
           <h2>Out of sight</h2>
-          <p data-promise>Hide the hand, and the brain keeps knowing where it is.</p>
-          <p class="small">The body in the room carries a camera, which lights what it sees. The teal glow is where the brain says the hand is.</p>
+          <p data-promise>Hide the hand, and the brain knows where it is.</p>
+          <p class="small">The body in the room carries a camera, which lights what it sees. The brain holds a map of what is where. The teal glow is where the map holds the hand.</p>
           <div class="row"><button class="primary" id="welcome-go" type="button">Show me</button><button id="welcome-skip" type="button">Skip</button></div>
-        </div>
-        <div class="inset" id="inset">
-          <canvas id="around" tabindex="0" role="application"
-            aria-label="The map around the body: you at the centre, facing up, and every thing the brain remembers at its direction and distance. Tap a thing to ask where it is; tap an empty direction to ask what is there. Arrow keys ask in front, behind, left and right; 1 to 4 ask for the hand, the cup, the apple and the bread."></canvas>
-          <button id="around-mode" type="button" title="Switch this map between around the body and the room">around me</button>
         </div>
       </div>
       <div class="below">
@@ -65,10 +59,9 @@
         <canvas id="brain" aria-hidden="true"></canvas>
         <canvas id="brain-overlay" aria-hidden="true"></canvas>
         <div class="parts" id="parts" role="group" aria-label="The parts of the brain. Each one explains itself."></div>
-        <span class="badge" id="brain-badge" hidden></span>
-        <div class="learning" id="learning" aria-hidden="true">learning</div>
+        <span class="badge" id="brain-badge" hidden>development files</span>
         <div class="readout" id="readout" aria-live="off"></div>
-        <button class="follow" id="follow" type="button" title="Step through how the brain knows where the hand is, one part at a time">Follow the position ›</button>
+        <button class="follow" id="follow" type="button" title="Step through how a position travels through the map, one part at a time">Follow the position ›</button>
         <div class="card" id="card" role="dialog" aria-label="A part of the brain, explained" hidden></div>
       </div>
     </section>
@@ -78,51 +71,36 @@
     <div class="panels">
       <figure class="panel wide">
         <figcaption><b>Distance from the true hand</b>
-          <span class="legend"><span><i class="ln brain"></i>brain <b id="e-brain">–</b></span><span><i class="ln kalman"></i>Kalman filter <b id="e-kalman">–</b></span><span><i class="ln last"></i>last seen <b id="e-last">–</b></span><span><i class="sw shade"></i>out of view</span></span>
+          <span class="legend"><span><i class="ln brain"></i>the map <b id="e-brain">–</b></span><span><i class="ln kalman"></i>Kalman filter <b id="e-kalman">–</b></span><span><i class="ln last"></i>last seen <b id="e-last">–</b></span><span><i class="sw shade"></i>out of view</span></span>
         </figcaption>
-        <canvas id="chart" aria-label="Each estimate's distance from the true hand over the last ten seconds"></canvas>
-      </figure>
-      <figure class="panel">
-        <figcaption><b>The map it holds</b><span>its place answer and its records</span></figcaption>
-        <canvas id="map" aria-label="The brain's place answer drawn over the table, with a pin for every thing it remembers"></canvas>
+        <canvas id="chart" aria-label="The distance from the true hand of the map's place, of the Kalman filter and of the last seen place, over the last ten seconds"></canvas>
       </figure>
     </div>
     <div class="settings">
       <dl class="stats">
-        <div><dt>Settle</dt><dd id="s-sweeps">–</dd></div>
-        <div><dt>Residual</dt><dd id="s-residual">–</dd></div>
-        <div><dt>Think</dt><dd id="s-ms">–</dd></div>
-        <div><dt>Lessons</dt><dd id="s-lessons">–</dd></div>
-        <div title="Settles that found no qualified state: the brain gave no answer"><dt>No answer</dt><dd id="s-refused">0</dd></div>
+        <div><dt>A moment</dt><dd id="s-ms">–</dd></div>
         <div><dt>Frame</dt><dd id="s-frame">–</dd></div>
+        <div title="The cells of the map that hold the hand"><dt>The hand’s cells</dt><dd id="s-cells">–</dd></div>
       </dl>
       <div class="knobs">
-        <div class="segmented" role="group" aria-label="Whose hand the brain follows">
-          <button type="button" data-case="other" aria-pressed="true" title="A person's hand, which moves by itself">A person's hand</button>
-          <button type="button" data-case="own" aria-pressed="false" title="The arm's own hand, moved by commands the brain is given">The arm's own hand</button>
-        </div>
-        <label class="select"><span class="sr">A recorded scene</span><select id="reach" aria-label="A recorded scene"></select></label>
-        <button id="play" type="button" disabled>Play</button>
         <button id="load" type="button" title="Replay a scene file of the tracking chamber (cadence-tracking-scene/1)">Load a scene</button>
         <input id="file" type="file" accept=".json,application/json" hidden>
-        <label class="toggle"><input type="checkbox" id="teach" checked> learn at seen moments</label>
-        <button id="reborn" type="button" title="A new brain: every synapse as at birth, every record empty">New brain</button>
       </div>
-      <p class="keys" id="keys">Keys, with the scene in focus: <kbd>1</kbd> hand, <kbd>2</kbd> cup, <kbd>3</kbd> apple, <kbd>4</kbd> bread, <kbd>5</kbd> pillar; arrows move it; <kbd>K</kbd> knocks on it; <kbd>Q</kbd> and <kbd>E</kbd> turn the camera; <kbd>C</kbd> switches it; <kbd>H</kbd> shows what is hidden; <kbd>Z</kbd> undo; <kbd>R</kbd> reset. With the small map in focus, the arrows ask what is in front, behind, left and right, and <kbd>1</kbd> to <kbd>4</kbd> ask where a thing is. In the brain, <kbd>Tab</kbd> moves from part to part and <kbd>Esc</kbd> closes a card.</p>
+      <p class="keys" id="keys">Keys, with the scene in focus: <kbd>1</kbd> hand, <kbd>2</kbd> apple, <kbd>3</kbd> bread, <kbd>4</kbd> pillar; arrows move it; <kbd>W</kbd> asks the map where it is; <kbd>Q</kbd> and <kbd>E</kbd> turn the camera; <kbd>C</kbd> switches it; <kbd>H</kbd> shows what is hidden; <kbd>Z</kbd> undo; <kbd>R</kbd> reset. In the brain, <kbd>Tab</kbd> moves from part to part and <kbd>Esc</kbd> closes a card.</p>
     </div>
     <div class="card-body">
       <div>
         <h3>The scene</h3>
         <p>A room seen from above. A body in the room carries a camera, which lights what it sees. The pillar and the arm cast shadows, and whatever stands in shadow, or beside or behind the body, is out of view: the camera reports nothing of it. In view, the camera reports a position about a centimetre off.</p>
-        <p>At every moment the brain is asked one question: <b>where is the hand?</b> The teal glow is its answer. The ring around it is the area the brain says holds the hand nine times in ten.</p>
+        <p>The brain holds a map of what is where. A thing enters the map when the camera first sees it. The teal glow is where the map holds the hand, and the light under it the cells that hold it.</p>
       </div>
       <div>
-        <h3>What is where, around you</h3>
-        <p>You know there is an apple behind you and a slice of bread in front of you without looking, because they do not move by themselves. The brain keeps the cup, the apple and the bread the same way: one record each, which holds what the thing is together with where it is. Turn the camera away, and the record stays. The small map shows the same records as the body has them: you at the centre, facing up. A dashed ring came from a sound.</p>
+        <h3>The comparison</h3>
+        <p>Two controls are given the same camera reports: the last seen place, and a constant-velocity Kalman filter that carries the hand on along its seen movement. The chart shows each one’s distance from the true hand beside the map’s. The map moves nothing it does not sense: learning how things move is the second stage of the model.</p>
       </div>
       <div>
         <h3>The brain</h3>
-        <p>Cadence is a library for brains that answer by settling: the neurons drive each other until their activity rests, and the answer is read from the resting state. The right half of the page draws every neuron and every synapse of the brain that runs here, laid out as a brain seen from the side. Each population sits where the part whose role it plays would sit. Point at a part and it explains itself.</p>
+        <p>Cadence is a library for brains that answer by settling: the neurons drive each other until their activity rests, and the answer is read from the resting state. The right half of the page draws every neuron and every synapse of the map’s graph, laid out as a brain seen from the side. Each region sits where the part whose role it plays would sit. Point at a part and it explains itself.</p>
         <p id="brain-note"></p>
       </div>
       <div>

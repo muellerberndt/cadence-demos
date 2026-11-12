@@ -1,18 +1,17 @@
 // The whole brain, drawn from the running brain's own numbers.
 //
 // Every neuron is a point in the region whose role its population plays (the page names the
-// role; it claims nothing about what the neurons are). A synapse glows with the message it
-// carries, |weight x presynaptic activation|; while a sweep changes a presynaptic neuron, a
-// pulse runs along its synapses. A lesson's changed synapses flash, gold where they grew and
-// blue where they shrank. The records beside the brain are drawn as cells of a hippocampus: a
-// cell lights when its record is read or written, with a thumbnail of the place it holds.
-// Every part (a region, the records, a tract) has a box and a button over it: pointing at it,
-// tapping it or tabbing to it opens the card that explains it (cards.js).
+// role; it claims nothing about what the neurons are). The map's sheet is drawn as the map it is:
+// its cells in rows and columns as the room's, each cell's code units in a small square, a unit
+// lit in the colour of the kind it codes. A synapse glows with the message it carries,
+// |weight x presynaptic activation|; while a sweep changes a presynaptic neuron, a pulse runs
+// along its synapses. Every part (a region or a tract) has a box and a button over it: pointing
+// at it, tapping it or tabbing to it opens the card that explains it (cards.js).
 // Nothing is invented: the activations are the settle's own, sweep by sweep, and the weights
 // are the brain's own. WebGL2 draws it on a GPU; on a software renderer, or if frames get slow,
 // a Canvas2D view draws the neurons and the strongest messages instead.
 
-import { glyph } from './scene.js';
+import { THING_COLOR } from './scene.js';
 
 export const COLOR = {
   visual: [0.4, 0.74, 1.0],
@@ -28,6 +27,12 @@ export const COLOR = {
   doubt: [0.66, 0.56, 0.98],
   found: [0.95, 0.55, 0.78],
   keep: [0.78, 0.9, 0.42],
+  map: [0.24, 0.89, 0.82],
+  recall: [0.66, 0.56, 0.98],
+  attention: [1.0, 0.8, 0.42],
+  placecells: [0.95, 0.55, 0.78],
+  objects: [0.4, 0.74, 1.0],
+  lost: [0.62, 0.72, 0.86],
   other: [0.72, 0.72, 0.82],
   excite: [1.0, 0.62, 0.28],
   inhibit: [0.32, 0.58, 1.0],
@@ -48,13 +53,13 @@ export const ROLE = {
   found: 'plays the role of the map’s entry from the other senses',
   keep: 'plays the role of a brake on the carried movement',
 };
-const ANATOMY = { visual: 'visual cortex', somatosensory: 'somatosensory', motor: 'motor strip', association: 'association cortex',
-  prefrontal: 'prefrontal cortex', place: 'parietal · entorhinal map', timer: 'timer', shift: 'the step', doubt: 'the doubt', found: 'other senses', keep: 'the keep', auditory: 'auditory cortex', hippocampus: 'hippocampus' };
-const SHORT = { visual: 'visual', somatosensory: 'body', motor: 'motor', association: 'association', prefrontal: 'prefrontal', place: 'map', auditory: 'hearing', timer: 'timer', shift: 'step', doubt: 'doubt', found: 'senses', keep: 'keep' };
+const ANATOMY = { map: 'the map', recall: 'replay', attention: 'kind', placecells: 'where', objects: 'what', timer: 'clock', doubt: 'doubt', lost: 'no place' };
+const SHORT = { map: 'map', recall: 'replay', attention: 'kind', placecells: 'where', objects: 'what', timer: 'clock', doubt: 'doubt', lost: 'lost' };
+const KIND_HUE = (name) => (THING_COLOR[name] ? THING_COLOR[name].map((v) => v / 255) : null);
 const css = (rgb, a = 1) => `rgba(${rgb.map((v) => Math.round(v * 255)).join(',')},${a})`;
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 const ease = (f) => f * f * (3 - 2 * f);
-const LEVEL_FLOOR = 0.08; // a population this quiet is drawn at its true, dim level
+const LEVEL_FLOOR = 1e-4; // a population quieter than this is drawn at its true, dim level
 const FLASH_MS = 900;
 const SIGNAL = 0.062;        // how bright a synapse's signal is drawn
 const ANATOMY_LIGHT = 0.1;   // the wiring's own faint light, as a share of a full signal
@@ -242,8 +247,7 @@ export class BrainView {
     this.wave = null;
     this.slow = 0;
     this.learning = 0; // the time of the latest lesson that changed synapses
-    this.cells = [];
-    this.parts = [];       // what explains itself: regions, the records and the tracts
+    this.parts = [];       // what explains itself: regions and tracts
     this.spot = new Set(); // the parts a card or the tutorial points at
     this.onPart = null;    // (id, 'enter' | 'leave' | 'tap', event) from the pointer or the keyboard
     this.cam = { x: 0, y: 0, s: 1 };
@@ -291,8 +295,6 @@ export class BrainView {
         this.unit[i] = { reading, value: lo + ((hi - lo) * j) / (per - 1), index: j };
       });
     }
-    this.records = brain.records || null;
-    this.cells = Array.from({ length: this.records?.capacity || 0 }, () => ({ lit: 0, write: 0, record: null }));
     this.inbound = this.lists(this.post, n);
     this.outbound = this.lists(this.pre, n);
     // per synapse: its block (a pair of regions) and how bright a typical message of it glows
@@ -394,7 +396,7 @@ export class BrainView {
     const pos = this.pos = new Float32Array(2 * n);
     const size = this.size = new Float32Array(n);
     const hue = this.hue = new Float32Array(3 * n);
-    this.labels = []; this.labelsPlaced = false;
+    this.labels = []; this.labelsPlaced = false; this.sheetBox = null;
     this.glows = [];
     // The brain fills its pane: as wide as the pane, and as tall as a brain may be (the cortex
     // with the cerebellum and the stem below it spans 1.06 of the box's height). `inset` is
@@ -458,89 +460,48 @@ export class BrainView {
       const [x, y] = at(u, v);
       this.glows.push({ region: region.index, x, y, rx: ru * bw, ry: rv * bh, hue: COLOR[region.role] || COLOR.other });
     };
-    const seen = { visual: 0, somatosensory: 0, motor: 0, place: 0, association: 0, prefrontal: 0, other: 0 };
+    let nth = 0;
     for (const r of this.regions) {
-      const kind = r.layout?.kind, per = r.layout?.per || r.neurons.length;
-      const rows = kind === 'axes' ? Math.round(r.neurons.length / per) : 1;
-      const row = (k) => r.neurons.slice(k * per, (k + 1) * per);
-      const nth = seen[r.role in seen ? r.role : 'other']++;
+      const kind = r.layout?.kind;
       if (r.seat) {
         // the host names the region's seat: its centre and half size, in the drawing's units
         const [u, v, hw, hh] = r.seat;
-        if (kind === 'axes' && r.role === 'place' && rows === 2) {
-          // the held place as a map's axes: x units across, y units up
-          line(row(0), u - hw * 0.8, v + hh, u + hw, v + hh);
-          line(row(1), u - hw, v + hh * 0.8, u - hw, v - hh);
-          this.placeBox = { region: r.index, x0: at(u - hw * 0.8, 0)[0], x1: at(u + hw, 0)[0], y0: at(0, v + hh * 0.8)[1], y1: at(0, v - hh)[1] };
-        } else if (kind === 'axes') {
-          // one line of tuned units a reading: side by side where the seat is tall, stacked where it is wide
-          const tall = hh * bh > hw * bw, small = clamp(unitR * Math.min(1, ((tall ? 2 * hh * bh : 2 * hw * bw) / per) / (2.3 * unitR)), 1.3, unitR);
-          for (let k = 0; k < rows; k++) {
-            const t = rows > 1 ? k / (rows - 1) - 0.5 : 0;
-            if (tall) line(row(k), u + t * hw * 1.3, v + hh, u + t * hw * 1.3, v - hh, 0, small);
-            else line(row(k), u - hw, v + t * hh * 1.3, u + hw, v + t * hh * 1.3, 0, small);
-          }
-        } else if (kind === 'grid') {
-          const { width: gw, height: gh } = r.layout, cell = Math.min((2 * hw * bw) / gw, (2 * hh * bh) / gh);
+        if (kind === 'cells') {
+          // the map's cells in rows and columns as the room's (x across, y up); a cell's code
+          // units in a small square inside it
+          const { nx, ny, units } = r.layout, side = Math.ceil(Math.sqrt(units));
+          const cw = (2 * hw * bw) / nx, ch = (2 * hh * bh) / ny;
           r.neurons.forEach((i, k) => {
-            const [x, y] = at(u - hw + (2 * hw * ((k % gw) + 0.5)) / gw, v + hh - (2 * hh * (Math.floor(k / gw) + 0.5)) / gh);
-            pos[2 * i] = x; pos[2 * i + 1] = y; size[i] = clamp(cell * 0.36, 0.9, unitR);
+            const cell = Math.floor(k / units), unit = k % units, ci = Math.floor(cell / ny), cj = cell % ny;
+            const [x, y] = at(u - hw + (2 * hw * ci) / nx, v + hh - (2 * hh * (cj + 1)) / ny);
+            pos[2 * i] = x + (((unit % side) + 0.5) / side) * cw; pos[2 * i + 1] = y + ((Math.floor(unit / side) + 0.5) / side) * ch;
+            size[i] = clamp((Math.min(cw, ch) / side) * 0.3, 0.35, unitR);
           });
+          if (r.name === 'map') this.sheetBox = { region: r.index, x0: at(u - hw, 0)[0], x1: at(u + hw, 0)[0], y0: at(0, v - hh)[1], y1: at(0, v + hh)[1], nx, ny, units };
+        } else if (kind === 'row') {
+          const tall = hh * bh > hw * bw, small = clamp(unitR * 0.8, 1.3, unitR);
+          if (tall) line(r.neurons, u, v - hh, u, v + hh, 0, small); else line(r.neurons, u - hw, v, u + hw, v, 0, small);
         } else {
           ellipse(this.fieldPlace.get(r.name) || r.neurons.map((i, k) => ({ i, x: k % 12, y: Math.floor(k / 12) })), u, v, hw, hh);
         }
         glow(r, u, v, hw * 1.15, hh * 1.15); label(r, u - hw, v - hh - 0.062);
         continue;
       }
-      if (r.role === 'visual' && kind === 'axes') {
-        // the camera's report at the back of the brain: x units across, y units up
-        line(row(0), 0.795, 0.49, 0.935, 0.49);
-        if (rows > 1) line(row(1), 0.865, 0.68, 0.865, 0.30);
-        glow(r, 0.865, 0.49, 0.09, 0.22); label(r, 0.80, 0.215);
-      } else if (r.role === 'visual') {
-        line(r.neurons, 0.935, 0.32 + 0.05 * nth, 0.935, 0.32 + 0.05 * nth, 0, unitR * 1.5);
-      } else if (r.role === 'somatosensory') {
-        // the joint readings behind the central sulcus, one arc a joint
-        for (let k = 0; k < rows; k++) line(row(k), 0.425 + 0.03 * k, 0.60, 0.455 + 0.03 * k, 0.085, 0.035);
-        glow(r, 0.47, 0.34, 0.05, 0.27); label(r, 0.405, 0.03);
-      } else if (r.role === 'motor') {
-        // the arm's commands in front of the central sulcus, one arc a joint
-        for (let k = 0; k < rows; k++) line(row(k), 0.305 + 0.03 * k, 0.60, 0.335 + 0.03 * k, 0.085, 0.035);
-        glow(r, 0.35, 0.34, 0.05, 0.27); label(r, 0.215, 0.03);
-      } else if (r.role === 'place' && kind === 'axes') {
-        // the place answer over the parietal region: x units across, y units up, as a map's axes
-        line(row(0), 0.575, 0.345, 0.765, 0.345);
-        if (rows > 1) line(row(1), 0.553, 0.318, 0.553, 0.075);
-        this.placeBox = { region: r.index, x0: at(0.575, 0)[0], x1: at(0.765, 0)[0], y0: at(0, 0.318)[1], y1: at(0, 0.075)[1] };
-        glow(r, 0.66, 0.2, 0.13, 0.18); label(r, 0.61, 0.03);
-      } else if (r.role === 'place' && kind === 'grid') {
-        const { width: gw, height: gh } = r.layout;
-        r.neurons.forEach((i, k) => {
-          const [x, y] = at(0.585 + 0.16 * ((k % gw) + 0.5) / gw, 0.31 - 0.225 * (Math.floor(k / gw) + 0.5) / gh);
-          pos[2 * i] = x; pos[2 * i + 1] = y; size[i] = clamp((0.16 * bw) / gw * 0.36, 1.1, unitR);
-        });
-        this.placeBox = null;
-        glow(r, 0.665, 0.2, 0.1, 0.15); label(r, 0.61, 0.03);
-      } else if (r.role === 'association') {
-        const f = ellipse(this.fieldPlace.get(r.name) || r.neurons.map((i, k) => ({ i, x: k % 12, y: Math.floor(k / 12) })), 0.655, 0.575, 0.085, 0.155);
-        if (f) { this.glows.push({ region: r.index, ...f, hue: COLOR.association }); label(r, 0.75, 0.70); }
-      } else if (r.role === 'prefrontal') {
-        const f = ellipse(this.fieldPlace.get(r.name) || r.neurons.map((i, k) => ({ i, x: k % 12, y: Math.floor(k / 12) })), 0.165, 0.43, 0.1, 0.22);
-        if (f) { this.glows.push({ region: r.index, ...f, hue: COLOR.prefrontal }); label(r, 0.075, 0.175); }
-      } else {
-        const f = ellipse(r.neurons.map((i, k) => ({ i, x: k % 10, y: Math.floor(k / 10) })), 0.80 + 0.06 * nth, 0.74, 0.05, 0.05);
-        if (f) label(r, 0.76 + 0.06 * nth, 0.80);
-      }
+      // a region the host gives no seat: a small field at the bottom of the temporal lobe
+      const f = ellipse(r.neurons.map((i, k) => ({ i, x: k % 10, y: Math.floor(k / 10) })), 0.80 + 0.06 * nth, 0.74, 0.05, 0.05);
+      if (f) label(r, 0.76 + 0.06 * nth, 0.80);
+      nth += 1;
     }
     for (let i = 0; i < n; i++) hue.set(COLOR[this.regions[this.regionOf[i]]?.role] || COLOR.other, 3 * i);
-    // the hippocampus: one cell a record slot, along an arc in the temporal lobe
-    const count = this.cells.length;
-    this.cells.forEach((cell, k) => {
-      const t = count > 1 ? k / (count - 1) : 0.5;
-      const [x, y] = at(0.27 + 0.30 * t, 0.735 + 0.035 * Math.sin(Math.PI * t) - 0.02 * t);
-      cell.x = x; cell.y = y; cell.r = clamp(bw * 0.011, 3.2, 8);
-    });
-    if (count) { const [x, y] = at(0.30, 0.86); this.cellLabel = { x, y }; }
+    // a code unit in the colour of the kind it codes, where the brain names its kinds
+    const coded = new Map();
+    for (const [name, units] of Object.entries(this.brain.codes || {})) if (units.length === 1 && KIND_HUE(name)) coded.set(units[0], KIND_HUE(name));
+    for (const r of this.regions) {
+      const units = r.layout?.kind === 'cells' ? r.layout.units : r.layout?.kind === 'row' && r.neurons.length === this.brain.units ? 1 : 0;
+      if (!units || !coded.size) continue;
+      const every = r.layout?.kind === 'row' ? r.neurons.length : units;
+      r.neurons.forEach((i, k) => { const h = coded.get(k % every); if (h && (r.layout?.kind === 'row' || units > 1)) hue.set(h, 3 * i); });
+    }
     this.tracts();
     this.placeParts();
     if (this.gl) { this.uploadLayout(); this.uploadSynapses(); }
@@ -632,16 +593,6 @@ export class BrainView {
     this.learning = performance.now();
   }
 
-  /** The records as the brain holds them: per thing its slot, its place and how it came. */
-  setRecords(things, now = performance.now()) {
-    for (const t of things || []) {
-      if (t.slot === undefined || t.slot < 0 || !this.cells[t.slot]) continue;
-      const cell = this.cells[t.slot];
-      cell.record = t;
-      if (t.write) cell.write = now; else cell.lit = now;
-    }
-  }
-
   sweepInfo() { return this.wave ? { sweep: this.wave.sweeps[Math.min(this.wave.sweeps.length - 1, Math.floor(this.wave.head) + 1)], of: this.wave.of } : null; }
 
   // -- WebGL2
@@ -715,20 +666,11 @@ export class BrainView {
   // What each synapse's light is multiplied by: a wide fan of synapses glows fainter per synapse
   // than a narrow one, and every block is read against its own mean weight.
   gains() {
-    // a small brain packs the same curves into fewer pixels: its light is turned down with its size
-    // and a brain of many synapses is turned down with their number, so that its tracts do not run to white
-    const size = clamp(Math.pow((this.brainBox?.w || this.width) / 640, 1.3), 0.22, 1.25) * clamp(Math.sqrt(24000 / Math.max(1, this.pre.length)), 0.3, 1);
-    return this.blockNames.map((name, b) => {
-      const fan = clamp(Math.sqrt(1600 / Math.max(64, this.blockCount[b])), 0.12, 1.6);
-      const from = this.regions[Number(name.split('>')[0])]?.role;
-      if (this.pre.length > 60000) {
-        // a brain of many synapses: every projection is read against its own strongest synapse
-        // and the number of its synapses that meet at one neuron, so that no bundle runs to white
-        const [ra, rb] = name.split('>').map(Number), meet = this.blockCount[b] / Math.max(1, this.regions[rb]?.neurons.length || 1);
-        return (0.5 / ((this.blockMax[b] || 1) * Math.sqrt(Math.max(1, meet)))) * clamp(Math.pow((this.brainBox?.w || this.width) / 640, 1.3), 0.3, 1.25) * (DENSE[this.regions[ra]?.role] ?? 1);
-      }
-      return (0.5 / (this.blockScale[b] * 0.6 || 1)) * fan * size * SIGNAL * (DENSE[from] ?? 1);
-    });
+    // A synapse's light is its weight against its tract's strongest, times its source neuron's
+    // activity against the most active neuron of that region (drawn in drawGL): every tract shows
+    // its pattern, however small the activities it carries. A brain drawn small is turned down.
+    const size = clamp(Math.pow((this.brainBox?.w || this.width) / 640, 1.1), 0.35, 1.2);
+    return this.blockNames.map((name, b) => (0.55 / (this.blockMax[b] || 1)) * size);
   }
 
   uploadSynapses(weightsOnly = false) {
@@ -770,7 +712,7 @@ export class BrainView {
     const changeGain = this.wave ? 1 / this.wave.top : 1;
     for (let i = 0; i < n; i++) {
       const scale = this.levelScale[this.regionOf[i] < 0 ? last : this.regionOf[i]];
-      s[4 * i] = this.display[i]; s[4 * i + 1] = this.change[i] * changeGain;
+      s[4 * i] = this.display[i] / scale; s[4 * i + 1] = this.change[i] * changeGain;
       s[4 * i + 2] = this.display[i] / scale; s[4 * i + 3] = this.wave ? this.change[i] * changeGain * 0.25 : this.change[i] / scale;
     }
     gl.bindTexture(gl.TEXTURE_2D, this.stateTex);
@@ -790,7 +732,8 @@ export class BrainView {
     gl.uniform1i(sp.u.state, 0); gl.uniform1i(sp.u.stateWidth, this.stateWidth);
     gl.uniform2f(sp.u.viewport, this.width, this.height);
     gl.uniform2f(sp.u.centre, cx, cy); gl.uniform3f(sp.u.cam, cam.x, cam.y, cam.s);
-    gl.uniform1f(sp.u.anatomy, ANATOMY_LIGHT);
+    // the wiring's own light, turned down where many synapses overlap
+    gl.uniform1f(sp.u.anatomy, ANATOMY_LIGHT * clamp(1000 / Math.max(1, this.pre.length), 0.01, 1));
     gl.uniform1f(sp.u.pulseGain, this.reduced || !this.wave ? 0 : 14); // pulses run while a settle plays
     gl.uniform1f(sp.u.progress, progress);
     gl.uniform3fv(sp.u.excite, COLOR.excite); gl.uniform3fv(sp.u.inhibit, COLOR.inhibit); gl.uniform3fv(sp.u.pulseColor, COLOR.pulse);
@@ -1052,7 +995,7 @@ export class BrainView {
     }
     c.globalCompositeOperation = 'source-over';
     // the place answer as the map it is: the product of its two axes, inside the axes
-    this.drawPlace(c);
+    this.drawSheet(c);
     // labels
     c.font = `600 ${this.compact ? 9 : 10.5}px Inter, system-ui, sans-serif`;
     c.textBaseline = 'alphabetic';
@@ -1085,7 +1028,6 @@ export class BrainView {
       c.fillStyle = css(COLOR[l.region.role] || COLOR.other, 0.95);
       c.fillText(l.text, l.x, l.y + 10);
     }
-    this.drawCells(c, now);
     c.restore();
     // a lesson's changed synapses, on the tracts' own layer
     this.view(c, 1);
@@ -1168,81 +1110,35 @@ export class BrainView {
     c.restore();
   }
 
-  drawPlace(c) {
-    const box = this.placeBox;
+  // The map's sheet as the map it is: each cell lit by its code units' activity, in the colours
+  // of the kinds they code, as soft light under its neurons. It is the region's own activity.
+  drawSheet(c) {
+    const box = this.sheetBox;
     if (!box) return;
-    const r = this.regions[box.region], per = r.layout.per;
-    const scale = this.levelScale[box.region];
-    const cw = (box.x1 - box.x0) / per, ch = (box.y0 - box.y1) / per;
+    const r = this.regions[box.region], { nx, ny, units } = box, scale = this.levelScale[box.region];
+    if (!this.sheetCanvas) this.sheetCanvas = document.createElement('canvas');
+    const sc = this.sheetCanvas;
+    if (sc.width !== nx || sc.height !== ny) { sc.width = nx; sc.height = ny; }
+    const g = sc.getContext('2d'), img = g.createImageData(nx, ny);
+    for (let cell = 0; cell < nx * ny; cell++) {
+      let red = 0, green = 0, blue = 0, top = 0;
+      for (let u = 0; u < units; u++) {
+        const i = r.neurons[cell * units + u], v = Math.sqrt(Math.max(0, this.display[i] / scale)); // a spread patch stays legible
+        if (v < 0.01) continue;
+        red += this.hue[3 * i] * v; green += this.hue[3 * i + 1] * v; blue += this.hue[3 * i + 2] * v; top = Math.max(top, v);
+      }
+      if (!top) continue;
+      const o = 4 * ((ny - 1 - (cell % ny)) * nx + Math.floor(cell / ny));
+      img.data[o] = 255 * Math.min(1, red); img.data[o + 1] = 255 * Math.min(1, green); img.data[o + 2] = 255 * Math.min(1, blue); img.data[o + 3] = 255 * Math.min(1, 0.25 + 0.6 * top);
+    }
+    g.putImageData(img, 0, 0);
     c.save();
     c.globalCompositeOperation = 'lighter';
-    for (let j = 0; j < per; j++) {
-      const ay = Math.max(0, this.display[r.neurons[per + j]] / scale);
-      if (ay < 0.04) continue;
-      for (let i = 0; i < per; i++) {
-        const ax = Math.max(0, this.display[r.neurons[i]] / scale);
-        const v = ax * ay;
-        if (v < 0.03) continue;
-        c.fillStyle = css(COLOR.place, 0.55 * v);
-        c.fillRect(box.x0 + i * cw, box.y0 - (j + 1) * ch, cw + 0.5, ch + 0.5);
-      }
-    }
+    c.imageSmoothingEnabled = true; c.imageSmoothingQuality = 'high';
+    c.drawImage(sc, box.x0, box.y0, box.x1 - box.x0, box.y1 - box.y0);
     c.restore();
-    c.strokeStyle = 'rgba(63,224,207,0.16)'; c.lineWidth = 1;
-    c.strokeRect(box.x0, box.y1, box.x1 - box.x0, box.y0 - box.y1);
-  }
-
-  // The records' cells. A cell lights for a read (gold) or a write (white), and the latest
-  // record's thumbnail hangs from it by a thread: the place it holds on the plane.
-  drawCells(c, now) {
-    if (!this.cells.length) return;
-    const plane = this.records?.value?.plane || [-1, 1, -0.2, 1.4];
-    for (const cell of this.cells) {
-      const read = clamp(1 - (now - cell.lit) / 400, 0, 1), write = clamp(1 - (now - cell.write) / 700, 0, 1);
-      const held = cell.record ? 1 : 0;
-      const level = Math.max(read * 0.75, write, held * 0.22);
-      c.beginPath(); c.arc(cell.x, cell.y, cell.r * (1 + 0.25 * write), 0, Math.PI * 2);
-      c.fillStyle = held ? css(COLOR.hippocampus.map((v) => v * (0.25 + 0.75 * level) + write * 0.3), 1) : 'rgba(60,66,90,0.55)';
-      c.fill();
-      if (level > 0.25) {
-        const grad = c.createRadialGradient(cell.x, cell.y, 0, cell.x, cell.y, cell.r * 4);
-        grad.addColorStop(0, css(COLOR.hippocampus, 0.45 * level)); grad.addColorStop(1, css(COLOR.hippocampus, 0));
-        c.fillStyle = grad; c.beginPath(); c.arc(cell.x, cell.y, cell.r * 4, 0, Math.PI * 2); c.fill();
-      }
-    }
-    // the thumbnails: the plane with each record's place, in a row under the cells, each on a
-    // thread to its cell
-    const held = this.cells.filter((cell) => cell.record?.place);
-    const tw = clamp(this.brainBox.w * 0.066, 26, 46), th = tw * 0.8, gap = 8;
-    const rowY = Math.max(...this.cells.map((cell) => cell.y)) + this.cells[0].r + 16;
-    held.forEach((cell, k) => {
-      const read = clamp(1 - (now - cell.lit) / 400, 0, 1), write = clamp(1 - (now - cell.write) / 700, 0, 1), lit = Math.max(read, write);
-      const tx = this.cells[0].x - this.cells[0].r + k * (tw + gap), ty = rowY;
-      c.strokeStyle = css(COLOR.hippocampus, 0.22 + 0.6 * lit); c.lineWidth = 1;
-      c.beginPath(); c.moveTo(cell.x, cell.y + cell.r); c.quadraticCurveTo(cell.x, ty - 4, tx + tw / 2, ty); c.stroke();
-      c.fillStyle = 'rgba(10,14,25,0.92)'; c.strokeStyle = css(COLOR.hippocampus, 0.3 + 0.6 * lit);
-      c.beginPath(); c.roundRect(tx, ty, tw, th, 3); c.fill(); c.stroke();
-      const px = tx + ((cell.record.place[0] - plane[0]) / (plane[1] - plane[0])) * tw;
-      const py = ty + th - ((cell.record.place[1] - plane[2]) / (plane[3] - plane[2])) * th;
-      // a thing marked gone (its place in sight, and the thing not there) fades in its record
-      c.save(); if (cell.record.gone) c.globalAlpha = 0.3; c.translate(clamp(px, tx + 5, tx + tw - 5), clamp(py, ty + 5, ty + th - 5)); glyph(c, cell.record.name, 3.2, !cell.record.gone); c.restore();
-      c.font = '600 9px Inter, system-ui, sans-serif'; c.textAlign = 'center';
-      c.fillStyle = cell.record.from === 'heard' ? 'rgba(255,224,160,0.95)' : 'rgba(255,224,160,0.8)';
-      c.fillText(cell.record.gone ? `${cell.record.name} ?` : cell.record.from === 'heard' ? `${cell.record.name} ♪` : cell.record.name, tx + tw / 2, ty + th + 10);
-      c.textAlign = 'left';
-    });
-    {
-    if (this.cellLabel) {
-      c.font = `600 ${this.compact ? 9 : 10.5}px Inter, system-ui, sans-serif`;
-      const text = this.compact ? 'HIPPOCAMPUS' : `HIPPOCAMPUS · RECORDS ${this.cells.filter((x) => x.record).length} OF ${this.cells.length}`;
-      const y = this.cells[0].y - this.cells[0].r - 16, x = this.cells[0].x - this.cells[0].r;
-      const w = c.measureText(text).width;
-      if (!this.underCard(x - 4, y - 1, w + 8, 15)) {
-        c.fillStyle = 'rgba(6,8,14,0.72)'; c.beginPath(); c.roundRect(x - 4, y - 1, w + 8, 15, 4); c.fill();
-        c.fillStyle = css(COLOR.hippocampus, 0.88); c.fillText(text, x, y + 10);
-      }
-    }
-    }
+    c.strokeStyle = 'rgba(63,224,207,0.22)'; c.lineWidth = 1;
+    c.strokeRect(box.x0, box.y0, box.x1 - box.x0, box.y1 - box.y0);
   }
 
   // -- the parts that explain themselves
@@ -1265,11 +1161,6 @@ export class BrainView {
       byPart.get(o.name).neurons.push(...r.neurons);
     }
     for (const [id, part] of byPart) parts.push({ id, kind: 'region', label: part.region.label, region: part.region, neurons: part.neurons, ...box(part.neurons, 9) });
-    if (this.cells.length) {
-      const xs = this.cells.map((c) => c.x), ys = this.cells.map((c) => c.y), r = this.cells[0].r;
-      parts.push({ id: 'records', kind: 'records', label: 'the records of things', x: Math.min(...xs) - r - 6, y: Math.min(...ys) - r - 6,
-        w: Math.max(...xs) - Math.min(...xs) + 2 * r + 12, h: Math.max(...ys) - Math.min(...ys) + 2 * r + 56 });
-    }
     this.tractParts = [];
     for (const [b, curve] of this.bundle) {
       const [ra, rb] = this.blockNames[b].split('>').map(Number);
@@ -1342,11 +1233,12 @@ export class BrainView {
     return { signal, synapses: this.blockSynapses[part.block].length, excite, inhibit };
   }
 
-  /** A region's activations as they are drawn, in the region's own order. */
+  /** A region's activations as the latest settle left them, in the region's own order (a card
+   *  reads the moment's settled state, whatever sweep the wave is drawing). */
   activity(name) {
     const r = this.regions.find((q) => q.name === name);
     const out = new Float32Array(r ? r.neurons.length : 0);
-    if (r) r.neurons.forEach((i, k) => { out[k] = this.display[i]; });
+    if (r) r.neurons.forEach((i, k) => { out[k] = this.target[i]; });
     return out;
   }
 
@@ -1363,7 +1255,17 @@ export class BrainView {
     if (best < 0) return '';
     this.unitAt = best;
     const r = this.regions[this.regionOf[best]], u = this.unit[best], a = this.display[best].toFixed(2);
-    if (r.layout?.kind === 'point') return `The unit under your pointer is on while the camera sees the hand. Its activity is ${a}.`;
+    if (r.layout?.kind === 'cells') {
+      // a cell of the map and, where the cell holds several, one of its code units
+      const k = r.neurons.indexOf(best), { ny, units } = r.layout, cell = Math.floor(k / units), unit = k % units;
+      const [x0, , y0] = this.brain.plane, [sx, sy] = this.brain.cell, x = x0 + (Math.floor(cell / ny) + 0.5) * sx, y = y0 + ((cell % ny) + 0.5) * sy;
+      const kind = Object.entries(this.brain.codes || {}).find(([, u]) => u.includes(unit))?.[0];
+      return `Under your pointer: the cell at (${x.toFixed(2)}, ${y.toFixed(2)}) m${units > 1 ? `, code unit ${unit}${kind ? `, the ${kind === 'own' ? 'arm’s hand' : kind}’s` : ''}` : ''}. Its activity is ${a}.`;
+    }
+    if (r.layout?.kind === 'row') {
+      const k = r.neurons.indexOf(best), kind = Object.entries(this.brain.codes || {}).find(([, u]) => u.includes(k))?.[0];
+      return `Under your pointer: code unit ${k}${kind ? `, the ${kind === 'own' ? 'arm’s hand' : kind}’s` : ''}. Its activity is ${a}.`;
+    }
     if (u) {
       // what a tuned unit prefers, in the words of what its region holds
       const axis = u.reading === 0 ? 'x' : 'y';

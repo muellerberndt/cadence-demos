@@ -1,137 +1,94 @@
-# Model card: the place module's development file place-keeplong-2 (a feed-forward baseline)
+# Model card: the what-where map
 
-This card describes the file the Out of sight page runs. It is a development file of the place
-module and a baseline by the project's rules: every synapse of its brain runs from the inputs
-toward the outputs, so an answer is complete after three sweeps. It comes from development
-founder 2 and was raised with practice spans of 80 steps. A version that settles takes its seat
-when it arrives, with its own card.
+This card describes the map the Out of sight page runs: `cadence.space.map.Map`, the brain's
+map of things. The map is the brain's own state: a sheet of cells whose settled activity is
+carried from moment to moment. No list of things is given to it and none is kept beside it. A
+thing enters the map at the moment a sense first reports it. The map's graph has no taught
+synapse: it is wiring and carried activity.
 
 | | |
 | --- | --- |
 | Demo | Out of sight (`out-of-sight/`) |
-| File | `site/pack/module/place-keeplong-2.npz` · 966,534 bytes · SHA-256 `2e84b17e7e1d7082…` · format `cadence-module/1` (arrays and one JSON record, no pickled object) |
-| Library | `cadence-net` 0.98.0, a wheel built from the library's branch lane-099-space at 1ee53f9e; it holds cadence.space and cadence.modules, which PyPI's 0.98.0 does not (SHA-256 `e3ad21502cd17ffb…`), CPU, in Pyodide 314.0.7 |
-| Loaded by | `cadence.load_module(path)`, then `cadence.space.Space.load(module, track=True, records=12, practice=0.0, course=True)` (`site/pack/py/spacebrain/place_host.py`) |
-| Size | 954 neurons, 139,648 synapses: `place` 32, `moved` 18, `motion` 56, `unseen` 8, `heard` 320, `felt` 256, `hidden` 128, `shift` 64, `spread` 16, `found` 48, `keep` 8 |
+| File | `site/pack/map/page-map.npz` · 1,567 bytes · SHA-256 `747cd90a7cdb8969…` · format `cadence-space-map/1` (the map's settings, its kinds' codes and an empty carried state; arrays and one JSON record, no pickled object) |
+| Library | `cadence-net` 0.98.0, a development wheel built from the library's branch lane-099-space at bff49e22; it holds `cadence.space.map`, which PyPI's 0.98.0 does not (SHA-256 `d1b94b96953fb227…`), CPU, in Pyodide 314.0.7 |
+| Loaded by | `Map.load(path, trace=True)` (`site/pack/py/spacebrain/map_host.py`); `trace` keeps each settle by sweep for the brain view |
+| Size | 29,168 neurons, 39,936 synapses, none taught: `map` 13,312, `held` 13,312, `reference` 16, `where` 832, `what` 16, `clock` 832, `doubt` 832, `lost` 16 |
+| Settings | 32 by 26 cells of 6.25 cm by 6.15 cm over a plane of 2 m by 1.6 m; 16 code units a cell, one a kind; `level` 0.02; `empty` "near", `reach` 0.15 m; `step` 0.15 m; `stride` 0.5 m (the guide's founder) |
 | Date | 2026-11-12 |
+
+The development wheel and the map file sit on the branch `space` only. Before any pull request
+they are replaced by the released wheel and the map the library ships.
 
 ## What the program does and what the brain does
 
-`Space` is a program beside the brain, as a long-term memory is. It holds each thing's place
-between moments (two numbers and the radius of its area), writes a camera's report into it,
-moves it by the brain's answers and keeps the records. The brain holds no place. It answers four
-things for a thing whose place may have moved: how far the place moves in this step (`shift`),
-how much of its last seen movement a thing keeps in this step (`keep`), how far off the place
-may be (`spread`), and the place a cue or the arm's joint readings name (`found`). The peak
-drawn in the `place` region is the program's place, shown to the brain.
+The guide of the wheel's commit (`docs/space.md`, "What the brain does and what the program
+does") states it row by row; the page's cards carry those rows beside the steps they belong to.
+In short: the program beside the map copies the sheet's potentials to the next moment's drive on
+the same neurons, turns a report (a kind and a place) into a drive on four cells, passes the
+cells the camera sees as the settle's mask, finds a piece of activity whose place is seen empty
+and drives it onto the unseen cells within reach, sets a question's cue, and reads the
+inventory off the peaks. The brain (the map's graph) holds every place in its settled activity,
+holds a seen cell at zero in every sweep, and settles `where` and `what` on a question's answer.
+Lessons: none on either side.
 
-- **Inputs:** `place` (the held place, 16 tuned units an axis), `moved` (the copy of the arm's
-  command, for the arm's own hand), `motion` (the thing's last seen movement: the slope of the
-  line through its reports), `unseen` (the moments since it was seen), `heard` (a cue: 20
-  directions by 16 distances from the ear), `felt` (the arm's joint readings, 16 by 16).
-- **Outputs:** `shift` (32 units an axis, up to 6 cm a step), `spread` (16 units from 2 mm to
-  2 m), `found` (24 units an axis over the plane), `keep` (8 units from 0 to 1).
-- **On its course:** the page runs this file with `course=True`, as it was raised. A thing that
-  moves by itself is moved by its last seen movement times the share the brain's `keep`
-  answers, in place of the `shift`; the arm's own hand is moved by the `shift`.
-- **One moment on the page:** the cues go to their rows (`hear`), the brain answers
-  (`predict`), the reports go to their rows (`assign`) and the places are written (`observe`).
-  Reports and cues carry what a thing looks like and no name. The answer for the hand is its
-  row's place and a circle that holds it nine times in ten (`where`).
-- **The sight evidence:** the page gives `observe` a function that says whether the camera
-  would see a thing at a place, from the scene as it stands (`in_sight=`). A thing that goes out
-  of view while moving is looked ahead for along its seen movement; it is carried no farther
-  than the middle of its hidden stretch and waits there, with a radius that reaches .90 of the
-  way back to where it was last seen. A thing at rest whose own place the camera sees, with no
-  report from there for three moments, is marked gone: its radius becomes the room's, and the
-  page says the brain does not know where it is.
-- **The arm's own hand:** the space is given the copy of the arm's command. The arm's joint
-  readings are passed only where the pack says the module was raised with them
-  (`--space '{"joints": true}'`); this file was raised without them.
-- **The ear:** the module's ear stands at (0.95, 1.35). A cue heard at the page's body is given
-  to the module as the direction and distance of the same point from its own ear.
+## How the page drives it
 
-## How it was trained
+At every moment of the scene (30 a second) the page sends one `moment`:
 
-By the library's tracking chamber, as the file's own record states: "benchmarks/tracking curriculum(founder=2, 2000 scenes), lessons that hold only reports". The record
-names its arm "feed-forward baseline" and says "founder 2 is a development founder". It was
-raised on its course, with practice spans of 80 steps.
+- `seen`: what the camera reports, a kind and a place for each thing in view, nothing for a thing
+  out of view. Kinds: the hand 0, the arm's own hand 1, the apple 2, the bread 3.
+- `lit`: which of the map's 832 cells the camera sees, by the page's own rule for what the camera
+  sees (`visible` of `site/world.js`, a port of the tracking chamber's rule) at each cell's
+  middle; none while the camera is off.
+- `felt`: for the arm's own hand, the place its joint readings name. The page works the place
+  out from the readings (forward kinematics, a program's step) and gives it to the map as what
+  the body's own sense reports.
+- `heard`: the place a sound names, where a scene file holds a sound.
 
-## How it was measured on the page
+The page draws each thing from its inventory entry: its place, its cells (as soft light, each
+cell by its activity on the map), its state and the moments since a sense wrote it. Two places
+of one kind (a thing left where it was, and one sensed since) are two entries; the page follows
+the one a sense wrote last. A question is a settle: a tap on a thing asks `where_is`, a tap on
+the floor `what_is_at`.
 
-The promise is read from a scripted scenario: the module as its file holds it, the same route by
-scene steps (0.5 m/s into the pillar's shadow, 70 moments at rest there, back), the camera's
-noise from one seed. The scene is also a scene file of the tracking chamber,
-`tests/fixtures/promise-scene.json` (323 steps, 91 out of view; `tools/export_promise.mjs`),
-and the page's first scene is `tests/fixtures/promise-merged-shadows-scene.json`.
-In the default scene, three runs with lessons on and three with lessons off, and one of each
-with the sight evidence withheld; the same, one run each, in the page's first scene, where the
-pillar's shadow and the arm's join (`evidence/promise_runs.json`). Bounds: 5 cm in view, 10 cm
-hidden, 0.85 for the circle, 5 cm after the return. The first scene has no bound: it is read as
-a stated limit.
+## Readings on the page
 
-| Scene | Sight evidence | Lessons | In view | Hidden, mean | Hidden, last | Circle holds the hand | Circle's radius | Held back | After return | Lessons taken | A moment |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| default | given | on | 1.0 cm | 4.6 cm | 15.7 cm | 1.00 | 3.6 cm to 17.0 cm | 81 moments, from hidden moment 11 | 0.3 cm | 319 | 81 ms |
-| default | given | on | 1.0 cm | 4.6 cm | 15.7 cm | 1.00 | 3.6 cm to 17.0 cm | 81 moments, from hidden moment 11 | 0.3 cm | 319 | 79 ms |
-| default | given | on | 1.0 cm | 4.6 cm | 15.7 cm | 1.00 | 3.6 cm to 17.0 cm | 81 moments, from hidden moment 11 | 0.3 cm | 319 | 74 ms |
-| default | given | off | 1.0 cm | 4.6 cm | 15.7 cm | 1.00 | 3.5 cm to 17.0 cm | 80 moments, from hidden moment 12 | 0.3 cm | 0 | 11 ms |
-| default | given | off | 1.0 cm | 4.6 cm | 15.7 cm | 1.00 | 3.5 cm to 17.0 cm | 80 moments, from hidden moment 12 | 0.3 cm | 0 | 10 ms |
-| default | given | off | 1.0 cm | 4.6 cm | 15.7 cm | 1.00 | 3.5 cm to 17.0 cm | 80 moments, from hidden moment 12 | 0.3 cm | 0 | 10 ms |
-| default | none | on | 1.0 cm | 40.6 cm | 83.2 cm | 0.26 | 2.7 cm to 43.1 cm | - | 0.2 cm | 319 | 69 ms |
-| default | none | off | 1.0 cm | 38.2 cm | 80.6 cm | 0.34 | 2.9 cm to 43.4 cm | - | 0.8 cm | 0 | 11 ms |
-| first (shadows joined) | given | on | 1.0 cm | 27.6 cm | 51.1 cm | 0.98 | 3.6 cm to 49.0 cm | 55 moments, from hidden moment 37 | 0.3 cm | 319 | 70 ms |
-| first (shadows joined) | given | off | 1.0 cm | 27.2 cm | 51.1 cm | 0.98 | 3.5 cm to 49.0 cm | 53 moments, from hidden moment 39 | 0.3 cm | 0 | 11 ms |
-| first (shadows joined) | none | on | 1.0 cm | 41.0 cm | 83.9 cm | 0.25 | 2.6 cm to 42.9 cm | - | 0.2 cm | 319 | 67 ms |
-| first (shadows joined) | none | off | 1.0 cm | 38.2 cm | 80.6 cm | 0.34 | 2.9 cm to 43.4 cm | - | 0.8 cm | 0 | 13 ms |
+The promise, replayed on the page from the two scene files of the tracking chamber (a hand goes
+behind the pillar at 0.5 m/s, rests there for 70 moments and comes back; 323 moments, 91 of them
+with the hand out of view), as `tools/check_page.py` reads it (`evidence/page_check.json`,
+2026-11-12 22:52):
 
-In the default scene the place lies 4.6 cm from the hidden hand on average (15.7 cm at the last
-hidden moment, as the hand comes back out) and the circle holds the hand on 1.00 of the hidden
-moments, lessons on or off; the place is held back from hidden moment 12. The circle states .90 and
-holds 1.00: it is wider than it needs to be. In the page's first scene, where the pillar's
-shadow and the arm's join, the place lies 27.2 cm from the hidden hand and the circle holds it on
-0.98: a stated limit. There the hidden stretch has no lit end, the place waits at the middle of
-a stretch that runs to the room's edge, and the circle is wide enough to hold the hand. With the
-sight evidence withheld the place runs on in either scene: 38.2 cm and 0.34.
+| Scene file | In view | Hidden, mean | Last seen, hidden | Kalman filter, hidden | The hand's cells hold it | Its cells, mean | Back in view | A moment |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| the arm folded (`promise-scene.json`) | 1.2 cm | 11.8 cm | 15.5 cm | 27.8 cm | 1.00 | 34 | 1.0 cm | 20 ms |
+| the arm's shadow joined to the pillar's (`promise-merged-shadows-scene.json`) | 1.2 cm | 11.8 cm | 15.5 cm | 27.8 cm | 1.00 | 34 | 1.0 cm | 18 ms |
 
-On the same rows the chamber's Kalman filter lay 28 cm from the hidden hand and the last seen
-position 16 cm. With lessons off the three runs are the same to the last digit and a moment
-takes 10 to 11 ms of the scene's 33 ms; with lessons on it takes 74 to 81 ms.
+The map holds the hand near where it vanished on every hidden moment, and its cells hold the
+true hand on every hidden moment of both files. The page's readings are the model's own on the
+same files: `tests/test_map_host.py` drives the host natively on the pack's wheel and map file and
+reads the same inventory as `Map` driven directly. The map holds no randomness: replays read
+alike to the digit (`tools/promise_runs.py`).
 
-- The page check (`evidence/page_check.json`): 42 of 42; every check passes.
-- One knock: the cup's record lay 14 cm from the cup, against three times the cue's own error,
-  26 cm. The knock's error is drawn from a seeded stream, and the reading repeats.
+The arm's own hand, out of the camera's view and moved by the arm, in the tutorial's last step:
+0.4 mm from the hand on average over 55 hidden moments, 1.5 mm at worst (bound 1.5 cm).
 
-## In the page
-
-Lessons are off unless the visitor switches them on (Details): the module arrives trained. With
-them on, the space teaches the brain from the camera's reports of every thing in view. A lesson
-is made of six reports in a row and lands up to five moments after the last of them; with the
-camera off no lesson is taken, and the rule that marks a resting thing gone does not act while
-lessons are on. No span of reports is left unread (`practice=0.0`). A new brain (Details) is the
-module as its file holds it. A visitor's drag is held to 0.7 m/s and the arm's command to
-0.1 rad a step, the range the module was raised in. Nothing of the brain is saved in the browser.
+A frame took 16.7 ms at the median and 16.7 ms at the 95th percentile with the
+brain view and its bloom on (bounds 20 ms and 34 ms); a moment of the map, with its inventory and
+every neuron's activity for the brain view, took 18 ms of the scene's 33 ms. These were
+read with the Mac's load average at 24 to 69 from other work: upper bounds.
 
 ## Limits
 
-- A feed-forward baseline: its answers do not come from a settled exchange between regions.
-- Where two shadows join, as in the page's first scene, the hidden stretch has no lit end: the
-  place waits 27.2 cm from the hand on average, inside a circle wide enough to hold it
-  (0.98). A stated limit.
-- The circle is wider than it needs to be: in the default scene it states .90 and holds the
-  hand on 1.00 of the hidden moments.
-- Without the sight evidence (`?sight=0`, or the camera off) the place runs on: 38.2 cm and
-  0.34 in the default scene.
-- A hand that goes into the shadow after a pause, or slowly, can be taken as at rest: its place
-  stays where it was last seen. Where the camera sees that place, the space marks it gone and
-  the page says the brain does not know where the hand is; a place that comes to rest just
-  inside the shadow's edge is not marked.
-- A cue does not take the gone mark away in the space; the page shows a place named by a cue
-  after the mark as a heard place.
-- The module was raised on up to about 100 moments of a moving hand it does not see.
-- Places are the room's own. A turn of the body changes what is seen and no stored place; the
-  small map turns the places for display. A body that moves is not modelled.
-- One development founder. These are a page's readings on one run, not the gates of
+- The map moves nothing it does not sense. A hand that keeps going in the dark is held near where
+  it vanished, within 30 cm (two reaches) of it; a hand that comes out farther away is found
+  there as the same thing (within `stride`, 0.5 m) or as a new one. Learning how things move is
+  the second stage of the model, and nothing on this page anticipates a movement.
+- A thing whose place is seen empty with no cell out of sight within reach is known by its kind
+  with no place ("not known where") until a sense reports it.
+- Recognising a thing is not the map's work: the page tells the map the kind of each report.
+- The arm's own hand is placed by its joint readings through the page's kinematics; a taught
+  projection of the readings onto the map (`cadence.space.map.Sense`) is not on this page.
+- One map file of the founder's settings. These are a page's readings, not the gates of
   [cadence#320](https://github.com/muellerberndt/cadence/issues/320).
 
 ## Licence

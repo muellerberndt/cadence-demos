@@ -14,12 +14,12 @@
 import { writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import { Stage, Random, DT, FORMAT, visible, MERGED_JOINTS } from '../site/world.js';
+import { Stage, Random, DT, FORMAT, visible, MERGED_JOINTS, HOME, RECORDED_THINGS } from '../site/world.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 
 function record(joints, name, out) {
-  const stage = new Stage();
+  const stage = new Stage({ home: { ...HOME, things: RECORDED_THINGS } }); // the stage the files were recorded on
   if (joints) stage.home.joints = joints.slice();
   stage.reset(); stage.random = new Random(320);
   const g = stage.geometry, o = g.occluders[0], eye = g.camera.position;

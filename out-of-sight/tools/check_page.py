@@ -38,6 +38,11 @@ the two scene files were known when they were set (the map with ``reach`` 0.15 m
 moments, 1.2 cm in view); the page's own numbers were not. A bound changes only by an amendment
 recorded here.
 
+One change was made after the checks were first committed (74f1cc2) and before the page first
+ran the map, and changed no bound: "what is there" was first asked by a tap on the bread, which
+lands on the bread itself and asks where it is; it is asked at the apple's old place after the
+apple was moved unseen, where the map holds the apple and no apple stands.
+
 The earlier models (a plain composed brain, and the place module of a program beside the brain)
 are not hosts of this page; their checks left with them. Their readings are in the
 repository's history (evidence/page_check.json at a8b35eb). Evidence goes to
@@ -184,7 +189,7 @@ def turn(page, sweep: float, radius: float = 0.3) -> None:
     """Drag the floor around the body through ``sweep`` radians (counter-clockwise where
     positive), as a visitor turns the camera."""
     eye, heading = page.evaluate("[window.outOfSight.stage.geometry.camera.position, window.outOfSight.stage.geometry.camera.heading]")
-    at = lambda a: page.evaluate("(p) => window.outOfSight.screenAt(p)", [eye[0] + radius * math.cos(a), eye[1] + radius * math.sin(a)])  # noqa: E731
+    at = lambda a: page.evaluate("(p) => window.outOfSight.screenAt(p)", [eye[0] + radius * math.cos(a), eye[1] + radius * math.sin(a)])
     page.mouse.move(*at(heading))
     page.mouse.down()
     steps = max(8, int(abs(sweep) / 0.06))
@@ -333,7 +338,7 @@ def kept_and_moved(page, c: Check, cell: float) -> dict:
     apple0 = entry(page, "apple")
     wait_moments(page, KEEP_MOMENTS)
     apple1 = entry(page, "apple")
-    seen = page.evaluate("window.outOfSight.state.history.slice(-%d).some((r) => r.pins.apple && r.pins.apple.seen)" % KEEP_MOMENTS)
+    seen = page.evaluate(f"window.outOfSight.state.history.slice(-{KEEP_MOMENTS}).some((r) => r.pins.apple && r.pins.apple.seen)")
     out["kept"] = {"before": apple0, "after": apple1, "moments": KEEP_MOMENTS, "seen_between": seen}
     c.add(f"a thing unseen keeps its place on the map within one cell for {KEEP_MOMENTS} moments", bool(apple0) and bool(apple1) and not seen
           and dist(apple0["place"], apple1["place"]) <= cell and apple1["since"] >= KEEP_MOMENTS, bound_m=cell,
@@ -346,6 +351,13 @@ def kept_and_moved(page, c: Check, cell: float) -> dict:
     moved = entry(page, "apple")
     c.add("a thing moved while the camera looks away keeps its old place on the map", bool(moved) and moved["state"] == "held"
           and dist(moved["place"], old) <= cell, bound_m=cell, entry=moved, old=old, true=page.evaluate("window.outOfSight.stage.where('apple')"))
+    # the map answers "what is there" with the apple at its old place, where no apple stands
+    page.evaluate("document.body.dataset.said = ''")
+    page.mouse.click(*page.evaluate("(p) => window.outOfSight.screenAt(p)", old))
+    page.wait_for_function("(document.body.dataset.said || '').length > 3", timeout=10000)
+    out["what"] = page.evaluate("document.body.dataset.said")
+    c.add("a tap on the floor asks the map what is there: the apple at its old place, where it was moved from unseen",
+          "apple" in out["what"], said=out["what"], point=old)
     # the camera turned to the old place: seen empty
     eye = page.evaluate("window.outOfSight.stage.geometry.camera.position")
     turn_to(page, math.atan2(old[1] - eye[1], old[0] - eye[0]))
@@ -370,26 +382,24 @@ def kept_and_moved(page, c: Check, cell: float) -> dict:
 
 
 def questions(page, c: Check) -> dict:
-    """A tap on a thing asks where it is; a tap on the floor asks what is there."""
+    """A tap on a thing asks the map where it is; a tap on the floor where the map holds nothing
+    asks what is there (the other way, where the map holds a thing, is tried with the apple moved
+    unseen, in ``kept_and_moved``)."""
     out: dict = {}
+    page.evaluate("window.outOfSight.setCase('other')")
+    wait_moments(page, 3)
     x, y = page.evaluate("window.outOfSight.screenOf('apple')")
+    page.evaluate("document.body.dataset.said = ''")
     page.mouse.click(x, y)
     page.wait_for_function("(document.body.dataset.said || '').includes('apple')", timeout=10000)
     out["where"] = page.evaluate("document.body.dataset.said")
     c.add("a tap on a thing asks the map where it is, and the page answers in one sentence", "apple" in out["where"] and "m away" in out["where"], said=out["where"])
-    bread = entry(page, "bread")
-    if bread and bread.get("place"):
-        page.evaluate("document.body.dataset.said = ''")
-        page.mouse.click(*page.evaluate("(p) => window.outOfSight.screenAt(p)", bread["place"]))
-        page.wait_for_function("(document.body.dataset.said || '').length > 3", timeout=10000)
-        out["what"] = page.evaluate("document.body.dataset.said")
     empty = page.evaluate("window.outOfSight.emptyFloor()")
     page.evaluate("document.body.dataset.said = ''")
     page.mouse.click(*page.evaluate("(p) => window.outOfSight.screenAt(p)", empty))
     page.wait_for_function("(document.body.dataset.said || '').length > 3", timeout=10000)
     out["nothing"] = page.evaluate("document.body.dataset.said")
-    c.add("a tap on the floor asks the map what is there: the bread where the map holds it, nothing where it holds nothing",
-          "slice of bread" in (out.get("what") or "") and "nothing" in out["nothing"], **out)
+    c.add("a tap on the floor where the map holds nothing: the map says nothing is there", "nothing" in out["nothing"], said=out["nothing"], point=empty)
     return out
 
 

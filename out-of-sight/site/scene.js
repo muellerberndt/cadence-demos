@@ -1,18 +1,16 @@
-// The scene from above, the map around the body, the map the brain holds, and the error chart:
-// four Canvas2D views.
+// The scene from above and the error chart: two Canvas2D views.
 //
 // SceneView draws the plane as it is (the arm, the hand, the things, the camera's light and its
-// shadows) and, on top, what the brain says: the hand's place as a glowing peak inside the area
-// that holds it at the stated rate, and a pin for every thing's record. MapView draws the place
-// answer itself, straight from the place units' readout. ChartView draws each estimate's error
-// against the true position over the last moments.
+// shadows) and, on top, what the brain's map holds at this moment: every thing on the map as a
+// soft patch of its cells with a pin at its place, and the hand as the scene's hero, a glowing
+// peak over its cells. ChartView draws the hand's distance from the true hand over the last
+// moments, beside last seen and the Kalman filter.
 
-import { forward, litPolygon, cartesian, around } from './world.js';
-import { radiusAt, RATE } from './controls.js';
+import { forward, litPolygon, cartesian } from './world.js';
 import { contour, sheetImage } from './region.js';
 
 const TEAL = [63, 224, 207], ORANGE = [255, 159, 74], GOLD = [255, 206, 102], VIOLET = [183, 156, 255];
-export const THING_COLOR = { hand: ORANGE, cup: [127, 212, 255], apple: [255, 104, 116], bread: [236, 190, 124] };
+export const THING_COLOR = { hand: ORANGE, own: ORANGE, cup: [127, 212, 255], apple: [255, 104, 116], bread: [236, 190, 124] };
 
 /** A kind of thing as a small friendly glyph, drawn at the origin at size u: a cup seen from
  *  above, an apple, a slice of bread. `lit`: in the camera's view (solid and glowing); else it
@@ -87,12 +85,11 @@ export class SceneView {
     this.canvas = canvas;
     this.shade = document.createElement('canvas'); // the shadows inside the camera's field
     this.rings = [];  // sounds: { at, cue, start }
-    this.trail = [];  // the brain's last answers for the hand
-    this.shown = null; // the belief as it is drawn, flowing toward the latest answer
+    this.trail = [];  // the hand's last places on the map
+    this.shown = null; // the hand's place as it is drawn, flowing toward the latest one
     this.calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
     this.scale = 1; this.ox = 0; this.oy = 0;
     this.hatch = null;
-    this.cells = document.createElement('canvas'); // an area given as cells: one pixel a cell
   }
 
   // metres <-> CSS pixels (y up on the plane, down on the screen)
@@ -109,7 +106,7 @@ export class SceneView {
   ring(at, cue, geometry) { this.rings.push({ at: at.slice(), heard: cartesian(geometry, cue), ear: geometry.ear.slice(), start: performance.now() }); }
 
   /** Draw one frame. `s` holds the stage's geometry, the two latest records (for motion
-   *  between moments), the brain's latest answer and the page's toggles. */
+   *  between moments), the map's inventory at this moment and the page's toggles. */
   draw(s, now = performance.now()) {
     const { c, w, h, dpr } = fit(this.canvas);
     const g = s.geometry;
@@ -156,18 +153,13 @@ export class SceneView {
     } else {
       c.fillStyle = 'rgba(2,3,8,0.42)'; c.fillRect(x0, y0, x1 - x0, y1 - y0);
     }
+
+    // what the map holds: each thing's cells as soft light, under everything on the table
+    const entries = s.inventory || [], hand = s.hand;
+    for (const e of entries) if (e.area) this.region(c, e.area, e === hand ? TEAL : (THING_COLOR[e.name] || TEAL), e === hand ? 1 : 0.7);
     c.restore();
     c.strokeStyle = 'rgba(150,165,210,0.28)'; c.lineWidth = 1.2;
     c.beginPath(); c.roundRect(x0, y0, x1 - x0, y1 - y0, 10); c.stroke();
-
-    // the brain's belief of the hand: its haze lies under everything on the table
-    const belief = s.belief?.place ? this.flow(s) : null;
-    const gone = !!s.gone && !!s.record && !s.record.in_view[0]; // the place held for the hand is in sight, and no hand is there
-    if (belief && !gone) {
-      c.save(); c.beginPath(); c.roundRect(x0, y0, x1 - x0, y1 - y0, 10); c.clip();
-      if (belief.cells) this.region(c, belief.cells); else this.haze(c, belief, m);
-      c.restore();
-    }
 
     // the occluding discs
     for (const o of g.occluders) {
@@ -178,24 +170,21 @@ export class SceneView {
       c.strokeStyle = s.selected === 'pillar' ? 'rgba(255,255,255,0.9)' : 'rgba(170,185,225,0.55)'; c.lineWidth = 1.4; c.stroke();
     }
 
-    // the things on the table and their pins
+    // the things on the table as they are, and the map's pins for every thing but the hand
     for (let k = 1; k < things.length; k++) this.thing(c, s, k, things[k], m);
-    for (let k = 1; k < things.length; k++) this.pin(c, s, k, things[k]);
+    for (const e of entries) if (e !== hand && e.place) this.pin(c, s, e, things);
 
-    // the arm
+    // the arm, and the hand as it is
     this.arm(c, g, joints, m, s.own);
-
-    // the hand
     this.hand(c, s, things[0], m);
 
-    // the belief's ring and its peak, over the hand: the brightest thing on the table
-    if (belief) {
-      c.save(); c.beginPath(); c.roundRect(x0, y0, x1 - x0, y1 - y0, 10); c.clip();
-      if (gone) this.left(c, belief.place, TEAL); else this.peak(c, s, belief, m);
-      c.restore();
-    }
+    // the hand as the map holds it: the brightest thing on the table
+    c.save(); c.beginPath(); c.roundRect(x0, y0, x1 - x0, y1 - y0, 10); c.clip();
+    if (hand?.place) this.peak(c, s, hand, things[0], m);
+    c.restore();
+    this.lost(c, s, entries, x0, y1);
 
-    // the comparison's markers
+    // the comparison's markers (Details)
     if (s.compare && s.controls) {
       const { last, kalman, kalmanRadius } = s.controls;
       const [kx, ky] = S(kalman), [qx, qy] = S(last);
@@ -208,23 +197,23 @@ export class SceneView {
       c.beginPath(); c.moveTo(qx - 4, qy - 4); c.lineTo(qx + 4, qy + 4); c.moveTo(qx + 4, qy - 4); c.lineTo(qx - 4, qy + 4); c.stroke();
     }
 
-    // what was just asked about: a line from the body to the place the brain answered
+    // what was just asked about: a line from the body to the place the map answered
     if (s.asked?.place) {
-      const f = 1 - (now - s.asked.at) / 2200, [ax, ay] = S(s.asked.place);
+      const fade = 1 - (now - s.asked.at) / 2200, [ax, ay] = S(s.asked.place);
       c.save();
-      c.strokeStyle = rgba(GOLD, 0.8 * f); c.lineWidth = 1.4; c.setLineDash([3, 5]);
+      c.strokeStyle = rgba(GOLD, 0.8 * fade); c.lineWidth = 1.4; c.setLineDash([3, 5]);
       c.beginPath(); c.moveTo(eye[0], eye[1]); c.lineTo(ax, ay); c.stroke(); c.setLineDash([]);
-      c.beginPath(); c.arc(ax, ay, 16 + 10 * (1 - f), 0, Math.PI * 2); c.stroke();
+      c.beginPath(); c.arc(ax, ay, 16 + 10 * (1 - fade), 0, Math.PI * 2); c.stroke();
       c.restore();
     }
 
     // the tutorial's guide: a ring on what to take hold of, and where to bring it
     if (s.guide) this.guide(c, s.guide, m, now);
 
-    // the camera and the ear
+    // the camera
     this.cameraGlyph(c, eye, cam.heading, s.cameraOn, s.selected === 'camera');
 
-    // sounds: rings from where the thing is, and what the ear heard of it
+    // sounds (a scene file may hold them): rings from where the thing is, and what the ear heard of it
     this.rings = this.rings.filter((r) => now - r.start < 1100);
     for (const r of this.rings) {
       const age = (now - r.start) / 1100, [rx, ry] = S(r.at), [hx2, hy2] = S(r.heard), [ex, ey] = S(r.ear);
@@ -236,9 +225,9 @@ export class SceneView {
       }
       c.strokeStyle = rgba(GOLD, 0.5 * (1 - age)); c.lineWidth = 1; c.setLineDash([2, 5]);
       c.beginPath(); c.moveTo(ex, ey); c.lineTo(hx2, hy2); c.stroke(); c.setLineDash([]);
-      c.fillStyle = rgba(GOLD, 0.9 * (1 - age)); c.beginPath(); c.arc(hx2, hy2, 3, 0, Math.PI * 2); c.fill();
     }
   }
+
 
   guide(c, guide, m, now) {
     const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -309,125 +298,147 @@ export class SceneView {
 
   // The belief as it is shown: it flows from one moment's answer to the next, and keeps the
   // path of its last answers.
-  flow(s) {
-    const b = s.belief, f = this.shown;
-    const far = !f || Math.hypot(f.place[0] - b.place[0], f.place[1] - b.place[1]) > 0.5;
-    const k = far || this.calm ? 1 : 0.34;
-    this.shown = far ? { place: b.place.slice(), sd: b.sd.slice() }
-      : { place: [f.place[0] + (b.place[0] - f.place[0]) * k, f.place[1] + (b.place[1] - f.place[1]) * k], sd: [f.sd[0] + (b.sd[0] - f.sd[0]) * k, f.sd[1] + (b.sd[1] - f.sd[1]) * k] };
-    this.shown.cells = b.cells || null; // an area of cells is drawn as the answer states it
-    const moment = s.record?.moment ?? 0;
-    if (moment !== this.trailMoment) {
-      this.trailMoment = moment;
-      this.trail.push(b.place.slice());
-      if (this.trail.length > 36) this.trail.shift();
-    }
-    return this.shown;
-  }
 
-  // The haze: the answer's own spread, drawn as light. The same light lies over a small area or
-  // a large one, so a sure answer is a bright spot and an unsure one a wide, faint glow.
-  haze(c, belief, m) {
-    const [bx, by] = this.toScreen(belief.place), k = radiusAt(RATE);
-    const rx = Math.max(9, k * belief.sd[0] * m), ry = Math.max(9, k * belief.sd[1] * m);
-    const dense = clamp(Math.sqrt((34 * 34) / (rx * ry)), 0.16, 1);
-    c.save();
-    c.globalCompositeOperation = 'lighter';
-    c.translate(bx, by); c.scale(rx, ry);
-    const light = c.createRadialGradient(0, 0, 0, 0, 0, 1.75);
-    light.addColorStop(0, rgba([170, 255, 244], 0.7 * dense)); light.addColorStop(0.3, rgba(TEAL, 0.42 * dense));
-    light.addColorStop(0.62, rgba(TEAL, 0.17 * dense)); light.addColorStop(1, rgba(TEAL, 0));
-    c.fillStyle = light; c.beginPath(); c.arc(0, 0, 1.75, 0, Math.PI * 2); c.fill();
-    c.restore();
-  }
-
-  // A place marked gone: the camera sees it, and the thing is not there. What is left of the
-  // answer is a faded, empty mark where the brain had left the thing, with a question mark: the
-  // brain does not know where the thing is.
-  left(c, place, color) {
-    const [x, y] = this.toScreen(place);
-    c.save();
-    c.strokeStyle = rgba(color, 0.5); c.lineWidth = 1.2; c.setLineDash([3, 4]);
-    c.beginPath(); c.arc(x, y, 13, 0, Math.PI * 2); c.stroke(); c.setLineDash([]);
-    c.fillStyle = rgba(color, 0.75); c.font = '600 13px Inter, system-ui, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
-    c.fillText('?', x, y + 0.5);
-    c.textAlign = 'left'; c.textBaseline = 'alphabetic';
-    c.restore();
-  }
-
-  // An area given as a set of cells: the sheet as soft light, each cell by its share, with the
-  // edge of the cells that hold the stated share drawn around them as a smooth line. It may be two patches.
-  region(c, sheet) {
+  // A thing's cells as soft light: each cell by its activity on the map, with the edge of its
+  // cells drawn around them. A thing in doubt may lie in two patches.
+  region(c, sheet, tint, strength = 1) {
     const [x0, y1] = this.toScreen([sheet.plane[0], sheet.plane[2]]), [x1, y0] = this.toScreen([sheet.plane[1], sheet.plane[3]]);
     c.save();
     c.globalCompositeOperation = 'lighter';
+    c.globalAlpha = strength;
     c.imageSmoothingEnabled = true; c.imageSmoothingQuality = 'high';
-    c.drawImage(sheetImage(sheet, this.cells), x0, y0, x1 - x0, y1 - y0);
+    c.drawImage(sheetImage(sheet, this.cellsCanvas(tint), tint), x0, y0, x1 - x0, y1 - y0);
     c.restore();
   }
+  cellsCanvas(tint) {
+    this.canvases = this.canvases || new Map();
+    const key = tint.join();
+    if (!this.canvases.has(key)) this.canvases.set(key, document.createElement('canvas'));
+    return this.canvases.get(key);
+  }
 
-  // The edge of an area of cells, over the things on the table.
-  regionEdge(c, sheet) {
+  // The edge of a thing's cells.
+  regionEdge(c, sheet, tint, alpha = 0.8) {
     c.save();
     c.globalCompositeOperation = 'lighter';
-    c.shadowColor = rgba(TEAL, 0.9); c.shadowBlur = 10;
-    c.strokeStyle = rgba([150, 250, 238], 0.8); c.lineWidth = 1.4; c.lineCap = 'round';
+    c.shadowColor = rgba(tint, 0.9); c.shadowBlur = 8;
+    c.strokeStyle = rgba(tint.map((v) => Math.round(v + (255 - v) * 0.4)), alpha); c.lineWidth = 1.3; c.lineCap = 'round';
     c.beginPath();
     for (const [ax, ay, bx, by] of contour(sheet)) { const p = this.toScreen([ax, ay]), q = this.toScreen([bx, by]); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); }
     c.stroke();
     c.restore();
   }
 
-  // The ring of doubt (the area that holds the hand at the stated rate), the path of the last
-  // answers and the peak itself.
-  peak(c, s, belief, m) {
-    const [bx, by] = this.toScreen(belief.place), k = radiusAt(RATE);
-    const rx = Math.max(7, k * belief.sd[0] * m), ry = Math.max(7, k * belief.sd[1] * m);
+  // The hand as the map holds it: the edge of its cells, the path of its last places, a bright
+  // peak at its place, a word on how the map holds it, and, while the hand is hidden, a thin line
+  // to where the hand really is.
+  peak(c, s, e, truth, m) {
+    const shown = this.flow(e.place, s.record?.moment ?? 0), [bx, by] = this.toScreen(shown);
     c.save();
     c.globalCompositeOperation = 'lighter';
-    // the path of the last answers, fading
     if (this.trail.length > 1) {
       c.lineCap = 'round'; c.lineJoin = 'round';
       for (let i = 1; i < this.trail.length; i++) {
         const a = this.toScreen(this.trail[i - 1]), b = this.toScreen(this.trail[i]), f = i / this.trail.length;
         if (Math.hypot(a[0] - b[0], a[1] - b[1]) > 0.4 * m) continue;
-        c.strokeStyle = rgba(TEAL, 0.5 * f * f); c.lineWidth = 1 + 2.2 * f;
+        c.strokeStyle = rgba(TEAL, 0.45 * f * f); c.lineWidth = 1 + 2 * f;
         c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.stroke();
       }
     }
-    // the ring; an area given as cells has its own edge in place of it
-    if (belief.cells) this.regionEdge(c, belief.cells);
-    else {
-      c.shadowColor = rgba(TEAL, 0.9); c.shadowBlur = 12;
-      c.strokeStyle = rgba([150, 250, 238], 0.85); c.lineWidth = 1.5;
-      c.beginPath(); c.ellipse(bx, by, rx, ry, 0, 0, Math.PI * 2); c.stroke();
-      c.shadowBlur = 0;
-    }
-    // the peak
-    const r = clamp(Math.min(rx, ry) * 0.7, 9, 20);
+    if (e.area) this.regionEdge(c, e.area, TEAL, 0.85);
+    const r = clamp(e.cells.length > 6 ? 16 : 12, 9, 20);
     const core = c.createRadialGradient(bx, by, 0, bx, by, r);
     core.addColorStop(0, 'rgba(255,255,255,0.98)'); core.addColorStop(0.28, rgba([170, 255, 244], 0.8)); core.addColorStop(1, rgba(TEAL, 0));
     c.fillStyle = core; c.beginPath(); c.arc(bx, by, r, 0, Math.PI * 2); c.fill();
     c.restore();
-    if (s.showHidden && s.record && !s.record.in_view[0]) {
-      // while the hand is hidden: a thin line from the belief to where the hand really is, and,
-      // where the two have parted, how far apart they are
-      const truth = s.record.truth[0], [tx, ty] = this.toScreen(truth);
-      const apart = Math.hypot(s.belief.place[0] - truth[0], s.belief.place[1] - truth[1]), span = Math.hypot(tx - bx, ty - by);
-      c.strokeStyle = 'rgba(255,255,255,0.55)'; c.setLineDash([3, 4]); c.lineWidth = 1.1;
+    const hidden = s.record && !s.record.in_view[0];
+    if (hidden && s.showHidden) {
+      const [tx, ty] = this.toScreen(truth), apart = Math.hypot(shown[0] - truth[0], shown[1] - truth[1]), span = Math.hypot(tx - bx, ty - by);
+      c.save();
+      c.strokeStyle = 'rgba(255,255,255,0.5)'; c.setLineDash([3, 4]); c.lineWidth = 1.1;
       c.beginPath(); c.moveTo(bx, by); c.lineTo(tx, ty); c.stroke(); c.setLineDash([]);
-      if (apart >= 0.1 && span > 30) {
-        // beside the line's middle, clear of the glow and of the hand
+      if (apart >= 0.08 && span > 30) {
         const text = `${Math.round(apart * 100)} cm`, side = tx - bx >= 0 ? 1 : -1, off = (14 + 14 * Math.abs((ty - by) / span)) * side;
         const mx = (bx + tx) / 2 - ((ty - by) / span) * off, my = (by + ty) / 2 + ((tx - bx) / span) * off;
-        c.font = '500 10.5px "JetBrains Mono", ui-monospace, monospace'; c.textAlign = 'center'; c.textBaseline = 'middle';
-        const w = c.measureText(text).width + 10;
-        c.fillStyle = 'rgba(6,8,14,0.82)'; c.beginPath(); c.roundRect(mx - w / 2, my - 8, w, 16, 5); c.fill();
-        c.fillStyle = 'rgba(255,255,255,0.86)'; c.fillText(text, mx, my + 0.5);
-        c.textAlign = 'left'; c.textBaseline = 'alphabetic';
+        this.tag(c, text, mx, my, 'rgba(255,255,255,0.86)');
       }
+      c.restore();
     }
+    if (hidden) this.tag(c, e.state === 'felt' ? 'felt: its joint readings' : e.state === 'near' ? `near where it vanished · ${this.ago(e.since, s.dt)}` : `last seen · ${this.ago(e.since, s.dt)}`, bx, by - r - 8, rgba([170, 255, 244], 0.95));
   }
+
+  ago(moments, dt) { return `${Math.max(0, Math.round((moments || 0) * (dt || 1 / 30)))} s`; }
+
+  // A short word on the table, on a dark ground.
+  tag(c, text, x, y, color) {
+    c.save();
+    c.font = '500 10.5px "JetBrains Mono", ui-monospace, monospace'; c.textAlign = 'center'; c.textBaseline = 'middle';
+    const w = c.measureText(text).width + 10;
+    c.fillStyle = 'rgba(6,8,14,0.82)'; c.beginPath(); c.roundRect(x - w / 2, y - 8, w, 16, 5); c.fill();
+    c.fillStyle = color; c.fillText(text, x, y + 0.5);
+    c.restore();
+  }
+
+  // The place shown for the hand flows from one moment's place to the next, and keeps the path
+  // of its last places.
+  flow(place, moment) {
+    const f = this.shown;
+    const far = !f || Math.hypot(f[0] - place[0], f[1] - place[1]) > 0.5;
+    const k = far || this.calm ? 1 : 0.4;
+    this.shown = far ? place.slice() : [f[0] + (place[0] - f[0]) * k, f[1] + (place[1] - f[1]) * k];
+    if (moment !== this.trailMoment) {
+      this.trailMoment = moment;
+      this.trail.push(place.slice());
+      if (this.trail.length > 36) this.trail.shift();
+    }
+    return this.shown;
+  }
+
+  // A thing on the map other than the hand: a pin at its place, its glyph in the pin's head, and
+  // a word on how the map holds it. Hidden where it sits on the thing the camera sees.
+  pin(c, s, e, things) {
+    // a person's hand, where the page follows the arm's: it is not in the room, and has no true place to show
+    const k = e.name === 'hand' && s.own ? -1 : s.names.indexOf(e.name), color = THING_COLOR[e.name] || [200, 200, 220];
+    // the arm's own hand, where the page follows a person's: the arm's end
+    const arm = e.name === 'own' && !s.own ? s.record?.arm : null;
+    const truth = arm ? arm.tip : k >= 0 ? things[k] : null, inView = arm ? arm.seen : k >= 0 && !!s.record?.in_view?.[k];
+    const off = truth ? Math.hypot(e.place[0] - truth[0], e.place[1] - truth[1]) : Infinity;
+    if (inView && off < 0.03) return;
+    const [x, y] = this.toScreen(e.place);
+    if (e.area && e.cells.length > 4) this.regionEdge(c, e.area, color, 0.55);
+    c.save();
+    if (s.showHidden && truth && off > 0.03) {
+      const [tx, ty] = this.toScreen(truth);
+      c.strokeStyle = rgba(color, 0.4); c.setLineDash([2, 4]); c.lineWidth = 1;
+      c.beginPath(); c.moveTo(x, y); c.lineTo(tx, ty); c.stroke(); c.setLineDash([]);
+    }
+    c.strokeStyle = rgba(color, 0.95); c.lineWidth = 1.5;
+    c.beginPath(); c.moveTo(x, y); c.lineTo(x, y - 15); c.stroke();
+    if (e.state === 'heard' || e.state === 'near') c.setLineDash([2, 2]);
+    c.beginPath(); c.arc(x, y - 21, 7.5, 0, Math.PI * 2);
+    c.fillStyle = 'rgba(8,11,20,0.9)'; c.fill(); c.stroke(); c.setLineDash([]);
+    c.fillStyle = rgba(color, 0.95);
+    c.beginPath(); c.arc(x, y, 2.2, 0, Math.PI * 2); c.fill();
+    c.translate(x, y - 20.4);
+    if (e.name === 'hand' || e.name === 'own') { c.fillStyle = rgba(color, 0.9); c.beginPath(); c.arc(0, 0, 3.2, 0, Math.PI * 2); c.fill(); }
+    else glyph(c, e.name, 3.6, false);
+    c.restore();
+    const word = e.state === 'near' ? `near · ${this.ago(e.since, s.dt)}` : e.state === 'held' ? `${this.ago(e.since, s.dt)} ago` : e.state;
+    if (!inView) this.tag(c, word, x, y + 11, rgba(color, 0.95));
+  }
+
+  // Things the map knows by their kind with no place: a line in the scene's corner.
+  lost(c, s, entries, x0, y1) {
+    const names = entries.filter((e) => !e.place).map((e) => (e.name === 'own' ? 'arm’s hand' : e.name === 'bread' ? 'bread' : e.name));
+    if (!names.length) return;
+    c.save();
+    c.font = '500 11px "JetBrains Mono", ui-monospace, monospace'; c.textBaseline = 'alphabetic';
+    const text = `on the map, not known where: ${names.join(', ')}`, w = c.measureText(text).width + 14;
+    c.fillStyle = 'rgba(6,8,14,0.85)'; c.beginPath(); c.roundRect(x0 + 8, y1 - 26, w, 18, 6); c.fill();
+    c.fillStyle = rgba(GOLD, 0.95); c.fillText(text, x0 + 15, y1 - 13);
+    c.restore();
+  }
+
 
   arm(c, g, joints, m, own) {
     const chain = forward(g, joints).map((p) => this.toScreen(p));
@@ -526,33 +537,6 @@ export class SceneView {
 
   // The record of a thing: a pin where the brain holds it. Solid while the record came from
   // sight, dashed while it came from a sound.
-  pin(c, s, k, truth) {
-    const name = s.names[k], rec = s.pins?.[name];
-    if (!rec?.place) return;
-    const [x, y] = this.toScreen(rec.place), color = THING_COLOR[name] || [200, 200, 220];
-    const off = Math.hypot(rec.place[0] - truth[0], rec.place[1] - truth[1]);
-    const inView = !!s.record?.in_view?.[k];
-    if (inView && off < 0.03) return; // the pin sits on the thing the camera sees
-    if (rec.gone && !inView) { this.left(c, rec.place, color); return; } // not where the brain left it: the pin fades to an empty mark
-    c.save();
-    if (s.showHidden && off > 0.03) {
-      const [tx, ty] = this.toScreen(truth);
-      c.strokeStyle = rgba(color, 0.4); c.setLineDash([2, 4]); c.lineWidth = 1;
-      c.beginPath(); c.moveTo(x, y); c.lineTo(tx, ty); c.stroke(); c.setLineDash([]);
-    }
-    const heard = rec.from === 'heard';
-    c.strokeStyle = rgba(color, 0.95); c.fillStyle = rgba(color, 0.9); c.lineWidth = 1.5;
-    c.beginPath(); c.moveTo(x, y); c.lineTo(x, y - 15); c.stroke();
-    if (heard) c.setLineDash([2, 2]);
-    c.beginPath(); c.arc(x, y - 21, 7.5, 0, Math.PI * 2);
-    c.fillStyle = 'rgba(8,11,20,0.9)'; c.fill(); c.stroke(); c.setLineDash([]);
-    c.fillStyle = rgba(color, 0.95);
-    c.beginPath(); c.arc(x, y, 2.2, 0, Math.PI * 2); c.fill();
-    c.translate(x - (name === 'cup' ? 0.8 : 0), y - 21 + (name === 'cup' ? 0 : 0.6));
-    glyph(c, name, name === 'cup' ? 3.1 : 3.6, false);
-    c.restore();
-  }
-
   // The body, which carries the camera: a round body with its eye where it faces.
   cameraGlyph(c, eye, heading, on, selected) {
     c.save();
@@ -593,88 +577,6 @@ export class SceneView {
   }
 }
 
-/** The map the brain holds: the place answer drawn over the plane, straight from the place
- *  units' readout (each axis one softmax; the map is their product), with the records' pins. */
-export class MapView {
-  constructor(canvas) { this.canvas = canvas; this.image = null; this.buffer = document.createElement('canvas'); }
-
-  draw(s) {
-    const { c, w, h } = fit(this.canvas);
-    c.clearRect(0, 0, w, h);
-    const [lx, hx, ly, hy] = s.geometry.plane;
-    const pad = 14, mw = w - 2 * pad - 6, mh = h - 2 * pad - 8;
-    const scale = Math.min(mw / (hx - lx), mh / (hy - ly));
-    const x0 = pad + 6 + (mw - (hx - lx) * scale) / 2, y0 = 6 + (mh - (hy - ly) * scale) / 2;
-    const W = (hx - lx) * scale, H = (hy - ly) * scale;
-    const P = (p) => [x0 + (p[0] - lx) * scale, y0 + H - (p[1] - ly) * scale];
-    c.fillStyle = '#080b15'; c.beginPath(); c.roundRect(x0, y0, W, H, 6); c.fill();
-    const sheet = s.sheet, cells = s.belief?.cells;
-    if (cells) {
-      // the answer is a sheet of cells: drawn as it is, with the edge of its stated area
-      c.save();
-      c.beginPath(); c.roundRect(x0, y0, W, H, 6); c.clip();
-      c.imageSmoothingEnabled = true; c.imageSmoothingQuality = 'high';
-      c.drawImage(sheetImage(cells, this.buffer), x0, y0, W, H);
-      c.strokeStyle = rgba([150, 250, 238], 0.8); c.lineWidth = 1;
-      c.beginPath();
-      for (const [ax, ay, bx, by] of contour(cells)) { const p = P([ax, ay]), q = P([bx, by]); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); }
-      c.stroke();
-      c.restore();
-    } else if (sheet?.px) {
-      const k = sheet.px.length, kb = this.buffer;
-      if (kb.width !== k) { kb.width = k; kb.height = k; }
-      const bc = kb.getContext('2d');
-      const img = bc.createImageData(k, k);
-      let max = 1e-9;
-      for (let j = 0; j < k; j++) for (let i = 0; i < k; i++) max = Math.max(max, sheet.px[i] * sheet.py[j]);
-      for (let j = 0; j < k; j++) {
-        for (let i = 0; i < k; i++) {
-          const v = Math.pow((sheet.px[i] * sheet.py[j]) / max, 0.6) * Math.min(1, max * k * 0.9 + 0.25);
-          const o = 4 * ((k - 1 - j) * k + i);
-          img.data[o] = 63 + 150 * v * v; img.data[o + 1] = 224 + 31 * v * v; img.data[o + 2] = 207 + 40 * v * v; img.data[o + 3] = 255 * clamp(v, 0, 1);
-        }
-      }
-      bc.putImageData(img, 0, 0);
-      c.save();
-      c.beginPath(); c.roundRect(x0, y0, W, H, 6); c.clip();
-      c.imageSmoothingEnabled = true; c.imageSmoothingQuality = 'high';
-      // unit i is centred on its preferred value: the image spans half a bin beyond the plane
-      const bw = W / (k - 1), bh = H / (k - 1);
-      c.drawImage(kb, x0 - bw / 2, y0 - bh / 2, W + bw, H + bh);
-      c.restore();
-      // the two axes' readouts along the edges
-      c.fillStyle = rgba(TEAL, 0.85);
-      let mx = 1e-9, my = 1e-9;
-      for (let i = 0; i < k; i++) { mx = Math.max(mx, sheet.px[i]); my = Math.max(my, sheet.py[i]); }
-      for (let i = 0; i < k; i++) {
-        const bx = x0 + (i / (k - 1)) * W, hgt = (sheet.px[i] / mx) * 10;
-        c.fillRect(bx - bw * 0.3, y0 + H + 3, bw * 0.6, Math.max(0.6, hgt));
-        const byy = y0 + H - (i / (k - 1)) * H, wid = (sheet.py[i] / my) * 10;
-        c.fillRect(x0 - 3 - Math.max(0.6, wid), byy - bh * 0.3, Math.max(0.6, wid), bh * 0.6);
-      }
-    }
-    c.strokeStyle = 'rgba(150,165,210,0.3)'; c.lineWidth = 1; c.beginPath(); c.roundRect(x0, y0, W, H, 6); c.stroke();
-    // the camera's corner, for orientation
-    const [cx, cy] = P(s.geometry.camera.position);
-    c.fillStyle = 'rgba(150,225,255,0.7)'; c.beginPath(); c.arc(clamp(cx, x0 + 3, x0 + W - 3), clamp(cy, y0 + 3, y0 + H - 3), 2.2, 0, Math.PI * 2); c.fill();
-    // the records' pins
-    for (const [name, rec] of Object.entries(s.pins || {})) {
-      if (!rec?.place) continue;
-      const [px, py] = P(rec.place), color = THING_COLOR[name] || [200, 200, 220];
-      if (rec.gone) c.globalAlpha = 0.32; // not where the brain left it
-      c.strokeStyle = rgba(color, 0.95); c.fillStyle = 'rgba(8,11,20,0.9)'; c.lineWidth = 1.3;
-      if (rec.from === 'heard') c.setLineDash([2, 2]);
-      c.beginPath(); c.arc(px, py, 7, 0, Math.PI * 2); c.fill(); c.stroke(); c.setLineDash([]);
-      c.save(); c.translate(px, py); glyph(c, name, 3, false); c.restore();
-      c.globalAlpha = 1;
-    }
-    if (s.belief?.place && !s.gone) {
-      const [bx, by] = P(s.belief.place);
-      c.strokeStyle = 'rgba(220,255,250,0.95)'; c.lineWidth = 1;
-      c.beginPath(); c.moveTo(bx - 4, by); c.lineTo(bx + 4, by); c.moveTo(bx, by - 4); c.lineTo(bx, by + 4); c.stroke();
-    }
-  }
-}
 
 /** Each estimate's distance from the true hand over the last moments; the moments the hand was
  *  out of view are shaded. */
@@ -726,155 +628,3 @@ export class ChartView {
   }
 }
 
-/** The map as the body has it. "Around me": the body at the centre, facing up, and every thing
- *  the brain holds a record of at its direction and distance, inside a soft ring as wide as the
- *  record's own spread; the hand's answer with its ring. "Room": the same map over the room. A
- *  tap on a thing asks where it is; a tap on an empty direction asks what is there. */
-export class AroundView {
-  constructor(canvas) { this.canvas = canvas; this.marks = []; this.reach = 1.35; this.mode = 'me'; this.asked = null; }
-
-  /** A tapped direction is shown for a moment: { bearing, start }. */
-  ask(bearing) { this.asked = { bearing, start: performance.now() }; }
-
-  draw(s, now = performance.now()) {
-    const { c, w, h } = fit(this.canvas);
-    c.clearRect(0, 0, w, h);
-    this.marks = [];
-    this.size = [w, h];
-    if (this.mode === 'room') { this.room(c, s, w, h); return; }
-    const cx = w / 2, cy = h / 2, R = Math.min(w, h) / 2 - 2, k = R / this.reach, fov = s.geometry.camera.fov;
-    c.save();
-    c.beginPath(); c.arc(cx, cy, R, 0, Math.PI * 2);
-    c.fillStyle = 'rgba(8,11,21,0.94)'; c.fill();
-    c.clip();
-    if (s.cameraOn) {
-      // what the camera sees lies ahead: up
-      const light = c.createRadialGradient(cx, cy, 0, cx, cy, R);
-      light.addColorStop(0, 'rgba(150,225,255,0.3)'); light.addColorStop(1, 'rgba(90,150,255,0.06)');
-      c.fillStyle = light;
-      c.beginPath(); c.moveTo(cx, cy); c.arc(cx, cy, R, -Math.PI / 2 - fov / 2, -Math.PI / 2 + fov / 2); c.closePath(); c.fill();
-    }
-    c.strokeStyle = 'rgba(130,150,210,0.16)'; c.lineWidth = 1;
-    for (const ring of [0.5, 1.0]) { c.beginPath(); c.arc(cx, cy, ring * k, 0, Math.PI * 2); c.stroke(); }
-    if (this.asked && now - this.asked.start < 1600) {
-      // the direction just asked about
-      const f = 1 - (now - this.asked.start) / 1600, a = -Math.PI / 2 - this.asked.bearing;
-      c.fillStyle = `rgba(255,206,102,${0.22 * f})`;
-      c.beginPath(); c.moveTo(cx, cy); c.arc(cx, cy, R, a - 0.45, a + 0.45); c.closePath(); c.fill();
-    }
-    // a thing further than the map reaches is drawn at its rim, in its direction
-    const at = (rel) => { const r = Math.min(this.reach * 0.9, rel.distance) * k; return [cx - Math.sin(rel.bearing) * r, cy - Math.cos(rel.bearing) * r]; };
-    for (let i = 1; i < s.names.length; i++) {
-      const name = s.names[i], pin = s.pins?.[name];
-      if (!pin?.place) continue;
-      const [x, y] = at(around(s.geometry, pin.place)), color = THING_COLOR[name] || [200, 200, 220];
-      if (pin.gone && !s.record?.in_view?.[i]) {
-        // not where the brain left it: the thing fades from the map, with a question mark; a tap asks about it
-        c.save(); c.globalAlpha = 0.3; c.translate(x, y); glyph(c, name, name === 'cup' ? 4.6 : 5.4, false); c.restore();
-        c.fillStyle = rgba(color, 0.85); c.font = '600 10px Inter, system-ui, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
-        c.fillText('?', x + 9, y - 8); c.textAlign = 'left'; c.textBaseline = 'alphabetic';
-        this.marks.push({ name, x, y });
-        continue;
-      }
-      const ring = clamp(radiusAt(RATE) * (pin.spread ?? 0.01) * k, 9.5, R * 0.6);
-      const soft = c.createRadialGradient(x, y, 0, x, y, ring * 1.25);
-      soft.addColorStop(0, rgba(color, 0.42)); soft.addColorStop(0.7, rgba(color, 0.14)); soft.addColorStop(1, rgba(color, 0));
-      c.fillStyle = soft; c.beginPath(); c.arc(x, y, ring * 1.25, 0, Math.PI * 2); c.fill();
-      if (pin.from === 'heard') { c.setLineDash([2, 3]); c.strokeStyle = rgba(color, 0.7); c.beginPath(); c.arc(x, y, ring, 0, Math.PI * 2); c.stroke(); c.setLineDash([]); }
-      c.save(); c.translate(x, y); glyph(c, name, name === 'cup' ? 4.6 : 5.4, !!s.record?.in_view?.[i]); c.restore();
-      this.marks.push({ name, x, y });
-    }
-    if (s.belief?.place) {
-      // the hand: the brain's answer and its ring of doubt; marked gone, a faded mark with a question mark
-      const [x, y] = at(around(s.geometry, s.belief.place));
-      if (s.gone && !s.record?.in_view?.[0]) {
-        c.strokeStyle = rgba(TEAL, 0.45); c.setLineDash([2, 3]); c.beginPath(); c.arc(x, y, 5, 0, Math.PI * 2); c.stroke(); c.setLineDash([]);
-        c.fillStyle = rgba(TEAL, 0.85); c.font = '600 10px Inter, system-ui, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
-        c.fillText('?', x + 9, y - 8); c.textAlign = 'left'; c.textBaseline = 'alphabetic';
-      } else {
-        const ring = clamp(radiusAt(RATE) * Math.sqrt(s.belief.sd[0] * s.belief.sd[1]) * k, 4, R * 0.95);
-        c.strokeStyle = rgba(TEAL, 0.7); c.lineWidth = 1.1; c.beginPath(); c.arc(x, y, ring, 0, Math.PI * 2); c.stroke();
-        c.fillStyle = 'rgba(200,255,248,0.98)'; c.shadowColor = rgba(TEAL, 0.9); c.shadowBlur = 8;
-        c.beginPath(); c.arc(x, y, 3, 0, Math.PI * 2); c.fill(); c.shadowBlur = 0;
-      }
-      this.marks.push({ name: 'hand', x, y });
-    }
-    // the body, facing up
-    c.fillStyle = 'rgba(214,228,255,0.96)'; c.strokeStyle = 'rgba(8,11,21,0.9)'; c.lineWidth = 1;
-    c.beginPath(); c.moveTo(cx, cy - 7.5); c.lineTo(cx + 5.5, cy + 5.5); c.lineTo(cx, cy + 2.8); c.lineTo(cx - 5.5, cy + 5.5); c.closePath(); c.fill(); c.stroke();
-    c.restore();
-    c.strokeStyle = 'rgba(150,165,210,0.4)'; c.lineWidth = 1.1; c.beginPath(); c.arc(cx, cy, R, 0, Math.PI * 2); c.stroke();
-    this.dial = { cx, cy, R };
-  }
-
-  // the same map over the room: the body where it stands, facing the way it faces
-  room(c, s, w, h) {
-    const [lx, hx, ly, hy] = s.geometry.plane, pad = 3;
-    const k = Math.min((w - 2 * pad) / (hx - lx), (h - 2 * pad) / (hy - ly));
-    const x0 = (w - (hx - lx) * k) / 2, y0 = (h - (hy - ly) * k) / 2;
-    const P = (p) => [x0 + (p[0] - lx) * k, y0 + (hy - p[1]) * k];
-    this.plane = { toPlane: (x, y) => [lx + (x - x0) / k, hy - (y - y0) / k] };
-    c.save();
-    c.fillStyle = 'rgba(8,11,21,0.94)'; c.beginPath(); c.roundRect(x0, y0, (hx - lx) * k, (hy - ly) * k, 5); c.fill(); c.clip();
-    const cam = s.geometry.camera, [bx, by] = P(cam.position);
-    if (s.cameraOn) {
-      const light = c.createRadialGradient(bx, by, 0, bx, by, cam.range * k * 0.7);
-      light.addColorStop(0, 'rgba(150,225,255,0.3)'); light.addColorStop(1, 'rgba(90,150,255,0.05)');
-      c.fillStyle = light;
-      c.beginPath(); c.moveTo(bx, by); c.arc(bx, by, cam.range * k, -(cam.heading + cam.fov / 2), -(cam.heading - cam.fov / 2)); c.closePath(); c.fill();
-    }
-    for (let i = 1; i < s.names.length; i++) {
-      const name = s.names[i], pin = s.pins?.[name];
-      if (!pin?.place) continue;
-      const [x, y] = P(pin.place), color = THING_COLOR[name] || [200, 200, 220];
-      if (pin.gone && !s.record?.in_view?.[i]) {
-        c.save(); c.globalAlpha = 0.3; c.translate(x, y); glyph(c, name, name === 'cup' ? 3.4 : 4, false); c.restore();
-        c.fillStyle = rgba(color, 0.85); c.font = '600 9px Inter, system-ui, sans-serif'; c.fillText('?', x + 5, y - 5);
-        this.marks.push({ name, x, y });
-        continue;
-      }
-      const ring = clamp(radiusAt(RATE) * (pin.spread ?? 0.01) * k, 7, 40);
-      const soft = c.createRadialGradient(x, y, 0, x, y, ring * 1.25);
-      soft.addColorStop(0, rgba(color, 0.42)); soft.addColorStop(1, rgba(color, 0));
-      c.fillStyle = soft; c.beginPath(); c.arc(x, y, ring * 1.25, 0, Math.PI * 2); c.fill();
-      c.save(); c.translate(x, y); glyph(c, name, name === 'cup' ? 3.4 : 4, !!s.record?.in_view?.[i]); c.restore();
-      this.marks.push({ name, x, y });
-    }
-    if (s.belief?.place) {
-      const [x, y] = P(s.belief.place), u = radiusAt(RATE), lost = s.gone && !s.record?.in_view?.[0];
-      c.strokeStyle = rgba(TEAL, lost ? 0.35 : 0.7); c.lineWidth = 1.1;
-      c.beginPath(); c.ellipse(x, y, lost ? 5 : Math.max(4, u * s.belief.sd[0] * k), lost ? 5 : Math.max(4, u * s.belief.sd[1] * k), 0, 0, Math.PI * 2); c.stroke();
-      if (lost) { c.fillStyle = rgba(TEAL, 0.85); c.font = '600 9px Inter, system-ui, sans-serif'; c.fillText('?', x + 6, y - 5); }
-      c.fillStyle = 'rgba(200,255,248,0.98)'; c.beginPath(); c.arc(x, y, 2.8, 0, Math.PI * 2); c.fill();
-      this.marks.push({ name: 'hand', x, y });
-    }
-    c.translate(bx, by); c.rotate(Math.PI / 2 - cam.heading);
-    c.fillStyle = 'rgba(214,228,255,0.96)'; c.strokeStyle = 'rgba(8,11,21,0.9)'; c.lineWidth = 1;
-    c.beginPath(); c.moveTo(0, -7); c.lineTo(5, 5); c.lineTo(0, 2.6); c.lineTo(-5, 5); c.closePath(); c.fill(); c.stroke();
-    c.restore();
-    c.strokeStyle = 'rgba(150,165,210,0.4)'; c.lineWidth = 1.1; c.beginPath(); c.roundRect(x0, y0, (hx - lx) * k, (hy - ly) * k, 5); c.stroke();
-    this.dial = null;
-  }
-
-  /** The thing drawn under a point of the canvas, or null. */
-  hit(x, y) {
-    let best = null, near = 15;
-    for (const mark of this.marks) { const d = Math.hypot(mark.x - x, mark.y - y); if (d < near) { near = d; best = mark.name; } }
-    return best;
-  }
-
-  /** The point of the room that a point of the canvas stands for (within the map's reach). */
-  pointAt(x, y, geometry) {
-    if (!this.dial) return this.plane ? this.plane.toPlane(x, y) : null;
-    const d = this.dial, far = (Math.hypot(x - d.cx, y - d.cy) / d.R) * this.reach;
-    if (far > this.reach * 0.9) return null; // the rim stands for everything further
-    const a = geometry.camera.heading + this.bearingAt(x, y, geometry);
-    return [geometry.camera.position[0] + far * Math.cos(a), geometry.camera.position[1] + far * Math.sin(a)];
-  }
-
-  /** The bearing, from the way the body faces, that a point of the canvas stands for. */
-  bearingAt(x, y, geometry) {
-    if (this.dial) return Math.atan2(-(x - this.dial.cx), -(y - this.dial.cy));
-    return this.plane ? around(geometry, this.plane.toPlane(x, y)).bearing : 0;
-  }
-}

@@ -1,4 +1,4 @@
-"""Record steps and scenes with the tracking chamber's Python world, for the page and its parity test.
+"""Record steps and scenes with the tracking chamber's Python world, for the page's parity test.
 
     python tools/record_scenes.py --world <cadence>/benchmarks/tracking --source "<branch> <commit>"
 
@@ -9,9 +9,6 @@ Writes, from the world's own ``step``, scripts and scene file format (``cadence-
   samples of the geometry helpers; the camera's view over the whole plane; and scene files beside
   what the world's own reader makes of them. ``tests/parity.mjs`` gives ``site/world.js`` the same
   inputs and compares every number.
-- ``site/pack/reaches.json``: the recorded scenes the page plays: a person's hand that crosses
-  the blind spot (one per kind: straight, slow, stop, turn), a sweep of the arm's own hand, and
-  the room scene with a thing heard moving out of view.
 """
 
 from __future__ import annotations
@@ -156,42 +153,6 @@ def main() -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(out) + "\n")
     print("wrote", path, f"{path.stat().st_size / 1024:.0f} KB", len(runs), "runs")
-
-    # -- the scenes the page plays
-    reaches = []
-    want = ["straight", "slow", "stop", "turn"]
-    seed = a.seed
-    while want and seed < a.seed + 400:
-        seed += 1
-        for scene in W.scenes("other", seed, 4, steps=180):
-            kind = W.panel(scene)
-            seen = scene.in_view[:, 0]
-            hidden = int((~seen).sum())
-            if kind in want and 25 <= hidden <= 90 and bool(seen[-10:].all()) and bool(seen[:15].all()):
-                want.remove(kind)
-                scene.name = f"a person's hand, {kind}"
-                reaches.append(W.to_dict(scene))
-    for scene in W.scenes("own", a.seed + 7, 12, steps=240):
-        seen = scene.in_view[:, 0]
-        hidden = int((~seen).sum())
-        if 40 <= hidden <= 140 and bool(seen[:10].all()):
-            scene.name = "the arm's own hand, a sweep"
-            reaches.append(W.to_dict(scene))
-            break
-    try:
-        room = W.room_scene(np.random.default_rng(a.seed + 11), kind="demo", steps=240)
-        room.name = "the room: a hand, and a thing heard moving out of view"
-        reaches.append(W.to_dict(room))
-    except Exception as error:  # the room scene is the newest part of the world
-        print("no room scene:", error)
-    order = ["straight", "slow", "stop", "turn", "sweep", "demo"]
-    reaches.sort(key=lambda r: order.index(r["kind"]) if r["kind"] in order else 99)
-    out = {"format": "cadence-out-of-sight-reaches/1", "world_sha256": digest, "source": a.source,
-           "scene_format": W.FORMAT, "reaches": reaches}
-    path = HERE / "site" / "pack" / "reaches.json"
-    path.write_text(json.dumps(out) + "\n")
-    print("wrote", path, f"{path.stat().st_size / 1024:.0f} KB",
-          [(r["name"], len(r["truth"])) for r in reaches])
 
 
 if __name__ == "__main__":

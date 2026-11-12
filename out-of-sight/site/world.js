@@ -239,10 +239,9 @@ export class Random {
 
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 
-// What stands in the room: the hand, and three kinds of thing.
+// What stands in the room: the hand, an apple and a slice of bread.
 export const THINGS = Object.freeze([
   { name: 'hand', what: 0, radius: 0.06 },
-  { name: 'cup', what: 1, radius: 0.055 },
   { name: 'apple', what: 2, radius: 0.05 },
   { name: 'bread', what: 3, radius: 0.06 },
 ]);
@@ -263,8 +262,12 @@ export const HOME = Object.freeze({
   body: { position: [0.45, 0.5], heading: (170 * Math.PI) / 180 },
   pillar: { center: [-0.2, 0.62], radius: 0.1 }, // a little wider than the chamber's, to hide a hand behind with ease
   joints: [2.79, -2.6],
-  things: [[-0.6, 1.0], [-0.2, 0.32], [-0.05, 1.1], [0.82, 0.3]],
+  things: [[-0.6, 1.0], [-0.05, 1.1], [0.82, 0.3]],
 });
+// The stage the promise's scene files were recorded on (tools/export_promise.mjs): a cup stood
+// at (-0.2, 0.32) beside the three. The noise of every step is drawn for each thing on the
+// stage, so the files' rows come from a stage of these four.
+export const RECORDED_THINGS = Object.freeze([[-0.6, 1.0], [-0.2, 0.32], [-0.05, 1.1], [0.82, 0.3]]);
 
 /** An angle brought into (-pi, pi]. */
 export const wrap = (a) => Math.atan2(Math.sin(a), Math.cos(a));

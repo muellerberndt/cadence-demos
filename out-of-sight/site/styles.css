@@ -66,14 +66,7 @@ button:focus-visible, select:focus-visible, input:focus-visible, a:focus-visible
   background: radial-gradient(ellipse 62% 46% at 50% 50%, rgba(56, 96, 170, 0.16), rgba(30, 50, 110, 0.05) 62%, transparent 82%); }
 .promise { margin: 0 0 clamp(8px, 1.6vh, 18px); padding: 0 16px; font-size: clamp(17px, 1.55vw, 23px); line-height: 1.25; font-weight: 600; letter-spacing: -0.018em; color: #dfe5f6; text-wrap: balance; }
 .scene-wrap { position: relative; flex: 0 1 auto; width: 100%; aspect-ratio: 2.1 / 1.7; max-height: calc(100% - 240px); min-height: 0; }
-/* the map around the body: one small element under the scene's corner */
-.inset { position: absolute; right: 4px; top: calc(100% + 10px); width: 156px; display: flex; flex-direction: column; align-items: center; gap: 1px; z-index: 2; }
-.inset canvas { width: 150px; height: 150px; display: block; border-radius: 50%; cursor: pointer; outline: none; touch-action: manipulation; }
-.inset.room canvas { border-radius: 8px; }
-.inset canvas:focus-visible { box-shadow: 0 0 0 2px rgba(63, 224, 207, 0.6); }
-.inset button { height: 22px; padding: 0 8px; border: 1px solid transparent; border-radius: 7px; background: transparent; color: var(--muted); font-size: 11.5px; font-weight: 550; cursor: pointer; }
-.inset button:hover { color: var(--text); border-color: var(--line-2); }
-.below { min-height: 176px; padding: 12px 176px 0 16px; }
+.below { min-height: 150px; padding: 12px 16px 0; }
 .said { margin: 0 0 6px; min-height: 22px; color: var(--gold); font-size: 14.5px; font-weight: 550; line-height: 1.4; transition: opacity 0.4s; }
 .said.old { opacity: 0; }
 #scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: default; outline: none; }
@@ -87,6 +80,14 @@ button:focus-visible, select:focus-visible, input:focus-visible, a:focus-visible
 .chip.held { color: var(--brain); border-color: rgba(63, 224, 207, 0.4); }
 .chip.gone { color: var(--gold); border-color: rgba(255, 206, 102, 0.45); }
 body:not(.more) .more { display: none; }
+/* whose hand the brain follows: two buttons over the scene's corner */
+.segmented.case { position: absolute; right: 10px; top: 8px; z-index: 2; background: rgba(8, 11, 20, 0.8); }
+.segmented.case button { height: 26px; padding: 0 10px; font-size: 12px; }
+/* the guide's table of what the program does and what the brain does, in a stage's card */
+.card p.who { margin: 5px 0 0; padding-top: 5px; border-top: 1px solid var(--line); font-size: 11.5px; line-height: 1.38; color: #b9c2dc; }
+.card p.who b { color: var(--text); }
+.card p.who i { font-style: normal; color: var(--muted); }
+.card code { font-size: 0.9em; }
 
 .welcome { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(380px, calc(100% - 32px)); padding: 20px 22px 18px; border: 1px solid var(--line-2); border-radius: var(--radius); background: rgba(9, 12, 22, 0.92); backdrop-filter: blur(8px); box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55); text-align: center; }
 .welcome h2 { margin: 0 0 6px; font-size: 22px; font-weight: 650; letter-spacing: -0.02em; }
@@ -117,9 +118,6 @@ button.primary { border-color: rgba(63, 224, 207, 0.5) !important; background: r
 .part { position: absolute; padding: 0; border: 0; border-radius: 12px; background: transparent; cursor: help; }
 .part:focus-visible { outline: 2px solid rgba(255, 255, 255, 0.75); outline-offset: 2px; }
 .badge { position: absolute; left: 14px; top: 10px; padding: 1px 8px; border: 1px solid rgba(255, 206, 102, 0.5); border-radius: 999px; color: var(--gold); font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; pointer-events: none; }
-.learning { position: absolute; right: 14px; top: 10px; padding: 1px 9px; border: 1px solid rgba(255, 206, 102, 0.5); border-radius: 999px; color: var(--gold); font: 600 10.5px/1.6 Inter, sans-serif; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
-.learning.on { opacity: 1; box-shadow: 0 0 14px rgba(255, 206, 102, 0.35); }
-.learning.blind { border-style: dashed; color: var(--muted); border-color: var(--line-2); opacity: 0.9; }
 .readout { position: absolute; left: 14px; bottom: 10px; color: var(--faint); font: 500 11px/1.4 var(--mono); pointer-events: none; white-space: nowrap; }
 .follow { position: absolute; right: 12px; bottom: 6px; height: 26px; padding: 0 9px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: var(--faint); font-size: 12px; font-weight: 550; cursor: pointer; }
 .follow:hover, .follow[aria-pressed="true"] { color: var(--text); border-color: var(--line-2); }
@@ -194,9 +192,8 @@ button.primary { border-color: rgba(63, 224, 207, 0.5) !important; background: r
   .chips { left: 8px; right: 8px; top: 6px; gap: 4px; }
   .chip { font-size: 10.5px; white-space: normal; }
   .chip .wide { display: none; } /* a narrow screen keeps a chip to its first words */
-  .inset { right: auto; left: 6px; top: auto; bottom: 6px; width: 92px; }
-  .inset canvas { width: 88px; height: 88px; }
-  .inset button { height: 18px; font-size: 10.5px; background: rgba(8, 11, 20, 0.7); }
+  .segmented.case { right: 4px; top: 4px; padding: 1px; }
+  .segmented.case button { height: 22px; padding: 0 6px; font-size: 10.5px; }
   .below { min-height: 128px; padding: 6px 6px 0; overflow: hidden; }
   .said { min-height: 0; margin-bottom: 2px; font-size: 13px; }
   .pane.brain { border-left: 0; border-top: 1px solid var(--line); }

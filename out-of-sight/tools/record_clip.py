@@ -1,4 +1,4 @@
-"""Record a short clip of the page for the README: the tutorial's steps, performed with the mouse.
+"""Record a short clip of the page for the README: the tutorial's four steps, performed with the mouse.
 
     python tools/record_clip.py --out docs/out-of-sight.mp4      # from out-of-sight/
 
@@ -16,9 +16,8 @@ import subprocess
 import tempfile
 from pathlib import Path
 
-from playwright.sync_api import sync_playwright
-
 import check_page as check
+from playwright.sync_api import sync_playwright
 
 HERE = Path(__file__).resolve().parents[1]
 
@@ -27,7 +26,6 @@ def main() -> None:
     p = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     p.add_argument("--out", type=Path, default=Path("docs/out-of-sight.mp4"))
     p.add_argument("--size", default="1280x800")
-    p.add_argument("--warm", type=int, default=0, help="moments of free movement in view before the tutorial (a brain raised on the page learns in them)")
     a = p.parse_args()
     width, height = (int(v) for v in a.size.split("x"))
     out = a.out if a.out.is_absolute() else HERE / a.out
@@ -41,44 +39,31 @@ def main() -> None:
         page.goto(url + "?sound=0", wait_until="domcontentloaded")
         check.ready(page, 240)
         began = page.evaluate("performance.now()")
-        if a.warm:
-            page.evaluate("document.getElementById('welcome').hidden = true")
-            for point in ([-0.3, 1.15], [-0.75, 1.2], [-0.45, 0.9], [-0.8, 1.3], [-0.2, 1.25], [-0.6, 1.0]) * 8:
-                page.evaluate("(p) => { window.outOfSight.stage.targets[0] = p; }", point)
-                check.wait_moments(page, 24)
-                if check.moment(page) >= a.warm:
-                    break
-            page.evaluate("window.outOfSight.stage.targets[0] = null; document.getElementById('welcome').hidden = false")
-            began = page.evaluate("performance.now()")
         home = page.evaluate("window.outOfSight.stage.home.things")
         page.wait_for_timeout(900)
         page.click("#welcome-go")
-        check.wait_tour(page, "follow", 5)
-        check.drag(page, "hand", [[-0.3, 1.15], [-0.75, 1.2], [-0.45, 0.9], [-0.6, 1.0]])
-        check.wait_tour(page, "hide")
+        check.wait_tour(page, "hide", 5)
         page.wait_for_timeout(700)
         check.drag(page, "hand", [page.evaluate("window.outOfSight.shadowPoint(0.32)")])
-        part = page.evaluate("(() => { const p = window.outOfSight.brainView.part('place'), b = document.getElementById('brain-stage').getBoundingClientRect(); return [b.left + p.x + p.w / 2, b.top + p.y + p.h / 2]; })()")
+        part = page.evaluate("(() => { const p = window.outOfSight.brainView.part('map'), b = document.getElementById('brain-stage').getBoundingClientRect(); return [b.left + p.x + p.w / 2, b.top + p.y + p.h / 2]; })()")
         page.mouse.move(part[0], part[1], steps=12)
-        check.wait_tour(page, "return", 20)
+        check.wait_tour(page, "return", 30)
         page.wait_for_timeout(1600)
         page.mouse.move(part[0], 70, steps=8)
         check.drag(page, "hand", [home[0]], hold=20)
-        check.wait_tour(page, "turn", 20)
+        check.wait_tour(page, "turn", 30)
         page.wait_for_timeout(600)
         sweep = page.evaluate("""(() => { const o = window.outOfSight, d = o.awayHeading('apple') - o.stage.geometry.camera.heading;
             return Math.atan2(Math.sin(d), Math.cos(d)); })()""")
         check.turn(page, sweep * 1.05)
-        check.wait_tour(page, "move", 20)
+        check.wait_tour(page, "own", 30)
         page.wait_for_timeout(1800)
-        check.drag(page, "cup", [page.evaluate("window.outOfSight.awayPoint('cup', 0.3)")], hold=20)
-        check.wait_tour(page, "knock", 20)
-        page.wait_for_timeout(600)
-        x, y = page.evaluate("window.outOfSight.screenOf('cup')")
-        page.mouse.move(x, y, steps=6)
-        page.mouse.down()
-        page.mouse.up()
-        check.wait_tour(page, "free", 20)
+        goal = page.evaluate("window.outOfSight.tour.current()?.guide()?.target || null")
+        if goal:
+            x, y = page.evaluate("(p) => window.outOfSight.screenAt(p)", goal)
+            page.mouse.move(x, y, steps=10)
+            page.mouse.click(x, y)
+        check.wait_tour(page, "free", 40)
         page.wait_for_timeout(2500)
         skip = began / 1000.0
         video = page.video

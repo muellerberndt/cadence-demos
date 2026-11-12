@@ -1,42 +1,31 @@
 {
- "schema": "cadence-out-of-sight-pack/1",
+ "schema": "cadence-out-of-sight-pack/2",
  "packed": "2026-11-12",
  "pyodide": "314.0.7",
  "cadence": "0.98.0",
  "wheel": "cadence_net-0.98.0-py3-none-any.whl",
- "wheel_sha256": "e3ad21502cd17ffb27f350a0e3ef04c01207e6ac36a271f9b3b3b3a47ee13308",
- "wheel_source": "built from the library's branch lane-099-space at 1ee53f9e; it holds cadence.space and cadence.modules, which PyPI's 0.98.0 does not",
+ "wheel_sha256": "d1b94b96953fb227f2680580203bd057b70b277393b0e6b3633e7e84c2e11287",
+ "wheel_source": "a development wheel built from the library's branch lane-099-space at bff49e22; it holds cadence.space.map, which PyPI's 0.98.0 does not",
  "sources": [
   "__init__.py",
-  "host.py",
-  "place_host.py"
+  "map_host.py"
  ],
  "sources_sha256": {
   "__init__.py": "94e4f42d9d612c5aa91adc5eadb7a3fce757d1a521c351132a2df4787b560544",
-  "host.py": "5032667889b3ec6d319ca38e3cb4d88ffb83c98dcc052244f945a2e5fccec98f",
-  "place_host.py": "418db891fc7237700253475eaa80df67a826809a4df7dc3984dfcf9a7e7d25c9"
+  "map_host.py": "9fffd5b38c3e0b1a25d827b3b70c5745087995fe1abf5e093ce0d6a751accc13"
  },
- "config": {},
- "module": {
-  "name": "place",
-  "label": "Feed-forward baseline",
-  "note": "The place module's development file place-keeplong-2: a feed-forward baseline (development founder 2, 2,000 scenes of the tracking chamber, raised with practice spans of 80 steps), run on its course. A program beside the brain holds each place between moments; the brain answers how far a place moves in a step, how much of its seen movement a thing keeps, how far off a place may be, and the place a cue names. The model is being rebuilt: by the ruling in cadence#320 the map becomes the brain's own state, and this file is the model from before it.",
-  "files": [
-   {
-    "name": "place-keeplong-2.npz",
-    "sha256": "2e84b17e7e1d7082db2a522159c943edd7bc1ae33f19bcb536eecdccd2a74186",
-    "bytes": 966534
-   }
-  ],
-  "space": {
-   "course": true
+ "map": {
+  "file": "page-map.npz",
+  "sha256": "747cd90a7cdb89691078c0dba14f08341acdde094d672b0151dac963ce14655e",
+  "bytes": 1567,
+  "label": "The what-where map",
+  "note": "The map of things: a sheet of 32 by 26 cells of about 6 cm, 16 code units a cell, whose settled activity is carried from moment to moment. Its graph has no taught synapse.",
+  "source": "a development map file made by the library's branch lane-099-space (the founder's settings, 32 by 26 cells, 16 kinds, an empty carried state)",
+  "kinds": {
+   "hand": 0,
+   "own": 1,
+   "apple": 2,
+   "bread": 3
   }
- },
- "reaches": {
-  "file": "reaches.json",
-  "sha256": "dbb3de7ac2f6dbcfe429cc6fafd992703e0e2b8586854f0efc115a889e218784",
-  "scenes": 5,
-  "world_sha256": "82f1dc294e547be655db9f4fc17f71b78f3ba7817b0152cb65cb2d8dd46c98c8",
-  "source": "cadence lane-099-space c3b6d611, benchmarks/tracking"
  }
 }

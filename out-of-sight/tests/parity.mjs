@@ -9,7 +9,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { LastSeen, Kalman } from '../site/controls.js';
-import { makeWorld, step, visible, smooth, pointSegment, segments, polar, cartesian, readScene, unseenSteps, Stage } from '../site/world.js';
+import { makeWorld, step, visible, smooth, pointSegment, segments, polar, cartesian, readScene, unseenSteps, Stage, HOME, RECORDED_THINGS } from '../site/world.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const path = process.argv[2] || resolve(here, 'fixtures/steps.json');
@@ -67,7 +67,7 @@ for (const entry of data.files || []) {
     && scene.geometry.camera.fov === want.geometry.camera.fov && scene.geometry.camera.heading === want.geometry.camera.heading
     && scene.geometry.camera.range === want.geometry.camera.range && gap(scene.geometry.ear, want.geometry.ear) === 0;
   // the stage replays the file: every step's record holds the file's own rows
-  const stage = new Stage();
+  const stage = new Stage({ home: { ...HOME, things: RECORDED_THINGS } }); // room for every thing of a file of four
   stage.play(scene);
   let replay = 0;
   for (let t = 0; t < scene.steps; t++) {
