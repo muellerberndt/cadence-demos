@@ -13,114 +13,114 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="masthead">
-    <a class="brand" href="../" aria-label="Cadence demos"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 17h5l4-10 7 20 4-13h6"/></svg><span>cadence</span><span class="slash">/</span><span class="sub">out of sight</span></a>
-    <span class="runtime" id="runtime" role="status"><i id="runtime-dot"></i><span id="runtime-text">Starting the brain</span><span class="runtime-more" id="runtime-more"></span></span>
+  <header class="bar">
+    <a class="brand" href="../" aria-label="Cadence demos"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 17h5l4-10 7 20 4-13h6"/></svg><span class="lib">cadence</span><span class="slash">/</span><span class="sub">out of sight</span></a>
+    <span class="runtime" id="runtime" role="status"><i id="runtime-dot"></i><span id="runtime-text">Starting the brain</span></span>
+    <nav class="tools" aria-label="The page">
+      <button id="tour" type="button" title="Play the tutorial">Tutorial</button>
+      <button id="undo" type="button" title="Take the last move back" disabled>Undo</button>
+      <button id="reset" type="button" title="Put everything back where it stood">Reset</button>
+      <button id="details" type="button" aria-pressed="false" aria-controls="details-panel" title="The comparison, the chart, the settings and the scene files">Details</button>
+    </nav>
   </header>
 
-  <main>
-    <section class="intro">
-      <h1>Hide the hand behind the blind spot, and the brain keeps knowing where it is.</h1>
-      <p class="task"><b>Drag the hand</b> into the shadow and watch the glow follow it. <b>Move the cup</b> while the camera cannot see it, then <b>knock</b> on it. Drag the screen, or switch the camera off.</p>
+  <main class="app">
+    <h1 class="sr">Out of sight: hide the hand behind the blind spot, and the brain keeps knowing where it is.</h1>
+    <section class="pane world" aria-label="The scene">
+      <div class="scene-wrap" id="scene-wrap">
+        <canvas id="scene" tabindex="0" role="application" aria-describedby="keys"
+          aria-label="A table seen from above: a robot arm, a hand, a cup, a wrench and a box. A camera in the corner lights the part of the table it sees; a pillar and the arm cast shadows. Drag the hand, a thing or the pillar; tap a thing to knock on it; tap the camera to switch it."></canvas>
+        <div class="chips" aria-hidden="true">
+          <span class="chip" id="chip-view" hidden>out of view</span>
+          <span class="chip brainc more" id="chip-error">error –</span>
+          <span class="chip brainc more" id="chip-area">area –</span>
+        </div>
+        <div class="welcome" id="welcome" hidden>
+          <h2>Out of sight</h2>
+          <p>Hide the hand, and the brain keeps knowing where it is.</p>
+          <p class="small">A camera in the corner lights what it sees. The teal glow is where the brain says the hand is.</p>
+          <div class="row"><button class="primary" id="welcome-go" type="button">Show me</button><button id="welcome-skip" type="button">Skip</button></div>
+        </div>
+      </div>
+      <div class="coach" id="coach" role="status" aria-live="polite">
+        <span class="dots" id="coach-dots" aria-hidden="true"></span>
+        <p id="coach-text">The brain is waking up in your browser.</p>
+        <button id="coach-skip" type="button" hidden>Skip</button>
+      </div>
     </section>
 
-    <div class="stage">
-      <section class="world" aria-label="The scene">
-        <div class="scene-wrap" id="scene-wrap">
-          <canvas id="scene" tabindex="0" role="application" aria-describedby="keys"
-            aria-label="A table seen from above: a robot arm, a hand, a cup, a wrench and a box. A camera in the corner lights the part of the table it sees; a screen and the arm cast shadows. Drag the hand, the things or the screen."></canvas>
-          <div class="chips" aria-live="polite">
-            <span class="chip" id="chip-view">hand: in view</span>
-            <span class="chip brainc" id="chip-error" title="The distance between the brain's place and the true hand">error –</span>
-            <span class="chip brainc" id="chip-area" title="The area the brain says holds the hand nine times in ten">area –</span>
-          </div>
-          <div class="banner" id="banner" hidden></div>
-        </div>
-        <div class="controls">
-          <div class="segmented" role="group" aria-label="Whose hand the brain follows">
-            <button type="button" data-case="other" aria-pressed="true" title="A person's hand, which moves by itself">A person's hand</button>
-            <button type="button" data-case="own" aria-pressed="false" title="The arm's own hand, moved by commands the brain is given">The arm's own hand</button>
-          </div>
-          <div class="pair">
-            <label class="select"><span class="sr">A recorded reach</span><select id="reach" aria-label="A recorded reach"></select></label>
-            <button class="primary" id="play" type="button" disabled>Play</button>
-          </div>
-          <button id="camera" type="button" aria-pressed="true" title="Switch the camera off: nothing is in view">Camera on</button>
-          <button id="hidden" type="button" aria-pressed="true" title="Draw what the camera cannot see as faint outlines">Show what is hidden</button>
-          <button id="compare" type="button" aria-pressed="true" title="Draw the last seen position and a Kalman filter's estimate">Compare</button>
-        </div>
-        <div class="things" id="things" aria-label="The things on the table"></div>
-        <p class="keys" id="keys">Keys, with the scene in focus: <kbd>1</kbd> hand, <kbd>2</kbd> cup, <kbd>3</kbd> wrench, <kbd>4</kbd> box, <kbd>5</kbd> screen; arrows move it; <kbd>K</kbd> knocks on it; <kbd>C</kbd> camera; <kbd>H</kbd> hidden things; <kbd>Space</kbd> plays the reach.</p>
+    <section class="pane brain" aria-label="The whole brain">
+      <div class="brain-stage" id="brain-stage">
+        <canvas id="brain" aria-hidden="true"></canvas>
+        <canvas id="brain-overlay" aria-hidden="true"></canvas>
+        <div class="parts" id="parts" role="group" aria-label="The parts of the brain. Each one explains itself."></div>
+        <span class="badge" id="brain-badge" hidden></span>
+        <div class="learning" id="learning" aria-hidden="true">learning</div>
+        <div class="readout" id="readout" aria-live="off"></div>
+        <button class="follow" id="follow" type="button" title="Step through how the brain knows where the hand is, one part at a time">Follow the position ›</button>
+        <div class="card" id="card" role="dialog" aria-label="A part of the brain, explained" hidden></div>
+      </div>
+    </section>
+  </main>
 
-      </section>
-
-      <div class="mind">
-      <section class="brain" aria-label="The whole brain">
-        <div class="brain-head">
-          <div class="brain-title"><h2>The whole brain <span class="badge" id="brain-badge" hidden></span></h2><p id="brain-size">loading</p></div>
-          <dl class="stats" aria-live="off">
-            <div><dt>Settle</dt><dd id="s-sweeps">–</dd></div>
-            <div><dt>Residual</dt><dd id="s-residual">–</dd></div>
-            <div><dt>Think</dt><dd id="s-ms">–</dd></div>
-            <div class="learn" id="s-learn-box"><dt>Lessons</dt><dd id="s-lessons">–</dd></div>
-            <div title="Settles that found no qualified state: the brain gave no answer"><dt>No answer</dt><dd id="s-refused">0</dd></div>
-          </dl>
+  <section class="details" id="details-panel" aria-label="Details" hidden>
+    <div class="panels">
+      <figure class="panel wide">
+        <figcaption><b>Distance from the true hand</b>
+          <span class="legend"><span><i class="ln brain"></i>brain <b id="e-brain">–</b></span><span><i class="ln kalman"></i>Kalman filter <b id="e-kalman">–</b></span><span><i class="ln last"></i>last seen <b id="e-last">–</b></span><span><i class="sw shade"></i>out of view</span></span>
+        </figcaption>
+        <canvas id="chart" aria-label="Each estimate's distance from the true hand over the last ten seconds"></canvas>
+      </figure>
+      <figure class="panel">
+        <figcaption><b>The map it holds</b><span>its place answer and its records</span></figcaption>
+        <canvas id="map" aria-label="The brain's place answer drawn over the table, with a pin for every thing it remembers"></canvas>
+      </figure>
+    </div>
+    <div class="settings">
+      <dl class="stats">
+        <div><dt>Settle</dt><dd id="s-sweeps">–</dd></div>
+        <div><dt>Residual</dt><dd id="s-residual">–</dd></div>
+        <div><dt>Think</dt><dd id="s-ms">–</dd></div>
+        <div><dt>Lessons</dt><dd id="s-lessons">–</dd></div>
+        <div title="Settles that found no qualified state: the brain gave no answer"><dt>No answer</dt><dd id="s-refused">0</dd></div>
+        <div><dt>Frame</dt><dd id="s-frame">–</dd></div>
+      </dl>
+      <div class="knobs">
+        <div class="segmented" role="group" aria-label="Whose hand the brain follows">
+          <button type="button" data-case="other" aria-pressed="true" title="A person's hand, which moves by itself">A person's hand</button>
+          <button type="button" data-case="own" aria-pressed="false" title="The arm's own hand, moved by commands the brain is given">The arm's own hand</button>
         </div>
-        <div class="brain-stage" id="brain-stage">
-          <canvas id="brain" aria-hidden="true"></canvas>
-          <canvas id="brain-overlay" aria-label="The brain seen from the side. Every dot is a neuron, lit by its activity; every line is a synapse, lit by the signal it carries."></canvas>
-          <div class="tooltip" id="tooltip" hidden></div>
-          <div class="learning" id="learning" aria-live="off">learning</div>
-        </div>
-        <div class="brain-foot">
-          <span class="legend">
-            <span><i class="sw visual"></i>camera</span><span><i class="sw place"></i>place</span><span><i class="sw assoc"></i>association</span><span><i class="sw trace"></i>trace</span><span><i class="sw soma"></i>joints</span><span><i class="sw motor"></i>commands</span><span><i class="sw hippo"></i>records</span>
-            <span><i class="ln exc"></i>excites</span><span><i class="ln inh"></i>inhibits</span>
-          </span>
-          <span class="lessons"><label class="toggle"><input type="checkbox" id="teach" checked> learn at seen moments</label><button id="reborn" type="button" title="A new brain: every synapse as at birth, every record empty">New brain</button></span>
-        </div>
-      </section>
-        <div class="panels">
-          <figure class="panel">
-            <figcaption><b>The map it holds</b><span id="map-note">its place answer</span></figcaption>
-            <canvas id="map" aria-label="The brain's place answer drawn over the table, with a pin for every thing it remembers"></canvas>
-          </figure>
-          <figure class="panel wide">
-            <figcaption><b>Distance from the true hand</b>
-              <span class="legend"><span><i class="ln brain"></i>brain <b id="e-brain">–</b></span><span class="cmp"><i class="ln kalman"></i>Kalman filter <b id="e-kalman">–</b></span><span class="cmp"><i class="ln last"></i>last seen <b id="e-last">–</b></span><span><i class="sw shade"></i>out of view</span></span>
-            </figcaption>
-            <canvas id="chart" aria-label="Each estimate's distance from the true hand over the last ten seconds"></canvas>
-          </figure>
-        </div>
+        <label class="select"><span class="sr">A recorded scene</span><select id="reach" aria-label="A recorded scene"></select></label>
+        <button id="play" type="button" disabled>Play</button>
+        <button id="load" type="button" title="Replay a scene file of the tracking chamber (cadence-tracking-scene/1)">Load a scene</button>
+        <input id="file" type="file" accept=".json,application/json" hidden>
+        <label class="toggle"><input type="checkbox" id="teach" checked> learn at seen moments</label>
+        <button id="reborn" type="button" title="A new brain: every synapse as at birth, every record empty">New brain</button>
+      </div>
+      <p class="keys" id="keys">Keys, with the scene in focus: <kbd>1</kbd> hand, <kbd>2</kbd> cup, <kbd>3</kbd> wrench, <kbd>4</kbd> box, <kbd>5</kbd> pillar; arrows move it; <kbd>K</kbd> knocks on it; <kbd>C</kbd> camera; <kbd>H</kbd> shows what is hidden; <kbd>Z</kbd> undo; <kbd>R</kbd> reset. In the brain, <kbd>Tab</kbd> moves from part to part and <kbd>Esc</kbd> closes a card.</p>
+    </div>
+    <div class="card-body">
+      <div>
+        <h3>The scene</h3>
+        <p>A table seen from above. A camera in the corner lights what it sees. The pillar and the arm cast shadows, and whatever stands in shadow is out of view: the camera reports nothing of it. In view, the camera reports a position about a centimetre off.</p>
+        <p>At every moment the brain is asked one question: <b>where is the hand?</b> The teal glow is its answer. The ring around it is the area the brain says holds the hand nine times in ten.</p>
+      </div>
+      <div>
+        <h3>Things that stay put</h3>
+        <p>You know there is a bicycle a few metres to your right without looking at it, because it does not move by itself. The brain keeps the cup, the wrench and the box the same way: one record each, drawn as a pin. A dashed pin came from a sound.</p>
+      </div>
+      <div>
+        <h3>The brain</h3>
+        <p>Cadence is a library for brains that answer by settling: the neurons drive each other until their activity rests, and the answer is read from the resting state. The right half of the page draws every neuron and every synapse of the brain that runs here, laid out as a brain seen from the side. Each population sits where the part whose role it plays would sit. Point at a part and it explains itself.</p>
+        <p id="brain-note"></p>
+      </div>
+      <div>
+        <h3>This page</h3>
+        <dl id="card-facts"></dl>
+        <p>The brain runs in your browser, in Python through Pyodide, with the released <code id="card-wheel">cadence-net</code> wheel. Nothing is sent to a server. <a href="https://github.com/muellerberndt/cadence" target="_blank" rel="noopener">Cadence on GitHub</a></p>
       </div>
     </div>
-
-    <details class="model-card" open>
-      <summary>What you are looking at <span class="summary-line" id="card-line"></span></summary>
-      <div class="card-body">
-        <div>
-          <h3>The scene</h3>
-          <p>A table seen from above. A camera in the corner lights what it sees. The screen and the arm cast shadows, and whatever stands in shadow is out of view: the camera reports nothing of it. While a thing is in view the camera reports its position, a centimetre off on average.</p>
-          <p>At every moment the brain is asked one question: <b>where is the hand?</b> The teal glow is its answer. The ring around it is the area the brain says holds the hand nine times in ten: it grows while the hand is unseen and closes when the hand is seen again.</p>
-        </div>
-        <div>
-          <h3>Things that stay put</h3>
-          <p>You know there is a bicycle a few metres to your right without looking at it, because it does not move by itself. The brain keeps the cup, the wrench and the box the same way: one record each, drawn as a pin. Move a thing while the camera cannot see it, and the pin stays at the old place. Knock on it, and the ear hears the direction and the distance of the sound: the record moves without sight. A dashed pin came from a sound.</p>
-        </div>
-        <div>
-          <h3>The brain</h3>
-          <p>Cadence is a library for brains that answer by settling: the neurons drive each other until their activity rests, and the answer is read from the resting state. The panel draws every neuron and every synapse of the brain that runs on this page, laid out as a brain seen from the side. Each population sits where the part whose role it plays would sit; hover over one to read what it holds. The lines flash where a lesson changed a synapse. The brain learns only at moments the camera sees the hand, so the flashes stop in the shadow.</p>
-          <p id="brain-note"></p>
-        </div>
-        <div>
-          <h3>This page</h3>
-          <dl id="card-facts"></dl>
-          <p>The brain runs in your browser, in Python through Pyodide, with the released <code id="card-wheel">cadence-net</code> wheel. Nothing is sent to a server.</p>
-        </div>
-      </div>
-    </details>
-    <footer class="foot"><a href="https://github.com/muellerberndt/cadence" target="_blank" rel="noopener">Cadence on GitHub</a> · <a href="https://github.com/muellerberndt/cadence-demos" target="_blank" rel="noopener">the demos</a> · GPL-3.0</footer>
-  </main>
+  </section>
   <script type="module" src="app.js"></script>
 </body>
 </html>

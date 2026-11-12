@@ -1,0 +1,456 @@
+{
+ "schema": "cadence-out-of-sight-page-check/1",
+ "checked": "2026-11-12 16:42",
+ "cadence": "0.98.0",
+ "brain": "baseline, composed on the page",
+ "bounds": {
+  "follow_m": 0.05,
+  "hidden_m": 0.1,
+  "cover": 0.85,
+  "return_m": 0.05,
+  "pin_kept_m": 0.03,
+  "pin_heard_cue_sd": 3.0,
+  "frame_median_ms": 20.0,
+  "frame_p95_ms": 34.0
+ },
+ "page": {
+  "cadence": "0.98.0",
+  "brain": {
+   "kind": "baseline",
+   "trained": false,
+   "label": "Untrained baseline",
+   "note": "A plain composed brain, raised on this page from birth. It reads the camera, the arm's joints and commands, and is asked for the hand's place. It holds no place map between moments beyond its working trace.",
+   "compose": "Brain.compose(inputs=75, actions=40, slots=2, modules=(96,), seed=0, recall=False, temperature=0.05)"
+  },
+  "view": {
+   "mode": "webgl2",
+   "hdr": true,
+   "fallback": null,
+   "frames": 4,
+   "lit": 0,
+   "wave": false,
+   "synapses": 24096
+  },
+  "neurons": 307,
+  "synapses": 24096,
+  "seconds_to_ready": 4.2
+ },
+ "tutorial": {
+  "follow": {
+   "moments": 245,
+   "in_view": 245,
+   "brain_m": 0.20152461569001984,
+   "kalman_m": 0.00843955638353196,
+   "lessons": 245
+  },
+  "hide": {
+   "hidden_moments": 79,
+   "no_answer": 0,
+   "brain_m": 0.1458749582173675,
+   "brain_last_m": 0.16262742595550062,
+   "kalman_m": 0.1434231259017336,
+   "last_seen_m": 0.17311389126167837,
+   "inside_area": 1.0,
+   "uncertainty_first_m": 1.0121449508934923,
+   "uncertainty_last_m": 1.0038464486293064,
+   "lessons_while_hidden": 0
+  },
+  "return": {
+   "brain_m": 0.1920112998487899,
+   "uncertainty_m": 0.522326747025255,
+   "uncertainty_hidden_m": 1.0038464486293064
+  },
+  "move": {
+   "hidden_moments": 78,
+   "pin_from_last_seen_m": 0.0,
+   "pin_from_true_m": 0.43190250425017834,
+   "pin_source": "seen"
+  },
+  "knock": {
+   "pin_from_true_m": 0.15497581018604317,
+   "pin_source": "heard",
+   "cup_in_view": false,
+   "before_m": 0.43190250425017834,
+   "cue_error_sd_m": 0.12166289316737103
+  }
+ },
+ "frames": {
+  "desktop_webgl": {
+   "frames": 1500,
+   "median_ms": 16.699999999999818,
+   "p95_ms": 16.799999999999272,
+   "worst_ms": 50
+  },
+  "think_ms": 14.3,
+  "round_trip_ms": 16.300000071525574,
+  "moments": 649,
+  "no_answer": 0,
+  "phone_viewport": {
+   "frames": 300,
+   "median_ms": 16.69999999999891,
+   "p95_ms": 16.799999999999272,
+   "worst_ms": 150
+  },
+  "desktop_canvas2d": {
+   "frames": 240,
+   "median_ms": 16.699999999999818,
+   "p95_ms": 16.700000000000728,
+   "worst_ms": 33.400000000000546
+  }
+ },
+ "checks": [
+  {
+   "name": "the brain loads in Pyodide with the released wheel",
+   "passed": true,
+   "seconds": 4.2,
+   "cadence": "0.98.0",
+   "brain": "Untrained baseline",
+   "view": "webgl2"
+  },
+  {
+   "name": "one screen: the scene and the brain, nothing to scroll, the tutorial offered",
+   "passed": true,
+   "w": true,
+   "h": true,
+   "welcome": true
+  },
+  {
+   "name": "the tutorial starts at its first step",
+   "passed": true,
+   "step": "follow"
+  },
+  {
+   "name": "1 follow: the visitor's drag completes the step",
+   "passed": true,
+   "step": "hide"
+  },
+  {
+   "name": "1 follow: the brain's place follows the hand in view",
+   "passed": false,
+   "bound_m": 0.05,
+   "moments": 245,
+   "in_view": 245,
+   "brain_m": 0.20152461569001984,
+   "kalman_m": 0.00843955638353196,
+   "lessons": 245
+  },
+  {
+   "name": "2 hide: the visitor's drag completes the step",
+   "passed": true,
+   "step": "return"
+  },
+  {
+   "name": "2 hide: THE PROMISE, the brain's place stays with the hidden hand",
+   "passed": false,
+   "bound_m": 0.1,
+   "hidden_moments": 79,
+   "no_answer": 0,
+   "brain_m": 0.1458749582173675,
+   "brain_last_m": 0.16262742595550062,
+   "kalman_m": 0.1434231259017336,
+   "last_seen_m": 0.17311389126167837,
+   "inside_area": 1.0,
+   "uncertainty_first_m": 1.0121449508934923,
+   "uncertainty_last_m": 1.0038464486293064,
+   "lessons_while_hidden": 0
+  },
+  {
+   "name": "2 hide: the stated area holds the hidden hand",
+   "passed": true,
+   "bound": 0.85,
+   "inside_area": 1.0
+  },
+  {
+   "name": "2 hide: the brain learns nothing while the hand is hidden",
+   "passed": true,
+   "lessons": 0
+  },
+  {
+   "name": "2 hide: the place part's card shows a position and the moments unseen",
+   "passed": true,
+   "readings": 58,
+   "place": "-0.166,0.713",
+   "unseen": 69,
+   "text": "The place answer\n\nplays the role of the parietal and entorhinal map\n\nThe brain\u2019s answer to \u201cwhere is the hand?\u201d: 20 units for x and 20 for y, each with a favourite position. After the brain settles, the peak over these units is where it says the hand is.\n\nx\n-1.0\n1.0 m\ny\n-0.2\n1.4 m\n\nAT THIS MOMENT\nIt"
+  },
+  {
+   "name": "2 hide: the card's uncertainty grows while the hand is hidden",
+   "passed": false,
+   "when_last_seen_m": 1.0046183778624476,
+   "first_m": 1.004,
+   "first_unseen": 18,
+   "later_m": 1.0038,
+   "later_unseen": 69
+  },
+  {
+   "name": "3 return: the visitor's drag completes the step",
+   "passed": true,
+   "step": "move"
+  },
+  {
+   "name": "3 return: the place closes on the hand",
+   "passed": false,
+   "bound_m": 0.05,
+   "brain_m": 0.1920112998487899,
+   "uncertainty_m": 0.522326747025255,
+   "uncertainty_hidden_m": 1.0038464486293064
+  },
+  {
+   "name": "3 return: the uncertainty falls when the hand is seen",
+   "passed": true,
+   "brain_m": 0.1920112998487899,
+   "uncertainty_m": 0.522326747025255,
+   "uncertainty_hidden_m": 1.0038464486293064
+  },
+  {
+   "name": "4 move: the visitor's drag completes the step",
+   "passed": true,
+   "step": "knock"
+  },
+  {
+   "name": "4 move: the record keeps the place the cup was last seen at",
+   "passed": true,
+   "bound_m": 0.03,
+   "hidden_moments": 78,
+   "pin_from_last_seen_m": 0.0,
+   "pin_from_true_m": 0.43190250425017834,
+   "pin_source": "seen"
+  },
+  {
+   "name": "5 knock: the tap completes the tutorial, which leaves the visitor in free play",
+   "passed": true,
+   "step": "free"
+  },
+  {
+   "name": "5 knock: the record moves to the heard place without sight",
+   "passed": true,
+   "bound_m": 0.3649886795021131,
+   "pin_from_true_m": 0.15497581018604317,
+   "pin_source": "heard",
+   "cup_in_view": false,
+   "before_m": 0.43190250425017834,
+   "cue_error_sd_m": 0.12166289316737103
+  },
+  {
+   "name": "frame time with the brain view on, over the tutorial",
+   "passed": true,
+   "bound_median_ms": 20.0,
+   "bound_p95_ms": 34.0,
+   "frames": 1500,
+   "median_ms": 16.699999999999818,
+   "p95_ms": 16.799999999999272,
+   "worst_ms": 50,
+   "think_ms": 14.3,
+   "round_trip_ms": 16.300000071525574,
+   "moments": 649,
+   "no_answer": 0
+  },
+  {
+   "name": "every part of the brain explains itself on hover, with what it does at this moment",
+   "passed": true,
+   "parts": 14,
+   "missing": [],
+   "heads": [
+    "The camera\u2019s report",
+    "The arm\u2019s joint angles",
+    "The arm\u2019s commands, as a copy",
+    "The association region",
+    "The working trace",
+    "The place answer",
+    "The records of things",
+    "From the camera to the association region",
+    "The \u201cin view\u201d line",
+    "From the joint angles to the association region",
+    "From the commands to the association region",
+    "From the working trace to the association region",
+    "From the association region to the place answer",
+    "From the association region to the place answer"
+   ]
+  },
+  {
+   "name": "no card shows until the visitor points at something",
+   "passed": true
+  },
+  {
+   "name": "a part's card opens on keyboard focus and Escape closes it",
+   "passed": true,
+   "head": "The arm\u2019s joint angles"
+  },
+  {
+   "name": "follow the position: eight stages in order, each with live numbers and its part ringed",
+   "passed": true,
+   "stages": [
+    {
+     "title": "What the camera reports",
+     "ringed": [
+      "camera"
+     ],
+     "baseline_mark": false
+    },
+    {
+     "title": "A position becomes activity",
+     "ringed": [
+      "camera"
+     ],
+     "baseline_mark": false
+    },
+    {
+     "title": "The place, and what holds it",
+     "ringed": [
+      "place",
+      "prefrontal"
+     ],
+     "baseline_mark": true
+    },
+    {
+     "title": "How the place moves while unseen",
+     "ringed": [
+      "commands",
+      "joints"
+     ],
+     "baseline_mark": true
+    },
+    {
+     "title": "Sight corrects it",
+     "ringed": [
+      "place",
+      "association",
+      "tract:association>place"
+     ],
+     "baseline_mark": false
+    },
+    {
+     "title": "Doubt: how sure the brain is",
+     "ringed": [
+      "place"
+     ],
+     "baseline_mark": true
+    },
+    {
+     "title": "Things that stay put",
+     "ringed": [
+      "records"
+     ],
+     "baseline_mark": false
+    },
+    {
+     "title": "The answer",
+     "ringed": [
+      "place"
+     ],
+     "baseline_mark": false
+    }
+   ]
+  },
+  {
+   "name": "undo takes the last move back in one tap",
+   "passed": true,
+   "before": [
+    0.72,
+    0.25
+   ],
+   "moved": [
+    0.399999991522895,
+    0.1999999152289497
+   ],
+   "undone": [
+    0.72,
+    0.25
+   ]
+  },
+  {
+   "name": "a tap on the camera switches it off: nothing is in view",
+   "passed": true,
+   "on": false,
+   "seen": [
+    false,
+    false,
+    false,
+    false
+   ]
+  },
+  {
+   "name": "reset puts everything back in one tap",
+   "passed": true,
+   "camera_on": true
+  },
+  {
+   "name": "the comparison, the chart and the settings stay behind one switch, off until asked for",
+   "passed": true,
+   "hidden": false,
+   "chart": 170,
+   "more": true
+  },
+  {
+   "name": "a scene file of the tracking chamber loads and replays",
+   "passed": true,
+   "file": "example.json",
+   "steps": 60,
+   "run": {
+    "name": "example.json",
+    "kind": "stop",
+    "moments": 60,
+    "out_of_view": 27,
+    "no_answer": 0,
+    "in_view": {
+     "brain": 0.2571736190552033,
+     "kalman": 0.007257828535376098,
+     "last": 0.010431621031045986
+    },
+    "unseen": {
+     "brain": 0.12299000184797315,
+     "kalman": 0.1913352010992633,
+     "last": 0.08822387778196515
+    },
+    "inside_area": 0.9333333333333333,
+    "inside_area_unseen": 1,
+    "lessons_in_view": 33,
+    "lessons_out_of_view": 0
+   }
+  },
+  {
+   "name": "a phone shows the scene and the brain on one screen",
+   "passed": true,
+   "w": true,
+   "scene": 347.75,
+   "brain": 384.578125
+  },
+  {
+   "name": "on a phone a tap knocks, a tap on a part opens its card and a tap elsewhere closes it",
+   "passed": true,
+   "card": "The place answer",
+   "closed": true
+  },
+  {
+   "name": "the Canvas2D view draws the brain where WebGL2 is missing",
+   "passed": true,
+   "view": {
+    "mode": "canvas2d",
+    "hdr": false,
+    "fallback": "requested",
+    "frames": 190,
+    "lit": 96,
+    "wave": true,
+    "synapses": 1800
+   },
+   "frame_times": {
+    "frames": 240,
+    "median_ms": 16.699999999999818,
+    "p95_ms": 16.700000000000728,
+    "worst_ms": 33.400000000000546
+   }
+  },
+  {
+   "name": "no console errors, page errors or failed requests",
+   "passed": true,
+   "errors": []
+  }
+ ],
+ "passed": false,
+ "failed": [
+  "1 follow: the brain's place follows the hand in view",
+  "2 hide: THE PROMISE, the brain's place stays with the hidden hand",
+  "2 hide: the card's uncertainty grows while the hand is hidden",
+  "3 return: the place closes on the hand"
+ ]
+}

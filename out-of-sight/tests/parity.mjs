@@ -3,11 +3,13 @@
 // Every scripted run is replayed with the same commands, moves, sounds and standard normal
 // draws, one step() call a step; the record of every step is compared number by number: the
 // true positions, the in-view flags, the camera's reports, the ear's cues, the joint readings.
-// Then the helpers on sampled inputs, and the camera's view over the whole plane.
+// Then the helpers on sampled inputs, the camera's view over the whole plane, and scene files:
+// the page's reader beside the Python world's own, and the stage's replay of every file.
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import { makeWorld, step, visible, smooth, pointSegment, segments, polar, cartesian } from '../site/world.js';
+import { LastSeen, Kalman } from '../site/controls.js';
+import { makeWorld, step, visible, smooth, pointSegment, segments, polar, cartesian, readScene, unseenSteps, Stage } from '../site/world.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const path = process.argv[2] || resolve(here, 'fixtures/steps.json');
@@ -48,5 +50,50 @@ for (const v of h.view.views) {
 const helpersOk = worst.view_mismatches === 0 && ['smooth', 'point_segment', 'segments', 'polar', 'cartesian'].every((k) => worst[k] < TOLERANCE);
 failed ||= !helpersOk;
 console.log(JSON.stringify({ helpers: worst, view_points: viewPoints, view_points_lit: lit, ok: helpersOk }));
-console.log(JSON.stringify({ world_sha256: data.world_sha256, source: data.source, runs: data.runs.length, tolerance: TOLERANCE, passed: !failed }));
+// scene files: the page's reader beside the Python world's own, and the stage's replay of each
+for (const entry of data.files || []) {
+  const want = entry.read, scene = readScene(entry.file);
+  const worst = { truth: gap(scene.truth, want.truth), report: gap(scene.report, want.report), commands: gap(scene.commands, want.commands),
+    joints: gap(scene.joints, want.joints), start: gap(scene.start, want.start), cue: gap(scene.cue || want.cue.map((row) => row.map(() => null)), want.cue) };
+  let flags = 0, since = 0;
+  const unseen = unseenSteps(scene);
+  scene.in_view.forEach((row, t) => row.forEach((v, k) => { if (v !== want.in_view[t][k]) flags += 1; if (unseen[t][k] !== want.unseen[t][k]) since += 1; }));
+  const same = scene.steps === want.steps && scene.things === want.things && scene.case === want.case && Math.abs(scene.dt - want.dt) < 1e-15
+    && scene.kind === want.kind && scene.event === want.event && gap(scene.what, want.what) === 0
+    && gap(scene.geometry.arm.base, want.geometry.arm.base) === 0 && gap(scene.geometry.arm.lengths, want.geometry.arm.lengths) === 0
+    && gap(scene.geometry.arm.limits, want.geometry.arm.limits) === 0 && scene.geometry.arm.width === want.geometry.arm.width
+    && gap(scene.geometry.occluders.map((o) => [...o.center, o.radius]), want.geometry.occluders.map((o) => [...o.center, o.radius])) === 0
+    && gap(scene.geometry.plane, want.geometry.plane) === 0 && gap(scene.geometry.camera.position, want.geometry.camera.position) === 0
+    && scene.geometry.camera.fov === want.geometry.camera.fov && scene.geometry.camera.heading === want.geometry.camera.heading
+    && scene.geometry.camera.range === want.geometry.camera.range && gap(scene.geometry.ear, want.geometry.ear) === 0;
+  // the stage replays the file: every step's record holds the file's own rows
+  const stage = new Stage();
+  stage.play(scene);
+  let replay = 0;
+  for (let t = 0; t < scene.steps; t++) {
+    const record = stage.advance(), n = Math.min(scene.things, record.truth.length);
+    replay = Math.max(replay, gap(record.truth.slice(0, n), scene.truth[t].slice(0, n)), gap(record.report.slice(0, n), scene.report[t].slice(0, n)),
+      gap(record.joints, scene.joints[t]), gap(record.commands, scene.commands[t]));
+    for (let k = 0; k < n; k++) if (record.in_view[k] !== scene.in_view[t][k]) replay = Infinity;
+  }
+  const ok = same && flags === 0 && since === 0 && replay < TOLERANCE && Object.values(worst).every((v) => v < TOLERANCE);
+  failed ||= !ok;
+  console.log(JSON.stringify({ file: entry.name, steps: scene.steps, things: scene.things, case: scene.case, fields_same: same,
+    in_view_mismatches: flags, unseen_mismatches: since, worst, replay_worst: replay, ok }));
+}
+// the controls beside the brain: the last seen position and the constant-velocity Kalman filter
+for (const entry of data.controls || []) {
+  const scene = readScene(entry.file);
+  const last = new LastSeen(scene.start[0]), kalman = new Kalman(scene.start[0], entry.settings);
+  const worst = { last_seen: 0, kalman: 0, kalman_radius: 0 };
+  for (let t = 0; t < scene.steps; t++) {
+    worst.last_seen = Math.max(worst.last_seen, gap(last.step(scene.report[t][0]), entry.last_seen[t]));
+    worst.kalman = Math.max(worst.kalman, gap(kalman.step(scene.report[t][0]), entry.kalman[t]));
+    worst.kalman_radius = Math.max(worst.kalman_radius, Math.abs(kalman.radius - entry.kalman_radius[t]));
+  }
+  const ok = Object.values(worst).every((v) => v < TOLERANCE);
+  failed ||= !ok;
+  console.log(JSON.stringify({ controls: scene.kind, steps: scene.steps, out_of_view: scene.in_view.filter((r) => !r[0]).length, worst, ok }));
+}
+console.log(JSON.stringify({ world_sha256: data.world_sha256, source: data.source, runs: data.runs.length, files: (data.files || []).length, controls: (data.controls || []).length, tolerance: TOLERANCE, passed: !failed }));
 process.exit(failed ? 1 : 0);

@@ -41,12 +41,20 @@ async function initialize(payload) {
     const bytes = await checked(new URL(`py/spacebrain/${name}`, base), manifest.sources_sha256[name]);
     python.FS.writeFile(`/home/pyodide/spacebrain/${name}`, bytes);
   }
-  if (manifest.brain) {
-    status('Loading the brain');
-    python.FS.writeFile('/home/pyodide/brain.npz', await checked(new URL(manifest.brain, base), manifest.brain_sha256));
+  // The trained brain arrives as a module: a file of arrays with a JSON record. Where the pack
+  // ships module files they are checked and written beside the host, which loads them with
+  // cadence.load_module(path); a module named without files is loaded from the wheel with
+  // cadence.modules.load(name). A pack without a module composes the baseline brain.
+  const config = { ...(manifest.config || {}), ...(payload?.config || {}) };
+  if (manifest.module) {
+    status(`Loading the ${manifest.module.name} module`);
+    const files = manifest.module.files || [];
+    if (files.length) python.FS.mkdirTree('/home/pyodide/module');
+    for (const file of files) python.FS.writeFile(`/home/pyodide/module/${file.name}`, await checked(new URL(`module/${file.name}`, base), file.sha256));
+    config.module = { name: manifest.module.name, path: files.length ? `/home/pyodide/module/${files[0].name}` : null };
   }
-  status(manifest.brain ? 'Waking the brain' : 'Composing the brain');
-  python.globals.set('_space_config', JSON.stringify({ ...(manifest.config || {}), ...(payload?.config || {}) }));
+  status(manifest.module ? 'Waking the brain' : 'Composing the brain');
+  python.globals.set('_space_config', JSON.stringify(config));
   python.runPython(`
 import sys, json, warnings
 warnings.simplefilter('ignore')

@@ -119,6 +119,64 @@ export function unseen(inView) {
   return out;
 }
 
+export const FORMAT = 'cadence-tracking-scene/1';
+const UNITS = { length: 'm', time: 's', angle: 'rad' };
+
+/** Read a scene file (the tracking chamber's `cadence-tracking-scene/1`, as its `world.load`
+ *  reads it) into one shape whatever the file holds: every per-step field has one row a step
+ *  and, for `truth`, `report`, `in_view` and `cue`, one cell a thing. A scene of one thing (the
+ *  hand's rows written plainly) and a scene of several read alike. A report out of view and a
+ *  silent cue are null. Where the file leaves them out: `start` is the truth at step 0, `dt`
+ *  is 1/30, `commands` and `joints` are an arm at rest and `geometry` is the chamber's own. */
+export function readScene(data) {
+  if (!data || data.format !== FORMAT) throw new Error(`A scene file states format "${FORMAT}"; this one states ${JSON.stringify(data?.format)}.`);
+  const units = data.units || UNITS;
+  for (const key of Object.keys(UNITS)) if (units[key] !== UNITS[key]) throw new Error('A scene is in metres, seconds and radians.');
+  for (const name of ['case', 'report', 'in_view', 'truth']) if (!(name in data)) throw new Error(`A scene file holds "${name}".`);
+  const steps = data.truth.length;
+  if (!steps) throw new Error('A scene holds one row of truth a step.');
+  const one = typeof data.truth[0][0] === 'number'; // the hand's rows written plainly
+  const cells = (rows) => rows.map((row) => (one ? [row] : row).map((cell) => (cell === null || cell === undefined || cell.some((v) => v === null || Number.isNaN(v)) ? null : [Number(cell[0]), Number(cell[1])])));
+  const truth = cells(data.truth), things = truth[0].length;
+  const inView = data.in_view.map((row) => (Array.isArray(row) ? row.map(Boolean) : [Boolean(row)]));
+  const report = cells(data.report).map((row, t) => row.map((cell, k) => (inView[t][k] ? cell : null)));
+  const geometry = cloneGeometry(data.geometry || GEOMETRY);
+  if (!geometry.ear) geometry.ear = geometry.camera.position.slice();
+  geometry.camera = { heading: 0, fov: 2 * Math.PI, range: 1e9, ...geometry.camera };
+  geometry.occluders = geometry.occluders || [];
+  geometry.arm = { width: 0, ...geometry.arm };
+  const joints = geometry.arm.lengths.length;
+  if (!geometry.arm.limits) geometry.arm.limits = geometry.arm.lengths.map(() => [-Math.PI, Math.PI]);
+  const atRest = () => Array.from({ length: steps }, () => new Array(joints).fill(0));
+  const bad = (rows, width) => rows.length !== steps || rows.some((row) => !row || row.length !== width);
+  const scene = {
+    format: FORMAT, case: String(data.case), steps, things,
+    truth, report, in_view: inView,
+    cue: data.cue ? cells(data.cue) : null,
+    commands: (data.commands || atRest()).map((row) => row.map(Number)),
+    joints: (data.joints || atRest()).map((row) => row.map(Number)),
+    start: data.start ? (one ? [data.start.map(Number)] : data.start.map((p) => p.map(Number))) : truth[0].map((p) => p.slice()),
+    what: data.what ? data.what.map(Number) : new Array(things).fill(0),
+    geometry, dt: Number(data.dt ?? 1 / 30), kind: String(data.kind ?? ''), event: Number(data.event ?? -1),
+    camera_noise: data.camera_noise ?? null, name: String(data.name ?? ''),
+  };
+  if (!['own', 'other', 'room'].includes(scene.case)) throw new Error(`A scene's case is "own", "other" or "room"; this one states "${scene.case}".`);
+  if (truth.some((row) => row.length !== things || row.some((cell) => cell === null))) throw new Error('truth holds one finite (x, y) per step and thing.');
+  if (bad(report, things) || bad(inView, things) || (scene.cue && bad(scene.cue, things))) throw new Error('report, in_view and cue match truth\'s steps and things.');
+  if (bad(scene.commands, joints) || bad(scene.joints, joints)) throw new Error('commands and joints hold one row of joint values per step.');
+  if (report.some((row, t) => row.some((cell, k) => inView[t][k] && cell === null))) throw new Error('The report is finite wherever a thing is in view.');
+  if (scene.start.length !== things || scene.what.length !== things) throw new Error('start and what hold one entry per thing.');
+  return scene;
+}
+
+/** Steps since each thing was last seen, per step and thing. Step 0 counts as seen: the
+ *  starting positions are given. */
+export function unseenSteps(scene) {
+  const out = [new Array(scene.things).fill(0)];
+  for (let t = 1; t < scene.steps; t++) out.push(scene.in_view[t].map((seen, k) => (seen ? 0 : out[t - 1][k] + 1)));
+  return out;
+}
+
 /** What moves: the arm's true joint angles and the things' true positions (thing 0 the hand).
  *  `own`: the hand is the arm's own end. */
 export function makeWorld({ geometry = GEOMETRY, joints = [1.3, -1.1], things = [[-0.55, 0.55]], own = false, noise = NOISE } = {}) {
@@ -189,11 +247,15 @@ export const THINGS = Object.freeze([
 ]);
 
 /** The page's stage: the world as it stands, stepped once per moment. The visitor moves the
- *  hand, the things and the occluder and switches the camera off; a recorded reach moves the
+ *  hand, the things and the pillar (the occluding disc) and switches the camera off; a recorded reach moves the
  *  things as a scene file scripts them. `advance()` returns the moment's record. */
 export class Stage {
-  constructor({ geometry = GEOMETRY, seed = 20261112, noise = NOISE } = {}) {
-    this.world = makeWorld({ geometry, noise, joints: [1.3, -1.1], things: [[-0.55, 0.55], [0.5, 0.36], [-0.5, 1.0], [0.22, 1.12]] });
+  constructor({ geometry = GEOMETRY, seed = 20261112, noise = NOISE, pillar = 0.1 } = {}) {
+    // where everything stands when the page opens, and where Reset puts it back
+    const home = cloneGeometry(geometry);
+    if (pillar) home.occluders.forEach((o) => { o.radius = pillar; }); // a little wider than the chamber's, to hide a hand behind with ease
+    this.home = { joints: [1.3, -1.1], things: [[-0.6, 0.95], [-0.35, 0.15], [0.62, 0.95], [0.72, 0.25]], geometry: home };
+    this.world = makeWorld({ geometry: home, noise, joints: this.home.joints, things: this.home.things });
     this.names = THINGS.map((t) => t.name);
     this.random = new Random(seed);
     this.cameraOn = true;
@@ -205,6 +267,33 @@ export class Stage {
     this.moment = 0;
   }
 
+  /** Everything back where it stood when the page opened; the camera on. */
+  reset() {
+    this.world.joints = this.home.joints.slice();
+    this.world.things = this.home.things.map((p) => p.slice());
+    this.world.geometry = cloneGeometry(this.home.geometry);
+    this.world.own = false;
+    this.cameraOn = true;
+    this.targets.fill(null); this.sounding.fill(false);
+    this.reach = null; this.armPlan = null;
+  }
+
+  /** Where a thing (or the pillar, 'pillar') stands, for Undo. */
+  where(name) {
+    if (name === 'pillar') return this.world.geometry.occluders[0].center.slice();
+    const k = this.names.indexOf(name);
+    return k >= 0 ? this.world.things[k].slice() : null;
+  }
+
+  /** Put a thing (or the pillar) at a point at once, as a hand that lifts it would. */
+  place(name, point) {
+    if (name === 'pillar') { this.world.geometry.occluders[0].center = point.slice(); return; }
+    const k = this.names.indexOf(name);
+    if (k < 0 || (k === 0 && this.world.own)) return;
+    this.targets[k] = null;
+    this.world.things[k] = point.slice();
+  }
+
   get geometry() { return this.world.geometry; }
   get own() { return this.world.own; }
 
@@ -214,13 +303,18 @@ export class Stage {
     if (!this.world.own) this.armPlan = null;
   }
 
-  /** Play a scene file: its commands move the arm and its true positions move the things. */
+  /** Play a scene (as `readScene` gives it): its geometry stands on the stage, its commands
+   *  and joint readings move the arm, and its things take the file's true positions, in-view
+   *  flags, reports and cues as they are, so the brain is given exactly what the file holds.
+   *  Things of the stage beyond the file's stay where they are, seen by the stage's camera. */
   play(scene) {
     this.reach = { scene, t: 0 };
+    const g = cloneGeometry(scene.geometry);
+    this.world.geometry = g;
     this.world.own = scene.case === 'own';
     this.world.joints = scene.joints[0].slice();
-    const rows = Array.isArray(scene.truth[0][0]) ? scene.truth[0] : [scene.truth[0]];
-    rows.slice(0, this.world.things.length).forEach((p, k) => { this.world.things[k] = p.slice(); });
+    scene.truth[0].slice(0, this.world.things.length).forEach((p, k) => { this.world.things[k] = p.slice(); });
+    this.cameraOn = true;
     this.targets.fill(null); this.armPlan = null;
   }
 
@@ -245,22 +339,20 @@ export class Stage {
     let command = w.joints.map(() => 0);
     const moves = w.things.map(() => [0, 0]);
     const noise = this.random.draws(joints, count);
-    let sounds = this.sounding.slice();
+    const sounds = this.sounding.slice();
     this.sounding.fill(false);
+    let row = null;
     if (this.reach) {
-      // a recorded scene: the arm takes the file's joint readings, the things its true
-      // positions, and a thing sounds where the file holds a cue
+      // a recorded scene: the arm takes the file's readings and the things its true positions
       const { scene } = this.reach;
-      const t = Math.min(this.reach.t, scene.truth.length - 1);
-      const rows = Array.isArray(scene.truth[t][0]) ? scene.truth[t] : [scene.truth[t]];
+      const t = Math.min(this.reach.t, scene.steps - 1);
+      row = { t, scene, things: Math.min(count, scene.things) };
       command = scene.commands[t].slice();
-      noise.motor.fill(0);
+      noise.motor.fill(0); noise.encoder.fill(0);
       w.joints = scene.joints[t].map((q, k) => q - command[k]); // step() adds the command
-      for (let k = w.own ? 1 : 0; k < Math.min(count, rows.length); k++) moves[k] = [rows[k][0] - w.things[k][0], rows[k][1] - w.things[k][1]];
-      const cues = scene.cue ? scene.cue[t] : null;
-      if (cues) sounds = sounds.map((v, k) => v || (cues[k] !== null && cues[k] !== undefined));
+      for (let k = 0; k < row.things; k++) moves[k] = [scene.truth[t][k][0] - w.things[k][0], scene.truth[t][k][1] - w.things[k][1]];
       this.reach.t += 1;
-      if (this.reach.t >= scene.truth.length) this.reach = null;
+      if (this.reach.t >= scene.steps) this.reach = null;
     } else if (this.armPlan) {
       const p = this.armPlan;
       const f0 = smooth(p.t / p.steps), f1 = smooth((p.t + 1) / p.steps);
@@ -271,7 +363,7 @@ export class Stage {
     const [lx, hx, ly, hy] = g.plane;
     for (let k = 0; k < count; k++) {
       const target = this.targets[k];
-      if (!target || this.reach || (k === 0 && w.own)) continue;
+      if (!target || row || (k === 0 && w.own)) continue;
       const dx = target[0] - w.things[k][0], dy = target[1] - w.things[k][1];
       const d = Math.hypot(dx, dy), limit = this.maxSpeed * DT;
       const f = d > limit ? limit / d : 1;
@@ -279,6 +371,18 @@ export class Stage {
       moves[k] = [nx - w.things[k][0], ny - w.things[k][1]];
     }
     const record = step(w, command, moves, sounds, noise);
+    if (row) {
+      // what the file holds of its things stands as it is: the flags, the reports, the cues
+      const { scene, t } = row;
+      for (let k = 0; k < row.things; k++) {
+        record.truth[k] = scene.truth[t][k].slice(); w.things[k] = scene.truth[t][k].slice();
+        record.in_view[k] = scene.in_view[t][k];
+        record.report[k] = scene.report[t][k] ? scene.report[t][k].slice() : null;
+        record.cue[k] = scene.cue?.[t][k] ? scene.cue[t][k].slice() : record.cue[k];
+      }
+      record.joints = scene.joints[t].slice();
+      record.replayed = row.things;
+    }
     if (!this.cameraOn) { record.in_view = record.in_view.map(() => false); record.report = record.report.map(() => null); }
     this.moment += 1;
     record.moment = this.moment;

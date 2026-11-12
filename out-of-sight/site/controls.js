@@ -1,53 +1,55 @@
-// The two simple controls the page draws beside the brain, given the same camera reports.
+// The two simple controls the page draws beside the brain, given the same camera reports: a port
+// of the tracking chamber's controls that learn nothing (benchmarks/tracking/tracking.py in the
+// Cadence library); tests/parity.mjs checks both against the Python ones on recorded scenes.
 //
-// `LastSeen` answers the last place the camera reported. `Kalman` is a constant-velocity filter:
-// position and velocity on each axis, driven by white acceleration noise, corrected by every
-// report and coasting on its velocity while the hand is out of view. Both start from the hand's
-// starting position, as every learner in the tracking chamber does.
+// `LastSeen` answers the last place the camera reported. `Kalman` is a constant-velocity Kalman
+// filter: position and velocity on each axis, process noise `q` and report noise `r` (a standard
+// deviation), corrected by every report and coasting on its velocity while the hand is out of
+// view. Both start from the hand's starting position, as every learner in the chamber does: the
+// first moment is the start itself, and every later moment predicts and then reads its report.
+
+export const RATE = 0.9; // the rate an answer's area is stated at
+
+/** The radius, in standard deviations, of the circle that holds `rate` of a Gaussian in a plane. */
+export const radiusAt = (rate) => Math.sqrt(-2 * Math.log(1 - rate));
 
 export class LastSeen {
-  constructor(start) { this.place = start.slice(); }
+  constructor(start) { this.place = start.slice(); this.radius = 0; this.first = true; }
   step(report) {
+    if (this.first) { this.first = false; return this.place.slice(); }
     if (report) this.place = report.slice();
     return this.place.slice();
   }
 }
 
 export class Kalman {
-  /** `noise`: the report's standard deviation (m); `accel`: the acceleration's standard
-   *  deviation (m a step squared); `speed`: the starting velocity's standard deviation (m a step). */
-  constructor(start, { noise = 0.01, accel = 0.002, speed = 0.02 } = {}) {
-    this.x = start.slice();
-    this.v = [0, 0];
-    this.r = noise * noise;
-    this.q = accel * accel;
-    this.p = [noise * noise, 0, speed * speed]; // p11, p12, p22: the same on both axes
+  constructor(start, { q = 1e-5, r = 0.01 } = {}) {
+    this.q = q; this.r = r;
+    this.x = start.slice(); this.v = [0, 0];
+    this.c = [r * r, 0, 0, 0.03 ** 2]; // c00, c01, c10, c11: one covariance for both axes
+    this.first = true;
   }
+
+  get place() { return this.x.slice(); }
+  /** The radius of the answer's area at RATE. */
+  get radius() { return radiusAt(RATE) * Math.sqrt(this.c[0]); }
+  get sd() { return Math.sqrt(this.c[0]); }
 
   step(report) {
+    if (this.first) { this.first = false; return this.place; }
     // predict: one step at constant velocity
     this.x = [this.x[0] + this.v[0], this.x[1] + this.v[1]];
-    let [p11, p12, p22] = this.p;
-    p11 = p11 + 2 * p12 + p22 + this.q / 4;
-    p12 = p12 + p22 + this.q / 2;
-    p22 = p22 + this.q;
+    const [a, b, c, d] = this.c, q = this.q;
+    this.c = [a + b + c + d + q / 3, b + d + q / 2, c + d + q / 2, d + q];
     if (report) {
-      const s = p11 + this.r, k1 = p11 / s, k2 = p12 / s;
-      for (let a = 0; a < 2; a++) {
-        const innovation = report[a] - this.x[a];
-        this.x[a] += k1 * innovation;
-        this.v[a] += k2 * innovation;
+      const [c00, c01, c10, c11] = this.c;
+      const s = c00 + this.r * this.r, g0 = c00 / s, g1 = c10 / s;
+      for (let k = 0; k < 2; k++) {
+        const gap = report[k] - this.x[k];
+        this.x[k] += gap * g0; this.v[k] += gap * g1;
       }
-      const n11 = (1 - k1) * p11, n12 = (1 - k1) * p12, n22 = p22 - k2 * p12;
-      p11 = n11; p12 = n12; p22 = n22;
+      this.c = [c00 - g0 * c00, c01 - g0 * c01, c10 - g1 * c00, c11 - g1 * c01];
     }
-    this.p = [p11, p12, p22];
-    return this.x.slice();
+    return this.place;
   }
-
-  /** The standard deviation of the position on each axis. */
-  get sd() { return Math.sqrt(Math.max(0, this.p[0])); }
 }
-
-/** The radius factor of the circle that holds `rate` of a two-dimensional Gaussian. */
-export const radiusAt = (rate) => Math.sqrt(-2 * Math.log(1 - rate));

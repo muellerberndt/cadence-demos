@@ -6,6 +6,8 @@
 // pulse runs along its synapses. A lesson's changed synapses flash, gold where they grew and
 // blue where they shrank. The records beside the brain are drawn as cells of a hippocampus: a
 // cell lights when its record is read or written, with a thumbnail of the place it holds.
+// Every part (a region, the records, a tract) has a box and a button over it: pointing at it,
+// tapping it or tabbing to it opens the card that explains it (cards.js).
 // Nothing is invented: the activations are the settle's own, sweep by sweep, and the weights
 // are the brain's own. WebGL2 draws it on a GPU; on a software renderer, or if frames get slow,
 // a Canvas2D view draws the neurons and the strongest messages instead.
@@ -172,8 +174,8 @@ function program(gl, vs, fs) {
 const hash = (k) => { let x = (k + 0x9e3779b9) | 0; x = Math.imul(x ^ (x >>> 16), 0x85ebca6b); x = Math.imul(x ^ (x >>> 13), 0xc2b2ae35); return ((x ^ (x >>> 16)) >>> 0) / 4294967296; };
 
 export class BrainView {
-  constructor({ canvas, overlay, tooltip, renderer = 'auto' }) {
-    this.canvas = canvas; this.overlay = overlay; this.tooltip = tooltip;
+  constructor({ canvas, overlay, parts, renderer = 'auto' }) {
+    this.canvas = canvas; this.overlay = overlay; this.partsRoot = parts;
     this.stage = canvas.parentElement;
     this.ctx = overlay.getContext('2d');
     this.gl = null;
@@ -188,17 +190,20 @@ export class BrainView {
     }
     if (!this.gl) this.use2D(renderer === '2d' ? 'requested' : 'no fast WebGL2');
     this.frames = 0;
-    this.hover = -1; this.hoverCell = -1; this.pinned = false;
     this.flashes = [];
     this.wave = null;
     this.slow = 0;
     this.learning = 0; // the time of the latest lesson that changed synapses
     this.cells = [];
+    this.parts = [];       // what explains itself: regions, the records and the tracts
+    this.spot = new Set(); // the parts a card or the tutorial points at
+    this.onPart = null;    // (id, 'enter' | 'leave' | 'tap', event) from the pointer or the keyboard
     this.reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
     new ResizeObserver(() => this.resize()).observe(this.stage);
-    this.stage.addEventListener('pointermove', (e) => this.pointer(e));
-    this.stage.addEventListener('pointerdown', (e) => this.pointer(e, true));
-    this.stage.addEventListener('pointerleave', () => { if (!this.pinned) this.setHover(-1, -1); });
+    // a tract has no box of its own: the pointer is tested against its curve
+    this.stage.addEventListener('pointermove', (e) => this.overTract(e));
+    this.stage.addEventListener('pointerleave', () => this.overTract(null));
+    this.stage.addEventListener('pointerdown', (e) => { if (e.target === this.stage || e.target === this.partsRoot) this.overTract(e, true); });
   }
 
   // Draw with Canvas2D from here on, on a fresh canvas when the old one holds a WebGL context.
@@ -250,6 +255,9 @@ export class BrainView {
     }
     this.blockScale = sums.map((s, b) => (counts[b] ? s / counts[b] : 1));
     this.blockCount = counts;
+    this.blockSynapses = counts.map((count) => new Int32Array(count));
+    const fill = counts.map(() => 0);
+    for (let k = 0; k < m; k++) { const b = this.blockOf[k]; this.blockSynapses[b][fill[b]++] = k; }
     this.levelScale = new Float32Array(this.regions.length + 1).fill(LEVEL_FLOOR);
     this.display = new Float32Array(n);
     this.target = new Float32Array(n);
@@ -438,8 +446,8 @@ export class BrainView {
     });
     if (count) { const [x, y] = at(0.30, 0.86); this.cellLabel = { x, y }; }
     this.tracts();
+    this.placeParts();
     if (this.gl) { this.uploadLayout(); this.uploadSynapses(); }
-    this.overlayDirty = true;
   }
 
   // The centre of each region, and the bundled path every synapse takes between two regions: a
@@ -453,6 +461,7 @@ export class BrainView {
       s[0] += this.pos[2 * i]; s[1] += this.pos[2 * i + 1]; s[2]++; sum.set(r, s);
     }
     this.centroid = new Map([...sum].map(([r, s]) => [r, [s[0] / s[2], s[1] / s[2]]]));
+    this.bundle = new Map(); // block -> the curve its tract follows: [A, M, B]
     const m = this.pre.length, ctrl = this.ctrl = new Float32Array(4 * m);
     for (let k = 0; k < m; k++) {
       const p = this.pre[k], q = this.post[k];
@@ -468,16 +477,17 @@ export class BrainView {
       const side = ra < rb ? 1 : -1;
       const nx = -dy / len, ny = dx / len, bulge = 0.16 * len * side;
       const M = [(A[0] + B[0]) / 2 + nx * bulge, (A[1] + B[1]) / 2 + ny * bulge];
+      if (!this.bundle.has(this.blockOf[k])) this.bundle.set(this.blockOf[k], [A, M, B]);
       const bez = (t) => [(1 - t) * (1 - t) * A[0] + 2 * (1 - t) * t * M[0] + t * t * B[0], (1 - t) * (1 - t) * A[1] + 2 * (1 - t) * t * M[1] + t * t * B[1]];
       const T1 = bez(0.3), T2 = bez(0.7);
-      const j = (hash(k) - 0.5) * Math.min(14, len * 0.06), jx = nx * j, jy = ny * j;
+      const j = (hash(k) - 0.5) * Math.min(30, len * 0.11), jx = nx * j, jy = ny * j; // its place across the bundle
       ctrl[4 * k] = P0[0] + (T1[0] - P0[0]) * 0.85 + jx; ctrl[4 * k + 1] = P0[1] + (T1[1] - P0[1]) * 0.85 + jy;
       ctrl[4 * k + 2] = P3[0] + (T2[0] - P3[0]) * 0.85 + jx; ctrl[4 * k + 3] = P3[1] + (T2[1] - P3[1]) * 0.85 + jy;
     }
   }
 
   // The largest activation of each region in these frames sets its brightness scale, so a quiet
-  // region shows its pattern; the tooltip reads the raw activation.
+  // region shows its pattern; a part's card reads the raw activation.
   rescale(frames) {
     const scale = this.levelScale;
     const next = new Float32Array(scale.length).fill(LEVEL_FLOOR);
@@ -527,7 +537,6 @@ export class BrainView {
       cell.record = t;
       if (t.write) cell.write = now; else cell.lit = now;
     }
-    this.overlayDirty = true;
   }
 
   sweepInfo() { return this.wave ? { sweep: this.wave.sweeps[Math.min(this.wave.sweeps.length - 1, Math.floor(this.wave.head) + 1)], of: this.wave.of } : null; }
@@ -604,7 +613,7 @@ export class BrainView {
     // a wide fan of synapses glows fainter per synapse than a narrow one
     const gains = this.blockNames.map((name, b) => {
       const fan = clamp(Math.sqrt(1600 / Math.max(64, this.blockCount[b])), 0.3, 1.6);
-      return (0.5 / (this.blockScale[b] * 0.6 || 1)) * fan * clamp(this.width / 640, 0.6, 1.2) * 0.07;
+      return (0.5 / (this.blockScale[b] * 0.6 || 1)) * fan * clamp(this.width / 640, 0.6, 1.2) * 0.032;
     });
     for (let k = 0; k < m; k++) {
       const p = this.pre[k], q = this.post[k], b = this.blockOf[k];
@@ -751,10 +760,9 @@ export class BrainView {
     } else this.draw2D();
     this.frames++;
     this.drawOverlay(now);
-    if (this.hover >= 0 || this.hoverCell >= 0) this.renderTooltip();
   }
 
-  // -- the overlay: the outline, the labels, the records, a lesson's changes, the hovered neuron
+  // -- the overlay: the outline, the labels, the records, a lesson's changes, the parts pointed at
 
   // The outline of a brain seen from the side (front to the left). It glows gold for the half
   // second after a lesson that changed synapses: the learning state, on.
@@ -863,7 +871,7 @@ export class BrainView {
     }
     c.globalCompositeOperation = 'source-over';
     this.flashes = this.flashes.filter((fl) => now - fl.start < FLASH_MS);
-    if (this.hover >= 0) this.drawHover(c);
+    this.drawSpots(c, now);
   }
 
   drawPlace(c) {
@@ -941,107 +949,176 @@ export class BrainView {
     }
   }
 
-  drawHover(c) {
-    const i = this.hover, x = this.pos[2 * i], y = this.pos[2 * i + 1];
-    c.lineWidth = 1.4;
-    for (const s of this.strongest(i, 12)) {
-      const o = s.other;
-      c.strokeStyle = s.value >= 0 ? 'rgba(110,220,255,0.85)' : 'rgba(200,140,255,0.85)';
-      c.beginPath(); c.moveTo(this.pos[2 * o], this.pos[2 * o + 1]); c.lineTo(x, y); c.stroke();
-      c.fillStyle = 'rgba(255,255,255,0.9)';
-      c.beginPath(); c.arc(this.pos[2 * o], this.pos[2 * o + 1], 2.2, 0, Math.PI * 2); c.fill();
+  // -- the parts that explain themselves
+
+  // A part is a region (the single "in view" input belongs to the camera's part), the records,
+  // or a tract. Each gets a box over the brain and a button in it, so the pointer, a finger and
+  // the keyboard reach the same card.
+  placeParts() {
+    const parts = [];
+    const box = (ids, pad) => {
+      let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+      for (const i of ids) { x0 = Math.min(x0, this.pos[2 * i]); x1 = Math.max(x1, this.pos[2 * i]); y0 = Math.min(y0, this.pos[2 * i + 1]); y1 = Math.max(y1, this.pos[2 * i + 1]); }
+      return { x: x0 - pad, y: y0 - pad, w: x1 - x0 + 2 * pad, h: y1 - y0 + 2 * pad };
+    };
+    const owner = (r) => (r.layout?.kind === 'point' ? this.regions.find((q) => q.role === r.role && q.layout?.kind !== 'point') || r : r);
+    const byPart = new Map();
+    for (const r of this.regions) {
+      const o = owner(r);
+      if (!byPart.has(o.name)) byPart.set(o.name, { region: o, neurons: [] });
+      byPart.get(o.name).neurons.push(...r.neurons);
     }
-    c.strokeStyle = 'rgba(255,255,255,0.95)'; c.lineWidth = 1.6;
-    c.beginPath(); c.arc(x, y, Math.max(5, this.size[i] + 3), 0, Math.PI * 2); c.stroke();
+    for (const [id, part] of byPart) parts.push({ id, kind: 'region', label: part.region.label, region: part.region, neurons: part.neurons, ...box(part.neurons, 9) });
+    if (this.cells.length) {
+      const xs = this.cells.map((c) => c.x), ys = this.cells.map((c) => c.y), r = this.cells[0].r;
+      parts.push({ id: 'records', kind: 'records', label: 'the records of things', x: Math.min(...xs) - r - 6, y: Math.min(...ys) - r - 6,
+        w: Math.max(...xs) - Math.min(...xs) + 2 * r + 12, h: Math.max(...ys) - Math.min(...ys) + 2 * r + 56 });
+    }
+    this.tractParts = [];
+    for (const [b, curve] of this.bundle) {
+      const [ra, rb] = this.blockNames[b].split('>').map(Number);
+      const key = `${this.regions[ra]?.name}>${this.regions[rb]?.name}`;
+      const [A, M, B] = curve;
+      const mid = [0.25 * A[0] + 0.5 * M[0] + 0.25 * B[0], 0.25 * A[1] + 0.5 * M[1] + 0.25 * B[1]];
+      const part = { id: `tract:${key}`, kind: 'tract', key, block: b, curve, label: `the tract from ${this.regions[ra]?.label} to ${this.regions[rb]?.label}`, x: mid[0] - 11, y: mid[1] - 11, w: 22, h: 22 };
+      parts.push(part); this.tractParts.push(part);
+    }
+    this.parts = parts;
+    if (!this.partsRoot) return;
+    this.partsRoot.replaceChildren();
+    for (const part of parts) {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = `part ${part.kind}`; b.dataset.part = part.id;
+      b.setAttribute('aria-label', `Explain ${part.label}`);
+      Object.assign(b.style, { left: `${part.x}px`, top: `${part.y}px`, width: `${part.w}px`, height: `${part.h}px` });
+      b.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') this.onPart?.(part.id, 'enter', e); });
+      b.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') this.onPart?.(part.id, 'leave', e); });
+      b.addEventListener('pointermove', (e) => { this.pointerAt = this.local(e); });
+      b.addEventListener('focus', () => { if (b.matches(':focus-visible')) this.onPart?.(part.id, 'enter', null); });
+      b.addEventListener('blur', () => this.onPart?.(part.id, 'leave', null));
+      b.addEventListener('click', (e) => { this.pointerAt = this.local(e); this.onPart?.(part.id, 'tap', e); });
+      this.partsRoot.append(b);
+      part.button = b;
+    }
   }
 
-  // The synapses that matter most to neuron i at this moment: inbound (outbound for a neuron
-  // that hears nothing) by |weight x presynaptic activation|, or by |weight|.
-  strongest(i, count) {
-    const outward = this.inbound.start[i + 1] === this.inbound.start[i];
-    const list = outward ? this.outbound : this.inbound;
-    const items = [];
-    for (let k = list.start[i]; k < list.start[i + 1]; k++) {
-      const s = list.order[k], other = outward ? this.post[s] : this.pre[s];
-      const value = this.weight[s] * (outward ? this.display[i] : this.display[other]);
-      items.push({ s, other, weight: this.weight[s], value, rank: Math.abs(value) > 1e-6 ? Math.abs(value) : Math.abs(this.weight[s]) * 1e-3 });
-    }
-    items.sort((a, b) => b.rank - a.rank);
-    return items.slice(0, count).map((it) => ({ ...it, outward }));
+  local(event) {
+    const box = this.stage.getBoundingClientRect();
+    return [event.clientX - box.left, event.clientY - box.top];
   }
 
-  name(i, short = false) {
-    const r = this.regions[this.regionOf[i]];
-    if (!r) return `neuron ${i}`;
-    const u = this.unit[i];
+  part(id) { return this.parts.find((p) => p.id === id) || null; }
+
+  // The tract whose bundle runs under the pointer, where no region's box does.
+  overTract(event, tap = false) {
+    let found = null;
+    if (event && (event.target === this.stage || event.target === this.partsRoot)) {
+      const [x, y] = this.local(event);
+      let best = 9;
+      for (const part of this.tractParts || []) {
+        const [A, M, B] = part.curve;
+        for (let k = 0; k <= 24; k++) {
+          const t = 0.08 + (0.84 * k) / 24, u = 1 - t;
+          const d = Math.hypot(u * u * A[0] + 2 * u * t * M[0] + t * t * B[0] - x, u * u * A[1] + 2 * u * t * M[1] + t * t * B[1] - y);
+          if (d < best) { best = d; found = part; }
+        }
+      }
+      this.pointerAt = [x, y];
+    }
+    const id = found ? found.id : null;
+    if (tap) { this.onPart?.(id, 'tap', event); return; }
+    if (id === this.tractHover) return;
+    if (this.tractHover) this.onPart?.(this.tractHover, 'leave', event);
+    this.tractHover = id;
+    if (id) this.onPart?.(id, 'enter', event);
+  }
+
+  /** A tract's live numbers: the signal it carries and its synapses by sign. */
+  flow(key) {
+    const part = this.part(`tract:${key}`);
+    if (!part) return { signal: 0, synapses: 0, excite: 0, inhibit: 0 };
+    let signal = 0, excite = 0, inhibit = 0;
+    for (const k of this.blockSynapses[part.block]) {
+      const w = this.weight[k];
+      signal += Math.abs(w * this.display[this.pre[k]]);
+      if (w > 0) excite += 1; else if (w < 0) inhibit += 1;
+    }
+    return { signal, synapses: this.blockSynapses[part.block].length, excite, inhibit };
+  }
+
+  /** A region's activations as they are drawn, in the region's own order. */
+  activity(name) {
+    const r = this.regions.find((q) => q.name === name);
+    const out = new Float32Array(r ? r.neurons.length : 0);
+    if (r) r.neurons.forEach((i, k) => { out[k] = this.display[i]; });
+    return out;
+  }
+
+  /** One plain line about the unit under the pointer inside a part, or ''. */
+  unitLine(id) {
+    const part = this.part(id);
+    if (!part || part.kind !== 'region' || !this.pointerAt) return '';
+    const [x, y] = this.pointerAt;
+    let best = -1, bestD = 14 * 14;
+    for (const i of part.neurons) {
+      const d = (this.pos[2 * i] - x) ** 2 + (this.pos[2 * i + 1] - y) ** 2;
+      if (d < bestD) { best = i; bestD = d; }
+    }
+    if (best < 0) return '';
+    this.unitAt = best;
+    const r = this.regions[this.regionOf[best]], u = this.unit[best], a = this.display[best].toFixed(2);
+    if (r.layout?.kind === 'point') return `The unit under your pointer is on while the camera sees the hand. Its activity is ${a}.`;
     if (u) {
-      const axes = r.layout.ranges.length === 2 && (r.role === 'visual' || r.role === 'place') ? ['x', 'y'] : r.layout.ranges.map((_, k) => `joint ${k + 1}`);
-      const unit = r.role === 'visual' || r.role === 'place' ? 'm' : 'rad';
-      return short ? `${r.name} ${axes[u.reading]} ${u.value.toFixed(2)}` : `${r.label}: ${axes[u.reading]} near ${u.value.toFixed(2)} ${unit}`;
+      const place = r.role === 'visual' || r.role === 'place';
+      const what = place ? (u.reading === 0 ? 'x' : 'y') : `joint ${u.reading + 1}`;
+      return `The unit under your pointer prefers ${what} = ${u.value.toFixed(2)} ${place ? 'm' : 'rad'}. Its activity is ${a}.`;
     }
-    const k = r.neurons.indexOf(i);
-    return short ? `${r.name.slice(0, 6)} ${k + 1}` : `${r.label}: neuron ${k + 1} of ${r.neurons.length}`;
+    return `The neuron under your pointer has an activity of ${a}.`;
   }
 
-  pointer(event, tap = false) {
-    if (!this.pos) return;
-    const box = this.overlay.getBoundingClientRect();
-    const x = event.clientX - box.left, y = event.clientY - box.top;
-    let best = -1, bestD = Infinity;
-    for (let i = 0; i < this.n; i++) {
-      const dx = this.pos[2 * i] - x, dy = this.pos[2 * i + 1] - y, d = dx * dx + dy * dy;
-      const reach = Math.max(7, this.size[i] + 4);
-      if (d < reach * reach && d < bestD) { best = i; bestD = d; }
-    }
-    let cell = -1;
-    if (best < 0) this.cells.forEach((cl, k) => { if (Math.hypot(cl.x - x, cl.y - y) < cl.r + 6) cell = k; });
-    let label = -1;
-    if (best < 0 && cell < 0) this.labels.forEach((l, k) => { if (x >= l.x - 4 && x <= l.x + (l.w || 80) && y >= l.y - 2 && y <= l.y + 15) label = k; });
-    this.hoverLabel = label; this.pointerAt = [x, y];
-    if (tap) this.pinned = best >= 0 || cell >= 0;
-    if (tap || !this.pinned) this.setHover(best, cell);
+  /** Where a card for a part goes: beside the part, inside the stage. */
+  cardPlace(id, w, h) {
+    const part = this.part(id);
+    if (!part) return { left: 10, top: 10 };
+    let left = part.x + part.w + 12, top = part.y + part.h / 2 - h / 2;
+    if (left + w > this.width - 8) left = part.x - w - 12;
+    if (left < 8) { left = clamp(part.x + part.w / 2 - w / 2, 8, this.width - w - 8); top = part.y + part.h + 10; if (top + h > this.height - 8) top = part.y - h - 10; }
+    return { left: clamp(left, 8, Math.max(8, this.width - w - 8)), top: clamp(top, 8, Math.max(8, this.height - h - 8)) };
   }
 
-  setHover(i, cell) {
-    this.hover = i; this.hoverCell = cell;
-    this.renderTooltip();
+  /** Where a pinned card goes so that it covers none of the parts it speaks of: the corner or
+   *  edge of the stage that hides the least of them and of the brain. */
+  cardClear(ids, w, h) {
+    const W = this.width, H = this.height, m = 12, b = this.brainBox || { x: 0, y: 0, w: W, h: H };
+    const boxes = ids.map((id) => this.part(id)).filter(Boolean);
+    const overlap = (x, y, r) => Math.max(0, Math.min(x + w, r.x + r.w) - Math.max(x, r.x)) * Math.max(0, Math.min(y + h, r.y + r.h) - Math.max(y, r.y));
+    const spots = [[m, m + 26], [W - w - m, m + 26], [m, H - h - m - 22], [W - w - m, H - h - m - 26], [(W - w) / 2, m + 26], [(W - w) / 2, H - h - m - 22]];
+    let best = spots[0], least = Infinity;
+    for (const [x, y] of spots) {
+      const cost = boxes.reduce((sum, r) => sum + 20 * overlap(x, y, r), 0) + overlap(x, y, b);
+      if (cost < least) { least = cost; best = [x, y]; }
+    }
+    return { left: clamp(best[0], 8, Math.max(8, W - w - 8)), top: clamp(best[1], 8, Math.max(8, H - h - 8)) };
   }
 
-  renderTooltip() {
-    const tip = this.tooltip, i = this.hover;
-    let html = '', x = 0, y = 0;
-    if (i >= 0 && this.pos) {
-      const r = this.regions[this.regionOf[i]];
-      const rows = this.strongest(i, 5);
-      const outward = rows[0]?.outward;
-      const lines = rows.map((s) => `<li><span>${this.name(s.other, true)}</span><b class="${s.value >= 0 ? 'pos' : 'neg'}">${s.value >= 0 ? '+' : '−'}${Math.abs(s.value).toFixed(3)}</b><i>w ${s.weight.toFixed(3)}</i></li>`).join('');
-      const list = outward ? this.outbound : this.inbound;
-      const count = list.start[i + 1] - list.start[i];
-      html = `<h4>${this.name(i)}</h4><p class="act">activation <b>${this.display[i].toFixed(3)}</b></p>`
-        + (count ? `<p class="sub">${outward ? 'strongest outputs' : 'strongest inputs'} <span>(of ${count.toLocaleString()})</span></p><ul>${lines}</ul>` : '')
-        + (r ? `<p class="note">${r.holds}</p><p class="note role">This population ${ROLE[r.role] || 'is a population of this brain'}.</p>` : '');
-      x = this.pos[2 * i]; y = this.pos[2 * i + 1];
-    } else if (this.hoverCell >= 0) {
-      const cell = this.cells[this.hoverCell], rec = cell.record;
-      html = `<h4>Record slot ${this.hoverCell + 1} of ${this.cells.length}</h4>`
-        + (rec ? `<p class="act">holds <b>${rec.name}</b> at (${rec.place ? rec.place.map((v) => v.toFixed(2)).join(', ') : '–'}) m</p><p class="sub">${rec.from === 'heard' ? 'written from a sound' : 'written from sight'}${rec.unseen ? `, ${rec.unseen} moments ago` : ''}</p>` : '<p class="act">empty</p>')
-        + `<p class="note">A long-term record beside the brain, keyed by what the thing is. A thing out of view is read from its record; seeing or hearing it revises the record.</p><p class="note role">The records ${ROLE.hippocampus.replace('plays', 'play')}.</p>`;
-      x = cell.x; y = cell.y;
-    } else if (this.hoverLabel >= 0 && this.labels[this.hoverLabel]) {
-      const r = this.labels[this.hoverLabel].region;
-      html = `<h4>${r.label}</h4><p class="act">${r.neurons.length} neurons</p><p class="note">${r.holds}</p><p class="note role">This population ${ROLE[r.role] || 'is a population of this brain'}.</p>`;
-      [x, y] = this.pointerAt;
+  drawSpots(c, now) {
+    if (!this.spot.size) return;
+    const pulse = this.reduced ? 0.8 : 0.62 + 0.3 * Math.sin(now / 420);
+    c.save();
+    for (const id of this.spot) {
+      const part = this.part(id);
+      if (!part) continue;
+      c.strokeStyle = `rgba(255,255,255,${0.75 * pulse})`; c.lineWidth = 1.4;
+      c.shadowColor = 'rgba(255,255,255,0.6)'; c.shadowBlur = 10;
+      if (part.kind === 'tract') {
+        const [A, M, B] = part.curve;
+        c.lineWidth = 9; c.strokeStyle = `rgba(255,255,255,${0.16 * pulse})`; c.lineCap = 'round';
+        c.beginPath(); c.moveTo(A[0], A[1]); c.quadraticCurveTo(M[0], M[1], B[0], B[1]); c.stroke();
+      } else {
+        c.beginPath(); c.roundRect(part.x, part.y, part.w, part.h, 12); c.stroke();
+      }
     }
-    if (!html) { tip.hidden = true; return; }
-    if (tip.dataset.html !== html) { tip.innerHTML = html; tip.dataset.html = html; }
-    tip.hidden = false;
-    const w = tip.offsetWidth || 240, h = tip.offsetHeight || 140;
-    let left = x + 14, topY = y - h - 10;
-    if (left + w > this.width - 6) left = x - w - 14;
-    if (left < 6) left = 6;
-    if (topY < 6) topY = y + 14;
-    if (topY + h > this.height - 6) topY = Math.max(6, this.height - h - 6);
-    tip.style.left = `${left}px`; tip.style.top = `${topY}px`;
+    c.restore();
   }
 
   // For the page check: draw the brain and read the pixels back.

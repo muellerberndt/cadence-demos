@@ -1,11 +1,12 @@
 """Build the page's brain pack: the Cadence wheel, the host and the manifest with SHA-256 sums.
 
-    python tools/build.py --wheel cadence_net-0.98.0-py3-none-any.whl [--brain brain.npz]
+    python tools/build.py --wheel cadence_net-0.98.0-py3-none-any.whl [--module place.npz place.json]
 
 ``site/pack/`` then holds the wheel (as released on PyPI; its sum is printed for comparison), the
 host's sources under ``py/spacebrain/`` and ``manifest.json``, which the page's worker checks
-every file against before it runs anything. Without ``--brain`` the pack holds no saved brain and
-the host composes the baseline brain when the page loads. ``reaches.json`` is written by
+every file against before it runs anything. ``--module`` adds the trained place module's files
+under ``module/``; without it the pack holds no module and the host composes the baseline brain
+when the page loads. ``reaches.json`` is written by
 ``tools/record_scenes.py``; its sum is added here.
 """
 
@@ -31,7 +32,9 @@ def sha(path: Path) -> str:
 def main() -> None:
     p = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     p.add_argument("--wheel", required=True, help="the released cadence-net wheel")
-    p.add_argument("--brain", default=None, help="a saved brain (.npz); none: the baseline is composed on the page")
+    p.add_argument("--module", nargs="*", default=None,
+                   help="the trained place module's files (the arrays and the JSON record); none: the baseline is composed on the page")
+    p.add_argument("--module-name", default="place")
     p.add_argument("--wheel-source", default="PyPI")
     a = p.parse_args()
     wheel = Path(a.wheel)
@@ -54,12 +57,17 @@ def main() -> None:
         "sources_sha256": {name: sha(PACK / "py" / "spacebrain" / name) for name in sources},
         "config": {},
     }
-    if a.brain:
-        shutil.copyfile(a.brain, PACK / "brain.npz")
-        manifest.update({"brain": "brain.npz", "brain_sha256": sha(PACK / "brain.npz"),
-                         "brain_bytes": (PACK / "brain.npz").stat().st_size})
+    if a.module:
+        folder = PACK / "module"
+        folder.mkdir(exist_ok=True)
+        files = []
+        for source in a.module:
+            shutil.copyfile(source, folder / Path(source).name)
+            files.append({"name": Path(source).name, "sha256": sha(folder / Path(source).name),
+                          "bytes": (folder / Path(source).name).stat().st_size})
+        manifest["module"] = {"name": a.module_name, "files": files}
     else:
-        manifest["brain"] = None
+        manifest["module"] = None
         manifest["brain_kind"] = "baseline, composed on the page"
     reaches = PACK / "reaches.json"
     if reaches.exists():

@@ -22,7 +22,8 @@ Messages are JSON objects with a ``command``:
   heard writes its record; a thing out of view is read from its record.
 - ``ask``: ``{"thing": name}``: reads the thing's record, crediting the read.
 - ``reset``: the streams afresh (activity and working trace); weights and records stay.
-- ``reborn``: a new brain and empty records.
+- ``reborn``: a new brain and empty records; ``{"config": {...}}`` changes the plane, the
+  arm's limits or the ear before it is built.
 
 This file's brain is the BASELINE: a plain composed brain (``Brain.compose``) whose inputs are
 population codes (``PopulationCode``) of the camera's report, the joint readings and the arm's
@@ -65,6 +66,21 @@ WAVE_FRAMES = 16
 RECOGNISED = 0.9  # the cosine at which a read record is the thing asked for
 
 
+def load_module(spec: dict[str, Any]) -> Any:
+    """The trained place module the pack names: from its file where the pack ships one
+    (``cadence.load_module(path)``), else by name from the wheel (``cadence.modules.load(name)``).
+    A wheel without the module system is refused by name."""
+    if spec.get("path"):
+        loader = getattr(cadence, "load_module", None)
+        if loader is None:
+            raise RuntimeError(f"cadence {cadence.__version__} has no load_module; the pack ships a module file")
+        return loader(spec["path"])
+    modules = getattr(cadence, "modules", None)
+    if modules is None or not hasattr(modules, "load"):
+        raise RuntimeError(f"cadence {cadence.__version__} has no modules.load; the pack names the module {spec.get('name')!r}")
+    return modules.load(spec["name"])
+
+
 def _copy_state(state: Any) -> Any:
     """An owned copy of a ``BrainState`` (None before the first act)."""
     if state is None:
@@ -103,6 +119,11 @@ class Host:
     def __init__(self, config: dict[str, Any] | None = None) -> None:
         self.config = {**DEFAULTS, **(config or {})}
         self.buffers: dict[str, np.ndarray] = {}
+        if self.config.get("module"):
+            # the seam for the trained place module: this host is the baseline's, and the
+            # module's own host reads the same messages and writes the same replies
+            self.module = load_module(self.config["module"])
+            raise RuntimeError("this host is the baseline's; the place module is read by its own host")
         self._build()
 
     # -- the brain

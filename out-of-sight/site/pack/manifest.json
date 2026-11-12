@@ -12,16 +12,16 @@
  ],
  "sources_sha256": {
   "__init__.py": "94e4f42d9d612c5aa91adc5eadb7a3fce757d1a521c351132a2df4787b560544",
-  "host.py": "ad0c749ec32b5fc7631fdc2cef7295c7fe9995ab84b9932d672422b2173527df"
+  "host.py": "c15461f6c6d79a8a16900d709040a1be8612741171c3518b0168402abda09dea"
  },
  "config": {},
- "brain": null,
+ "module": null,
  "brain_kind": "baseline, composed on the page",
  "reaches": {
   "file": "reaches.json",
-  "sha256": "d0e95f09d0a63896e8a97858ea15cc5636c6c313571bc9c4f43032ce9cc0e1dd",
+  "sha256": "dbb3de7ac2f6dbcfe429cc6fafd992703e0e2b8586854f0efc115a889e218784",
   "scenes": 5,
-  "world_sha256": "9618c01d42c8b8a25f7fcfaed512cec9d9c91c5101cb362e5e02d96eccfba01f",
-  "source": "benchmarks/tracking/world.py of cadence#320, development draft of 2026-11-12"
+  "world_sha256": "82f1dc294e547be655db9f4fc17f71b78f3ba7817b0152cb65cb2d8dd46c98c8",
+  "source": "cadence lane-099-space c3b6d611, benchmarks/tracking"
  }
 }

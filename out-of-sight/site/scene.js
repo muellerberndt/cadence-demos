@@ -115,7 +115,7 @@ export class SceneView {
       const disc = c.createRadialGradient(ox - r * 0.3, oy - r * 0.3, r * 0.1, ox, oy, r);
       disc.addColorStop(0, '#39425e'); disc.addColorStop(1, '#161b2c');
       c.fillStyle = disc; c.beginPath(); c.arc(ox, oy, r, 0, Math.PI * 2); c.fill();
-      c.strokeStyle = s.selected === 'screen' ? 'rgba(255,255,255,0.9)' : 'rgba(170,185,225,0.55)'; c.lineWidth = 1.4; c.stroke();
+      c.strokeStyle = s.selected === 'pillar' ? 'rgba(255,255,255,0.9)' : 'rgba(170,185,225,0.55)'; c.lineWidth = 1.4; c.stroke();
     }
 
     // the things on the table and their pins
@@ -130,16 +130,19 @@ export class SceneView {
 
     // the comparison's markers
     if (s.compare && s.controls) {
-      const { last, kalman, kalmanSd } = s.controls;
+      const { last, kalman, kalmanRadius } = s.controls;
       const [kx, ky] = S(kalman), [qx, qy] = S(last);
       c.lineWidth = 1;
       c.strokeStyle = rgba(VIOLET, 0.95);
       c.beginPath(); c.moveTo(kx, ky - 5); c.lineTo(kx + 5, ky); c.lineTo(kx, ky + 5); c.lineTo(kx - 5, ky); c.closePath(); c.stroke();
       c.strokeStyle = rgba(VIOLET, 0.3);
-      c.beginPath(); c.arc(kx, ky, Math.max(2, radiusAt(0.9) * kalmanSd * m), 0, Math.PI * 2); c.stroke();
+      c.beginPath(); c.arc(kx, ky, Math.max(2, kalmanRadius * m), 0, Math.PI * 2); c.stroke();
       c.strokeStyle = rgba(GOLD, 0.95);
       c.beginPath(); c.moveTo(qx - 4, qy - 4); c.lineTo(qx + 4, qy + 4); c.moveTo(qx + 4, qy - 4); c.lineTo(qx - 4, qy + 4); c.stroke();
     }
+
+    // the tutorial's guide: a ring on what to take hold of, and where to bring it
+    if (s.guide) this.guide(c, s.guide, m, now);
 
     // the camera and the ear
     this.cameraGlyph(c, eye, cam.heading, s.cameraOn, s.selected === 'camera');
@@ -158,6 +161,31 @@ export class SceneView {
       c.beginPath(); c.moveTo(ex, ey); c.lineTo(hx2, hy2); c.stroke(); c.setLineDash([]);
       c.fillStyle = rgba(GOLD, 0.9 * (1 - age)); c.beginPath(); c.arc(hx2, hy2, 3, 0, Math.PI * 2); c.fill();
     }
+  }
+
+  guide(c, guide, m, now) {
+    const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const beat = calm ? 0.5 : (now % 1500) / 1500;
+    const [x, y] = this.toScreen(guide.ring), r = (guide.radius || 0.11) * m;
+    c.save();
+    c.lineWidth = 1.6;
+    c.strokeStyle = `rgba(255,255,255,${calm ? 0.7 : 0.75 * (1 - beat)})`;
+    c.beginPath(); c.arc(x, y, r * (calm ? 1 : 0.75 + 0.5 * beat), 0, Math.PI * 2); c.stroke();
+    c.strokeStyle = 'rgba(255,255,255,0.5)';
+    c.beginPath(); c.arc(x, y, r * 0.75, 0, Math.PI * 2); c.stroke();
+    if (guide.target) {
+      const [tx, ty] = this.toScreen(guide.target), d = Math.hypot(tx - x, ty - y);
+      c.setLineDash([4, 5]); c.strokeStyle = 'rgba(255,255,255,0.55)';
+      c.beginPath(); c.arc(tx, ty, r * 0.7, 0, Math.PI * 2); c.stroke();
+      if (d > r * 1.8) {
+        const ux = (tx - x) / d, uy = (ty - y) / d;
+        const ax = tx - ux * r * 0.9, ay = ty - uy * r * 0.9;
+        c.beginPath(); c.moveTo(x + ux * r * 0.95, y + uy * r * 0.95); c.lineTo(ax, ay); c.stroke();
+        c.setLineDash([]);
+        c.beginPath(); c.moveTo(ax, ay); c.lineTo(ax - ux * 9 - uy * 5, ay - uy * 9 + ux * 5); c.moveTo(ax, ay); c.lineTo(ax - ux * 9 + uy * 5, ay - uy * 9 - ux * 5); c.stroke();
+      }
+    }
+    c.restore();
   }
 
   shadows(c, w, h, dpr, g, eye, lit, rect) {
@@ -362,13 +390,13 @@ export class SceneView {
     c.restore();
   }
 
-  /** What lies under a point of the canvas: a thing's name, 'screen', 'camera' or null. */
+  /** What lies under a point of the canvas: a thing's name, 'pillar', 'camera' or null. */
   hit(x, y, s) {
     const m = this.scale, near = (p, r) => { const q = this.toScreen(p); return Math.hypot(q[0] - x, q[1] - y) <= r; };
     const things = s.record ? s.record.truth : s.things;
     if (!s.own && near(things[0], 0.1 * m)) return 'hand';
     for (let k = 1; k < things.length; k++) if (near(things[k], 0.085 * m)) return s.names[k];
-    for (const o of s.geometry.occluders) if (near(o.center, o.radius * m + 8)) return 'screen';
+    for (const o of s.geometry.occluders) if (near(o.center, o.radius * m + 8)) return 'pillar';
     if (near(s.geometry.camera.position, 20)) return 'camera';
     return null;
   }
