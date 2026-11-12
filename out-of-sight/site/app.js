@@ -6,14 +6,17 @@
 // for the brain's answer, so the brain lives every moment of the scene in order.
 //
 // The page is one screen: the scene and the brain. The visitor drags the hand, a thing or the
-// pillar, taps a thing to knock on it and taps the camera to switch it. A short tutorial walks
-// through the promise; every part of the brain explains itself when pointed at (cards.js).
+// pillar, drags the floor to turn the camera, taps a thing to knock on it and taps the body to
+// switch the camera. A small map shows the brain's records as the body has them, and answers
+// two questions: where is this thing, and what is that way. A short tutorial walks through the
+// promise; every part of the brain explains itself when pointed at (cards.js).
 
-import { Stage, DT, forward, visible, readScene } from './world.js';
-import { SceneView, MapView, ChartView } from './scene.js';
+import { Stage, DT, forward, visible, readScene, around, wrap } from './world.js';
+import { SceneView, MapView, ChartView, AroundView } from './scene.js';
 import { BrainView } from './brain.js';
 import { LastSeen, Kalman } from './controls.js';
 import { partCard, tractCard, stageCard, stagesFor, uncertainty } from './cards.js';
+import { whereSentence, whatSentence, handSentence } from './where.js';
 
 const $ = (id) => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -24,6 +27,7 @@ const stage = new Stage({ seed: Number(params.get('seed') ?? 20261112) });
 const sceneView = new SceneView($('scene'));
 const mapView = new MapView($('map'));
 const chartView = new ChartView($('chart'));
+const aroundView = new AroundView($('around'));
 const brainView = new BrainView({ canvas: $('brain'), overlay: $('brain-overlay'), parts: $('parts'), renderer: params.get('renderer') || 'auto' });
 
 const state = {
@@ -88,7 +92,7 @@ function tick(now) {
   state.unseen = record.in_view[0] ? 0 : state.unseen + 1;
   record.cue.forEach((cue, k) => { if (cue) { sceneView.ring(record.truth[k], cue, stage.geometry); knockSound(cue); } });
   const message = {
-    hand: { report }, joints: record.joints, commands: record.commands,
+    hand: { report }, joints: record.joints, commands: record.commands, body: record.body,
     things: stage.names.slice(1).map((name, i) => ({ name, report: record.report[i + 1], cue: record.cue[i + 1] })),
     teach: state.teach, wave: state.waveEvery > 0 && record.moment % state.waveEvery === 0 && !brainView.wave,
   };
@@ -134,7 +138,7 @@ function answered(record, estimates, reply, arrays) {
   }
   (reply.things || []).forEach((t, i) => {
     state.pins[t.name] = t.place ? t : null;
-    if (t.place) row.pins[t.name] = { off: distance(t.place, record.truth[i + 1]), from: t.from, place: t.place, seen: record.in_view[i + 1] };
+    if (t.place) row.pins[t.name] = { off: distance(t.place, record.truth[i + 1]), from: t.from, place: t.place, seen: record.in_view[i + 1], ...aroundBody(record.body, t.place) };
   });
   brainView.setRecords(reply.things);
   state.history.push(row); if (state.history.length > 3000) state.history.shift();
@@ -145,6 +149,11 @@ function answered(record, estimates, reply, arrays) {
   }
   tour.observe(record, row);
   readouts(record, row);
+}
+
+// A place as the body had it at a moment: its distance and its bearing from the way it faced.
+function aroundBody(body, place) {
+  return around({ camera: body }, place);
 }
 
 // -- readouts
@@ -193,6 +202,7 @@ function context() {
     lessons: state.lessons || 0, teach: state.teach,
     coverage: rows.length >= 30 ? { moments: rows.length, share: rows.filter((x) => x.inside).length / rows.length } : null,
     act: (name) => brainView.activity(name), regions: state.regions, dt: DT,
+    around: (place) => around(stage.geometry, place),
   };
 }
 
@@ -237,6 +247,7 @@ function showCard(mode, pinned) {
   card.el.hidden = false;
   card.el.classList.toggle('pinned', pinned);
   const stages = stagesFor(state.kind);
+  card.el.classList.toggle('wide', mode === 'stage' && !!stages[card.stage].wide); // a long stage gets a wider card
   card.el.innerHTML = '<div class="content"></div>' + (mode === 'stage'
     ? `<div class="nav"><button type="button" data-go="-1" aria-label="The stage before">‹</button><span>${card.stage + 1} / ${stages.length}</span><button type="button" data-go="1" aria-label="The next stage">›</button><button type="button" data-go="0" aria-label="Close">Close</button></div>` : '');
   card.el.dataset.mode = mode;
@@ -298,9 +309,76 @@ document.addEventListener('pointerdown', (event) => {
   if (card.mode === 'part' && card.pinned && !event.target.closest('#brain-stage')) closeCard();
 });
 
-// -- the tutorial: five steps the visitor performs
+// -- the two questions: where is this thing, and what is that way
 
-const HOME_HINT = 'Drag the hand, a thing or the pillar. Tap a thing to knock on it. Tap the camera to switch it off. Point at a part of the brain and it explains itself.';
+function say(text, asked = null) {
+  const el = $('said');
+  el.textContent = text; el.classList.remove('old');
+  state.said = asked ? { ...asked, at: performance.now() } : null;
+  document.body.dataset.said = text;
+  clearTimeout(say.timer);
+  if (text) say.timer = setTimeout(() => { el.classList.add('old'); }, 9000);
+}
+
+/** Where is this thing? The hand: the brain's own place answer. A kind of thing: its record. */
+async function askWhere(name) {
+  if (!state.ready) return null;
+  const g = stage.geometry, k = stage.names.indexOf(name);
+  let place, text;
+  if (name === 'hand') {
+    place = state.belief?.place || null;
+    text = handSentence(place ? around(g, place) : null, state.unseen, DT);
+  } else {
+    const { reply } = await brain.call('ask', { thing: name });
+    place = reply.place;
+    text = whereSentence(name, place ? around(g, place) : null, reply, !!state.record?.in_view?.[k], DT);
+  }
+  if (place) aroundView.ask(around(g, place).bearing);
+  say(text, place ? { place } : null);
+  return text;
+}
+
+/** What is that way? `bearing`: from the way the body faces (0 ahead, positive to the left). */
+async function askWhat(bearing, tolerance = 0.45) {
+  if (!state.ready) return null;
+  const g = stage.geometry;
+  const { reply } = await brain.call('what', { origin: g.camera.position, direction: g.camera.heading + bearing, tolerance });
+  let name = reply.name, place = reply.place, gap = reply.gap ?? Infinity;
+  if (state.belief?.place) {
+    // the hand is the brain's own answer, not a record: it is named where it lies nearer that way
+    const off = Math.abs(wrap(around(g, state.belief.place).bearing - bearing));
+    if (off <= tolerance && off < gap) { name = 'hand'; place = state.belief.place; }
+  }
+  aroundView.ask(bearing);
+  const text = whatSentence(bearing, name, place ? around(g, place) : null);
+  say(text, place ? { place } : null);
+  return text;
+}
+
+function bindAround() {
+  const canvas = $('around');
+  const at = (event) => { const box = canvas.getBoundingClientRect(); return [event.clientX - box.left, event.clientY - box.top]; };
+  canvas.addEventListener('click', (event) => {
+    const [x, y] = at(event), name = aroundView.hit(x, y);
+    if (name) askWhere(name); else askWhat(aroundView.bearingAt(x, y, stage.geometry));
+  });
+  canvas.addEventListener('keydown', (event) => {
+    const ways = { ArrowUp: 0, ArrowLeft: Math.PI / 2, ArrowRight: -Math.PI / 2, ArrowDown: Math.PI };
+    if (event.key in ways) askWhat(ways[event.key]);
+    else if (event.key >= '1' && event.key <= '4') askWhere(stage.names[Number(event.key) - 1]);
+    else return;
+    event.preventDefault();
+  });
+  $('around-mode').addEventListener('click', () => {
+    aroundView.mode = aroundView.mode === 'me' ? 'room' : 'me';
+    $('around-mode').textContent = aroundView.mode === 'me' ? 'around me' : 'the room';
+    $('inset').classList.toggle('room', aroundView.mode === 'room');
+  });
+}
+
+// -- the tutorial: six steps the visitor performs
+
+const HOME_HINT = 'Drag the hand, a thing or the pillar. Drag the floor to turn the camera. Tap a thing to knock on it. Tap the small map to ask what is where. Point at a part of the brain and it explains itself.';
 function coach(text, kind = '', step = -1, steps = 0) {
   $('coach-text').innerHTML = text;
   $('coach').className = `coach ${kind}`;
@@ -321,6 +399,21 @@ function shadowPoint(depth) {
   return [o.center[0] + ux * depth, o.center[1] + uy * depth];
 }
 
+// The heading that puts a thing behind the body: 150 degrees off the way it faces, on the side
+// that is the shorter turn.
+function awayHeading(name) {
+  const g = stage.geometry, p = stage.where(name), to = Math.atan2(p[1] - g.camera.position[1], p[0] - g.camera.position[0]);
+  const options = [to - (150 * Math.PI) / 180, to + (150 * Math.PI) / 180];
+  return options.sort((a, b) => Math.abs(wrap(a - g.camera.heading)) - Math.abs(wrap(b - g.camera.heading)))[0];
+}
+// A point `far` metres further from the body than a thing stands, out of the camera's view.
+function awayPoint(name, far) {
+  const g = stage.geometry, p = stage.where(name), eye = g.camera.position;
+  const d = distance(p, eye) || 1, [lx, hx, ly, hy] = g.plane;
+  const q = [clamp(p[0] + ((p[0] - eye[0]) / d) * far, lx + 0.08, hx - 0.08), clamp(p[1] + ((p[1] - eye[1]) / d) * far, ly + 0.08, hy - 0.08)];
+  return visible(g, q, stage.world.joints) ? shadowPoint(0.5) : q;
+}
+
 const tour = {
   active: false, step: 0, since: null, log: [], doneAt: 0,
   steps: [
@@ -330,8 +423,8 @@ const tour = {
       guide: () => ({ ring: stage.world.things[0] }),
       done: (t) => t.moved >= 0.5 },
     { id: 'hide', brain: 'place',
-      text: '<b>Drag it behind the pillar</b>, into the shadow. The camera loses it. The brain keeps its place, and the ring of doubt grows.',
-      aside: 'The ringed part plays the role of the map: it holds the place while nothing is seen.',
+      text: '<b>Drag it behind the pillar</b>, into the shadow. The camera loses it. Watch where the glow goes, and how wide its ring of doubt is.',
+      aside: 'The ringed part plays the role of the map: the peak over its units is where the brain says the hand is.',
       guide: () => ({ ring: stage.world.things[0], target: state.unseen ? null : shadowPoint(0.32) }),
       done: () => state.unseen >= 40 },
     { id: 'return', brain: 'association',
@@ -339,10 +432,16 @@ const tour = {
       aside: 'Gold flashes are synapses changing: the brain learns only while it sees the hand.',
       guide: () => ({ ring: stage.world.things[0], target: state.unseen ? stage.home.things[0] : null }),
       done: (t) => t.seenRun >= 15 },
+    { id: 'turn', brain: 'records',
+      text: '<b>Turn the camera away from the apple</b>: drag the floor around the body, or twist with two fingers. The apple ends up behind you, and the map keeps it.',
+      aside: 'The small map shows the room as the body has it: you at the centre, facing up. Tap a thing in it to ask where it is.',
+      guide: () => ({ ring: stage.geometry.camera.position, radius: 0.09, turn: { from: stage.geometry.camera.heading, to: awayHeading('apple') } }),
+      done: (t, row) => { t.behind = row.pins.apple && !row.pins.apple.seen && Math.abs(row.pins.apple.bearing) >= 1.95 ? (t.behind || 0) + 1 : 0; return t.behind >= 12; },
+      after: () => askWhere('apple') },
     { id: 'move', brain: 'records',
-      text: '<b>Drag the cup</b> deep into the shadow. Its pin stays where the camera last saw it.',
-      aside: 'The ringed cells play the role of the hippocampus: one record for each thing.',
-      guide: () => ({ ring: stage.world.things[1], radius: 0.1, target: shadowPoint(0.5) }),
+      text: '<b>Drag the cup</b> while the camera looks away. Its pin stays where the camera last saw it.',
+      aside: 'The ringed cells play the role of the hippocampus: one record for each kind of thing, with its place.',
+      guide: () => ({ ring: stage.world.things[1], radius: 0.1, target: state.pins.cup && distance(state.pins.cup.place, stage.world.things[1]) < 0.1 ? awayPoint('cup', 0.3) : null }),
       done: (t, row) => !!row.pins.cup && !row.pins.cup.seen && row.pins.cup.off >= 0.1 },
     { id: 'knock', brain: 'records',
       text: '<b>Tap the cup</b> to knock on it. The ear hears where the sound came from, and the pin moves without sight.',
@@ -374,6 +473,7 @@ const tour = {
     if (!s.done(t, row)) return;
     this.log.push({ id: s.id, from: t.from, to: record.moment });
     this.doneAt = performance.now();
+    s.after?.();
     coach(`${s.text} <span class="aside">${s.aside}</span>`, 'done', this.step + 1, this.steps.length);
     setTimeout(() => this.next(), params.get('tour') === 'fast' ? 150 : 1300);
   },
@@ -405,8 +505,10 @@ function frame(now) {
     names: stage.names, own: stage.own, cameraOn: stage.cameraOn, showHidden: state.showHidden, compare: state.more,
     belief: state.belief, sheet: state.sheet, pins: state.pins, selected: focused && focusByKey ? state.selected : null,
     controls: state.estimates, rate: 0.9, guide: tour.active && !tour.doneAt && state.ready ? tour.current().guide() : null,
+    asked: state.said && now - state.said.at < 2200 ? state.said : null,
   };
   sceneView.draw(s, now);
+  aroundView.draw(s, now);
   if (state.more) { mapView.draw(s); chartView.draw(state.history, { compare: true, dt: DT }); }
   brainView.frame(now, interval);
   learningBadge(now);
@@ -502,6 +604,7 @@ function reset() {
   setCase('other', false); setCamera(true, false);
   restartControls();
   state.undo = []; $('undo').disabled = true;
+  say('');
   if (state.ready) brain.call('reset', {}).catch((error) => fail(error.message));
 }
 function setCase(kind, restart = true) {
@@ -593,45 +696,97 @@ function tap(name) {
   else if (name !== 'hand' && name !== 'pillar') knock(name);
 }
 
+// The angle, in the room, of a point of the canvas as seen from the body.
+function angleFromBody(x, y) {
+  const eye = sceneView.toScreen(stage.geometry.camera.position);
+  return { angle: Math.atan2(-(y - eye[1]), x - eye[0]), far: Math.hypot(x - eye[0], y - eye[1]) };
+}
+function turnBy(delta) {
+  pushUndo({ name: 'heading', from: stage.where('heading') });
+  stage.turnTo((stage.facing ?? stage.geometry.camera.heading) + delta);
+}
+
 function bindScene() {
   const canvas = $('scene');
+  const fingers = new Map(); // the pointers on the scene: id -> [x, y]
+  let twist = null;          // two fingers turning the camera: { angle, target }
+  const release = () => {
+    if (!press) return;
+    const k = stage.names.indexOf(press.name);
+    if (k >= 0) stage.targets[k] = null;
+    press = null; canvas.classList.remove('dragging');
+  };
   canvas.addEventListener('pointerdown', (event) => {
     const { x, y, p } = planePoint(event);
-    const hit = sceneView.hit(x, y, sceneState());
+    fingers.set(event.pointerId, [x, y]);
     focusByKey = false; canvas.classList.remove('keys');
     canvas.focus({ preventScroll: true });
-    if (!hit) { if (stage.own) reachTo(p); return; }
-    press = { name: hit, x, y, at: performance.now(), moved: false };
-    if (hit !== 'camera') state.selected = hit;
     try { canvas.setPointerCapture(event.pointerId); } catch { /* a synthetic pointer has no capture */ }
     event.preventDefault();
+    if (fingers.size === 2) {
+      // a second finger: the two of them turn the camera, as a hand turns a dial
+      release();
+      const [a, b] = [...fingers.values()];
+      twist = { angle: Math.atan2(-(b[1] - a[1]), b[0] - a[0]), target: stage.geometry.camera.heading };
+      pushUndo({ name: 'heading', from: stage.where('heading') });
+      return;
+    }
+    const hit = sceneView.hit(x, y, sceneState()) || 'floor';
+    press = { name: hit, x, y, p, at: performance.now(), moved: false };
+    if (hit !== 'camera' && hit !== 'floor') state.selected = hit;
   });
   canvas.addEventListener('pointermove', (event) => {
     const { x, y, p } = planePoint(event);
+    if (fingers.has(event.pointerId)) fingers.set(event.pointerId, [x, y]);
+    if (twist && fingers.size === 2) {
+      const [a, b] = [...fingers.values()], angle = Math.atan2(-(b[1] - a[1]), b[0] - a[0]);
+      twist.target += wrap(angle - twist.angle); twist.angle = angle;
+      stage.turnTo(twist.target);
+      return;
+    }
     if (!press) {
       const hit = sceneView.hit(x, y, sceneState());
       canvas.classList.toggle('grab', !!hit && hit !== 'camera');
       canvas.classList.toggle('tap', hit === 'camera');
       return;
     }
+    const turning = press.name === 'floor' || press.name === 'camera';
     if (!press.moved && Math.hypot(x - press.x, y - press.y) > 6) {
       press.moved = true;
-      if (press.name !== 'camera') { pushUndo({ name: press.name, from: stage.where(press.name) }); canvas.classList.add('dragging'); }
+      canvas.classList.add('dragging');
+      if (turning) {
+        // the floor is a turntable for the camera: it turns by the angle the pointer sweeps around the body
+        if (stage.reach) { stage.stop(); finishRun(); }
+        pushUndo({ name: 'heading', from: stage.where('heading') });
+        press.angle = angleFromBody(press.x, press.y).angle; press.target = stage.geometry.camera.heading;
+      } else pushUndo({ name: press.name, from: stage.where(press.name) });
     }
-    if (press.moved && press.name !== 'camera') moveSelected(press.name, p);
+    if (!press.moved) return;
+    if (press.name === 'camera') {
+      // dragged from the body itself: the camera faces the pointer
+      const { angle, far } = angleFromBody(x, y);
+      if (far > 24) stage.turnTo(angle);
+    } else if (press.name === 'floor') {
+      const { angle, far } = angleFromBody(x, y);
+      if (far > 14) { press.target += wrap(angle - press.angle); stage.turnTo(press.target); }
+      press.angle = angle;
+    } else moveSelected(press.name, p);
   });
   const end = (event) => {
+    fingers.delete(event.pointerId);
+    if (fingers.size < 2) twist = null;
     if (!press) return;
-    const k = stage.names.indexOf(press.name);
-    if (k >= 0) stage.targets[k] = null;
-    if (event.type === 'pointerup' && !press.moved && performance.now() - press.at < 450) tap(press.name);
-    press = null; canvas.classList.remove('dragging');
+    const tapped = event.type === 'pointerup' && !press.moved && performance.now() - press.at < 450;
+    const { name, p } = press;
+    release();
+    if (!tapped) return;
+    if (name === 'floor') { if (stage.own) reachTo(p); } else tap(name);
   };
   canvas.addEventListener('pointerup', end);
   canvas.addEventListener('pointercancel', end);
   canvas.addEventListener('keyup', (event) => { if (event.key === 'Tab') { focusByKey = true; canvas.classList.add('keys'); } });
   canvas.addEventListener('keydown', (event) => {
-    const order = ['hand', 'cup', 'wrench', 'box', 'pillar'];
+    const order = [...stage.names, 'pillar'];
     const arrows = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] };
     const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
     focusByKey = true; canvas.classList.add('keys');
@@ -643,6 +798,7 @@ function bindScene() {
       pushUndo({ name, from: stage.where(name) });
       moveSelected(name, [from[0] + arrows[key][0] * stride, from[1] + arrows[key][1] * stride]);
     } else if (key === 'k' || key === 'Enter') tap(state.selected);
+    else if (key === 'q' || key === 'e') turnBy(((key === 'q' ? 1 : -1) * Math.PI) / 12);
     else if (key === 'c') setCamera(!stage.cameraOn);
     else if (key === 'h') state.showHidden = !state.showHidden;
     else if (key === 'z') undo();
@@ -710,7 +866,7 @@ function adopt(describe, arrays) {
 }
 
 async function start() {
-  bindScene(); bindControls(); restartControls();
+  bindScene(); bindAround(); bindControls(); restartControls();
   if (params.get('details') === '1') setMore(true);
   requestAnimationFrame(frame);
   try {
@@ -738,7 +894,7 @@ async function start() {
 }
 
 // what the page check drives
-window.outOfSight = { stage, state, brainView, sceneView, tour, card, playScene, playReach, loadScene: (data) => playScene(readScene(data)), knock, setCamera, reset, undo,
+window.outOfSight = { stage, state, brainView, sceneView, aroundView, tour, card, askWhere, askWhat, awayPoint, awayHeading, playScene, playReach, loadScene: (data) => playScene(readScene(data)), knock, setCamera, reset, undo,
   setMore, openPart, openStage, closeCard, shadowPoint,
   /** Where a thing, the pillar or the camera is on the screen, in client pixels. */
   screenOf(name) {
@@ -748,6 +904,9 @@ window.outOfSight = { stage, state, brainView, sceneView, tour, card, playScene,
     return [box.left + q[0], box.top + q[1]];
   },
   screenAt(p) { const box = $('scene').getBoundingClientRect(), q = sceneView.toScreen(p); return [box.left + q[0], box.top + q[1]]; },
+  /** Where the small map draws a thing, or stands for a bearing at a share of its radius, in client pixels. */
+  mapOf(name) { const box = $('around').getBoundingClientRect(), m = aroundView.marks.find((k) => k.name === name); return m ? [box.left + m.x, box.top + m.y] : null; },
+  mapAt(bearing, share = 0.5) { const box = $('around').getBoundingClientRect(), d = aroundView.dial; return d ? [box.left + d.cx - Math.sin(bearing) * d.R * share, box.top + d.cy - Math.cos(bearing) * d.R * share] : null; },
   frameStats(last = 600) {
     const t = state.frameTimes.slice(-last).sort((a, b) => a - b), q = (f) => (t.length ? t[Math.min(t.length - 1, Math.floor(f * t.length))] : null);
     return { frames: t.length, median_ms: q(0.5), p95_ms: q(0.95), worst_ms: t.at(-1) ?? null };

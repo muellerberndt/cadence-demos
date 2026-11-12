@@ -8,6 +8,7 @@
 // way, and its card says so.
 
 import { radiusAt, RATE } from './controls.js';
+import { metres, phrase } from './where.js';
 
 const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
 const num = (v, d = 2) => (Object.is(Number(v.toFixed(d)), -0) ? 0 : v).toFixed(d);
@@ -15,7 +16,7 @@ export const at = (p) => `(${num(p[0])}, ${num(p[1])}) m`;
 export const cm = (v) => (v < 0.1 ? `${(v * 100).toFixed(1)} cm` : `${Math.round(v * 100)} cm`);
 const secs = (moments, dt) => `${(moments * dt).toFixed(1)} s`;
 const area = (a) => (a >= 1 ? `${a.toFixed(2)} m²` : `${Math.round(a * 1e4).toLocaleString('en')} cm²`);
-const WHY = { occluder: 'it is in the pillar’s shadow', arm: 'it is in the arm’s shadow', field: 'it is outside the camera’s field', off: 'the camera is off' };
+const WHY = { occluder: 'it is in the pillar’s shadow', arm: 'it is in the arm’s shadow', field: 'it is beside or behind the body, outside the camera’s field', off: 'the camera is off' };
 
 /** One number for the answer's doubt: the radius of the circle as large as the area at RATE. */
 export const uncertainty = (belief) => radiusAt(RATE) * Math.sqrt(Math.max(belief.sd[0], 1e-9) * Math.max(belief.sd[1], 1e-9));
@@ -94,13 +95,14 @@ function doubtLine(ctx) {
   return `Width: ${cm(b.sd[0])} in x, ${cm(b.sd[1])} in y. Area at nine in ten: <span>${area(b.area)}</span>.${cover}`;
 }
 function recordsLine(ctx) {
+  // one line a kind: where it is around the body, and how the record came
   const lines = ctx.names.slice(1).map((name, i) => {
     const pin = ctx.pins[name], seen = ctx.record?.in_view[i + 1];
-    if (!pin?.place) return `${name}: no record`;
-    if (seen) return `${name}: ${at(pin.place)}, in view, rewritten at this moment`;
-    return `${name}: ${at(pin.place)}, ${pin.from === 'heard' ? 'from a sound' : 'from sight'} ${secs(pin.unseen || 0, ctx.dt)} ago`;
+    if (!pin?.place) return `${name}: no record, never seen`;
+    const rel = ctx.around(pin.place), how = seen ? 'in view' : `${pin.from === 'heard' ? 'heard' : 'seen'} ${secs(pin.unseen || 0, ctx.dt)} ago`;
+    return `${name}: ${metres(rel.distance)}, ${phrase(rel.bearing)} · ${how}`;
   });
-  return lines.map((l) => `<span>${esc(l)}</span>`).join('<br>');
+  return lines.map((l) => `<span data-record>${esc(l)}</span>`).join('<br>');
 }
 function answerLine(ctx) {
   const b = ctx.belief, s = ctx.sheet;
@@ -129,13 +131,14 @@ const codeRows = (ctx, name, labels, unit, marks) => {
 // -- the copy
 
 const MARK = 'Baseline brain: the trained place module does this stage another way.';
+const PROVISIONAL = 'Provisional text: the trained module’s own description replaces it.';
 
 const COPY = {
   baseline: {
     parts: {
       camera: {
         title: 'The camera’s report', role: 'visual',
-        what: 'What the camera sees of the hand enters the brain here. Its x and its y are each spread over 16 inputs. Every input has a favourite position and lights up when the hand is near it.',
+        what: 'What the camera sees of the hand enters the brain here, as a position in the room. Its x and its y are each spread over 16 inputs. Every input has a favourite position and lights up when the hand is near it.',
         live: (ctx) => `${seenLine(ctx)} ${ctx.record?.report[0] ? '' : 'All of these inputs are dark.'}`,
         draw: (ctx) => peakSvg(codeRows(ctx, 'camera', ['x', 'y'], 'm', ctx.record?.report[0]), '#66bdff'),
       },
@@ -163,14 +166,14 @@ const COPY = {
       },
       place: {
         title: 'The place answer', role: 'place',
-        what: 'The brain’s answer to “where is the hand?”: 20 units for x and 20 for y, each with a favourite position. After the brain settles, the peak over these units is where it says the hand is.',
+        what: 'The brain’s answer to “where is the hand?”: 20 units for x and 20 for y, each with a favourite position. After the brain settles, the peak over these units is where it says the hand is. The positions are the room’s own, so a turn of the camera moves no unit’s meaning.',
         live: placeLine,
         draw: (ctx) => (ctx.sheet ? peakSvg([{ label: 'x', values: ctx.sheet.px, lo: ctx.centres[0][0], hi: ctx.centres[0].at(-1), mark: ctx.belief?.place[0], floor: 0.05 },
           { label: 'y', values: ctx.sheet.py, lo: ctx.centres[1][0], hi: ctx.centres[1].at(-1), mark: ctx.belief?.place[1], floor: 0.05 }], '#3fe0cf') : ''),
       },
       records: {
-        title: 'The records of things', role: 'hippocampus',
-        what: 'A long-term memory beside the brain, with 12 slots. Each thing has one record: a key that says what the thing is, and a value that holds where it is.',
+        title: 'The records: what is where', role: 'hippocampus', provisional: true,
+        what: 'A long-term memory beside the brain, with 12 slots: one record for each kind of thing. A record’s key says what the thing is (“apple”), and its value says where it is. The two sit in one record, so they are found together: ask for a kind and get its place; ask for a direction and get the kind that lies there.',
         live: recordsLine,
       },
     },
@@ -185,7 +188,7 @@ const COPY = {
     },
     stages: [
       { id: 'report', parts: ['camera'], title: 'What the camera reports',
-        body: 'The camera stands in the corner and reports one thing about the hand: where it is, as two numbers, x and y in metres. Each report is about a centimetre off. In the blind spot it reports nothing at all: no position and no guess. What the brain knows about a hidden hand, it has to hold by itself.',
+        body: 'The body in the room carries a camera. It reports one thing about the hand: where it is in the room, as two numbers, x and y in metres. Each report is about a centimetre off. In the blind spot (a shadow, or anywhere beside or behind the body) it reports nothing at all: no position and no guess. What the brain knows about a hidden hand, it has to hold by itself.',
         live: seenLine },
       { id: 'code', parts: ['camera'], title: 'A position becomes activity',
         body: 'A neuron cannot hold the number 0.42. So each number is spread over 16 inputs in a row. Every input has a favourite position and lights up when the hand is near it. The hand shows as a small peak, and where the peak stands is the position. This is called a population code.',
@@ -203,8 +206,8 @@ const COPY = {
       { id: 'doubt', parts: ['place'], title: 'Doubt: how sure the brain is', changes: true,
         body: 'The answer is a peak, and a peak has a width. A narrow peak says the brain is sure; a wide one says it is unsure. The ring on the table is drawn from that width: the area the brain says holds the hand nine times in ten. In this baseline brain the width is whatever the settle leaves. With the camera dark, the peak tends to spread out.',
         live: doubtLine },
-      { id: 'things', parts: ['records'], title: 'Things that stay put',
-        body: 'A cup does not move by itself, so the brain does not follow it moment by moment. It keeps one record for each thing: a key that says what the thing is, and a value that holds where it is, written as a peak like the camera’s. While the camera sees the thing, the record is rewritten at every moment. Out of view the record is only read, and keeping it costs nothing. A knock reaches the ear as a direction and a distance. Together they name a point, and the record is rewritten to that point without sight.',
+      { id: 'things', parts: ['records'], title: 'What is where, around the body', provisional: true, wide: true,
+        body: 'An apple does not move by itself, so the brain does not follow it moment by moment. It keeps one record for each kind of thing: a key for what the thing is, and a value for where it is. In view, the record is rewritten at every moment. Out of view it is only read: turn the camera away, and the apple’s record stays. A knock reaches the ear as a direction and a distance, which name a point; the record is rewritten to it without sight. This baseline keeps places in the room’s own coordinates and works out “behind you” from the way the body faces. In the trained module’s design, a copy of the body’s own turn shifts every held place.',
         live: recordsLine },
       { id: 'answer', parts: ['place'], title: 'The answer',
         body: 'How does a peak become two numbers? On each axis the 20 units share one vote: the more active a unit, the larger its share. The answer is the average of the units’ favourite positions, weighted by their shares. The spread of the shares is the doubt of the stage before last.',
@@ -235,9 +238,11 @@ export function partCard(kind, id, ctx, unit = '') {
   const [role, color] = ROLE[part.role] || ['is a population of this brain', '#8d97b2'];
   const stage = copyFor(kind).stages.findIndex((s) => s.parts[0] === id);
   return `<div style="--c:${color}" data-part="${id}"><h3>${part.title}</h3><p class="role">${role}</p><p>${part.what}</p>`
+    + (part.more ? `<p>${part.more}</p>` : '')
     + (part.draw ? part.draw(ctx) : '')
     + `<p class="live"><b>At this moment</b>${part.live(ctx)}</p>`
     + (unit ? `<p class="unit">${unit}</p>` : '')
+    + (part.provisional ? `<p class="mark">${PROVISIONAL}</p>` : '')
     + (stage >= 0 ? `<p class="unit">Stage ${stage + 1} of ${copyFor(kind).stages.length} on the path of a position.</p>` : '') + '</div>';
 }
 
@@ -258,5 +263,5 @@ export function stageCard(kind, index, ctx) {
     + `<p class="role">${part.title}: ${role}</p><p>${stage.body}</p>`
     + (stage.draw ? stage.draw(ctx) : '')
     + `<p class="live"><b>At this moment</b>${stage.live(ctx)}</p>`
-    + (stage.changes ? `<p class="mark">${MARK}</p>` : '') + '</div>';
+    + (stage.changes ? `<p class="mark">${MARK}</p>` : '') + (stage.provisional ? `<p class="mark">${PROVISIONAL}</p>` : '') + '</div>';
 }

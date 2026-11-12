@@ -12,6 +12,8 @@
 // are the brain's own. WebGL2 draws it on a GPU; on a software renderer, or if frames get slow,
 // a Canvas2D view draws the neurons and the strongest messages instead.
 
+import { glyph } from './scene.js';
+
 export const COLOR = {
   visual: [0.4, 0.74, 1.0],
   somatosensory: [0.78, 0.8, 0.5],
@@ -995,8 +997,8 @@ export class BrainView {
       c.beginPath(); c.ellipse(g.x, g.y, g.rx * 1.3, g.ry * 1.3, 0, 0, Math.PI * 2); c.fill();
       if (g.ripple > 0.04) {
         // the settle's wave reaching this region: a ring as bright as its neurons' change
-        c.strokeStyle = css(g.hue.map((v) => 0.5 + 0.5 * v), 0.85 * g.ripple); c.lineWidth = 1 + 2 * g.ripple;
-        c.shadowColor = css(g.hue, 0.9); c.shadowBlur = 14 * g.ripple;
+        c.strokeStyle = css(g.hue, 0.5 * g.ripple); c.lineWidth = 1 + 0.8 * g.ripple;
+        c.shadowColor = css(g.hue, 0.8); c.shadowBlur = 10 * g.ripple;
         c.beginPath(); c.ellipse(g.x, g.y, g.rx * (1.12 + 0.1 * g.ripple), g.ry * (1.12 + 0.1 * g.ripple), 0, 0, Math.PI * 2); c.stroke();
         c.shadowBlur = 0;
       }
@@ -1151,8 +1153,7 @@ export class BrainView {
       c.beginPath(); c.roundRect(tx, ty, tw, th, 3); c.fill(); c.stroke();
       const px = tx + ((cell.record.place[0] - plane[0]) / (plane[1] - plane[0])) * tw;
       const py = ty + th - ((cell.record.place[1] - plane[2]) / (plane[3] - plane[2])) * th;
-      c.fillStyle = css(COLOR.hippocampus, 0.95);
-      c.beginPath(); c.arc(clamp(px, tx + 2, tx + tw - 2), clamp(py, ty + 2, ty + th - 2), 2.2, 0, Math.PI * 2); c.fill();
+      c.save(); c.translate(clamp(px, tx + 5, tx + tw - 5), clamp(py, ty + 5, ty + th - 5)); glyph(c, cell.record.name, 3.2, true); c.restore();
       c.font = '600 9px Inter, system-ui, sans-serif'; c.textAlign = 'center';
       c.fillStyle = cell.record.from === 'heard' ? 'rgba(255,224,160,0.95)' : 'rgba(255,224,160,0.8)';
       c.fillText(cell.record.from === 'heard' ? `${cell.record.name} ♪` : cell.record.name, tx + tw / 2, ty + th + 10);

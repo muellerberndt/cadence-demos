@@ -4,16 +4,20 @@
     python tools/check_page.py --shots docs    # and saves screenshots there
 
 The promise: hide the hand behind the blind spot, and the brain keeps knowing where it is. The
-check performs the tutorial's five steps with real pointer input and reads what the brain did at
+check performs the tutorial's six steps with real pointer input and reads what the brain did at
 each of them from the page's own record of its answers:
 
-1. follow: the hand is dragged across the table in view; the brain's place follows it;
+1. follow: the hand is dragged across the room in view; the brain's place follows it;
 2. hide: the hand is dragged behind the pillar and rests in the shadow; the brain's place stays
    with the hand and its stated area holds the hand; the place part's card, opened while the
    hand is hidden, shows a position and an uncertainty that grows;
 3. return: the hand is brought back into view; the place closes on it and the uncertainty falls;
-4. move: the cup is dragged into the shadow; its record keeps the place it was last seen at;
-5. knock: the cup is tapped; its record moves to the heard place without sight.
+4. turn: the floor is dragged around the body until the camera looks away from the apple; the
+   apple's record keeps its place, and the page says the apple is behind the body; the small map
+   answers "where is the apple" and "what is that way" as one sentence each;
+5. move: the cup is dragged while the camera looks away; its record keeps the place it was last
+   seen at;
+6. knock: the cup is tapped; its record moves to the heard place without sight.
 
 Then the parts' cards (each beside its part, never over it) and the eight stages of "follow the
 position", undo and reset, the
@@ -90,7 +94,7 @@ CLEAR = """(ids) => { const card = document.getElementById('card'); if (card.hid
     return a.right <= b.left + 1 || b.right <= a.left + 1 || a.bottom <= b.top + 1 || b.bottom <= a.top + 1; }); }"""
 
 JS_ROWS = """([from, to]) => window.outOfSight.state.history.filter((r) => r.moment > from && r.moment <= to)
-  .map((r) => ({ m: r.moment, seen: r.seen, brain: r.brain, last: r.last, kalman: r.kalman, u: r.uncertainty, inside: r.inside, lesson: r.lesson, cup: r.pins.cup || null }))"""
+  .map((r) => ({ m: r.moment, seen: r.seen, brain: r.brain, last: r.last, kalman: r.kalman, u: r.uncertainty, inside: r.inside, lesson: r.lesson, cup: r.pins.cup || null, apple: r.pins.apple || null }))"""
 
 
 def mean(values: list[float]) -> float | None:
@@ -147,6 +151,23 @@ def drag(page, name: str, points: list[list[float]], *, hold: int = 0, release: 
         page.mouse.up()
 
 
+def turn(page, sweep: float, radius: float = 0.3) -> None:
+    """Drag the floor around the body through ``sweep`` radians (counter-clockwise where
+    positive), as a visitor turns the camera: press a little way ahead of the body and bring
+    the pointer around it."""
+    eye, heading = page.evaluate("[window.outOfSight.stage.geometry.camera.position, window.outOfSight.stage.geometry.camera.heading]")
+    import math
+    at = lambda a: page.evaluate("(p) => window.outOfSight.screenAt(p)", [eye[0] + radius * math.cos(a), eye[1] + radius * math.sin(a)])  # noqa: E731
+    page.mouse.move(*at(heading))
+    page.mouse.down()
+    steps = max(8, int(abs(sweep) / 0.06))
+    for k in range(1, steps + 1):
+        page.mouse.move(*at(heading + sweep * k / steps))
+        page.wait_for_timeout(33)
+    page.wait_for_timeout(400)
+    page.mouse.up()
+
+
 def tour_step(page) -> str:
     return page.evaluate("document.body.dataset.tour || ''")
 
@@ -160,7 +181,7 @@ def wait_tour(page, step: str, timeout_s: float = 30.0) -> bool:
 
 
 def tutorial(page, c: Check) -> dict:
-    """The five steps, performed with the mouse; what the brain did at each."""
+    """The six steps, performed with the mouse; what the brain did at each."""
     out: dict = {}
     home = page.evaluate("window.outOfSight.stage.home.things")
     page.click("#welcome-go")
@@ -168,7 +189,7 @@ def tutorial(page, c: Check) -> dict:
 
     # 1. follow: across the table, in view
     start = moment(page)
-    drag(page, "hand", [[-0.75, 0.6], [-0.25, 1.15], [-0.7, 1.2], [-0.55, 0.8], [-0.8, 1.0], [-0.6, 0.95]])
+    drag(page, "hand", [[-0.3, 1.15], [-0.75, 1.2], [-0.45, 0.9], [-0.8, 1.3], [-0.2, 1.25], [-0.6, 1.0]])
     advanced = wait_tour(page, "hide")
     wait_moments(page, 20)
     rows = page.evaluate(JS_ROWS, [start, moment(page)])
@@ -227,7 +248,7 @@ def tutorial(page, c: Check) -> dict:
     # 3. return: back into the light
     start = moment(page)
     drag(page, "hand", [home[0]], hold=25)
-    advanced = wait_tour(page, "move", 20)
+    advanced = wait_tour(page, "turn", 20)
     rows = page.evaluate(JS_ROWS, [start, moment(page)])
     seen = [r for r in rows if r["seen"] and r["brain"] is not None]
     back = mean([r["brain"] for r in seen[-10:]])
@@ -238,26 +259,71 @@ def tutorial(page, c: Check) -> dict:
     c.add("3 return: the uncertainty falls when the hand is seen", bool(seen) and out["hide"]["uncertainty_last_m"] is not None
           and seen[-1]["u"] < out["hide"]["uncertainty_last_m"], **out["return"])
 
-    # 4. move: the cup into the shadow; its pin keeps the place it was last seen at
-    target = page.evaluate("window.outOfSight.shadowPoint(0.5)")
+    # 4. turn: the camera away from the apple, by dragging the floor around the body
+    start = moment(page)
+    sweep = page.evaluate("""(() => { const o = window.outOfSight, h = o.stage.geometry.camera.heading, d = o.awayHeading('apple') - h;
+        return Math.atan2(Math.sin(d), Math.cos(d)); })()""")
+    turn(page, sweep * 1.05)
+    advanced = wait_tour(page, "move", 20)
+    page.wait_for_function("(document.body.dataset.said || '').includes('apple')", timeout=10000)
+    said = page.evaluate("document.body.dataset.said")
+    rows = page.evaluate(JS_ROWS, [start, moment(page)])
+    behind = [r for r in rows if r["apple"] and not r["apple"]["seen"]]
+    view = page.evaluate("(() => { const o = window.outOfSight; return Object.fromEntries(o.stage.names.map((n, k) => [n, o.state.record.in_view[k]])); })()")
+    out["turn"] = {"sweep_degrees": round(sweep * 57.2958, 1), "moments_out_of_view": len(behind),
+                   "apple_record_from_true_m": behind[-1]["apple"]["off"] if behind else None,
+                   "apple_bearing_degrees": round(behind[-1]["apple"]["bearing"] * 57.2958, 1) if behind else None,
+                   "apple_distance_m": behind[-1]["apple"]["distance"] if behind else None, "in_view": view, "said": said}
+    c.add("4 turn: the visitor's drag of the floor completes the step", advanced, step=tour_step(page))
+    c.add("4 turn: the apple, out of view behind the body, keeps its place on the map", bool(behind) and not view["apple"]
+          and out["turn"]["apple_record_from_true_m"] <= PIN_KEPT and abs(out["turn"]["apple_bearing_degrees"]) >= 110, bound_m=PIN_KEPT, **out["turn"])
+    c.add("4 turn: the page says the apple is behind the body, in one sentence", "apple" in said and "behind you" in said, said=said)
+    c.shot(page, "tour-4-turned.png")
+    # the small map: a tap on a thing asks where it is; a tap on an empty direction asks what is there
+    x, y = page.evaluate("window.outOfSight.mapOf('apple')")
+    page.mouse.click(x, y)
+    page.wait_for_timeout(250)
+    where = page.evaluate("document.body.dataset.said")
+    bearing = page.evaluate("(() => { const o = window.outOfSight; return o.state.history.at(-1).pins.bread ? o.state.history.at(-1).pins.bread.bearing : null; })()")
+    what = nothing = None
+    if bearing is not None:
+        x, y = page.evaluate("(b) => window.outOfSight.mapAt(b, 0.82)", bearing)
+        page.mouse.click(x, y)
+        page.wait_for_timeout(250)
+        what = page.evaluate("document.body.dataset.said")
+        x, y = page.evaluate("(b) => window.outOfSight.mapAt(b, 0.82)", bearing + 1.6)
+        page.mouse.click(x, y)
+        page.wait_for_timeout(250)
+        nothing = page.evaluate("document.body.dataset.said")
+    out["around"] = {"where": where, "what": what, "elsewhere": nothing}
+    c.add("the small map answers where a thing is: the apple, behind the body", "apple" in where and "behind you" in where and "m away" in where, said=where)
+    c.add("the small map answers what lies a way: the bread, seen for the first time after the turn",
+          what is not None and "slice of bread" in what and "front" in what, said=what, bread_in_view=view["bread"])
+    c.add("the small map says so where nothing lies that way", nothing is not None and ("nothing" in nothing or "the hand" in nothing), said=nothing)
+    page.keyboard.press("Escape")
+    page.mouse.move(*page.evaluate("window.outOfSight.screenAt([0.2, 1.2])"))
+    c.shot(page, "around-me.png")
+
+    # 5. move: the cup while the camera looks away; its pin keeps the place it was last seen at
+    target = page.evaluate("window.outOfSight.awayPoint('cup', 0.3)")
     start = moment(page)
     drag(page, "cup", [target], hold=20)
     advanced = wait_tour(page, "knock", 20)
     rows = page.evaluate(JS_ROWS, [start, moment(page)])
-    last_seen = [r for r in rows if r["cup"] and r["cup"]["seen"]]
+    last_seen = page.evaluate("(() => { const r = window.outOfSight.state.history.filter((x) => x.pins.cup && x.pins.cup.seen).at(-1); return r ? r.pins.cup.place : null; })()")
     hidden = [r for r in rows if r["cup"] and not r["cup"]["seen"]]
     kept = None
     if last_seen and hidden:
-        a, b = last_seen[-1]["cup"]["place"], hidden[-1]["cup"]["place"]
+        a, b = last_seen, hidden[-1]["cup"]["place"]
         kept = ((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2) ** 0.5
     out["move"] = {"hidden_moments": len(hidden), "pin_from_last_seen_m": kept, "pin_from_true_m": hidden[-1]["cup"]["off"] if hidden else None,
                    "pin_source": hidden[-1]["cup"]["from"] if hidden else None}
-    c.add("4 move: the visitor's drag completes the step", advanced, step=tour_step(page))
-    c.add("4 move: the record keeps the place the cup was last seen at", kept is not None and kept <= PIN_KEPT
+    c.add("5 move: the visitor's drag completes the step", advanced, step=tour_step(page))
+    c.add("5 move: the record keeps the place the cup was last seen at", kept is not None and kept <= PIN_KEPT
           and out["move"]["pin_from_true_m"] >= 0.1, bound_m=PIN_KEPT, **out["move"])
-    c.shot(page, "tour-4-moved.png")
+    c.shot(page, "tour-5-moved.png")
 
-    # 5. knock: a tap on the hidden cup
+    # 6. knock: a tap on the cup, out of view
     start = moment(page)
     x, y = page.evaluate("window.outOfSight.screenOf('cup')")
     page.mouse.move(x, y)
@@ -269,15 +335,15 @@ def tutorial(page, c: Check) -> dict:
     after = [r for r in rows if r["cup"]]
     out["knock"] = {"pin_from_true_m": after[-1]["cup"]["off"] if after else None, "pin_source": after[-1]["cup"]["from"] if after else None,
                     "cup_in_view": after[-1]["cup"]["seen"] if after else None, "before_m": out["move"]["pin_from_true_m"]}
-    c.add("5 knock: the tap completes the tutorial, which leaves the visitor in free play", finished, step=tour_step(page))
+    c.add("6 knock: the tap completes the tutorial, which leaves the visitor in free play", finished, step=tour_step(page))
     far, noise = page.evaluate("""(() => { const o = window.outOfSight, g = o.stage.geometry, p = o.stage.where('cup');
         return [Math.hypot(p[0] - g.ear[0], p[1] - g.ear[1]), o.stage.world.cueNoise]; })()""")
     bound = PIN_HEARD * far * (noise[0] ** 2 + noise[1] ** 2) ** 0.5
     out["knock"]["cue_error_sd_m"] = far * (noise[0] ** 2 + noise[1] ** 2) ** 0.5
-    c.add("5 knock: the record moves to the heard place without sight", bool(after) and after[-1]["cup"]["from"] == "heard"
+    c.add("6 knock: the record moves to the heard place without sight", bool(after) and after[-1]["cup"]["from"] == "heard"
           and not after[-1]["cup"]["seen"] and after[-1]["cup"]["off"] <= bound and after[-1]["cup"]["off"] < out["move"]["pin_from_true_m"],
           bound_m=bound, **out["knock"])
-    c.shot(page, "tour-5-knock.png")
+    c.shot(page, "tour-6-knock.png")
     return out
 
 
@@ -321,19 +387,30 @@ def cards(page, c: Check) -> None:
     order_ok = [s["kicker"].upper().endswith(f"{k + 1} OF 8") for k, s in enumerate(stages)]
     c.add("follow the position: eight stages in order, each with live numbers and its part ringed",
           all(order_ok) and all(s["title"] and "AT THIS MOMENT" in s["live"].upper() and s["spots"] and s["clear"] for s in stages),
-          stages=[{"title": s["title"], "ringed": s["spots"], "baseline_mark": s["marked"]} for s in stages])
+          stages=[{"title": s["title"], "ringed": s["spots"], "marked": s["marked"], "beside_its_parts": s["clear"]} for s in stages])
 
 
 def manners(page, c: Check, scene_file: Path | None) -> None:
     """Undo, reset, the details switch and a scene file."""
-    before = page.evaluate("window.outOfSight.stage.where('box')")
-    drag(page, "box", [[0.4, 0.2]])
-    moved = page.evaluate("window.outOfSight.stage.where('box')")
+    page.click("#reset")
+    wait_moments(page, 5)
+    before = page.evaluate("window.outOfSight.stage.where('bread')")
+    drag(page, "bread", [[0.6, 0.1]])
+    moved = page.evaluate("window.outOfSight.stage.where('bread')")
     page.click("#undo")
     page.wait_for_timeout(100)
-    undone = page.evaluate("window.outOfSight.stage.where('box')")
-    c.add("undo takes the last move back in one tap", abs(moved[0] - 0.4) < 0.02 and abs(undone[0] - before[0]) < 1e-9 and abs(undone[1] - before[1]) < 1e-9,
+    undone = page.evaluate("window.outOfSight.stage.where('bread')")
+    c.add("undo takes the last move back in one tap", abs(moved[0] - 0.6) < 0.02 and abs(undone[0] - before[0]) < 1e-9 and abs(undone[1] - before[1]) < 1e-9,
           before=before, moved=moved, undone=undone)
+    facing = page.evaluate("window.outOfSight.stage.where('heading')")
+    turn(page, -0.9)
+    wait_moments(page, 8)
+    turned = page.evaluate("window.outOfSight.stage.where('heading')")
+    page.click("#undo")
+    wait_moments(page, 3)
+    back = page.evaluate("window.outOfSight.stage.where('heading')")
+    c.add("a drag of the floor turns the camera, and undo takes the turn back", abs(abs(turned - facing) - 0.9) < 0.12 and abs(back - facing) < 1e-9,
+          facing=facing, turned=turned, undone=back)
     x, y = page.evaluate("window.outOfSight.screenOf('camera')")
     page.mouse.move(x, y)
     page.mouse.down()
@@ -412,6 +489,20 @@ def main() -> int:
             wait_moments(page, 30)
             fits = page.evaluate("({ w: document.documentElement.scrollWidth <= innerWidth, scene: document.getElementById('scene').getBoundingClientRect().height, brain: document.getElementById('brain-stage').getBoundingClientRect().height })")
             c.add("a phone shows the scene and the brain on one screen", fits["w"] and fits["scene"] > 200 and fits["brain"] > 200, **fits)
+            before = page.evaluate("window.outOfSight.stage.where('heading')")
+            page.evaluate("""async () => { const el = document.getElementById('scene'), b = el.getBoundingClientRect(), cx = b.left + b.width * 0.5, cy = b.top + b.height * 0.3, r = 50;
+                const fire = (type, id, a) => el.dispatchEvent(new PointerEvent(type, { pointerId: id, pointerType: 'touch', isPrimary: id === 31, bubbles: true,
+                  clientX: cx + r * Math.cos(a), clientY: cy - r * Math.sin(a) }));
+                fire('pointerdown', 31, Math.PI); fire('pointerdown', 32, 0);
+                for (let k = 1; k <= 20; k++) { const a = (k / 20) * (Math.PI / 3); fire('pointermove', 31, Math.PI + a); fire('pointermove', 32, a); await new Promise((r2) => setTimeout(r2, 30)); }
+                fire('pointerup', 31, Math.PI + Math.PI / 3); fire('pointerup', 32, Math.PI / 3); }""")
+            wait_moments(page, 12)
+            after = page.evaluate("window.outOfSight.stage.where('heading')")
+            import math
+            twisted = math.atan2(math.sin(after - before), math.cos(after - before))
+            c.add("on a phone two fingers twist the camera", abs(twisted - math.pi / 3) < 0.1, turned_degrees=round(math.degrees(twisted), 1))
+            page.click("#reset")
+            wait_moments(page, 6)
             x, y = page.evaluate("window.outOfSight.screenOf('cup')")
             page.touchscreen.tap(x, y)
             wait_moments(page, 6)

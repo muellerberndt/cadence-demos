@@ -1,4 +1,5 @@
-// The scene from above, the map the brain holds, and the error chart: three Canvas2D views.
+// The scene from above, the map around the body, the map the brain holds, and the error chart:
+// four Canvas2D views.
 //
 // SceneView draws the plane as it is (the arm, the hand, the things, the camera's light and its
 // shadows) and, on top, what the brain says: the hand's place as a glowing peak inside the area
@@ -6,11 +7,63 @@
 // answer itself, straight from the place units' readout. ChartView draws each estimate's error
 // against the true position over the last moments.
 
-import { forward, litPolygon, cartesian } from './world.js';
+import { forward, litPolygon, cartesian, around } from './world.js';
 import { radiusAt, RATE } from './controls.js';
 
 const TEAL = [63, 224, 207], ORANGE = [255, 159, 74], GOLD = [255, 206, 102], VIOLET = [183, 156, 255];
-export const THING_COLOR = { hand: ORANGE, cup: [127, 212, 255], wrench: [201, 210, 232], box: [222, 178, 124] };
+export const THING_COLOR = { hand: ORANGE, cup: [127, 212, 255], apple: [255, 104, 116], bread: [236, 190, 124] };
+
+/** A kind of thing as a small friendly glyph, drawn at the origin at size u: a cup seen from
+ *  above, an apple, a slice of bread. `lit`: in the camera's view (solid and glowing); else it
+ *  is what is really there, as a clear outline. */
+export function glyph(c, name, u, lit = true) {
+  const color = THING_COLOR[name] || [200, 200, 220];
+  c.save();
+  c.lineJoin = 'round'; c.lineCap = 'round';
+  c.lineWidth = Math.max(1, u * 0.11);
+  c.strokeStyle = rgba(color, lit ? 1 : 0.85); c.fillStyle = rgba(color, lit ? 0.3 : 0.1);
+  if (lit) { c.shadowColor = rgba(color, 0.6); c.shadowBlur = u * 0.9; }
+  if (name === 'apple') {
+    const body = new Path2D();
+    body.moveTo(0, -0.5 * u);
+    body.bezierCurveTo(-0.5 * u, -1.0 * u, -1.2 * u, -0.5 * u, -1.02 * u, 0.2 * u);
+    body.bezierCurveTo(-0.9 * u, 0.85 * u, -0.4 * u, 1.1 * u, 0, 0.88 * u);
+    body.bezierCurveTo(0.4 * u, 1.1 * u, 0.9 * u, 0.85 * u, 1.02 * u, 0.2 * u);
+    body.bezierCurveTo(1.2 * u, -0.5 * u, 0.5 * u, -1.0 * u, 0, -0.5 * u);
+    if (lit) c.fillStyle = rgba(color, 0.9);
+    c.fill(body); c.shadowBlur = 0; c.stroke(body);
+    if (lit) { c.strokeStyle = 'rgba(255,220,220,0.75)'; c.beginPath(); c.arc(-0.42 * u, -0.05 * u, 0.36 * u, Math.PI * 0.95, Math.PI * 1.45); c.stroke(); }
+    c.strokeStyle = lit ? 'rgba(150,104,60,1)' : rgba(color, 0.85);
+    c.beginPath(); c.moveTo(0, -0.5 * u); c.quadraticCurveTo(0.02 * u, -0.9 * u, 0.2 * u, -1.12 * u); c.stroke();
+    c.fillStyle = lit ? 'rgba(126,214,140,0.95)' : rgba(color, 0.1); c.strokeStyle = lit ? 'rgba(70,150,90,1)' : rgba(color, 0.85);
+    c.beginPath(); c.ellipse(0.55 * u, -0.98 * u, 0.36 * u, 0.17 * u, -0.5, 0, Math.PI * 2); c.fill(); c.stroke();
+  } else if (name === 'bread') {
+    const slice = (k) => {
+      const q = new Path2D();
+      q.moveTo(-0.85 * u * k, 0.78 * u * k);
+      q.lineTo(-0.85 * u * k, -0.12 * u * k);
+      q.bezierCurveTo(-1.3 * u * k, -0.3 * u * k, -1.2 * u * k, -1.02 * u * k, -0.52 * u * k, -0.94 * u * k);
+      q.bezierCurveTo(-0.3 * u * k, -1.14 * u * k, 0.3 * u * k, -1.14 * u * k, 0.52 * u * k, -0.94 * u * k);
+      q.bezierCurveTo(1.2 * u * k, -1.02 * u * k, 1.3 * u * k, -0.3 * u * k, 0.85 * u * k, -0.12 * u * k);
+      q.lineTo(0.85 * u * k, 0.78 * u * k);
+      q.quadraticCurveTo(0.85 * u * k, 0.95 * u * k, 0.68 * u * k, 0.95 * u * k);
+      q.lineTo(-0.68 * u * k, 0.95 * u * k);
+      q.quadraticCurveTo(-0.85 * u * k, 0.95 * u * k, -0.85 * u * k, 0.78 * u * k);
+      return q;
+    };
+    if (lit) c.fillStyle = 'rgba(206,140,72,0.95)';
+    c.fill(slice(1)); c.shadowBlur = 0;
+    c.strokeStyle = lit ? 'rgba(150,92,40,1)' : rgba(color, 0.85); c.stroke(slice(1));
+    if (lit) { c.fillStyle = 'rgba(246,220,172,0.96)'; c.fill(slice(0.74)); }
+    else { c.strokeStyle = rgba(color, 0.5); c.stroke(slice(0.74)); }
+  } else {
+    // a cup seen from above: its rim, its inside and its handle
+    c.beginPath(); c.arc(0, 0, u, 0, Math.PI * 2); c.fill(); c.shadowBlur = 0; c.stroke();
+    c.beginPath(); c.arc(0, 0, u * 0.68, 0, Math.PI * 2); c.stroke();
+    c.beginPath(); c.arc(u * 1.25, 0, u * 0.42, -Math.PI * 0.62, Math.PI * 0.62); c.stroke();
+  }
+  c.restore();
+}
 const rgba = (c, a) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 const lerp = (a, b, f) => a + (b - a) * f;
@@ -152,6 +205,16 @@ export class SceneView {
       c.beginPath(); c.moveTo(qx - 4, qy - 4); c.lineTo(qx + 4, qy + 4); c.moveTo(qx + 4, qy - 4); c.lineTo(qx - 4, qy + 4); c.stroke();
     }
 
+    // what was just asked about: a line from the body to the place the brain answered
+    if (s.asked?.place) {
+      const f = 1 - (now - s.asked.at) / 2200, [ax, ay] = S(s.asked.place);
+      c.save();
+      c.strokeStyle = rgba(GOLD, 0.8 * f); c.lineWidth = 1.4; c.setLineDash([3, 5]);
+      c.beginPath(); c.moveTo(eye[0], eye[1]); c.lineTo(ax, ay); c.stroke(); c.setLineDash([]);
+      c.beginPath(); c.arc(ax, ay, 16 + 10 * (1 - f), 0, Math.PI * 2); c.stroke();
+      c.restore();
+    }
+
     // the tutorial's guide: a ring on what to take hold of, and where to bring it
     if (s.guide) this.guide(c, s.guide, m, now);
 
@@ -184,6 +247,19 @@ export class SceneView {
     c.beginPath(); c.arc(x, y, r * (calm ? 1 : 0.75 + 0.5 * beat), 0, Math.PI * 2); c.stroke();
     c.strokeStyle = 'rgba(255,255,255,0.5)';
     c.beginPath(); c.arc(x, y, r * 0.75, 0, Math.PI * 2); c.stroke();
+    if (guide.turn) {
+      // an arc around the body, from the way it faces to the way to turn it
+      const from = guide.turn.from, gap = Math.atan2(Math.sin(guide.turn.to - from), Math.cos(guide.turn.to - from));
+      const R = 0.34 * m, a0 = -from, a1 = -(from + gap);
+      c.setLineDash([4, 5]); c.strokeStyle = 'rgba(255,255,255,0.7)';
+      c.beginPath(); c.arc(x, y, R, a0, a1, gap > 0); c.stroke();
+      c.setLineDash([]);
+      const ex = x + Math.cos(a1) * R, ey = y + Math.sin(a1) * R, tangent = a1 + (gap > 0 ? -Math.PI / 2 : Math.PI / 2);
+      c.beginPath();
+      c.moveTo(ex, ey); c.lineTo(ex - Math.cos(tangent - 0.5) * 10, ey - Math.sin(tangent - 0.5) * 10);
+      c.moveTo(ex, ey); c.lineTo(ex - Math.cos(tangent + 0.5) * 10, ey - Math.sin(tangent + 0.5) * 10);
+      c.stroke();
+    }
     if (guide.target) {
       const [tx, ty] = this.toScreen(guide.target), d = Math.hypot(tx - x, ty - y);
       c.setLineDash([4, 5]); c.strokeStyle = 'rgba(255,255,255,0.55)';
@@ -384,31 +460,10 @@ export class SceneView {
   thing(c, s, k, at, m) {
     const name = s.names[k], inView = !!s.record?.in_view?.[k];
     if (!inView && !s.showHidden) return;
-    const [x, y] = this.toScreen(at), u = 0.05 * m, color = THING_COLOR[name] || [200, 200, 220];
-    const alpha = inView ? 1 : 0.8;
+    const [x, y] = this.toScreen(at), u = (name === 'cup' ? 0.05 : 0.058) * m;
     c.save();
     c.translate(x, y);
-    c.lineWidth = inView ? 1.5 : 1.25;
-    c.strokeStyle = rgba(color, 0.95 * alpha); c.fillStyle = rgba(color, inView ? 0.24 : 0.08);
-    if (inView) { c.shadowColor = rgba(color, 0.55); c.shadowBlur = 10; }
-    if (name === 'cup') {
-      c.beginPath(); c.arc(0, 0, u, 0, Math.PI * 2); c.fill(); c.stroke();
-      c.shadowBlur = 0;
-      c.beginPath(); c.arc(0, 0, u * 0.68, 0, Math.PI * 2); c.stroke();
-      c.beginPath(); c.arc(u * 1.25, 0, u * 0.42, -Math.PI * 0.62, Math.PI * 0.62); c.stroke();
-    } else if (name === 'wrench') {
-      c.rotate(-0.6);
-      c.beginPath(); c.roundRect(-u * 1.35, -u * 0.2, u * 2.1, u * 0.4, u * 0.2); c.fill(); c.stroke();
-      c.shadowBlur = 0;
-      c.beginPath(); c.arc(u * 1.05, 0, u * 0.52, Math.PI * 0.28, Math.PI * 1.72); c.stroke();
-      c.beginPath(); c.arc(-u * 1.3, 0, u * 0.3, 0, Math.PI * 2); c.stroke();
-    } else {
-      c.rotate(0.25);
-      c.beginPath(); c.roundRect(-u, -u * 0.85, u * 2, u * 1.7, u * 0.18); c.fill(); c.stroke();
-      c.shadowBlur = 0;
-      c.beginPath(); c.moveTo(-u, 0); c.lineTo(u, 0); c.moveTo(0, -u * 0.85); c.lineTo(0, u * 0.85); c.stroke();
-    }
-    c.setLineDash([]);
+    glyph(c, name, u, inView);
     if (s.selected === name) { c.strokeStyle = 'rgba(255,255,255,0.85)'; c.lineWidth = 1.2; c.beginPath(); c.arc(0, 0, u * 1.9, 0, Math.PI * 2); c.stroke(); }
     c.restore();
   }
@@ -432,24 +487,40 @@ export class SceneView {
     c.strokeStyle = rgba(color, 0.95); c.fillStyle = rgba(color, 0.9); c.lineWidth = 1.5;
     c.beginPath(); c.moveTo(x, y); c.lineTo(x, y - 15); c.stroke();
     if (heard) c.setLineDash([2, 2]);
-    c.beginPath(); c.arc(x, y - 21, 6.5, 0, Math.PI * 2);
+    c.beginPath(); c.arc(x, y - 21, 7.5, 0, Math.PI * 2);
     c.fillStyle = 'rgba(8,11,20,0.9)'; c.fill(); c.stroke(); c.setLineDash([]);
     c.fillStyle = rgba(color, 0.95);
     c.beginPath(); c.arc(x, y, 2.2, 0, Math.PI * 2); c.fill();
-    c.font = '600 8.5px Inter, system-ui, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
-    c.fillText(name[0].toUpperCase(), x, y - 20.5);
+    c.translate(x - (name === 'cup' ? 0.8 : 0), y - 21 + (name === 'cup' ? 0 : 0.6));
+    glyph(c, name, name === 'cup' ? 3.1 : 3.6, false);
     c.restore();
   }
 
+  // The body, which carries the camera: a round body with its eye where it faces.
   cameraGlyph(c, eye, heading, on, selected) {
     c.save();
     c.translate(eye[0], eye[1]); c.rotate(-heading);
-    c.fillStyle = '#1a2136'; c.strokeStyle = selected ? 'rgba(255,255,255,0.9)' : on ? 'rgba(150,225,255,0.9)' : 'rgba(120,130,160,0.7)'; c.lineWidth = 1.4;
-    c.beginPath(); c.roundRect(-16, -8, 16, 16, 3); c.fill(); c.stroke();
-    c.beginPath(); c.moveTo(0, -5); c.lineTo(8, -8); c.lineTo(8, 8); c.lineTo(0, 5); c.closePath(); c.fill(); c.stroke();
-    c.fillStyle = on ? 'rgba(150,235,255,0.95)' : 'rgba(90,100,130,0.8)';
-    if (on) { c.shadowColor = 'rgba(150,235,255,0.9)'; c.shadowBlur = 10; }
-    c.beginPath(); c.arc(-8, 0, 2.6, 0, Math.PI * 2); c.fill();
+    c.lineWidth = 1.5;
+    c.fillStyle = '#1a2136'; c.strokeStyle = selected ? 'rgba(255,255,255,0.95)' : on ? 'rgba(150,225,255,0.95)' : 'rgba(120,130,160,0.75)';
+    if (on) { c.shadowColor = 'rgba(150,235,255,0.7)'; c.shadowBlur = 12; }
+    c.beginPath(); c.arc(0, 0, 13, 0, Math.PI * 2); c.fill(); c.stroke();
+    c.shadowBlur = 0;
+    // the eye, at the front
+    c.beginPath(); c.moveTo(6, -6.5); c.lineTo(17, -9); c.lineTo(17, 9); c.lineTo(6, 6.5); c.closePath();
+    c.fillStyle = '#222b45'; c.fill(); c.stroke();
+    c.fillStyle = on ? 'rgba(170,240,255,0.98)' : 'rgba(90,100,130,0.85)';
+    if (on) { c.shadowColor = 'rgba(150,235,255,0.95)'; c.shadowBlur = 10; }
+    c.beginPath(); c.arc(12.5, 0, 3, 0, Math.PI * 2); c.fill();
+    c.shadowBlur = 0;
+    // its back: a small mark, so that behind reads as behind
+    c.strokeStyle = 'rgba(150,165,210,0.5)'; c.beginPath(); c.arc(0, 0, 8.5, Math.PI * 0.72, Math.PI * 1.28); c.stroke();
+    // a grip ahead of it: the camera turns
+    c.strokeStyle = 'rgba(190,225,255,0.4)'; c.lineWidth = 1.2;
+    c.beginPath(); c.arc(0, 0, 30, -0.42, 0.42); c.stroke();
+    for (const side of [-1, 1]) {
+      const a = 0.42 * side, x = 30 * Math.cos(a), y = 30 * Math.sin(a), t = a + (side * Math.PI) / 2;
+      c.beginPath(); c.moveTo(x - Math.cos(t - 0.6) * 5, y - Math.sin(t - 0.6) * 5); c.lineTo(x, y); c.lineTo(x - Math.cos(t + 0.6) * 5, y - Math.sin(t + 0.6) * 5); c.stroke();
+    }
     c.restore();
   }
 
@@ -524,9 +595,8 @@ export class MapView {
       const [px, py] = P(rec.place), color = THING_COLOR[name] || [200, 200, 220];
       c.strokeStyle = rgba(color, 0.95); c.fillStyle = 'rgba(8,11,20,0.9)'; c.lineWidth = 1.3;
       if (rec.from === 'heard') c.setLineDash([2, 2]);
-      c.beginPath(); c.arc(px, py, 5.5, 0, Math.PI * 2); c.fill(); c.stroke(); c.setLineDash([]);
-      c.fillStyle = rgba(color, 0.95); c.font = '600 7.5px Inter, system-ui, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
-      c.fillText(name[0].toUpperCase(), px, py + 0.5);
+      c.beginPath(); c.arc(px, py, 7, 0, Math.PI * 2); c.fill(); c.stroke(); c.setLineDash([]);
+      c.save(); c.translate(px, py); glyph(c, name, 3, false); c.restore();
     }
     if (s.belief?.place) {
       const [bx, by] = P(s.belief.place);
@@ -583,5 +653,128 @@ export class ChartView {
     line('brain', rgba(TEAL, 1), 1.8);
     c.fillStyle = 'rgba(141,151,178,0.8)'; c.textAlign = 'right'; c.textBaseline = 'alphabetic';
     c.fillText(`the last ${Math.round(n * dt)} s`, left + W, h - 3);
+  }
+}
+
+/** The map as the body has it. "Around me": the body at the centre, facing up, and every thing
+ *  the brain holds a record of at its direction and distance, inside a soft ring as wide as the
+ *  record's own spread; the hand's answer with its ring. "Room": the same map over the room. A
+ *  tap on a thing asks where it is; a tap on an empty direction asks what is there. */
+export class AroundView {
+  constructor(canvas) { this.canvas = canvas; this.marks = []; this.reach = 1.35; this.mode = 'me'; this.asked = null; }
+
+  /** A tapped direction is shown for a moment: { bearing, start }. */
+  ask(bearing) { this.asked = { bearing, start: performance.now() }; }
+
+  draw(s, now = performance.now()) {
+    const { c, w, h } = fit(this.canvas);
+    c.clearRect(0, 0, w, h);
+    this.marks = [];
+    this.size = [w, h];
+    if (this.mode === 'room') { this.room(c, s, w, h); return; }
+    const cx = w / 2, cy = h / 2, R = Math.min(w, h) / 2 - 2, k = R / this.reach, fov = s.geometry.camera.fov;
+    c.save();
+    c.beginPath(); c.arc(cx, cy, R, 0, Math.PI * 2);
+    c.fillStyle = 'rgba(8,11,21,0.94)'; c.fill();
+    c.clip();
+    if (s.cameraOn) {
+      // what the camera sees lies ahead: up
+      const light = c.createRadialGradient(cx, cy, 0, cx, cy, R);
+      light.addColorStop(0, 'rgba(150,225,255,0.3)'); light.addColorStop(1, 'rgba(90,150,255,0.06)');
+      c.fillStyle = light;
+      c.beginPath(); c.moveTo(cx, cy); c.arc(cx, cy, R, -Math.PI / 2 - fov / 2, -Math.PI / 2 + fov / 2); c.closePath(); c.fill();
+    }
+    c.strokeStyle = 'rgba(130,150,210,0.16)'; c.lineWidth = 1;
+    for (const ring of [0.5, 1.0]) { c.beginPath(); c.arc(cx, cy, ring * k, 0, Math.PI * 2); c.stroke(); }
+    if (this.asked && now - this.asked.start < 1600) {
+      // the direction just asked about
+      const f = 1 - (now - this.asked.start) / 1600, a = -Math.PI / 2 - this.asked.bearing;
+      c.fillStyle = `rgba(255,206,102,${0.22 * f})`;
+      c.beginPath(); c.moveTo(cx, cy); c.arc(cx, cy, R, a - 0.45, a + 0.45); c.closePath(); c.fill();
+    }
+    // a thing further than the map reaches is drawn at its rim, in its direction
+    const at = (rel) => { const r = Math.min(this.reach * 0.9, rel.distance) * k; return [cx - Math.sin(rel.bearing) * r, cy - Math.cos(rel.bearing) * r]; };
+    for (let i = 1; i < s.names.length; i++) {
+      const name = s.names[i], pin = s.pins?.[name];
+      if (!pin?.place) continue;
+      const [x, y] = at(around(s.geometry, pin.place)), color = THING_COLOR[name] || [200, 200, 220];
+      const ring = clamp(radiusAt(RATE) * (pin.spread ?? 0.01) * k, 9.5, R * 0.6);
+      const soft = c.createRadialGradient(x, y, 0, x, y, ring * 1.25);
+      soft.addColorStop(0, rgba(color, 0.42)); soft.addColorStop(0.7, rgba(color, 0.14)); soft.addColorStop(1, rgba(color, 0));
+      c.fillStyle = soft; c.beginPath(); c.arc(x, y, ring * 1.25, 0, Math.PI * 2); c.fill();
+      if (pin.from === 'heard') { c.setLineDash([2, 3]); c.strokeStyle = rgba(color, 0.7); c.beginPath(); c.arc(x, y, ring, 0, Math.PI * 2); c.stroke(); c.setLineDash([]); }
+      c.save(); c.translate(x, y); glyph(c, name, name === 'cup' ? 4.6 : 5.4, !!s.record?.in_view?.[i]); c.restore();
+      this.marks.push({ name, x, y });
+    }
+    if (s.belief?.place) {
+      // the hand: the brain's answer and its ring of doubt
+      const [x, y] = at(around(s.geometry, s.belief.place));
+      const ring = clamp(radiusAt(RATE) * Math.sqrt(s.belief.sd[0] * s.belief.sd[1]) * k, 4, R * 0.95);
+      c.strokeStyle = rgba(TEAL, 0.7); c.lineWidth = 1.1; c.beginPath(); c.arc(x, y, ring, 0, Math.PI * 2); c.stroke();
+      c.fillStyle = 'rgba(200,255,248,0.98)'; c.shadowColor = rgba(TEAL, 0.9); c.shadowBlur = 8;
+      c.beginPath(); c.arc(x, y, 3, 0, Math.PI * 2); c.fill(); c.shadowBlur = 0;
+      this.marks.push({ name: 'hand', x, y });
+    }
+    // the body, facing up
+    c.fillStyle = 'rgba(214,228,255,0.96)'; c.strokeStyle = 'rgba(8,11,21,0.9)'; c.lineWidth = 1;
+    c.beginPath(); c.moveTo(cx, cy - 7.5); c.lineTo(cx + 5.5, cy + 5.5); c.lineTo(cx, cy + 2.8); c.lineTo(cx - 5.5, cy + 5.5); c.closePath(); c.fill(); c.stroke();
+    c.restore();
+    c.strokeStyle = 'rgba(150,165,210,0.4)'; c.lineWidth = 1.1; c.beginPath(); c.arc(cx, cy, R, 0, Math.PI * 2); c.stroke();
+    this.dial = { cx, cy, R };
+  }
+
+  // the same map over the room: the body where it stands, facing the way it faces
+  room(c, s, w, h) {
+    const [lx, hx, ly, hy] = s.geometry.plane, pad = 3;
+    const k = Math.min((w - 2 * pad) / (hx - lx), (h - 2 * pad) / (hy - ly));
+    const x0 = (w - (hx - lx) * k) / 2, y0 = (h - (hy - ly) * k) / 2;
+    const P = (p) => [x0 + (p[0] - lx) * k, y0 + (hy - p[1]) * k];
+    this.plane = { toPlane: (x, y) => [lx + (x - x0) / k, hy - (y - y0) / k] };
+    c.save();
+    c.fillStyle = 'rgba(8,11,21,0.94)'; c.beginPath(); c.roundRect(x0, y0, (hx - lx) * k, (hy - ly) * k, 5); c.fill(); c.clip();
+    const cam = s.geometry.camera, [bx, by] = P(cam.position);
+    if (s.cameraOn) {
+      const light = c.createRadialGradient(bx, by, 0, bx, by, cam.range * k * 0.7);
+      light.addColorStop(0, 'rgba(150,225,255,0.3)'); light.addColorStop(1, 'rgba(90,150,255,0.05)');
+      c.fillStyle = light;
+      c.beginPath(); c.moveTo(bx, by); c.arc(bx, by, cam.range * k, -(cam.heading + cam.fov / 2), -(cam.heading - cam.fov / 2)); c.closePath(); c.fill();
+    }
+    for (let i = 1; i < s.names.length; i++) {
+      const name = s.names[i], pin = s.pins?.[name];
+      if (!pin?.place) continue;
+      const [x, y] = P(pin.place), color = THING_COLOR[name] || [200, 200, 220];
+      const ring = clamp(radiusAt(RATE) * (pin.spread ?? 0.01) * k, 7, 40);
+      const soft = c.createRadialGradient(x, y, 0, x, y, ring * 1.25);
+      soft.addColorStop(0, rgba(color, 0.42)); soft.addColorStop(1, rgba(color, 0));
+      c.fillStyle = soft; c.beginPath(); c.arc(x, y, ring * 1.25, 0, Math.PI * 2); c.fill();
+      c.save(); c.translate(x, y); glyph(c, name, name === 'cup' ? 3.4 : 4, !!s.record?.in_view?.[i]); c.restore();
+      this.marks.push({ name, x, y });
+    }
+    if (s.belief?.place) {
+      const [x, y] = P(s.belief.place), u = radiusAt(RATE);
+      c.strokeStyle = rgba(TEAL, 0.7); c.lineWidth = 1.1;
+      c.beginPath(); c.ellipse(x, y, Math.max(4, u * s.belief.sd[0] * k), Math.max(4, u * s.belief.sd[1] * k), 0, 0, Math.PI * 2); c.stroke();
+      c.fillStyle = 'rgba(200,255,248,0.98)'; c.beginPath(); c.arc(x, y, 2.8, 0, Math.PI * 2); c.fill();
+      this.marks.push({ name: 'hand', x, y });
+    }
+    c.translate(bx, by); c.rotate(Math.PI / 2 - cam.heading);
+    c.fillStyle = 'rgba(214,228,255,0.96)'; c.strokeStyle = 'rgba(8,11,21,0.9)'; c.lineWidth = 1;
+    c.beginPath(); c.moveTo(0, -7); c.lineTo(5, 5); c.lineTo(0, 2.6); c.lineTo(-5, 5); c.closePath(); c.fill(); c.stroke();
+    c.restore();
+    c.strokeStyle = 'rgba(150,165,210,0.4)'; c.lineWidth = 1.1; c.beginPath(); c.roundRect(x0, y0, (hx - lx) * k, (hy - ly) * k, 5); c.stroke();
+    this.dial = null;
+  }
+
+  /** The thing drawn under a point of the canvas, or null. */
+  hit(x, y) {
+    let best = null, near = 15;
+    for (const mark of this.marks) { const d = Math.hypot(mark.x - x, mark.y - y); if (d < near) { near = d; best = mark.name; } }
+    return best;
+  }
+
+  /** The bearing, from the way the body faces, that a point of the canvas stands for. */
+  bearingAt(x, y, geometry) {
+    if (this.dial) return Math.atan2(-(x - this.dial.cx), -(y - this.dial.cy));
+    return this.plane ? around(geometry, this.plane.toPlane(x, y)).bearing : 0;
   }
 }

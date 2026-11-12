@@ -239,28 +239,55 @@ export class Random {
 
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 
+// What stands in the room: the hand, and three kinds of thing.
 export const THINGS = Object.freeze([
   { name: 'hand', what: 0, radius: 0.06 },
   { name: 'cup', what: 1, radius: 0.055 },
-  { name: 'wrench', what: 2, radius: 0.06 },
-  { name: 'box', what: 3, radius: 0.06 },
+  { name: 'apple', what: 2, radius: 0.05 },
+  { name: 'bread', what: 3, radius: 0.06 },
 ]);
 
+// Where everything stands when the page opens. The body, which carries the camera and the ear,
+// stands inside the room, so that things lie around it: in front of it, beside it and behind it.
+export const HOME = Object.freeze({
+  body: { position: [0.45, 0.5], heading: (170 * Math.PI) / 180 },
+  pillar: { center: [-0.2, 0.62], radius: 0.1 }, // a little wider than the chamber's, to hide a hand behind with ease
+  joints: [2.6, -0.5],
+  things: [[-0.6, 1.0], [-0.2, 0.32], [-0.05, 1.1], [0.82, 0.3]],
+});
+
+/** An angle brought into (-pi, pi]. */
+export const wrap = (a) => Math.atan2(Math.sin(a), Math.cos(a));
+
+/** A point as the body has it: its distance, and its bearing from the way the body faces
+ *  (0 straight ahead, positive to the left, pi behind). */
+export function around(geometry, point) {
+  const cam = geometry.camera, dx = point[0] - cam.position[0], dy = point[1] - cam.position[1];
+  return { distance: Math.hypot(dx, dy), bearing: wrap(Math.atan2(dy, dx) - cam.heading) };
+}
+
 /** The page's stage: the world as it stands, stepped once per moment. The visitor moves the
- *  hand, the things and the pillar (the occluding disc) and switches the camera off; a recorded reach moves the
- *  things as a scene file scripts them. `advance()` returns the moment's record. */
+ *  hand, the things and the pillar (the occluding disc), turns the camera and switches it off;
+ *  a recorded scene moves the things as a scene file scripts them. `advance()` returns the
+ *  moment's record. The camera's position and heading are the body's pose: they are read at
+ *  every moment, so a body that moves across the room needs nothing more than its position
+ *  changed. */
 export class Stage {
-  constructor({ geometry = GEOMETRY, seed = 20261112, noise = NOISE, pillar = 0.1 } = {}) {
+  constructor({ geometry = GEOMETRY, seed = 20261112, noise = NOISE, home = HOME } = {}) {
     // where everything stands when the page opens, and where Reset puts it back
-    const home = cloneGeometry(geometry);
-    if (pillar) home.occluders.forEach((o) => { o.radius = pillar; }); // a little wider than the chamber's, to hide a hand behind with ease
-    this.home = { joints: [1.3, -1.1], things: [[-0.6, 0.95], [-0.35, 0.15], [0.62, 0.95], [0.72, 0.25]], geometry: home };
-    this.world = makeWorld({ geometry: home, noise, joints: this.home.joints, things: this.home.things });
+    const room = cloneGeometry(geometry);
+    room.camera.position = home.body.position.slice(); room.camera.heading = home.body.heading;
+    room.ear = home.body.position.slice();
+    room.occluders = [{ center: home.pillar.center.slice(), radius: home.pillar.radius }];
+    this.home = { joints: home.joints.slice(), things: home.things.map((p) => p.slice()), geometry: room };
+    this.world = makeWorld({ geometry: room, noise, joints: this.home.joints, things: this.home.things });
     this.names = THINGS.map((t) => t.name);
     this.random = new Random(seed);
     this.cameraOn = true;
     this.targets = this.world.things.map(() => null); // where the visitor drags each thing
     this.maxSpeed = 1.6;   // metres a second: a dragged thing's limit
+    this.facing = null;    // the heading the visitor turns the camera to
+    this.turnRate = 4.2;   // radians a second: the camera's limit
     this.sounding = this.world.things.map(() => false);
     this.reach = null;     // a recorded scene being played: { scene, t }
     this.armPlan = null;   // a move of the arm: { from, to, t, steps }
@@ -273,13 +300,17 @@ export class Stage {
     this.world.things = this.home.things.map((p) => p.slice());
     this.world.geometry = cloneGeometry(this.home.geometry);
     this.world.own = false;
-    this.cameraOn = true;
+    this.cameraOn = true; this.facing = null;
     this.targets.fill(null); this.sounding.fill(false);
     this.reach = null; this.armPlan = null;
   }
 
-  /** Where a thing (or the pillar, 'pillar') stands, for Undo. */
+  /** Turn the camera toward a heading; it gets there at its own rate. */
+  turnTo(heading) { this.facing = heading; }
+
+  /** Where a thing (or the pillar, 'pillar') stands, or the way the camera faces ('heading'), for Undo. */
   where(name) {
+    if (name === 'heading') return this.world.geometry.camera.heading;
     if (name === 'pillar') return this.world.geometry.occluders[0].center.slice();
     const k = this.names.indexOf(name);
     return k >= 0 ? this.world.things[k].slice() : null;
@@ -287,6 +318,7 @@ export class Stage {
 
   /** Put a thing (or the pillar) at a point at once, as a hand that lifts it would. */
   place(name, point) {
+    if (name === 'heading') { this.world.geometry.camera.heading = point; this.facing = null; return; }
     if (name === 'pillar') { this.world.geometry.occluders[0].center = point.slice(); return; }
     const k = this.names.indexOf(name);
     if (k < 0 || (k === 0 && this.world.own)) return;
@@ -314,7 +346,7 @@ export class Stage {
     this.world.own = scene.case === 'own';
     this.world.joints = scene.joints[0].slice();
     scene.truth[0].slice(0, this.world.things.length).forEach((p, k) => { this.world.things[k] = p.slice(); });
-    this.cameraOn = true;
+    this.cameraOn = true; this.facing = null;
     this.targets.fill(null); this.armPlan = null;
   }
 
@@ -370,7 +402,16 @@ export class Stage {
       const nx = clamp(w.things[k][0] + dx * f, lx + 0.02, hx - 0.02), ny = clamp(w.things[k][1] + dy * f, ly + 0.02, hy - 0.02);
       moves[k] = [nx - w.things[k][0], ny - w.things[k][1]];
     }
+    // the body's own turn: the camera swings toward where the visitor turns it
+    let turn = 0;
+    if (this.facing !== null && !row) {
+      const gap = wrap(this.facing - g.camera.heading), limit = this.turnRate * DT;
+      turn = clamp(gap, -limit, limit);
+      g.camera.heading = wrap(g.camera.heading + turn);
+      if (Math.abs(gap) <= limit) this.facing = null;
+    }
     const record = step(w, command, moves, sounds, noise);
+    record.body = { position: g.camera.position.slice(), heading: g.camera.heading, turn };
     if (row) {
       // what the file holds of its things stands as it is: the flags, the reports, the cues
       const { scene, t } = row;

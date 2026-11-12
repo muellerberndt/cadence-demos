@@ -114,6 +114,30 @@ def test_things_keep_their_own_records_and_a_thing_never_seen_has_none():
     assert np.allclose(host.handle({"command": "ask", "thing": "wrench"})["place"], [-0.5, 1.0], atol=1e-9)
 
 
+def test_what_is_where_both_ways():
+    host = Host()
+    body = {"position": [0.45, 0.5], "heading": 3.0, "turn": 0.0}
+    things = [{"name": "cup", "report": [-0.2, 0.32]}, {"name": "apple", "report": [-0.05, 1.1]}, {"name": "bread", "report": None}]
+    host.handle({"command": "step", "hand": {"report": None}, "joints": JOINTS, "commands": REST, "things": things, "body": body})
+    # asked for a kind, the record answers a place; a kind never seen has none
+    apple = host.handle({"command": "ask", "thing": "apple"})
+    assert np.allclose(apple["place"], [-0.05, 1.1], atol=1e-9) and apple["from"] == "seen" and apple["spread"] == 0.01
+    assert host.handle({"command": "ask", "thing": "bread"})["place"] is None
+    # asked for a direction from the body, the record whose place lies that way answers its kind
+    origin = np.array(body["position"])
+    toward = lambda p: float(np.arctan2(p[1] - origin[1], p[0] - origin[0]))  # noqa: E731
+    assert host.handle({"command": "what", "origin": body["position"], "direction": toward([-0.05, 1.1]) + 0.1})["name"] == "apple"
+    assert host.handle({"command": "what", "origin": body["position"], "direction": toward([-0.2, 0.32])})["name"] == "cup"
+    assert host.handle({"command": "what", "origin": body["position"], "direction": toward([0.82, 0.3])})["name"] is None
+    # a cue is read from the ear at the body, and its record's spread is the cue's own error
+    cue = [toward([0.82, 0.3]), float(np.hypot(0.82 - 0.45, 0.3 - 0.5))]
+    things[2] = {"name": "bread", "report": None, "cue": cue}
+    host.handle({"command": "step", "hand": {"report": None}, "joints": JOINTS, "commands": REST, "things": things, "body": body})
+    bread = host.handle({"command": "what", "origin": body["position"], "direction": cue[0]})
+    assert bread["name"] == "bread" and bread["from"] == "heard" and np.allclose(bread["place"], [0.82, 0.3], atol=1e-9)
+    assert np.isclose(bread["spread"], cue[1] * np.hypot(0.04, 0.08))
+
+
 def test_reborn_takes_another_plane_and_starts_empty():
     host = Host()
     step(host, [0.2, 0.5], [{"name": "cup", "report": [0.3, 0.4]}])
@@ -123,6 +147,7 @@ def test_reborn_takes_another_plane_and_starts_empty():
     assert 0.0 <= reply["place"][0] <= 2.0
 
 
-def test_a_pack_that_names_a_module_is_refused_by_a_wheel_without_one():
-    with pytest.raises(RuntimeError):
-        Host({"module": {"name": "place", "path": None}})
+def test_a_pack_that_names_a_module_the_library_does_not_hold_is_refused():
+    # a wheel without the module system refuses by that; one with it, by the module's name
+    with pytest.raises((RuntimeError, ValueError)):
+        Host({"module": {"name": "no-such-module", "path": None}})

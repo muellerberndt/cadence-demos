@@ -20,7 +20,13 @@ Messages are JSON objects with a ``command``:
   is in view and ``teach`` is set, the place the camera reports is then taught as a lesson
   (``Brain.lesson``), so no lesson uses a position the camera did not give. A thing in view or
   heard writes its record; a thing out of view is read from its record.
-- ``ask``: ``{"thing": name}``: reads the thing's record, crediting the read.
+  ``"body": {"position": [x, y], "heading": rad, "turn": rad}`` is the body's pose and its own
+  turn at this moment: the ear stands at the body. This baseline keeps every place in the
+  room's coordinates and reads nothing else of the body.
+- ``ask``: ``{"thing": name}``: where is this kind of thing? Reads its record, crediting the read.
+- ``what``: ``{"origin": [x, y], "direction": rad, "tolerance": rad}``: what lies that way from
+  the origin? This baseline goes through its records and answers the one whose place lies
+  nearest that direction, within the tolerance, crediting its read.
 - ``reset``: the streams afresh (activity and working trace); weights and records stay.
 - ``reborn``: a new brain and empty records; ``{"config": {...}}`` changes the plane, the
   arm's limits or the ear before it is built.
@@ -49,6 +55,8 @@ DEFAULTS: dict[str, Any] = {
     "plane": [-1.0, 1.0, -0.2, 1.4],  # x low, x high, y low, y high (metres)
     "limits": [[0.35, 2.79], [-2.6, -0.3]],  # the arm's joint limits (radians)
     "ear": [0.95, 1.35],  # where the ear stands: a cue is a direction and a distance from it
+    "camera_noise": 0.01,  # the standard deviation of a report on each axis (metres)
+    "cue_noise": [0.04, 0.08],  # of a cue: radians of direction, share of distance
     "command": 0.25,  # the largest joint increment a step asks for (radians)
     "bins": 20,  # place bins per axis: the two motor slots
     "camera_per": 16,
@@ -283,6 +291,9 @@ class Host:
     def step(self, m: dict[str, Any]) -> dict[str, Any]:
         hand = m.get("hand") or {}
         report = hand.get("report")
+        body = m.get("body")
+        if body and body.get("position") is not None:
+            self.config["ear"] = [float(v) for v in body["position"]]
         x = self.observation(report, m["joints"], m.get("commands"))
         b = self.brain
         want_wave = bool(m.get("wave"))
@@ -436,12 +447,17 @@ class Host:
                 previous = self.record_meta.get(slot, {})
                 moved = (not previous or previous.get("name") != name
                          or float(np.hypot(*(np.asarray(previous["given"]) - given))) > 0.03)
+                if source == "seen":
+                    spread = float(self.config["camera_noise"])
+                else:  # a cue's error grows with the distance it names
+                    spread = float(cue[1]) * float(np.hypot(*self.config["cue_noise"]))
                 if moved:
                     self.record_meta[slot] = {"name": name, "moment": self.moments, "source": source,
-                                              "given": [float(given[0]), float(given[1])]}
+                                              "given": [float(given[0]), float(given[1])], "spread": spread}
                 else:
                     previous["latest"] = self.moments
                     previous["source"] = source
+                    previous["spread"] = spread
                 place = decode(self.record_code, np.asarray(self.records.values[slot]))
                 entry.update({"slot": slot, "source": source, "write": True, "revised": bool(revised),
                               "place": [float(place[0]), float(place[1])]})
@@ -454,15 +470,45 @@ class Host:
                 entry["stored"] = meta["moment"]
                 entry["unseen"] = self.moments - int(meta.get("latest", meta["moment"]))
                 entry["from"] = meta["source"]
+                entry["spread"] = meta.get("spread")
             out.append(entry)
         self.records.moment()
         return out
 
+    def _entry(self, name: str, slot: int, place: np.ndarray | None) -> dict[str, Any]:
+        meta = self.record_meta.get(slot) if slot >= 0 else None
+        out: dict[str, Any] = {"name": name, "slot": slot,
+                               "place": None if place is None else [float(place[0]), float(place[1])]}
+        if meta is not None and meta.get("name") == name:
+            out.update({"from": meta["source"], "spread": meta.get("spread"),
+                        "unseen": self.moments - int(meta.get("latest", meta["moment"]))})
+        return out
+
     def ask(self, name: str) -> dict[str, Any]:
+        """Where is this kind of thing? Its record, found by its key."""
         slot, place, cosine = self._held(name, credit=True)
-        return {"name": name, "slot": slot, "cosine": round(cosine, 4),
-                "place": None if place is None else [float(place[0]), float(place[1])],
-                "stored": self.record_meta.get(slot)}
+        return {**self._entry(name, slot, place), "cosine": round(cosine, 4), "asked": "where"}
+
+    def what(self, origin: Any, direction: float, tolerance: float = 0.45) -> dict[str, Any]:
+        """What lies that way from the origin? The record whose place lies nearest the
+        direction, within the tolerance; ``name`` is None where no record does."""
+        origin = np.asarray(origin, dtype=np.float64)
+        best: tuple[float, int, np.ndarray] | None = None
+        for slot, meta in self.record_meta.items():
+            if slot >= self.records.count:
+                continue
+            place = decode(self.record_code, np.asarray(self.records.values[slot]))
+            offset = place - origin
+            bearing = float(np.arctan2(offset[1], offset[0])) - float(direction)
+            gap = abs(float(np.arctan2(np.sin(bearing), np.cos(bearing))))
+            if gap <= tolerance and (best is None or gap < best[0]):
+                best = (gap, slot, place)
+        if best is None:
+            return {"name": None, "slot": -1, "place": None, "asked": "what"}
+        gap, slot, place = best
+        name = str(self.record_meta[slot]["name"])
+        self.records.read(self.key(name), credit=True)
+        return {**self._entry(name, slot, place), "gap": round(gap, 4), "asked": "what"}
 
     # -- requests
 
@@ -485,6 +531,8 @@ class Host:
             reply = self.step(m)
         elif command == "ask":
             reply = self.ask(str(m.get("thing")))
+        elif command == "what":
+            reply = self.what(m["origin"], float(m["direction"]), float(m.get("tolerance", 0.45)))
         elif command == "reset":
             reply = self.reset()
         elif command == "reborn":

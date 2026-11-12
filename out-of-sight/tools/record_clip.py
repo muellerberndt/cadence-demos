@@ -2,7 +2,7 @@
 
     python tools/record_clip.py --out docs/out-of-sight.mp4      # from out-of-sight/
 
-Serves ``site/``, opens it in headless Chromium at 1280 by 800, performs the five steps of the
+Serves ``site/``, opens it in headless Chromium at 1280 by 800, performs the six steps of the
 tutorial as ``tools/check_page.py`` does (the same pointer input), and saves the browser's own
 recording. With ``ffmpeg`` on the path the recording is written as H.264 ``.mp4`` (or as a
 ``.gif`` where ``--out`` ends so); without it the ``.webm`` is kept.
@@ -43,7 +43,7 @@ def main() -> None:
         began = page.evaluate("performance.now()")
         if a.warm:
             page.evaluate("document.getElementById('welcome').hidden = true")
-            for point in ([-0.75, 0.6], [-0.25, 1.15], [-0.7, 1.2], [-0.55, 0.8], [-0.8, 1.0], [-0.3, 0.95], [-0.6, 0.95]) * 8:
+            for point in ([-0.3, 1.15], [-0.75, 1.2], [-0.45, 0.9], [-0.8, 1.3], [-0.2, 1.25], [-0.6, 1.0]) * 8:
                 page.evaluate("(p) => { window.outOfSight.stage.targets[0] = p; }", point)
                 check.wait_moments(page, 24)
                 if check.moment(page) >= a.warm:
@@ -54,7 +54,7 @@ def main() -> None:
         page.wait_for_timeout(900)
         page.click("#welcome-go")
         check.wait_tour(page, "follow", 5)
-        check.drag(page, "hand", [[-0.75, 0.6], [-0.25, 1.15], [-0.7, 1.2], [-0.6, 0.95]])
+        check.drag(page, "hand", [[-0.3, 1.15], [-0.75, 1.2], [-0.45, 0.9], [-0.6, 1.0]])
         check.wait_tour(page, "hide")
         page.wait_for_timeout(700)
         check.drag(page, "hand", [page.evaluate("window.outOfSight.shadowPoint(0.32)")])
@@ -64,9 +64,14 @@ def main() -> None:
         page.wait_for_timeout(1600)
         page.mouse.move(part[0], 70, steps=8)
         check.drag(page, "hand", [home[0]], hold=20)
-        check.wait_tour(page, "move", 20)
+        check.wait_tour(page, "turn", 20)
         page.wait_for_timeout(600)
-        check.drag(page, "cup", [page.evaluate("window.outOfSight.shadowPoint(0.5)")], hold=20)
+        sweep = page.evaluate("""(() => { const o = window.outOfSight, d = o.awayHeading('apple') - o.stage.geometry.camera.heading;
+            return Math.atan2(Math.sin(d), Math.cos(d)); })()""")
+        check.turn(page, sweep * 1.05)
+        check.wait_tour(page, "move", 20)
+        page.wait_for_timeout(1800)
+        check.drag(page, "cup", [page.evaluate("window.outOfSight.awayPoint('cup', 0.3)")], hold=20)
         check.wait_tour(page, "knock", 20)
         page.wait_for_timeout(600)
         x, y = page.evaluate("window.outOfSight.screenOf('cup')")
