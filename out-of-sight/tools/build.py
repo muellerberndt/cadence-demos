@@ -35,6 +35,8 @@ def main() -> None:
     p.add_argument("--module", nargs="*", default=None,
                    help="the trained place module's files (the arrays and the JSON record); none: the baseline is composed on the page")
     p.add_argument("--module-name", default="place")
+    p.add_argument("--module-label", default=None, help="what the page calls this file (its badge)")
+    p.add_argument("--module-note", default=None, help="one or two sentences on what this file is")
     p.add_argument("--wheel-source", default="PyPI")
     a = p.parse_args()
     wheel = Path(a.wheel)
@@ -45,6 +47,8 @@ def main() -> None:
     if wheel.resolve() != (PACK / wheel.name).resolve():
         shutil.copyfile(wheel, PACK / wheel.name)
     sources = sorted(f.name for f in (PACK / "py" / "spacebrain").glob("*.py"))
+    for old in (PACK / "module").glob("*") if (PACK / "module").is_dir() else ():
+        old.unlink()
     manifest = {
         "schema": "cadence-out-of-sight-pack/1",
         "packed": time.strftime("%Y-%m-%d"),
@@ -65,7 +69,7 @@ def main() -> None:
             shutil.copyfile(source, folder / Path(source).name)
             files.append({"name": Path(source).name, "sha256": sha(folder / Path(source).name),
                           "bytes": (folder / Path(source).name).stat().st_size})
-        manifest["module"] = {"name": a.module_name, "files": files}
+        manifest["module"] = {"name": a.module_name, "label": a.module_label, "note": a.module_note, "files": files}
     else:
         manifest["module"] = None
         manifest["brain_kind"] = "baseline, composed on the page"

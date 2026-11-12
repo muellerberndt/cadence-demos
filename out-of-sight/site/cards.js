@@ -3,9 +3,12 @@
 // A card holds the part's name, the role it plays, one or two plain sentences on what it does,
 // and what it is doing at this moment, written from the brain's live state. The same texts are
 // reachable in order as the eight stages of "follow the position". Every sentence describes
-// what the brain on this page does. COPY is keyed by the brain's kind: `baseline` is the plain
+// what the brain on this page does. COPY is keyed by the brain's kind. `baseline` is the plain
 // composed brain; a stage whose `changes` is set is one the trained place module does another
-// way, and its card says so.
+// way, and its card says so. `place` is the trained place module: there a program beside the
+// brain (the space) holds each place between moments, and the brain answers how far a place
+// moves in a step, how far off it may be, and the place a cue names. Its texts are provisional
+// until the module's own description of its stages replaces them.
 
 import { radiusAt, RATE } from './controls.js';
 import { metres, phrase } from './where.js';
@@ -92,7 +95,8 @@ function doubtLine(ctx) {
   const b = ctx.belief;
   if (!b) return 'No answer.';
   const cover = ctx.coverage === null ? '' : ` Over the last ${ctx.coverage.moments} moments the true hand lay inside the area on ${Math.round(ctx.coverage.share * 100)} of 100.`;
-  return `Width: ${cm(b.sd[0])} in x, ${cm(b.sd[1])} in y. Area at nine in ten: <span>${area(b.area)}</span>.${cover}`;
+  const width = b.radius ? `Radius: ${cm(b.radius)}.` : `Width: ${cm(b.sd[0])} in x, ${cm(b.sd[1])} in y.`;
+  return `${width} Area at nine in ten: <span>${area(b.area)}</span>.${cover}`;
 }
 function recordsLine(ctx) {
   // one line a kind: where it is around the body, and how the record came
@@ -217,6 +221,83 @@ const COPY = {
   },
 };
 
+
+// -- the trained place module
+
+function heldLine(ctx) {
+  const b = ctx.belief;
+  if (!b) return 'No place is held.';
+  const u = uncertainty(b), asked = ctx.asked ? 'The brain was asked for its step at this moment.' : 'The brain was not asked at this moment: nothing says the place moved.';
+  if (!ctx.unseen) return `The space holds the hand at <span data-place="${num(b.place[0], 3)},${num(b.place[1], 3)}">${at(b.place)}</span>, written by the camera’s report. Its area’s radius is <span data-uncertainty="${u.toFixed(4)}">${cm(u)}</span>.`;
+  return `The space holds the hand at <span data-place="${num(b.place[0], 3)},${num(b.place[1], 3)}">${at(b.place)}</span>, unseen for <span data-unseen="${ctx.unseen}">${ctx.unseen} moments</span>. Its area’s radius is <span data-uncertainty="${u.toFixed(4)}">${cm(u)}</span>. ${asked}`;
+}
+const askedLine = (ctx) => (ctx.asked ? `The brain was asked at this moment and answered in ${ctx.settle ? ctx.settle.sweeps : 0} sweeps.` : 'The brain was not asked at this moment. It is asked only for a thing whose place may have moved: one with a command, a seen movement or a cue.');
+const region = (title, role, what, live = askedLine, draw = null) => ({ title, role, what, live, draw });
+const axes = (name, labels, unit, color) => (ctx) => peakSvg(codeRows(ctx, name, labels, unit, null), color);
+
+COPY.place = {
+  parts: {
+    place: region('The held place, as the brain is given it', 'place',
+      'The place is held nowhere in the brain. A program beside the brain keeps it between moments, as the long-term records are kept, and this region shows the program’s place to the brain at each step: a peak over 16 tuned inputs for x and 16 for y. The brain’s own states are the hidden region and its three answers.',
+      heldLine, axes('place', ['x', 'y'], 'm', '#3fe0cf')),
+    moved: region('The arm’s command, as a copy', 'motor',
+      'For the arm’s own hand, what the arm is told to do at this moment, joint by joint. It is dark for a person’s hand and for an arm at rest.',
+      (ctx) => `${commandLine(ctx)} ${ctx.own ? '' : 'The brain follows a person’s hand: these inputs are dark.'}`, axes('moved', ['j1', 'j2', 'j3'], 'rad', '#ff9f4a')),
+    motion: region('The last seen movement', 'visual',
+      'How the thing moved while the camera saw it: the slope of the line through its last reports, a peak for x and a peak for y, with how many reports the line holds. The program fits the line; the brain is given it. It is dark until three reports in a row.'),
+    unseen: region('The moments since it was seen', 'timer',
+      'How long the camera has not reported the thing, over 8 tuned inputs.',
+      (ctx) => (ctx.unseen ? `Unseen for ${ctx.unseen} moments (${secs(ctx.unseen, ctx.dt)}).` : 'The hand is in view: zero moments.')),
+    heard: region('A cue: its direction and distance', 'auditory',
+      'What the ear hears of a thing that sounds: a direction and a distance, one unit for each pair of them. It is dark while nothing sounds.'),
+    felt: region('The arm’s joint readings', 'somatosensory',
+      'For the arm’s own hand, the arm’s posture: one unit for each pair of joint angles. It is dark for a person’s hand.'),
+    hidden: region('The hidden region', 'association',
+      'The neurons between what the brain is given and what it answers. Every input region drives them, and they drive the three answers.'),
+    shift: region('How far the place moves in this step', 'shift',
+      'The brain’s first answer: a step in x and a step in y, 32 tuned units each, up to 6 cm. The program adds the step to the place it holds. This is how a place moves while nothing is seen.',
+      askedLine, axes('shift', ['dx', 'dy'], 'm', '#5cdb9e')),
+    spread: region('How far off the place may be', 'doubt',
+      'The brain’s second answer: how far from the truth a place predicted here is found to be, from 2 mm to 2 m. It is taught whenever the thing comes back into view, by how far off the prediction was. The ring on the table is drawn from it.',
+      (ctx) => (ctx.belief ? `The radius of the area that holds the hand nine times in ten: <span>${cm(uncertainty(ctx.belief))}</span>. ${askedLine(ctx)}` : askedLine(ctx))),
+    found: region('The place another sense names', 'found',
+      'The brain’s third answer: the place a cue, or the arm’s own joint readings, names. It is taught at moments a thing is heard and seen at once.'),
+    records: { title: 'The places of things: what is where', role: 'hippocampus',
+      what: 'Each thing has one row in the space: what it looks like, and where it is. A thing in view is written by the camera’s report. A thing at rest out of view costs nothing: its row stays as it is, and the brain is not asked. A cue rewrites a row without sight.',
+      live: recordsLine },
+  },
+  tracts: {},
+  // The stages are the library guide's "How a position travels" (docs/space.md of the branch
+  // the module comes from), word for word but for one phrase: where the guide says the brain
+  // "settles on" what the regions hold, the card says it "reads" it.
+  stages: [
+    { id: 'report', parts: ['place'], title: 'The camera’s report',
+      body: 'A report is a position in the plane. The program writes it into the thing’s place. The place region shows that place to the brain as a peak on each axis: the units within two spacings of the position are lit, five at most, and the rest are silent. A thing that is not seen changes nothing here: there is no “nothing seen” pattern.',
+      live: seenLine, draw: axes('place', ['x', 'y'], 'm', '#3fe0cf') },
+    { id: 'hold', parts: ['place'], title: 'The place is held',
+      body: 'The program keeps the place between moments. With no report, no command, no seen movement and no cue it is not touched, and the brain is not asked. A thing at rest in view takes the mean of its reports, which is sharper than one report.',
+      live: heldLine },
+    { id: 'move', parts: ['shift', 'motion'], title: 'Movement while unseen',
+      body: 'The brain reads what the regions hold and its shift answers how far the place moves in this step. For the arm’s own end the moved region holds the copy of the command. For a thing that moves by itself the motion region holds its last seen movement: the slope of the line through its reports in a row. The program adds the shift to the place.',
+      live: askedLine, draw: axes('shift', ['dx', 'dy'], 'm', '#5cdb9e') },
+    { id: 'correct', parts: ['shift', 'spread'], title: 'Correction by sight',
+      body: 'When the thing is seen again its report writes the place. The lessons happen only then: the movement the reports show teaches shift, and the distance from the predicted place to the report teaches spread. A lesson is made of six reports in a row, so it lands a few moments after them.',
+      live: lessonLine },
+    { id: 'doubt', parts: ['spread'], title: 'The uncertainty',
+      body: 'Spread is a belief over distances. The program reads the distance that holds .90 of the belief, takes out the camera’s own noise, and reports a circle of that radius around the place. The circle grows while the thing is unseen and shrinks to the camera’s noise when it is seen.',
+      live: doubtLine },
+    { id: 'things', parts: ['records'], title: 'Things that stay put', wide: true,
+      body: 'Every thing has a row of its own in the program: what it looks like, and its place. A thing with a look of its own that rests is also filed in a long-term memory: the key is a code of what it looks like and the value is its place and the number of reports the place is a mean of. The record is revised as the mean sharpens and when the thing is seen elsewhere. The places are the room’s own, so a turn of the camera changes what is seen and not the stored places; the small map turns them for display.',
+      live: recordsLine },
+    { id: 'cue', parts: ['heard', 'found'], title: 'A cue from another sense',
+      body: 'A cue is a direction and a distance from the ear. It lights one neighbourhood of the heard sheet, the brain’s found answers the place it names, and the program writes that place. The same holds for the arm’s joint readings in felt.',
+      live: recordsLine },
+    { id: 'answer', parts: ['place'], title: 'The answer',
+      body: 'The program gives each place and its radius. Asked for a kind, it answers with its places; asked for a place, it answers with the kind held there. The glow on the table is the hand’s place, and the ring its radius.',
+      live: heldLine },
+  ],
+};
+
 const ROLE = {
   visual: ['plays the role of the visual cortex', '#66bdff'],
   somatosensory: ['plays the role of the somatosensory strip, the sense of the body’s own posture', '#c7cc80'],
@@ -226,6 +307,10 @@ const ROLE = {
   place: ['plays the role of the parietal and entorhinal map', '#3fe0cf'],
   auditory: ['plays the role of the auditory cortex', '#f28cc7'],
   hippocampus: ['plays the role of the hippocampus', '#ffcc6b'],
+  timer: ['plays the role of a timer, drawn where the cerebellum sits', '#9eb8db'],
+  shift: ['plays the role of path integration: the step that moves a place on the map', '#5cdb9e'],
+  doubt: ['plays the role of a confidence estimate', '#a88ffa'],
+  found: ['plays the role of the map’s entry from the other senses', '#f28cc7'],
 };
 
 export const copyFor = (kind) => COPY[kind] || COPY.baseline;

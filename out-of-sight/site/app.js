@@ -92,7 +92,7 @@ function tick(now) {
   state.unseen = record.in_view[0] ? 0 : state.unseen + 1;
   record.cue.forEach((cue, k) => { if (cue) { sceneView.ring(record.truth[k], cue, stage.geometry); knockSound(cue); } });
   const message = {
-    hand: { report }, joints: record.joints, commands: record.commands, body: record.body,
+    hand: { report }, joints: record.joints, commands: record.commands, body: record.body, own: stage.own,
     things: stage.names.slice(1).map((name, i) => ({ name, report: record.report[i + 1], cue: record.cue[i + 1] })),
     teach: state.teach, wave: state.waveEvery > 0 && record.moment % state.waveEvery === 0 && !brainView.wave,
   };
@@ -116,7 +116,8 @@ function answered(record, estimates, reply, arrays) {
   if (reply.refused) {
     state.refused = reply.refusals;
   } else {
-    state.belief = { place: reply.place, sd: reply.sd, area: reply.area };
+    state.belief = { place: reply.place, sd: reply.sd, area: reply.area, radius: reply.radius ?? null };
+    state.asked = reply.asked ?? true; // a module's brain is asked only for a place that may have moved
     if (seen) state.seenBelief = state.belief;
     state.sheet = { px: arrays.px, py: arrays.py };
     row.brain = distance(reply.place, truth); row.place = reply.place;
@@ -163,7 +164,7 @@ function readouts(record, row) {
   const view = $('chip-view');
   view.hidden = record.in_view[0];
   if (!record.in_view[0]) view.textContent = stage.cameraOn ? `out of view ${(state.unseen * DT).toFixed(1)} s` : `camera off ${(state.unseen * DT).toFixed(1)} s`;
-  if (state.settle) $('readout').textContent = `this moment: ${state.settle.sweeps} sweeps · residual ${state.settle.residual.toExponential(1)}`;
+  if (state.settle) $('readout').textContent = state.asked === false ? 'this moment: the brain was not asked' : `this moment: ${state.settle.sweeps} sweeps · residual ${state.settle.residual.toExponential(1)}`;
   if (!state.more) return;
   $('chip-error').textContent = `error ${cm(row.brain)}`;
   const area = state.belief?.area;
@@ -197,7 +198,7 @@ function context() {
   return {
     record: r, why: r && !r.in_view[0] ? stage.why(0) : null, own: stage.own,
     belief: state.belief, seenBelief: state.seenBelief, sheet: state.sheet, centres: d.place.centres,
-    unseen: state.unseen, pins: state.pins, names: stage.names, settle: state.settle,
+    unseen: state.unseen, pins: state.pins, names: stage.names, settle: state.settle, asked: state.asked,
     lesson: state.lesson ? { ...state.lesson, ageMs: performance.now() - state.lesson.at } : null,
     lessons: state.lessons || 0, teach: state.teach,
     coverage: rows.length >= 30 ? { moments: rows.length, share: rows.filter((x) => x.inside).length / rows.length } : null,
@@ -277,7 +278,7 @@ function spots() {
   const ids = new Set();
   if (card.mode === 'part') ids.add(card.id);
   if (card.mode === 'stage') { const s = stagesFor(state.kind)[card.stage]; s.parts.forEach((p) => ids.add(p)); if (s.tract) ids.add(`tract:${s.tract}`); }
-  if (!card.mode && tour.active && tour.current()?.brain) ids.add(tour.current().brain);
+  if (!card.mode && tour.active && tour.current()?.brain) ids.add(tourPart(tour.current()));
   brainView.spot = ids;
 }
 
@@ -339,10 +340,10 @@ async function askWhere(name) {
 }
 
 /** What is that way? `bearing`: from the way the body faces (0 ahead, positive to the left). */
-async function askWhat(bearing, tolerance = 0.45) {
+async function askWhat(bearing, tolerance = 0.45, point = null) {
   if (!state.ready) return null;
   const g = stage.geometry;
-  const { reply } = await brain.call('what', { origin: g.camera.position, direction: g.camera.heading + bearing, tolerance });
+  const { reply } = await brain.call('what', { origin: g.camera.position, direction: g.camera.heading + bearing, tolerance, point });
   let name = reply.name, place = reply.place, gap = reply.gap ?? Infinity;
   if (state.belief?.place) {
     // the hand is the brain's own answer, not a record: it is named where it lies nearer that way
@@ -360,7 +361,7 @@ function bindAround() {
   const at = (event) => { const box = canvas.getBoundingClientRect(); return [event.clientX - box.left, event.clientY - box.top]; };
   canvas.addEventListener('click', (event) => {
     const [x, y] = at(event), name = aroundView.hit(x, y);
-    if (name) askWhere(name); else askWhat(aroundView.bearingAt(x, y, stage.geometry));
+    if (name) askWhere(name); else askWhat(aroundView.bearingAt(x, y, stage.geometry), 0.45, aroundView.pointAt(x, y, stage.geometry));
   });
   canvas.addEventListener('keydown', (event) => {
     const ways = { ArrowUp: 0, ArrowLeft: Math.PI / 2, ArrowRight: -Math.PI / 2, ArrowDown: Math.PI };
@@ -414,6 +415,19 @@ function awayPoint(name, far) {
   return visible(g, q, stage.world.joints) ? shadowPoint(0.5) : q;
 }
 
+// The part of the brain each step of the tutorial points at, and its sentence, for a brain of
+// another kind than the baseline.
+const TOUR_PARTS = {
+  place: {
+    follow: ['place', 'The ringed part shows the brain the place a program beside it holds for the hand.'],
+    hide: ['shift', 'The ringed part is the brain’s answer: how far the place moves in each step while nothing is seen.'],
+    return: ['spread', 'The ringed part answers how far off the place may be: the ring of doubt. Gold flashes are lessons, made of the camera’s reports alone.'],
+    knock: ['found', 'The ringed part answers the place a sound names.'],
+  },
+};
+const tourPart = (s) => TOUR_PARTS[state.kind]?.[s.id]?.[0] || s.brain;
+const tourAside = (s) => TOUR_PARTS[state.kind]?.[s.id]?.[1] || s.aside;
+
 const tour = {
   active: false, step: 0, since: null, log: [], doneAt: 0,
   steps: [
@@ -461,7 +475,7 @@ const tour = {
     const s = this.current();
     this.since = { moved: 0, seenRun: 0, from: state.record?.moment ?? 0 };
     this.doneAt = 0;
-    coach(`${s.text} <span class="aside">${s.aside}</span>`, '', this.step, this.steps.length);
+    coach(`${s.text} <span class="aside">${tourAside(s)}</span>`, '', this.step, this.steps.length);
     document.body.dataset.tour = s.id;
     spots();
   },
@@ -474,7 +488,7 @@ const tour = {
     this.log.push({ id: s.id, from: t.from, to: record.moment });
     this.doneAt = performance.now();
     s.after?.();
-    coach(`${s.text} <span class="aside">${s.aside}</span>`, 'done', this.step + 1, this.steps.length);
+    coach(`${s.text} <span class="aside">${tourAside(s)}</span>`, 'done', this.step + 1, this.steps.length);
     setTimeout(() => this.next(), params.get('tour') === 'fast' ? 150 : 1300);
   },
   next() {
@@ -681,7 +695,9 @@ function reachTo(point) {
   if (!to) return;
   const from = forward(stage.geometry, stage.world.joints).at(-1);
   stage.stop();
-  stage.moveArm(to, Math.round(clamp(distance(point, from) / 0.02, 12, 60)));
+  // no joint is asked for more in a step than the brain's range of commands holds
+  const most = Math.max(...to.map((q, k) => Math.abs(q - stage.world.joints[k]))), cap = state.describe?.limits?.command;
+  stage.moveArm(to, Math.max(Math.round(clamp(distance(point, from) / 0.02, 12, 60)), cap ? Math.ceil((most / cap) * 1.9) : 0));
 }
 function moveSelected(name, p) {
   if (name === 'pillar') { const o = stage.geometry.occluders[0]; if (o) o.center = inPlane(p, o.radius); return; }
@@ -854,10 +870,14 @@ function adopt(describe, arrays) {
   state.regions = Object.fromEntries(describe.regions.map((r) => [r.name, r]));
   closeCard();
   brainView.setBrain(describe, arrays);
-  const b = describe.brain;
-  $('brain-badge').hidden = !!b.trained; $('brain-badge').textContent = b.label;
-  $('brain-note').textContent = b.trained ? '' : `${b.label}. ${b.note}`;
-  $('card-wheel').textContent = `cadence-net==${describe.cadence}`;
+  const b = describe.brain, badge = b.badge || (b.trained ? '' : b.label);
+  $('brain-badge').hidden = !badge; $('brain-badge').textContent = badge;
+  $('brain-note').textContent = badge ? `${b.label}. ${b.note}` : '';
+  brainView.verb = state.kind === 'baseline' ? 'settled in' : 'answered in';
+  // a visitor's drag stays within the speed the brain was raised on
+  stage.maxSpeed = describe.limits?.speed ?? 1.6;
+  if (describe.manifest) state.manifest = describe.manifest;
+  $('card-wheel').textContent = `cadence-net ${describe.cadence} (${state.manifest?.wheel_source || 'the pack’s wheel'})`;
   const facts = [['Brain', b.compose || b.label], ['Neurons', describe.neurons.toLocaleString('en')], ['Synapses', `${describe.synapses.toLocaleString('en')}, every one drawn`],
     ['Place answer', `${describe.place.bins} units an axis`], ['Records', `${describe.records.capacity} slots`], ['A moment', `${(DT * 1000).toFixed(0)} ms of the scene`],
     ['Runs in', `Pyodide ${describe.manifest?.pyodide || state.pyodide || ''}, ${brainView.mode === 'webgl2' ? 'WebGL2' : 'Canvas2D'}`]];

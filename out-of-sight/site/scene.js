@@ -772,6 +772,15 @@ export class AroundView {
     return best;
   }
 
+  /** The point of the room that a point of the canvas stands for (within the map's reach). */
+  pointAt(x, y, geometry) {
+    if (!this.dial) return this.plane ? this.plane.toPlane(x, y) : null;
+    const d = this.dial, far = (Math.hypot(x - d.cx, y - d.cy) / d.R) * this.reach;
+    if (far > this.reach * 0.9) return null; // the rim stands for everything further
+    const a = geometry.camera.heading + this.bearingAt(x, y, geometry);
+    return [geometry.camera.position[0] + far * Math.cos(a), geometry.camera.position[1] + far * Math.sin(a)];
+  }
+
   /** The bearing, from the way the body faces, that a point of the canvas stands for. */
   bearingAt(x, y, geometry) {
     if (this.dial) return Math.atan2(-(x - this.dial.cx), -(y - this.dial.cy));

@@ -44,14 +44,16 @@ async function initialize(payload) {
   // The trained brain arrives as a module: a file of arrays with a JSON record. Where the pack
   // ships module files they are checked and written beside the host, which loads them with
   // cadence.load_module(path); a module named without files is loaded from the wheel with
-  // cadence.modules.load(name). A pack without a module composes the baseline brain.
+  // cadence.modules.load(name). The module's own host (place_host.py) then answers the page's
+  // messages. A pack without a module composes the baseline brain (host.py).
   const config = { ...(manifest.config || {}), ...(payload?.config || {}) };
   if (manifest.module) {
     status(`Loading the ${manifest.module.name} module`);
     const files = manifest.module.files || [];
     if (files.length) python.FS.mkdirTree('/home/pyodide/module');
     for (const file of files) python.FS.writeFile(`/home/pyodide/module/${file.name}`, await checked(new URL(`module/${file.name}`, base), file.sha256));
-    config.module = { name: manifest.module.name, path: files.length ? `/home/pyodide/module/${files[0].name}` : null };
+    config.module = { name: manifest.module.name, label: manifest.module.label || null, note: manifest.module.note || null,
+      path: files.length ? `/home/pyodide/module/${files[0].name}` : null };
   }
   status(manifest.module ? 'Waking the brain' : 'Composing the brain');
   python.globals.set('_space_config', JSON.stringify(config));
@@ -60,8 +62,8 @@ import sys, json, warnings
 warnings.simplefilter('ignore')
 if '/home/pyodide' not in sys.path:
     sys.path.insert(0, '/home/pyodide')
-from spacebrain.host import Host
-_space_host = Host(json.loads(_space_config))
+from spacebrain.host import make
+_space_host = make(json.loads(_space_config))
 def _space_handle(text):
     return json.dumps(_space_host.handle(json.loads(text)), allow_nan=False)
 def _space_buffer(name):

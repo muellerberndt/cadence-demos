@@ -149,5 +149,68 @@ def test_reborn_takes_another_plane_and_starts_empty():
 
 def test_a_pack_that_names_a_module_the_library_does_not_hold_is_refused():
     # a wheel without the module system refuses by that; one with it, by the module's name
+    from spacebrain.host import make
+
     with pytest.raises((RuntimeError, ValueError)):
-        Host({"module": {"name": "no-such-module", "path": None}})
+        make({"module": {"name": "no-such-module", "path": None}})
+    assert isinstance(make({}), Host)
+
+
+def test_the_place_modules_host_answers_the_pages_messages(tmp_path):
+    """The adapter, on a module made here in a few lessons: the replies hold what the page
+    reads. It says nothing of how well a trained module answers."""
+    space = pytest.importorskip("cadence.space")
+    from spacebrain.host import make
+
+    interface = space.Interface(plane=(-1.0, 1.0, -0.2, 1.4), limits=((0.35, 2.79), (-2.6, -0.3)), hidden=32)
+    donor = space.Space(interface, seed=0)
+    donor.begin(np.array([[-0.5, 0.6]]))
+    for t in range(40):
+        donor.advance(np.array([True]), np.array([[-0.5 + 0.01 * t, 0.6]]), learn=True)
+    path = donor.save(tmp_path / "place.npz")
+    host = make({"module": {"name": "place", "path": str(path)}})
+    d = host.handle({"command": "describe"})
+    assert d["brain"]["kind"] == "place" and d["brain"]["trained"] is True
+    named = [i for region in d["regions"] for i in region["neurons"]]
+    assert sorted(named) == list(range(d["neurons"])) and all(len(r["seat"]) == 4 for r in d["regions"])
+    assert host.buffers["weight"].shape == (d["synapses"],)
+    body = {"position": [0.45, 0.5], "heading": 3.0, "turn": 0.0}
+
+    def moment(report, cup=None, cue=None, teach=True):
+        things = [{"name": "cup", "report": cup, "cue": cue}, {"name": "apple", "report": None, "cue": None}]
+        return host.handle({"command": "step", "hand": {"report": report}, "joints": JOINTS, "commands": REST,
+                            "things": things, "body": body, "teach": teach})
+
+    for t in range(30):  # the hand in view, moving; the cup at rest in view
+        reply = moment([-0.5 + 0.01 * t, 0.6], cup=[-0.2, 0.32])
+    assert reply["seen"] and np.allclose(reply["place"], [-0.21, 0.6], atol=0.03)
+    assert host.buffers["activation"].shape == (d["neurons"],) and np.isclose(host.buffers["px"].sum(), 1.0, atol=1e-5)
+    cup, apple = reply["things"]
+    assert np.allclose(cup["place"], [-0.2, 0.32], atol=0.02) and cup["from"] == "seen" and cup["spread"] > 0
+    assert apple["place"] is None  # never seen: no place is claimed for it
+    # out of view: the space holds the rows. A lesson is made of six reports in a row and lands
+    # up to five moments after the last of them; from the sixth unseen moment on none is taken.
+    for _ in range(6):
+        reply = moment(None)
+    lessons = reply["lessons"]
+    for _ in range(14):
+        reply = moment(None)
+    assert not reply["seen"] and reply["since"] == 20 and reply["lesson"] is None and reply["lessons"] == lessons
+    assert reply["radius"] > 0 and np.isfinite(reply["place"]).all()
+    assert np.allclose(reply["things"][0]["place"], [-0.2, 0.32], atol=0.02) and reply["things"][0]["unseen"] == 20
+    # a cue heard at the body reaches the space from the module's own ear: the same point
+    point = np.array([-0.4, 0.2])
+    offset = point - np.array(body["position"])
+    again = host._cue([float(np.arctan2(offset[1], offset[0])), float(np.linalg.norm(offset))], np.array(body["position"]))
+    ear = np.array(host.interface.ear)
+    assert np.allclose(ear + again[1] * np.array([np.cos(again[0]), np.sin(again[0])]), point, atol=1e-12)
+    heard = moment(None, cue=[float(np.arctan2(offset[1], offset[0])), float(np.linalg.norm(offset))])
+    assert heard["things"][0]["source"] == "heard" and heard["things"][0]["from"] == "heard"
+    # what is where, both ways
+    assert host.handle({"command": "ask", "thing": "apple"})["place"] is None
+    where = host.handle({"command": "ask", "thing": "cup"})
+    assert where["place"] is not None
+    toward = float(np.arctan2(where["place"][1] - 0.5, where["place"][0] - 0.45))
+    assert host.handle({"command": "what", "origin": body["position"], "direction": toward})["name"] == "cup"
+    assert host.handle({"command": "what", "origin": body["position"], "direction": toward + 2.0, "point": where["place"]})["by"] == "place"
+    assert host.handle({"command": "what", "origin": body["position"], "direction": toward + 2.0})["name"] is None

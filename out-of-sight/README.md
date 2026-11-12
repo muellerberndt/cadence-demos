@@ -15,14 +15,16 @@ This is the demonstration page of
 [cadence#320](https://github.com/muellerberndt/cadence/issues/320), spatial object awareness:
 a map that holds where things are while they are out of view.
 
-> **Status: under construction on the branch `space`.** The page runs the **untrained
-> baseline**: a plain composed brain (`Brain.compose` with `PopulationCode` inputs, asked for
-> the hand's place as two motor slots of 20 units), born when the page loads and taught the
-> camera's report at every moment the hand is in view ([model card](MODEL_CARD.md)). It holds
-> no place between moments beyond its working trace, so it does not keep the promise above:
-> the page check below reads 39 of 42 checks, and the 3 it fails are the brain's own. Its
-> records of what is where are a long-term memory beside it, and those the page's checks pass.
-> The trained place module takes its seat through `site/pack/manifest.json`, with its own card.
+> **Status: under construction on the branch `space`.** The page runs the place module's
+> **development file, a feed-forward baseline** ([model card](MODEL_CARD.md)), with a wheel
+> built from the library's branch that holds `cadence.space` and `cadence.modules`. A program
+> beside the brain holds each place; the brain answers how far a place moves in a step, how far
+> off it may be, and the place a cue names. The page check below reads 41 of 42: in view and
+> after the return the place lies within a centimetre or two of the hand. Hidden behind the
+> pillar it read 6.7 cm in the run on file and 13 cm and 26 cm in the two runs before it
+> (bound 10 cm). A version that settles takes this file's seat
+> through `site/pack/manifest.json`. The plain composed brain the page was built on stays as a
+> second host (`tools/build.py` without `--module`).
 
 ![The hand hidden behind the pillar, the place part's card open beside its part](docs/baseline-hidden-card.jpg)
 
@@ -83,15 +85,22 @@ replaces it.
 Every population sits in the region whose role it plays. The page names the role; it claims
 nothing about what the neurons are.
 
-| Population (baseline brain) | Plays the role of |
-| --- | --- |
-| `sensory`, the camera's report: 16 tuned inputs for x, 16 for y, and one input that is on while the hand is in view | visual cortex |
-| `sensory`, the arm's joint readings: 12 tuned inputs a joint | somatosensory strip |
-| `sensory`, the arm's commands as a copy: 9 tuned inputs a joint | motor strip and the copy of its commands |
-| `association`, 96 neurons | association cortex |
-| `prefrontal`, the working trace, 96 neurons | prefrontal working memory |
-| `motor`, the place answer: 20 units for x, 20 for y, each axis one softmax | parietal and entorhinal map |
-| the records, a `LongTermMemory` of 12 slots beside the brain: one record a kind of thing, its key what the thing is and its value where it is | hippocampus |
+| Region of the place brain | What it holds | Plays the role of |
+| --- | --- | --- |
+| `place`, 32 | the program's place for the thing, shown to the brain: a peak on each axis | parietal and entorhinal map |
+| `moved`, 18 | the copy of the arm's command | motor strip and the copy of its commands |
+| `motion`, 56 | the thing's last seen movement | visual cortex |
+| `unseen`, 8 | the moments since it was seen | a timer, drawn where the cerebellum sits |
+| `heard`, 320 | a cue: its direction and distance | auditory cortex |
+| `felt`, 256 | the arm's joint readings | somatosensory strip |
+| `hidden`, 128 | between the inputs and the answers | association cortex |
+| `shift`, 64 | answer: how far the place moves in this step | path integration |
+| `spread`, 16 | answer: how far off the place may be | a confidence estimate |
+| `found`, 48 | answer: the place a cue or a posture names | the map's entry from the other senses |
+| the places of things, one row a thing, and the records of things at rest | kept by the program beside the brain | hippocampus |
+
+The roles are the page's reading of each region. The regions and what they hold are the
+module's own.
 
 - A synapse glows with the signal it carries, `|weight x presynaptic activation|`, in its source
   population's hue, warmer where it excites and cooler where it inhibits; all 24,096 are drawn,
@@ -120,7 +129,8 @@ becomes light; they change no number the brain holds (`site/brain.js`):
 
 - `SIGNAL` (0.062): how bright a synapse's signal `|weight x presynaptic activation|` is drawn.
   Each tract is read against its own mean weight, a tract of many synapses glows fainter per
-  synapse, and a brain drawn small is turned down with its size.
+  synapse, and a brain drawn small or of many synapses is turned down with its size and their
+  number.
 - `DENSE`: the tracts that leave the association region are drawn at 0.42 of that gain, and
   those that leave the working trace at 0.8. Most of those neurons are active at once, and at
   the full gain their light covers every other tract.
@@ -167,7 +177,7 @@ sweep-by-sweep replay off, `?details=1` opens the details and `?sound=0` keeps t
 | `site/brain.js` | the brain view (WebGL2, with a Canvas2D fallback) and its self-explaining parts |
 | `site/cards.js` | what every part says about itself, and the eight stages of a position's path |
 | `site/worker.js` | Pyodide, the Cadence wheel and the host, checked against `pack/manifest.json` |
-| `site/pack/` | the wheel, the host (`py/spacebrain/host.py`), `reaches.json`, `manifest.json` with SHA-256 |
+| `site/pack/` | the wheel, the module file (`module/`), the hosts (`py/spacebrain/place_host.py` for a place module, `host.py` for the plain composed brain), `reaches.json`, `manifest.json` with SHA-256 |
 | `tools/build.py` | builds `site/pack/` from the released wheel, with the place module's files where given |
 | `tools/record_scenes.py` | records the parity fixtures and the page's scenes with the Python world |
 | `tools/check_page.py` | the promise in headless Chromium; writes `evidence/page_check.json` |
@@ -215,16 +225,14 @@ to the value it was given; a lesson follows only a moment the camera reports; th
 sweep is the state the answer was read from; a record keeps its place until the thing is seen or
 heard, and a cue's direction and distance rewrite it.
 
-The reading on the **untrained baseline** (`evidence/page_check.json`, 12 November 2026): 39 of
-42 checks. The page's own checks pass: the tutorial's steps complete on a visitor's input, the
-camera turns under a drag and under two fingers, the small map answers both questions ("The apple is 0.8 m away, behind you, to the right. The camera last saw it 6 s ago." and "In front of you, to the left: the slice of bread, 0.4 m away."), every card opens beside its part, undo, reset and the
-scene file work, and a frame takes 16.7 ms at the median and 16.7 ms at the 95th percentile with
-the brain view and its bloom on (16.8 ms at the worst of 1,500 frames; the brain answered a
-moment in 9 ms in the worker). The records hold: the apple's record lay 1.5 cm from the
-apple with the camera turned away, the cup's record stayed where the cup was last seen, and one
-knock brought it to 11 cm from the cup. The 3 that fail are the brain's: 27 cm in view
-after 630 lessons from birth (it has read between 3 cm and 35 cm from load to load), 19 cm from
-the hidden hand (the last seen position 16 cm, the Kalman filter 21 cm), and an uncertainty that
-does not grow while the hand is hidden. The baseline is not the model.
+The reading on the **development file** (`evidence/page_check.json`, 12 November 2026): 41 of
+42 checks. In view the place lay 1.1 cm from the hand, and 2.2 cm after the return. Hidden
+behind the pillar, where the hand came to rest, it lay 6.7 cm away on average over 70 moments and
+8.8 cm at the last (the last seen position 18 cm, the Kalman filter 16 cm); its circle grew from
+1.2 cm to 30 cm and held the hand on 0.70 of the hidden moments. With the camera turned
+away the apple's place lay 0.1 cm from the apple; one knock brought the cup's place to 5.5 cm from
+the cup. A frame took 16.7 ms at the median and 16.8 ms at the 95th percentile with the brain view
+and its bloom on; a moment took 73 ms in the worker with lessons on, on a machine under heavy
+load from other work (measured apart under Pyodide: 62 ms with lessons, 14 ms without). The hidden hand's reading differs from run to run: 26 cm and 13 cm in the two runs before this one. Failing in this run: the stated area holds the hidden hand.
 
 Cadence is GPL-3.0.

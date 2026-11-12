@@ -23,6 +23,10 @@ export const COLOR = {
   place: [0.24, 0.89, 0.82],
   auditory: [0.95, 0.55, 0.78],
   hippocampus: [1.0, 0.8, 0.42],
+  timer: [0.62, 0.72, 0.86],
+  shift: [0.36, 0.86, 0.62],
+  doubt: [0.66, 0.56, 0.98],
+  found: [0.95, 0.55, 0.78],
   other: [0.72, 0.72, 0.82],
   excite: [1.0, 0.62, 0.28],
   inhibit: [0.32, 0.58, 1.0],
@@ -37,10 +41,14 @@ export const ROLE = {
   place: 'plays the role of the parietal and entorhinal map',
   auditory: 'plays the role of the auditory cortex',
   hippocampus: 'plays the role of the hippocampus',
+  timer: 'plays the role of a timer, drawn where the cerebellum sits',
+  shift: 'plays the role of path integration: the step that moves a place on the map',
+  doubt: 'plays the role of a confidence estimate',
+  found: 'plays the role of the map’s entry from the other senses',
 };
 const ANATOMY = { visual: 'visual cortex', somatosensory: 'somatosensory', motor: 'motor strip', association: 'association cortex',
-  prefrontal: 'prefrontal cortex', place: 'parietal · entorhinal map', auditory: 'auditory cortex', hippocampus: 'hippocampus' };
-const SHORT = { visual: 'visual', somatosensory: 'body', motor: 'motor', association: 'association', prefrontal: 'prefrontal', place: 'map', auditory: 'hearing' };
+  prefrontal: 'prefrontal cortex', place: 'parietal · entorhinal map', timer: 'timer', shift: 'the step', doubt: 'the doubt', found: 'other senses', auditory: 'auditory cortex', hippocampus: 'hippocampus' };
+const SHORT = { visual: 'visual', somatosensory: 'body', motor: 'motor', association: 'association', prefrontal: 'prefrontal', place: 'map', auditory: 'hearing', timer: 'timer', shift: 'step', doubt: 'doubt', found: 'senses' };
 const css = (rgb, a = 1) => `rgba(${rgb.map((v) => Math.round(v * 255)).join(',')},${a})`;
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 const ease = (f) => f * f * (3 - 2 * f);
@@ -452,6 +460,34 @@ export class BrainView {
       const rows = kind === 'axes' ? Math.round(r.neurons.length / per) : 1;
       const row = (k) => r.neurons.slice(k * per, (k + 1) * per);
       const nth = seen[r.role in seen ? r.role : 'other']++;
+      if (r.seat) {
+        // the host names the region's seat: its centre and half size, in the drawing's units
+        const [u, v, hw, hh] = r.seat;
+        if (kind === 'axes' && r.role === 'place' && rows === 2) {
+          // the held place as a map's axes: x units across, y units up
+          line(row(0), u - hw * 0.8, v + hh, u + hw, v + hh);
+          line(row(1), u - hw, v + hh * 0.8, u - hw, v - hh);
+          this.placeBox = { region: r.index, x0: at(u - hw * 0.8, 0)[0], x1: at(u + hw, 0)[0], y0: at(0, v + hh * 0.8)[1], y1: at(0, v - hh)[1] };
+        } else if (kind === 'axes') {
+          // one line of tuned units a reading: side by side where the seat is tall, stacked where it is wide
+          const tall = hh * bh > hw * bw, small = clamp(unitR * Math.min(1, ((tall ? 2 * hh * bh : 2 * hw * bw) / per) / (2.3 * unitR)), 1.3, unitR);
+          for (let k = 0; k < rows; k++) {
+            const t = rows > 1 ? k / (rows - 1) - 0.5 : 0;
+            if (tall) line(row(k), u + t * hw * 1.3, v + hh, u + t * hw * 1.3, v - hh, 0, small);
+            else line(row(k), u - hw, v + t * hh * 1.3, u + hw, v + t * hh * 1.3, 0, small);
+          }
+        } else if (kind === 'grid') {
+          const { width: gw, height: gh } = r.layout, cell = Math.min((2 * hw * bw) / gw, (2 * hh * bh) / gh);
+          r.neurons.forEach((i, k) => {
+            const [x, y] = at(u - hw + (2 * hw * ((k % gw) + 0.5)) / gw, v + hh - (2 * hh * (Math.floor(k / gw) + 0.5)) / gh);
+            pos[2 * i] = x; pos[2 * i + 1] = y; size[i] = clamp(cell * 0.36, 0.9, unitR);
+          });
+        } else {
+          ellipse(this.fieldPlace.get(r.name) || r.neurons.map((i, k) => ({ i, x: k % 12, y: Math.floor(k / 12) })), u, v, hw, hh);
+        }
+        glow(r, u, v, hw * 1.15, hh * 1.15); label(r, u - hw, v - hh - 0.062);
+        continue;
+      }
       if (r.role === 'visual' && kind === 'axes') {
         // the camera's report at the back of the brain: x units across, y units up
         line(row(0), 0.795, 0.49, 0.935, 0.49);
@@ -676,9 +712,10 @@ export class BrainView {
   // than a narrow one, and every block is read against its own mean weight.
   gains() {
     // a small brain packs the same curves into fewer pixels: its light is turned down with its size
-    const size = clamp(Math.pow((this.brainBox?.w || this.width) / 640, 1.3), 0.22, 1.25);
+    // and a brain of many synapses is turned down with their number, so that its tracts do not run to white
+    const size = clamp(Math.pow((this.brainBox?.w || this.width) / 640, 1.3), 0.22, 1.25) * clamp(Math.sqrt(24000 / Math.max(1, this.pre.length)), 0.3, 1);
     return this.blockNames.map((name, b) => {
-      const fan = clamp(Math.sqrt(1600 / Math.max(64, this.blockCount[b])), 0.3, 1.6);
+      const fan = clamp(Math.sqrt(1600 / Math.max(64, this.blockCount[b])), 0.12, 1.6);
       const from = this.regions[Number(name.split('>')[0])]?.role;
       return (0.5 / (this.blockScale[b] * 0.6 || 1)) * fan * size * SIGNAL * (DENSE[from] ?? 1);
     });
@@ -1075,7 +1112,7 @@ export class BrainView {
     c.shadowBlur = 0;
     c.font = '500 10.5px "JetBrains Mono", ui-monospace, monospace'; c.textBaseline = 'alphabetic';
     c.fillStyle = playing ? 'rgba(255,236,200,0.95)' : 'rgba(141,151,178,0.85)';
-    c.fillText(playing ? `sweep ${playing} of ${s.of}` : this.resting ? 'at rest: no sweep needed' : `settled in ${s.of} sweeps`, x0 + w + 8, y1 - 2);
+    c.fillText(playing ? `sweep ${playing} of ${s.of}` : this.resting ? 'at rest: no sweep needed' : `${this.verb || 'settled in'} ${s.of} sweeps`, x0 + w + 8, y1 - 2);
     c.restore();
   }
 

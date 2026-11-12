@@ -74,19 +74,14 @@ WAVE_FRAMES = 12
 RECOGNISED = 0.9  # the cosine at which a read record is the thing asked for
 
 
-def load_module(spec: dict[str, Any]) -> Any:
-    """The trained place module the pack names: from its file where the pack ships one
-    (``cadence.load_module(path)``), else by name from the wheel (``cadence.modules.load(name)``).
-    A wheel without the module system is refused by name."""
-    if spec.get("path"):
-        loader = getattr(cadence, "load_module", None)
-        if loader is None:
-            raise RuntimeError(f"cadence {cadence.__version__} has no load_module; the pack ships a module file")
-        return loader(spec["path"])
-    modules = getattr(cadence, "modules", None)
-    if modules is None or not hasattr(modules, "load"):
-        raise RuntimeError(f"cadence {cadence.__version__} has no modules.load; the pack names the module {spec.get('name')!r}")
-    return modules.load(spec["name"])
+def make(config: dict[str, Any] | None = None) -> Any:
+    """The host the pack asks for: the trained place module's where the pack names a module
+    (``place_host.PlaceHost``), else the baseline's (``Host``). Both answer the same messages."""
+    if (config or {}).get("module"):
+        from .place_host import PlaceHost
+
+        return PlaceHost(config)
+    return Host(config)
 
 
 def _copy_state(state: Any) -> Any:
@@ -127,11 +122,6 @@ class Host:
     def __init__(self, config: dict[str, Any] | None = None) -> None:
         self.config = {**DEFAULTS, **(config or {})}
         self.buffers: dict[str, np.ndarray] = {}
-        if self.config.get("module"):
-            # the seam for the trained place module: this host is the baseline's, and the
-            # module's own host reads the same messages and writes the same replies
-            self.module = load_module(self.config["module"])
-            raise RuntimeError("this host is the baseline's; the place module is read by its own host")
         self._build()
 
     # -- the brain
@@ -263,6 +253,7 @@ class Host:
                          "tolerance": None if cfg.tolerance is None else float(cfg.tolerance),
                          "surprise": bool(cfg.surprise), "eta": float(cfg.eta),
                          "temperature": float(cfg.temperature)},
+            "controls": {"kalman": {"q": 3.16e-7, "r": 0.02}},  # the chamber's fitted filter
             "compose_ms": round(self.compose_ms, 1),
             "moments": self.moments, "lessons": self.lessons,
             "index_bits": int(np.dtype(np.intp).itemsize * 8),

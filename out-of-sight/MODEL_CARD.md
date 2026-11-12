@@ -1,100 +1,94 @@
-# Model card: the untrained baseline (the Out of sight page's stand-in brain)
+# Model card: the place module's development file (a feed-forward baseline)
 
-This card describes the brain the page runs while the trained place module is raised. It is a
-control: a plain composed brain with nothing that holds a place between moments. It does not
-keep the page's promise, and the page says so. The trained module's card replaces this one.
+This card describes the file the Out of sight page runs. It is the place module's development
+file and a baseline by the project's rules: every synapse of its brain runs from the inputs
+toward the outputs, so an answer is complete after three sweeps. A version that settles, with
+the same regions and calls, takes its seat when it arrives, with its own card.
 
 | | |
 | --- | --- |
 | Demo | Out of sight (`out-of-sight/`) |
-| File | none: composed in the page's worker by `site/pack/py/spacebrain/host.py` when the page loads |
-| Library | `cadence-net` 0.98.0, the PyPI wheel (SHA-256 `7eb6faec5e4fe785…`), CPU backend, float64, in Pyodide 314.0.7 |
-| Composition | `Brain.compose(inputs=75, actions=40, slots=2, modules=(96,), seed=0, recall=False, temperature=0.05)` |
-| Size | 307 neurons (75 sensory, 96 association, 96 prefrontal, 40 motor), 24,096 synapses |
-| Beside the brain | `LongTermMemory(width=48, value_width=48, capacity=12, cosine=True, revise=0.9)`: the records of the things |
+| File | `site/pack/module/place-dev0.npz` · 957,040 bytes · SHA-256 `268a36746e4e95b1…` · format `cadence-module/1` (arrays and one JSON record, no pickled object) |
+| Library | `cadence-net` 0.98.0, a wheel built from the library's branch lane-099-space; it holds cadence.space and cadence.modules, which PyPI's 0.98.0 does not (SHA-256 `36e529caeacc06cd…`), CPU, in Pyodide 314.0.7 |
+| Loaded by | `cadence.load_module(path)`, then `cadence.space.Space.load(module, track=True, records=12, practice=0.0)` (`site/pack/py/spacebrain/place_host.py`) |
+| Size | 946 neurons, 138,112 synapses: `place` 32, `moved` 18, `motion` 56, `unseen` 8, `heard` 320, `felt` 256, `hidden` 128, `shift` 64, `spread` 16, `found` 48 |
 | Date | 2026-11-12 |
 
-## What it sees and does
+## What the program does and what the brain does
 
-- **Inputs (75 values, fixed population codes):** the camera's report of the hand, x and y, 16
-  tuned inputs each over the plane, all dark while the hand is out of view; one input that is on
-  while the hand is in view; the arm's two joint readings, 12 tuned inputs each over the joint's
-  limits; the arm's two commands as a copy, 9 tuned inputs each over ±0.25 rad.
-- **Outputs (40 motor neurons in two slots):** 20 units for x and 20 for y, each with a preferred
-  position; each slot is read as one softmax at temperature 0.05. The place is the mean of the
-  preferred positions under each slot's shares, the spread their standard deviation, and the
-  area at 0.90 the most likely cells of the x-by-y product that hold nine tenths of it. The
-  ring on the page is the ellipse of the two spreads at that rate.
-- **One moment:** `Brain.act(x, greedy=True)` in a continuing stream. The working trace (a copy
-  of the association region's last state, `prefrontal`) is the one thing carried from moment to
-  moment. A settle that finds no qualified state gives no answer, and the page counts it.
-- **What is where:** each kind of thing (a cup, an apple, a slice of bread) has one record. Its
-  key is a fixed unit vector drawn from the kind's name; its value is a population code of its
-  place in the room (24 tuned units an axis). A thing the camera reports, or that the ear hears
-  (a direction and a distance from the ear, which stands at the body), is written; a thing out
-  of view is read. Asked for a kind ("where is the apple"), the record found by the key gives
-  the place. Asked for a direction from the body ("what is behind me"), the host goes through
-  the records and answers the one whose place lies nearest that direction, within 0.45 rad. The
-  page gives every report its thing's name. The tracking chamber does not: there a learner
-  keeps each thing's identity itself.
-- **Around the body:** the body carries the camera and turns by the visitor's hand. The host is
-  given the body's position, heading and turn at every moment and uses the position alone (the
-  ear stands there). Every place it holds is in the room's own coordinates; the page works out
-  a place's direction and distance from the body, and the words "behind you", from the record's
-  place and the way the body faces.
-- **A record's ring:** the soft ring on a thing in the small map is the error of what wrote its
-  record: the camera's 1 cm, or a cue's own error at the distance heard (0.04 rad of direction
-  and 8% of distance). It does not grow with the time since.
+`Space` is a program beside the brain, as a long-term memory is. It holds each thing's place
+between moments (two numbers and the radius of its area), writes a camera's report into it,
+adds the brain's answer to it and keeps the records. The brain holds no place. It answers three
+things for a thing whose place may have moved: how far the place moves in this step (`shift`),
+how far off the place may be (`spread`), and the place a cue or the arm's joint readings name
+(`found`). The peak drawn in the `place` region is the program's place, shown to the brain.
+
+- **Inputs:** `place` (the held place, 16 tuned units an axis), `moved` (the copy of the arm's
+  command, for the arm's own hand), `motion` (the thing's last seen movement: the slope of the
+  line through its reports), `unseen` (the moments since it was seen), `heard` (a cue: 20
+  directions by 16 distances from the ear), `felt` (the arm's joint readings, 16 by 16).
+- **Outputs:** `shift` (32 units an axis, up to 6 cm a step), `spread` (16 units from 2 mm to
+  2 m), `found` (24 units an axis over the plane).
+- **One moment on the page:** the cues go to their rows (`hear`), the brain answers
+  (`predict`), the reports go to their rows (`assign`) and the places are written (`observe`).
+  Reports and cues carry what a thing looks like and no name. The answer for the hand is its
+  row's place and a circle that holds it nine times in ten (`where`).
+- **The ear:** the module's ear stands at (0.95, 1.35). A cue heard at the page's body is given
+  to the module as the direction and distance of the same point from its own ear.
 
 ## How it was trained
 
-It was not. The brain is born when the page loads. On the page, at every moment the camera
-reports the hand, the report is a lesson after the answer: `Brain.lesson(x, label)`, the label
-the nearest unit to the report on each axis. With `recall=False` the learner stands at
-`surprise=False`, so every such moment teaches (step 0.5, 12 nudged sweeps, cross-entropy
-nudge). No lesson uses a position the camera did not give. The visitor can switch the lessons
-off (Details) and start a new brain.
+By the library's tracking chamber, as the file's own record states: "benchmarks/tracking curriculum(founder=0, 2000 scenes), lessons that hold only reports". Development founder 0.
+Its record's readings, in centimetres: a person's hand 0.64 in view and 15.86 out of view; the
+arm's own hand 1.09 in view and 12.51 out of view.
 
-## How it was measured
+## How it was measured on the page
 
-On the page only, by `tools/check_page.py` in headless Chromium (`evidence/page_check.json`,
-12 November 2026): the tutorial's six steps performed with the mouse, from birth.
+By `tools/check_page.py` in headless Chromium: the tutorial's six steps performed with the
+mouse. 41 of 42 checks pass.
 
-| Reading | Baseline | Bound |
+| Reading on the page (`evidence/page_check.json`, 12 November 2026) | This file | Bound |
 | --- | --- | --- |
-| In view: place to true hand, mean of the last 60 moments of the first step | 27 cm (after 630 lessons) | 5 cm |
-| Hidden behind the pillar: place to true hand, mean over the hidden moments | 19 cm | 10 cm |
-| the last seen position, the same moments | 16 cm | – |
-| the constant-velocity Kalman filter (q 1e-5, r 0.01, not the chamber's fitted values), the same moments | 21 cm | – |
-| Share of hidden moments whose stated area holds the true hand | 1.00 | 0.85 |
-| Back in view: place to true hand, 10 moments | 5.0 cm | 5 cm |
-| The camera turned away from the apple: its record to its true place, the apple 156 degrees off the way the body faces | 1.5 cm | 3 cm |
-| The cup moved unseen: its record to the place it was last seen at | 0.0 cm | 3 cm |
-| After one knock: the record to the true place (the cue's own error: 8.7 cm) | 11 cm | three times the cue's error |
-| The brain's answer for one moment, in the worker | 9 ms | – |
+| In view: place to true hand, mean of the last 60 moments of the first step | 1.1 cm | 5 cm |
+| Hidden behind the pillar, where the hand comes to rest: place to true hand, mean over 70 hidden moments | 6.7 cm (8.8 cm at the last) | 10 cm |
+| the last seen position, the same moments | 18 cm | – |
+| the chamber's Kalman filter (q 3.16e-7, r 0.02), the same moments | 16 cm | – |
+| Share of hidden moments whose stated circle holds the true hand | 0.70 | 0.85 |
+| The circle's radius: at the first hidden moment, at the last | 1.2 cm, 30 cm | grows |
+| Back in view: place to true hand, 10 moments | 2.2 cm | 5 cm |
+| The camera turned away from the apple: its place to its true place | 0.1 cm | 3 cm |
+| The cup moved unseen: its place to the place it was last seen at | 0.0 cm | 3 cm |
+| After one knock: the place to the true place (the cue's own error: 8.7 cm) | 5.5 cm | three times the cue's error |
+| One moment in the worker, lessons on, four things | 73 ms | – |
 
-The baseline's readings change from load to load: the brain is born at each load and learns
-from the moments the check's drags give it (in view it has read between 3 cm and 35 cm). Its
-stated area is as wide as the table while the hand is hidden, which is why it holds the hand.
+- The promise step: the check drags the hand into the pillar's shadow at 0.5 m/s and lets it
+  rest there. Three runs of the check read 26 cm, 13 cm and the 6.7 cm of the run on file,
+  against a bound of 10 cm: the module carries the place on along the hand's last seen
+  movement, for a stretch that differs from run to run, and its lessons on the page are part
+  of each run. Its circle held the hand on 0.70 of the hidden moments (bound 0.85).
+- One knock: beside this run's reading, 16 knocks at one place with the cue's own error of 6 cm
+  put the place 14 cm from the true one on average, 27 cm at the most (measured natively
+  through the page's host).
 
 ## In the page
 
-Learning while the visitor plays, at seen moments only. The visitor can switch the lessons off,
-start a new brain, undo a move and reset the scene. Nothing of the brain is saved in the
-browser: a reload is a new brain. The browser keeps one flag, that the tutorial was seen.
+Learning, unless the visitor switches it off (Details): the space teaches the brain from the
+camera's reports of every thing in view. A lesson is made of six reports in a row and lands up
+to five moments after the last of them; with the camera off no lesson is taken. No span of
+reports is left unread (`practice=0.0`). A new brain (Details) is the module as its file holds
+it. A visitor's drag is held to 0.7 m/s and the arm's command to 0.1 rad a step, the range the
+module was raised in. Nothing of the brain is saved in the browser.
 
 ## Limits
 
-- It holds no place while the hand is out of view. Its answer then leans on the working trace
-  and slides away from the hand; the page check's promise step fails on it.
-- Its stated area is the spread of a softmax. It was not calibrated, and it is not gated.
-- A cue rewrites a thing's record whole; cues are not combined.
-- It holds one record a kind: two things of one kind would share one record.
-- Turning the body shifts nothing it holds. Places are kept in the room's coordinates, which
-  the page's camera reports in; a body that has only its own turn commands to go by is not
-  modelled.
-- It is one founder (seed 0) with no held-out reading. The numbers above certify the page's
-  plumbing and nothing about spatial object awareness.
+- A feed-forward baseline: its answers do not come from a settled exchange between regions.
+- Out of view, its error passes 10 cm after 20 to 30 moments of movement, and a hand that
+  stops in the shadow can be carried on.
+- With the camera off and the hand moving, expect 20 to 40 cm beyond about 100 moments.
+- Places are the room's own. A turn of the body changes what is seen and no stored place; the
+  small map turns the places for display. A body that moves is not modelled.
+- One development founder. These are a page's readings on one run, not the gates of
+  [cadence#320](https://github.com/muellerberndt/cadence/issues/320).
 
 ## Licence
 

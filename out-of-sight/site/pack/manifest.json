@@ -4,19 +4,31 @@
  "pyodide": "314.0.7",
  "cadence": "0.98.0",
  "wheel": "cadence_net-0.98.0-py3-none-any.whl",
- "wheel_sha256": "7eb6faec5e4fe785a8fc4a564107e197aefb5bacecdd76197d4c1391bcd10246",
- "wheel_source": "PyPI",
+ "wheel_sha256": "36e529caeacc06cdbef091ac414212a767b6d1a1d18dafe4b88a26e25e74ea4e",
+ "wheel_source": "built from the library's branch lane-099-space; it holds cadence.space and cadence.modules, which PyPI's 0.98.0 does not",
  "sources": [
   "__init__.py",
-  "host.py"
+  "host.py",
+  "place_host.py"
  ],
  "sources_sha256": {
   "__init__.py": "94e4f42d9d612c5aa91adc5eadb7a3fce757d1a521c351132a2df4787b560544",
-  "host.py": "2fbb980091f2943dd47fc227b122749a81e0a521e0814563e0d8e64d22f508b1"
+  "host.py": "5032667889b3ec6d319ca38e3cb4d88ffb83c98dcc052244f945a2e5fccec98f",
+  "place_host.py": "838204cb17c5505716585e054c0d622118719e1c84f369d02ae9d455af64365b"
  },
  "config": {},
- "module": null,
- "brain_kind": "baseline, composed on the page",
+ "module": {
+  "name": "place",
+  "label": "Feed-forward baseline",
+  "note": "The place module's development file: a feed-forward baseline (development founder 0, 2,000 scenes of the tracking chamber). A program beside the brain holds each place between moments; the brain answers how far a place moves in a step, how far off it may be, and the place a cue names.",
+  "files": [
+   {
+    "name": "place-dev0.npz",
+    "sha256": "268a36746e4e95b126b79beb54aafee8ac963ae14e3788f26264a3a5a511364c",
+    "bytes": 957040
+   }
+  ]
+ },
  "reaches": {
   "file": "reaches.json",
   "sha256": "dbb3de7ac2f6dbcfe429cc6fafd992703e0e2b8586854f0efc115a889e218784",

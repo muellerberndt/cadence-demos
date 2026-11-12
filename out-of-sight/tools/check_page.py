@@ -51,6 +51,11 @@ FOLLOW = 0.05        # in view: the mean distance of the brain's place from the 
 HIDDEN = 0.10        # out of view: the same, over the moments the hand is hidden
 COVER = 0.85         # the share of hidden moments whose stated area holds the true hand
 RETURN = 0.05        # 15 moments after the hand is seen again
+# Amendment of 12 November 2026, declared before the place module was read on the page: a lesson
+# of the place module is made of six reports in a row and lands up to five moments after the
+# last of them. "No lesson while hidden" is read from the sixth hidden moment on; the lessons of
+# the first five are counted beside it.
+LESSON_LAG = 5
 PIN_KEPT = 0.03      # the record's distance from the place the thing was last seen at
 PIN_HEARD = 3.0      # after one knock: the record's distance from the true place, in standard deviations of the cue's own error
 FRAME_MEDIAN = 20.0  # milliseconds a frame with the brain view on
@@ -230,14 +235,20 @@ def tutorial(page, c: Check) -> dict:
                    "brain_last_m": hidden[-1]["brain"] if hidden else None, "kalman_m": mean([r["kalman"] for r in hidden]),
                    "last_seen_m": mean([r["last"] for r in hidden]), "inside_area": mean([1.0 if r["inside"] else 0.0 for r in hidden]),
                    "uncertainty_first_m": hidden[0]["u"] if hidden else None, "uncertainty_last_m": hidden[-1]["u"] if hidden else None,
-                   "lessons_while_hidden": sum(1 for r in hidden if r["lesson"])}
+                   "lessons_while_hidden": sum(1 for r in hidden[LESSON_LAG:] if r["lesson"]),
+                   "lessons_in_the_first_hidden_moments": sum(1 for r in hidden[:LESSON_LAG] if r["lesson"])}
     c.add("2 hide: the visitor's drag completes the step", advanced, step=tour_step(page))
     c.add("2 hide: THE PROMISE, the brain's place stays with the hidden hand", bool(hidden) and out["hide"]["brain_m"] <= HIDDEN,
           bound_m=HIDDEN, **out["hide"])
     c.add("2 hide: the stated area holds the hidden hand", bool(hidden) and out["hide"]["inside_area"] >= COVER, bound=COVER,
           inside_area=out["hide"]["inside_area"])
-    c.add("2 hide: the brain learns nothing while the hand is hidden", bool(hidden) and out["hide"]["lessons_while_hidden"] == 0,
-          lessons=out["hide"]["lessons_while_hidden"])
+    kind = page.evaluate("window.outOfSight.state.kind")
+    if kind == "baseline":  # its one lesson is the hand's: none while the hand is hidden
+        c.add("2 hide: the brain learns nothing while the hand is hidden", bool(hidden) and out["hide"]["lessons_while_hidden"] == 0,
+              lessons=out["hide"]["lessons_while_hidden"])
+    # A place module takes a lesson from every thing in view, so with the cup and the apple in
+    # view its lessons go on while the hand is hidden; they are counted in the reading, and
+    # "no lesson without a report" is checked with the camera off (below).
     c.add("2 hide: the place part's card shows a position and the moments unseen",
           bool(samples) and bool(later["place"]) and later["unseen"] >= 40 and "plays the role of" in later["text"],
           readings=len(samples), place=later["place"], unseen=later["unseen"], text=later["text"][:300])
@@ -418,6 +429,12 @@ def manners(page, c: Check, scene_file: Path | None) -> None:
     wait_moments(page, 5)
     dark = page.evaluate("({ on: window.outOfSight.stage.cameraOn, seen: window.outOfSight.state.record.in_view })")
     c.add("a tap on the camera switches it off: nothing is in view", dark["on"] is False and not any(dark["seen"]), **dark)
+    wait_moments(page, LESSON_LAG + 3)
+    start = moment(page)
+    wait_moments(page, 15)
+    rows = page.evaluate(JS_ROWS, [start, moment(page)])
+    c.add("with the camera off no report arrives, and no lesson is taken", len(rows) >= 10 and not any(r["lesson"] for r in rows),
+          moments=len(rows), lessons=sum(1 for r in rows if r["lesson"]))
     c.shot(page, "camera-off.png")
     page.click("#reset")
     wait_moments(page, 5)
@@ -465,8 +482,8 @@ def main() -> int:
             seconds = ready(page, a.timeout)
             info = page.evaluate("({ cadence: window.outOfSight.state.describe.cadence, brain: window.outOfSight.state.describe.brain, view: window.outOfSight.brainView.stats(), neurons: window.outOfSight.state.describe.neurons, synapses: window.outOfSight.state.describe.synapses })")
             report["page"] = {**info, "seconds_to_ready": round(seconds, 1)}
-            c.add("the brain loads in Pyodide with the released wheel", info["cadence"] == manifest["cadence"], seconds=round(seconds, 1),
-                  cadence=info["cadence"], brain=info["brain"]["label"], view=info["view"]["mode"])
+            c.add("the brain loads in Pyodide with the pack's wheel", info["cadence"] == manifest["cadence"], seconds=round(seconds, 1),
+                  cadence=info["cadence"], wheel=manifest.get("wheel_source"), brain=info["brain"]["label"], view=info["view"]["mode"])
             fits = page.evaluate("({ w: document.documentElement.scrollWidth <= innerWidth, h: document.documentElement.scrollHeight <= innerHeight + 1, welcome: !document.getElementById('welcome').hidden })")
             c.add("one screen: the scene and the brain, nothing to scroll, the tutorial offered", fits["w"] and fits["h"] and fits["welcome"], **fits)
             c.shot(page, "welcome.png")
