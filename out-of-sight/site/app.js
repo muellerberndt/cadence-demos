@@ -805,7 +805,6 @@ function adopt(describe, arrays) {
   document.querySelectorAll('[data-promise]').forEach((el) => { el.textContent = TOUR.promise; });
   if (describe.manifest) state.manifest = describe.manifest;
   const m = state.manifest?.map || {};
-  $('brain-badge').hidden = !params.has('badge');
   $('brain-note').textContent = m.note || '';
   $('card-wheel').textContent = `cadence-net ${describe.cadence} (${state.manifest?.wheel_source || 'the pack’s wheel'})`;
   const [nx, ny] = describe.cells, s = describe.settings || {};

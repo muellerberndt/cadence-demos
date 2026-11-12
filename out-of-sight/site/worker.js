@@ -1,6 +1,6 @@
-// The brain's map runs here, off the page's thread, in Python through Pyodide. The wheel, the
-// map file and the Python host are checked against the pack manifest's SHA-256 before anything
-// runs. Messages: {rid, command, payload} in; {rid, result, arrays} or {rid, error} out; {status}
+// The brain's map runs here, off the page's thread, in Python through Pyodide. The wheel (and a
+// map file, where the pack ships one in place of the library's built-in map) and the Python host
+// are checked against the pack manifest's SHA-256 before anything runs. Messages: {rid, command, payload} in; {rid, result, arrays} or {rid, error} out; {status}
 // while loading. `arrays` holds the typed arrays a reply names in `buffers`.
 //
 // What the camera sees. The map is told at every moment what the camera sees: a thing whose held
@@ -72,11 +72,15 @@ async function initialize(payload) {
     const bytes = await checked(new URL(`py/spacebrain/${name}`, base), manifest.sources_sha256[name]);
     python.FS.writeFile(`/home/pyodide/spacebrain/${name}`, bytes);
   }
+  // The map: the library's built-in one by name (cadence.modules.load), or a map file the pack ships
   status('Loading the map');
-  python.FS.mkdirTree('/home/pyodide/map');
-  const path = `/home/pyodide/map/${manifest.map.file}`;
-  python.FS.writeFile(path, await checked(new URL(`map/${manifest.map.file}`, base), manifest.map.sha256));
-  const config = { map: { path, kinds: manifest.map.kinds, label: manifest.map.label, note: manifest.map.note } };
+  let path = null;
+  if (manifest.map.file) {
+    python.FS.mkdirTree('/home/pyodide/map');
+    path = `/home/pyodide/map/${manifest.map.file}`;
+    python.FS.writeFile(path, await checked(new URL(`map/${manifest.map.file}`, base), manifest.map.sha256));
+  }
+  const config = { map: { path, module: manifest.map.module || null, kinds: manifest.map.kinds, label: manifest.map.label, note: manifest.map.note } };
   status('Waking the map');
   python.globals.set('_space_config', JSON.stringify(config));
   python.runPython(`

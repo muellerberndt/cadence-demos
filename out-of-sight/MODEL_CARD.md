@@ -9,19 +9,16 @@ synapse: it is wiring and carried activity.
 | | |
 | --- | --- |
 | Demo | Out of sight (`out-of-sight/`) |
-| File | `site/pack/map/page-map.npz` · 1,937 bytes · SHA-256 `1920649c180a793a…` · format `cadence-space-map/1` (the map's settings, its kinds' codes and an empty carried state, with a checksum of every array and a card; arrays and one JSON record, no pickled object) |
-| Library | `cadence-net` 0.98.0, a development wheel built from the library's branch lane-099-space at 824c9ae9; it holds `cadence.space.map`, which PyPI's 0.98.0 does not (SHA-256 `75f4dddb4ee19e2a…`), CPU, in Pyodide 314.0.7 |
-| Loaded by | `Map.load(path)` (`site/pack/py/spacebrain/map_host.py`); `trace` is switched on for the moments the brain view plays a settle's wave, and for every question; at any other moment every neuron's activity is read from the map's carried state (`arrays`) and `observation`, which give the same numbers to the bit |
+| Map | the library's built-in map, `cadence.modules.load("place")`: `cadence/modules/place.npz` inside the wheel, format `cadence-space-map/1` (the map's settings, its kinds' codes and an empty carried state, with a checksum of every array and a card; arrays and one JSON record, no pickled object) |
+| Library | `cadence-net` 0.99.0, the wheel as released on PyPI (SHA-256 `1879e46117499cb6…`), CPU, in Pyodide 314.0.7 |
+| Loaded by | `cadence.modules.load("place")` (`site/pack/py/spacebrain/map_host.py`); `trace` is switched on for the moments the brain view plays a settle's wave, and for every question; at any other moment every neuron's activity is read from the map's carried state (`arrays`) and `observation`, which give the same numbers to the bit |
 | Size | 29,168 neurons, 39,936 synapses, none taught: `map` 13,312, `held` 13,312, `reference` 16, `where` 832, `what` 16, `clock` 832, `doubt` 832, `lost` 16 |
 | Settings | 32 by 26 cells of 6.25 cm by 6.15 cm over a plane of 2 m by 1.6 m; 16 code units a cell, one a kind; `level` 0.02; `empty` "near", `reach` 0.15 m; `step` 0.15 m; `stride` 0.5 m; `margin` 0.02 m, the camera's error (the guide's founder) |
-| Date | 2026-11-12 |
-
-The development wheel and the map file sit on the branch `space` only. Before any pull request
-they are replaced by the released wheel and the map the library ships.
+| Date | 2026-11-13 |
 
 ## What the program does and what the brain does
 
-The guide of the wheel's commit (`docs/space.md`, "What the brain does and what the program
+The library's guide of the release (`docs/space.md`, "What the brain does and what the program
 does") states it row by row; the page's cards carry those rows beside the steps they belong to.
 In short: the program beside the map copies the sheet's potentials to the next moment's drive on
 the same neurons, turns a report (a kind and a place) into a drive on four cells, passes the
@@ -56,27 +53,27 @@ the floor `what_is_at`.
 
 The promise, replayed on the page from the two scene files of the tracking chamber (a hand goes
 behind the pillar at 0.5 m/s, rests there for 70 moments and comes back; 323 moments, 91 of them
-with the hand out of view), as `tools/check_page.py` reads it (`evidence/page_check-20261113-0039-75f4dddb.json`,
-2026-11-13 00:37, on the wheel of 824c9ae9; the three runs on that wheel read the same):
+with the hand out of view), as `tools/check_page.py` reads it (`evidence/page_check-20261113-0223-1879e461.json`,
+2026-11-13 02:22, on cadence-net 0.99.0; the three runs on it read the same):
 
 | Scene file | In view | Hidden, mean | Last seen, hidden | Kalman filter, hidden | The hand's cells hold it | Its cells, mean | Back in view | A moment |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| the arm folded (`promise-scene.json`) | 1.2 cm | 10.7 cm | 15.5 cm | 27.8 cm | 1.00 | 39 | 1.0 cm | 19 ms |
-| the arm's shadow joined to the pillar's (`promise-merged-shadows-scene.json`) | 1.2 cm | 10.7 cm | 15.5 cm | 27.8 cm | 1.00 | 39 | 1.0 cm | 14 ms |
+| the arm folded (`promise-scene.json`) | 1.2 cm | 10.7 cm | 15.5 cm | 27.8 cm | 1.00 | 39 | 1.0 cm | 6 ms |
+| the arm's shadow joined to the pillar's (`promise-merged-shadows-scene.json`) | 1.2 cm | 10.7 cm | 15.5 cm | 27.8 cm | 1.00 | 39 | 1.0 cm | 5 ms |
 
 The map holds the hand near where it vanished on every hidden moment, and its cells hold the
 true hand on every hidden moment of both files. The page's readings are the model's own on the
-same files: `tests/test_map_host.py` drives the host natively on the pack's wheel and map file and
+same files: `tests/test_map_host.py` drives the host natively on the pack's wheel and map and
 reads the same inventory as `Map` driven directly. The map holds no randomness: replays read
-alike to the digit (`tools/promise_runs.py`; `evidence/promise_runs-20261113-0041-75f4dddb.json`, on the wheel of 824c9ae9).
+alike to the digit (`tools/promise_runs.py`; `evidence/promise_runs-20261113-0225-1879e461.json`).
 
 The arm's own hand, out of the camera's view and moved by the arm, in the tutorial's last step:
-0.6 mm from the hand on average over 64 hidden moments, 1.3 mm at worst (bound 1.5 cm).
+0.5 mm from the hand on average over 69 hidden moments, 1.5 mm at worst (bound 1.5 cm).
 
 A frame took 16.7 ms at the median and 16.7 ms at the 95th percentile with the
 brain view and its bloom on (bounds 20 ms and 34 ms); a moment of the map, with its inventory and
-every neuron's activity for the brain view, took 16.9 ms of the scene's 33 ms at the median. These
-were read with the Mac's load average at 50 to 77 from other work: upper bounds.
+every neuron's activity for the brain view, took 5.2 ms of the scene's 33 ms at the median, with the Mac's load
+average at 3 to 5.
 
 ## Limits
 
@@ -90,7 +87,7 @@ were read with the Mac's load average at 50 to 77 from other work: upper bounds.
 - Recognising a thing is not the map's work: the page tells the map the kind of each report.
 - The arm's own hand is placed by its joint readings through the page's kinematics; a taught
   projection of the readings onto the map (`cadence.space.map.Sense`) is not on this page.
-- One map file of the founder's settings. These are a page's readings, not the gates of
+- One map, the built-in one of the founder's settings. These are a page's readings, not the gates of
   [cadence#320](https://github.com/muellerberndt/cadence/issues/320).
 
 ## Licence

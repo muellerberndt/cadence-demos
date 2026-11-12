@@ -3,13 +3,13 @@
 // A card holds the part's name, the role it plays, what it holds and what it is doing at this
 // moment, written from the map's live state. The same texts are reachable in order as the
 // stages of "follow the position". The texts are the library guide's own, word for word
-// (docs/space.md of the commit the pack's wheel is built from, GUIDE below): the regions' table
+// (docs/space.md of the release the pack's wheel is, GUIDE below): the regions' table
 // for the parts, the nine steps of "How a position travels" for the stages, and the rows of
 // "What the brain does and what the program does" beside the steps they belong to.
 
 import { metres, phrase, LABEL } from './where.js';
 
-export const GUIDE = 'lane-099-space 824c9ae9';
+export const GUIDE = 'v0.99.0 (0780c106)';
 // The map moves nothing it does not sense; the one sentence the page says of what comes after it.
 const SECOND_STAGE = 'The second stage, learned physics on the map, follows in a later release.';
 
@@ -152,7 +152,7 @@ const STAGES = [
     body: 'A report within `step` of a piece of its kind’s activity is that thing. Its old cells are cleared and the report’s cells are written, so in view a thing’s place is the latest report.',
     table: ['which'], live: (ctx) => `${reportLine(ctx)} ${handLine(ctx)}` },
   { id: 'empty', parts: ['map', 'doubt'], title: 'A place seen empty',
-    body: 'The camera sees a thing’s held place (the mean of its activity) and no report of its kind claims it: the thing is not where it was held. The map drives it, once, onto the cells out of sight within reach of that place and marks those cells as doubt. With no such cell the thing is kept by its kind with no place. A place reported the moment before is a report, as far off as the camera’s error: it is seen empty where the camera still sees all it saw around it (within `margin`) when it reported it. A camera turning off a thing leaves it held; a hand that walks into a shadow, which a still camera sees gone, is placed out of sight near there. Any other held place is seen empty only where the camera sees all of it within `margin`, so the camera’s error never decides it.',
+    body: 'The camera sees a thing’s held place (the mean of its activity) and no report of its kind claims it: the thing is not where it was held. The map drives it, once, onto the cells out of sight within reach of that place and marks those cells as doubt. With no such cell the thing is kept by its kind with no place. A place reported the moment before is a report, as far off as the camera’s error: it is seen empty where the camera sees all it saw around it (within `margin`) when it reported it. A camera turning off a thing leaves it held; a hand that walks into a shadow, which a camera that did not move sees gone, is placed out of sight near there. Any other held place is seen empty only where the camera sees all of it within `margin`, so the camera’s error never decides it.',
     also: (ctx) => `On this page the map is set as the guide’s founder: “It is driven onto the cells out of sight around where it was held, as a peak <code>reach</code> metres wide; cells farther than two reaches take none. With no such cell it is kept by its kind with no place”, with <code>reach</code> ${ctx.describe.settings?.reach ?? '–'} m and <code>margin</code> ${ctx.describe.settings?.margin ?? '–'} m.`,
     table: ['empty'], live: (ctx) => `${handLine(ctx)} ${doubtLine(ctx)}` },
   { id: 'only', parts: ['map', 'doubt'], title: 'Sight only takes away',

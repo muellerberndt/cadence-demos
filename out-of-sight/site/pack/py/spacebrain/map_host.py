@@ -65,17 +65,24 @@ class MapHost:
         self.note = str(spec.get("note") or "")
         self.moments = 0
         self.looks: Any = None  # the page's rule for what the camera sees: places -> flags (the worker gives it)
-        self._build(spec.get("path"))
+        self._build(spec.get("path"), spec.get("module"))
 
     # -- every call into the map is made in the methods of this block
 
-    def _build(self, path: str | None) -> None:
+    def _build(self, path: str | None, module: str | None = None) -> None:
+        """The map: the library's built-in one by name (``cadence.modules.load``), or a map file."""
         from cadence.space.map import Map  # opt-in, imported by name
 
         began = time.perf_counter()
         # trace: a settle kept by sweep, for the brain view's wave; switched on for the moments
         # the page asks a wave of (a traced settle takes two sweeps in place of one)
-        self.map = Map.load(path, trace=False) if path else Map((-1.0, 1.0, -0.2, 1.4), trace=False)
+        if module:
+            import cadence.modules  # opt-in, imported by name
+
+            self.map = cadence.modules.load(module)
+            self.map.trace = False
+        else:
+            self.map = Map.load(path, trace=False) if path else Map((-1.0, 1.0, -0.2, 1.4), trace=False)
         self._traced = False
         self.load_ms = (time.perf_counter() - began) * 1000.0
         self.n = int(self.map.connectome.n)

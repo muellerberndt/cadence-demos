@@ -34,8 +34,18 @@ warnings.simplefilter("ignore")
 from cadence.space.map import Map
 from spacebrain.map_host import MapHost
 
-MAP_FILE = PACK / "map" / MANIFEST["map"]["file"]
-CONFIG = {"map": {"path": str(MAP_FILE), "kinds": MANIFEST["map"]["kinds"], "label": MANIFEST["map"]["label"]}}
+MAP_FILE = PACK / "map" / MANIFEST["map"]["file"] if MANIFEST["map"].get("file") else None
+CONFIG = {"map": {"path": None if MAP_FILE is None else str(MAP_FILE), "module": MANIFEST["map"].get("module"),
+                  "kinds": MANIFEST["map"]["kinds"], "label": MANIFEST["map"]["label"]}}
+
+
+def the_map() -> Map:
+    """The map the pack names, driven directly: the built-in one, or the pack's map file."""
+    if MAP_FILE is None:
+        import cadence.modules
+
+        return cadence.modules.load(MANIFEST["map"]["module"])
+    return Map.load(MAP_FILE)
 SCENES = {"default": HERE / "tests" / "fixtures" / "promise-scene.json",
           "merged": HERE / "tests" / "fixtures" / "promise-merged-shadows-scene.json"}
 HAND = MANIFEST["map"]["kinds"]["hand"]
@@ -96,7 +106,7 @@ def test_the_host_gives_the_inventory_the_map_gives_driven_directly(scene):
     data = json.loads(SCENES[scene].read_text())
     host = MapHost(CONFIG)
     host.handle({"command": "describe"})
-    direct = Map.load(MAP_FILE)
+    direct = the_map()
     lit = lit_cells(SCENES[scene], direct.centers)
     assert lit.shape == (len(data["truth"]), direct.count)
     errors, last_seen, inside, last = [], [], [], None
