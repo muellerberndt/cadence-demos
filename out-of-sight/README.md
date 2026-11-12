@@ -42,12 +42,12 @@ a map that holds where things are while they are out of view.
 The promise, replayed on the page from the two scene files of the tracking chamber (a hand goes
 behind the pillar at 0.5 m/s, rests there for 70 moments and comes back; 323 moments, 91 of them
 with the hand out of view), as `tools/check_page.py` reads it (`evidence/page_check.json`,
-2026-11-12 22:52):
+2026-11-12 23:18, on the wheel of 73e2f635):
 
 | Scene file | In view | Hidden, mean | Last seen, hidden | Kalman filter, hidden | The hand's cells hold it | Its cells, mean | Back in view | A moment |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| the arm folded (`promise-scene.json`) | 1.2 cm | 11.8 cm | 15.5 cm | 27.8 cm | 1.00 | 34 | 1.0 cm | 20 ms |
-| the arm's shadow joined to the pillar's (`promise-merged-shadows-scene.json`) | 1.2 cm | 11.8 cm | 15.5 cm | 27.8 cm | 1.00 | 34 | 1.0 cm | 18 ms |
+| the arm folded (`promise-scene.json`) | 1.2 cm | 11.8 cm | 15.5 cm | 27.8 cm | 1.00 | 34 | 1.0 cm | 13 ms |
+| the arm's shadow joined to the pillar's (`promise-merged-shadows-scene.json`) | 1.2 cm | 11.8 cm | 15.5 cm | 27.8 cm | 1.00 | 34 | 1.0 cm | 10 ms |
 
 The map holds the hand near where it vanished on every hidden moment, and its cells hold the
 true hand on every hidden moment of both files. The page's readings are the model's own on the
@@ -56,12 +56,12 @@ reads the same inventory as `Map` driven directly. The map holds no randomness: 
 alike to the digit (`tools/promise_runs.py`).
 
 The arm's own hand, out of the camera's view and moved by the arm, in the tutorial's last step:
-0.4 mm from the hand on average over 55 hidden moments, 1.5 mm at worst (bound 1.5 cm).
+0.4 mm from the hand on average over 61 hidden moments, 1.2 mm at worst (bound 1.5 cm).
 
 A frame took 16.7 ms at the median and 16.7 ms at the 95th percentile with the
 brain view and its bloom on (bounds 20 ms and 34 ms); a moment of the map, with its inventory and
-every neuron's activity for the brain view, took 18 ms of the scene's 33 ms. These were
-read with the Mac's load average at 24 to 69 from other work: upper bounds.
+every neuron's activity for the brain view, took 12.5 ms of the scene's 33 ms at the median. These
+were read with the Mac's load average at 76 to 90 from other work: upper bounds.
 
 ![The hand behind the pillar: the map holds it on the cells out of sight near where it vanished (the teal light), the true hand an outline inside them; the map's card open beside the map in the brain](docs/hidden-hand.jpg)
 
