@@ -10,8 +10,8 @@ synapse: it is wiring and carried activity.
 | --- | --- |
 | Demo | Out of sight (`out-of-sight/`) |
 | File | `site/pack/map/page-map.npz` · 1,567 bytes · SHA-256 `747cd90a7cdb8969…` · format `cadence-space-map/1` (the map's settings, its kinds' codes and an empty carried state; arrays and one JSON record, no pickled object) |
-| Library | `cadence-net` 0.98.0, a development wheel built from the library's branch lane-099-space at bff49e22; it holds `cadence.space.map`, which PyPI's 0.98.0 does not (SHA-256 `d1b94b96953fb227…`), CPU, in Pyodide 314.0.7 |
-| Loaded by | `Map.load(path, trace=True)` (`site/pack/py/spacebrain/map_host.py`); `trace` keeps each settle by sweep for the brain view |
+| Library | `cadence-net` 0.98.0, a development wheel built from the library's branch lane-099-space at 73e2f635; it holds `cadence.space.map`, which PyPI's 0.98.0 does not (SHA-256 `64a9ae0a33bb6684…`), CPU, in Pyodide 314.0.7 |
+| Loaded by | `Map.load(path)` (`site/pack/py/spacebrain/map_host.py`); `trace` is switched on for the moments the brain view plays a settle's wave, and for every question |
 | Size | 29,168 neurons, 39,936 synapses, none taught: `map` 13,312, `held` 13,312, `reference` 16, `where` 832, `what` 16, `clock` 832, `doubt` 832, `lost` 16 |
 | Settings | 32 by 26 cells of 6.25 cm by 6.15 cm over a plane of 2 m by 1.6 m; 16 code units a cell, one a kind; `level` 0.02; `empty` "near", `reach` 0.15 m; `step` 0.15 m; `stride` 0.5 m (the guide's founder) |
 | Date | 2026-11-12 |

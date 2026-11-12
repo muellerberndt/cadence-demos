@@ -17,7 +17,7 @@ a map that holds where things are while they are out of view.
 
 > **Status: under construction on the branch `space`.** The page runs the what-where map
 > (`cadence.space.map.Map`) from a development wheel built from the library's branch
-> lane-099-space at bff49e22, and a development map file of the founder's settings
+> lane-099-space at 73e2f635, and a development map file of the founder's settings
 > ([model card](MODEL_CARD.md)). Both sit on this branch only, named as development files in
 > `site/pack/manifest.json`; before any pull request they are replaced by the released wheel
 > and the map the library ships. The headline is provisional (one constant, `PROMISE` in
@@ -141,6 +141,25 @@ own. Everything drawn is the map's state at that moment:
 - The regions that record keeps (`map`, `where`, `what`) are drawn sweep by sweep; the others
   (`held`, `reference`, `clock`, `doubt`, `lost`) as they settled, from every neuron's settled
   potential.
+
+## Learned physics, prepared
+
+The model's second stage (`Map(physics=)` in the library's branch from 73e2f635: velocity cells
+beside each cell, a kernel a velocity, taught whenever a thing is seen at two moments in a row)
+has its place on the page, for the model's trained file. Where the pack's map holds learned
+physics (or with `?physics=1`, a map whose kernels are born to stay), the page:
+
+- gives every moment's lessons to the map and has them taught in batches of 15 moments
+  (`TEACH_EVERY` in `map_host.py`);
+- draws, in the brain, what the kernels hold: one slot a velocity, each the 3 by 3 cells where its
+  mass is found a moment later, the velocities that carry the followed hand ringed, and under them
+  the lessons taught and each batch's error, in order;
+- draws, on the scene, the velocity a thing's moving mass carries, as a faint arrow, and the hand's
+  place and cells as the map holds them, wherever the kernels carry them.
+
+It is off on the page as it stands: the pack's map file has no physics, and no check reads it.
+Cost, under Pyodide on a Mac with a load average near 120: a moment with born kernels and lessons
+took 86 ms in the page, against 15 ms without physics.
 
 ## Details
 

@@ -105,7 +105,19 @@ const PARTS = {
     live: clockLine },
   doubt: { title: 'Doubt', role: 'doubt', holds: 'One a cell: a one where the cell holds a thing that was not seen to be there', live: doubtLine },
   lost: { title: 'A kind with no place', role: 'lost', holds: 'One a code unit: a one where a thing of the kind is known with no place', live: lostLine },
+  // learned physics (cadence.space.physics, the module's docstring word for word)
+  physics: { title: 'How things move, learned', role: 'motion',
+    holds: 'The mass on each moving velocity is the next moment’s drive on `went`, and one kernel of three by three cells for each velocity, tied across every cell and every kind, drives `moving`. The kernels are born as “stay”: a brain that has watched nothing answers as the map does. Whenever a thing is seen at two moments in a row, the mass it carried the moment before (its place and velocities) is the drive and the same mass moved by the motion seen is the target. Each velocity’s kernel learns where the mass of things seen moving at that velocity is found a moment later: going on, stopping, or turning',
+    live: physicsLine },
 };
+
+function physicsLine(ctx) {
+  const ph = ctx.physics;
+  if (!ph) return 'This map has no learned physics.';
+  const e = ph.errors.at(-1), hand = ctx.hand;
+  const v = hand?.velocity ? ` The ${name(hand.name)}’s moving mass carries it at ${(Math.hypot(...hand.velocity) / ctx.dt * 100).toFixed(0)} cm a second, ${Math.round((hand.moving || 0) * 100)} of 100 of its mass moving.` : '';
+  return `${ph.lessons.toLocaleString('en')} lessons taught so far${e === undefined ? '' : `; the latest batch’s error ${e.toFixed(2)}${ph.errors.length > 3 ? `, from ${ph.errors[0].toFixed(2)} at the first` : ''}`}.${v}`;
+}
 
 const ROLE = {
   map: ['plays the role of the parietal map of where things are', '#3fe0cf'],
@@ -116,6 +128,7 @@ const ROLE = {
   timer: ['plays the role of a timer, drawn where the cerebellum sits', '#9eb8db'],
   doubt: ['plays the role of a confidence estimate: the cells of doubt', '#a88ffa'],
   lost: ['plays the role of knowing a thing with no place', '#9eb8db'],
+  motion: ['plays the role of motion-selective cells: where a thing moving at each velocity is found a moment later', '#8cf299'],
 };
 
 // The guide's table "What the brain does and what the program does", row by row.

@@ -172,7 +172,9 @@ export class SceneView {
 
     // the things on the table as they are, and the map's pins for every thing but the hand
     for (let k = 1; k < things.length; k++) this.thing(c, s, k, things[k], m);
+    c.save(); c.beginPath(); c.roundRect(x0, y0, x1 - x0, y1 - y0, 10); c.clip(); // a pin's edge stays in the room
     for (const e of entries) if (e !== hand && e.place) this.pin(c, s, e, things);
+    c.restore();
 
     // the arm, and the hand as it is
     this.arm(c, g, joints, m, s.own);
@@ -346,6 +348,7 @@ export class SceneView {
       }
     }
     if (e.area) this.regionEdge(c, e.area, TEAL, 0.85);
+    this.motion(c, e, shown, TEAL);
     const r = clamp(e.cells.length > 6 ? 16 : 12, 9, 20);
     const core = c.createRadialGradient(bx, by, 0, bx, by, r);
     core.addColorStop(0, 'rgba(255,255,255,0.98)'); core.addColorStop(0.28, rgba([170, 255, 244], 0.8)); core.addColorStop(1, rgba(TEAL, 0));
@@ -365,6 +368,22 @@ export class SceneView {
       c.restore();
     }
     if (hidden) this.tag(c, e.state === 'felt' ? 'felt: its joint readings' : e.state === 'near' ? `near where it vanished · ${this.ago(e.since, s.dt)}` : `last seen · ${this.ago(e.since, s.dt)}`, bx, by - r - 8, rgba([170, 255, 244], 0.95));
+  }
+
+  // Learned physics: the velocity a thing's moving mass carries, as a faint arrow from its place
+  // to where that velocity takes it in half a second; as bright as the share of its mass that moves.
+  motion(c, e, at, color) {
+    if (!e.velocity || !(e.moving > 0.05)) return;
+    const [x, y] = this.toScreen(at), [tx, ty] = this.toScreen([at[0] + e.velocity[0] * 15, at[1] + e.velocity[1] * 15]);
+    const d = Math.hypot(tx - x, ty - y);
+    if (d < 4) return;
+    const ux = (tx - x) / d, uy = (ty - y) / d, a = 0.25 + 0.6 * Math.min(1, e.moving);
+    c.save();
+    c.strokeStyle = rgba(color, a); c.lineWidth = 1.6; c.lineCap = 'round';
+    c.beginPath(); c.moveTo(x, y); c.lineTo(tx, ty);
+    c.moveTo(tx, ty); c.lineTo(tx - ux * 7 - uy * 4, ty - uy * 7 + ux * 4); c.moveTo(tx, ty); c.lineTo(tx - ux * 7 + uy * 4, ty - uy * 7 - ux * 4);
+    c.stroke();
+    c.restore();
   }
 
   ago(moments, dt) { return `${Math.max(0, Math.round((moments || 0) * (dt || 1 / 30)))} s`; }
@@ -406,6 +425,7 @@ export class SceneView {
     if (inView && off < 0.03) return;
     const [x, y] = this.toScreen(e.place);
     if (e.area && e.cells.length > 4) this.regionEdge(c, e.area, color, 0.55);
+    this.motion(c, e, e.place, color);
     c.save();
     if (s.showHidden && truth && off > 0.03) {
       const [tx, ty] = this.toScreen(truth);

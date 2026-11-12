@@ -4,15 +4,15 @@
  "pyodide": "314.0.7",
  "cadence": "0.98.0",
  "wheel": "cadence_net-0.98.0-py3-none-any.whl",
- "wheel_sha256": "d1b94b96953fb227f2680580203bd057b70b277393b0e6b3633e7e84c2e11287",
- "wheel_source": "a development wheel built from the library's branch lane-099-space at bff49e22; it holds cadence.space.map, which PyPI's 0.98.0 does not",
+ "wheel_sha256": "64a9ae0a33bb6684e652b00c047edaa3f32fa7fb09bdebf5b07b42b0da3844ca",
+ "wheel_source": "a development wheel built from the library's branch lane-099-space at 73e2f635; it holds cadence.space.map, which PyPI's 0.98.0 does not",
  "sources": [
   "__init__.py",
   "map_host.py"
  ],
  "sources_sha256": {
   "__init__.py": "94e4f42d9d612c5aa91adc5eadb7a3fce757d1a521c351132a2df4787b560544",
-  "map_host.py": "9fffd5b38c3e0b1a25d827b3b70c5745087995fe1abf5e093ce0d6a751accc13"
+  "map_host.py": "2aaa52ef6613abc12337b5d06de901467c45b9d04ecc7e1d4d295a17e2570546"
  },
  "map": {
   "file": "page-map.npz",
