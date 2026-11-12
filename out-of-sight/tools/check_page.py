@@ -45,8 +45,9 @@ apple was moved unseen, where the map holds the apple and no apple stands.
 
 The earlier models (a plain composed brain, and the place module of a program beside the brain)
 are not hosts of this page; their checks left with them. Their readings are in the
-repository's history (evidence/page_check.json at a8b35eb). Evidence goes to
-``evidence/page_check.json``.
+repository's history (evidence/page_check.json at a8b35eb). Each run's evidence goes to a file of
+its own, ``evidence/page_check-<date>-<time>-<wheel>.json`` (the wheel's SHA-256, its first 8
+characters), so that no run replaces another; ``--out`` names another file.
 """
 
 from __future__ import annotations
@@ -62,6 +63,7 @@ import threading
 import time
 from pathlib import Path
 
+from playwright.sync_api import TimeoutError as PageTimeout
 from playwright.sync_api import sync_playwright
 
 HERE = Path(__file__).resolve().parents[1]
@@ -240,7 +242,7 @@ def wait_tour(page, step: str, timeout_s: float = 40.0) -> bool:
     try:
         page.wait_for_function(f"document.body.dataset.tour === '{step}'", timeout=timeout_s * 1000)
         return True
-    except Exception:
+    except PageTimeout:
         return False
 
 
@@ -506,6 +508,7 @@ def main() -> int:
     p.add_argument("--shots", type=Path, default=None, help="save screenshots in this folder")
     p.add_argument("--scene", type=Path, default=FIXTURES / "example.json", help="a scene file to load and replay")
     p.add_argument("--timeout", type=float, default=240.0)
+    p.add_argument("--out", type=Path, default=None, help="the evidence file (default: one of its own for this run)")
     a = p.parse_args()
     url, server = (a.url, None) if a.url else serve(SITE)
     c = Check((HERE / a.shots) if a.shots and not a.shots.is_absolute() else a.shots)
@@ -621,7 +624,7 @@ def main() -> int:
     report["checks"] = c.rows
     report["passed"] = all(row["passed"] for row in c.rows)
     report["failed"] = [row["name"] for row in c.rows if not row["passed"]]
-    out = HERE / "evidence" / "page_check.json"
+    out = a.out or HERE / "evidence" / f"page_check-{time.strftime('%Y%m%d-%H%M')}-{manifest['wheel_sha256'][:8]}.json"
     out.parent.mkdir(exist_ok=True)
     out.write_text(json.dumps(report, indent=1, default=str) + "\n")
     print(("PASS" if report["passed"] else "FAIL") + f": {sum(r['passed'] for r in c.rows)} of {len(c.rows)} checks; evidence in {out}")

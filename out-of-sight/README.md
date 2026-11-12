@@ -41,7 +41,7 @@ a map that holds where things are while they are out of view.
 
 The promise, replayed on the page from the two scene files of the tracking chamber (a hand goes
 behind the pillar at 0.5 m/s, rests there for 70 moments and comes back; 323 moments, 91 of them
-with the hand out of view), as `tools/check_page.py` reads it (`evidence/page_check.json`,
+with the hand out of view), as `tools/check_page.py` reads it (`evidence/page_check-20261112-2350-70589f3f.json`,
 2026-11-12 23:50, on the wheel of fac45529):
 
 | Scene file | In view | Hidden, mean | Last seen, hidden | Kalman filter, hidden | The hand's cells hold it | Its cells, mean | Back in view | A moment |
@@ -53,7 +53,7 @@ The map holds the hand near where it vanished on every hidden moment, and its ce
 true hand on every hidden moment of both files. The page's readings are the model's own on the
 same files: `tests/test_map_host.py` drives the host natively on the pack's wheel and map file and
 reads the same inventory as `Map` driven directly. The map holds no randomness: replays read
-alike to the digit (`tools/promise_runs.py`).
+alike to the digit (`tools/promise_runs.py`; `evidence/promise_runs-20261112-2326-c7088cf0.json`, on the wheel of 38820655).
 
 The arm's own hand, out of the camera's view and moved by the arm, in the tutorial's last step:
 0.5 mm from the hand on average over 60 hidden moments, 1.2 mm at worst (bound 1.5 cm).
@@ -197,8 +197,8 @@ the details.
 | `site/worker.js` | Pyodide, the Cadence wheel, the map file and the host, checked against `pack/manifest.json`; the cells the camera sees at each moment |
 | `site/pack/` | the wheel, the map file (`map/`), the host (`py/spacebrain/map_host.py`), `manifest.json` with SHA-256 |
 | `tools/build.py` | builds `site/pack/` from a wheel and a map file |
-| `tools/check_page.py` | the page, end to end, in headless Chromium; writes `evidence/page_check.json` |
-| `tools/promise_runs.py` | the two scene files replayed on the page, three times each; writes `evidence/promise_runs.json` |
+| `tools/check_page.py` | the page, end to end, in headless Chromium; writes `evidence/page_check-<date>-<time>-<wheel>.json`, a file a run |
+| `tools/promise_runs.py` | the two scene files replayed on the page, three times each; writes `evidence/promise_runs-<date>-<time>-<wheel>.json` |
 | `tools/export_promise.mjs` | the two scene files of the promise, as the stage they were recorded on gives them |
 | `tools/record_scenes.py`, `tools/record_clip.py` | the parity fixtures from the Python world; a clip of the tutorial |
 | `MODEL_CARD.md` | the map the page runs |
@@ -218,7 +218,7 @@ python tools/promise_runs.py               # the two scene files, three runs eac
 ```
 
 **The page check** (`tools/check_page.py`) reads 47 of 47 checks on the map in the run on
-file (`evidence/page_check.json`, the wheel of fac45529). One earlier run on the same wheel read
+file (`evidence/page_check-20261112-2350-70589f3f.json`, the wheel of fac45529). One earlier run on the same wheel read
 45 of 47, and a probe of the same steps failed the same two checks. Its bounds were set before the page ran the map, from the gates of
 [cadence#320](https://github.com/muellerberndt/cadence/issues/320), from last seen on the same
 rows and from the owner's word on the arm's own hand; the model's native readings on the two

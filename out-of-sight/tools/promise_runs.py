@@ -1,17 +1,19 @@
 """The promise on the two scene files, replayed on the page three times each.
 
-    python tools/promise_runs.py            # from out-of-sight/; writes evidence/promise_runs.json
+    python tools/promise_runs.py            # from out-of-sight/; writes evidence/promise_runs-<date>-<time>-<wheel>.json
 
 Each run replays a scene file of the tracking chamber on the page (``promise`` of
 ``tools/check_page.py``): the map emptied, then the file's camera reports, with the page's own
 rule for which of the map's cells the camera sees. The map holds no randomness, so the three runs
-of a file read alike; the moment's milliseconds differ. ``--out`` writes the runs to another file.
+of a file read alike; the moment's milliseconds differ. Each run of the tool writes a file of its
+own, named by its date, time and the wheel's SHA-256 (first 8 characters); ``--out`` names another.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import time
 from pathlib import Path
 
 import check_page as check
@@ -33,7 +35,7 @@ def table(runs: list[dict]) -> str:
 
 def main() -> None:
     p = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    p.add_argument("--out", type=Path, default=check.HERE / "evidence" / "promise_runs.json")
+    p.add_argument("--out", type=Path, default=None)
     p.add_argument("--runs", type=int, default=3)
     a = p.parse_args()
     url, server = check.serve(check.SITE)
@@ -51,9 +53,12 @@ def main() -> None:
         browser.close()
     server.shutdown()
     manifest = json.loads((check.SITE / "pack" / "manifest.json").read_text())
+
+    a.out = a.out or check.HERE / "evidence" / f"promise_runs-{time.strftime('%Y%m%d-%H%M')}-{manifest['wheel_sha256'][:8]}.json"
     a.out.write_text(json.dumps({"schema": "cadence-out-of-sight-promise-runs/4", "map": manifest.get("map"), "wheel_sha256": manifest.get("wheel_sha256"),
                                  "wheel_source": manifest.get("wheel_source"), "runs": runs}, indent=1) + "\n")
     print(table(runs))
+    print(f"evidence in {a.out}")
 
 
 if __name__ == "__main__":

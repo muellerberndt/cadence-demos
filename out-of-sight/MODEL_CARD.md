@@ -56,7 +56,7 @@ the floor `what_is_at`.
 
 The promise, replayed on the page from the two scene files of the tracking chamber (a hand goes
 behind the pillar at 0.5 m/s, rests there for 70 moments and comes back; 323 moments, 91 of them
-with the hand out of view), as `tools/check_page.py` reads it (`evidence/page_check.json`,
+with the hand out of view), as `tools/check_page.py` reads it (`evidence/page_check-20261112-2350-70589f3f.json`,
 2026-11-12 23:50, on the wheel of fac45529):
 
 | Scene file | In view | Hidden, mean | Last seen, hidden | Kalman filter, hidden | The hand's cells hold it | Its cells, mean | Back in view | A moment |
@@ -68,7 +68,7 @@ The map holds the hand near where it vanished on every hidden moment, and its ce
 true hand on every hidden moment of both files. The page's readings are the model's own on the
 same files: `tests/test_map_host.py` drives the host natively on the pack's wheel and map file and
 reads the same inventory as `Map` driven directly. The map holds no randomness: replays read
-alike to the digit (`tools/promise_runs.py`).
+alike to the digit (`tools/promise_runs.py`; `evidence/promise_runs-20261112-2326-c7088cf0.json`, on the wheel of 38820655).
 
 The arm's own hand, out of the camera's view and moved by the arm, in the tutorial's last step:
 0.5 mm from the hand on average over 60 hidden moments, 1.2 mm at worst (bound 1.5 cm).
