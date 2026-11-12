@@ -218,8 +218,9 @@ python tools/promise_runs.py               # the two scene files, three runs eac
 ```
 
 **The page check** (`tools/check_page.py`). On the wheel of a155d0dc three runs read 45 of 47
-(`evidence/page_check-20261113-0003-3c934ba9.json`, `-0005-`, `-0008-`), and a fourth run, with
-the apple's entries logged, 46 of 47 (`evidence/page_check-20261113-0013-3c934ba9.json`). Its
+(`evidence/page_check-20261113-0003-3c934ba9.json`, `-0005-`, `-0008-`). Two later runs, with the
+apple's entries logged moment by moment, read 46 of 47
+(`evidence/page_check-20261113-0013-3c934ba9.json`) and 47 of 47 (`evidence/page_check-20261113-0019-3c934ba9.json`). Its
 bounds were set before the page ran the map, from the gates of
 [cadence#320](https://github.com/muellerberndt/cadence/issues/320), from last seen on the same
 rows and from the owner's word on the arm's own hand; the model's native readings on the two
@@ -233,10 +234,11 @@ In the three runs these checks failed:
 
 After the tutorial's turn away from the apple, the map held the apple "near", on 36 to 38 cells,
 its place 7.3 cm to 9.3 cm from where it was last seen, and kept it so through the steps that follow. The
-same turn, replayed on the page outside the check three times, and the fourth run kept the apple
-held where it was last seen; natively, turning the field off the apple at a steady 0.25 rad/s to
+same turn, replayed on the page outside the check three times, and both logged runs kept the
+apple held where it was last seen (in the second, whose log is kept, the camera's heading moved at
+most 0.12 rad between moments); natively, turning the field off the apple at a steady 0.25 rad/s to
 4.2 rad/s kept it held in 29 of 30 turns. The moment it went "near" in the three runs is not
-recorded. The fourth run failed "seen again, it is found within 3 cm, one thing on the map": the
+recorded. The first logged run failed "seen again, it is found within 3 cm, one thing on the map": the
 apple found was one thing, 3.4 cm from the true apple. On the wheel of fac45529 one run read 47
 of 47 and an earlier run 45 of 47 (`evidence/page_check-20261112-2350-70589f3f.json` and the
 history of this branch). The checks are not amended.
