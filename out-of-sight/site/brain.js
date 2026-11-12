@@ -305,6 +305,8 @@ export class BrainView {
       this.blockOf[k] = b; sums[b] += Math.abs(this.weight[k]); counts[b]++;
     }
     this.blockScale = sums.map((s, b) => (counts[b] ? s / counts[b] : 1));
+    this.blockMax = counts.map(() => 0);
+    for (let k = 0; k < m; k++) this.blockMax[this.blockOf[k]] = Math.max(this.blockMax[this.blockOf[k]], Math.abs(this.weight[k]));
     this.blockCount = counts;
     this.blockSynapses = counts.map((count) => new Int32Array(count));
     const fill = counts.map(() => 0);
@@ -717,6 +719,12 @@ export class BrainView {
     return this.blockNames.map((name, b) => {
       const fan = clamp(Math.sqrt(1600 / Math.max(64, this.blockCount[b])), 0.12, 1.6);
       const from = this.regions[Number(name.split('>')[0])]?.role;
+      if (this.pre.length > 60000) {
+        // a brain of many synapses: every projection is read against its own strongest synapse
+        // and the number of its synapses that meet at one neuron, so that no bundle runs to white
+        const [ra, rb] = name.split('>').map(Number), meet = this.blockCount[b] / Math.max(1, this.regions[rb]?.neurons.length || 1);
+        return (0.5 / ((this.blockMax[b] || 1) * Math.sqrt(Math.max(1, meet)))) * clamp(Math.pow((this.brainBox?.w || this.width) / 640, 1.3), 0.3, 1.25) * (DENSE[this.regions[ra]?.role] ?? 1);
+      }
       return (0.5 / (this.blockScale[b] * 0.6 || 1)) * fan * size * SIGNAL * (DENSE[from] ?? 1);
     });
   }
@@ -1057,6 +1065,12 @@ export class BrainView {
         }
       }
       for (const l of this.labels) l.x = clamp(l.x, 6, Math.max(6, this.width - l.w - 6));
+      // any two that meet after that: the later one steps down, then up, until it stands clear
+      const meets = (a, b) => a !== b && Math.abs(a.y - b.y) < 16 && a.x < b.x + b.w + 4 && b.x < a.x + a.w + 4;
+      rows.forEach((b, k) => {
+        const home = b.y;
+        for (let step = 1; step <= 6 && rows.slice(0, k).some((a) => meets(a, b)); step++) b.y = home + (step % 2 ? 1 : -1) * 17 * Math.ceil(step / 2);
+      });
       this.labelsPlaced = true;
     }
     for (const l of this.labels) {
@@ -1097,7 +1111,11 @@ export class BrainView {
   drawSettle(c) {
     const s = this.settled;
     if (!s || !s.move.length || this.compact || this.inset) return;
-    const n = s.move.length, x0 = 14, w = Math.min(150, this.width * 0.3), h = 30, y1 = this.height - 34 - (this.inset || 0);
+    // the sweeps in which a neuron moved: an answer that is complete after three shows three bars
+    let moved = s.move.length;
+    while (moved > 1 && s.move[moved - 1] <= 1e-7) moved -= 1;
+    const early = moved < s.move.length;
+    const n = moved, x0 = 14, w = Math.min(150, this.width * 0.3, 14 * n), h = 30, y1 = this.height - 34 - (this.inset || 0);
     const playing = this.wave ? this.wave.sweeps[Math.min(this.wave.sweeps.length - 1, Math.floor(this.wave.head) + 1)] : 0;
     const bars = Math.min(n, 64), bw = w / bars;
     c.save();
@@ -1112,7 +1130,7 @@ export class BrainView {
     c.shadowBlur = 0;
     c.font = '500 10.5px "JetBrains Mono", ui-monospace, monospace'; c.textBaseline = 'alphabetic';
     c.fillStyle = playing ? 'rgba(255,236,200,0.95)' : 'rgba(141,151,178,0.85)';
-    c.fillText(playing ? `sweep ${playing} of ${s.of}` : this.resting ? 'at rest: no sweep needed' : `${this.verb || 'settled in'} ${s.of} sweeps`, x0 + w + 8, y1 - 2);
+    c.fillText(playing && playing <= n ? `sweep ${playing} of ${early ? n : s.of}` : this.resting ? (this.restLabel || 'at rest: no sweep needed') : early ? `answer complete after ${n} sweeps` : `${this.verb || 'settled in'} ${s.of} sweeps`, x0 + w + 8, y1 - 2);
     c.restore();
   }
 

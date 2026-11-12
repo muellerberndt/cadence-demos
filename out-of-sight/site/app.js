@@ -11,12 +11,12 @@
 // two questions: where is this thing, and what is that way. A short tutorial walks through the
 // promise; every part of the brain explains itself when pointed at (cards.js).
 
-import { Stage, DT, forward, visible, readScene, around, wrap } from './world.js';
+import { Stage, DT, forward, visible, readScene, around, wrap, Random } from './world.js';
 import { SceneView, MapView, ChartView, AroundView } from './scene.js';
 import { BrainView } from './brain.js';
 import { LastSeen, Kalman } from './controls.js';
 import { partCard, tractCard, stageCard, stagesFor, uncertainty } from './cards.js';
-import { whereSentence, whatSentence, handSentence } from './where.js';
+import { whereSentence, whatSentence, handSentence, the, placed } from './where.js';
 
 const $ = (id) => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -136,6 +136,7 @@ function answered(record, estimates, reply, arrays) {
     state.lessons = reply.lessons; state.changedTotal = reply.changed_total;
     state.settle = { sweeps: reply.sweeps, residual: reply.residual, tolerance: reply.tolerance };
     brainView.resting = reply.sweeps === 0;
+    brainView.restLabel = reply.asked === false ? 'the brain was not asked at this moment' : null;
   }
   (reply.things || []).forEach((t, i) => {
     state.pins[t.name] = t.place ? t : null;
@@ -147,6 +148,12 @@ function answered(record, estimates, reply, arrays) {
   if (run && !run.done && record.moment >= run.first && record.moment <= (run.last ?? Infinity)) {
     run.rows.push(row);
     if (run.ended && record.moment >= run.last) summarise(run);
+  }
+  const heard = record.cue.findIndex((cue, k) => k > 0 && cue);
+  if (heard > 0 && state.pins[stage.names[heard]]?.place) {
+    // a knock: the cue's own error (its stated noise at the distance heard) beside where the map put the thing
+    const name = stage.names[heard], noise = stage.world.cueNoise, sd = record.cue[heard][1] * Math.hypot(noise[0], noise[1]);
+    say(`A knock: the ear places ${the(name)} to within about ${Math.round(sd * 100)} cm. The map puts it ${placed(around(stage.geometry, state.pins[name].place))}.`, { place: state.pins[name].place });
   }
   tour.observe(record, row);
   readouts(record, row);
@@ -163,7 +170,11 @@ const cm = (v) => (v === null || v === undefined ? '–' : v < 0.1 ? `${(v * 100
 function readouts(record, row) {
   const view = $('chip-view');
   view.hidden = record.in_view[0];
-  if (!record.in_view[0]) view.textContent = stage.cameraOn ? `out of view ${(state.unseen * DT).toFixed(1)} s` : `camera off ${(state.unseen * DT).toFixed(1)} s`;
+  // with the camera off and the hand moving, a module is outside what it was raised on after about 100 moments
+  const far = state.describe?.limits?.unseen_moving, moving = state.previous && distance(record.truth[0], state.previous.truth[0]) > 1e-4;
+  if (moving) state.movedDark = stage.cameraOn ? 0 : (state.movedDark || 0) + 1; else if (stage.cameraOn) state.movedDark = 0;
+  const caption = !stage.cameraOn && far && state.movedDark > 5 ? ` · raised for about ${far} moments (${Math.round(far * DT)} s) of a moving hand with the camera off` : '';
+  if (!record.in_view[0]) view.textContent = stage.cameraOn ? `out of view ${(state.unseen * DT).toFixed(1)} s` : `camera off ${(state.unseen * DT).toFixed(1)} s${caption}`;
   if (state.settle) $('readout').textContent = state.asked === false ? 'this moment: the brain was not asked' : `this moment: ${state.settle.sweeps} sweeps · residual ${state.settle.residual.toExponential(1)}`;
   if (!state.more) return;
   $('chip-error').textContent = `error ${cm(row.brain)}`;
@@ -874,6 +885,10 @@ function adopt(describe, arrays) {
   $('brain-badge').hidden = !badge; $('brain-badge').textContent = badge;
   $('brain-note').textContent = badge ? `${b.label}. ${b.note}` : '';
   brainView.verb = state.kind === 'baseline' ? 'settled in' : 'answered in';
+  // a module arrives trained: on the page it takes no lessons unless the visitor switches them on (Details)
+  if (params.get('teach') !== null) state.teach = params.get('teach') === '1';
+  else state.teach = !(describe.brain.trained && state.kind !== 'baseline');
+  $('teach').checked = state.teach;
   // a visitor's drag stays within the speed the brain was raised on
   stage.maxSpeed = describe.limits?.speed ?? 1.6;
   if (describe.manifest) state.manifest = describe.manifest;
@@ -913,8 +928,27 @@ async function start() {
   } catch (error) { fail(error.message); }
 }
 
+// A scripted scenario, for the page check: the brain as it arrives, the scene at its start, the
+// camera's noise from a seed, and a route taken by scene steps. Every run gives the brain the
+// same rows. Resolves with the page's record of its answers over the route.
+async function scenario(route, { seed = 320, teach = null } = {}) {
+  await reborn({});
+  if (teach !== null) { state.teach = teach; $('teach').checked = teach; }
+  while (state.pending) await new Promise((r) => setTimeout(r, 5));
+  await brain.call('reset', {});
+  while (state.pending) await new Promise((r) => setTimeout(r, 5));
+  // from here to the route's first step nothing waits: the scene's rows are the seed's and the route's alone
+  stage.reset(); stage.random = new Random(seed);
+  setCase('other', false); restartControls();
+  const from = stage.moment;
+  stage.route = route.map((leg) => ({ ...leg }));
+  while (stage.route && stage.route.length) await new Promise((r) => setTimeout(r, 30));
+  while (state.pending || !state.history.length || state.history.at(-1).moment < stage.moment) await new Promise((r) => setTimeout(r, 10));
+  return state.history.filter((r) => r.moment > from).map((r) => ({ m: r.moment - from, seen: r.seen, brain: r.brain, kalman: r.kalman, last: r.last, u: r.uncertainty, inside: r.inside, lesson: r.lesson }));
+}
+
 // what the page check drives
-window.outOfSight = { stage, state, brainView, sceneView, aroundView, tour, card, askWhere, askWhat, awayPoint, awayHeading, playScene, playReach, loadScene: (data) => playScene(readScene(data)), knock, setCamera, reset, undo,
+window.outOfSight = { scenario, stage, state, brainView, sceneView, aroundView, tour, card, askWhere, askWhat, awayPoint, awayHeading, playScene, playReach, loadScene: (data) => playScene(readScene(data)), knock, setCamera, reset, undo,
   setMore, openPart, openStage, closeCard, shadowPoint,
   /** Where a thing, the pillar or the camera is on the screen, in client pixels. */
   screenOf(name) {

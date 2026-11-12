@@ -44,36 +44,35 @@ arm's own hand 1.09 in view and 12.51 out of view.
 
 ## How it was measured on the page
 
-By `tools/check_page.py` in headless Chromium: the tutorial's six steps performed with the
-mouse. 41 of 42 checks pass.
+The promise is read from a scripted scenario: the module as its file holds it, the same route by
+scene steps (0.5 m/s into the pillar's shadow, 70 moments at rest there, back), the camera's
+noise from one seed. The scene is also a scene file of the tracking chamber,
+`tests/fixtures/promise-scene.json` (323 steps, 91 out of view; `tools/export_promise.mjs`).
+Three runs with lessons on and three with lessons off (`evidence/promise_runs.json`); bounds
+5 cm in view, 10 cm hidden, 0.85 for the circle, 5 cm after the return:
 
-| Reading on the page (`evidence/page_check.json`, 12 November 2026) | This file | Bound |
-| --- | --- | --- |
-| In view: place to true hand, mean of the last 60 moments of the first step | 1.1 cm | 5 cm |
-| Hidden behind the pillar, where the hand comes to rest: place to true hand, mean over 70 hidden moments | 6.7 cm (8.8 cm at the last) | 10 cm |
-| the last seen position, the same moments | 18 cm | – |
-| the chamber's Kalman filter (q 3.16e-7, r 0.02), the same moments | 16 cm | – |
-| Share of hidden moments whose stated circle holds the true hand | 0.70 | 0.85 |
-| The circle's radius: at the first hidden moment, at the last | 1.2 cm, 30 cm | grows |
-| Back in view: place to true hand, 10 moments | 2.2 cm | 5 cm |
-| The camera turned away from the apple: its place to its true place | 0.1 cm | 3 cm |
-| The cup moved unseen: its place to the place it was last seen at | 0.0 cm | 3 cm |
-| After one knock: the place to the true place (the cue's own error: 8.7 cm) | 5.5 cm | three times the cue's error |
-| One moment in the worker, lessons on, four things | 73 ms | – |
+| Lessons | In view | Hidden, mean | Hidden, last | Circle holds the hand | Circle's radius | After return | Lessons taken | A moment |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| on | 1.0 cm | 37 cm | 87 cm | 0.23 | 1.6 cm to 19 cm | 0.2 cm | 321 | 79 ms |
+| on | 1.0 cm | 36 cm | 86 cm | 0.23 | 1.5 cm to 19 cm | 0.2 cm | 319 | 78 ms |
+| on | 1.0 cm | 36 cm | 86 cm | 0.23 | 1.5 cm to 19 cm | 0.2 cm | 319 | 68 ms |
+| off | 1.0 cm | 33 cm | 80 cm | 0.24 | 1.6 cm to 19 cm | 0.3 cm | 0 | 17 ms |
+| off | 1.0 cm | 33 cm | 80 cm | 0.24 | 1.6 cm to 19 cm | 0.3 cm | 0 | 17 ms |
+| off | 1.0 cm | 33 cm | 80 cm | 0.24 | 1.6 cm to 19 cm | 0.3 cm | 0 | 16 ms |
 
-- The promise step: the check drags the hand into the pillar's shadow at 0.5 m/s and lets it
-  rest there. Three runs of the check read 26 cm, 13 cm and the 6.7 cm of the run on file,
-  against a bound of 10 cm: the module carries the place on along the hand's last seen
-  movement, for a stretch that differs from run to run, and its lessons on the page are part
-  of each run. Its circle held the hand on 0.70 of the hidden moments (bound 0.85).
-- One knock: beside this run's reading, 16 knocks at one place with the cue's own error of 6 cm
-  put the place 14 cm from the true one on average, 27 cm at the most (measured natively
-  through the page's host).
+On the same rows the chamber's Kalman filter lay 28 cm from the hidden hand and the last seen
+position 16 cm. With lessons off the three runs are the same to the last digit and a moment
+fits the scene's 33 ms; with lessons on a moment takes more than twice that. The hand stops in
+the shadow, and the module carries its place on along the last seen movement: the promise's
+bound is not held, with lessons or without.
+
+- One knock: 16 knocks at one place with the cue's own error of 6 cm put the place 14 cm from the
+  true one on average, 27 cm at the most (measured natively through the page's host).
 
 ## In the page
 
-Learning, unless the visitor switches it off (Details): the space teaches the brain from the
-camera's reports of every thing in view. A lesson is made of six reports in a row and lands up
+Lessons are off unless the visitor switches them on (Details): the module arrives trained. With
+them on, the space teaches the brain from the camera's reports of every thing in view. A lesson is made of six reports in a row and lands up
 to five moments after the last of them; with the camera off no lesson is taken. No span of
 reports is left unread (`practice=0.0`). A new brain (Details) is the module as its file holds
 it. A visitor's drag is held to 0.7 m/s and the arm's command to 0.1 rad a step, the range the

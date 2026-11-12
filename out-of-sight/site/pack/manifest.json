@@ -14,7 +14,7 @@
  "sources_sha256": {
   "__init__.py": "94e4f42d9d612c5aa91adc5eadb7a3fce757d1a521c351132a2df4787b560544",
   "host.py": "5032667889b3ec6d319ca38e3cb4d88ffb83c98dcc052244f945a2e5fccec98f",
-  "place_host.py": "838204cb17c5505716585e054c0d622118719e1c84f369d02ae9d455af64365b"
+  "place_host.py": "9119fc8120673d863f968515c9c6cb698d0162b0989183e7b33a30560ef3d95e"
  },
  "config": {},
  "module": {

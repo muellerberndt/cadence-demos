@@ -19,12 +19,16 @@ a map that holds where things are while they are out of view.
 > **development file, a feed-forward baseline** ([model card](MODEL_CARD.md)), with a wheel
 > built from the library's branch that holds `cadence.space` and `cadence.modules`. A program
 > beside the brain holds each place; the brain answers how far a place moves in a step, how far
-> off it may be, and the place a cue names. The page check below reads 41 of 42: in view and
-> after the return the place lies within a centimetre or two of the hand. Hidden behind the
-> pillar it read 6.7 cm in the run on file and 13 cm and 26 cm in the two runs before it
-> (bound 10 cm). A version that settles takes this file's seat
+> off it may be, and the place a cue names. The page check below reads 40 of 42: in view and
+> after the return the place lies within a centimetre of the hand. Hidden behind the pillar,
+> where the hand stops, it lies 33 cm away on average (bound 10 cm): the promise is not kept by
+> this file. A version that settles takes this file's seat
 > through `site/pack/manifest.json`. The plain composed brain the page was built on stays as a
 > second host (`tools/build.py` without `--module`).
+>
+> The development module file and the branch-built wheel sit on this branch only, named as
+> such. They do not reach `main`: before any pull request they are replaced by the released
+> wheel and the module the library ships.
 
 ![The hand hidden behind the pillar, the place part's card open beside its part](docs/baseline-hidden-card.jpg)
 
@@ -220,19 +224,51 @@ of a move and of a turn, the camera, reset, the details switch and a scene file,
 the frame time on a desktop (WebGL2, bloom on), a phone-sized touch screen (the card as a
 sheet, the brain above it, two fingers twisting the camera) and the Canvas2D view.
 
+**An amended check.** The check first read "the brain learns nothing while the hand is hidden".
+The first run on the place module showed it failing, with 69 lessons there, and the check was
+amended after that run. The reason: the module takes a lesson from every thing in view, and
+the cup and the apple stay in view while the hand hides; a lesson is made of six reports in a
+row and lands up to five moments after the last. The amended check reads "with the camera off
+no report arrives, and no lesson is taken". The original check's reading stays in the evidence
+file (`lessons_while_hidden`), and for the plain composed brain the original check stands.
+
+**The promise, by scene steps.** The promise is read from a scripted scenario
+(`scripted` in `tools/check_page.py`): the brain as it arrives, the scene at its start, the
+camera's noise from a seed, and the hand moved by scene steps (0.5 m/s into the pillar's
+shadow, 70 moments at rest there, back). Every run gives the brain the same rows.
+`tools/promise_runs.py` reads it three times with lessons on and three times with lessons off
+(`evidence/promise_runs.json`). The tutorial's steps are performed with the mouse beside it,
+and their readings are recorded without a bound, since a drag's timing differs from run to run.
+
 **The host.** `tests/test_host.py` runs the worker's Python natively: a population code decodes
 to the value it was given; a lesson follows only a moment the camera reports; the wave's last
 sweep is the state the answer was read from; a record keeps its place until the thing is seen or
 heard, and a cue's direction and distance rewrite it.
 
-The reading on the **development file** (`evidence/page_check.json`, 12 November 2026): 41 of
-42 checks. In view the place lay 1.1 cm from the hand, and 2.2 cm after the return. Hidden
-behind the pillar, where the hand came to rest, it lay 6.7 cm away on average over 70 moments and
-8.8 cm at the last (the last seen position 18 cm, the Kalman filter 16 cm); its circle grew from
-1.2 cm to 30 cm and held the hand on 0.70 of the hidden moments. With the camera turned
-away the apple's place lay 0.1 cm from the apple; one knock brought the cup's place to 5.5 cm from
-the cup. A frame took 16.7 ms at the median and 16.8 ms at the 95th percentile with the brain view
-and its bloom on; a moment took 73 ms in the worker with lessons on, on a machine under heavy
-load from other work (measured apart under Pyodide: 62 ms with lessons, 14 ms without). The hidden hand's reading differs from run to run: 26 cm and 13 cm in the two runs before this one. Failing in this run: the stated area holds the hidden hand.
+The reading on the **development file** (12 November 2026): 40 of 42 checks (`evidence/page_check.json`); the two that fail are the promise's.
+
+The promise is read from a scripted scenario: the module as its file holds it, the same route by
+scene steps (0.5 m/s into the pillar's shadow, 70 moments at rest there, back), the camera's
+noise from one seed. The scene is also a scene file of the tracking chamber,
+`tests/fixtures/promise-scene.json` (323 steps, 91 out of view; `tools/export_promise.mjs`).
+Three runs with lessons on and three with lessons off (`evidence/promise_runs.json`); bounds
+5 cm in view, 10 cm hidden, 0.85 for the circle, 5 cm after the return:
+
+| Lessons | In view | Hidden, mean | Hidden, last | Circle holds the hand | Circle's radius | After return | Lessons taken | A moment |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| on | 1.0 cm | 37 cm | 87 cm | 0.23 | 1.6 cm to 19 cm | 0.2 cm | 321 | 79 ms |
+| on | 1.0 cm | 36 cm | 86 cm | 0.23 | 1.5 cm to 19 cm | 0.2 cm | 319 | 78 ms |
+| on | 1.0 cm | 36 cm | 86 cm | 0.23 | 1.5 cm to 19 cm | 0.2 cm | 319 | 68 ms |
+| off | 1.0 cm | 33 cm | 80 cm | 0.24 | 1.6 cm to 19 cm | 0.3 cm | 0 | 17 ms |
+| off | 1.0 cm | 33 cm | 80 cm | 0.24 | 1.6 cm to 19 cm | 0.3 cm | 0 | 17 ms |
+| off | 1.0 cm | 33 cm | 80 cm | 0.24 | 1.6 cm to 19 cm | 0.3 cm | 0 | 16 ms |
+
+On the same rows the chamber's Kalman filter lay 28 cm from the hidden hand and the last seen
+position 16 cm. With lessons off the three runs are the same to the last digit and a moment
+fits the scene's 33 ms; with lessons on a moment takes more than twice that. The hand stops in
+the shadow, and the module carries its place on along the last seen movement: the promise's
+bound is not held, with lessons or without.
+
+A frame took 16.7 ms at the median and 16.8 ms at the 95th percentile with the brain view and its bloom on. The page runs the module with lessons off; learning is one switch in Details, and the gold flashes show while it is on.
 
 Cadence is GPL-3.0.

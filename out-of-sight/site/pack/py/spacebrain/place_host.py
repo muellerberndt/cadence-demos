@@ -366,7 +366,10 @@ class PlaceHost:
         return {"reset": True, "moments": self.moments}
 
     def reborn(self, config: dict[str, Any] | None = None) -> dict[str, Any]:
-        self._build()  # the module as its file holds it
+        # the module as its file holds it: read again, since a loaded module keeps the brain it
+        # made, and lessons on the page have moved that brain's synapses
+        self.module = load_module(self.config["module"])
+        self._build()
         return self.describe()
 
     def handle(self, m: dict[str, Any]) -> dict[str, Any]:

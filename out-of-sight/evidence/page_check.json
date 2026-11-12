@@ -1,6 +1,6 @@
 {
  "schema": "cadence-out-of-sight-page-check/1",
- "checked": "2026-11-12 19:16",
+ "checked": "2026-11-12 19:34",
  "cadence": "0.98.0",
  "brain": {
   "name": "place",
@@ -56,47 +56,63 @@
    "mode": "webgl2",
    "hdr": true,
    "fallback": null,
-   "frames": 4,
-   "lit": 0,
+   "frames": 5,
+   "lit": 13,
    "wave": false,
    "synapses": 138112
   },
   "neurons": 946,
   "synapses": 138112,
-  "seconds_to_ready": 5.4
+  "seconds_to_ready": 5.1
+ },
+ "promise": {
+  "teach": false,
+  "moments": 323,
+  "hidden_moments": 91,
+  "in_view_m": 0.009808836618686489,
+  "hidden_m": 0.3331956045144076,
+  "hidden_last_m": 0.8017627233753916,
+  "kalman_hidden_m": 0.2781558861607071,
+  "last_seen_hidden_m": 0.15544640197644222,
+  "inside_circle": 0.24175824175824176,
+  "radius_first_m": 0.016089562207947404,
+  "radius_last_m": 0.1889300966195871,
+  "return_m": 0.002972479220959637,
+  "lessons": 0,
+  "think_ms": 20.1
  },
  "tutorial": {
   "follow": {
-   "moments": 211,
-   "in_view": 211,
-   "brain_m": 0.010995802798039215,
-   "kalman_m": 0.02571003361603942,
-   "lessons": 208
+   "moments": 800,
+   "in_view": 800,
+   "brain_m": 0.012707701722486897,
+   "kalman_m": 0.010609326539912043,
+   "lessons": 0
   },
   "hide": {
-   "hidden_moments": 70,
+   "hidden_moments": 77,
    "no_answer": 0,
-   "brain_m": 0.0669468846332081,
-   "brain_last_m": 0.08783821922748414,
-   "kalman_m": 0.16201270769927847,
-   "last_seen_m": 0.17619540322351163,
-   "inside_area": 0.7,
-   "uncertainty_first_m": 0.01206710379650969,
-   "uncertainty_last_m": 0.30298273469715126,
-   "lessons_while_hidden": 65,
-   "lessons_in_the_first_hidden_moments": 5
+   "brain_m": 0.13209179333173107,
+   "brain_last_m": 0.13828820350262275,
+   "kalman_m": 0.10432980509011469,
+   "last_seen_m": 0.1634093484176355,
+   "inside_area": 0.0,
+   "uncertainty_first_m": 0.011281613891156686,
+   "uncertainty_last_m": 0.12273014602264924,
+   "lessons_while_hidden": 0,
+   "lessons_in_the_first_hidden_moments": 0
   },
   "return": {
-   "brain_m": 0.022114382391014854,
-   "uncertainty_m": 0.009063675389712665,
-   "uncertainty_hidden_m": 0.30298273469715126
+   "brain_m": 0.004542577897635774,
+   "uncertainty_m": 0.0053182037901101644,
+   "uncertainty_hidden_m": 0.12273014602264924
   },
   "turn": {
    "sweep_degrees": 109.8,
-   "moments_out_of_view": 49,
-   "apple_record_from_true_m": 0.0005060023615061167,
+   "moments_out_of_view": 80,
+   "apple_record_from_true_m": 0.00044911176159915183,
    "apple_bearing_degrees": -155.5,
-   "apple_distance_m": 0.780722987869353,
+   "apple_distance_m": 0.7807834753120463,
    "in_view": {
     "hand": false,
     "cup": false,
@@ -106,21 +122,21 @@
    "said": "The apple is 0.8 m away, behind you, to the right. The camera last saw it 1 s ago."
   },
   "around": {
-   "where": "The apple is 0.8 m away, behind you, to the right. The camera last saw it 2 s ago.",
+   "where": "The apple is 0.8 m away, behind you, to the right. The camera last saw it 3 s ago.",
    "what": "In front of you, to the left: the slice of bread, 0.4 m away.",
    "elsewhere": "Behind you, to the left: nothing the brain remembers."
   },
   "move": {
-   "hidden_moments": 37,
+   "hidden_moments": 58,
    "pin_from_last_seen_m": 0.0,
-   "pin_from_true_m": 0.3000977749058263,
+   "pin_from_true_m": 0.2998249423682214,
    "pin_source": "seen"
   },
   "knock": {
-   "pin_from_true_m": 0.05453725853740529,
+   "pin_from_true_m": 0.25000063864738303,
    "pin_source": "heard",
    "cup_in_view": false,
-   "before_m": 0.3000977749058263,
+   "before_m": 0.2998249423682214,
    "cue_error_sd_m": 0.08715859611840102
   }
  },
@@ -128,31 +144,73 @@
   "desktop_webgl": {
    "frames": 1500,
    "median_ms": 16.69999999999709,
-   "p95_ms": 16.80000000000291,
-   "worst_ms": 33.5
+   "p95_ms": 16.799999999995634,
+   "worst_ms": 50.099999999998545
   },
-  "think_ms": 73.3,
-  "round_trip_ms": 78.20000004768372,
-  "moments": 530,
+  "think_ms": 12.4,
+  "round_trip_ms": 13.899999856948853,
+  "moments": 1691,
   "no_answer": 0,
   "phone_viewport": {
    "frames": 300,
    "median_ms": 16.699999999999818,
-   "p95_ms": 16.80000000000109,
-   "worst_ms": 250
+   "p95_ms": 16.800000000000182,
+   "worst_ms": 200
   },
   "desktop_canvas2d": {
    "frames": 240,
-   "median_ms": 16.69999999999891,
-   "p95_ms": 16.799999999999272,
-   "worst_ms": 33.399999999999636
+   "median_ms": 16.699999999999818,
+   "p95_ms": 16.80000000000109,
+   "worst_ms": 49.899999999999636
   }
  },
+ "readings": [
+  {
+   "name": "1 follow: the brain's place follows the hand in view (a visitor's drag: its timing differs from run to run)",
+   "within_bound": true,
+   "bound_m": 0.05,
+   "moments": 800,
+   "in_view": 800,
+   "brain_m": 0.012707701722486897,
+   "kalman_m": 0.010609326539912043,
+   "lessons": 0
+  },
+  {
+   "name": "2 hide: the brain's place stays with the hidden hand (a visitor's drag: its timing differs from run to run)",
+   "within_bound": false,
+   "bound_m": 0.1,
+   "hidden_moments": 77,
+   "no_answer": 0,
+   "brain_m": 0.13209179333173107,
+   "brain_last_m": 0.13828820350262275,
+   "kalman_m": 0.10432980509011469,
+   "last_seen_m": 0.1634093484176355,
+   "inside_area": 0.0,
+   "uncertainty_first_m": 0.011281613891156686,
+   "uncertainty_last_m": 0.12273014602264924,
+   "lessons_while_hidden": 0,
+   "lessons_in_the_first_hidden_moments": 0
+  },
+  {
+   "name": "2 hide: the stated area holds the hidden hand (a visitor's drag: its timing differs from run to run)",
+   "within_bound": false,
+   "bound": 0.85,
+   "inside_area": 0.0
+  },
+  {
+   "name": "3 return: the place closes on the hand (a visitor's drag: its timing differs from run to run)",
+   "within_bound": true,
+   "bound_m": 0.05,
+   "brain_m": 0.004542577897635774,
+   "uncertainty_m": 0.0053182037901101644,
+   "uncertainty_hidden_m": 0.12273014602264924
+  }
+ ],
  "checks": [
   {
    "name": "the brain loads in Pyodide with the pack's wheel",
    "passed": true,
-   "seconds": 5.4,
+   "seconds": 5.1,
    "cadence": "0.98.0",
    "wheel": "built from the library's branch lane-099-space; it holds cadence.space and cadence.modules, which PyPI's 0.98.0 does not",
    "brain": "Feed-forward baseline",
@@ -166,6 +224,48 @@
    "welcome": true
   },
   {
+   "name": "THE PROMISE: in view the brain's place follows the hand",
+   "passed": true,
+   "bound_m": 0.05,
+   "teach": false,
+   "moments": 323,
+   "hidden_moments": 91,
+   "in_view_m": 0.009808836618686489,
+   "hidden_m": 0.3331956045144076,
+   "hidden_last_m": 0.8017627233753916,
+   "kalman_hidden_m": 0.2781558861607071,
+   "last_seen_hidden_m": 0.15544640197644222,
+   "inside_circle": 0.24175824175824176,
+   "radius_first_m": 0.016089562207947404,
+   "radius_last_m": 0.1889300966195871,
+   "return_m": 0.002972479220959637,
+   "lessons": 0,
+   "think_ms": 20.1
+  },
+  {
+   "name": "THE PROMISE: the brain's place stays with the hidden hand",
+   "passed": false,
+   "bound_m": 0.1,
+   "hidden_m": 0.3331956045144076,
+   "last_m": 0.8017627233753916,
+   "kalman_m": 0.2781558861607071,
+   "last_seen_m": 0.15544640197644222
+  },
+  {
+   "name": "THE PROMISE: the stated area holds the hidden hand",
+   "passed": false,
+   "bound": 0.85,
+   "inside": 0.24175824175824176,
+   "radius_first_m": 0.016089562207947404,
+   "radius_last_m": 0.1889300966195871
+  },
+  {
+   "name": "THE PROMISE: back in view the place closes on the hand",
+   "passed": true,
+   "bound_m": 0.05,
+   "return_m": 0.002972479220959637
+  },
+  {
    "name": "the tutorial starts at its first step",
    "passed": true,
    "step": "follow"
@@ -176,57 +276,25 @@
    "step": "hide"
   },
   {
-   "name": "1 follow: the brain's place follows the hand in view",
-   "passed": true,
-   "bound_m": 0.05,
-   "moments": 211,
-   "in_view": 211,
-   "brain_m": 0.010995802798039215,
-   "kalman_m": 0.02571003361603942,
-   "lessons": 208
-  },
-  {
    "name": "2 hide: the visitor's drag completes the step",
    "passed": true,
    "step": "return"
   },
   {
-   "name": "2 hide: THE PROMISE, the brain's place stays with the hidden hand",
-   "passed": true,
-   "bound_m": 0.1,
-   "hidden_moments": 70,
-   "no_answer": 0,
-   "brain_m": 0.0669468846332081,
-   "brain_last_m": 0.08783821922748414,
-   "kalman_m": 0.16201270769927847,
-   "last_seen_m": 0.17619540322351163,
-   "inside_area": 0.7,
-   "uncertainty_first_m": 0.01206710379650969,
-   "uncertainty_last_m": 0.30298273469715126,
-   "lessons_while_hidden": 65,
-   "lessons_in_the_first_hidden_moments": 5
-  },
-  {
-   "name": "2 hide: the stated area holds the hidden hand",
-   "passed": false,
-   "bound": 0.85,
-   "inside_area": 0.7
-  },
-  {
    "name": "2 hide: the place part's card shows a position and the moments unseen",
    "passed": true,
-   "readings": 152,
-   "place": "-0.440,0.639",
+   "readings": 49,
+   "place": "-0.513,0.821",
    "unseen": 69,
    "text": "The held place, as the brain is given it\n\nplays the role of the parietal and entorhinal map\n\nThe place is held nowhere in the brain. A program beside the brain keeps it between moments, as the long-term records are kept, and this region shows the program\u2019s place to the brain at each step: a peak ove"
   },
   {
    "name": "2 hide: the card's uncertainty grows while the hand is hidden",
    "passed": true,
-   "when_last_seen_m": 0.016089471728679586,
-   "first_m": 0.0725,
-   "first_unseen": 15,
-   "later_m": 0.2906,
+   "when_last_seen_m": 0.011651600725011226,
+   "first_m": 0.0827,
+   "first_unseen": 29,
+   "later_m": 0.1183,
    "later_unseen": 69
   },
   {
@@ -235,19 +303,11 @@
    "step": "turn"
   },
   {
-   "name": "3 return: the place closes on the hand",
-   "passed": true,
-   "bound_m": 0.05,
-   "brain_m": 0.022114382391014854,
-   "uncertainty_m": 0.009063675389712665,
-   "uncertainty_hidden_m": 0.30298273469715126
-  },
-  {
    "name": "3 return: the uncertainty falls when the hand is seen",
    "passed": true,
-   "brain_m": 0.022114382391014854,
-   "uncertainty_m": 0.009063675389712665,
-   "uncertainty_hidden_m": 0.30298273469715126
+   "brain_m": 0.004542577897635774,
+   "uncertainty_m": 0.0053182037901101644,
+   "uncertainty_hidden_m": 0.12273014602264924
   },
   {
    "name": "4 turn: the visitor's drag of the floor completes the step",
@@ -259,10 +319,10 @@
    "passed": true,
    "bound_m": 0.03,
    "sweep_degrees": 109.8,
-   "moments_out_of_view": 49,
-   "apple_record_from_true_m": 0.0005060023615061167,
+   "moments_out_of_view": 80,
+   "apple_record_from_true_m": 0.00044911176159915183,
    "apple_bearing_degrees": -155.5,
-   "apple_distance_m": 0.780722987869353,
+   "apple_distance_m": 0.7807834753120463,
    "in_view": {
     "hand": false,
     "cup": false,
@@ -279,7 +339,7 @@
   {
    "name": "the small map answers where a thing is: the apple, behind the body",
    "passed": true,
-   "said": "The apple is 0.8 m away, behind you, to the right. The camera last saw it 2 s ago."
+   "said": "The apple is 0.8 m away, behind you, to the right. The camera last saw it 3 s ago."
   },
   {
    "name": "the small map answers what lies a way: the bread, seen for the first time after the turn",
@@ -301,9 +361,9 @@
    "name": "5 move: the record keeps the place the cup was last seen at",
    "passed": true,
    "bound_m": 0.03,
-   "hidden_moments": 37,
+   "hidden_moments": 58,
    "pin_from_last_seen_m": 0.0,
-   "pin_from_true_m": 0.3000977749058263,
+   "pin_from_true_m": 0.2998249423682214,
    "pin_source": "seen"
   },
   {
@@ -315,10 +375,10 @@
    "name": "6 knock: the record moves to the heard place without sight",
    "passed": true,
    "bound_m": 0.261475788355203,
-   "pin_from_true_m": 0.05453725853740529,
+   "pin_from_true_m": 0.25000063864738303,
    "pin_source": "heard",
    "cup_in_view": false,
-   "before_m": 0.3000977749058263,
+   "before_m": 0.2998249423682214,
    "cue_error_sd_m": 0.08715859611840102
   },
   {
@@ -328,11 +388,11 @@
    "bound_p95_ms": 34.0,
    "frames": 1500,
    "median_ms": 16.69999999999709,
-   "p95_ms": 16.80000000000291,
-   "worst_ms": 33.5,
-   "think_ms": 73.3,
-   "round_trip_ms": 78.20000004768372,
-   "moments": 530,
+   "p95_ms": 16.799999999995634,
+   "worst_ms": 50.099999999998545,
+   "think_ms": 12.4,
+   "round_trip_ms": 13.899999856948853,
+   "moments": 1691,
    "no_answer": 0
   },
   {
@@ -525,14 +585,14 @@
      "last": 0.010431621031045986
     },
     "unseen": {
-     "brain": 0.1056874817980653,
+     "brain": 0.0942361191944357,
      "kalman": 0.18319426954000542,
      "last": 0.08822387778196515
     },
-    "inside_area": 0.7166666666666667,
-    "inside_area_unseen": 0.4444444444444444,
-    "lessons_in_view": 28,
-    "lessons_out_of_view": 27
+    "inside_area": 0.7333333333333333,
+    "inside_area_unseen": 0.48148148148148145,
+    "lessons_in_view": 0,
+    "lessons_out_of_view": 0
    }
   },
   {
@@ -568,16 +628,16 @@
     "mode": "canvas2d",
     "hdr": false,
     "fallback": "requested",
-    "frames": 435,
-    "lit": 108,
+    "frames": 196,
+    "lit": 26,
     "wave": false,
     "synapses": 1800
    },
    "frame_times": {
     "frames": 240,
-    "median_ms": 16.69999999999891,
-    "p95_ms": 16.799999999999272,
-    "worst_ms": 33.399999999999636
+    "median_ms": 16.699999999999818,
+    "p95_ms": 16.80000000000109,
+    "worst_ms": 49.899999999999636
    }
   },
   {
@@ -588,6 +648,7 @@
  ],
  "passed": false,
  "failed": [
-  "2 hide: the stated area holds the hidden hand"
+  "THE PROMISE: the brain's place stays with the hidden hand",
+  "THE PROMISE: the stated area holds the hidden hand"
  ]
 }

@@ -302,7 +302,20 @@ export class Stage {
     this.world.own = false;
     this.cameraOn = true; this.facing = null;
     this.targets.fill(null); this.sounding.fill(false);
-    this.reach = null; this.armPlan = null;
+    this.reach = null; this.armPlan = null; this.route = null;
+  }
+
+  /** A route: legs taken one scene step at a time, whatever the clock does. A leg moves a
+   *  thing to a point at `speed` metres a second ({ name, to, speed }) or rests for a number
+   *  of moments ({ rest }). The same route from the same start gives the same rows. */
+  follow() {
+    const leg = this.route?.[0];
+    if (!leg) return;
+    if (leg.rest !== undefined) { leg.rest -= 1; if (leg.rest <= 0) this.route.shift(); return; }
+    const k = this.names.indexOf(leg.name), p = this.world.things[k];
+    const dx = leg.to[0] - p[0], dy = leg.to[1] - p[1], d = Math.hypot(dx, dy), stride = (leg.speed ?? 0.5) * DT;
+    if (d <= stride) { this.world.things[k] = leg.to.slice(); this.route.shift(); return; }
+    this.world.things[k] = [p[0] + (dx / d) * stride, p[1] + (dy / d) * stride];
   }
 
   /** Turn the camera toward a heading; it gets there at its own rate. */
@@ -373,6 +386,7 @@ export class Stage {
     const noise = this.random.draws(joints, count);
     const sounds = this.sounding.slice();
     this.sounding.fill(false);
+    this.follow();
     let row = null;
     if (this.reach) {
       // a recorded scene: the arm takes the file's readings and the things its true positions
