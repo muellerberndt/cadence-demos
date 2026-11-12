@@ -3,7 +3,7 @@
  "module": {
   "name": "place",
   "label": "Feed-forward baseline",
-  "note": "The place module's development file place-keeplong-2: a feed-forward baseline (development founder 2, 2,000 scenes of the tracking chamber, raised with practice spans of 80 steps), run on its course. A program beside the brain holds each place between moments; the brain answers how far a place moves in a step, how much of its seen movement a thing keeps, how far off a place may be, and the place a cue names.",
+  "note": "The place module's development file place-keeplong-2: a feed-forward baseline (development founder 2, 2,000 scenes of the tracking chamber, raised with practice spans of 80 steps), run on its course. A program beside the brain holds each place between moments; the brain answers how far a place moves in a step, how much of its seen movement a thing keeps, how far off a place may be, and the place a cue names. The model is being rebuilt: by the ruling in cadence#320 the map becomes the brain's own state, and this file is the model from before it.",
   "files": [
    {
     "name": "place-keeplong-2.npz",
@@ -25,42 +25,20 @@
    "hidden_moments": 91,
    "takes_sight": "function",
    "sight": true,
-   "held_moments": 80,
-   "first_held": 11,
+   "held_moments": 81,
+   "first_held": 10,
    "gone_moments": 0,
    "in_view_m": 0.009808836618686489,
-   "hidden_m": 0.04554038888511729,
+   "hidden_m": 0.04553632221294893,
    "hidden_last_m": 0.15682919424918781,
    "kalman_hidden_m": 0.2781558861607071,
    "last_seen_hidden_m": 0.15544640197644222,
    "inside_circle": 1.0,
-   "radius_first_m": 0.03605222877884208,
-   "radius_last_m": 0.17049041752948424,
+   "radius_first_m": 0.036088057301053134,
+   "radius_last_m": 0.1704735037378021,
    "return_m": 0.002972479220959637,
    "lessons": 319,
-   "think_ms": 58.2
-  },
-  {
-   "scene": "default",
-   "teach": true,
-   "moments": 323,
-   "hidden_moments": 91,
-   "takes_sight": "function",
-   "sight": true,
-   "held_moments": 80,
-   "first_held": 11,
-   "gone_moments": 0,
-   "in_view_m": 0.009808836618686489,
-   "hidden_m": 0.0455391184586046,
-   "hidden_last_m": 0.15682919424918781,
-   "kalman_hidden_m": 0.2781558861607071,
-   "last_seen_hidden_m": 0.15544640197644222,
-   "inside_circle": 1.0,
-   "radius_first_m": 0.03601940237825843,
-   "radius_last_m": 0.17044265331630723,
-   "return_m": 0.002972479220959637,
-   "lessons": 319,
-   "think_ms": 59.1
+   "think_ms": 81
   },
   {
    "scene": "default",
@@ -73,16 +51,38 @@
    "first_held": 10,
    "gone_moments": 0,
    "in_view_m": 0.009808836618686489,
-   "hidden_m": 0.04553636990008171,
+   "hidden_m": 0.04553701458470181,
    "hidden_last_m": 0.15682919424918781,
    "kalman_hidden_m": 0.2781558861607071,
    "last_seen_hidden_m": 0.15544640197644222,
    "inside_circle": 1.0,
-   "radius_first_m": 0.03610370086946832,
-   "radius_last_m": 0.17048674736092986,
+   "radius_first_m": 0.036079080939614615,
+   "radius_last_m": 0.17046942191896575,
    "return_m": 0.002972479220959637,
-   "lessons": 320,
-   "think_ms": 54.3
+   "lessons": 319,
+   "think_ms": 79
+  },
+  {
+   "scene": "default",
+   "teach": true,
+   "moments": 323,
+   "hidden_moments": 91,
+   "takes_sight": "function",
+   "sight": true,
+   "held_moments": 81,
+   "first_held": 10,
+   "gone_moments": 0,
+   "in_view_m": 0.009808836618686489,
+   "hidden_m": 0.04553701458470181,
+   "hidden_last_m": 0.15682919424918781,
+   "kalman_hidden_m": 0.2781558861607071,
+   "last_seen_hidden_m": 0.15544640197644222,
+   "inside_circle": 1.0,
+   "radius_first_m": 0.036079080939614615,
+   "radius_last_m": 0.17046942191896575,
+   "return_m": 0.002972479220959637,
+   "lessons": 319,
+   "think_ms": 73.9
   },
   {
    "scene": "default",
@@ -104,7 +104,7 @@
    "radius_last_m": 0.17036433514219368,
    "return_m": 0.002972479220959637,
    "lessons": 0,
-   "think_ms": 9.3
+   "think_ms": 10.6
   },
   {
    "scene": "default",
@@ -126,7 +126,7 @@
    "radius_last_m": 0.17036433514219368,
    "return_m": 0.002972479220959637,
    "lessons": 0,
-   "think_ms": 9.8
+   "think_ms": 10.1
   },
   {
    "scene": "default",
@@ -148,7 +148,7 @@
    "radius_last_m": 0.17036433514219368,
    "return_m": 0.002972479220959637,
    "lessons": 0,
-   "think_ms": 9.7
+   "think_ms": 10.3
   },
   {
    "scene": "default",
@@ -161,16 +161,16 @@
    "first_held": null,
    "gone_moments": 0,
    "in_view_m": 0.009808836618686489,
-   "hidden_m": 0.4080300611448753,
-   "hidden_last_m": 0.8355492483973869,
+   "hidden_m": 0.40604263682533204,
+   "hidden_last_m": 0.831750464694832,
    "kalman_hidden_m": 0.2781558861607071,
    "last_seen_hidden_m": 0.15544640197644222,
-   "inside_circle": 0.25274725274725274,
-   "radius_first_m": 0.026545257960760904,
-   "radius_last_m": 0.43002544416899907,
+   "inside_circle": 0.26373626373626374,
+   "radius_first_m": 0.02667179110076137,
+   "radius_last_m": 0.4308901108295268,
    "return_m": 0.00217772561115653,
    "lessons": 319,
-   "think_ms": 59.2
+   "think_ms": 68.8
   },
   {
    "scene": "default",
@@ -192,7 +192,7 @@
    "radius_last_m": 0.4341090915456885,
    "return_m": 0.007515365229485338,
    "lessons": 0,
-   "think_ms": 11.9
+   "think_ms": 10.7
   },
   {
    "scene": "merged",
@@ -201,20 +201,20 @@
    "hidden_moments": 91,
    "takes_sight": "function",
    "sight": true,
-   "held_moments": 56,
-   "first_held": 35,
+   "held_moments": 55,
+   "first_held": 36,
    "gone_moments": 0,
    "in_view_m": 0.009808836618686489,
-   "hidden_m": 0.27671596014033173,
+   "hidden_m": 0.27640365127501737,
    "hidden_last_m": 0.5114799312147217,
    "kalman_hidden_m": 0.2781558861607071,
    "last_seen_hidden_m": 0.15544640197644222,
    "inside_circle": 0.978021978021978,
-   "radius_first_m": 0.036079080939614615,
-   "radius_last_m": 0.4899830991710055,
+   "radius_first_m": 0.03600060078017182,
+   "radius_last_m": 0.4899484769886044,
    "return_m": 0.002972479220959637,
    "lessons": 319,
-   "think_ms": 66.4
+   "think_ms": 69.5
   },
   {
    "scene": "merged",
@@ -236,7 +236,7 @@
    "radius_last_m": 0.48987801239423345,
    "return_m": 0.002972479220959637,
    "lessons": 0,
-   "think_ms": 11.2
+   "think_ms": 11
   },
   {
    "scene": "merged",
@@ -249,16 +249,16 @@
    "first_held": null,
    "gone_moments": 0,
    "in_view_m": 0.009808836618686489,
-   "hidden_m": 0.4115510291408972,
-   "hidden_last_m": 0.8430336051147842,
+   "hidden_m": 0.410223830156934,
+   "hidden_last_m": 0.8390489691131863,
    "kalman_hidden_m": 0.2781558861607071,
    "last_seen_hidden_m": 0.15544640197644222,
    "inside_circle": 0.25274725274725274,
-   "radius_first_m": 0.026358318714237623,
-   "radius_last_m": 0.42835459302889217,
+   "radius_first_m": 0.02645624568971465,
+   "radius_last_m": 0.4291477345803851,
    "return_m": 0.00217772561115653,
    "lessons": 319,
-   "think_ms": 68.6
+   "think_ms": 67
   },
   {
    "scene": "merged",
@@ -280,7 +280,7 @@
    "radius_last_m": 0.4341090915456885,
    "return_m": 0.007515365229485338,
    "lessons": 0,
-   "think_ms": 8.6
+   "think_ms": 13.3
   }
  ]
 }

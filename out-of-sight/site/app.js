@@ -471,9 +471,25 @@ const tourEntry = (s) => (state.kind === 'place' && state.describe?.space?.cours
 const tourPart = (s) => tourEntry(s)?.[0] || s.brain;
 const tourAside = (s) => tourEntry(s)?.[1] || s.aside;
 
-const tour = {
-  active: false, step: 0, since: null, log: [], doneAt: 0,
-  steps: [
+// The tutorials, one for each kind of model. Each holds its sentence (the page's headline and
+// the welcome's line: ONE constant a tutorial) and the steps the visitor performs.
+//
+// `held` is the tutorial of the model on this page: a place held while the hand is hidden.
+//
+// `map` is prepared for the model of cadence#320's "The model": the map is the brain's own
+// state, a thing enters it when it is first sensed, and with no sensory information the last
+// known position stays. It is chosen when a host describes its brain as of kind 'map'; no host
+// of this pack does. Its sentence waits for a decision and is null until then (the page keeps
+// the `held` sentence). Its steps read the page's state as it is named in this file (pins, the
+// gone mark, the moments unseen), and its `ring` parts are null until the module names its
+// regions. `start`: where the camera looks when the page opens, so that the map fills as the
+// visitor turns it; null keeps the scene's own.
+const PROMISE = 'Hide the hand, and the brain keeps knowing where it is.';
+const TOURS = {
+  held: {
+    promise: PROMISE,
+    start: null,
+    steps: [
     { id: 'follow', brain: 'camera',
       text: '<b>Drag the hand</b> across the table. The glow is where the brain says the hand is.',
       aside: 'In the brain, the ringed part plays the role of the visual cortex: the camera’s report enters there.',
@@ -505,7 +521,56 @@ const tour = {
       aside: 'A record rewritten from a sound alone.',
       guide: () => ({ ring: stage.world.things[1], radius: 0.1 }),
       done: (t, row) => !!row.pins.cup && !row.pins.cup.seen && row.pins.cup.from === 'heard' },
-  ],
+    ],
+  },
+  map: {
+    promise: null,
+    start: null,
+    steps: [
+      { id: 'look', brain: null,
+        text: '<b>Look around</b>: drag the floor around the body to turn the camera. Each thing arrives on the map at the moment the camera first sees it.',
+        aside: 'Nothing is handed to the brain beforehand. The small map shows what it holds.',
+        guide: () => ({ ring: stage.geometry.camera.position, radius: 0.09 }),
+        done: () => stage.names.slice(1).every((name) => state.pins[name]?.place) },
+      { id: 'turn', brain: null,
+        text: '<b>Turn the camera away from the apple.</b> It stays on the map, behind you.',
+        aside: 'With no sight of it, its last known place is the one the map holds.',
+        guide: () => ({ ring: stage.geometry.camera.position, radius: 0.09, turn: { from: stage.geometry.camera.heading, to: awayHeading('apple') } }),
+        done: (t, row) => { t.behind = row.pins.apple && !row.pins.apple.seen && Math.abs(row.pins.apple.bearing) >= 1.95 ? (t.behind || 0) + 1 : 0; return t.behind >= 12; },
+        after: () => askWhere('apple') },
+      { id: 'move', brain: null,
+        text: '<b>Drag the cup</b> while the camera looks elsewhere. The map keeps the place where the camera last saw it.',
+        aside: 'Nothing told the brain that the cup moved.',
+        guide: () => ({ ring: stage.world.things[1], radius: 0.1, target: state.pins.cup && distance(state.pins.cup.place, stage.world.things[1]) < 0.1 ? awayPoint('cup', 0.3) : null }),
+        done: (t, row) => !!row.pins.cup && !row.pins.cup.seen && row.pins.cup.off >= 0.1 },
+      { id: 'find', brain: null,
+        text: '<b>Look back</b> at where the cup stood. The camera finds the place empty, and the map clears it. Then <b>look at the cup</b>: the map has it again.',
+        aside: 'The sight of an empty place is information as well.',
+        guide: () => ({ ring: stage.geometry.camera.position, radius: 0.09 }),
+        done: (t, row) => { if (row.pins.cup?.gone) t.cleared = true; return !!t.cleared && !!row.pins.cup?.seen && row.pins.cup.off < 0.05; } },
+      { id: 'knock', brain: null,
+        text: '<b>Turn away from the cup and tap it</b> to knock on it. The ear hears where the sound came from, and the map updates from sound alone.',
+        aside: 'A sound carries a direction and a distance, which name a place.',
+        guide: () => ({ ring: stage.world.things[1], radius: 0.1 }),
+        done: (t, row) => !!row.pins.cup && !row.pins.cup.seen && row.pins.cup.from === 'heard' },
+      { id: 'hide', brain: null,
+        text: '<b>Drag the hand behind the pillar</b>, into the shadow. The camera loses it, and the map holds where it was last seen.',
+        aside: 'The map says how long ago that was.',
+        guide: () => ({ ring: stage.world.things[0], target: state.unseen ? null : shadowPoint(0.32) }),
+        done: () => state.unseen >= 40 },
+    ],
+  },
+};
+const tourOf = () => TOURS[state.kind] || TOURS.held;
+/** The page's sentence: the headline over the scene and the welcome's line. */
+function promise() {
+  const text = tourOf().promise || PROMISE;
+  document.querySelectorAll('[data-promise]').forEach((el) => { el.textContent = text; });
+}
+
+const tour = {
+  active: false, step: 0, since: null, log: [], doneAt: 0,
+  get steps() { return tourOf().steps; },
   current() { return this.active ? this.steps[this.step] : null; },
   start() {
     reset();
@@ -919,6 +984,7 @@ function adopt(describe, arrays) {
   brainView.verb = state.kind === 'baseline' ? 'settled in' : 'answered in';
   state.takesSight = describe.sight || false; state.held = false; state.gone = false; state.rulesGone = false; // 'function', 'flags' or false
   configure(state.kind, { course: !!describe.space?.course });
+  promise();
   // a module arrives trained: on the page it takes no lessons unless the visitor switches them on (Details)
   if (params.get('teach') !== null) state.teach = params.get('teach') === '1';
   else state.teach = !(describe.brain.trained && state.kind !== 'baseline');

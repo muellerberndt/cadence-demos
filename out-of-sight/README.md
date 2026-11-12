@@ -36,13 +36,14 @@ a map that holds where things are while they are out of view.
 > state. The file on this page is the model from before that ruling, a baseline: a program
 > beside the brain keeps the places, the things are handed to it at the start, and a thing it
 > does not see is carried on along its last seen movement. The page stays as it stands until
-> the new module arrives.
+> the new module arrives; the tutorial for it is prepared in `site/app.js`
+> (`TOURS.map`).
 >
 > The development module file and the branch-built wheel sit on this branch only, named as
 > such. They do not reach `main`: before any pull request they are replaced by the released
 > wheel and the module the library ships.
 
-![The hand hidden behind the pillar, the place part's card open beside its part](docs/baseline-hidden-card.jpg)
+![The scripted promise scenario, 40 moments after the hand went behind the pillar: its place held at the middle of its hidden stretch, the place part's card open beside its part](docs/baseline-hidden-card.jpg)
 
 ## What a visitor does
 
@@ -388,18 +389,18 @@ a stated limit.
 
 | Scene | Sight evidence | Lessons | In view | Hidden, mean | Hidden, last | Circle holds the hand | Circle's radius | Held back | After return | Lessons taken | A moment |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| default | given | on | 1.0 cm | 4.6 cm | 15.7 cm | 1.00 | 3.6 cm to 17.0 cm | 80 moments, from hidden moment 12 | 0.3 cm | 319 | 58 ms |
-| default | given | on | 1.0 cm | 4.6 cm | 15.7 cm | 1.00 | 3.6 cm to 17.0 cm | 80 moments, from hidden moment 12 | 0.3 cm | 319 | 59 ms |
-| default | given | on | 1.0 cm | 4.6 cm | 15.7 cm | 1.00 | 3.6 cm to 17.0 cm | 81 moments, from hidden moment 11 | 0.3 cm | 320 | 54 ms |
-| default | given | off | 1.0 cm | 4.6 cm | 15.7 cm | 1.00 | 3.5 cm to 17.0 cm | 80 moments, from hidden moment 12 | 0.3 cm | 0 | 9 ms |
+| default | given | on | 1.0 cm | 4.6 cm | 15.7 cm | 1.00 | 3.6 cm to 17.0 cm | 81 moments, from hidden moment 11 | 0.3 cm | 319 | 81 ms |
+| default | given | on | 1.0 cm | 4.6 cm | 15.7 cm | 1.00 | 3.6 cm to 17.0 cm | 81 moments, from hidden moment 11 | 0.3 cm | 319 | 79 ms |
+| default | given | on | 1.0 cm | 4.6 cm | 15.7 cm | 1.00 | 3.6 cm to 17.0 cm | 81 moments, from hidden moment 11 | 0.3 cm | 319 | 74 ms |
+| default | given | off | 1.0 cm | 4.6 cm | 15.7 cm | 1.00 | 3.5 cm to 17.0 cm | 80 moments, from hidden moment 12 | 0.3 cm | 0 | 11 ms |
 | default | given | off | 1.0 cm | 4.6 cm | 15.7 cm | 1.00 | 3.5 cm to 17.0 cm | 80 moments, from hidden moment 12 | 0.3 cm | 0 | 10 ms |
 | default | given | off | 1.0 cm | 4.6 cm | 15.7 cm | 1.00 | 3.5 cm to 17.0 cm | 80 moments, from hidden moment 12 | 0.3 cm | 0 | 10 ms |
-| default | none | on | 1.0 cm | 40.8 cm | 83.6 cm | 0.25 | 2.7 cm to 43.0 cm | - | 0.2 cm | 319 | 59 ms |
-| default | none | off | 1.0 cm | 38.2 cm | 80.6 cm | 0.34 | 2.9 cm to 43.4 cm | - | 0.8 cm | 0 | 12 ms |
-| first (shadows joined) | given | on | 1.0 cm | 27.7 cm | 51.1 cm | 0.98 | 3.6 cm to 49.0 cm | 56 moments, from hidden moment 36 | 0.3 cm | 319 | 66 ms |
+| default | none | on | 1.0 cm | 40.6 cm | 83.2 cm | 0.26 | 2.7 cm to 43.1 cm | - | 0.2 cm | 319 | 69 ms |
+| default | none | off | 1.0 cm | 38.2 cm | 80.6 cm | 0.34 | 2.9 cm to 43.4 cm | - | 0.8 cm | 0 | 11 ms |
+| first (shadows joined) | given | on | 1.0 cm | 27.6 cm | 51.1 cm | 0.98 | 3.6 cm to 49.0 cm | 55 moments, from hidden moment 37 | 0.3 cm | 319 | 70 ms |
 | first (shadows joined) | given | off | 1.0 cm | 27.2 cm | 51.1 cm | 0.98 | 3.5 cm to 49.0 cm | 53 moments, from hidden moment 39 | 0.3 cm | 0 | 11 ms |
-| first (shadows joined) | none | on | 1.0 cm | 41.2 cm | 84.3 cm | 0.25 | 2.6 cm to 42.8 cm | - | 0.2 cm | 319 | 69 ms |
-| first (shadows joined) | none | off | 1.0 cm | 38.2 cm | 80.6 cm | 0.34 | 2.9 cm to 43.4 cm | - | 0.8 cm | 0 | 9 ms |
+| first (shadows joined) | none | on | 1.0 cm | 41.0 cm | 83.9 cm | 0.25 | 2.6 cm to 42.9 cm | - | 0.2 cm | 319 | 67 ms |
+| first (shadows joined) | none | off | 1.0 cm | 38.2 cm | 80.6 cm | 0.34 | 2.9 cm to 43.4 cm | - | 0.8 cm | 0 | 13 ms |
 
 In the default scene the place lies 4.6 cm from the hidden hand on average (15.7 cm at the last
 hidden moment, as the hand comes back out) and the circle holds the hand on 1.00 of the hidden
@@ -412,8 +413,8 @@ sight evidence withheld the place runs on in either scene: 38.2 cm and 0.34.
 
 On the same rows the chamber's Kalman filter lay 28 cm from the hidden hand and the last seen
 position 16 cm. With lessons off the three runs are the same to the last digit and a moment
-takes 9 to 10 ms of the scene's 33 ms; with lessons on it takes 54 to 59 ms.
+takes 10 to 11 ms of the scene's 33 ms; with lessons on it takes 74 to 81 ms.
 
-A frame took 16.7 ms at the median and 16.7 ms at the 95th percentile with the brain view and its bloom on. The page runs the module with lessons off; learning is one switch in Details, and the gold flashes show while it is on.
+A frame took 16.7 ms at the median and 16.8 ms at the 95th percentile with the brain view and its bloom on. The page runs the module with lessons off; learning is one switch in Details, and the gold flashes show while it is on.
 
 Cadence is GPL-3.0.

@@ -20,7 +20,7 @@
  "module": {
   "name": "place",
   "label": "Feed-forward baseline",
-  "note": "The place module's development file place-keeplong-2: a feed-forward baseline (development founder 2, 2,000 scenes of the tracking chamber, raised with practice spans of 80 steps), run on its course. A program beside the brain holds each place between moments; the brain answers how far a place moves in a step, how much of its seen movement a thing keeps, how far off a place may be, and the place a cue names.",
+  "note": "The place module's development file place-keeplong-2: a feed-forward baseline (development founder 2, 2,000 scenes of the tracking chamber, raised with practice spans of 80 steps), run on its course. A program beside the brain holds each place between moments; the brain answers how far a place moves in a step, how much of its seen movement a thing keeps, how far off a place may be, and the place a cue names. The model is being rebuilt: by the ruling in cadence#320 the map becomes the brain's own state, and this file is the model from before it.",
   "files": [
    {
     "name": "place-keeplong-2.npz",
