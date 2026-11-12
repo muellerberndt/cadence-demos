@@ -7,7 +7,7 @@
 // against the true position over the last moments.
 
 import { forward, litPolygon, cartesian } from './world.js';
-import { radiusAt } from './controls.js';
+import { radiusAt, RATE } from './controls.js';
 
 const TEAL = [63, 224, 207], ORANGE = [255, 159, 74], GOLD = [255, 206, 102], VIOLET = [183, 156, 255];
 export const THING_COLOR = { hand: ORANGE, cup: [127, 212, 255], wrench: [201, 210, 232], box: [222, 178, 124] };
@@ -33,6 +33,9 @@ export class SceneView {
     this.canvas = canvas;
     this.shade = document.createElement('canvas'); // the shadows inside the camera's field
     this.rings = [];  // sounds: { at, cue, start }
+    this.trail = [];  // the brain's last answers for the hand
+    this.shown = null; // the belief as it is drawn, flowing toward the latest answer
+    this.calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
     this.scale = 1; this.ox = 0; this.oy = 0;
     this.hatch = null;
   }
@@ -42,7 +45,7 @@ export class SceneView {
   toPlane(x, y) { return [(x - this.ox) / this.scale, (this.oy - y) / this.scale]; }
 
   layout(geometry, w, h) {
-    const [lx, hx, ly, hy] = geometry.plane, margin = 0.1;
+    const [lx, hx, ly, hy] = geometry.plane, margin = 0.05;
     this.scale = Math.min(w / (hx - lx + 2 * margin), h / (hy - ly + 2 * margin));
     this.ox = w / 2 - ((lx + hx) / 2) * this.scale;
     this.oy = h / 2 + ((ly + hy) / 2) * this.scale;
@@ -102,10 +105,11 @@ export class SceneView {
     c.strokeStyle = 'rgba(150,165,210,0.28)'; c.lineWidth = 1.2;
     c.beginPath(); c.roundRect(x0, y0, x1 - x0, y1 - y0, 10); c.stroke();
 
-    // the brain's belief of the hand, under the things
-    if (s.belief?.place) {
+    // the brain's belief of the hand: its haze lies under everything on the table
+    const belief = s.belief?.place ? this.flow(s) : null;
+    if (belief) {
       c.save(); c.beginPath(); c.roundRect(x0, y0, x1 - x0, y1 - y0, 10); c.clip();
-      this.belief(c, s, m);
+      this.haze(c, belief, m);
       c.restore();
     }
 
@@ -127,6 +131,13 @@ export class SceneView {
 
     // the hand
     this.hand(c, s, things[0], m);
+
+    // the belief's ring and its peak, over the hand: the brightest thing on the table
+    if (belief) {
+      c.save(); c.beginPath(); c.roundRect(x0, y0, x1 - x0, y1 - y0, 10); c.clip();
+      this.peak(c, s, belief, m);
+      c.restore();
+    }
 
     // the comparison's markers
     if (s.compare && s.controls) {
@@ -217,33 +228,71 @@ export class SceneView {
     c.drawImage(sc, 0, 0, w, h);
   }
 
-  belief(c, s, m) {
-    const { place, sd } = s.belief, [bx, by] = this.toScreen(place);
-    const k = radiusAt(s.rate || 0.9);
-    const rx = Math.max(3, k * sd[0] * m), ry = Math.max(3, k * sd[1] * m);
-    const unseen = !s.record?.in_view?.[0];
+  // The belief as it is shown: it flows from one moment's answer to the next, and keeps the
+  // path of its last answers.
+  flow(s) {
+    const b = s.belief, f = this.shown;
+    const far = !f || Math.hypot(f.place[0] - b.place[0], f.place[1] - b.place[1]) > 0.5;
+    const k = far || this.calm ? 1 : 0.34;
+    this.shown = far ? { place: b.place.slice(), sd: b.sd.slice() }
+      : { place: [f.place[0] + (b.place[0] - f.place[0]) * k, f.place[1] + (b.place[1] - f.place[1]) * k], sd: [f.sd[0] + (b.sd[0] - f.sd[0]) * k, f.sd[1] + (b.sd[1] - f.sd[1]) * k] };
+    const moment = s.record?.moment ?? 0;
+    if (moment !== this.trailMoment) {
+      this.trailMoment = moment;
+      this.trail.push(b.place.slice());
+      if (this.trail.length > 36) this.trail.shift();
+    }
+    return this.shown;
+  }
+
+  // The haze: the answer's own spread, drawn as light. The same light lies over a small area or
+  // a large one, so a sure answer is a bright spot and an unsure one a wide, faint glow.
+  haze(c, belief, m) {
+    const [bx, by] = this.toScreen(belief.place), k = radiusAt(RATE);
+    const rx = Math.max(9, k * belief.sd[0] * m), ry = Math.max(9, k * belief.sd[1] * m);
+    const dense = clamp(Math.sqrt((34 * 34) / (rx * ry)), 0.16, 1);
     c.save();
-    // the area that holds the hand at the stated rate
-    c.beginPath(); c.ellipse(bx, by, rx, ry, 0, 0, Math.PI * 2);
-    const area = c.createRadialGradient(bx, by, 0, bx, by, Math.max(rx, ry));
-    area.addColorStop(0, rgba(TEAL, 0.16)); area.addColorStop(1, rgba(TEAL, 0.03));
-    c.fillStyle = area; c.fill();
-    c.strokeStyle = rgba(TEAL, 0.62); c.lineWidth = 1.3;
-    if (unseen) c.setLineDash([5, 4]);
-    c.stroke(); c.setLineDash([]);
-    // the peak
     c.globalCompositeOperation = 'lighter';
-    const r = clamp(Math.min(rx, ry) * 0.9, 12, 46);
-    const peak = c.createRadialGradient(bx, by, 0, bx, by, r);
-    peak.addColorStop(0, rgba([190, 255, 246], 0.95)); peak.addColorStop(0.25, rgba(TEAL, 0.6)); peak.addColorStop(1, rgba(TEAL, 0));
-    c.fillStyle = peak; c.beginPath(); c.arc(bx, by, r, 0, Math.PI * 2); c.fill();
+    c.translate(bx, by); c.scale(rx, ry);
+    const light = c.createRadialGradient(0, 0, 0, 0, 0, 1.75);
+    light.addColorStop(0, rgba([170, 255, 244], 0.7 * dense)); light.addColorStop(0.3, rgba(TEAL, 0.42 * dense));
+    light.addColorStop(0.62, rgba(TEAL, 0.17 * dense)); light.addColorStop(1, rgba(TEAL, 0));
+    c.fillStyle = light; c.beginPath(); c.arc(0, 0, 1.75, 0, Math.PI * 2); c.fill();
     c.restore();
-    c.strokeStyle = rgba([210, 255, 250], 0.9); c.lineWidth = 1;
-    c.beginPath(); c.moveTo(bx - 5, by); c.lineTo(bx + 5, by); c.moveTo(bx, by - 5); c.lineTo(bx, by + 5); c.stroke();
-    if (s.showHidden && s.record) {
-      // the error: a thin line from the belief to the true hand
+  }
+
+  // The ring of doubt (the area that holds the hand at the stated rate), the path of the last
+  // answers and the peak itself.
+  peak(c, s, belief, m) {
+    const [bx, by] = this.toScreen(belief.place), k = radiusAt(RATE);
+    const rx = Math.max(7, k * belief.sd[0] * m), ry = Math.max(7, k * belief.sd[1] * m);
+    c.save();
+    c.globalCompositeOperation = 'lighter';
+    // the path of the last answers, fading
+    if (this.trail.length > 1) {
+      c.lineCap = 'round'; c.lineJoin = 'round';
+      for (let i = 1; i < this.trail.length; i++) {
+        const a = this.toScreen(this.trail[i - 1]), b = this.toScreen(this.trail[i]), f = i / this.trail.length;
+        if (Math.hypot(a[0] - b[0], a[1] - b[1]) > 0.4 * m) continue;
+        c.strokeStyle = rgba(TEAL, 0.5 * f * f); c.lineWidth = 1 + 2.2 * f;
+        c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.stroke();
+      }
+    }
+    // the ring
+    c.shadowColor = rgba(TEAL, 0.9); c.shadowBlur = 12;
+    c.strokeStyle = rgba([150, 250, 238], 0.85); c.lineWidth = 1.5;
+    c.beginPath(); c.ellipse(bx, by, rx, ry, 0, 0, Math.PI * 2); c.stroke();
+    c.shadowBlur = 0;
+    // the peak
+    const r = clamp(Math.min(rx, ry) * 0.7, 9, 20);
+    const core = c.createRadialGradient(bx, by, 0, bx, by, r);
+    core.addColorStop(0, 'rgba(255,255,255,0.98)'); core.addColorStop(0.28, rgba([170, 255, 244], 0.8)); core.addColorStop(1, rgba(TEAL, 0));
+    c.fillStyle = core; c.beginPath(); c.arc(bx, by, r, 0, Math.PI * 2); c.fill();
+    c.restore();
+    if (s.showHidden && s.record && !s.record.in_view[0]) {
+      // while the hand is hidden: a thin line from the belief to where the hand really is
       const [tx, ty] = this.toScreen(s.record.truth[0]);
-      c.strokeStyle = rgba(TEAL, 0.35); c.setLineDash([2, 4]);
+      c.strokeStyle = 'rgba(255,255,255,0.4)'; c.setLineDash([2, 4]); c.lineWidth = 1;
       c.beginPath(); c.moveTo(bx, by); c.lineTo(tx, ty); c.stroke(); c.setLineDash([]);
     }
   }
@@ -271,18 +320,22 @@ export class SceneView {
     c.lineCap = 'butt';
   }
 
+  // A hand seen from above: a wrist, a palm, four fingers and a thumb. In view it is solid and
+  // lit. Out of view it is what is really there: the same hand as a clear outline, unlit.
   hand(c, s, at, m) {
     const inView = !!s.record?.in_view?.[0];
     if (!inView && !s.showHidden) return;
+    const [x, y] = this.toScreen(at);
     if (s.own) {
       if (!inView) {
-        const [x, y] = this.toScreen(at);
-        c.strokeStyle = rgba(ORANGE, 0.5); c.setLineDash([3, 3]); c.lineWidth = 1.2;
-        c.beginPath(); c.arc(x, y, 0.045 * m, 0, Math.PI * 2); c.stroke(); c.setLineDash([]);
+        c.save();
+        c.fillStyle = rgba(ORANGE, 0.16); c.strokeStyle = 'rgba(255,205,160,0.9)'; c.lineWidth = 1.4;
+        c.beginPath(); c.arc(x, y, 0.045 * m, 0, Math.PI * 2); c.fill(); c.stroke();
+        c.restore();
       }
       return;
     }
-    const [x, y] = this.toScreen(at), u = 0.07 * m;
+    const u = 0.066 * m;
     // the hand points the way it last moved
     if (s.previous && s.record) {
       const dx = s.record.truth[0][0] - s.previous.truth[0][0], dy = s.record.truth[0][1] - s.previous.truth[0][1];
@@ -290,30 +343,41 @@ export class SceneView {
         const want = Math.atan2(dx, dy);
         let turn = want - (this.handAngle ?? want);
         turn = Math.atan2(Math.sin(turn), Math.cos(turn));
-        this.handAngle = (this.handAngle ?? want) + turn * 0.12;
+        this.handAngle = (this.handAngle ?? want) + turn * (this.calm ? 1 : 0.1);
       }
     }
+    // the pieces, each its own shape so that the fingers part
+    const pieces = [];
+    const piece = (make) => { const path = new Path2D(); make(path); pieces.push(path); };
+    piece((q) => q.roundRect(-u * 0.42, u * 0.55, u * 0.84, u * 0.85, u * 0.3));            // the wrist
+    piece((q) => q.roundRect(-u * 0.68, -u * 0.42, u * 1.36, u * 1.28, u * 0.46));           // the palm
+    [[-0.51, 0.95], [-0.17, 1.2], [0.17, 1.12], [0.5, 0.86]].forEach(([fx, len]) =>
+      piece((q) => q.roundRect(fx * u - u * 0.145, -u * 0.38 - len * u, u * 0.29, len * u + u * 0.2, u * 0.145)));
+    piece((q) => {                                                                           // the thumb
+      const t = new DOMMatrix().translate(-u * 0.62, u * 0.34).rotate(0, 0, -52);
+      const thumb = new Path2D(); thumb.roundRect(-u * 0.16, -u * 0.86, u * 0.32, u * 0.95, u * 0.16);
+      q.addPath(thumb, t);
+    });
     c.save();
     c.translate(x, y); c.rotate(this.handAngle ?? 0);
-    const body = () => {
-      // a hand seen from above: the palm, four fingers and a thumb
-      c.beginPath(); c.ellipse(0, u * 0.25, u * 0.62, u * 0.7, 0, 0, Math.PI * 2);
-      for (let k = 0; k < 4; k++) {
-        const fx = (k - 1.5) * u * 0.34, len = u * (1.25 - 0.14 * Math.abs(k - 1.4));
-        c.roundRect(fx - u * 0.13, -u * 0.35 - len, u * 0.26, len, u * 0.13);
-      }
-      c.save(); c.rotate(-0.9); c.roundRect(-u * 0.95, -u * 0.25, u * 0.28, u * 0.8, u * 0.14); c.restore();
-    };
     if (inView) {
-      c.shadowColor = rgba(ORANGE, 0.75); c.shadowBlur = 16;
-      body(); c.fillStyle = rgba(ORANGE, 0.95); c.fill();
+      c.shadowColor = rgba(ORANGE, 0.8); c.shadowBlur = 18;
+      c.fillStyle = rgba(ORANGE, 1);
+      for (const q of pieces) c.fill(q);
       c.shadowBlur = 0;
-      body(); c.strokeStyle = 'rgba(255,230,200,0.8)'; c.lineWidth = 1; c.stroke();
+      const skin = c.createLinearGradient(0, -u * 1.6, 0, u * 1.4);
+      skin.addColorStop(0, '#ffc48a'); skin.addColorStop(1, '#ff8f3a');
+      c.fillStyle = skin; c.strokeStyle = 'rgba(120,52,8,0.55)'; c.lineWidth = 1;
+      for (const q of pieces) { c.fill(q); c.stroke(q); }
     } else {
-      body(); c.fillStyle = rgba(ORANGE, 0.07); c.fill();
-      c.setLineDash([3, 3]); c.strokeStyle = rgba(ORANGE, 0.55); c.lineWidth = 1.2; c.stroke();
+      // what is really there, behind the shadow: unlit, but plain to see
+      c.shadowColor = 'rgba(0,0,0,0.9)'; c.shadowBlur = 6;
+      c.fillStyle = 'rgba(255,170,100,0.20)'; c.strokeStyle = 'rgba(255,208,165,0.92)'; c.lineWidth = 1.35;
+      for (const q of pieces) c.fill(q);
+      c.shadowBlur = 0;
+      for (const q of pieces) c.stroke(q);
     }
-    if (s.selected === 'hand') { c.setLineDash([]); c.strokeStyle = 'rgba(255,255,255,0.85)'; c.lineWidth = 1.2; c.beginPath(); c.arc(0, -u * 0.3, u * 1.75, 0, Math.PI * 2); c.stroke(); }
+    if (s.selected === 'hand') { c.strokeStyle = 'rgba(255,255,255,0.85)'; c.lineWidth = 1.2; c.beginPath(); c.arc(0, -u * 0.2, u * 2.0, 0, Math.PI * 2); c.stroke(); }
     c.restore();
   }
 
@@ -321,12 +385,11 @@ export class SceneView {
     const name = s.names[k], inView = !!s.record?.in_view?.[k];
     if (!inView && !s.showHidden) return;
     const [x, y] = this.toScreen(at), u = 0.05 * m, color = THING_COLOR[name] || [200, 200, 220];
-    const alpha = inView ? 1 : 0.5;
+    const alpha = inView ? 1 : 0.8;
     c.save();
     c.translate(x, y);
-    c.lineWidth = 1.4;
-    if (!inView) c.setLineDash([3, 3]);
-    c.strokeStyle = rgba(color, 0.95 * alpha); c.fillStyle = rgba(color, inView ? 0.22 : 0.05);
+    c.lineWidth = inView ? 1.5 : 1.25;
+    c.strokeStyle = rgba(color, 0.95 * alpha); c.fillStyle = rgba(color, inView ? 0.24 : 0.08);
     if (inView) { c.shadowColor = rgba(color, 0.55); c.shadowBlur = 10; }
     if (name === 'cup') {
       c.beginPath(); c.arc(0, 0, u, 0, Math.PI * 2); c.fill(); c.stroke();

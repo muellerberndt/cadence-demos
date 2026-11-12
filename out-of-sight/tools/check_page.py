@@ -15,7 +15,8 @@ each of them from the page's own record of its answers:
 4. move: the cup is dragged into the shadow; its record keeps the place it was last seen at;
 5. knock: the cup is tapped; its record moves to the heard place without sight.
 
-Then the parts' cards and the eight stages of "follow the position", undo and reset, the
+Then the parts' cards (each beside its part, never over it) and the eight stages of "follow the
+position", undo and reset, the
 details switch with a scene file loaded and replayed, the frame times with the brain view on,
 a phone-sized touch screen, and the Canvas2D view. Console errors, page errors and failed
 requests fail the check. The bounds below were set before the trained brain was read. Evidence
@@ -83,6 +84,11 @@ class Check:
             page.screenshot(path=str(self.shots / name))
 
 
+# Whether the open card covers none of the named parts (their buttons' boxes on the screen).
+CLEAR = """(ids) => { const card = document.getElementById('card'); if (card.hidden) return false; const a = card.getBoundingClientRect();
+  return ids.every((id) => { const el = document.querySelector(`.part[data-part="${id}"]`); if (!el) return true; const b = el.getBoundingClientRect();
+    return a.right <= b.left + 1 || b.right <= a.left + 1 || a.bottom <= b.top + 1 || b.bottom <= a.top + 1; }); }"""
+
 JS_ROWS = """([from, to]) => window.outOfSight.state.history.filter((r) => r.moment > from && r.moment <= to)
   .map((r) => ({ m: r.moment, seen: r.seen, brain: r.brain, last: r.last, kalman: r.kalman, u: r.uncertainty, inside: r.inside, lesson: r.lesson, cup: r.pins.cup || null }))"""
 
@@ -106,9 +112,14 @@ def moment(page) -> int:
 
 
 def wait_moments(page, count: int, timeout_s: float = 60.0) -> None:
+    """Wait until the brain has answered ``count`` further moments; a page that stopped says why."""
     target = moment(page) + count
-    page.wait_for_function(f"window.outOfSight.state.record && window.outOfSight.state.record.moment >= {target} && !window.outOfSight.state.pending",
+    # answered: the page's record of answers holds the moment (the next one may be on its way)
+    page.wait_for_function(f"document.body.dataset.error || (window.outOfSight.state.history.length && window.outOfSight.state.history.at(-1).moment >= {target})",
                            timeout=timeout_s * 1000)
+    error = page.evaluate("document.body.dataset.error || null")
+    if error:
+        raise RuntimeError(f"the page stopped: {error}")
 
 
 def drag(page, name: str, points: list[list[float]], *, hold: int = 0, release: bool = True, pace: float = 0.5) -> None:
@@ -280,11 +291,12 @@ def cards(page, c: Check) -> None:
         page.wait_for_timeout(80)
         text = page.evaluate("document.getElementById('card').hidden ? '' : document.getElementById('card').innerText")
         opened.append({"id": part["id"], "ok": "at this moment" in text.lower() and ("plays the role of" in text or "fibre tract" in text.lower()),
-                       "head": text.split("\n")[0][:60]})
+                       "clear": page.evaluate(CLEAR, [part["id"]]), "head": text.split("\n")[0][:60]})
     page.mouse.move(box["x"] + 4, box["y"] + box["height"] / 2)
     page.wait_for_timeout(80)
     c.add("every part of the brain explains itself on hover, with what it does at this moment", all(o["ok"] for o in opened),
           parts=len(opened), missing=[o["id"] for o in opened if not o["ok"]], heads=[o["head"] for o in opened])
+    c.add("a card stands beside its part, never over it", all(o["clear"] for o in opened), over=[o["id"] for o in opened if not o["clear"]])
     c.add("no card shows until the visitor points at something", page.evaluate("document.getElementById('card').hidden"))
     # the keyboard reaches the same cards; Escape closes
     page.focus(".part")
@@ -302,12 +314,13 @@ def cards(page, c: Check) -> None:
         stages.append(page.evaluate("""() => ({ kicker: document.querySelector('#card .kicker')?.innerText || '', title: document.querySelector('#card h3')?.innerText || '',
             live: document.querySelector('#card .live')?.innerText || '', marked: !!document.querySelector('#card .mark'),
             spots: [...window.outOfSight.brainView.spot] })"""))
+        stages[-1]["clear"] = page.evaluate(CLEAR, stages[-1]["spots"])
         page.click("#card [data-go='1']")
     c.shot(page, "follow-the-position.png")
     page.keyboard.press("Escape")
     order_ok = [s["kicker"].upper().endswith(f"{k + 1} OF 8") for k, s in enumerate(stages)]
     c.add("follow the position: eight stages in order, each with live numbers and its part ringed",
-          all(order_ok) and all(s["title"] and "AT THIS MOMENT" in s["live"].upper() and s["spots"] for s in stages),
+          all(order_ok) and all(s["title"] and "AT THIS MOMENT" in s["live"].upper() and s["spots"] and s["clear"] for s in stages),
           stages=[{"title": s["title"], "ringed": s["spots"], "baseline_mark": s["marked"]} for s in stages])
 
 
@@ -408,6 +421,10 @@ def main() -> int:
             page.wait_for_timeout(150)
             text = page.evaluate("document.getElementById('card').hidden ? '' : document.getElementById('card').innerText")
             c.shot(page, "phone.png")
+            above = page.evaluate("""(() => { const v = window.outOfSight.brainView, card = document.getElementById('card').getBoundingClientRect(), stage = document.getElementById('brain-stage').getBoundingClientRect();
+                return { brain_bottom: stage.top + v.brainBox.y + v.brainBox.h, sheet_top: card.top, brain_height: v.brainBox.h, sheet: document.body.classList.contains('sheet') }; })()""")
+            c.add("on a phone the card is a sheet from the bottom and the brain stays visible above it",
+                  above["sheet"] and above["brain_bottom"] <= above["sheet_top"] + 2 and above["brain_height"] >= 110, **above)
             page.touchscreen.tap(60, 200)
             page.wait_for_timeout(120)
             closed = page.evaluate("document.getElementById('card').hidden")

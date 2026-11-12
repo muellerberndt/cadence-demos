@@ -38,47 +38,68 @@ export const ROLE = {
 };
 const ANATOMY = { visual: 'visual cortex', somatosensory: 'somatosensory', motor: 'motor strip', association: 'association cortex',
   prefrontal: 'prefrontal cortex', place: 'parietal · entorhinal map', auditory: 'auditory cortex', hippocampus: 'hippocampus' };
+const SHORT = { visual: 'visual', somatosensory: 'body', motor: 'motor', association: 'association', prefrontal: 'prefrontal', place: 'map', auditory: 'hearing' };
 const css = (rgb, a = 1) => `rgba(${rgb.map((v) => Math.round(v * 255)).join(',')},${a})`;
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 const ease = (f) => f * f * (3 - 2 * f);
 const LEVEL_FLOOR = 0.08; // a population this quiet is drawn at its true, dim level
 const FLASH_MS = 900;
+const SIGNAL = 0.062;        // how bright a synapse's signal is drawn
+const ANATOMY_LIGHT = 0.1;   // the wiring's own faint light, as a share of a full signal
+const BLOOM = 0.8;           // how much of the blurred light is added back
+// A population where most neurons are active at once would drown its tracts in light: its
+// synapses are drawn at a lower, fixed gain.
+const DENSE = { association: 0.42, prefrontal: 0.8 };
+const GROUND = [0.024, 0.031, 0.055]; // the page's dark
+const NEURON_DEPTH = 1.3;    // the neurons sit a little nearer than the tracts: they drift a little more
+const OUTLINE_DEPTH = 0.45;  // the outline sits behind: it drifts less
 
+// A synapse is a curve from its neuron into the tract and out at its target. Its light is the
+// signal it carries, |weight x presynaptic activation|, in its source population's hue, warmer
+// where the synapse excites and cooler where it inhibits; beside it a faint constant light of
+// the weight alone, so the wiring shows at rest; and, while a settle plays, a pulse that runs
+// along it where its presynaptic neuron changed in that sweep.
 const SYNAPSE_VS = `#version 300 es
 precision highp float; precision highp int;
 layout(location=0) in float t;
 layout(location=1) in vec4 ends;
 layout(location=2) in vec4 info;   // weight, presynaptic index, unused, brightness
 layout(location=3) in vec4 ctrl;   // the curve's two control points: the bundle it joins
+layout(location=4) in vec3 tint;   // the source population's hue
 uniform sampler2D state;
 uniform int stateWidth;
 uniform vec2 viewport;
+uniform vec2 centre;
+uniform vec3 cam;                  // the view's drift: offset x, y and scale
 uniform float anatomy;
 uniform float pulseGain;
-out float vGlow; out float vSign; out float vT; out float vPulse;
+out float vGlow; out float vRest; out float vSign; out float vT; out float vPulse; out vec3 vTint;
 void main() {
   int i = int(info.y + 0.5);
   vec4 s = texelFetch(state, ivec2(i % stateWidth, i / stateWidth), 0);
-  float message = info.x * s.r;
+  float message = abs(info.x * s.r) * info.w;
   vec2 a = ends.xy, b = ends.zw, c1 = ctrl.xy, c2 = ctrl.zw;
   float u = 1.0 - t;
   vec2 p = u * u * u * a + 3.0 * u * u * t * c1 + 3.0 * u * t * t * c2 + t * t * t * b;
+  p = centre + (p - centre) * cam.z + cam.xy;
   vec2 clip = p / viewport * 2.0 - 1.0;
   gl_Position = vec4(clip.x, -clip.y, 0.0, 1.0);
-  vGlow = clamp(abs(message) * info.w, 0.0, 1.0) + abs(info.x) * anatomy;
-  vSign = message >= 0.0 ? 1.0 : -1.0;
+  vGlow = pow(clamp(message, 0.0, 1.0), 0.72);
+  vRest = min(abs(info.x) * info.w * anatomy, 0.12);
+  vSign = info.x >= 0.0 ? 1.0 : -1.0;
   vT = t;
   vPulse = clamp(abs(info.x) * s.g * pulseGain * info.w, 0.0, 1.0);
+  vTint = tint;
 }`;
 const SYNAPSE_FS = `#version 300 es
 precision highp float;
-in float vGlow; in float vSign; in float vT; in float vPulse;
+in float vGlow; in float vRest; in float vSign; in float vT; in float vPulse; in vec3 vTint;
 uniform vec3 excite; uniform vec3 inhibit; uniform vec3 pulseColor; uniform float progress;
 out vec4 color;
 void main() {
-  vec3 base = vSign > 0.0 ? excite : inhibit;
-  float head = exp(-pow((vT - progress) * 7.0, 2.0)) * vPulse;
-  color = vec4(base * vGlow + pulseColor * head, 1.0);
+  vec3 base = mix(vSign > 0.0 ? excite : inhibit, vTint, 0.55);
+  float head = exp(-pow((vT - progress) * 6.0, 2.0)) * vPulse;
+  color = vec4(base * vGlow + mix(vTint, vec3(0.45, 0.55, 0.95), 0.6) * vRest + pulseColor * head * 1.6, 1.0);
 }`;
 const NEURON_VS = `#version 300 es
 precision highp float; precision highp int;
@@ -88,20 +109,25 @@ layout(location=2) in vec3 hue;
 uniform sampler2D state;
 uniform int stateWidth;
 uniform vec2 viewport;
+uniform vec2 centre;
+uniform vec3 cam;
 uniform float dpr;
 uniform float maxPoint;
 out vec3 vHue; out float vLevel; out float vChange;
 void main() {
   int i = int(meta.x + 0.5);
   vec4 s = texelFetch(state, ivec2(i % stateWidth, i / stateWidth), 0);
-  vec2 clip = position / viewport * 2.0 - 1.0;
+  vec2 p = centre + (position - centre) * cam.z + cam.xy;
+  vec2 clip = p / viewport * 2.0 - 1.0;
   gl_Position = vec4(clip.x, -clip.y, 0.0, 1.0);
-  gl_PointSize = min(maxPoint, meta.y * dpr * 4.8 * (1.0 + 0.18 * clamp(s.b, 0.0, 1.0)));
+  gl_PointSize = min(maxPoint, meta.y * dpr * cam.z * 5.2 * (1.0 + 0.22 * clamp(s.b, 0.0, 1.0)));
   vHue = hue; vLevel = s.b; vChange = s.a;
 }`;
+// A neuron: a core lit by its activity and a halo; `light` 1 adds it to the light that blooms.
 const NEURON_FS = `#version 300 es
 precision highp float;
 in vec3 vHue; in float vLevel; in float vChange;
+uniform float light;
 out vec4 color;
 void main() {
   vec2 q = gl_PointCoord * 2.0 - 1.0;
@@ -109,17 +135,17 @@ void main() {
   if (r > 1.0) discard;
   float level = clamp(vLevel, -0.2, 1.0);
   float lit = smoothstep(0.0, 0.75, level);
-  vec3 dim = vHue * 0.2 + vec3(0.035, 0.04, 0.07);
-  vec3 hot = mix(vHue, vec3(1.0), smoothstep(0.55, 1.0, level) * 0.7);
+  vec3 dim = vHue * 0.36 + vec3(0.04, 0.05, 0.085);
+  vec3 hot = mix(vHue, vec3(1.0), smoothstep(0.5, 1.0, level) * 0.75);
   vec3 c = mix(dim, hot, lit);
   if (level < 0.0) c = dim * (1.0 + level * 2.5);
-  float coreR = 0.25 + 0.15 * lit;
+  float coreR = 0.26 + 0.16 * lit;
   float core = 1.0 - smoothstep(coreR - 0.04, coreR + 0.03, r);
-  float halo = exp(-r * r * 9.0) * (0.15 + 0.85 * lit) + clamp(vChange * 6.0, 0.0, 0.6) * exp(-r * r * 5.0);
-  float a = clamp(core * (0.55 + 0.45 * lit) + halo, 0.0, 1.0);
+  float halo = exp(-r * r * 8.0) * (0.2 + 0.8 * lit) + clamp(vChange * 6.0, 0.0, 0.7) * exp(-r * r * 4.5);
+  float a = clamp(core * (0.6 + 0.4 * lit) + halo, 0.0, 1.0);
+  if (light > 0.5) { color = vec4(hot * (lit * 0.9 + clamp(vChange * 4.0, 0.0, 0.5)) * exp(-r * r * 3.0), 1.0); return; }
   color = vec4(c * a, a);
 }`;
-// The synapses' summed light, tone mapped: dense bundles stay bright without clipping to white.
 const QUAD_VS = `#version 300 es
 out vec2 uv;
 void main() {
@@ -127,26 +153,36 @@ void main() {
   uv = p;
   gl_Position = vec4(p * 2.0 - 1.0, 0.0, 1.0);
 }`;
+// One pass of a separable blur: nine taps along `step`, the weights of a Gaussian.
+const BLUR_FS = `#version 300 es
+precision highp float;
+in vec2 uv;
+uniform sampler2D source;
+uniform vec2 step;
+out vec4 color;
+void main() {
+  vec3 sum = texture(source, uv).rgb * 0.2270;
+  sum += (texture(source, uv + step * 1.3846).rgb + texture(source, uv - step * 1.3846).rgb) * 0.3162;
+  sum += (texture(source, uv + step * 3.2308).rgb + texture(source, uv - step * 3.2308).rgb) * 0.0703;
+  color = vec4(sum, 1.0);
+}`;
+// The light and its bloom, tone mapped together: dense bundles stay bright without clipping to
+// white, and what is bright glows into the dark around it.
 const QUAD_FS = `#version 300 es
 precision highp float;
 in vec2 uv;
 uniform sampler2D light;
+uniform sampler2D bloom;
+uniform sampler2D haze;
 uniform float exposure;
+uniform float bloomGain;
+uniform vec3 ground;
 out vec4 color;
-uniform vec2 texel;
 void main() {
-  vec3 x = texture(light, uv).rgb * exposure;
-  // bloom: the same light, gathered from a ring around the pixel, adds a soft glow to bright tracts
-  vec3 b = vec3(0.0);
-  for (int k = 0; k < 12; k++) {
-    float a = 6.2831853 * float(k) / 12.0;
-    vec2 d = vec2(cos(a), sin(a)) * texel;
-    b += texture(light, uv + d * 3.0).rgb + 0.6 * texture(light, uv + d * 7.0).rgb;
-  }
-  x += b * exposure * 0.035;
+  vec3 x = texture(light, uv).rgb * exposure + texture(bloom, uv).rgb * bloomGain + texture(haze, uv).rgb * bloomGain * 0.9;
   float l = max(max(x.r, x.g), x.b);
   vec3 c = l > 0.0 ? x * ((1.0 - exp(-l)) / l) : vec3(0.0);
-  color = vec4(c, 1.0);
+  color = vec4(ground + c, 1.0);
 }`;
 
 function shader(gl, type, source) {
@@ -198,6 +234,11 @@ export class BrainView {
     this.parts = [];       // what explains itself: regions, the records and the tracts
     this.spot = new Set(); // the parts a card or the tutorial points at
     this.onPart = null;    // (id, 'enter' | 'leave' | 'tap', event) from the pointer or the keyboard
+    this.cam = { x: 0, y: 0, s: 1 };
+    this.inset = 0;        // room kept free at the bottom of the stage, for a sheet
+    this.leader = null;    // a thin line from an open card to its part: { rect, id }
+    this.settled = null;   // the latest settle's record: the largest change at every sweep
+    this.resting = false;  // the moment on show needed no sweep: the state before it stood
     this.reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
     new ResizeObserver(() => this.resize()).observe(this.stage);
     // a tract has no box of its own: the pointer is tested against its curve
@@ -307,7 +348,14 @@ export class BrainView {
 
   setWeights(weight) {
     this.weight = Float32Array.from(weight);
-    if (this.gl) this.uploadSynapses();
+    if (this.gl) this.uploadSynapses(true);
+  }
+
+  /** Keep `pixels` at the bottom of the stage free (a sheet stands there): the brain moves up. */
+  setInset(pixels) {
+    if (Math.abs((this.inset || 0) - pixels) < 2) return;
+    this.inset = pixels;
+    if (this.brain && this.width) this.layout();
   }
 
   // -- layout in CSS pixels
@@ -334,12 +382,18 @@ export class BrainView {
     const hue = this.hue = new Float32Array(3 * n);
     this.labels = []; this.labelsPlaced = false;
     this.glows = [];
-    const pad = Math.max(10, Math.round(W * 0.02));
-    const bw = Math.min(W - 2 * pad, (H - 2 * pad - 14) * 1.45), bh = bw / 1.45;
-    const bx = (W - bw) / 2, by = (H - bh) / 2 + 4;
+    // The brain fills its pane: as wide as the pane, and as tall as a brain may be (the cortex
+    // with the cerebellum and the stem below it spans 1.06 of the box's height). `inset` is
+    // room kept free at the bottom for a sheet.
+    const pad = Math.max(8, Math.round(W * 0.014)), above = 36, below = this.inset ? this.inset + 6 : 40;
+    const room = Math.max(160, H - above - below);
+    const aspect = clamp((W - 2 * pad) / (room / 1.06), 1.1, 1.5);
+    const bw = Math.min(W - 2 * pad, (room / 1.06) * aspect), bh = bw / aspect;
+    const bx = (W - bw) / 2, by = above + (room - bh * 1.06) / 2;
     const at = (u, v) => [bx + u * bw, by + v * bh];
     this.brainBox = { x: bx, y: by, w: bw, h: bh };
-    const unitR = clamp(bw * 0.0085, 2.2, 7);
+    const unitR = clamp(bw * 0.0088, 2.2, 7.5);
+    this.compact = bw < 440; // a small brain: short labels, no settle trace
 
     const ellipse = (members, cx, cy, rx, ry) => {
       // a hexagonal grid clipped to the ellipse, with at least as many places as members
@@ -413,10 +467,10 @@ export class BrainView {
         glow(r, 0.35, 0.34, 0.05, 0.27); label(r, 0.215, 0.03);
       } else if (r.role === 'place' && kind === 'axes') {
         // the place answer over the parietal region: x units across, y units up, as a map's axes
-        line(row(0), 0.585, 0.335, 0.745, 0.335);
-        if (rows > 1) line(row(1), 0.565, 0.31, 0.565, 0.085);
-        this.placeBox = { region: r.index, x0: at(0.585, 0)[0], x1: at(0.745, 0)[0], y0: at(0, 0.31)[1], y1: at(0, 0.085)[1] };
-        glow(r, 0.655, 0.21, 0.11, 0.16); label(r, 0.61, 0.03);
+        line(row(0), 0.575, 0.345, 0.765, 0.345);
+        if (rows > 1) line(row(1), 0.553, 0.318, 0.553, 0.075);
+        this.placeBox = { region: r.index, x0: at(0.575, 0)[0], x1: at(0.765, 0)[0], y0: at(0, 0.318)[1], y1: at(0, 0.075)[1] };
+        glow(r, 0.66, 0.2, 0.13, 0.18); label(r, 0.61, 0.03);
       } else if (r.role === 'place' && kind === 'grid') {
         const { width: gw, height: gh } = r.layout;
         r.neurons.forEach((i, k) => {
@@ -511,13 +565,20 @@ export class BrainView {
   }
 
   /** Play a moment's settle sweep by sweep (the worker's exact replay). */
-  playWave(frames, count, sweeps, of) {
-    if (!this.brain || !count || this.reduced) return false;
-    if (this.wave) return false; // one wave at a time: a newer settle waits for the next one
+  playWave(frames, count, sweeps, of, move = null) {
+    if (!this.brain || !count) return false;
+    // the settle's own record, for the trace beside the readout: the largest change of any
+    // neuron at every sweep
+    if (move) this.settled = { move: Float32Array.from(move), of, sweeps: sweeps.slice(), at: performance.now() };
+    if (this.reduced || this.wave) return false; // one wave at a time: a newer settle waits for the next one
     const n = this.n, list = [];
     for (let k = 0; k < count; k++) list.push(frames.subarray(k * n, (k + 1) * n));
     this.rescale(list);
-    this.wave = { frames: [Float32Array.from(this.display), ...list], sweeps: [0, ...sweeps], of, head: 0 };
+    const all = [Float32Array.from(this.display), ...list];
+    // the pulses are drawn relative to the largest change between two of the wave's frames
+    let top = 1e-5;
+    for (let k = 1; k < all.length; k++) for (let j = 0; j < n; j++) top = Math.max(top, Math.abs(all[k][j] - all[k - 1][j]));
+    this.wave = { frames: all, sweeps: [0, ...sweeps], of, head: 0, top };
     return true;
   }
 
@@ -552,34 +613,40 @@ export class BrainView {
     this.stateWidth = 1024;
     this.synapseVAO = gl.createVertexArray();
     this.neuronVAO = gl.createVertexArray();
-    this.buffers = { t: gl.createBuffer(), ends: gl.createBuffer(), info: gl.createBuffer(), ctrl: gl.createBuffer(), position: gl.createBuffer(), meta: gl.createBuffer(), hue: gl.createBuffer() };
+    this.buffers = { t: gl.createBuffer(), ends: gl.createBuffer(), info: gl.createBuffer(), ctrl: gl.createBuffer(), tint: gl.createBuffer(),
+      position: gl.createBuffer(), meta: gl.createBuffer(), hue: gl.createBuffer() };
     this.maxPoint = gl.getParameter(gl.ALIASED_POINT_SIZE_RANGE)[1] || 64;
     this.hdr = !!(gl.getExtension('EXT_color_buffer_float') || gl.getExtension('EXT_color_buffer_half_float'));
     if (this.hdr) {
       this.compositeProgram = program(gl, QUAD_VS, QUAD_FS);
+      this.blurProgram = program(gl, QUAD_VS, BLUR_FS);
       this.quadVAO = gl.createVertexArray();
-      this.fbo = gl.createFramebuffer();
-      this.lightTex = gl.createTexture();
-      this.fboSize = [0, 0];
+      // the light at full size; its bloom at a quarter and its haze at an eighth, two buffers each
+      this.targets = ['light', 'bloomA', 'bloomB', 'hazeA', 'hazeB'].map((name) => ({ name, fbo: gl.createFramebuffer(), tex: gl.createTexture(), w: 0, h: 0 }));
     }
     this.canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); this.use2D('context lost'); });
   }
 
-  // The off-screen buffer the synapses add their light into, at the canvas's size.
-  lightBuffer() {
-    const gl = this.gl, w = this.canvas.width, h = this.canvas.height;
-    if (this.fboSize[0] === w && this.fboSize[1] === h) return true;
-    gl.bindTexture(gl.TEXTURE_2D, this.lightTex);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA16F, w, h, 0, gl.RGBA, gl.HALF_FLOAT, null);
-    for (const p of [gl.TEXTURE_MIN_FILTER, gl.TEXTURE_MAG_FILTER]) gl.texParameteri(gl.TEXTURE_2D, p, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, this.fbo);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.lightTex, 0);
-    const ok = gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE;
+  // The off-screen buffers the light is gathered and blurred in, at the canvas's size.
+  lightBuffers() {
+    const gl = this.gl, W = this.canvas.width, H = this.canvas.height;
+    const sizes = [[W, H], [W >> 2, H >> 2], [W >> 2, H >> 2], [W >> 3, H >> 3], [W >> 3, H >> 3]];
+    let ok = true;
+    this.targets.forEach((t, k) => {
+      const [w, h] = sizes[k].map((v) => Math.max(2, v));
+      if (t.w === w && t.h === h) return;
+      gl.bindTexture(gl.TEXTURE_2D, t.tex);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA16F, w, h, 0, gl.RGBA, gl.HALF_FLOAT, null);
+      for (const p of [gl.TEXTURE_MIN_FILTER, gl.TEXTURE_MAG_FILTER]) gl.texParameteri(gl.TEXTURE_2D, p, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, t.fbo);
+      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t.tex, 0);
+      ok = ok && gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE;
+      t.w = w; t.h = h;
+    });
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    if (!ok) { this.hdr = false; return false; }
-    this.fboSize = [w, h];
-    return true;
+    if (!ok) this.hdr = false;
+    return ok;
   }
 
   uploadLayout() {
@@ -603,83 +670,131 @@ export class BrainView {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   }
 
-  uploadSynapses() {
+  // What each synapse's light is multiplied by: a wide fan of synapses glows fainter per synapse
+  // than a narrow one, and every block is read against its own mean weight.
+  gains() {
+    // a small brain packs the same curves into fewer pixels: its light is turned down with its size
+    const size = clamp(Math.pow((this.brainBox?.w || this.width) / 640, 1.3), 0.22, 1.25);
+    return this.blockNames.map((name, b) => {
+      const fan = clamp(Math.sqrt(1600 / Math.max(64, this.blockCount[b])), 0.3, 1.6);
+      const from = this.regions[Number(name.split('>')[0])]?.role;
+      return (0.5 / (this.blockScale[b] * 0.6 || 1)) * fan * size * SIGNAL * (DENSE[from] ?? 1);
+    });
+  }
+
+  uploadSynapses(weightsOnly = false) {
     const gl = this.gl, m = this.pre.length;
     if (!this.pos || !gl) return;
-    this.segments = m > 120000 ? 6 : 8;
+    const gains = this.gains();
+    const info = new Float32Array(4 * m);
+    for (let k = 0; k < m; k++) { info[4 * k] = this.weight[k]; info[4 * k + 1] = this.pre[k]; info[4 * k + 3] = gains[this.blockOf[k]]; }
+    if (weightsOnly && this.synapseCount === m) { // a lesson changed weights: the curves stand as they are
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.info); gl.bufferSubData(gl.ARRAY_BUFFER, 0, info);
+      return;
+    }
+    this.segments = m > 120000 ? 6 : 10;
     const t = new Float32Array(2 * this.segments);
     for (let k = 0; k < this.segments; k++) { t[2 * k] = k / this.segments; t[2 * k + 1] = (k + 1) / this.segments; }
-    const ends = new Float32Array(4 * m), info = new Float32Array(4 * m);
-    // a wide fan of synapses glows fainter per synapse than a narrow one
-    const gains = this.blockNames.map((name, b) => {
-      const fan = clamp(Math.sqrt(1600 / Math.max(64, this.blockCount[b])), 0.3, 1.6);
-      return (0.5 / (this.blockScale[b] * 0.6 || 1)) * fan * clamp(this.width / 640, 0.6, 1.2) * 0.032;
-    });
+    const ends = new Float32Array(4 * m), tint = new Float32Array(3 * m);
     for (let k = 0; k < m; k++) {
-      const p = this.pre[k], q = this.post[k], b = this.blockOf[k];
+      const p = this.pre[k], q = this.post[k];
       ends[4 * k] = this.pos[2 * p]; ends[4 * k + 1] = this.pos[2 * p + 1]; ends[4 * k + 2] = this.pos[2 * q]; ends[4 * k + 3] = this.pos[2 * q + 1];
-      info[4 * k] = this.weight[k]; info[4 * k + 1] = p; info[4 * k + 2] = 0; info[4 * k + 3] = gains[b];
+      tint.set(COLOR[this.regions[this.regionOf[p]]?.role] || COLOR.other, 3 * k);
     }
     gl.bindVertexArray(this.synapseVAO);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.t); gl.bufferData(gl.ARRAY_BUFFER, t, gl.STATIC_DRAW);
     gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 1, gl.FLOAT, false, 0, 0); gl.vertexAttribDivisor(0, 0);
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.ends); gl.bufferData(gl.ARRAY_BUFFER, ends, gl.STATIC_DRAW);
-    gl.enableVertexAttribArray(1); gl.vertexAttribPointer(1, 4, gl.FLOAT, false, 0, 0); gl.vertexAttribDivisor(1, 1);
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.info); gl.bufferData(gl.ARRAY_BUFFER, info, gl.DYNAMIC_DRAW);
-    gl.enableVertexAttribArray(2); gl.vertexAttribPointer(2, 4, gl.FLOAT, false, 0, 0); gl.vertexAttribDivisor(2, 1);
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.ctrl); gl.bufferData(gl.ARRAY_BUFFER, this.ctrl, gl.STATIC_DRAW);
-    gl.enableVertexAttribArray(3); gl.vertexAttribPointer(3, 4, gl.FLOAT, false, 0, 0); gl.vertexAttribDivisor(3, 1);
+    const instanced = (buffer, data, loc, width, usage = gl.STATIC_DRAW) => {
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer); gl.bufferData(gl.ARRAY_BUFFER, data, usage);
+      gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, width, gl.FLOAT, false, 0, 0); gl.vertexAttribDivisor(loc, 1);
+    };
+    instanced(this.buffers.ends, ends, 1, 4);
+    instanced(this.buffers.info, info, 2, 4, gl.DYNAMIC_DRAW);
+    instanced(this.buffers.ctrl, this.ctrl, 3, 4);
+    instanced(this.buffers.tint, tint, 4, 3);
     gl.bindVertexArray(null);
     this.synapseCount = m;
   }
 
   drawGL(progress) {
     const gl = this.gl, s = this.stateData, n = this.n, last = this.levelScale.length - 1;
+    const changeGain = this.wave ? 1 / this.wave.top : 1;
     for (let i = 0; i < n; i++) {
       const scale = this.levelScale[this.regionOf[i] < 0 ? last : this.regionOf[i]];
-      s[4 * i] = this.display[i]; s[4 * i + 1] = this.change[i];
-      s[4 * i + 2] = this.display[i] / scale; s[4 * i + 3] = this.change[i] / scale;
+      s[4 * i] = this.display[i]; s[4 * i + 1] = this.change[i] * changeGain;
+      s[4 * i + 2] = this.display[i] / scale; s[4 * i + 3] = this.wave ? this.change[i] * changeGain * 0.25 : this.change[i] / scale;
     }
     gl.bindTexture(gl.TEXTURE_2D, this.stateTex);
     gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, this.stateWidth, this.stateHeight, gl.RGBA, gl.FLOAT, s);
-    const hdr = this.hdr && this.lightBuffer();
-    gl.viewport(0, 0, this.canvas.width, this.canvas.height);
-    if (hdr) { gl.bindFramebuffer(gl.FRAMEBUFFER, this.fbo); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); }
-    else { gl.clearColor(0.027, 0.035, 0.063, 1); gl.clear(gl.COLOR_BUFFER_BIT); }
+    const hdr = this.hdr && this.lightBuffers();
+    const cam = this.cam, b = this.brainBox, cx = b.x + b.w / 2, cy = b.y + b.h / 2;
+    const W = this.canvas.width, H = this.canvas.height;
+    gl.viewport(0, 0, W, H);
+    if (hdr) { gl.bindFramebuffer(gl.FRAMEBUFFER, this.targets[0].fbo); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); }
+    else { gl.clearColor(...GROUND, 1); gl.clear(gl.COLOR_BUFFER_BIT); }
     gl.enable(gl.BLEND);
+    // the synapses' light
     const sp = this.synapseProgram;
     gl.useProgram(sp.p);
     gl.blendFunc(gl.ONE, gl.ONE);
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, this.stateTex);
     gl.uniform1i(sp.u.state, 0); gl.uniform1i(sp.u.stateWidth, this.stateWidth);
     gl.uniform2f(sp.u.viewport, this.width, this.height);
-    gl.uniform1f(sp.u.anatomy, 0.05 / Math.max(1, Math.sqrt(this.synapseCount / 2000)));
-    gl.uniform1f(sp.u.pulseGain, this.reduced || !this.wave ? 0 : 9); // pulses run while a settle plays
+    gl.uniform2f(sp.u.centre, cx, cy); gl.uniform3f(sp.u.cam, cam.x, cam.y, cam.s);
+    gl.uniform1f(sp.u.anatomy, ANATOMY_LIGHT);
+    gl.uniform1f(sp.u.pulseGain, this.reduced || !this.wave ? 0 : 14); // pulses run while a settle plays
     gl.uniform1f(sp.u.progress, progress);
     gl.uniform3fv(sp.u.excite, COLOR.excite); gl.uniform3fv(sp.u.inhibit, COLOR.inhibit); gl.uniform3fv(sp.u.pulseColor, COLOR.pulse);
     gl.bindVertexArray(this.synapseVAO);
     gl.drawArraysInstanced(gl.LINES, 0, 2 * this.segments, this.synapseCount);
+    const np = this.neuronProgram;
+    const neurons = (light, depth) => {
+      gl.useProgram(np.p);
+      gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, this.stateTex);
+      gl.uniform1i(np.u.state, 0); gl.uniform1i(np.u.stateWidth, this.stateWidth);
+      gl.uniform2f(np.u.viewport, this.width, this.height);
+      gl.uniform2f(np.u.centre, cx, cy); gl.uniform3f(np.u.cam, cam.x * depth, cam.y * depth, cam.s);
+      gl.uniform1f(np.u.dpr, this.dpr); gl.uniform1f(np.u.maxPoint, this.maxPoint);
+      gl.uniform1f(np.u.light, light);
+      gl.bindVertexArray(this.neuronVAO);
+      gl.drawArrays(gl.POINTS, 0, n);
+    };
     if (hdr) {
-      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-      gl.clearColor(0.027, 0.035, 0.063, 1); gl.clear(gl.COLOR_BUFFER_BIT);
+      // the neurons' own light joins the synapses' before it blooms
+      gl.blendFunc(gl.ONE, gl.ONE);
+      neurons(1, NEURON_DEPTH);
+      // the bloom: the light blurred at a quarter of the size, and the haze at an eighth
+      const bp = this.blurProgram, [light, a1, a2, h1, h2] = this.targets;
+      gl.disable(gl.BLEND);
+      gl.useProgram(bp.p);
+      gl.bindVertexArray(this.quadVAO);
+      gl.activeTexture(gl.TEXTURE1);
+      gl.uniform1i(bp.u.source, 1);
+      const blur = (from, to, dx, dy) => {
+        gl.bindFramebuffer(gl.FRAMEBUFFER, to.fbo); gl.viewport(0, 0, to.w, to.h);
+        gl.bindTexture(gl.TEXTURE_2D, from.tex);
+        gl.uniform2f(bp.u.step, dx / from.w, dy / from.h);
+        gl.drawArrays(gl.TRIANGLES, 0, 3);
+      };
+      blur(light, a1, 2, 0); blur(a1, a2, 0, 1); blur(a2, a1, 1.5, 0); blur(a1, a2, 0, 1.5);
+      blur(a2, h1, 2, 0); blur(h1, h2, 0, 1.5); blur(h2, h1, 2, 0); blur(h1, h2, 0, 2);
+      // the light, its bloom and its haze together, tone mapped
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, W, H);
       const cp = this.compositeProgram;
       gl.useProgram(cp.p);
-      gl.blendFunc(gl.ONE, gl.ONE);
-      gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, this.lightTex);
-      gl.uniform1i(cp.u.light, 1); gl.uniform1f(cp.u.exposure, 1.0);
-      gl.uniform2f(cp.u.texel, 1 / this.canvas.width, 1 / this.canvas.height);
-      gl.bindVertexArray(this.quadVAO);
+      gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, light.tex);
+      gl.activeTexture(gl.TEXTURE2); gl.bindTexture(gl.TEXTURE_2D, a2.tex);
+      gl.activeTexture(gl.TEXTURE3); gl.bindTexture(gl.TEXTURE_2D, h2.tex);
+      gl.uniform1i(cp.u.light, 1); gl.uniform1i(cp.u.bloom, 2); gl.uniform1i(cp.u.haze, 3);
+      gl.uniform1f(cp.u.exposure, 1.0); gl.uniform1f(cp.u.bloomGain, BLOOM);
+      gl.uniform3fv(cp.u.ground, GROUND);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       gl.activeTexture(gl.TEXTURE0);
+      gl.enable(gl.BLEND);
     }
-    const np = this.neuronProgram;
-    gl.useProgram(np.p);
+    // the neurons themselves, crisp, a little nearer than the tracts
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-    gl.uniform1i(np.u.state, 0); gl.uniform1i(np.u.stateWidth, this.stateWidth);
-    gl.uniform2f(np.u.viewport, this.width, this.height);
-    gl.uniform1f(np.u.dpr, this.dpr); gl.uniform1f(np.u.maxPoint, this.maxPoint);
-    gl.bindVertexArray(this.neuronVAO);
-    gl.drawArrays(gl.POINTS, 0, n);
+    neurons(0, NEURON_DEPTH);
     gl.bindVertexArray(null);
   }
 
@@ -700,7 +815,8 @@ export class BrainView {
   draw2D() {
     const c = this.ctx2, n = this.n, dpr = this.dpr, last = this.levelScale.length - 1;
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
-    c.fillStyle = '#07090f'; c.fillRect(0, 0, this.width, this.height);
+    c.fillStyle = '#06080e'; c.fillRect(0, 0, this.width, this.height);
+    this.view(c, 1);
     const levels = 6, paths = [[], []];
     for (let b = 0; b < levels; b++) { paths[0].push(new Path2D()); paths[1].push(new Path2D()); }
     const scale = this.peakMax || 1;
@@ -727,6 +843,7 @@ export class BrainView {
       if (rad < 2.2) c.fillRect(this.pos[2 * i] - rad, this.pos[2 * i + 1] - rad, 2 * rad, 2 * rad);
       else { c.beginPath(); c.arc(this.pos[2 * i], this.pos[2 * i + 1], rad, 0, Math.PI * 2); c.fill(); }
     }
+    c.restore();
   }
 
   // -- one frame
@@ -737,9 +854,9 @@ export class BrainView {
     let progress = 0;
     const w = this.wave;
     if (w) {
-      // one recorded sweep every 45 ms, eased from one to the next
+      // one recorded sweep every 70 ms, eased from one to the next; a pulse runs each tract per sweep
       const limit = w.frames.length - 1;
-      w.head = Math.min(limit, w.head + dt / 45);
+      w.head = Math.min(limit, w.head + dt / 70);
       const i = Math.min(limit, Math.floor(w.head)), f = w.head - i;
       const a = w.frames[i], b = w.frames[Math.min(limit, i + 1)], e = ease(f);
       for (let j = 0; j < this.n; j++) { this.display[j] = a[j] + (b[j] - a[j]) * e; this.change[j] = Math.abs(b[j] - a[j]); }
@@ -751,7 +868,14 @@ export class BrainView {
         const d = this.target[j] - this.display[j];
         this.display[j] += d * k; this.change[j] = Math.abs(d) * 0.2;
       }
-      progress = (now % 700) / 700;
+    }
+    // the view drifts a little, slowly, and the layers part: the outline behind, the neurons in front
+    const t = now / 1000;
+    this.cam = this.reduced ? { x: 0, y: 0, s: 1 } : { x: 5 * Math.sin(t / 4.7), y: 3.2 * Math.sin(t / 6.1 + 1.3), s: 1 + 0.007 * Math.sin(t / 8.3) };
+    if (this.partsRoot && this.brainBox) {
+      const b = this.brainBox;
+      this.partsRoot.style.transformOrigin = `${b.x + b.w / 2}px ${b.y + b.h / 2}px`;
+      this.partsRoot.style.transform = `translate(${(this.cam.x * NEURON_DEPTH).toFixed(2)}px, ${(this.cam.y * NEURON_DEPTH).toFixed(2)}px) scale(${this.cam.s.toFixed(4)})`;
     }
     if (this.gl) {
       this.drawGL(progress);
@@ -764,9 +888,23 @@ export class BrainView {
 
   // -- the overlay: the outline, the labels, the records, a lesson's changes, the parts pointed at
 
-  // The outline of a brain seen from the side (front to the left). It glows gold for the half
-  // second after a lesson that changed synapses: the learning state, on.
-  silhouette(c, learning = 0) {
+  // The view's drift for a layer at `depth`: saves the context; the caller restores it.
+  view(c, depth) {
+    const b = this.brainBox, cx = b.x + b.w / 2, cy = b.y + b.h / 2, k = this.cam;
+    c.save();
+    c.translate(cx + k.x * depth, cy + k.y * depth); c.scale(k.s, k.s); c.translate(-cx, -cy);
+  }
+
+  /** Where a point of a layer stands on the stage at this frame. */
+  onStage(x, y, depth) {
+    const b = this.brainBox, cx = b.x + b.w / 2, cy = b.y + b.h / 2, k = this.cam;
+    return [cx + k.x * depth + (x - cx) * k.s, cy + k.y * depth + (y - cy) * k.s];
+  }
+
+  // The outline of a brain seen from the side (front to the left): the frame the populations sit
+  // in. Its light follows the brain's mean activity, and it glows gold for the half second after
+  // a lesson that changed synapses: the learning state, on.
+  silhouette(c, learning = 0, level = 0) {
     const b = this.brainBox;
     if (!b) return;
     const P = (u, v) => [b.x + u * b.w, b.y + v * b.h];
@@ -778,27 +916,49 @@ export class BrainView {
         c.quadraticCurveTo(...P(u0, v0), ...P((u0 + u1) / 2, (v0 + v1) / 2));
       }
     };
+    const cortex = [[0.06, 0.52], [0.02, 0.36], [0.08, 0.16], [0.24, 0.04], [0.46, 0.0], [0.68, 0.03], [0.86, 0.14], [0.97, 0.34],
+      [0.98, 0.56], [0.93, 0.72], [0.80, 0.80], [0.62, 0.82], [0.50, 0.92], [0.36, 0.86], [0.22, 0.80], [0.10, 0.70], [0.06, 0.52]];
     c.save();
-    c.lineWidth = 1.2;
-    curve([[0.06, 0.52], [0.02, 0.36], [0.08, 0.16], [0.24, 0.04], [0.46, 0.0], [0.68, 0.03], [0.86, 0.14], [0.97, 0.34],
-      [0.98, 0.56], [0.93, 0.72], [0.80, 0.80], [0.62, 0.82], [0.50, 0.92], [0.36, 0.86], [0.22, 0.80], [0.10, 0.70], [0.06, 0.52]]);
-    c.closePath();
-    const g = c.createRadialGradient(...P(0.5, 0.42), 10, ...P(0.5, 0.42), b.w * 0.6);
-    g.addColorStop(0, 'rgba(60,70,110,0.10)'); g.addColorStop(1, 'rgba(20,24,40,0.02)');
-    c.fillStyle = g; c.fill();
-    c.strokeStyle = 'rgba(150,165,210,0.22)'; c.stroke();
-    if (learning > 0) {
-      c.save(); c.shadowColor = 'rgba(255,206,102,0.9)'; c.shadowBlur = 18 * learning;
-      c.strokeStyle = `rgba(255,206,102,${0.55 * learning})`; c.lineWidth = 1.6; c.stroke(); c.restore();
-    }
+    // a soft light behind the whole brain
+    const [mx, my] = P(0.5, 0.45);
+    const air = c.createRadialGradient(mx, my, b.w * 0.05, mx, my, b.w * 0.78);
+    air.addColorStop(0, `rgba(72,96,190,${0.2 + 0.16 * level})`); air.addColorStop(0.55, `rgba(46,62,140,${0.08 + 0.06 * level})`); air.addColorStop(1, 'rgba(20,28,70,0)');
+    c.fillStyle = air; c.fillRect(0, 0, this.width, this.height);
+    // the cortex: a body with depth, lit from within
+    curve(cortex); c.closePath();
+    const body = c.createRadialGradient(...P(0.46, 0.34), b.w * 0.04, ...P(0.5, 0.45), b.w * 0.62);
+    body.addColorStop(0, 'rgba(84,100,176,0.26)'); body.addColorStop(0.6, 'rgba(40,52,104,0.16)'); body.addColorStop(1, 'rgba(14,18,40,0.10)');
+    c.fillStyle = body; c.fill();
+    c.save();
+    c.shadowColor = learning > 0 ? `rgba(255,206,102,${0.5 + 0.4 * learning})` : 'rgba(110,140,255,0.6)'; c.shadowBlur = 16 + 10 * learning;
+    c.lineWidth = 1.6; c.strokeStyle = learning > 0 ? `rgba(${Math.round(170 + 85 * learning)},${Math.round(186 + 20 * learning)},${Math.round(236 - 130 * learning)},0.72)` : 'rgba(170,186,236,0.62)';
+    c.stroke();
+    c.restore();
+    // the folds of the surface, faint, inside the outline
+    c.save();
+    curve(cortex); c.closePath(); c.clip();
+    c.lineWidth = 1; c.strokeStyle = 'rgba(150,168,225,0.085)';
+    for (const fold of [
+      [[0.10, 0.30], [0.20, 0.22], [0.27, 0.36], [0.20, 0.52]], [[0.13, 0.62], [0.24, 0.56], [0.33, 0.66]], [[0.26, 0.10], [0.33, 0.22], [0.30, 0.40]],
+      [[0.50, 0.03], [0.53, 0.20], [0.50, 0.40]], [[0.60, 0.44], [0.72, 0.40], [0.80, 0.50]], [[0.74, 0.10], [0.80, 0.26], [0.76, 0.42]],
+      [[0.84, 0.20], [0.92, 0.36], [0.90, 0.56]], [[0.70, 0.62], [0.80, 0.66], [0.90, 0.62]], [[0.30, 0.74], [0.42, 0.78], [0.56, 0.74], [0.66, 0.70]],
+      [[0.05, 0.44], [0.12, 0.42], [0.16, 0.48]], [[0.36, 0.52], [0.44, 0.60], [0.56, 0.56]],
+    ]) { curve(fold); c.stroke(); }
+    // an inner contour: the far side of the surface
+    c.translate(...P(0.5, 0.44)); c.scale(0.94, 0.93); c.translate(-P(0.5, 0.44)[0], -P(0.5, 0.44)[1]);
+    curve(cortex); c.closePath(); c.strokeStyle = 'rgba(150,168,225,0.07)'; c.stroke();
+    c.restore();
     // the cerebellum and the brainstem (no populations of this brain sit there)
     curve([[0.70, 0.84], [0.82, 0.80], [0.92, 0.84], [0.90, 0.95], [0.76, 0.98], [0.66, 0.92], [0.70, 0.84]]);
-    c.strokeStyle = 'rgba(150,165,210,0.12)'; c.stroke();
-    curve([[0.56, 0.90], [0.60, 1.02], [0.64, 1.06]]);
-    c.stroke();
+    c.closePath(); c.fillStyle = 'rgba(40,52,104,0.12)'; c.fill();
+    c.lineWidth = 1.2; c.strokeStyle = 'rgba(160,176,228,0.3)'; c.stroke();
+    c.strokeStyle = 'rgba(150,168,225,0.12)'; c.lineWidth = 1;
+    for (const leaf of [[[0.70, 0.88], [0.80, 0.84], [0.90, 0.87]], [[0.69, 0.91], [0.80, 0.88], [0.90, 0.91]], [[0.71, 0.945], [0.80, 0.92], [0.88, 0.945]]]) { curve(leaf); c.stroke(); }
+    curve([[0.55, 0.90], [0.585, 1.0], [0.62, 1.06]]); c.strokeStyle = 'rgba(160,176,228,0.26)'; c.lineWidth = 1.2; c.stroke();
+    curve([[0.615, 0.89], [0.645, 0.98], [0.685, 1.04]]); c.stroke();
     // the central and lateral sulci
-    c.setLineDash([3, 5]);
-    curve([[0.42, 0.01], [0.405, 0.3], [0.385, 0.62]]); c.strokeStyle = 'rgba(150,165,210,0.16)'; c.stroke();
+    c.setLineDash([3, 5]); c.lineWidth = 1.1; c.strokeStyle = 'rgba(160,176,228,0.26)';
+    curve([[0.42, 0.01], [0.405, 0.3], [0.385, 0.62]]); c.stroke();
     curve([[0.24, 0.66], [0.44, 0.67], [0.60, 0.62]]); c.stroke();
     c.restore();
   }
@@ -808,33 +968,48 @@ export class BrainView {
     if (!this.labels) return;
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
     c.clearRect(0, 0, this.width, this.height);
-    // each region glows with its population's mean activation, relative to its most active neuron
-    c.save();
-    c.globalCompositeOperation = 'lighter';
     const learning = clamp(1 - (now - this.learning) / 500, 0, 1);
+    // every region's level: its population's mean activation, relative to its most active neuron
+    let mean = 0;
     for (const g of this.glows) {
       const members = this.regions[g.region].neurons;
       let sum = 0;
       for (const i of members) sum += Math.max(0, this.display[i] / this.levelScale[g.region]);
-      const level = clamp(sum / members.length * 2.2, 0, 1);
-      if (level < 0.01) continue;
-      const r = Math.max(g.rx, g.ry) * 1.25;
-      const grad = c.createRadialGradient(g.x, g.y, 0, g.x, g.y, r);
-      grad.addColorStop(0, css(g.hue, 0.26 * level));
-      grad.addColorStop(1, css(g.hue, 0));
-      c.fillStyle = grad;
-      c.beginPath(); c.ellipse(g.x, g.y, g.rx * 1.25, g.ry * 1.25, 0, 0, Math.PI * 2); c.fill();
+      g.level = clamp((sum / members.length) * 2.2, 0, 1);
+      mean += g.level / this.glows.length;
+      // while a settle plays: how much this region's neurons changed in the sweep on show,
+      // relative to the settle's largest change
+      g.ripple = 0;
+      if (this.wave) { let moved = 0; for (const i of members) moved = Math.max(moved, this.change[i]); g.ripple = clamp(moved / this.wave.top, 0, 1); }
     }
+    this.view(c, OUTLINE_DEPTH);
+    this.silhouette(c, learning, mean);
     c.restore();
-    this.silhouette(c, learning);
+    // each region: a faint plate where its population sits, glowing with its level
+    this.view(c, NEURON_DEPTH);
+    c.globalCompositeOperation = 'lighter';
+    for (const g of this.glows) {
+      const grad = c.createRadialGradient(g.x, g.y, 0, g.x, g.y, Math.max(g.rx, g.ry) * 1.3);
+      grad.addColorStop(0, css(g.hue, 0.1 + 0.3 * g.level)); grad.addColorStop(0.7, css(g.hue, 0.04 + 0.08 * g.level)); grad.addColorStop(1, css(g.hue, 0));
+      c.fillStyle = grad;
+      c.beginPath(); c.ellipse(g.x, g.y, g.rx * 1.3, g.ry * 1.3, 0, 0, Math.PI * 2); c.fill();
+      if (g.ripple > 0.04) {
+        // the settle's wave reaching this region: a ring as bright as its neurons' change
+        c.strokeStyle = css(g.hue.map((v) => 0.5 + 0.5 * v), 0.85 * g.ripple); c.lineWidth = 1 + 2 * g.ripple;
+        c.shadowColor = css(g.hue, 0.9); c.shadowBlur = 14 * g.ripple;
+        c.beginPath(); c.ellipse(g.x, g.y, g.rx * (1.12 + 0.1 * g.ripple), g.ry * (1.12 + 0.1 * g.ripple), 0, 0, Math.PI * 2); c.stroke();
+        c.shadowBlur = 0;
+      }
+    }
+    c.globalCompositeOperation = 'source-over';
     // the place answer as the map it is: the product of its two axes, inside the axes
     this.drawPlace(c);
     // labels
-    c.font = '600 10.5px Inter, system-ui, sans-serif';
+    c.font = `600 ${this.compact ? 9 : 10.5}px Inter, system-ui, sans-serif`;
     c.textBaseline = 'alphabetic';
     if (!this.labelsPlaced) {
       // labels that would run into each other on one line step up, one above the other
-      for (const l of this.labels) { l.text = `${ANATOMY[l.region.role] || l.region.label} · ${l.region.neurons.length}`.toUpperCase(); l.w = c.measureText(l.text).width + 8; }
+      for (const l of this.labels) { l.text = (this.compact ? SHORT[l.region.role] || l.region.label : `${ANATOMY[l.region.role] || l.region.label} · ${l.region.neurons.length}`).toUpperCase(); l.w = c.measureText(l.text).width + 8; }
       const rows = this.labels.slice().sort((a, b) => a.x - b.x);
       for (let k = 1; k < rows.length; k++) {
         for (let j = 0; j < k; j++) {
@@ -842,18 +1017,20 @@ export class BrainView {
           if (Math.abs(a.y - b.y) < 15 && b.x < a.x + a.w + 4) b.y = a.y - 17;
         }
       }
+      for (const l of this.labels) l.x = clamp(l.x, 6, Math.max(6, this.width - l.w - 6));
       this.labelsPlaced = true;
     }
     for (const l of this.labels) {
-      const text = l.text;
-      const w = c.measureText(text).width;
-      c.fillStyle = 'rgba(6,8,14,0.72)';
-      c.beginPath(); c.roundRect(l.x - 4, l.y - 1, w + 8, 15, 4); c.fill();
-      c.fillStyle = css(COLOR[l.region.role] || COLOR.other, 0.88);
-      c.fillText(text, l.x, l.y + 10);
+      c.fillStyle = 'rgba(6,8,14,0.6)';
+      c.beginPath(); c.roundRect(l.x - 4, l.y - 1, l.w, 15, 4); c.fill();
+      c.fillStyle = css(COLOR[l.region.role] || COLOR.other, 0.95);
+      c.fillText(l.text, l.x, l.y + 10);
     }
     this.drawCells(c, now);
-    // a lesson's changed synapses
+    this.drawSpots(c, now);
+    c.restore();
+    // a lesson's changed synapses, on the tracts' own layer
+    this.view(c, 1);
     c.globalCompositeOperation = 'lighter';
     for (const fl of this.flashes) {
       const age = (now - fl.start) / FLASH_MS;
@@ -862,16 +1039,60 @@ export class BrainView {
       const count = Math.min(fl.index.length, 220);
       for (let j = 0; j < count; j++) {
         const k = fl.index[j], p = this.pre[k], q = this.post[k], r = Math.abs(fl.delta[j]) / fl.max;
-        c.lineWidth = 0.6 + 2.2 * r;
-        c.strokeStyle = fl.delta[j] >= 0 ? `rgba(255,206,102,${(0.08 + 0.6 * r) * fade})` : `rgba(150,200,255,${(0.08 + 0.6 * r) * fade})`;
+        c.lineWidth = 0.7 + 2.4 * r;
+        c.strokeStyle = fl.delta[j] >= 0 ? `rgba(255,206,102,${(0.1 + 0.7 * r) * fade})` : `rgba(150,200,255,${(0.1 + 0.7 * r) * fade})`;
         c.beginPath(); c.moveTo(this.pos[2 * p], this.pos[2 * p + 1]);
         c.bezierCurveTo(this.ctrl[4 * k], this.ctrl[4 * k + 1], this.ctrl[4 * k + 2], this.ctrl[4 * k + 3], this.pos[2 * q], this.pos[2 * q + 1]);
         c.stroke();
       }
     }
-    c.globalCompositeOperation = 'source-over';
+    c.restore();
     this.flashes = this.flashes.filter((fl) => now - fl.start < FLASH_MS);
-    this.drawSpots(c, now);
+    this.drawSettle(c);
+    this.drawLeader(c);
+  }
+
+  // The latest settle, sweep by sweep: one bar a sweep, as tall as the largest change of any
+  // neuron in that sweep (ten times smaller is one step lower). While the settle plays, the bar
+  // of the sweep on show is lit.
+  drawSettle(c) {
+    const s = this.settled;
+    if (!s || !s.move.length || this.compact || this.inset) return;
+    const n = s.move.length, x0 = 14, w = Math.min(150, this.width * 0.3), h = 30, y1 = this.height - 34 - (this.inset || 0);
+    const playing = this.wave ? this.wave.sweeps[Math.min(this.wave.sweeps.length - 1, Math.floor(this.wave.head) + 1)] : 0;
+    const bars = Math.min(n, 64), bw = w / bars;
+    c.save();
+    for (let k = 0; k < bars; k++) {
+      const i = Math.min(n - 1, Math.round((k * (n - 1)) / Math.max(1, bars - 1)));
+      const f = clamp((Math.log10(Math.max(s.move[i], 1e-9)) + 7) / 7, 0.04, 1);
+      const here = playing && Math.abs(i + 1 - playing) <= Math.max(0.5, n / bars / 2), done = !playing || i + 1 <= playing;
+      c.fillStyle = here ? 'rgba(255,244,220,0.98)' : this.resting && !playing ? 'rgba(63,224,207,0.2)' : done ? 'rgba(63,224,207,0.62)' : 'rgba(63,224,207,0.2)';
+      if (here) { c.shadowColor = 'rgba(255,230,180,0.9)'; c.shadowBlur = 8; } else c.shadowBlur = 0;
+      c.fillRect(x0 + k * bw, y1 - f * h, Math.max(1, bw - 1), f * h);
+    }
+    c.shadowBlur = 0;
+    c.font = '500 10.5px "JetBrains Mono", ui-monospace, monospace'; c.textBaseline = 'alphabetic';
+    c.fillStyle = playing ? 'rgba(255,236,200,0.95)' : 'rgba(141,151,178,0.85)';
+    c.fillText(playing ? `sweep ${playing} of ${s.of}` : this.resting ? 'at rest: no sweep needed' : `settled in ${s.of} sweeps`, x0 + w + 8, y1 - 2);
+    c.restore();
+  }
+
+  // A thin line from an open card to the part it explains.
+  drawLeader(c) {
+    const l = this.leader, part = l && this.part(l.id);
+    if (!part) return;
+    const [px, py] = this.onStage(part.x + part.w / 2, part.y + part.h / 2, NEURON_DEPTH);
+    const hw = (part.w / 2) * this.cam.s, hh = (part.h / 2) * this.cam.s, r = l.rect;
+    // from the card's edge nearest the part to the part's edge nearest the card
+    const cx = clamp(px, r.left, r.left + r.w), cy = clamp(py, r.top, r.top + r.h);
+    const ex = clamp(cx, px - hw, px + hw), ey = clamp(cy, py - hh, py + hh);
+    if (Math.hypot(ex - cx, ey - cy) < 6) return;
+    c.save();
+    c.strokeStyle = 'rgba(255,255,255,0.55)'; c.lineWidth = 1;
+    c.beginPath(); c.moveTo(cx, cy); c.lineTo(ex, ey); c.stroke();
+    c.fillStyle = 'rgba(255,255,255,0.9)';
+    c.beginPath(); c.arc(ex, ey, 2.4, 0, Math.PI * 2); c.fill();
+    c.restore();
   }
 
   drawPlace(c) {
@@ -939,8 +1160,8 @@ export class BrainView {
     });
     {
     if (this.cellLabel) {
-      c.font = '600 10.5px Inter, system-ui, sans-serif';
-      const text = `HIPPOCAMPUS · RECORDS ${this.cells.filter((x) => x.record).length} OF ${this.cells.length}`;
+      c.font = `600 ${this.compact ? 9 : 10.5}px Inter, system-ui, sans-serif`;
+      const text = this.compact ? 'HIPPOCAMPUS' : `HIPPOCAMPUS · RECORDS ${this.cells.filter((x) => x.record).length} OF ${this.cells.length}`;
       const y = this.cells[0].y - this.cells[0].r - 16, x = this.cells[0].x - this.cells[0].r;
       const w = c.measureText(text).width;
       c.fillStyle = 'rgba(6,8,14,0.72)'; c.beginPath(); c.roundRect(x - 4, y - 1, w + 8, 15, 4); c.fill();
@@ -1076,29 +1297,29 @@ export class BrainView {
     return `The neuron under your pointer has an activity of ${a}.`;
   }
 
-  /** Where a card for a part goes: beside the part, inside the stage. */
-  cardPlace(id, w, h) {
-    const part = this.part(id);
-    if (!part) return { left: 10, top: 10 };
-    let left = part.x + part.w + 12, top = part.y + part.h / 2 - h / 2;
-    if (left + w > this.width - 8) left = part.x - w - 12;
-    if (left < 8) { left = clamp(part.x + part.w / 2 - w / 2, 8, this.width - w - 8); top = part.y + part.h + 10; if (top + h > this.height - 8) top = part.y - h - 10; }
-    return { left: clamp(left, 8, Math.max(8, this.width - w - 8)), top: clamp(top, 8, Math.max(8, this.height - h - 8)) };
-  }
-
-  /** Where a pinned card goes so that it covers none of the parts it speaks of: the corner or
-   *  edge of the stage that hides the least of them and of the brain. */
-  cardClear(ids, w, h) {
-    const W = this.width, H = this.height, m = 12, b = this.brainBox || { x: 0, y: 0, w: W, h: H };
-    const boxes = ids.map((id) => this.part(id)).filter(Boolean);
-    const overlap = (x, y, r) => Math.max(0, Math.min(x + w, r.x + r.w) - Math.max(x, r.x)) * Math.max(0, Math.min(y + h, r.y + r.h) - Math.max(y, r.y));
-    const spots = [[m, m + 26], [W - w - m, m + 26], [m, H - h - m - 22], [W - w - m, H - h - m - 26], [(W - w) / 2, m + 26], [(W - w) / 2, H - h - m - 22]];
+  /** Where a card goes: beside the first of the parts it explains, never over any of them. The
+   *  places around the part are tried in turn (right, left, below, above, then the stage's
+   *  corners); the first that covers no named part wins, else the one that covers least. */
+  cardBeside(ids, w, h) {
+    const W = this.width, H = this.height - (this.inset || 0), m = 8, gap = 22;
+    const boxes = ids.map((id) => this.part(id)).filter(Boolean).map((p) => {
+      const [x, y] = this.onStage(p.x, p.y, NEURON_DEPTH);
+      return p.kind === 'tract' ? { x: x - 8, y: y - 8, w: p.w + 16, h: p.h + 16 } : { x: x - 4, y: y - 4, w: p.w + 8, h: p.h + 8 };
+    });
+    if (!boxes.length) return { left: m, top: m + 30 };
+    const a = boxes[0], ax = a.x + a.w / 2, ay = a.y + a.h / 2;
+    const fit = ([x, y]) => [clamp(x, m, Math.max(m, W - w - m)), clamp(y, m + 26, Math.max(m + 26, H - h - m - 26))];
+    const spots = [[a.x + a.w + gap, ay - h / 2], [a.x - w - gap, ay - h / 2], [ax - w / 2, a.y + a.h + gap], [ax - w / 2, a.y - h - gap],
+      [a.x + a.w + gap, a.y - h * 0.8], [a.x - w - gap, a.y - h * 0.8], [a.x + a.w + gap, a.y + a.h - h * 0.2], [a.x - w - gap, a.y + a.h - h * 0.2],
+      [m, m + 26], [W - w - m, m + 26], [m, H - h - m - 26], [W - w - m, H - h - m - 26]].map(fit);
+    const over = (x, y, r) => Math.max(0, Math.min(x + w, r.x + r.w) - Math.max(x, r.x)) * Math.max(0, Math.min(y + h, r.y + r.h) - Math.max(y, r.y));
     let best = spots[0], least = Infinity;
     for (const [x, y] of spots) {
-      const cost = boxes.reduce((sum, r) => sum + 20 * overlap(x, y, r), 0) + overlap(x, y, b);
-      if (cost < least) { least = cost; best = [x, y]; }
+      const cost = boxes.reduce((sum, r) => sum + over(x, y, r), 0);
+      if (cost < least - 1) { least = cost; best = [x, y]; }
+      if (cost === 0) break;
     }
-    return { left: clamp(best[0], 8, Math.max(8, W - w - 8)), top: clamp(best[1], 8, Math.max(8, H - h - 8)) };
+    return { left: best[0], top: best[1] };
   }
 
   drawSpots(c, now) {

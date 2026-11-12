@@ -17,12 +17,12 @@ a map that holds where things are while they are out of view.
 > **Status: under construction on the branch `space`.** The page runs the **untrained
 > baseline**: a plain composed brain (`Brain.compose` with `PopulationCode` inputs, asked for
 > the hand's place as two motor slots of 20 units), born when the page loads and taught the
-> camera's report at every moment the hand is in view. It holds no place between moments
-> beyond its working trace, so it does not keep the promise above: the page check below reads
-> 28 of 32 checks, and the four it fails are the brain's own. The trained place module takes
-> its seat through `site/pack/manifest.json`; the model card arrives with it.
+> camera's report at every moment the hand is in view ([model card](MODEL_CARD.md)). It holds
+> no place between moments beyond its working trace, so it does not keep the promise above:
+> the page check below reads 31 of 34 checks, and the three it fails are the brain's own. The
+> trained place module takes its seat through `site/pack/manifest.json`, with its own card.
 
-![The hand hidden behind the pillar, the place part's card open](docs/baseline-hidden-card.jpg)
+![The hand hidden behind the pillar, the place part's card open beside its part](docs/baseline-hidden-card.jpg)
 
 ## What a visitor does
 
@@ -40,6 +40,8 @@ Everything is direct: there is no panel of switches.
 A tutorial of five steps, which the visitor performs, opens on the first visit: follow, hide,
 return, move the cup while it is hidden, knock. It can be skipped and played again.
 
+![The tutorial's second step: the hand in view, the brain's glow on it, the way into the shadow](docs/baseline-tutorial.jpg)
+
 Keys, with the scene in focus: `1` to `5` choose the hand, the cup, the wrench, the box or the
 pillar; the arrows move it; `K` knocks on it; `C` switches the camera; `H` shows or hides what
 the camera cannot see; `Z` is undo and `R` reset. In the brain, `Tab` moves from part to part.
@@ -47,7 +49,9 @@ the camera cannot see; `Z` is undo and `R` reset. In the brain, `Tab` moves from
 ## The brain explains itself
 
 Nothing is written over the brain until the visitor points at something. Every part (a
-population, the records, a fibre tract) opens a card on hover, on a tap and on keyboard focus:
+population, the records, a fibre tract) opens a card on hover, on a tap and on keyboard focus.
+The card stands beside its part, never over it, with a thin line to it; on a phone it is a sheet
+from the bottom, and the brain moves up above it. It holds
 its name, the role it plays, what it does in one or two plain sentences, and what it is doing at
 this moment, written from the brain's live state ("It says the hand is at (-0.17, 0.71) m,
 unseen for 25 moments. Uncertainty 99 cm, up from 92 cm when the hand was last seen."). Cards of
@@ -73,12 +77,19 @@ nothing about what the neurons are.
 | `motor`, the place answer: 20 units for x, 20 for y, each axis one softmax | parietal and entorhinal map |
 | the records, a `LongTermMemory` of 12 slots beside the brain, keyed by what a thing is | hippocampus |
 
-- A synapse glows with the signal it carries, `|weight x presynaptic activation|`, warm where it
-  excites and cool where it inhibits; all 24,096 are drawn, bundled into tracts between regions.
-- Every third moment the settle plays sweep by sweep: the worker settles the brain again from
-  the state the moment started from, under the same drive, for exactly the sweeps the answer
-  took, and sends up to 16 of them. The host checks that the last sweep is the state the answer
-  was read from and sends nothing otherwise.
+- A synapse glows with the signal it carries, `|weight x presynaptic activation|`, in its source
+  population's hue, warmer where it excites and cooler where it inhibits; all 24,096 are drawn,
+  bundled into tracts between regions, with a faint light of the weight alone so the wiring
+  shows at rest. The light blooms (the same light, blurred and added back) and is tone mapped.
+- The settle plays as a wave: the worker settles the brain again from the state the moment
+  started from, under the same drive, for exactly the sweeps the answer took, and sends up to 12
+  of them; the host checks that the last sweep is the state the answer was read from and sends
+  nothing otherwise. The page shows one sweep every 70 ms: a pulse runs along each synapse whose
+  neuron changed in that sweep, a ring lights each region its change reaches, and the trace
+  beside the readout shows the largest change of every sweep, with the sweep on show lit. A new
+  wave starts when the one on show has played.
+- The view drifts a few pixels, slowly, and its layers part (the outline behind, the neurons in
+  front). With reduced motion asked for, it rests and the settle is shown as its final state.
 - A lesson's changed synapses flash, gold where they grew and blue where they shrank, and the
   outline glows. Lessons happen only at moments the camera sees the hand.
 - A record's cell lights when the record is read or written; its thumbnail shows the place it
@@ -123,13 +134,18 @@ sweep-by-sweep replay off, `?details=1` opens the details and `?sound=0` keeps t
 | `tools/build.py` | builds `site/pack/` from the released wheel, with the place module's files where given |
 | `tools/record_scenes.py` | records the parity fixtures and the page's scenes with the Python world |
 | `tools/check_page.py` | the promise in headless Chromium; writes `evidence/page_check.json` |
+| `tools/record_clip.py` | records the tutorial, performed with the mouse, as a clip |
+| `MODEL_CARD.md` | the brain the page runs |
 | `tests/parity.mjs`, `tests/fixtures/` | the parity test of `site/world.js` and `site/controls.js`, its recorded steps and the chamber's example scene |
+| `tests/test_host.py` | the brain host run natively: the answer, the lesson only at seen moments, the wave, the records |
 
 ## Checks
 
 ```sh
 node tests/parity.mjs                    # the page's world and controls against the Python ones
+python -m pytest tests/test_host.py      # the brain host, natively (cadence-net 0.98.0)
 python tools/check_page.py --shots docs  # the promise, with the mouse a visitor uses
+python tools/record_clip.py              # the tutorial as a clip, docs/out-of-sight.mp4
 ```
 
 **Parity.** `tests/parity.mjs` replays 340 steps recorded by the tracking chamber's Python world
@@ -149,16 +165,25 @@ before the trained brain was read: in view the place within 5 cm of the hand; hi
 place part's card showing a position and a growing uncertainty; back in view, within 5 cm and
 the uncertainty lower; the cup's record at the place it was last seen while it is moved unseen;
 after one knock, within three standard deviations of the cue's own error of the true place.
-It then opens every part's card by hover and by keyboard, steps through the eight stages, tries
-undo, the camera, reset, the details switch and a scene file, and measures the frame time on a
-desktop (WebGL2), a phone-sized touch screen and the Canvas2D view.
+It then opens every part's card by hover and by keyboard and checks that each stands beside
+its part and covers none of it, steps through the eight stages, tries undo, the camera, reset,
+the details switch and a scene file, and measures the frame time on a desktop (WebGL2, bloom
+on), a phone-sized touch screen (the card as a sheet, the brain above it) and the Canvas2D view.
 
-The reading on the **untrained baseline** (`evidence/page_check.json`, 12 November 2026): 28 of
-32 checks. The page's own checks pass: the tutorial's steps complete on a visitor's input, the
-cards and the stages open, undo, reset and the scene file work, and a frame takes 16.7 ms at the
-median and 16.8 ms at the 95th percentile with the brain view on (the brain answers a moment in
-14 ms in the worker). The four that fail are the brain's: 20 cm in view after 245 lessons from
-birth, 15 cm while hidden (the last seen position 17 cm, the Kalman filter 14 cm), an
-uncertainty that does not grow, and 19 cm after the return. The baseline is not the model.
+**The host.** `tests/test_host.py` runs the worker's Python natively: a population code decodes
+to the value it was given; a lesson follows only a moment the camera reports; the wave's last
+sweep is the state the answer was read from; a record keeps its place until the thing is seen or
+heard, and a cue's direction and distance rewrite it.
+
+The reading on the **untrained baseline** (`evidence/page_check.json`, 12 November 2026): 31 of
+34 checks. The page's own checks pass: the tutorial's steps complete on a visitor's input, every
+card opens beside its part, the stages step in order, undo, reset and the scene file work, and a
+frame takes 16.7 ms at the median and at the 95th percentile with the brain view and its bloom
+on, 16.8 ms at the worst of 1,500 frames (the brain answered a moment in 24 ms in the worker, on
+a machine under heavy load from other work). The three that fail are the brain's: 16 cm from
+the hidden hand (the last seen position 15 cm, the Kalman filter 12 cm), an uncertainty that
+does not grow while the hand is hidden, and 19 cm after the return. In view it read 4.8 cm after
+358 lessons from birth in this run; from load to load it has read between 3 cm and 20 cm. The
+baseline is not the model.
 
 Cadence is GPL-3.0.

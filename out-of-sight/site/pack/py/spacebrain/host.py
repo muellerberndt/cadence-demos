@@ -62,7 +62,7 @@ DEFAULTS: dict[str, Any] = {
     "key_width": 48,
 }
 TOP_CHANGES = 480  # the largest synaptic changes of a lesson that the page flashes
-WAVE_FRAMES = 16
+WAVE_FRAMES = 12
 RECOGNISED = 0.9  # the cosine at which a read record is the thing asked for
 
 
@@ -374,7 +374,7 @@ class Host:
         """The moment's settle, sweep by sweep: the brain settled again from the state the act
         started from, under the same drive, for exactly the sweeps the act ran, every sweep
         recorded. The last sweep is the state the answer was read from (checked; nothing is sent
-        when it differs or when the act's solve halved its step). Up to 16 sweeps are sent, with
+        when it differs or when the act's solve halved its step). Up to 12 sweeps are sent, with
         the largest change of any neuron at every sweep."""
         steps = int(settle.get("steps", 0))
         if steps <= 0 or settle.get("damping_halvings") or settle.get("rescue_steps"):

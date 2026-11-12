@@ -121,7 +121,7 @@ function answered(record, estimates, reply, arrays) {
     const k2 = -2 * Math.log(1 - 0.9);
     row.inside = ((reply.place[0] - truth[0]) / Math.max(reply.sd[0], 1e-6)) ** 2 + ((reply.place[1] - truth[1]) / Math.max(reply.sd[1], 1e-6)) ** 2 <= k2;
     brainView.update(arrays.activation);
-    if (reply.wave && arrays.wave_frames) brainView.playWave(arrays.wave_frames, reply.wave.frames, reply.wave.sweeps, reply.wave.of);
+    if (reply.wave && arrays.wave_frames) brainView.playWave(arrays.wave_frames, reply.wave.frames, reply.wave.sweeps, reply.wave.of, arrays.wave_move);
     if (arrays.weight) brainView.setWeights(arrays.weight);
     if (reply.lesson?.taught) {
       brainView.flash(arrays.flash_index, arrays.flash_delta, reply.lesson.changed);
@@ -130,6 +130,7 @@ function answered(record, estimates, reply, arrays) {
     }
     state.lessons = reply.lessons; state.changedTotal = reply.changed_total;
     state.settle = { sweeps: reply.sweeps, residual: reply.residual, tolerance: reply.tolerance };
+    brainView.resting = reply.sweeps === 0;
   }
   (reply.things || []).forEach((t, i) => {
     state.pins[t.name] = t.place ? t : null;
@@ -138,7 +139,7 @@ function answered(record, estimates, reply, arrays) {
   brainView.setRecords(reply.things);
   state.history.push(row); if (state.history.length > 3000) state.history.shift();
   const run = state.run;
-  if (run && !run.done && record.moment <= (run.last ?? Infinity)) {
+  if (run && !run.done && record.moment >= run.first && record.moment <= (run.last ?? Infinity)) {
     run.rows.push(row);
     if (run.ended && record.moment >= run.last) summarise(run);
   }
@@ -153,7 +154,7 @@ function readouts(record, row) {
   const view = $('chip-view');
   view.hidden = record.in_view[0];
   if (!record.in_view[0]) view.textContent = stage.cameraOn ? `out of view ${(state.unseen * DT).toFixed(1)} s` : `camera off ${(state.unseen * DT).toFixed(1)} s`;
-  if (state.settle) $('readout').textContent = `settle ${state.settle.sweeps} sweeps · residual ${state.settle.residual.toExponential(1)}`;
+  if (state.settle) $('readout').textContent = `this moment: ${state.settle.sweeps} sweeps · residual ${state.settle.residual.toExponential(1)}`;
   if (!state.more) return;
   $('chip-error').textContent = `error ${cm(row.brain)}`;
   const area = state.belief?.area;
@@ -205,13 +206,34 @@ function renderCard() {
   if (html === card.html) return;
   card.html = html;
   card.el.querySelector('.content').innerHTML = html;
-  const w = card.el.offsetWidth, h = card.el.offsetHeight;
-  const { left, top } = card.pinned ? brainView.cardClear([...brainView.spot], w, h) : brainView.cardPlace(card.id, w, h);
-  card.el.style.left = `${left}px`; card.el.style.top = `${top}px`;
+  placeCard();
 }
 
+// A card stands beside its part with a thin line to it, never over it. On a narrow screen it is
+// a sheet at the bottom of the brain's pane, and the brain moves up above it.
+const narrow = matchMedia('(max-width: 860px), (max-aspect-ratio: 1 / 1)');
+function placeCard(force = false) {
+  if (!card.mode) return;
+  if (narrow.matches) {
+    card.el.style.left = ''; card.el.style.top = '';
+    document.body.classList.add('sheet');
+    brainView.leader = null;
+    brainView.setInset(card.el.offsetHeight + 8);
+    return;
+  }
+  const w = card.el.offsetWidth, h = card.el.offsetHeight;
+  const ids = card.mode === 'stage' ? [...brainView.spot] : [card.id];
+  // the card keeps its place while it is open, unless it grows or shrinks a good deal
+  if (force || !card.place || card.place.key !== ids.join() || Math.abs(card.place.h - h) > 48) {
+    card.place = { ...brainView.cardBeside(ids, w, h), key: ids.join(), h };
+    card.el.style.left = `${card.place.left}px`; card.el.style.top = `${card.place.top}px`;
+  }
+  brainView.leader = { rect: { left: card.place.left, top: card.place.top, w, h }, id: ids[0] };
+}
+window.addEventListener('resize', () => placeCard(true));
+
 function showCard(mode, pinned) {
-  card.mode = mode; card.pinned = pinned; card.html = '';
+  card.mode = mode; card.pinned = pinned; card.html = ''; card.place = null;
   card.el.hidden = false;
   card.el.classList.toggle('pinned', pinned);
   const stages = stagesFor(state.kind);
@@ -233,7 +255,9 @@ function openStage(index) {
   $('follow').setAttribute('aria-pressed', 'true');
 }
 function closeCard() {
-  card.mode = null; card.id = null; card.pinned = false; card.el.hidden = true;
+  card.mode = null; card.id = null; card.pinned = false; card.el.hidden = true; card.place = null;
+  brainView.leader = null; brainView.setInset(0);
+  document.body.classList.remove('sheet');
   $('follow').setAttribute('aria-pressed', 'false');
   spots();
 }
@@ -411,7 +435,7 @@ async function playScene(scene) {
   restartControls(scene.start[0]);
   state.undo = []; $('undo').disabled = true;
   $('play').textContent = 'Stop';
-  return new Promise((resolve) => { state.run = { name: scene.name, kind: scene.kind, rows: [], ended: false, done: false, resolve, steps: scene.steps }; });
+  return new Promise((resolve) => { state.run = { name: scene.name, kind: scene.kind, rows: [], first: stage.moment + 1, ended: false, done: false, resolve, steps: scene.steps }; });
 }
 const playReach = (index) => playScene(state.reaches[index]);
 
