@@ -162,7 +162,8 @@ export class SceneView {
 
     // the brain's belief of the hand: its haze lies under everything on the table
     const belief = s.belief?.place ? this.flow(s) : null;
-    if (belief) {
+    const gone = !!s.gone && !!s.record && !s.record.in_view[0]; // the place held for the hand is in sight, and no hand is there
+    if (belief && !gone) {
       c.save(); c.beginPath(); c.roundRect(x0, y0, x1 - x0, y1 - y0, 10); c.clip();
       if (belief.cells) this.region(c, belief.cells); else this.haze(c, belief, m);
       c.restore();
@@ -190,7 +191,7 @@ export class SceneView {
     // the belief's ring and its peak, over the hand: the brightest thing on the table
     if (belief) {
       c.save(); c.beginPath(); c.roundRect(x0, y0, x1 - x0, y1 - y0, 10); c.clip();
-      this.peak(c, s, belief, m);
+      if (gone) this.left(c, belief.place, TEAL); else this.peak(c, s, belief, m);
       c.restore();
     }
 
@@ -337,6 +338,20 @@ export class SceneView {
     light.addColorStop(0, rgba([170, 255, 244], 0.7 * dense)); light.addColorStop(0.3, rgba(TEAL, 0.42 * dense));
     light.addColorStop(0.62, rgba(TEAL, 0.17 * dense)); light.addColorStop(1, rgba(TEAL, 0));
     c.fillStyle = light; c.beginPath(); c.arc(0, 0, 1.75, 0, Math.PI * 2); c.fill();
+    c.restore();
+  }
+
+  // A place marked gone: the camera sees it, and the thing is not there. What is left of the
+  // answer is a faded, empty mark where the brain had left the thing, with a question mark: the
+  // brain does not know where the thing is.
+  left(c, place, color) {
+    const [x, y] = this.toScreen(place);
+    c.save();
+    c.strokeStyle = rgba(color, 0.5); c.lineWidth = 1.2; c.setLineDash([3, 4]);
+    c.beginPath(); c.arc(x, y, 13, 0, Math.PI * 2); c.stroke(); c.setLineDash([]);
+    c.fillStyle = rgba(color, 0.75); c.font = '600 13px Inter, system-ui, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
+    c.fillText('?', x, y + 0.5);
+    c.textAlign = 'left'; c.textBaseline = 'alphabetic';
     c.restore();
   }
 
@@ -518,6 +533,7 @@ export class SceneView {
     const off = Math.hypot(rec.place[0] - truth[0], rec.place[1] - truth[1]);
     const inView = !!s.record?.in_view?.[k];
     if (inView && off < 0.03) return; // the pin sits on the thing the camera sees
+    if (rec.gone && !inView) { this.left(c, rec.place, color); return; } // not where the brain left it: the pin fades to an empty mark
     c.save();
     if (s.showHidden && off > 0.03) {
       const [tx, ty] = this.toScreen(truth);
@@ -645,12 +661,14 @@ export class MapView {
     for (const [name, rec] of Object.entries(s.pins || {})) {
       if (!rec?.place) continue;
       const [px, py] = P(rec.place), color = THING_COLOR[name] || [200, 200, 220];
+      if (rec.gone) c.globalAlpha = 0.32; // not where the brain left it
       c.strokeStyle = rgba(color, 0.95); c.fillStyle = 'rgba(8,11,20,0.9)'; c.lineWidth = 1.3;
       if (rec.from === 'heard') c.setLineDash([2, 2]);
       c.beginPath(); c.arc(px, py, 7, 0, Math.PI * 2); c.fill(); c.stroke(); c.setLineDash([]);
       c.save(); c.translate(px, py); glyph(c, name, 3, false); c.restore();
+      c.globalAlpha = 1;
     }
-    if (s.belief?.place) {
+    if (s.belief?.place && !s.gone) {
       const [bx, by] = P(s.belief.place);
       c.strokeStyle = 'rgba(220,255,250,0.95)'; c.lineWidth = 1;
       c.beginPath(); c.moveTo(bx - 4, by); c.lineTo(bx + 4, by); c.moveTo(bx, by - 4); c.lineTo(bx, by + 4); c.stroke();
@@ -750,6 +768,14 @@ export class AroundView {
       const name = s.names[i], pin = s.pins?.[name];
       if (!pin?.place) continue;
       const [x, y] = at(around(s.geometry, pin.place)), color = THING_COLOR[name] || [200, 200, 220];
+      if (pin.gone && !s.record?.in_view?.[i]) {
+        // not where the brain left it: the thing fades from the map, with a question mark; a tap asks about it
+        c.save(); c.globalAlpha = 0.3; c.translate(x, y); glyph(c, name, name === 'cup' ? 4.6 : 5.4, false); c.restore();
+        c.fillStyle = rgba(color, 0.85); c.font = '600 10px Inter, system-ui, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
+        c.fillText('?', x + 9, y - 8); c.textAlign = 'left'; c.textBaseline = 'alphabetic';
+        this.marks.push({ name, x, y });
+        continue;
+      }
       const ring = clamp(radiusAt(RATE) * (pin.spread ?? 0.01) * k, 9.5, R * 0.6);
       const soft = c.createRadialGradient(x, y, 0, x, y, ring * 1.25);
       soft.addColorStop(0, rgba(color, 0.42)); soft.addColorStop(0.7, rgba(color, 0.14)); soft.addColorStop(1, rgba(color, 0));
@@ -759,12 +785,18 @@ export class AroundView {
       this.marks.push({ name, x, y });
     }
     if (s.belief?.place) {
-      // the hand: the brain's answer and its ring of doubt
+      // the hand: the brain's answer and its ring of doubt; marked gone, a faded mark with a question mark
       const [x, y] = at(around(s.geometry, s.belief.place));
-      const ring = clamp(radiusAt(RATE) * Math.sqrt(s.belief.sd[0] * s.belief.sd[1]) * k, 4, R * 0.95);
-      c.strokeStyle = rgba(TEAL, 0.7); c.lineWidth = 1.1; c.beginPath(); c.arc(x, y, ring, 0, Math.PI * 2); c.stroke();
-      c.fillStyle = 'rgba(200,255,248,0.98)'; c.shadowColor = rgba(TEAL, 0.9); c.shadowBlur = 8;
-      c.beginPath(); c.arc(x, y, 3, 0, Math.PI * 2); c.fill(); c.shadowBlur = 0;
+      if (s.gone && !s.record?.in_view?.[0]) {
+        c.strokeStyle = rgba(TEAL, 0.45); c.setLineDash([2, 3]); c.beginPath(); c.arc(x, y, 5, 0, Math.PI * 2); c.stroke(); c.setLineDash([]);
+        c.fillStyle = rgba(TEAL, 0.85); c.font = '600 10px Inter, system-ui, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
+        c.fillText('?', x + 9, y - 8); c.textAlign = 'left'; c.textBaseline = 'alphabetic';
+      } else {
+        const ring = clamp(radiusAt(RATE) * Math.sqrt(s.belief.sd[0] * s.belief.sd[1]) * k, 4, R * 0.95);
+        c.strokeStyle = rgba(TEAL, 0.7); c.lineWidth = 1.1; c.beginPath(); c.arc(x, y, ring, 0, Math.PI * 2); c.stroke();
+        c.fillStyle = 'rgba(200,255,248,0.98)'; c.shadowColor = rgba(TEAL, 0.9); c.shadowBlur = 8;
+        c.beginPath(); c.arc(x, y, 3, 0, Math.PI * 2); c.fill(); c.shadowBlur = 0;
+      }
       this.marks.push({ name: 'hand', x, y });
     }
     // the body, facing up
@@ -795,6 +827,12 @@ export class AroundView {
       const name = s.names[i], pin = s.pins?.[name];
       if (!pin?.place) continue;
       const [x, y] = P(pin.place), color = THING_COLOR[name] || [200, 200, 220];
+      if (pin.gone && !s.record?.in_view?.[i]) {
+        c.save(); c.globalAlpha = 0.3; c.translate(x, y); glyph(c, name, name === 'cup' ? 3.4 : 4, false); c.restore();
+        c.fillStyle = rgba(color, 0.85); c.font = '600 9px Inter, system-ui, sans-serif'; c.fillText('?', x + 5, y - 5);
+        this.marks.push({ name, x, y });
+        continue;
+      }
       const ring = clamp(radiusAt(RATE) * (pin.spread ?? 0.01) * k, 7, 40);
       const soft = c.createRadialGradient(x, y, 0, x, y, ring * 1.25);
       soft.addColorStop(0, rgba(color, 0.42)); soft.addColorStop(1, rgba(color, 0));
@@ -803,9 +841,10 @@ export class AroundView {
       this.marks.push({ name, x, y });
     }
     if (s.belief?.place) {
-      const [x, y] = P(s.belief.place), u = radiusAt(RATE);
-      c.strokeStyle = rgba(TEAL, 0.7); c.lineWidth = 1.1;
-      c.beginPath(); c.ellipse(x, y, Math.max(4, u * s.belief.sd[0] * k), Math.max(4, u * s.belief.sd[1] * k), 0, 0, Math.PI * 2); c.stroke();
+      const [x, y] = P(s.belief.place), u = radiusAt(RATE), lost = s.gone && !s.record?.in_view?.[0];
+      c.strokeStyle = rgba(TEAL, lost ? 0.35 : 0.7); c.lineWidth = 1.1;
+      c.beginPath(); c.ellipse(x, y, lost ? 5 : Math.max(4, u * s.belief.sd[0] * k), lost ? 5 : Math.max(4, u * s.belief.sd[1] * k), 0, 0, Math.PI * 2); c.stroke();
+      if (lost) { c.fillStyle = rgba(TEAL, 0.85); c.font = '600 9px Inter, system-ui, sans-serif'; c.fillText('?', x + 6, y - 5); }
       c.fillStyle = 'rgba(200,255,248,0.98)'; c.beginPath(); c.arc(x, y, 2.8, 0, Math.PI * 2); c.fill();
       this.marks.push({ name: 'hand', x, y });
     }

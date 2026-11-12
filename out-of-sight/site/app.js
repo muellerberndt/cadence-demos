@@ -35,6 +35,7 @@ const state = {
   ready: false, failed: null, kind: 'baseline',
   showHidden: true, more: false, teach: true, selected: 'hand',
   sight: params.get('sight') !== '0', takesSight: false, held: false, // the sight evidence: asked for, taken by the host, and whether the hand's place was held back
+  gone: false, rulesGone: false, // the hand's place is marked gone (in sight, with no report), and whether the pack's library has that rule
   record: null, previous: null, stepAt: 0, pending: false,
   belief: null, seenBelief: null, sheet: null, pins: {}, history: [],
   controls: null, estimates: null, unseen: 0, moments: 0, refused: 0, lessons: 0, lesson: null, settle: null,
@@ -115,7 +116,7 @@ function answered(record, estimates, reply, arrays) {
   state.moments = reply.moment;
   state.think.push(reply.ms); if (state.think.length > 600) state.think.shift();
   const row = { moment: record.moment, seen, unseen: seen ? 0 : state.unseen, brain: null, last: distance(estimates.last, truth), kalman: distance(estimates.kalman, truth),
-    area: null, uncertainty: null, inside: null, lesson: false, place: null, pins: {}, held: false, sight: false };
+    area: null, uncertainty: null, inside: null, lesson: false, place: null, pins: {}, held: false, sight: false, gone: false };
   state.estimates = estimates;
   if (reply.refused) {
     state.refused = reply.refusals;
@@ -123,6 +124,7 @@ function answered(record, estimates, reply, arrays) {
     state.belief = { place: reply.place, sd: reply.sd, area: reply.area, radius: reply.radius ?? null };
     state.asked = reply.asked ?? true; // a module's brain is asked only for a place that may have moved
     state.held = !!reply.held_back; row.held = state.held; row.sight = !!reply.sight?.given;
+    state.gone = !!reply.gone; row.gone = state.gone; if (Array.isArray(reply.sight?.gone)) state.rulesGone = true;
     if (seen) state.seenBelief = state.belief;
     state.sheet = { px: arrays.px, py: arrays.py };
     row.brain = distance(reply.place, truth); row.place = reply.place;
@@ -153,7 +155,7 @@ function answered(record, estimates, reply, arrays) {
   }
   (reply.things || []).forEach((t, i) => {
     state.pins[t.name] = t.place ? t : null;
-    if (t.place) row.pins[t.name] = { off: distance(t.place, record.truth[i + 1]), from: t.from, place: t.place, seen: record.in_view[i + 1], ...aroundBody(record.body, t.place) };
+    if (t.place) row.pins[t.name] = { off: distance(t.place, record.truth[i + 1]), from: t.from, place: t.place, seen: record.in_view[i + 1], gone: !!t.gone, ...aroundBody(record.body, t.place) };
   });
   brainView.setRecords(reply.things);
   state.history.push(row); if (state.history.length > 3000) state.history.shift();
@@ -189,10 +191,16 @@ function readouts(record, row) {
   if (!record.in_view[0]) view.textContent = stage.cameraOn ? `out of view ${(state.unseen * DT).toFixed(1)} s` : `camera off ${(state.unseen * DT).toFixed(1)} s`;
   const range = $('chip-range'), held = $('chip-held');
   range.hidden = !(!stage.cameraOn && far && state.movedDark > 5);
-  if (!range.hidden) range.textContent = `this module was raised on up to about ${Math.round(far * DT)} s of a moving hand it does not see`;
+  if (!range.hidden) range.innerHTML = `<span class="wide">this module was </span>raised on up to about ${Math.round(far * DT)} s of a moving hand it does not see`;
   // the sight evidence held the place back: the camera would see the hand where its movement leads, and does not
-  held.hidden = !(state.held && !record.in_view[0]);
-  if (!held.hidden) held.textContent = state.takesSight === 'function' ? 'it has not come out: held at the middle of its hidden stretch' : 'it did not come out where its movement leads: held on its hidden path';
+  held.hidden = !(state.held && !record.in_view[0] && !state.gone);
+  // marked gone: the camera sees the place held for the hand, and no hand is there
+  $('chip-gone').hidden = !(state.gone && !record.in_view[0]);
+  // a narrow screen shows the first words alone
+  if (!held.hidden && held.dataset.kind !== String(state.takesSight)) {
+    held.dataset.kind = String(state.takesSight);
+    held.innerHTML = state.takesSight === 'function' ? 'it has not come out<span class="wide">: held at the middle of its hidden stretch</span>' : 'it did not come out where its movement leads<span class="wide">: held on its hidden path</span>';
+  }
   if (state.settle) $('readout').textContent = state.asked === false ? 'this moment: the brain was not asked' : `this moment: ${state.settle.sweeps} sweeps run · residual ${state.settle.residual.toExponential(1)}`;
   if (!state.more) return;
   $('chip-error').textContent = `error ${cm(row.brain)}`;
@@ -230,6 +238,7 @@ function context() {
     unseen: state.unseen, pins: state.pins, names: stage.names, settle: state.settle, asked: state.asked,
     lesson: state.lesson ? { ...state.lesson, ageMs: performance.now() - state.lesson.at } : null,
     lessons: state.lessons || 0, teach: state.teach, held: state.held, sight: state.sight && state.takesSight, course: !!d.space?.course,
+    gone: state.gone, rulesGone: state.rulesGone,
     coverage: rows.length >= 30 ? { moments: rows.length, share: rows.filter((x) => x.inside).length / rows.length } : null,
     act: (name) => brainView.activity(name), regions: state.regions, dt: DT,
     around: (place) => around(stage.geometry, place),
@@ -359,7 +368,7 @@ async function askWhere(name) {
   let place, text;
   if (name === 'hand') {
     place = state.belief?.place || null;
-    text = handSentence(place ? around(g, place) : null, state.unseen, DT);
+    text = handSentence(place ? around(g, place) : null, state.unseen, DT, state.gone);
   } else {
     const { reply } = await brain.call('ask', { thing: name });
     place = reply.place;
@@ -552,7 +561,7 @@ function frame(now) {
     blend: clamp((now - state.stepAt) / (1000 * DT), 0, 1), joints: stage.world.joints, things: stage.world.things,
     names: stage.names, own: stage.own, cameraOn: stage.cameraOn, showHidden: state.showHidden, compare: state.more,
     belief: state.belief, sheet: state.sheet, pins: state.pins, selected: focused && focusByKey ? state.selected : null,
-    controls: state.estimates, rate: 0.9, guide: tour.active && !tour.doneAt && state.ready ? tour.current().guide() : null,
+    gone: state.gone, controls: state.estimates, rate: 0.9, guide: tour.active && !tour.doneAt && state.ready ? tour.current().guide() : null,
     asked: state.said && now - state.said.at < 2200 ? state.said : null,
   };
   sceneView.draw(s, now);
@@ -908,7 +917,7 @@ function adopt(describe, arrays) {
   $('brain-badge').hidden = !badge; $('brain-badge').textContent = badge;
   $('brain-note').textContent = badge ? `${b.label}. ${b.note}` : '';
   brainView.verb = state.kind === 'baseline' ? 'settled in' : 'answered in';
-  state.takesSight = describe.sight || false; state.held = false; // 'function', 'flags' or false
+  state.takesSight = describe.sight || false; state.held = false; state.gone = false; state.rulesGone = false; // 'function', 'flags' or false
   configure(state.kind, { course: !!describe.space?.course });
   // a module arrives trained: on the page it takes no lessons unless the visitor switches them on (Details)
   if (params.get('teach') !== null) state.teach = params.get('teach') === '1';
@@ -978,7 +987,7 @@ async function scenario(route, { seed = 320, teach = null, sight = null, scene =
   const last = stage.routeEnd ?? stage.moment;
   while (state.pending || !state.history.length || state.history.at(-1).moment < last) await new Promise((r) => setTimeout(r, 10));
   if (scene === 'merged') { stage.home.joints = rest; reset(); }
-  return state.history.filter((r) => r.moment > from && r.moment <= last).map((r) => ({ m: r.moment - from, seen: r.seen, brain: r.brain, kalman: r.kalman, last: r.last, u: r.uncertainty, inside: r.inside, lesson: r.lesson, held: r.held, sight: r.sight }));
+  return state.history.filter((r) => r.moment > from && r.moment <= last).map((r) => ({ m: r.moment - from, seen: r.seen, brain: r.brain, kalman: r.kalman, last: r.last, u: r.uncertainty, inside: r.inside, lesson: r.lesson, held: r.held, sight: r.sight, gone: r.gone }));
 }
 
 // what the page check drives
@@ -992,6 +1001,8 @@ window.outOfSight = { sheetArea, scenario, stage, state, brainView, sceneView, a
     return [box.left + q[0], box.top + q[1]];
   },
   screenAt(p) { const box = $('scene').getBoundingClientRect(), q = sceneView.toScreen(p); return [box.left + q[0], box.top + q[1]]; },
+  /** Whether the camera sees a point of the plane as the scene stands. */
+  visibleAt: (p) => visible(stage.geometry, p, stage.world.joints),
   /** Where the small map draws a thing, or stands for a bearing at a share of its radius, in client pixels. */
   mapOf(name) { const box = $('around').getBoundingClientRect(), m = aroundView.marks.find((k) => k.name === name); return m ? [box.left + m.x, box.top + m.y] : null; },
   mapAt(bearing, share = 0.5) { const box = $('around').getBoundingClientRect(), d = aroundView.dial; return d ? [box.left + d.cx - Math.sin(bearing) * d.R * share, box.top + d.cy - Math.cos(bearing) * d.R * share] : null; },

@@ -4,8 +4,8 @@
  "pyodide": "314.0.7",
  "cadence": "0.98.0",
  "wheel": "cadence_net-0.98.0-py3-none-any.whl",
- "wheel_sha256": "36e529caeacc06cdbef091ac414212a767b6d1a1d18dafe4b88a26e25e74ea4e",
- "wheel_source": "built from the library's branch lane-099-space; it holds cadence.space and cadence.modules, which PyPI's 0.98.0 does not",
+ "wheel_sha256": "e3ad21502cd17ffb27f350a0e3ef04c01207e6ac36a271f9b3b3b3a47ee13308",
+ "wheel_source": "built from the library's branch lane-099-space at 1ee53f9e; it holds cadence.space and cadence.modules, which PyPI's 0.98.0 does not",
  "sources": [
   "__init__.py",
   "host.py",
@@ -14,20 +14,23 @@
  "sources_sha256": {
   "__init__.py": "94e4f42d9d612c5aa91adc5eadb7a3fce757d1a521c351132a2df4787b560544",
   "host.py": "5032667889b3ec6d319ca38e3cb4d88ffb83c98dcc052244f945a2e5fccec98f",
-  "place_host.py": "376c04bb40b08a7f370672fad7f772d0f9d7db5d45fa68440accd4b8df5f6859"
+  "place_host.py": "418db891fc7237700253475eaa80df67a826809a4df7dc3984dfcf9a7e7d25c9"
  },
  "config": {},
  "module": {
   "name": "place",
   "label": "Feed-forward baseline",
-  "note": "The place module's development file: a feed-forward baseline (development founder 0, 2,000 scenes of the tracking chamber). A program beside the brain holds each place between moments; the brain answers how far a place moves in a step, how far off it may be, and the place a cue names.",
+  "note": "The place module's development file place-keeplong-2: a feed-forward baseline (development founder 2, 2,000 scenes of the tracking chamber, raised with practice spans of 80 steps), run on its course. A program beside the brain holds each place between moments; the brain answers how far a place moves in a step, how much of its seen movement a thing keeps, how far off a place may be, and the place a cue names.",
   "files": [
    {
-    "name": "place-dev0.npz",
-    "sha256": "268a36746e4e95b126b79beb54aafee8ac963ae14e3788f26264a3a5a511364c",
-    "bytes": 957040
+    "name": "place-keeplong-2.npz",
+    "sha256": "2e84b17e7e1d7082db2a522159c943edd7bc1ae33f19bcb536eecdccd2a74186",
+    "bytes": 966534
    }
-  ]
+  ],
+  "space": {
+   "course": true
+  }
  },
  "reaches": {
   "file": "reaches.json",

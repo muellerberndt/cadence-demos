@@ -304,3 +304,50 @@ def test_with_a_function_a_thing_waits_at_the_middle_of_its_hidden_stretch(tmp_p
     # without the page's function no evidence is given
     host.looks = None
     assert moment(None)["sight"]["given"] is False
+
+
+def test_a_thing_at_rest_that_is_not_where_the_camera_looks_is_marked_gone(tmp_path):
+    """Where the space has the rule: a thing at rest whose own place the camera sees, with no
+    report from there for three moments, is marked gone. The host says so for the hand and for
+    a thing, leaves a gone thing out of "what is that way", shows a cue after the mark as the
+    heard place, and a report takes the mark away. On a module made here."""
+    space = pytest.importorskip("cadence.space")
+    from spacebrain.host import make
+
+    interface = space.Interface(plane=(-1.0, 1.0, -0.2, 1.4), limits=((0.35, 2.79), (-2.6, -0.3)), hidden=32)
+    donor = space.Space(interface, seed=0)
+    donor.begin(np.array([[-0.5, 0.6]]))
+    for t in range(40):
+        donor.advance(np.array([True]), np.array([[-0.5 + 0.01 * t, 0.6]]), learn=True)
+    host = make({"module": {"name": "place", "path": str(donor.save(tmp_path / "place.npz"))}})
+    if host.handle({"command": "describe"})["sight"] != "function":
+        pytest.skip("this library's space takes no function for the sight evidence")
+    host.looks = lambda points: np.ones(len(points), dtype=bool)  # the camera sees every place
+    body = {"position": [0.45, 0.5], "heading": 3.0, "turn": 0.0}
+
+    def moment(hand, cup, cue=None):
+        return host.handle({"command": "step", "hand": {"report": hand}, "joints": JOINTS, "commands": REST, "body": body,
+                            "things": [{"name": "cup", "report": cup, "cue": cue}], "teach": False, "in_sight": True})
+
+    for _ in range(10):  # both at rest, in view
+        reply = moment([-0.4, 0.9], [-0.2, 0.32])
+    if reply["sight"]["gone"] is None:
+        pytest.skip("this library's space marks no thing gone")
+    assert not reply["gone"] and not reply["things"][0]["gone"]
+    for _ in range(3):  # the camera looks at both places, and neither thing reports
+        reply = moment(None, None)
+    assert reply["gone"] and reply["things"][0]["gone"] and reply["sight"]["gone"] == [True, True]
+    assert reply["radius"] > 2.0  # the hand's area is the plane's
+    asked = host.handle({"command": "ask", "thing": "cup"})
+    assert asked["gone"] and np.allclose(asked["place"], [-0.2, 0.32], atol=0.02)  # the place it was left at
+    toward = float(np.arctan2(0.32 - 0.5, -0.2 - 0.45))
+    assert host.handle({"command": "what", "origin": body["position"], "direction": toward})["name"] is None
+    assert host.handle({"command": "what", "origin": body["position"], "direction": toward, "point": [-0.2, 0.32]})["name"] is None
+    # a cue names a place for the cup: the page is given the heard place, no gone mark
+    offset = np.array([0.3, 1.0]) - np.array(body["position"])
+    heard = moment(None, None, cue=[float(np.arctan2(offset[1], offset[0])), float(np.linalg.norm(offset))])["things"][0]
+    assert not heard["gone"] and heard["from"] == "heard"
+    assert not moment(None, None)["things"][0]["gone"]  # and stays the heard place
+    # a report takes the mark away
+    seen = moment([-0.1, 0.9], [0.3, 1.0])
+    assert not seen["gone"] and not seen["things"][0]["gone"] and seen["things"][0]["from"] == "seen"

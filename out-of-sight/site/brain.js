@@ -1224,10 +1224,11 @@ export class BrainView {
       c.beginPath(); c.roundRect(tx, ty, tw, th, 3); c.fill(); c.stroke();
       const px = tx + ((cell.record.place[0] - plane[0]) / (plane[1] - plane[0])) * tw;
       const py = ty + th - ((cell.record.place[1] - plane[2]) / (plane[3] - plane[2])) * th;
-      c.save(); c.translate(clamp(px, tx + 5, tx + tw - 5), clamp(py, ty + 5, ty + th - 5)); glyph(c, cell.record.name, 3.2, true); c.restore();
+      // a thing marked gone (its place in sight, and the thing not there) fades in its record
+      c.save(); if (cell.record.gone) c.globalAlpha = 0.3; c.translate(clamp(px, tx + 5, tx + tw - 5), clamp(py, ty + 5, ty + th - 5)); glyph(c, cell.record.name, 3.2, !cell.record.gone); c.restore();
       c.font = '600 9px Inter, system-ui, sans-serif'; c.textAlign = 'center';
       c.fillStyle = cell.record.from === 'heard' ? 'rgba(255,224,160,0.95)' : 'rgba(255,224,160,0.8)';
-      c.fillText(cell.record.from === 'heard' ? `${cell.record.name} ♪` : cell.record.name, tx + tw / 2, ty + th + 10);
+      c.fillText(cell.record.gone ? `${cell.record.name} ?` : cell.record.from === 'heard' ? `${cell.record.name} ♪` : cell.record.name, tx + tw / 2, ty + th + 10);
       c.textAlign = 'left';
     });
     {

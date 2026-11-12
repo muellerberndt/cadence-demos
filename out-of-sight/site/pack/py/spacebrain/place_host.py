@@ -25,6 +25,10 @@ What holds what, as the module is built:
   predicted to be, the page says for every row whether the camera would see a thing there, and
   ``observe`` is given that; a row predicted in sight for three steps in a row with no report
   is put halfway between where it was last seen and where it was before those steps, and rests.
+  Where the space has the rule, a thing at rest whose own place is in sight with no report from
+  there is marked gone (``state()["gone"]``): it is not where the map holds it, and the page
+  says the brain does not know where it is. The space clears the mark when the thing is seen; a
+  cue that names a place for it after the mark is shown as the heard place.
 
 The module's ear stands where its interface says. A cue heard at the page's body is given to the
 space as the direction and distance of the same point from the module's own ear.
@@ -128,6 +132,9 @@ class PlaceHost:
         self.looks: Any = getattr(self, "looks", None)  # the page's function: places -> flags
         self.held: list[bool] = []  # the row was held back and rests on its hidden path
         self.was_live: list[bool] = []
+        self.gone: list[bool] = []  # the row is not where the map holds it: its place is in sight, with no report
+        self.named: list[bool] = []  # a cue named a place for the row after it was marked gone
+        self.rules_gone = False  # the space states which rows are gone
         self._open: dict[str, Any] | None = None  # a step begun (predict) and not ended (observe)
         self.names: list[str] = []  # the page's name of each row; row 0 is the hand
         self.ever: list[bool] = []  # the row was seen or heard at least once
@@ -149,6 +156,8 @@ class PlaceHost:
         self.latest = [self.moments] * len(names)
         self.held = [False] * len(names)
         self.was_live = [False] * len(names)
+        self.gone = [False] * len(names)
+        self.named = [False] * len(names)
 
     def _predict(self, cue_rows: list[list[float]], commands: Any, joints: Any, learn: bool,
                  wave: bool = False) -> dict[str, Any]:
@@ -370,6 +379,14 @@ class PlaceHost:
                 # rest by it: it rests on its hidden path until it is seen or heard
                 self.held[k] = True
             self.was_live[k] = bool(live[k]) and not (seen[k] or cues[k])
+        # the rows the space marks gone: at rest, their own place in the camera's sight, no report
+        # from there. The space clears the mark at a report; a cue after the mark names a place,
+        # which the page shows as heard.
+        self.rules_gone = "gone" in state
+        marked = np.asarray(state.get("gone", np.zeros(rows, dtype=bool)), dtype=bool)
+        for k in range(rows):
+            self.named[k] = bool(marked[k]) and (self.named[k] or bool(cues[k]))
+            self.gone[k] = bool(marked[k]) and not self.named[k]
         # the hand's row: its place, the radius of its area, and the brain as it was asked
         sd = float(radius[0]) / AREA
         activation = np.zeros(self.n)
@@ -396,11 +413,11 @@ class PlaceHost:
             "place": [float(at[0, 0]), float(at[0, 1])], "sd": [sd, sd], "radius": float(radius[0]),
             "area": float(np.pi * radius[0] ** 2), "since": int(np.asarray(state["since"])[0]),
             "sweeps": sweeps, "residual": residual, "tolerance": 0.0, "qualified": True, "refusals": self.refused,
-            "wave": wave, "lesson": None, "held_back": bool(self.held[0]),
+            "wave": wave, "lesson": None, "held_back": bool(self.held[0]), "gone": bool(self.gone[0]),
             # the sight evidence of this moment: whether it was given, which predicted places the
             # camera would see, and which rows were held back at this moment
             "sight": {"given": step["sight"], "in_sight": None if step["flags"] is None else [bool(v) for v in step["flags"]],
-                      "held_back": [bool(v) for v in self.held]},
+                      "held_back": [bool(v) for v in self.held], "gone": list(self.gone) if self.rules_gone else None},
         }
         cells = self._cells()
         if cells is not None:
@@ -430,7 +447,7 @@ class PlaceHost:
                 "write": bool(seen or heard), "revised": bool(seen or heard),
                 "place": [float(at[k, 0]), float(at[k, 1])], "spread": float(radius[k]) / AREA,
                 "from": self.source[k], "unseen": self.moments - self.latest[k], "stored": self.latest[k],
-                "held_back": bool(self.held[k])}
+                "held_back": bool(self.held[k]), "gone": bool(self.gone[k])}
 
     def ask(self, name: str) -> dict[str, Any]:
         """Where is this kind of thing? The space's own answer for what it looks like."""
@@ -451,11 +468,11 @@ class PlaceHost:
         at, radius = self._where()
         if point is not None:
             row = self._what_is_at(point)
-            if row is not None and row >= 1 and self.ever[row]:
+            if row is not None and row >= 1 and self.ever[row] and not self.gone[row]:
                 return {**self._thing(row, at, radius, False, False), "gap": 0.0, "asked": "what", "by": "place"}
         best: tuple[float, int] | None = None
         for k in range(1, len(self.names)):
-            if not self.ever[k]:
+            if not self.ever[k] or self.gone[k]:  # a thing marked gone lies no way the brain knows
                 continue
             offset = at[k] - origin
             turn = float(np.arctan2(offset[1], offset[0])) - float(direction)

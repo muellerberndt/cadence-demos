@@ -24,6 +24,8 @@ const ago = (moments, dt) => `${(moments * dt).toFixed(0)} s ago`;
  *  around the body; `record`: how the record came ({ from, unseen }); `seen`: in view at this moment. */
 export function whereSentence(name, rel, record, seen, dt) {
   if (!rel) return `The brain holds no record of ${the(name)}: the camera has not seen it.`;
+  // marked gone: the camera sees the place the record holds, and the thing is not there
+  if (record.gone && !seen) return `${`${the(name)}`.replace(/^t/, 'T')} is not where the brain left it: the camera sees that place, and ${the(name)} is not there. The brain does not know where it is.`;
   const how = seen ? 'The camera sees it.' : record.from === 'heard' ? `It was heard ${ago(record.unseen || 0, dt)}.` : `The camera last saw it ${ago(record.unseen || 0, dt)}.`;
   const lead = `${the(name)}`.replace(/^t/, 'T');
   return `${lead} is ${placed(rel)}. ${how}`;
@@ -37,8 +39,9 @@ export function whatSentence(bearing, name, rel) {
 }
 
 /** The answer to "where is the hand?": the brain's own place answer, around the body. */
-export function handSentence(rel, unseen, dt) {
+export function handSentence(rel, unseen, dt, gone = false) {
   if (!rel) return 'The brain has given no answer for the hand.';
+  if (gone) return 'The hand is not where the brain left it: the camera sees that place, and no hand is there. The brain does not know where the hand is.';
   const how = unseen ? `The camera has not seen it for ${(unseen * dt).toFixed(1)} s.` : 'The camera sees it.';
   return `The brain says the hand is ${placed(rel)}. ${how}`;
 }

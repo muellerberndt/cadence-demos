@@ -104,6 +104,7 @@ function recordsLine(ctx) {
   const lines = ctx.names.slice(1).map((name, i) => {
     const pin = ctx.pins[name], seen = ctx.record?.in_view[i + 1];
     if (!pin?.place) return `${name}: no record, never seen`;
+    if (pin.gone && !seen) return `${name}: not where the brain left it · the camera sees that place, and it is not there`;
     const rel = ctx.around(pin.place), how = seen ? 'in view' : `${pin.from === 'heard' ? 'heard' : 'seen'} ${secs(pin.unseen || 0, ctx.dt)} ago`;
     return `${name}: ${metres(rel.distance)}, ${phrase(rel.bearing)} · ${how}`;
   });
@@ -230,11 +231,12 @@ function heldLine(ctx) {
   if (!b) return 'No place is held.';
   const u = uncertainty(b);
   // held back by the sight evidence: the camera would see the hand where its movement leads, and no report came
-  const asked = ctx.held ? HELD[ctx.sight] || HELD.flags
+  const asked = ctx.gone ? GONE : ctx.held ? HELD[ctx.sight] || HELD.flags
     : ctx.asked ? 'The brain was asked for its step at this moment.' : 'The brain was not asked at this moment: nothing says the place moved.';
   if (!ctx.unseen) return `The space holds the hand at <span data-place="${num(b.place[0], 3)},${num(b.place[1], 3)}">${at(b.place)}</span>, written by the camera’s report. Its area’s radius is <span data-uncertainty="${u.toFixed(4)}">${cm(u)}</span>.`;
   return `The space holds the hand at <span data-place="${num(b.place[0], 3)},${num(b.place[1], 3)}">${at(b.place)}</span>, unseen for <span data-unseen="${ctx.unseen}">${ctx.unseen} moments</span>. Its area’s radius is <span data-uncertainty="${u.toFixed(4)}">${cm(u)}</span>. ${asked}`;
 }
+const GONE = 'The camera sees this place, and no report of the hand comes from it: the hand is not where the program holds it. The place is marked gone and its radius is the room’s, until the hand is seen. The brain does not know where the hand is.';
 const HELD = {
   function: 'The hand went out of view while it moved and has not come out: the program carries its place no farther than the middle of its hidden stretch and holds it there, with a radius that reaches .90 of the way back to where it was last seen.',
   flags: 'The camera would see the hand where its movement leads, and no report comes: it did not come out there. The program holds the place halfway along its hidden path, with a radius that reaches both ends, and rests it.',
@@ -247,9 +249,11 @@ const SIGHT = {
   function: 'Sight that does not come is evidence. The page gives the program a function that says whether the camera would see a thing at a place: the camera’s field, the pillar and the arm’s shadow, as they stand. A thing that goes out of view while moving is looked ahead for along its seen movement: its hidden stretch ends where it would come back into view, or at the room’s edge. It is carried no farther than the middle of that stretch and waits there, and its radius reaches .90 of the way back to where it was last seen.',
   flags: 'The page also tells the program, at every step, whether the camera would see a thing at its predicted place: the camera’s field, the pillar and the arm’s shadow, as they stand. In sight for three steps in a row with no report, the thing did not come out where its movement carries it. The program puts it halfway between where it was last seen and where it was before those steps, with a radius that reaches both, and rests it.',
 };
+// The rule for a thing at rest, where the pack's library has it (the guide's words).
+const AT_REST = 'A thing at rest whose own place the camera sees, with no report from there for three steps, is not where the map holds it: it is marked gone, and its radius becomes the room’s until it is seen.';
 // The course setting (`course=True`), where the pack runs the module with it.
 const COURSE = 'This module is run on its course: a thing that moves by itself is moved by its last seen movement times the share the brain’s keep answers, in place of the shift. The brain says when to hold it back.';
-const sightLine = (ctx) => (ctx.held ? ' The hand’s place is held back in this way at this moment.' : '');
+const sightLine = (ctx) => (ctx.gone ? ' The hand’s place is marked gone at this moment.' : ctx.held ? ' The hand’s place is held back in this way at this moment.' : '');
 const answers = (ctx) => (ctx.regions.keep ? 'four' : 'three');
 const region = (title, role, what, live = askedLine, draw = null) => ({ title, role, what, live, draw });
 const axes = (name, labels, unit, color) => (ctx) => peakSvg(codeRows(ctx, name, labels, unit, null), color);
@@ -308,7 +312,7 @@ COPY.place = {
       live: askedLine, draw: axes('shift', ['dx', 'dy'], 'm', '#5cdb9e') },
     { id: 'correct', parts: ['place'], title: 'Correction by sight',
       body: 'When the thing is seen again its report writes the place. The lessons happen only then: the movement the reports show teaches shift, and the distance from the predicted place to the report teaches spread. A lesson is made of six reports in a row, so it lands a few moments after them.',
-      also: (ctx) => (ctx.sight ? SIGHT[ctx.sight] || SIGHT.flags : ''),
+      also: (ctx) => [ctx.sight ? SIGHT[ctx.sight] || SIGHT.flags : '', ctx.sight && ctx.rulesGone ? AT_REST : ''].filter(Boolean).join('</p><p>'),
       live: (ctx) => lessonLine(ctx) + sightLine(ctx) },
     { id: 'doubt', parts: ['spread'], title: 'The uncertainty',
       body: 'Spread is a belief over distances. The program reads the distance that holds .90 of the belief, takes out the camera’s own noise, and reports a circle of that radius around the place. The circle grows while the thing is unseen and shrinks to the camera’s noise when it is seen.',

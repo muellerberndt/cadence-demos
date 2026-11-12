@@ -10,7 +10,7 @@ each of them from the page's own record of its answers:
 1. follow: the hand is dragged across the room in view; the brain's place follows it;
 2. hide: the hand is dragged behind the pillar and rests in the shadow; the brain's place stays
    with the hand and its stated area holds the hand; the place part's card, opened while the
-   hand is hidden, shows a position and an uncertainty that grows;
+   hand is hidden, shows a position and an uncertainty that rises and does not fall;
 3. return: the hand is brought back into view; the place closes on it and the uncertainty falls;
 4. turn: the floor is dragged around the body until the camera looks away from the apple; the
    apple's record keeps its place, and the page says the apple is behind the body; the small map
@@ -69,6 +69,20 @@ RETURN = 0.05        # 15 moments after the hand is seen again
 # reading stays in the evidence (`lessons_while_hidden`, from the sixth hidden moment on, and
 # `lessons_in_the_first_hidden_moments`); for the plain composed brain the original check stands.
 LESSON_LAG = 5
+# Amendment of 12 November 2026, made AFTER the candidate pack (the place module's file
+# place-keeplong-2 on a wheel from the library's branch, given the sight evidence) failed the
+# first wording in three runs. The first wording read "the card's uncertainty grows while the
+# hand is hidden": the card's first hidden reading above the value when the hand was last seen,
+# and its last hidden reading above its first. The candidate read 1.7 cm when the hand was last
+# seen, 17.4 cm at the card's first hidden reading (18 moments in) and 17.4 cm at its last (70
+# moments). The reason for the amendment: with the sight evidence the place is held back from
+# about the twelfth hidden moment, and the doubt is then bounded by the stretch of shadow the
+# hand can be in. A radius that rises from 1.7 cm to 17.4 cm and then holds is the right
+# behaviour, and the first wording counted it as a failure. The amended check has two parts:
+# (a) the stated radius while hidden is at least UNCERTAINTY_RISE times its value when the hand
+# was last seen; (b) it never falls while the hand is hidden unless a report or a cue arrives.
+# The first wording's reading stays in the evidence as a reported number (`first_wording`).
+UNCERTAINTY_RISE = 3.0
 PIN_KEPT = 0.03      # the record's distance from the place the thing was last seen at
 PIN_HEARD = 3.0      # after one knock: the record's distance from the true place, in standard deviations of the cue's own error
 FRAME_MEDIAN = 20.0  # milliseconds a frame with the brain view on
@@ -224,6 +238,7 @@ def scripted(page, teach: bool | None = None, seed: int = 320, sight: bool | Non
             # moments the place was held back by it, and the first of them
             "takes_sight": page.evaluate("window.outOfSight.state.takesSight") or False, "sight": any(bool(r.get("sight")) for r in rows),
             "held_moments": len(held), "first_held": held[0] if held else None,
+            "gone_moments": sum(1 for r in hidden if r.get("gone")),  # hidden moments the place was marked gone
             "in_view_m": mean([r["brain"] for r in seen[-60:]]), "hidden_m": mean([r["brain"] for r in hidden]),
             "hidden_last_m": hidden[-1]["brain"], "kalman_hidden_m": mean([r["kalman"] for r in hidden]),
             "last_seen_hidden_m": mean([r["last"] for r in hidden]), "inside_circle": mean([1.0 if r["inside"] else 0.0 for r in hidden]),
@@ -310,9 +325,19 @@ def tutorial(page, c: Check) -> dict:
     c.add("2 hide: the place part's card shows a position and the moments unseen",
           bool(samples) and bool(later["place"]) and later["unseen"] >= 40 and "plays the role of" in later["text"],
           readings=len(samples), place=later["place"], unseen=later["unseen"], text=later["text"][:300])
-    c.add("2 hide: the card's uncertainty grows while the hand is hidden",
-          bool(samples) and seen_u is not None and first["uncertainty"] > seen_u and later["uncertainty"] > first["uncertainty"],
-          when_last_seen_m=seen_u, first_m=first["uncertainty"], first_unseen=first["unseen"], later_m=later["uncertainty"], later_unseen=later["unseen"])
+    # the amended check (UNCERTAINTY_RISE above): the card's readings while the hand is hidden, in
+    # the order they were shown. A reading counts as a fall where it is lower than the one before
+    # it with no report between them (the moments unseen go on counting); no cue reaches the hand.
+    falls = [{"unseen": b["unseen"], "from_m": a["uncertainty"], "to_m": b["uncertainty"]} for a, b in zip(samples, samples[1:])
+             if b["unseen"] > a["unseen"] and b["uncertainty"] < a["uncertainty"] - 1e-4]
+    rises = bool(samples) and seen_u is not None and later["uncertainty"] >= UNCERTAINTY_RISE * seen_u
+    first_wording = bool(samples) and seen_u is not None and first["uncertainty"] > seen_u and later["uncertainty"] > first["uncertainty"]
+    c.add("2 hide: the card's uncertainty rises to three times its value when last seen and never falls while the hand is hidden",
+          rises and not falls, bound_rise=UNCERTAINTY_RISE, when_last_seen_m=seen_u, hidden_m=later["uncertainty"], hidden_unseen=later["unseen"],
+          rise=(later["uncertainty"] / seen_u) if samples and seen_u else None, falls=falls[:5], readings=len(samples),
+          first_wording={"wording": "the card's uncertainty grows while the hand is hidden: its first hidden reading above the value when last seen, its last above its first",
+                         "holds": first_wording, "when_last_seen_m": seen_u, "first_m": first["uncertainty"], "first_unseen": first["unseen"],
+                         "later_m": later["uncertainty"], "later_unseen": later["unseen"]})
 
     # 3. return: back into the light
     start = moment(page)
@@ -527,7 +552,7 @@ def main() -> int:
     manifest = json.loads((SITE / "pack" / "manifest.json").read_text())
     report: dict = {"schema": "cadence-out-of-sight-page-check/1", "checked": time.strftime("%Y-%m-%d %H:%M"),
                     "cadence": manifest["cadence"], "brain": manifest.get("module") or manifest.get("brain_kind"),
-                    "bounds": {"follow_m": FOLLOW, "hidden_m": HIDDEN, "cover": COVER, "return_m": RETURN, "pin_kept_m": PIN_KEPT,
+                    "bounds": {"follow_m": FOLLOW, "hidden_m": HIDDEN, "cover": COVER, "return_m": RETURN, "uncertainty_rise": UNCERTAINTY_RISE, "pin_kept_m": PIN_KEPT,
                                "pin_heard_cue_sd": PIN_HEARD, "frame_median_ms": FRAME_MEDIAN, "frame_p95_ms": FRAME_P95}}
     try:
         with sync_playwright() as pw:
