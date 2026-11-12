@@ -9,6 +9,7 @@ from there, so the test reads the library the page runs.
 
 from __future__ import annotations
 
+import itertools
 import json
 import subprocess
 import sys
@@ -74,8 +75,8 @@ def visible(geometry: dict, points: np.ndarray, joints: list[float]) -> np.ndarr
         angle += q
         chain.append(chain[-1] + length * np.array([np.cos(angle), np.sin(angle)]))
     e = np.broadcast_to(eye, pts.shape)
-    cross = lambda u, v: u[..., 0] * v[..., 1] - u[..., 1] * v[..., 0]  # noqa: E731
-    for a, b in zip(chain[:-1], chain[1:], strict=True):
+    cross = lambda u, v: u[..., 0] * v[..., 1] - u[..., 1] * v[..., 0]
+    for a, b in itertools.pairwise(chain):
         A, B = np.broadcast_to(a, pts.shape), np.broadcast_to(b, pts.shape)
         ends = np.minimum.reduce([to_segment(e, A, B), to_segment(pts, A, B), to_segment(A, e, pts), to_segment(B, e, pts)])
         s1, s2 = np.sign(cross(pts - e, A - e)), np.sign(cross(pts - e, B - e))
@@ -100,7 +101,7 @@ def test_the_host_gives_the_inventory_the_map_gives_driven_directly(scene):
     assert lit.shape == (len(data["truth"]), direct.count)
     errors, last_seen, inside, last = [], [], [], None
     for t, (report, seen) in enumerate(zip(data["report"], data["in_view"], strict=True)):
-        sees = lambda points, t=t: visible(data["geometry"], points, data["joints"][t])  # noqa: E731
+        sees = lambda points, t=t: visible(data["geometry"], points, data["joints"][t])
         assert np.array_equal(sees(direct.centers), lit[t]), f"the port of the page's rule differs at moment {t}"
         host.looks = sees  # as the worker gives the page's rule for any place
         reports = [["hand", *report]] if seen else []
