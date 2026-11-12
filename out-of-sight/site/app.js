@@ -11,11 +11,12 @@
 // two questions: where is this thing, and what is that way. A short tutorial walks through the
 // promise; every part of the brain explains itself when pointed at (cards.js).
 
-import { Stage, DT, forward, visible, readScene, around, wrap, Random } from './world.js';
+import { Stage, DT, forward, visible, readScene, around, wrap, Random, MERGED_JOINTS } from './world.js';
 import { SceneView, MapView, ChartView, AroundView } from './scene.js';
 import { BrainView } from './brain.js';
-import { LastSeen, Kalman } from './controls.js';
-import { partCard, tractCard, stageCard, stagesFor, uncertainty } from './cards.js';
+import { LastSeen, Kalman, radiusAt, RATE } from './controls.js';
+import { sheetArea } from './region.js';
+import { partCard, tractCard, stageCard, stagesFor, uncertainty, configure } from './cards.js';
 import { whereSentence, whatSentence, handSentence, the, placed } from './where.js';
 
 const $ = (id) => document.getElementById(id);
@@ -125,10 +126,18 @@ function answered(record, estimates, reply, arrays) {
     if (seen) state.seenBelief = state.belief;
     state.sheet = { px: arrays.px, py: arrays.py };
     row.brain = distance(reply.place, truth); row.place = reply.place;
-    row.area = reply.area; row.uncertainty = uncertainty(state.belief);
     // inside the stated area: the ellipse of the answer's spread at the stated rate
     const k2 = -2 * Math.log(1 - 0.9);
     row.inside = ((reply.place[0] - truth[0]) / Math.max(reply.sd[0], 1e-6)) ** 2 + ((reply.place[1] - truth[1]) / Math.max(reply.sd[1], 1e-6)) ** 2 <= k2;
+    if (reply.cells && arrays.cells) {
+      // the answer states its area as a set of cells (region.js): the true hand is inside it
+      // where its cell is one of them, and its one number is the radius of a circle as large
+      const cells = sheetArea(reply.cells, arrays.cells), even = Math.sqrt(cells.area / Math.PI) / radiusAt(RATE);
+      state.belief = { ...state.belief, cells, area: cells.area, sd: [even, even], radius: null };
+      if (seen) state.seenBelief = state.belief;
+      row.inside = cells.holds(truth);
+    }
+    row.area = state.belief.area; row.uncertainty = uncertainty(state.belief);
     brainView.update(arrays.activation);
     if (reply.wave && arrays.wave_frames) brainView.playWave(arrays.wave_frames, reply.wave.frames, reply.wave.sweeps, reply.wave.of, arrays.wave_move);
     if (arrays.weight) brainView.setWeights(arrays.weight);
@@ -183,6 +192,7 @@ function readouts(record, row) {
   if (!range.hidden) range.textContent = `this module was raised on up to about ${Math.round(far * DT)} s of a moving hand it does not see`;
   // the sight evidence held the place back: the camera would see the hand where its movement leads, and does not
   held.hidden = !(state.held && !record.in_view[0]);
+  if (!held.hidden) held.textContent = state.takesSight === 'function' ? 'it has not come out: held at the middle of its hidden stretch' : 'it did not come out where its movement leads: held on its hidden path';
   if (state.settle) $('readout').textContent = state.asked === false ? 'this moment: the brain was not asked' : `this moment: ${state.settle.sweeps} sweeps run · residual ${state.settle.residual.toExponential(1)}`;
   if (!state.more) return;
   $('chip-error').textContent = `error ${cm(row.brain)}`;
@@ -219,7 +229,7 @@ function context() {
     belief: state.belief, seenBelief: state.seenBelief, sheet: state.sheet, centres: d.place.centres,
     unseen: state.unseen, pins: state.pins, names: stage.names, settle: state.settle, asked: state.asked,
     lesson: state.lesson ? { ...state.lesson, ageMs: performance.now() - state.lesson.at } : null,
-    lessons: state.lessons || 0, teach: state.teach, held: state.held, sight: state.sight && state.takesSight,
+    lessons: state.lessons || 0, teach: state.teach, held: state.held, sight: state.sight && state.takesSight, course: !!d.space?.course,
     coverage: rows.length >= 30 ? { moments: rows.length, share: rows.filter((x) => x.inside).length / rows.length } : null,
     act: (name) => brainView.activity(name), regions: state.regions, dt: DT,
     around: (place) => around(stage.geometry, place),
@@ -446,8 +456,11 @@ const TOUR_PARTS = {
     knock: ['found', 'The ringed part answers the place a sound names.'],
   },
 };
-const tourPart = (s) => TOUR_PARTS[state.kind]?.[s.id]?.[0] || s.brain;
-const tourAside = (s) => TOUR_PARTS[state.kind]?.[s.id]?.[1] || s.aside;
+// on its course a thing is moved by its seen movement times the share the brain's keep answers
+const ON_COURSE = { hide: ['keep', 'The ringed part is the brain’s answer: how much of its last seen movement the hand keeps in each step while nothing is seen.'] };
+const tourEntry = (s) => (state.kind === 'place' && state.describe?.space?.course && state.regions.keep && ON_COURSE[s.id]) || TOUR_PARTS[state.kind]?.[s.id];
+const tourPart = (s) => tourEntry(s)?.[0] || s.brain;
+const tourAside = (s) => tourEntry(s)?.[1] || s.aside;
 
 const tour = {
   active: false, step: 0, since: null, log: [], doneAt: 0,
@@ -895,7 +908,8 @@ function adopt(describe, arrays) {
   $('brain-badge').hidden = !badge; $('brain-badge').textContent = badge;
   $('brain-note').textContent = badge ? `${b.label}. ${b.note}` : '';
   brainView.verb = state.kind === 'baseline' ? 'settled in' : 'answered in';
-  state.takesSight = !!describe.sight; state.held = false;
+  state.takesSight = describe.sight || false; state.held = false; // 'function', 'flags' or false
+  configure(state.kind, { course: !!describe.space?.course });
   // a module arrives trained: on the page it takes no lessons unless the visitor switches them on (Details)
   if (params.get('teach') !== null) state.teach = params.get('teach') === '1';
   else state.teach = !(describe.brain.trained && state.kind !== 'baseline');
@@ -942,10 +956,14 @@ async function start() {
 // A scripted scenario, for the page check: the brain as it arrives, the scene at its start, the
 // camera's noise from a seed, and a route taken by scene steps. Every run gives the brain the
 // same rows. Resolves with the page's record of its answers over the route.
-async function scenario(route, { seed = 320, teach = null, sight = null } = {}) {
+async function scenario(route, { seed = 320, teach = null, sight = null, scene = 'default' } = {}) {
   await reborn({});
   if (teach !== null) { state.teach = teach; $('teach').checked = teach; }
   if (sight !== null) state.sight = !!sight;
+  // the scene the route is taken in: the page's default, or its first scene, where the arm rests
+  // with its end under the pillar's shadow and the two shadows join ('merged')
+  const rest = stage.home.joints;
+  if (scene === 'merged') stage.home.joints = MERGED_JOINTS.slice();
   while (state.pending) await new Promise((r) => setTimeout(r, 5));
   await brain.call('reset', {});
   while (state.pending) await new Promise((r) => setTimeout(r, 5));
@@ -959,11 +977,12 @@ async function scenario(route, { seed = 320, teach = null, sight = null } = {}) 
   // the route's own moments, up to the one it ended at: a moment the clock adds after it is left out
   const last = stage.routeEnd ?? stage.moment;
   while (state.pending || !state.history.length || state.history.at(-1).moment < last) await new Promise((r) => setTimeout(r, 10));
+  if (scene === 'merged') { stage.home.joints = rest; reset(); }
   return state.history.filter((r) => r.moment > from && r.moment <= last).map((r) => ({ m: r.moment - from, seen: r.seen, brain: r.brain, kalman: r.kalman, last: r.last, u: r.uncertainty, inside: r.inside, lesson: r.lesson, held: r.held, sight: r.sight }));
 }
 
 // what the page check drives
-window.outOfSight = { scenario, stage, state, brainView, sceneView, aroundView, tour, card, askWhere, askWhat, awayPoint, awayHeading, playScene, playReach, loadScene: (data) => playScene(readScene(data)), knock, setCamera, reset, undo,
+window.outOfSight = { sheetArea, scenario, stage, state, brainView, sceneView, aroundView, tour, card, askWhere, askWhat, awayPoint, awayHeading, playScene, playReach, loadScene: (data) => playScene(readScene(data)), knock, setCamera, reset, undo,
   setMore, openPart, openStage, closeCard, shadowPoint,
   /** Where a thing, the pillar or the camera is on the screen, in client pixels. */
   screenOf(name) {

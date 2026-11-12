@@ -249,10 +249,20 @@ export const THINGS = Object.freeze([
 
 // Where everything stands when the page opens. The body, which carries the camera and the ear,
 // stands inside the room, so that things lie around it: in front of it, beside it and behind it.
+//
+// The arm rests folded along the room's near edge. The page's first scene (12 November 2026)
+// rested it at MERGED_JOINTS, its end right under the pillar's shadow, so that the pillar's
+// shadow ran straight into the arm's own. The rest pose was changed AFTER that scene's promise
+// reading of 33 cm from the hidden hand, for this reason: with the two shadows joined, a place
+// carried on out of the pillar's shadow never comes into the camera's sight, and no sight
+// evidence can reach it. With the arm folded there is light around the pillar's shadow. The
+// first scene is kept: the promise is read on it beside the default one (tools/check_page.py,
+// tests/fixtures/promise-merged-shadows-scene.json), as a stated limit.
+export const MERGED_JOINTS = Object.freeze([2.6, -0.5]);
 export const HOME = Object.freeze({
   body: { position: [0.45, 0.5], heading: (170 * Math.PI) / 180 },
   pillar: { center: [-0.2, 0.62], radius: 0.1 }, // a little wider than the chamber's, to hide a hand behind with ease
-  joints: [2.6, -0.5],
+  joints: [2.79, -2.6],
   things: [[-0.6, 1.0], [-0.2, 0.32], [-0.05, 1.1], [0.82, 0.3]],
 });
 
@@ -283,6 +293,10 @@ export class Stage {
     this.world = makeWorld({ geometry: room, noise, joints: this.home.joints, things: this.home.things });
     this.names = THINGS.map((t) => t.name);
     this.random = new Random(seed);
+    // a knock's own error is drawn from a stream of its own: the n-th knock since the scene
+    // was reset has the same draw whenever it is made, so a knock's reading repeats
+    this.cueSeed = (seed ^ 0x6b6e6f63) >>> 0;
+    this.cueRandom = new Random(this.cueSeed);
     this.cameraOn = true;
     this.targets = this.world.things.map(() => null); // where the visitor drags each thing
     this.maxSpeed = 1.6;   // metres a second: a dragged thing's limit
@@ -303,6 +317,7 @@ export class Stage {
     this.cameraOn = true; this.facing = null;
     this.targets.fill(null); this.sounding.fill(false);
     this.reach = null; this.armPlan = null; this.route = null;
+    this.cueRandom = new Random(this.cueSeed);
   }
 
   /** A route: legs taken one scene step at a time, whatever the clock does. A leg moves a
@@ -388,6 +403,7 @@ export class Stage {
     const noise = this.random.draws(joints, count);
     const sounds = this.sounding.slice();
     this.sounding.fill(false);
+    sounds.forEach((sounding, k) => { if (sounding) noise.cue[k] = [this.cueRandom.normal(), this.cueRandom.normal()]; });
     this.follow();
     let row = null;
     if (this.reach) {

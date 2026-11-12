@@ -19,14 +19,13 @@ a map that holds where things are while they are out of view.
 > **development file, a feed-forward baseline** ([model card](MODEL_CARD.md)), with a wheel
 > built from the library's branch that holds `cadence.space` and `cadence.modules`. A program
 > beside the brain holds each place; the brain answers how far a place moves in a step, how far
-> off it may be, and the place a cue names. The page check below reads 39 of 42: in view and
+> off it may be, and the place a cue names. The page check below reads 40 of 42: in view and
 > after the return the place lies within a centimetre of the hand. Hidden behind the pillar,
-> where the hand stops, it lies 33 cm away on average (bound 10 cm): the promise is not kept by
-> this file. In the run on file one knock left the cup's record 28 cm from the cup (bound
-> 26 cm). A version that settles takes this file's seat
-> through `site/pack/manifest.json`, with one command (`tools/swap_module.py`). The plain
-> composed brain the page was built on stays as a second host (`tools/build.py` without
-> `--module`).
+> where the hand stops, it lies 33 cm away on average (bound 10 cm), in the default scene and
+> in the first: the promise is not kept by this file, and this pack's library takes no sight
+> evidence. Another module file and wheel take this pack's seat through
+> `site/pack/manifest.json`, with one command (`tools/swap_module.py`). The plain composed
+> brain the page was built on stays as a second host (`tools/build.py` without `--module`).
 >
 > The development module file and the branch-built wheel sit on this branch only, named as
 > such. They do not reach `main`: before any pull request they are replaced by the released
@@ -71,6 +70,24 @@ shows or hides what the camera cannot see; `Z` is undo and `R` reset. With the s
 focus, the arrows ask what is in front, behind, left and right, and `1` to `4` ask where a thing
 is. In the brain, `Tab` moves from part to part.
 
+## The scene, and the first scene
+
+The arm rests folded along the room's near edge, and there is light all around the pillar's
+shadow. This is the page's second default scene. In its first scene the arm's end rested right
+under the pillar's shadow, so that the pillar's shadow ran straight into the arm's own.
+
+The rest pose was changed on 12 November 2026, AFTER the first scene's promise had read 33 cm
+from the hidden hand against a bound of 10 cm. The reason: with the two shadows joined, a place
+that is carried on out of the pillar's shadow passes into the arm's shadow and never comes into
+the camera's sight, so no sight evidence (below) can reach it. A demonstration's default scene
+lets a visitor see that evidence at work. No bound of a check was changed with it.
+
+The first scene is kept. `scenario` of `site/app.js` takes either scene, the promise is read in
+both at every check and in every promise run, and both are scene files of the tracking chamber:
+`tests/fixtures/promise-scene.json` (the default) and
+`tests/fixtures/promise-merged-shadows-scene.json` (the first). The first scene's reading is a
+stated limit with no bound: where two shadows join, a place can run on.
+
 ## The brain explains itself
 
 Nothing is written over the brain until the visitor points at something. Every part (a
@@ -106,13 +123,14 @@ nothing about what the neurons are.
 | `shift`, 64 | answer: how far the place moves in this step | path integration |
 | `spread`, 16 | answer: how far off the place may be | a confidence estimate |
 | `found`, 48 | answer: the place a cue or a posture names | the map's entry from the other senses |
+| `keep`, 8 | answer, in a module that carries it: how much of its seen movement a thing keeps in this step | a brake on the carried movement |
 | the places of things, one row a thing, and the records of things at rest | kept by the program beside the brain | hippocampus |
 
 The roles are the page's reading of each region. The regions and what they hold are the
 module's own.
 
 - A synapse glows with the signal it carries, `|weight x presynaptic activation|`, in its source
-  population's hue, warmer where it excites and cooler where it inhibits; all 24,096 are drawn,
+  population's hue, warmer where it excites and cooler where it inhibits; every one is drawn,
   bundled into tracts between regions, with a faint light of the weight alone so the wiring
   shows at rest. The light blooms (the same light, blurred and added back) and is tone mapped.
 - The settle plays as a wave: the worker settles the brain again from the state the moment
@@ -134,22 +152,47 @@ module's own.
 ## The sight evidence
 
 A place module's space moves a thing it does not see along its last seen movement. A camera
-that looks at the place where the thing would be, and reports nothing, is evidence as well. At
-every moment the page's worker takes the moment in two halves. It asks the host for the place
-it predicts for each thing. It works out whether the camera would see a thing at each of those
-places, by `visible` of `site/world.js`, the rule that decides what the camera reports: the
-camera's field as the body is turned, the pillar where the visitor dragged it, the arm's shadow,
-the camera's switch. It gives the host one flag a thing beside the camera's reports
-(`Space.observe(in_sight=)`). A place predicted in sight for three moments in a row with no
-report did not come out where its movement carries it: the space puts it halfway between where
-it was last seen and where it was before those moments, with a radius that reaches both, and
-rests it. The scene then states "it did not come out where its movement leads: held on its
-hidden path", and the place part's card and the third stage of the path say how.
+that looks at the place where the thing would be, and reports nothing, is evidence as well. The
+page knows the scene as it stands at every moment: the camera's field as the body is turned,
+the pillar where the visitor dragged it, the arm's shadow, the camera's switch. `visible` of
+`site/world.js`, the rule that decides what the camera reports, says from it whether the camera
+would see a thing at a place. The page gives that to the space in the form the pack's library
+takes (`sight` in the host's description):
 
-The library's branch holds the call from 87a99a26 on. The wheel in this branch's pack is built
-from 5dbb8631, which does not hold it, and the development module does not load on a library
-that does (its brain has no `keep` region). With this pack the worker passes no flags; the host
-states whether it takes them (`sight` in its description). `?sight=0` withholds them.
+- **A function** (`Space.observe(in_sight=f)`, on the library's branch from c6f02e2f on). Python
+  asks the worker's `look` about any places it likes. A thing that goes out of view while moving
+  is looked ahead for along its seen movement: its hidden stretch ends where it would come back
+  into view, or at the room's edge. It is carried no farther than the middle of that stretch and
+  waits there, and its radius reaches .90 of the way back to where it was last seen.
+- **Flags** (from 87a99a26 on). The worker takes the moment in two halves: the host predicts
+  every thing's place, the worker says for each whether the camera would see a thing there, and
+  the host is given one flag a thing beside the camera's reports. A place predicted in sight for
+  three moments in a row with no report is put halfway between where it was last seen and where
+  it was before those moments, with a radius that reaches both, and rests.
+- **None.** The wheel in this branch's pack is built from 5dbb8631, which does not hold the
+  call, and the development module does not load on a library that does (its brain has no `keep`
+  region). With this pack nothing is passed.
+
+A place held back in this way is stated on the scene ("held at the middle of its hidden
+stretch"), on the place part's card, and in the fourth stage of the path. `?sight=0` withholds
+the evidence.
+
+A module that carries the `keep` answer is run on its course where the pack says so
+(`tools/build.py --space '{"course": true}'`): a thing that moves by itself is then moved by
+its last seen movement times the share the brain's `keep` answers, in place of the shift. The
+tutorial and the third stage of the path ring the `keep` part in that case.
+
+## An area given as cells
+
+The present module states where the hand is as a place and a circle. A belief over the plane is
+a sheet of cells, and its stated area is the smallest set of cells that holds .90 of it, which
+is no circle: it may be two patches, "kept going" and "stopped". The page's side of that seam
+is `site/region.js`. A host that states a sheet sends its cells with its reply; the scene and
+the details' map then draw the area as soft light with the edge of its cells, the card of the
+doubt states its cells and patches, and a moment counts as inside where the true hand's cell is
+one of them. A host that sends none is drawn with its circle. No host of this pack states a
+sheet: `PlaceHost._cells` is the place where the call into such a space goes, and
+`tests/region.mjs` tries the page's side on sheets made in the test.
 
 ## Display constants
 
@@ -207,6 +250,7 @@ sweep-by-sweep replay off, `?details=1` opens the details, `?sound=0` keeps the 
 | `site/scene.js` | the scene, the map around the body, the details' map and the chart; the kinds' glyphs |
 | `site/brain.js` | the brain view (WebGL2, with a Canvas2D fallback) and its self-explaining parts |
 | `site/cards.js` | what every part says about itself, and the eight stages of a position's path |
+| `site/region.js` | an area given as a set of cells: the cells that hold the stated share, their patches and their edge |
 | `site/worker.js` | Pyodide, the Cadence wheel and the host, checked against `pack/manifest.json`; the sight evidence of each moment |
 | `site/pack/` | the wheel, the module file (`module/`), the hosts (`py/spacebrain/place_host.py` for a place module, `host.py` for the plain composed brain), `reaches.json`, `manifest.json` with SHA-256 |
 | `tools/build.py` | builds `site/pack/` from the released wheel, with the place module's files where given |
@@ -214,16 +258,18 @@ sweep-by-sweep replay off, `?details=1` opens the details, `?sound=0` keeps the 
 | `tools/check_page.py` | the promise in headless Chromium; writes `evidence/page_check.json` |
 | `tools/promise_runs.py` | the scripted promise scenario, three runs with lessons on and three off, with and without the sight evidence where the library takes it; writes `evidence/promise_runs.json` |
 | `tools/swap_module.py` | puts another module file and wheel on the page: the pack, the promise runs, the page check, the readings |
-| `tools/export_promise.mjs` | the promise scenario as a scene file of the tracking chamber |
+| `tools/export_promise.mjs` | the promise scenario as scene files of the tracking chamber, in the default scene and in the first |
 | `tools/record_clip.py` | records the tutorial, performed with the mouse, as a clip |
 | `MODEL_CARD.md` | the brain the page runs |
-| `tests/parity.mjs`, `tests/fixtures/` | the parity test of `site/world.js` and `site/controls.js`, its recorded steps and the chamber's example scene |
+| `tests/parity.mjs`, `tests/fixtures/` | the parity test of `site/world.js` and `site/controls.js`, its recorded steps, the chamber's example scene and the promise's two scenes |
+| `tests/region.mjs` | an area given as cells, on sheets made in the test |
 | `tests/test_host.py` | the brain host run natively: the answer, the lesson only at seen moments, the wave, the records |
 
 ## Checks
 
 ```sh
 node tests/parity.mjs                    # the page's world and controls against the Python ones
+node tests/region.mjs                    # an area given as a set of cells
 python -m pytest tests/test_host.py      # the brain host, natively (cadence-net 0.98.0)
 python tools/check_page.py --shots docs  # the promise, with the mouse a visitor uses
 python tools/promise_runs.py             # the scripted promise, six runs
@@ -236,7 +282,8 @@ the readings:
 
 ```sh
 python tools/swap_module.py --module place.npz --wheel cadence_net-0.99.0-py3-none-any.whl \
-    --label "The badge on the page" --note "One or two sentences on what this file is." --wheel-source "PyPI"
+    --label "The badge on the page" --note "One or two sentences on what this file is." --wheel-source "PyPI" \
+    --space '{"course": true}'   # where the module is run on its course
 ```
 
 **Parity.** `tests/parity.mjs` replays 340 steps recorded by the tracking chamber's Python world
@@ -257,7 +304,8 @@ place part's card showing a position and a growing uncertainty; back in view, wi
 the uncertainty lower; with the camera turned away from the apple, the apple's record within
 3 cm of its place and the page's sentence saying "behind you"; the cup's record at the place it
 was last seen while it is moved unseen; after one knock, within three standard deviations of
-the cue's own error of the true place. It taps the small map for where the apple is and for
+the cue's own error of the true place (the knock's own error is drawn from a seeded stream of its own, so the reading
+repeats from run to run). It taps the small map for where the apple is and for
 what lies two ways. It then opens every part's card by hover and by keyboard and checks that
 each stands beside its part and covers none of it, steps through the eight stages, tries undo
 of a move and of a turn, the camera, reset, the details switch and a scene file, and measures
@@ -284,34 +332,42 @@ and their readings are recorded without a bound, since a drag's timing differs f
 to the value it was given; a lesson follows only a moment the camera reports; the wave's last
 sweep is the state the answer was read from; a record keeps its place until the thing is seen or
 heard, and a cue's direction and distance rewrite it. For the place module's host: a moment
-taken in two halves, and a place that is predicted in sight for three moments and sends no
-report put halfway along its hidden path (skipped on a library without the call).
+taken in two halves, with a place that is predicted in sight for three moments and sends no
+report put halfway along its hidden path; and, with a function for the evidence, a thing that
+waits at the middle of its hidden stretch (each skipped on a library without the call).
 
-The reading on the **development file** (12 November 2026): 39 of 42 checks (`evidence/page_check.json`). The three that fail are the promise's two and the knock's: after one knock the cup's record lay 28 cm from the cup, against three times the cue's own error, 26 cm. A knock is one cue with one draw of its error.
+The reading on the **development file** (12 November 2026): 40 of 42 checks (`evidence/page_check.json`); the two that fail are the promise's. After one knock the cup's record lay 14 cm from the cup, against three times the cue's own error, 26 cm; the knock's error is drawn from a seeded stream, and the reading repeats.
 
 The promise is read from a scripted scenario: the module as its file holds it, the same route by
 scene steps (0.5 m/s into the pillar's shadow, 70 moments at rest there, back), the camera's
 noise from one seed. The scene is also a scene file of the tracking chamber,
-`tests/fixtures/promise-scene.json` (323 steps, 91 out of view; `tools/export_promise.mjs`).
-Three runs with lessons on and three with lessons off (`evidence/promise_runs.json`); bounds
-5 cm in view, 10 cm hidden, 0.85 for the circle, 5 cm after the return:
+`tests/fixtures/promise-scene.json` (323 steps, 91 out of view; `tools/export_promise.mjs`),
+and the page's first scene is `tests/fixtures/promise-merged-shadows-scene.json`.
+In the default scene, three runs with lessons on and three with lessons off; in the page's first
+scene, where the pillar's shadow and the arm's join, one of each (`evidence/promise_runs.json`).
+Bounds: 5 cm in view, 10 cm hidden, 0.85 for the circle, 5 cm after the return. The first scene
+has no bound: it is read as a stated limit.
 
-| Sight evidence | Lessons | In view | Hidden, mean | Hidden, last | Circle holds the hand | Circle's radius | Held back | After return | Lessons taken | A moment |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| none | on | 1.0 cm | 36.4 cm | 86.4 cm | 0.23 | 1.4 cm to 18.5 cm | - | 0.2 cm | 319 | 62 ms |
-| none | on | 1.0 cm | 36.3 cm | 86.3 cm | 0.23 | 1.4 cm to 18.5 cm | - | 0.2 cm | 319 | 54 ms |
-| none | on | 1.0 cm | 36.4 cm | 86.5 cm | 0.23 | 1.4 cm to 18.6 cm | - | 0.2 cm | 319 | 49 ms |
-| none | off | 1.0 cm | 33.3 cm | 80.2 cm | 0.24 | 1.6 cm to 18.9 cm | - | 0.3 cm | 0 | 12 ms |
-| none | off | 1.0 cm | 33.3 cm | 80.2 cm | 0.24 | 1.6 cm to 18.9 cm | - | 0.3 cm | 0 | 11 ms |
-| none | off | 1.0 cm | 33.3 cm | 80.2 cm | 0.24 | 1.6 cm to 18.9 cm | - | 0.3 cm | 0 | 9 ms |
+| Scene | Sight evidence | Lessons | In view | Hidden, mean | Hidden, last | Circle holds the hand | Circle's radius | Held back | After return | Lessons taken | A moment |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| default | none | on | 1.0 cm | 36.6 cm | 86.8 cm | 0.23 | 1.4 cm to 18.6 cm | - | 0.2 cm | 319 | 56 ms |
+| default | none | on | 1.0 cm | 36.4 cm | 86.5 cm | 0.23 | 1.4 cm to 18.6 cm | - | 0.2 cm | 319 | 45 ms |
+| default | none | on | 1.0 cm | 36.4 cm | 86.5 cm | 0.23 | 1.4 cm to 18.6 cm | - | 0.2 cm | 319 | 48 ms |
+| default | none | off | 1.0 cm | 33.3 cm | 80.2 cm | 0.24 | 1.6 cm to 18.9 cm | - | 0.3 cm | 0 | 13 ms |
+| default | none | off | 1.0 cm | 33.3 cm | 80.2 cm | 0.24 | 1.6 cm to 18.9 cm | - | 0.3 cm | 0 | 12 ms |
+| default | none | off | 1.0 cm | 33.3 cm | 80.2 cm | 0.24 | 1.6 cm to 18.9 cm | - | 0.3 cm | 0 | 13 ms |
+| first (shadows joined) | none | on | 1.0 cm | 36.4 cm | 86.5 cm | 0.23 | 1.4 cm to 18.6 cm | - | 0.2 cm | 319 | 46 ms |
+| first (shadows joined) | none | off | 1.0 cm | 33.3 cm | 80.2 cm | 0.24 | 1.6 cm to 18.9 cm | - | 0.3 cm | 0 | 11 ms |
 
 On the same rows the chamber's Kalman filter lay 28 cm from the hidden hand and the last seen
 position 16 cm. With lessons off the three runs are the same to the last digit and a moment
-takes 9 to 12 ms of the scene's 33 ms; with lessons on it takes 49 to 62 ms. The hand stops in
+takes 12 to 13 ms of the scene's 33 ms; with lessons on it takes 45 to 56 ms. The hand stops in
 the shadow, and the module carries its place on along the last seen movement: the promise's
-bound is not held, with lessons or without. The library of this pack takes no sight evidence
-(`library_takes_sight_evidence` in the evidence file), so every run reads without it.
+bound is not held, with lessons or without, in the default scene or in the first. The library
+of this pack takes no sight evidence (`library_takes_sight_evidence` in the evidence file), so
+every run reads without it, and the two scenes read alike: the hand's rows are the same in
+both, and nothing tells the place where the light is.
 
-A frame took 16.7 ms at the median and 16.7 ms at the 95th percentile with the brain view and its bloom on. The page runs the module with lessons off; learning is one switch in Details, and the gold flashes show while it is on.
+A frame took 16.7 ms at the median and 33.3 ms at the 95th percentile with the brain view and its bloom on. The page runs the module with lessons off; learning is one switch in Details, and the gold flashes show while it is on.
 
 Cadence is GPL-3.0.

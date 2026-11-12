@@ -233,7 +233,7 @@ def test_the_sight_evidence_holds_back_a_place_that_did_not_come_out(tmp_path):
     for t in range(40):
         donor.advance(np.array([True]), np.array([[-0.5 + 0.01 * t, 0.6]]), learn=True)
     host = make({"module": {"name": "place", "path": str(donor.save(tmp_path / "place.npz"))}})
-    assert host.handle({"command": "describe"})["sight"] is True
+    assert host.handle({"command": "describe"})["sight"] in ("flags", "function")
 
     def halves(report, in_sight):
         moment = {"hand": {"report": report}, "joints": JOINTS, "commands": REST, "things": [], "teach": False}
@@ -261,3 +261,46 @@ def test_the_sight_evidence_holds_back_a_place_that_did_not_come_out(tmp_path):
     assert plain["sight"]["given"] is False and not plain["held_back"]
     with pytest.raises(RuntimeError):
         host.handle({"command": "observe", "in_sight": [True]})  # no moment is open
+
+
+def test_with_a_function_a_thing_waits_at_the_middle_of_its_hidden_stretch(tmp_path):
+    """The sight evidence as a function of places, on a module made here and moved by its seen
+    movement as it is (the space's control, set through the pack's settings): a thing that
+    goes out of view while moving is carried no farther than the middle of its hidden stretch."""
+    space = pytest.importorskip("cadence.space")
+    from spacebrain.host import make
+
+    interface = space.Interface(plane=(-1.0, 1.0, -0.2, 1.4), limits=((0.35, 2.79), (-2.6, -0.3)), hidden=32)
+    donor = space.Space(interface, seed=0)
+    donor.begin(np.array([[-0.5, 0.6]]))
+    for t in range(40):
+        donor.advance(np.array([True]), np.array([[-0.5 + 0.01 * t, 0.6]]), learn=True)
+    host = make({"module": {"name": "place", "path": str(donor.save(tmp_path / "place.npz")), "space": {"read": "seen"}}})
+    described = host.handle({"command": "describe"})
+    assert described["space"] == {"read": "seen"}
+    if described["sight"] != "function":
+        pytest.skip("this library's space takes no function for the sight evidence")
+    asked = []
+
+    def looks(points):  # a shadow across the way: nothing is seen where x lies between 0.0 and 0.3
+        asked.append(len(points))
+        return ~((points[:, 0] > 0.0) & (points[:, 0] < 0.3))
+
+    host.looks = looks
+
+    def moment(report):
+        return host.handle({"command": "step", "hand": {"report": report}, "joints": JOINTS, "commands": REST, "things": [], "teach": False, "in_sight": True})
+
+    for t in range(26):  # in view, moving right at 2 cm a moment, up to the shadow's edge
+        reply = moment([-0.5 + 0.02 * t, 0.6])
+    last = np.array(reply["place"])
+    for _ in range(30):  # into the shadow, and no report
+        reply = moment(None)
+    assert reply["sight"]["given"] == "function" and reply["held_back"] and not reply["asked"]
+    assert abs(reply["place"][0] - 0.15) < 0.04 and abs(reply["place"][1] - 0.6) < 0.03  # the middle of the stretch
+    assert reply["radius"] >= 0.9 * np.linalg.norm(np.array(reply["place"]) - last) - 1e-9  # .90 of the way back
+    assert max(asked) > 100  # the space looked ahead along the seen movement
+    assert not moment([0.4, 0.6])["held_back"]  # seen again: the report takes the place
+    # without the page's function no evidence is given
+    host.looks = None
+    assert moment(None)["sight"]["given"] is False

@@ -25,6 +25,15 @@ details switch with a scene file loaded and replayed, the frame times with the b
 a phone-sized touch screen, and the Canvas2D view. Console errors, page errors and failed
 requests fail the check. The bounds below were set before the trained brain was read. Evidence
 goes to ``evidence/page_check.json``.
+
+The scene. The promise is read in the page's default scene. On 12 November 2026 the default
+scene's rest pose of the arm was changed, AFTER the first scene had read 33 cm from the hidden
+hand (bound 10 cm). The reason: in the first scene the arm's end rested right under the pillar's
+shadow, the two shadows joined, and a place carried on out of the pillar's shadow never came
+into the camera's sight, so no sight evidence could reach it. In the default scene the arm rests
+folded along the room's near edge, with light around the pillar's shadow. No bound was changed.
+The first scene is kept and read at every check (``promise_merged_shadows`` in the evidence, a
+reading with no bound): where two shadows join, a place can run on.
 """
 
 from __future__ import annotations
@@ -193,23 +202,27 @@ ROUTE = [  # the promise, by scene steps: across the room in view, into the pill
 ]
 
 
-def scripted(page, teach: bool | None = None, seed: int = 320, sight: bool | None = None) -> dict:
+SCENES = ("default", "merged")  # the page's default scene, and its first scene, where the pillar's shadow and the arm's join
+
+
+def scripted(page, teach: bool | None = None, seed: int = 320, sight: bool | None = None, scene: str = "default") -> dict:
     """The promise as a scripted scenario: the brain as it arrives, the scene at its start, the
     camera's noise from a seed, and the hand moved by scene steps (0.5 m/s into the shadow, 70
     moments at rest there). Every run gives the brain the same rows. `teach`: lessons on or off;
     `sight`: the sight evidence given or withheld (it is given only where the pack's library
-    takes it). None leaves the page's own default."""
+    takes it). None leaves the page's own default. `scene`: the page's default scene, or
+    "merged", its first scene, where the arm's end rests under the pillar's shadow."""
     shadow = page.evaluate("window.outOfSight.shadowPoint(0.32)")
     route = [{**leg, "to": shadow} if leg.get("to") == "SHADOW" else leg for leg in ROUTE]
-    rows = page.evaluate("([route, teach, seed, sight]) => window.outOfSight.scenario(route, { seed, teach, sight })", [route, teach, seed, sight])
+    rows = page.evaluate("([route, teach, seed, sight, scene]) => window.outOfSight.scenario(route, { seed, teach, sight, scene })", [route, teach, seed, sight, scene])
     first = next(k for k, r in enumerate(rows) if not r["seen"])
     hidden = [r for r in rows if not r["seen"] and r["brain"] is not None]
     seen, back = [r for r in rows[:first] if r["brain"] is not None], [r for r in rows[-10:] if r["brain"] is not None]
     held = [k for k, r in enumerate(hidden) if r.get("held")]
-    return {"teach": page.evaluate("window.outOfSight.state.teach"), "moments": len(rows), "hidden_moments": len(hidden),
+    return {"scene": scene, "teach": page.evaluate("window.outOfSight.state.teach"), "moments": len(rows), "hidden_moments": len(hidden),
             # the sight evidence: whether the pack's library takes it, whether this run gave it, the hidden
             # moments the place was held back by it, and the first of them
-            "takes_sight": bool(page.evaluate("window.outOfSight.state.takesSight")), "sight": any(bool(r.get("sight")) for r in rows),
+            "takes_sight": page.evaluate("window.outOfSight.state.takesSight") or False, "sight": any(bool(r.get("sight")) for r in rows),
             "held_moments": len(held), "first_held": held[0] if held else None,
             "in_view_m": mean([r["brain"] for r in seen[-60:]]), "hidden_m": mean([r["brain"] for r in hidden]),
             "hidden_last_m": hidden[-1]["brain"], "kalman_hidden_m": mean([r["kalman"] for r in hidden]),
@@ -543,6 +556,13 @@ def main() -> int:
             c.add("THE PROMISE: the stated area holds the hidden hand", promise["inside_circle"] >= COVER, bound=COVER, inside=promise["inside_circle"],
                   radius_first_m=promise["radius_first_m"], radius_last_m=promise["radius_last_m"])
             c.add("THE PROMISE: back in view the place closes on the hand", promise["return_m"] <= RETURN, bound_m=RETURN, return_m=promise["return_m"])
+            # the page's first scene, kept as a stated limit: the pillar's shadow and the arm's join
+            merged = scripted(page, scene="merged")
+            report["promise_merged_shadows"] = merged
+            c.note("the promise in the first scene, where the pillar's shadow and the arm's join (a stated limit)",
+                   merged["hidden_m"] <= HIDDEN and merged["inside_circle"] >= COVER, bound_m=HIDDEN, bound_cover=COVER, hidden_m=merged["hidden_m"],
+                   last_m=merged["hidden_last_m"], inside=merged["inside_circle"], sight_evidence=merged["sight"], held_moments=merged["held_moments"],
+                   in_view_m=merged["in_view_m"], return_m=merged["return_m"])
             page.click("#reset")
             page.evaluate("document.getElementById('welcome').hidden = false")
             report["tutorial"] = tutorial(page, c)

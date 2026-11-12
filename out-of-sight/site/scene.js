@@ -9,6 +9,7 @@
 
 import { forward, litPolygon, cartesian, around } from './world.js';
 import { radiusAt, RATE } from './controls.js';
+import { contour, sheetImage } from './region.js';
 
 const TEAL = [63, 224, 207], ORANGE = [255, 159, 74], GOLD = [255, 206, 102], VIOLET = [183, 156, 255];
 export const THING_COLOR = { hand: ORANGE, cup: [127, 212, 255], apple: [255, 104, 116], bread: [236, 190, 124] };
@@ -91,6 +92,7 @@ export class SceneView {
     this.calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
     this.scale = 1; this.ox = 0; this.oy = 0;
     this.hatch = null;
+    this.cells = document.createElement('canvas'); // an area given as cells: one pixel a cell
   }
 
   // metres <-> CSS pixels (y up on the plane, down on the screen)
@@ -162,7 +164,7 @@ export class SceneView {
     const belief = s.belief?.place ? this.flow(s) : null;
     if (belief) {
       c.save(); c.beginPath(); c.roundRect(x0, y0, x1 - x0, y1 - y0, 10); c.clip();
-      this.haze(c, belief, m);
+      if (belief.cells) this.region(c, belief.cells); else this.haze(c, belief, m);
       c.restore();
     }
 
@@ -312,6 +314,7 @@ export class SceneView {
     const k = far || this.calm ? 1 : 0.34;
     this.shown = far ? { place: b.place.slice(), sd: b.sd.slice() }
       : { place: [f.place[0] + (b.place[0] - f.place[0]) * k, f.place[1] + (b.place[1] - f.place[1]) * k], sd: [f.sd[0] + (b.sd[0] - f.sd[0]) * k, f.sd[1] + (b.sd[1] - f.sd[1]) * k] };
+    this.shown.cells = b.cells || null; // an area of cells is drawn as the answer states it
     const moment = s.record?.moment ?? 0;
     if (moment !== this.trailMoment) {
       this.trailMoment = moment;
@@ -337,6 +340,29 @@ export class SceneView {
     c.restore();
   }
 
+  // An area given as a set of cells: the sheet as soft light, each cell by its share, with the
+  // edge of the cells that hold the stated share drawn around them as a smooth line. It may be two patches.
+  region(c, sheet) {
+    const [x0, y1] = this.toScreen([sheet.plane[0], sheet.plane[2]]), [x1, y0] = this.toScreen([sheet.plane[1], sheet.plane[3]]);
+    c.save();
+    c.globalCompositeOperation = 'lighter';
+    c.imageSmoothingEnabled = true; c.imageSmoothingQuality = 'high';
+    c.drawImage(sheetImage(sheet, this.cells), x0, y0, x1 - x0, y1 - y0);
+    c.restore();
+  }
+
+  // The edge of an area of cells, over the things on the table.
+  regionEdge(c, sheet) {
+    c.save();
+    c.globalCompositeOperation = 'lighter';
+    c.shadowColor = rgba(TEAL, 0.9); c.shadowBlur = 10;
+    c.strokeStyle = rgba([150, 250, 238], 0.8); c.lineWidth = 1.4; c.lineCap = 'round';
+    c.beginPath();
+    for (const [ax, ay, bx, by] of contour(sheet)) { const p = this.toScreen([ax, ay]), q = this.toScreen([bx, by]); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); }
+    c.stroke();
+    c.restore();
+  }
+
   // The ring of doubt (the area that holds the hand at the stated rate), the path of the last
   // answers and the peak itself.
   peak(c, s, belief, m) {
@@ -354,11 +380,14 @@ export class SceneView {
         c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.stroke();
       }
     }
-    // the ring
-    c.shadowColor = rgba(TEAL, 0.9); c.shadowBlur = 12;
-    c.strokeStyle = rgba([150, 250, 238], 0.85); c.lineWidth = 1.5;
-    c.beginPath(); c.ellipse(bx, by, rx, ry, 0, 0, Math.PI * 2); c.stroke();
-    c.shadowBlur = 0;
+    // the ring; an area given as cells has its own edge in place of it
+    if (belief.cells) this.regionEdge(c, belief.cells);
+    else {
+      c.shadowColor = rgba(TEAL, 0.9); c.shadowBlur = 12;
+      c.strokeStyle = rgba([150, 250, 238], 0.85); c.lineWidth = 1.5;
+      c.beginPath(); c.ellipse(bx, by, rx, ry, 0, 0, Math.PI * 2); c.stroke();
+      c.shadowBlur = 0;
+    }
     // the peak
     const r = clamp(Math.min(rx, ry) * 0.7, 9, 20);
     const core = c.createRadialGradient(bx, by, 0, bx, by, r);
@@ -563,8 +592,19 @@ export class MapView {
     const W = (hx - lx) * scale, H = (hy - ly) * scale;
     const P = (p) => [x0 + (p[0] - lx) * scale, y0 + H - (p[1] - ly) * scale];
     c.fillStyle = '#080b15'; c.beginPath(); c.roundRect(x0, y0, W, H, 6); c.fill();
-    const sheet = s.sheet;
-    if (sheet?.px) {
+    const sheet = s.sheet, cells = s.belief?.cells;
+    if (cells) {
+      // the answer is a sheet of cells: drawn as it is, with the edge of its stated area
+      c.save();
+      c.beginPath(); c.roundRect(x0, y0, W, H, 6); c.clip();
+      c.imageSmoothingEnabled = true; c.imageSmoothingQuality = 'high';
+      c.drawImage(sheetImage(cells, this.buffer), x0, y0, W, H);
+      c.strokeStyle = rgba([150, 250, 238], 0.8); c.lineWidth = 1;
+      c.beginPath();
+      for (const [ax, ay, bx, by] of contour(cells)) { const p = P([ax, ay]), q = P([bx, by]); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); }
+      c.stroke();
+      c.restore();
+    } else if (sheet?.px) {
       const k = sheet.px.length, kb = this.buffer;
       if (kb.width !== k) { kb.width = k; kb.height = k; }
       const bc = kb.getContext('2d');

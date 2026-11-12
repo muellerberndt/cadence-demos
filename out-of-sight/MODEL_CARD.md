@@ -33,10 +33,14 @@ how far off the place may be (`spread`), and the place a cue or the arm's joint 
   (`predict`), the reports go to their rows (`assign`) and the places are written (`observe`).
   Reports and cues carry what a thing looks like and no name. The answer for the hand is its
   row's place and a circle that holds it nine times in ten (`where`).
-- **The sight evidence:** where the library's `observe` takes `in_sight`, the page's worker says
-  for each predicted place whether the camera would see a thing there, and a place predicted in
-  sight for three moments with no report is put halfway along its hidden path. The wheel this
-  file runs on does not hold that call, so no flag is passed.
+- **The sight evidence:** where the library's `observe` takes `in_sight`, the page says whether
+  the camera would see a thing at a place, as a function of places or as one flag for each
+  predicted place, and the space holds back a place that did not come out where its movement
+  leads. The wheel this file runs on does not hold that call, and this file does not load on a
+  library that does (its brain has no `keep` region): nothing is passed.
+- **The arm's own hand:** the space is given the copy of the arm's command. The arm's joint
+  readings are passed only where the pack says the module was raised with them
+  (`--space '{"joints": true}'`); this file was raised without them.
 - **The ear:** the module's ear stands at (0.95, 1.35). A cue heard at the page's body is given
   to the module as the direction and distance of the same point from its own ear.
 
@@ -51,25 +55,32 @@ arm's own hand 1.09 in view and 12.51 out of view.
 The promise is read from a scripted scenario: the module as its file holds it, the same route by
 scene steps (0.5 m/s into the pillar's shadow, 70 moments at rest there, back), the camera's
 noise from one seed. The scene is also a scene file of the tracking chamber,
-`tests/fixtures/promise-scene.json` (323 steps, 91 out of view; `tools/export_promise.mjs`).
-Three runs with lessons on and three with lessons off (`evidence/promise_runs.json`); bounds
-5 cm in view, 10 cm hidden, 0.85 for the circle, 5 cm after the return:
+`tests/fixtures/promise-scene.json` (323 steps, 91 out of view; `tools/export_promise.mjs`),
+and the page's first scene is `tests/fixtures/promise-merged-shadows-scene.json`.
+In the default scene, three runs with lessons on and three with lessons off; in the page's first
+scene, where the pillar's shadow and the arm's join, one of each (`evidence/promise_runs.json`).
+Bounds: 5 cm in view, 10 cm hidden, 0.85 for the circle, 5 cm after the return. The first scene
+has no bound: it is read as a stated limit.
 
-| Sight evidence | Lessons | In view | Hidden, mean | Hidden, last | Circle holds the hand | Circle's radius | Held back | After return | Lessons taken | A moment |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| none | on | 1.0 cm | 36.4 cm | 86.4 cm | 0.23 | 1.4 cm to 18.5 cm | - | 0.2 cm | 319 | 62 ms |
-| none | on | 1.0 cm | 36.3 cm | 86.3 cm | 0.23 | 1.4 cm to 18.5 cm | - | 0.2 cm | 319 | 54 ms |
-| none | on | 1.0 cm | 36.4 cm | 86.5 cm | 0.23 | 1.4 cm to 18.6 cm | - | 0.2 cm | 319 | 49 ms |
-| none | off | 1.0 cm | 33.3 cm | 80.2 cm | 0.24 | 1.6 cm to 18.9 cm | - | 0.3 cm | 0 | 12 ms |
-| none | off | 1.0 cm | 33.3 cm | 80.2 cm | 0.24 | 1.6 cm to 18.9 cm | - | 0.3 cm | 0 | 11 ms |
-| none | off | 1.0 cm | 33.3 cm | 80.2 cm | 0.24 | 1.6 cm to 18.9 cm | - | 0.3 cm | 0 | 9 ms |
+| Scene | Sight evidence | Lessons | In view | Hidden, mean | Hidden, last | Circle holds the hand | Circle's radius | Held back | After return | Lessons taken | A moment |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| default | none | on | 1.0 cm | 36.6 cm | 86.8 cm | 0.23 | 1.4 cm to 18.6 cm | - | 0.2 cm | 319 | 56 ms |
+| default | none | on | 1.0 cm | 36.4 cm | 86.5 cm | 0.23 | 1.4 cm to 18.6 cm | - | 0.2 cm | 319 | 45 ms |
+| default | none | on | 1.0 cm | 36.4 cm | 86.5 cm | 0.23 | 1.4 cm to 18.6 cm | - | 0.2 cm | 319 | 48 ms |
+| default | none | off | 1.0 cm | 33.3 cm | 80.2 cm | 0.24 | 1.6 cm to 18.9 cm | - | 0.3 cm | 0 | 13 ms |
+| default | none | off | 1.0 cm | 33.3 cm | 80.2 cm | 0.24 | 1.6 cm to 18.9 cm | - | 0.3 cm | 0 | 12 ms |
+| default | none | off | 1.0 cm | 33.3 cm | 80.2 cm | 0.24 | 1.6 cm to 18.9 cm | - | 0.3 cm | 0 | 13 ms |
+| first (shadows joined) | none | on | 1.0 cm | 36.4 cm | 86.5 cm | 0.23 | 1.4 cm to 18.6 cm | - | 0.2 cm | 319 | 46 ms |
+| first (shadows joined) | none | off | 1.0 cm | 33.3 cm | 80.2 cm | 0.24 | 1.6 cm to 18.9 cm | - | 0.3 cm | 0 | 11 ms |
 
 On the same rows the chamber's Kalman filter lay 28 cm from the hidden hand and the last seen
 position 16 cm. With lessons off the three runs are the same to the last digit and a moment
-takes 9 to 12 ms of the scene's 33 ms; with lessons on it takes 49 to 62 ms. The hand stops in
+takes 12 to 13 ms of the scene's 33 ms; with lessons on it takes 45 to 56 ms. The hand stops in
 the shadow, and the module carries its place on along the last seen movement: the promise's
-bound is not held, with lessons or without. The library of this pack takes no sight evidence
-(`library_takes_sight_evidence` in the evidence file), so every run reads without it.
+bound is not held, with lessons or without, in the default scene or in the first. The library
+of this pack takes no sight evidence (`library_takes_sight_evidence` in the evidence file), so
+every run reads without it, and the two scenes read alike: the hand's rows are the same in
+both, and nothing tells the place where the light is.
 
 - One knock: 16 knocks at one place with the cue's own error of 6 cm put the place 14 cm from the
   true one on average, 27 cm at the most (measured natively through the page's host).
@@ -86,6 +97,10 @@ module was raised in. Nothing of the brain is saved in the browser.
 ## Limits
 
 - A feed-forward baseline: its answers do not come from a settled exchange between regions.
+- With no sight evidence, the place runs on in the default scene and in the page's first scene
+  alike (the table above). Where two shadows join, as in the first scene, a place that is
+  carried on never comes into the camera's sight, and sight evidence could not reach it there
+  either.
 - Out of view, its error passes 10 cm after 20 to 30 moments of movement, and a hand that
   stops in the shadow can be carried on.
 - With the camera off and the hand moving, expect 20 to 40 cm beyond about 100 moments.

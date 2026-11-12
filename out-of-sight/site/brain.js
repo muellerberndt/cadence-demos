@@ -27,6 +27,7 @@ export const COLOR = {
   shift: [0.36, 0.86, 0.62],
   doubt: [0.66, 0.56, 0.98],
   found: [0.95, 0.55, 0.78],
+  keep: [0.78, 0.9, 0.42],
   other: [0.72, 0.72, 0.82],
   excite: [1.0, 0.62, 0.28],
   inhibit: [0.32, 0.58, 1.0],
@@ -45,10 +46,11 @@ export const ROLE = {
   shift: 'plays the role of path integration: the step that moves a place on the map',
   doubt: 'plays the role of a confidence estimate',
   found: 'plays the role of the map’s entry from the other senses',
+  keep: 'plays the role of a brake on the carried movement',
 };
 const ANATOMY = { visual: 'visual cortex', somatosensory: 'somatosensory', motor: 'motor strip', association: 'association cortex',
-  prefrontal: 'prefrontal cortex', place: 'parietal · entorhinal map', timer: 'timer', shift: 'the step', doubt: 'the doubt', found: 'other senses', auditory: 'auditory cortex', hippocampus: 'hippocampus' };
-const SHORT = { visual: 'visual', somatosensory: 'body', motor: 'motor', association: 'association', prefrontal: 'prefrontal', place: 'map', auditory: 'hearing', timer: 'timer', shift: 'step', doubt: 'doubt', found: 'senses' };
+  prefrontal: 'prefrontal cortex', place: 'parietal · entorhinal map', timer: 'timer', shift: 'the step', doubt: 'the doubt', found: 'other senses', keep: 'the keep', auditory: 'auditory cortex', hippocampus: 'hippocampus' };
+const SHORT = { visual: 'visual', somatosensory: 'body', motor: 'motor', association: 'association', prefrontal: 'prefrontal', place: 'map', auditory: 'hearing', timer: 'timer', shift: 'step', doubt: 'doubt', found: 'senses', keep: 'keep' };
 const css = (rgb, a = 1) => `rgba(${rgb.map((v) => Math.round(v * 255)).join(',')},${a})`;
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 const ease = (f) => f * f * (3 - 2 * f);
@@ -1112,8 +1114,10 @@ export class BrainView {
   // neuron in that sweep (ten times smaller is one step lower). While the settle plays, the bar
   // of the sweep on show is lit.
   drawSettle(c) {
-    const s = this.settled;
+    const s = this.settled, card = this.leader?.rect;
     if (!s || !s.move.length || this.compact || this.inset) return;
+    // an open card that reaches down over the trace: the trace waits until the card is closed
+    if (card && card.left < 190 && card.top + card.h > this.height - 70) return;
     // the sweeps in which a neuron moved: an answer that is complete after three shows three bars
     let moved = s.move.length;
     while (moved > 1 && s.move[moved - 1] <= 1e-7) moved -= 1;
@@ -1360,9 +1364,12 @@ export class BrainView {
     const r = this.regions[this.regionOf[best]], u = this.unit[best], a = this.display[best].toFixed(2);
     if (r.layout?.kind === 'point') return `The unit under your pointer is on while the camera sees the hand. Its activity is ${a}.`;
     if (u) {
-      const place = r.role === 'visual' || r.role === 'place';
-      const what = place ? (u.reading === 0 ? 'x' : 'y') : `joint ${u.reading + 1}`;
-      return `The unit under your pointer prefers ${what} = ${u.value.toFixed(2)} ${place ? 'm' : 'rad'}. Its activity is ${a}.`;
+      // what a tuned unit prefers, in the words of what its region holds
+      const axis = u.reading === 0 ? 'x' : 'y';
+      const prefers = r.role === 'visual' || r.role === 'place' || r.role === 'found' ? `${axis} = ${u.value.toFixed(2)} m`
+        : r.role === 'shift' ? `a step of ${(u.value * 100).toFixed(1)} cm in ${axis}`
+          : r.role === 'keep' ? `a share of ${u.value.toFixed(2)}` : `joint ${u.reading + 1} = ${u.value.toFixed(2)} rad`;
+      return `The unit under your pointer prefers ${prefers}. Its activity is ${a}.`;
     }
     return `The neuron under your pointer has an activity of ${a}.`;
   }

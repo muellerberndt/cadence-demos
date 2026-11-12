@@ -16,13 +16,15 @@ What holds what, as the module is built:
 - Reports and cues reach the space without names, as rows of a position (or a direction and a
   distance) and what the thing looks like: the hand 0, the kinds 1 and up. The space gives each
   to the nearest row of its look (``assign``, ``hear``).
-- The sight evidence, where the library's space takes it (``observe(in_sight=)``): a step is
-  taken in two halves. ``predict`` gives where every row is predicted to be; the page, which
-  knows the camera, the pillar and the arm as they stand at that step, says for every row
-  whether the camera would see a thing at its predicted place; ``observe`` is given that. A row
-  predicted in sight for three steps in a row with no report did not come out where its movement
-  carries it: the space puts it halfway between where it was last seen and where it was before
-  those steps, with a radius that reaches both, and rests it.
+- The sight evidence, where the library's space takes it (``observe(in_sight=)``). The page
+  knows the camera, the pillar and the arm as they stand at each step. Where the space takes a
+  function, the page gives one (``looks``: places in, one flag a place out: would the camera see
+  a thing there?), and the space looks ahead with it: a thing that goes out of view while moving
+  is carried no farther than the middle of its hidden stretch and waits there. Where the space
+  takes flags alone, a step is taken in two halves: ``predict`` gives where every row is
+  predicted to be, the page says for every row whether the camera would see a thing there, and
+  ``observe`` is given that; a row predicted in sight for three steps in a row with no report
+  is put halfway between where it was last seen and where it was before those steps, and rests.
 
 The module's ear stands where its interface says. A cue heard at the page's body is given to the
 space as the direction and distance of the same point from the module's own ear.
@@ -65,6 +67,7 @@ SEATS: dict[str, dict[str, Any]] = {
     "shift": {"role": "shift", "label": "how far the place moves in this step", "seat": [0.52, 0.2, 0.035, 0.12]},
     "spread": {"role": "doubt", "label": "how far off the place may be", "seat": [0.165, 0.43, 0.07, 0.12]},
     "found": {"role": "found", "label": "the place another sense names", "seat": [0.8, 0.2, 0.035, 0.12]},
+    "keep": {"role": "keep", "label": "how much of its seen movement a thing keeps", "seat": [0.25, 0.2, 0.05, 0.035]},
 }
 
 
@@ -106,16 +109,25 @@ class PlaceHost:
         began = time.perf_counter()
         slots = int(self.config.get("records", 12))
         # the page teaches as the space teaches itself, with no span of reports left unread; the
-        # pack may state further settings of the space this module is run with (``space``)
+        # pack may state further settings of the space this module is run with (``space``).
+        # ``joints`` among them says the module was raised with the arm's joint readings given,
+        # as the chamber's setting of that name does: without it they are not passed.
         self.settings = dict(self.config["module"].get("space") or {})
+        self.felt = bool(self.settings.pop("joints", False))
         self.space = Space.load(self.module, **{"track": True, "records": slots, "practice": 0.0, **self.settings})
         self.label = str(self.config["module"].get("label") or f"The {self.module.name} module")
         self.interface = self.space.interface
         self.brain = self.space.brain
         self.load_ms = (time.perf_counter() - began) * 1000.0
-        # whether this library's space takes the caller's sight evidence (observe(in_sight=))
-        self.sight = "in_sight" in inspect.signature(Space.observe).parameters
+        # whether this library's space takes the caller's sight evidence (observe(in_sight=)),
+        # and in which form: a function of places (the library took it in the commit that gave
+        # ``advance`` the same argument), flags for the predicted places, or not at all
+        takes = "in_sight" in inspect.signature(Space.observe).parameters
+        self.sight: str | bool = False if not takes else (
+            "function" if "in_sight" in inspect.signature(Space.advance).parameters else "flags")
+        self.looks: Any = getattr(self, "looks", None)  # the page's function: places -> flags
         self.held: list[bool] = []  # the row was held back and rests on its hidden path
+        self.was_live: list[bool] = []
         self._open: dict[str, Any] | None = None  # a step begun (predict) and not ended (observe)
         self.names: list[str] = []  # the page's name of each row; row 0 is the hand
         self.ever: list[bool] = []  # the row was seen or heard at least once
@@ -136,6 +148,7 @@ class PlaceHost:
         self.source = ["seen" if e else "" for e in self.ever]
         self.latest = [self.moments] * len(names)
         self.held = [False] * len(names)
+        self.was_live = [False] * len(names)
 
     def _predict(self, cue_rows: list[list[float]], commands: Any, joints: Any, learn: bool,
                  wave: bool = False) -> dict[str, Any]:
@@ -158,19 +171,28 @@ class PlaceHost:
 
     def _observe(self, half: dict[str, Any], report_rows: list[list[float]], learn: bool,
                  in_sight: Any = None) -> dict[str, Any]:
-        """The second half: the reports to their rows and the places written. ``in_sight``
-        says, one flag a row, whether the camera would see a thing at the row's predicted place
-        at this step; it is passed where the library's space takes it. Gives which rows were
-        seen and heard and which were held back at this step."""
+        """The second half: the reports to their rows and the places written. ``in_sight`` is
+        the sight evidence of this step: True for the page's function (``looks``), or one flag
+        a row for the predicted places; it is passed in the form the library's space takes.
+        Gives which rows were seen and heard, how the evidence was given, and the flags of the
+        predicted places."""
         space, cues = self.space, half["cues"]
         seen, z = space.assign(np.array(report_rows, dtype=np.float64).reshape(-1, 3))
-        given = self.sight and in_sight is not None
-        if given:
-            space.observe(seen, z, learn=learn, in_sight=np.asarray(in_sight, dtype=bool).reshape(space.rows))
+        given: str | bool = False
+        flags = None
+        if self.sight == "function" and in_sight is True and self.looks is not None:
+            looks = lambda points: np.asarray(self.looks(np.asarray(points, dtype=np.float64).reshape(-1, 2)), dtype=bool)  # noqa: E731
+            flags = looks(half["predicted"])
+            space.observe(seen, z, learn=learn, in_sight=looks)
+            given = "function"
+        elif self.sight and in_sight is not None and in_sight is not True and in_sight is not False:
+            flags = np.asarray(in_sight, dtype=bool).reshape(space.rows)
+            space.observe(seen, z, learn=learn, in_sight=flags)
+            given = "flags"
         else:
             space.observe(seen, z, learn=learn)
         heard = np.zeros(space.rows, dtype=bool) if cues is None else np.isfinite(cues).all(axis=1)
-        return {**half, "seen": np.asarray(seen, dtype=bool), "reports": np.asarray(z), "heard": heard, "sight": bool(given)}
+        return {**half, "seen": np.asarray(seen, dtype=bool), "reports": np.asarray(z), "heard": heard, "sight": given, "flags": flags}
 
     def _wave(self, given: np.ndarray, steps: int, final: np.ndarray) -> dict[str, Any] | None:
         """The hand's answer, sweep by sweep: the brain settled again from rest under the same
@@ -205,6 +227,15 @@ class PlaceHost:
     def _where(self) -> tuple[np.ndarray, np.ndarray]:
         return self.space.where()
 
+    def _cells(self) -> tuple[np.ndarray, list[float]] | None:
+        """The hand's belief over the plane as a sheet of cells, where the space states one:
+        ``(ny, nx)`` shares that sum to one, the first row the lowest y and each row from the
+        lowest x, and the plane they cover. The page then draws the stated area as the cells
+        that hold ``RATE`` of the belief, in place of a circle (``site/region.js``). The space
+        of this module states a place and a circle and gives no sheet: this is the seam for a
+        space that does, and the call into it comes with that space."""
+        return None
+
     def _weights(self) -> np.ndarray:
         return np.asarray(self.brain.brain.efficacy, dtype=np.float64)
 
@@ -224,6 +255,8 @@ class PlaceHost:
                 layout = {"kind": "axes", "per": f.shift, "ranges": [[-f.reach, f.reach]] * 2}
             elif name == "found":
                 layout = {"kind": "axes", "per": f.found, "ranges": [[x0, x1], [y0, y1]]}
+            elif name == "keep":
+                layout = {"kind": "axes", "per": f.keep, "ranges": [[0.0, 1.0]]}
             elif name == "moved":
                 layout = {"kind": "axes", "per": f.moved, "ranges": [[-f.command, f.command]] * f.joints}
             elif name == "heard":
@@ -252,7 +285,7 @@ class PlaceHost:
                         "role": "hippocampus", "held": int(self.space.records.count) if self.space.records is not None else 0},
             "learning": {"temperature": float(f.temperature)},
             "ear": [float(v) for v in f.ear], "limits": dict(LIMITS), "controls": {"kalman": dict(KALMAN)},
-            "sight": bool(self.sight), "space": dict(self.settings),
+            "sight": self.sight, "space": {**self.settings, **({"joints": True} if self.felt else {})},
             "compose_ms": round(self.load_ms, 1), "moments": self.moments, "lessons": self.lessons,
             "index_bits": int(np.dtype(np.intp).itemsize * 8),
         }
@@ -267,7 +300,7 @@ class PlaceHost:
 
     def step(self, m: dict[str, Any]) -> dict[str, Any]:
         """One moment in one message: both halves, with the sight evidence the message holds
-        (``in_sight``, one flag a row) or none."""
+        (``in_sight``: True for the page's function, one flag a row, or none)."""
         self.begin(m)
         return self.end(m.get("in_sight"))
 
@@ -300,12 +333,12 @@ class PlaceHost:
         taught_before = self.space.work["lesson_row_sweeps"]
         began = time.perf_counter()
         self.moments += 1
-        half = self._predict(cue_rows, m.get("commands") if own else None, m.get("joints") if own else None,
+        half = self._predict(cue_rows, m.get("commands") if own else None, m.get("joints") if own and self.felt else None,
                              learn, bool(m.get("wave")))
         self._open = {"half": half, "reports": report_rows, "learn": learn, "taught_before": taught_before,
                       "ms": (time.perf_counter() - began) * 1000.0}
         return {"moment": self.moments, "predicted": [[float(p[0]), float(p[1])] for p in half["predicted"]],
-                "names": list(self.names), "own": own, "sight": bool(self.sight)}
+                "names": list(self.names), "own": own, "sight": self.sight}
 
     def end(self, in_sight: Any = None) -> dict[str, Any]:
         """The second half of the moment begun: the reports, the sight evidence and the places
@@ -322,13 +355,21 @@ class PlaceHost:
         state = self.space.state()
         live = np.asarray(state.get("live", np.zeros(rows, dtype=bool)))
         refused = np.asarray(state.get("refused", np.zeros(rows, dtype=bool)), dtype=bool)
+        # a row that waits at the middle of its hidden stretch: the space keeps where the
+        # stretch ends and that the row moves no more (its own notes, read here where it has them)
+        ends, moving = getattr(self.space, "_exit", None), getattr(self.space, "_moving", None)
+        waits = np.zeros(rows, dtype=bool) if ends is None or moving is None else (
+            np.isfinite(np.asarray(ends)).all(axis=1) & ~np.asarray(moving, dtype=bool))
         for k in range(rows):
             if seen[k] or cues[k]:
                 self.ever[k], self.latest[k] = True, self.moments
                 self.source[k] = "seen" if seen[k] else "heard"
                 self.held[k] = False
-            elif refused[k]:
-                self.held[k] = True  # it rests on its hidden path until it is seen or heard
+            elif refused[k] or (step["sight"] and (waits[k] or (self.was_live[k] and not live[k]))):
+                # with the evidence given, a row that was moved while unseen and was put to
+                # rest by it: it rests on its hidden path until it is seen or heard
+                self.held[k] = True
+            self.was_live[k] = bool(live[k]) and not (seen[k] or cues[k])
         # the hand's row: its place, the radius of its area, and the brain as it was asked
         sd = float(radius[0]) / AREA
         activation = np.zeros(self.n)
@@ -358,9 +399,14 @@ class PlaceHost:
             "wave": wave, "lesson": None, "held_back": bool(self.held[0]),
             # the sight evidence of this moment: whether it was given, which predicted places the
             # camera would see, and which rows were held back at this moment
-            "sight": {"given": step["sight"], "in_sight": [bool(v) for v in in_sight] if step["sight"] else None,
-                      "held_back": [bool(v) for v in refused]},
+            "sight": {"given": step["sight"], "in_sight": None if step["flags"] is None else [bool(v) for v in step["flags"]],
+                      "held_back": [bool(v) for v in self.held]},
         }
+        cells = self._cells()
+        if cells is not None:
+            sheet, plane = cells
+            self.buffers["cells"] = np.ascontiguousarray(sheet, dtype=np.float32).ravel()
+            out["cells"] = {"nx": int(sheet.shape[1]), "ny": int(sheet.shape[0]), "plane": [float(v) for v in plane], "rate": RATE}
         if learn and self.space.work["lesson_row_sweeps"] != taught_before and len(self.space.changed):
             delta, where = np.asarray(self.space.changes, dtype=np.float64), np.asarray(self.space.changed, dtype=np.int64)
             top = np.argsort(-np.abs(delta))[:TOP_CHANGES]

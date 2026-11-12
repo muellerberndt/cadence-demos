@@ -95,7 +95,8 @@ function doubtLine(ctx) {
   const b = ctx.belief;
   if (!b) return 'No answer.';
   const cover = ctx.coverage === null ? '' : ` Over the last ${ctx.coverage.moments} moments the true hand lay inside the area on ${Math.round(ctx.coverage.share * 100)} of 100.`;
-  const width = b.radius ? `Radius: ${cm(b.radius)}.` : `Width: ${cm(b.sd[0])} in x, ${cm(b.sd[1])} in y.`;
+  const width = b.cells ? `The area is ${b.cells.count} cells of the sheet, in ${b.cells.patches === 1 ? 'one patch' : `${b.cells.patches} patches`}.`
+    : b.radius ? `Radius: ${cm(b.radius)}.` : `Width: ${cm(b.sd[0])} in x, ${cm(b.sd[1])} in y.`;
   return `${width} Area at nine in ten: <span>${area(b.area)}</span>.${cover}`;
 }
 function recordsLine(ctx) {
@@ -229,23 +230,34 @@ function heldLine(ctx) {
   if (!b) return 'No place is held.';
   const u = uncertainty(b);
   // held back by the sight evidence: the camera would see the hand where its movement leads, and no report came
-  const asked = ctx.held ? 'The camera would see the hand where its movement leads, and no report comes: it did not come out there. The program holds the place halfway along its hidden path, with a radius that reaches both ends, and rests it.'
+  const asked = ctx.held ? HELD[ctx.sight] || HELD.flags
     : ctx.asked ? 'The brain was asked for its step at this moment.' : 'The brain was not asked at this moment: nothing says the place moved.';
   if (!ctx.unseen) return `The space holds the hand at <span data-place="${num(b.place[0], 3)},${num(b.place[1], 3)}">${at(b.place)}</span>, written by the camera’s report. Its area’s radius is <span data-uncertainty="${u.toFixed(4)}">${cm(u)}</span>.`;
   return `The space holds the hand at <span data-place="${num(b.place[0], 3)},${num(b.place[1], 3)}">${at(b.place)}</span>, unseen for <span data-unseen="${ctx.unseen}">${ctx.unseen} moments</span>. Its area’s radius is <span data-uncertainty="${u.toFixed(4)}">${cm(u)}</span>. ${asked}`;
 }
+const HELD = {
+  function: 'The hand went out of view while it moved and has not come out: the program carries its place no farther than the middle of its hidden stretch and holds it there, with a radius that reaches .90 of the way back to where it was last seen.',
+  flags: 'The camera would see the hand where its movement leads, and no report comes: it did not come out there. The program holds the place halfway along its hidden path, with a radius that reaches both ends, and rests it.',
+};
 const askedLine = (ctx) => (ctx.asked ? `The brain was asked at this moment and answered in ${ctx.settle ? ctx.settle.sweeps : 0} sweeps.` : 'The brain was not asked at this moment. It is asked only for a thing whose place may have moved: one with a command, a seen movement or a cue.');
 // The sight evidence, where the library's space takes it. The sentences follow the docstring of
 // `Space.observe` on the branch the wheel is built from.
-const SIGHT = 'The page also tells the program, at every step, whether the camera would see a thing at its predicted place: the camera’s field, the pillar and the arm’s shadow, as they stand. In sight for three steps in a row with no report, the thing did not come out where its movement carries it. The program puts it halfway between where it was last seen and where it was before those steps, with a radius that reaches both, and rests it.';
+const SIGHT = {
+  // the guide's "Sight that does not come" (docs/space.md of the branch the wheel is built from)
+  function: 'Sight that does not come is evidence. The page gives the program a function that says whether the camera would see a thing at a place: the camera’s field, the pillar and the arm’s shadow, as they stand. A thing that goes out of view while moving is looked ahead for along its seen movement: its hidden stretch ends where it would come back into view, or at the room’s edge. It is carried no farther than the middle of that stretch and waits there, and its radius reaches .90 of the way back to where it was last seen.',
+  flags: 'The page also tells the program, at every step, whether the camera would see a thing at its predicted place: the camera’s field, the pillar and the arm’s shadow, as they stand. In sight for three steps in a row with no report, the thing did not come out where its movement carries it. The program puts it halfway between where it was last seen and where it was before those steps, with a radius that reaches both, and rests it.',
+};
+// The course setting (`course=True`), where the pack runs the module with it.
+const COURSE = 'This module is run on its course: a thing that moves by itself is moved by its last seen movement times the share the brain’s keep answers, in place of the shift. The brain says when to hold it back.';
 const sightLine = (ctx) => (ctx.held ? ' The hand’s place is held back in this way at this moment.' : '');
+const answers = (ctx) => (ctx.regions.keep ? 'four' : 'three');
 const region = (title, role, what, live = askedLine, draw = null) => ({ title, role, what, live, draw });
 const axes = (name, labels, unit, color) => (ctx) => peakSvg(codeRows(ctx, name, labels, unit, null), color);
 
 COPY.place = {
   parts: {
     place: region('The held place, as the brain is given it', 'place',
-      'The place is held nowhere in the brain. A program beside the brain keeps it between moments, as the long-term records are kept, and this region shows the program’s place to the brain at each step: a peak over 16 tuned inputs for x and 16 for y. The brain’s own states are the hidden region and its three answers.',
+      (ctx) => `The place is held nowhere in the brain. A program beside the brain keeps it between moments, as the long-term records are kept, and this region shows the program’s place to the brain at each step: a peak over 16 tuned inputs for x and 16 for y. The brain’s own states are the hidden region and its ${answers(ctx)} answers.`,
       heldLine, axes('place', ['x', 'y'], 'm', '#3fe0cf')),
     moved: region('The arm’s command, as a copy', 'motor',
       'For the arm’s own hand, what the arm is told to do at this moment, joint by joint. It is dark for a person’s hand and for an arm at rest.',
@@ -260,7 +272,7 @@ COPY.place = {
     felt: region('The arm’s joint readings', 'somatosensory',
       'For the arm’s own hand, the arm’s posture: one unit for each pair of joint angles. It is dark for a person’s hand.'),
     hidden: region('The hidden region', 'association',
-      'The neurons between what the brain is given and what it answers. Every input region drives them, and they drive the three answers.'),
+      (ctx) => `The neurons between what the brain is given and what it answers. Every input region drives them, and they drive the ${answers(ctx)} answers.`),
     shift: region('How far the place moves in this step', 'shift',
       'The brain’s first answer: a step in x and a step in y, 32 tuned units each, up to 6 cm. The program adds the step to the place it holds. This is how a place moves while nothing is seen.',
       askedLine, axes('shift', ['dx', 'dy'], 'm', '#5cdb9e')),
@@ -269,6 +281,10 @@ COPY.place = {
       (ctx) => (ctx.belief ? `The radius of the area that holds the hand nine times in ten: <span>${cm(uncertainty(ctx.belief))}</span>. ${askedLine(ctx)}` : askedLine(ctx))),
     found: region('The place another sense names', 'found',
       'The brain’s third answer: the place a cue, or the arm’s own joint readings, names. It is taught at moments a thing is heard and seen at once.'),
+    keep: region('How much of its seen movement a thing keeps', 'keep',
+      'The brain’s fourth answer: the share of its last seen movement that a thing which moves by itself keeps in this step, from 0 to 1, over 8 tuned units. It is taught the share the camera’s reports show, at the steps a thing’s seen movement is above its noise.',
+      (ctx) => `${ctx.course ? 'The program moves a thing that moves by itself by its seen movement times this share.' : 'The program moves a place by the shift; this answer is not read.'} ${askedLine(ctx)}`,
+      axes('keep', ['share'], ' ', '#c7e66b')),
     records: { title: 'The places of things: what is where', role: 'hippocampus',
       what: 'Each thing has one row in the space: what it looks like, and where it is. A thing in view is written by the camera’s report. A thing at rest out of view costs nothing: its row stays as it is, and the brain is not asked. A cue rewrites a row without sight.',
       live: recordsLine },
@@ -277,6 +293,7 @@ COPY.place = {
   // The stages are the library guide's "How a position travels" (docs/space.md of the branch
   // the module comes from), word for word but for one phrase: where the guide says the brain
   // "settles on" what the regions hold, the card says it "reads" it. The third stage adds the
+  // course setting where the pack runs the module with it (COURSE above), and the fourth the
   // sight evidence where the pack's library takes it (SIGHT above).
   stages: [
     { id: 'report', parts: ['place'], title: 'The camera’s report',
@@ -287,11 +304,12 @@ COPY.place = {
       live: heldLine },
     { id: 'move', parts: ['shift', 'motion'], title: 'Movement while unseen',
       body: 'The brain reads what the regions hold and its shift answers how far the place moves in this step. For the arm’s own end the moved region holds the copy of the command. For a thing that moves by itself the motion region holds its last seen movement: the slope of the line through its reports in a row. The program adds the shift to the place.',
-      also: (ctx) => (ctx.sight ? SIGHT : ''),
-      live: (ctx) => askedLine(ctx) + sightLine(ctx), draw: axes('shift', ['dx', 'dy'], 'm', '#5cdb9e') },
-    { id: 'correct', parts: ['shift', 'spread'], title: 'Correction by sight',
+      also: (ctx) => (ctx.course ? COURSE : ''),
+      live: askedLine, draw: axes('shift', ['dx', 'dy'], 'm', '#5cdb9e') },
+    { id: 'correct', parts: ['place'], title: 'Correction by sight',
       body: 'When the thing is seen again its report writes the place. The lessons happen only then: the movement the reports show teaches shift, and the distance from the predicted place to the report teaches spread. A lesson is made of six reports in a row, so it lands a few moments after them.',
-      live: lessonLine },
+      also: (ctx) => (ctx.sight ? SIGHT[ctx.sight] || SIGHT.flags : ''),
+      live: (ctx) => lessonLine(ctx) + sightLine(ctx) },
     { id: 'doubt', parts: ['spread'], title: 'The uncertainty',
       body: 'Spread is a belief over distances. The program reads the distance that holds .90 of the belief, takes out the camera’s own noise, and reports a circle of that radius around the place. The circle grows while the thing is unseen and shrinks to the camera’s noise when it is seen.',
       live: doubtLine },
@@ -320,7 +338,18 @@ const ROLE = {
   shift: ['plays the role of path integration: the step that moves a place on the map', '#5cdb9e'],
   doubt: ['plays the role of a confidence estimate', '#a88ffa'],
   found: ['plays the role of the map’s entry from the other senses', '#f28cc7'],
+  keep: ['plays the role of a brake on the carried movement', '#c7e66b'],
 };
+
+/** What the pack's module is run with, known once the brain has described itself: on its
+ *  course, the third stage rings the keep answer in place of the shift. */
+export function configure(kind, { course = false } = {}) {
+  const move = COPY[kind]?.stages.find((s) => s.id === 'move');
+  if (!move || kind !== 'place') return;
+  const answer = course && COPY.place.parts.keep ? 'keep' : 'shift';
+  move.parts = [answer, 'motion'];
+  move.draw = answer === 'keep' ? axes('keep', ['share'], ' ', '#c7e66b') : axes('shift', ['dx', 'dy'], 'm', '#5cdb9e');
+}
 
 export const copyFor = (kind) => COPY[kind] || COPY.baseline;
 export const stagesFor = (kind) => copyFor(kind).stages;
@@ -331,7 +360,7 @@ export function partCard(kind, id, ctx, unit = '') {
   if (!part) return '';
   const [role, color] = ROLE[part.role] || ['is a population of this brain', '#8d97b2'];
   const stage = copyFor(kind).stages.findIndex((s) => s.parts[0] === id);
-  return `<div style="--c:${color}" data-part="${id}"><h3>${part.title}</h3><p class="role">${role}</p><p>${part.what}</p>`
+  return `<div style="--c:${color}" data-part="${id}"><h3>${part.title}</h3><p class="role">${role}</p><p>${typeof part.what === 'function' ? part.what(ctx) : part.what}</p>`
     + (part.more ? `<p>${part.more}</p>` : '')
     + (part.draw ? part.draw(ctx) : '')
     + `<p class="live"><b>At this moment</b>${part.live(ctx)}</p>`
