@@ -10,7 +10,7 @@ synapse: it is wiring and carried activity.
 | --- | --- |
 | Demo | Out of sight (`out-of-sight/`) |
 | File | `site/pack/map/page-map.npz` · 1,577 bytes · SHA-256 `6fc3a93cad2f5400…` · format `cadence-space-map/1` (the map's settings, its kinds' codes and an empty carried state; arrays and one JSON record, no pickled object) |
-| Library | `cadence-net` 0.98.0, a development wheel built from the library's branch lane-099-space at 38820655; it holds `cadence.space.map`, which PyPI's 0.98.0 does not (SHA-256 `c7088cf0f0158d45…`), CPU, in Pyodide 314.0.7 |
+| Library | `cadence-net` 0.98.0, a development wheel built from the library's branch lane-099-space at fac45529 (git archive and pip wheel); it holds `cadence.space.map`, which PyPI's 0.98.0 does not (SHA-256 `70589f3fee4d2e69…`), CPU, in Pyodide 314.0.7 |
 | Loaded by | `Map.load(path)` (`site/pack/py/spacebrain/map_host.py`); `trace` is switched on for the moments the brain view plays a settle's wave, and for every question |
 | Size | 29,168 neurons, 39,936 synapses, none taught: `map` 13,312, `held` 13,312, `reference` 16, `where` 832, `what` 16, `clock` 832, `doubt` 832, `lost` 16 |
 | Settings | 32 by 26 cells of 6.25 cm by 6.15 cm over a plane of 2 m by 1.6 m; 16 code units a cell, one a kind; `level` 0.02; `empty` "near", `reach` 0.15 m; `step` 0.15 m; `stride` 0.5 m; `margin` 0.02 m, the camera's error (the guide's founder) |
@@ -57,12 +57,12 @@ the floor `what_is_at`.
 The promise, replayed on the page from the two scene files of the tracking chamber (a hand goes
 behind the pillar at 0.5 m/s, rests there for 70 moments and comes back; 323 moments, 91 of them
 with the hand out of view), as `tools/check_page.py` reads it (`evidence/page_check.json`,
-2026-11-12 23:22, on the wheel of 38820655):
+2026-11-12 23:50, on the wheel of fac45529):
 
 | Scene file | In view | Hidden, mean | Last seen, hidden | Kalman filter, hidden | The hand's cells hold it | Its cells, mean | Back in view | A moment |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| the arm folded (`promise-scene.json`) | 1.2 cm | 10.7 cm | 15.5 cm | 27.8 cm | 1.00 | 39 | 1.0 cm | 6 ms |
-| the arm's shadow joined to the pillar's (`promise-merged-shadows-scene.json`) | 1.2 cm | 10.7 cm | 15.5 cm | 27.8 cm | 1.00 | 39 | 1.0 cm | 7 ms |
+| the arm folded (`promise-scene.json`) | 1.2 cm | 10.7 cm | 15.5 cm | 27.8 cm | 1.00 | 39 | 1.0 cm | 13 ms |
+| the arm's shadow joined to the pillar's (`promise-merged-shadows-scene.json`) | 1.2 cm | 10.7 cm | 15.5 cm | 27.8 cm | 1.00 | 39 | 1.0 cm | 11 ms |
 
 The map holds the hand near where it vanished on every hidden moment, and its cells hold the
 true hand on every hidden moment of both files. The page's readings are the model's own on the
@@ -71,12 +71,12 @@ reads the same inventory as `Map` driven directly. The map holds no randomness: 
 alike to the digit (`tools/promise_runs.py`).
 
 The arm's own hand, out of the camera's view and moved by the arm, in the tutorial's last step:
-0.5 mm from the hand on average over 60 hidden moments, 2.1 mm at worst (bound 1.5 cm).
+0.5 mm from the hand on average over 60 hidden moments, 1.2 mm at worst (bound 1.5 cm).
 
 A frame took 16.7 ms at the median and 16.7 ms at the 95th percentile with the
 brain view and its bloom on (bounds 20 ms and 34 ms); a moment of the map, with its inventory and
-every neuron's activity for the brain view, took 9.6 ms of the scene's 33 ms at the median. These
-were read with the Mac's load average at 50 to 65 from other work: upper bounds.
+every neuron's activity for the brain view, took 12.0 ms of the scene's 33 ms at the median. These
+were read with the Mac's load average at 60 to 90 from other work: upper bounds.
 
 ## Limits
 

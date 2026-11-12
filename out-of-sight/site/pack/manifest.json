@@ -4,8 +4,8 @@
  "pyodide": "314.0.7",
  "cadence": "0.98.0",
  "wheel": "cadence_net-0.98.0-py3-none-any.whl",
- "wheel_sha256": "c7088cf0f0158d459220ba2f478e1239fc873c4ef99d36333f2ce77724c64960",
- "wheel_source": "a development wheel built from the library's branch lane-099-space at 38820655; it holds cadence.space.map, which PyPI's 0.98.0 does not",
+ "wheel_sha256": "70589f3fee4d2e6971a6459962cbca7145981bcea2673679b747e1868dbfb366",
+ "wheel_source": "a development wheel built here from the library's branch lane-099-space at fac45529 (git archive, pip wheel); it holds cadence.space.map, which PyPI's 0.98.0 does not",
  "sources": [
   "__init__.py",
   "map_host.py"

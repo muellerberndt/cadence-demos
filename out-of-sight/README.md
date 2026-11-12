@@ -17,7 +17,7 @@ a map that holds where things are while they are out of view.
 
 > **Status: under construction on the branch `space`.** The page runs the what-where map
 > (`cadence.space.map.Map`) from a development wheel built from the library's branch
-> lane-099-space at 38820655, and a development map file of the founder's settings
+> lane-099-space at fac45529 (built here from that commit), and a development map file of the founder's settings
 > ([model card](MODEL_CARD.md)). Both sit on this branch only, named as development files in
 > `site/pack/manifest.json`; before any pull request they are replaced by the released wheel
 > and the map the library ships. The headline is provisional (one constant, `PROMISE` in
@@ -42,12 +42,12 @@ a map that holds where things are while they are out of view.
 The promise, replayed on the page from the two scene files of the tracking chamber (a hand goes
 behind the pillar at 0.5 m/s, rests there for 70 moments and comes back; 323 moments, 91 of them
 with the hand out of view), as `tools/check_page.py` reads it (`evidence/page_check.json`,
-2026-11-12 23:22, on the wheel of 38820655):
+2026-11-12 23:50, on the wheel of fac45529):
 
 | Scene file | In view | Hidden, mean | Last seen, hidden | Kalman filter, hidden | The hand's cells hold it | Its cells, mean | Back in view | A moment |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| the arm folded (`promise-scene.json`) | 1.2 cm | 10.7 cm | 15.5 cm | 27.8 cm | 1.00 | 39 | 1.0 cm | 6 ms |
-| the arm's shadow joined to the pillar's (`promise-merged-shadows-scene.json`) | 1.2 cm | 10.7 cm | 15.5 cm | 27.8 cm | 1.00 | 39 | 1.0 cm | 7 ms |
+| the arm folded (`promise-scene.json`) | 1.2 cm | 10.7 cm | 15.5 cm | 27.8 cm | 1.00 | 39 | 1.0 cm | 13 ms |
+| the arm's shadow joined to the pillar's (`promise-merged-shadows-scene.json`) | 1.2 cm | 10.7 cm | 15.5 cm | 27.8 cm | 1.00 | 39 | 1.0 cm | 11 ms |
 
 The map holds the hand near where it vanished on every hidden moment, and its cells hold the
 true hand on every hidden moment of both files. The page's readings are the model's own on the
@@ -56,12 +56,12 @@ reads the same inventory as `Map` driven directly. The map holds no randomness: 
 alike to the digit (`tools/promise_runs.py`).
 
 The arm's own hand, out of the camera's view and moved by the arm, in the tutorial's last step:
-0.5 mm from the hand on average over 60 hidden moments, 2.1 mm at worst (bound 1.5 cm).
+0.5 mm from the hand on average over 60 hidden moments, 1.2 mm at worst (bound 1.5 cm).
 
 A frame took 16.7 ms at the median and 16.7 ms at the 95th percentile with the
 brain view and its bloom on (bounds 20 ms and 34 ms); a moment of the map, with its inventory and
-every neuron's activity for the brain view, took 9.6 ms of the scene's 33 ms at the median. These
-were read with the Mac's load average at 50 to 65 from other work: upper bounds.
+every neuron's activity for the brain view, took 12.0 ms of the scene's 33 ms at the median. These
+were read with the Mac's load average at 60 to 90 from other work: upper bounds.
 
 ![The hand behind the pillar: the map holds it on the cells out of sight near where it vanished (the teal light), the true hand an outline inside them; the map's card open beside the map in the brain](docs/hidden-hand.jpg)
 
@@ -217,29 +217,30 @@ python tools/check_page.py --shots shots   # the page, with the mouse a visitor 
 python tools/promise_runs.py               # the two scene files, three runs each
 ```
 
-**The page check** (`tools/check_page.py`) reads 45 of 47 checks on the map
-(`evidence/page_check.json`). Its bounds were set before the page ran the map, from the gates of
+**The page check** (`tools/check_page.py`) reads 47 of 47 checks on the map in the run on
+file (`evidence/page_check.json`, the wheel of fac45529). One earlier run on the same wheel read
+45 of 47, and a probe of the same steps failed the same two checks. Its bounds were set before the page ran the map, from the gates of
 [cadence#320](https://github.com/muellerberndt/cadence/issues/320), from last seen on the same
 rows and from the owner's word on the arm's own hand; the model's native readings on the two
 scene files were known when they were set, the page's were not. The file states every bound and
 how it was set. The earlier models' checks left the page with their hosts.
 
-The checks that fail:
+In those runs these checks failed:
 
-- **3 turn: the apple, out of view behind the body, keeps its place on the map**
-- **a thing moved while the camera looks away keeps its old place on the map**
+- **its old place seen empty, it is near there out of sight, or not known where**
+- **seen again, it is found within 3 cm, one thing on the map**
 
-Both are one finding about the map's sight at the edge of the camera's field. On the wheels of
-bff49e22 and 73e2f635 the map judged sight at each cell's middle: as the camera turned past the
-resting apple, the middle of one of its cells came into view while the apple lay just outside
-the field, and the map held the apple "near" on about 34 cells. From 38820655 the map judges a
-thing seen empty where the camera sees its held place, and the page gives the camera's sight as
-a function of places. On that wheel the failure has another term: a place a sense wrote
-the moment before counts as seen where the camera sees a place within `margin` (0.02 m, the
-camera's error) of it, so a field that turns slowly past a resting thing finds a point within
-2 cm of it in view and takes the thing as seen empty. Natively, with the page's rule as the
-function and the field turned away from the apple at 0.25 to 2 rad/s, the apple was held "near"
-in 15 of 24 turns; at the page's fastest turn (4.2 rad/s) it was held where it was in 6 of 6.
-The check is not amended.
+Both are one finding about a thing the map holds near where it vanished while the camera's field
+turns over it. The apple, moved into the pillar's shadow while the camera looked away, is held
+near its old place, out of sight, once the turning camera sees that place empty. As the field
+goes on turning over the cells that hold it, the map sees its new held place empty in turn and
+drives it on: in the page's record the apple's piece walks from (0.03, 1.17) to (0.71, 1.17) in
+80 moments, ahead of the field's edge. Where it ends marked held, the camera's sight of the apple
+in the shadow, more than a stride away, writes a second apple and keeps the first; where it ends
+marked near (the run on file: (0.75, 1.14), 31 cells), the sight of the apple clears it and both
+checks pass. The walk is in every run. The two checks that failed on the earlier wheels (the
+apple turned away from, and the apple moved unseen keeping its old place) pass on this wheel,
+which judges a thing seen empty where the camera sees all it saw around it. The checks are not
+amended.
 
 Cadence is GPL-3.0.

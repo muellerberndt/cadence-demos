@@ -1,6 +1,6 @@
 {
  "schema": "cadence-out-of-sight-page-check/2",
- "checked": "2026-11-12 23:22",
+ "checked": "2026-11-12 23:50",
  "cadence": "0.98.0",
  "map": {
   "file": "page-map.npz",
@@ -40,7 +40,7 @@
    "mode": "webgl2",
    "hdr": true,
    "fallback": null,
-   "frames": 2,
+   "frames": 4,
    "lit": 0,
    "wave": false,
    "synapses": 39936
@@ -51,7 +51,7 @@
    0.0625,
    0.061538461538461535
   ],
-  "seconds_to_ready": 3.6
+  "seconds_to_ready": 5.2
  },
  "promise": {
   "default": {
@@ -70,7 +70,7 @@
     "near": 91
    },
    "return_m": 0.009552051803362355,
-   "think_ms": 5.7
+   "think_ms": 12.7
   },
   "merged": {
    "scene": "merged",
@@ -88,7 +88,7 @@
     "near": 91
    },
    "return_m": 0.009552051803362355,
-   "think_ms": 7.3
+   "think_ms": 10.7
   }
  },
  "tutorial": {
@@ -101,119 +101,49 @@
   },
   "hide": {
    "hidden_moments": 80,
-   "brain_m": 0.11587514843247737,
-   "last_seen_m": 0.18011361963053313,
-   "cells_hold": 0.9875,
+   "brain_m": 0.10502160033711247,
+   "last_seen_m": 0.1560653770157162,
+   "cells_hold": 0.9375,
    "states": [
     "near"
    ]
   },
   "return": {
-   "brain_m": 0.015559828032385675,
+   "brain_m": 0.010687854727958464,
    "state": "seen"
   },
   "turn": {
    "apple_when_seen": [
-    -0.0651,
-    1.08049
+    -0.05802,
+    1.10854
    ],
    "apple": {
     "name": "apple",
     "kind": 2,
     "place": [
-     0.02057,
-     1.16097
+     -0.03657,
+     1.10104
     ],
     "cells": [
-     336,
-     361,
-     362,
-     363,
-     386,
-     387,
-     388,
-     389,
+     384,
+     385,
      410,
-     411,
-     412,
-     413,
-     414,
-     415,
-     435,
-     436,
-     437,
-     438,
-     439,
-     440,
-     441,
-     460,
-     461,
-     462,
-     463,
-     464,
-     465,
-     466,
-     486,
-     487,
-     488,
-     489,
-     490,
-     491,
-     492,
-     513,
-     514,
-     515,
-     516
+     411
     ],
     "shares": [
-     0.2228,
-     0.5174,
-     0.3207,
-     0.168,
-     0.8534,
-     0.6259,
-     0.3879,
-     0.2032,
-     0.9738,
-     1,
-     0.8679,
-     0.6365,
-     0.3945,
-     0.2066,
-     0.685,
-     0.8324,
-     0.8549,
-     0.7419,
-     0.5441,
-     0.3373,
-     0.1767,
-     0.3424,
-     0.4923,
-     0.5982,
-     0.6143,
-     0.5332,
-     0.391,
-     0.2424,
-     0.2068,
-     0.2974,
-     0.3614,
-     0.3711,
-     0.3221,
-     0.2362,
-     0.1464,
-     0.151,
-     0.1835,
-     0.1885,
-     0.1636
+     0.0519,
+     0.093,
+     0.5579,
+     1
     ],
-    "since": 74,
-    "state": "near"
+    "since": 140,
+    "state": "held"
    },
    "around": {
-    "distance": 0.7882204423890565,
-    "bearing": -2.8323938189718016
+    "distance": 0.7733042392874877,
+    "bearing": -2.7280206597072056
    },
-   "said": "The apple is 0.8 m away, behind you, to the right. It vanished from where it was seen 1 s ago: the map holds it near there, out of sight.",
+   "said": "The apple is 0.8 m away, behind you, to the right. The camera last saw it there 3 s ago.",
    "on_the_map": [
     "hand",
     "own",
@@ -227,9 +157,9 @@
     0.43082980029511586
    ],
    "hidden_moments": 60,
-   "brain_m": 0.0005262769932009075,
-   "worst_m": 0.002097157329455388,
-   "last_seen_m": 1.0241632733503618,
+   "brain_m": 0.0005051029015152699,
+   "worst_m": 0.0011918756867433805,
+   "last_seen_m": 1.0221362538526153,
    "states": [
     "felt"
    ]
@@ -240,26 +170,26 @@
    "frames": 1500,
    "median_ms": 16.69999999999709,
    "p95_ms": 16.700000000004366,
-   "worst_ms": 33.400000000001455
+   "worst_ms": 150
   },
-  "think_ms": 9.6,
-  "round_trip_ms": 10.900000095367432,
-  "moments": 1026,
+  "think_ms": 12,
+  "round_trip_ms": 13.700000047683716,
+  "moments": 1250,
   "phone_viewport": {
    "frames": 300,
    "median_ms": 16.699999999999818,
-   "p95_ms": 16.800000000000182,
-   "worst_ms": 216.69999999999982
+   "p95_ms": 16.80000000000109,
+   "worst_ms": 200
   },
   "desktop_canvas2d": {
    "frames": 240,
    "median_ms": 16.699999999999818,
-   "p95_ms": 33.399999999999636,
-   "worst_ms": 33.5
+   "p95_ms": 33.400000000000546,
+   "worst_ms": 50
   }
  },
  "questions": {
-  "where": "The apple is 0.8 m away, behind you. It vanished from where it was seen 5 s ago: the map holds it near there, out of sight.",
+  "where": "The apple is 0.8 m away, behind you, to the right. The camera last saw it there 8 s ago.",
   "nothing": "0.7 m away, behind you, to the left: nothing, as the map holds it."
  },
  "kept_and_moved": {
@@ -268,212 +198,79 @@
     "name": "apple",
     "kind": 2,
     "place": [
-     0.02057,
-     1.16097
+     -0.03657,
+     1.10104
     ],
     "cells": [
-     336,
-     361,
-     362,
-     363,
-     386,
-     387,
-     388,
-     389,
+     384,
+     385,
      410,
-     411,
-     412,
-     413,
-     414,
-     415,
-     435,
-     436,
-     437,
-     438,
-     439,
-     440,
-     441,
-     460,
-     461,
-     462,
-     463,
-     464,
-     465,
-     466,
-     486,
-     487,
-     488,
-     489,
-     490,
-     491,
-     492,
-     513,
-     514,
-     515,
-     516
+     411
     ],
     "shares": [
-     0.2228,
-     0.5174,
-     0.3207,
-     0.168,
-     0.8534,
-     0.6259,
-     0.3879,
-     0.2032,
-     0.9738,
-     1,
-     0.8679,
-     0.6365,
-     0.3945,
-     0.2066,
-     0.685,
-     0.8324,
-     0.8549,
-     0.7419,
-     0.5441,
-     0.3373,
-     0.1767,
-     0.3424,
-     0.4923,
-     0.5982,
-     0.6143,
-     0.5332,
-     0.391,
-     0.2424,
-     0.2068,
-     0.2974,
-     0.3614,
-     0.3711,
-     0.3221,
-     0.2362,
-     0.1464,
-     0.151,
-     0.1835,
-     0.1885,
-     0.1636
+     0.0519,
+     0.093,
+     0.5579,
+     1
     ],
-    "since": 166,
-    "state": "near"
+    "since": 243,
+    "state": "held"
    },
    "after": {
     "name": "apple",
     "kind": 2,
     "place": [
-     0.02057,
-     1.16097
+     -0.03657,
+     1.10104
     ],
     "cells": [
-     336,
-     361,
-     362,
-     363,
-     386,
-     387,
-     388,
-     389,
+     384,
+     385,
      410,
-     411,
-     412,
-     413,
-     414,
-     415,
-     435,
-     436,
-     437,
-     438,
-     439,
-     440,
-     441,
-     460,
-     461,
-     462,
-     463,
-     464,
-     465,
-     466,
-     486,
-     487,
-     488,
-     489,
-     490,
-     491,
-     492,
-     513,
-     514,
-     515,
-     516
+     411
     ],
     "shares": [
-     0.2228,
-     0.5174,
-     0.3207,
-     0.168,
-     0.8534,
-     0.6259,
-     0.3879,
-     0.2032,
-     0.9738,
-     1,
-     0.8679,
-     0.6365,
-     0.3945,
-     0.2066,
-     0.685,
-     0.8324,
-     0.8549,
-     0.7419,
-     0.5441,
-     0.3373,
-     0.1767,
-     0.3424,
-     0.4923,
-     0.5982,
-     0.6143,
-     0.5332,
-     0.391,
-     0.2424,
-     0.2068,
-     0.2974,
-     0.3614,
-     0.3711,
-     0.3221,
-     0.2362,
-     0.1464,
-     0.151,
-     0.1835,
-     0.1885,
-     0.1636
+     0.0519,
+     0.093,
+     0.5579,
+     1
     ],
-    "since": 466,
-    "state": "near"
+    "since": 543,
+    "state": "held"
    },
    "moments": 300,
    "seen_between": false
   },
-  "what": "0.8 m away, behind you: the apple, as the map holds it.",
+  "what": "0.8 m away, behind you, to the right: the apple, as the map holds it.",
   "looked": {
    "entry": {
     "name": "apple",
     "kind": 2,
     "place": [
-     0.82037,
-     1.1248
+     0.74907,
+     1.13874
     ],
     "cells": [
-     693,
+     668,
      694,
-     719,
+     695,
+     696,
+     697,
      720,
      721,
      722,
+     723,
+     724,
+     725,
+     726,
      746,
      747,
      748,
      749,
      750,
      751,
-     772,
+     752,
+     753,
      773,
      774,
      775,
@@ -481,54 +278,45 @@
      777,
      778,
      779,
-     799,
      800,
      801,
      802,
-     803,
-     804,
-     805,
-     826,
-     827,
-     828,
-     829,
-     830
+     803
     ],
     "shares": [
-     0.1607,
-     0.3294,
-     0.1687,
-     0.3457,
-     0.5988,
-     0.8765,
-     0.305,
-     0.5283,
-     0.7733,
-     0.9566,
+     0.2931,
+     0.2991,
+     0.5292,
+     0.7913,
      1,
-     0.8834,
-     0.2262,
-     0.3919,
-     0.5736,
-     0.7095,
-     0.7417,
-     0.6552,
-     0.4892,
-     0.3087,
-     0.2443,
-     0.3576,
-     0.4424,
-     0.4624,
-     0.4085,
-     0.305,
-     0.1924,
-     0.1874,
-     0.2319,
-     0.2424,
-     0.2141,
-     0.1599
+     0.2566,
+     0.4539,
+     0.6788,
+     0.8577,
+     0.916,
+     0.8267,
+     0.6305,
+     0.185,
+     0.3273,
+     0.4894,
+     0.6185,
+     0.6605,
+     0.5961,
+     0.4546,
+     0.293,
+     0.1984,
+     0.2967,
+     0.3749,
+     0.4003,
+     0.3613,
+     0.2756,
+     0.1776,
+     0.1512,
+     0.191,
+     0.204,
+     0.1841
     ],
-    "since": 652,
+    "since": 803,
     "state": "near"
    },
    "camera_sees_old_place": true,
@@ -539,27 +327,27 @@
     "name": "apple",
     "kind": 2,
     "place": [
-     0.02171,
-     1.17301
+     -0.03655,
+     1.09826
     ],
     "cells": [
-     411,
-     412,
-     437,
-     438
+     384,
+     385,
+     410,
+     411
     ],
     "shares": [
-     0.0419,
-     0.1801,
-     0.2324,
+     0.0626,
+     0.0926,
+     0.6759,
      1
     ],
     "since": 0,
     "state": "seen"
    },
    "true": [
-    0.020570028263286952,
-    1.1609700201549669
+    -0.036569957872376824,
+    1.1010400078766538
    ],
    "apple_entries": 1
   }
@@ -569,9 +357,9 @@
    "name": "1 hide: the hand's place on the map while hidden (a drag's timing differs from run to run)",
    "within_bound": true,
    "hidden_moments": 80,
-   "brain_m": 0.11587514843247737,
-   "last_seen_m": 0.18011361963053313,
-   "cells_hold": 0.9875,
+   "brain_m": 0.10502160033711247,
+   "last_seen_m": 0.1560653770157162,
+   "cells_hold": 0.9375,
    "states": [
     "near"
    ]
@@ -581,9 +369,9 @@
   {
    "name": "the map loads in Pyodide with the pack's wheel and map file",
    "passed": true,
-   "seconds": 3.6,
+   "seconds": 5.2,
    "cadence": "0.98.0",
-   "wheel": "a development wheel built from the library's branch lane-099-space at 38820655; it holds cadence.space.map, which PyPI's 0.98.0 does not",
+   "wheel": "a development wheel built here from the library's branch lane-099-space at fac45529 (git archive, pip wheel); it holds cadence.space.map, which PyPI's 0.98.0 does not",
    "brain": "The what-where map",
    "view": "webgl2",
    "neurons": 29168,
@@ -671,7 +459,7 @@
   {
    "name": "1 hide: the map's card, opened while the hand is hidden, says where the map holds it and plays the role of a part",
    "passed": true,
-   "text": "The map\n\nplays the role of the parietal map of where things are\n\nThe sheet: a unit at a cell is active where a thing whose kind\u2019s code holds the unit is at the cell. At each moment its drive is its own potentials of the moment before. 13,312 neurons.\n\nAT THIS MOMENT\nThe hand: near where it vanished 1 s ago, out of sight at (-0.60, 0.77) m, on 34 cells. 42 of 13,312 neurons are above rest.\n\nUnder y"
+   "text": "The map\n\nplays the role of the parietal map of where things are\n\nThe sheet: a unit at a cell is active where a thing whose kind\u2019s code holds the unit is at the cell. At each moment its drive is its own potentials of the moment before. 13,312 neurons.\n\nAT THIS MOMENT\nThe hand: near where it vanished 2 s ago, out of sight at (-0.60, 0.77) m, on 34 cells. 42 of 13,312 neurons are above rest.\n\nUnder y"
   },
   {
    "name": "2 return: the visitor's drag completes the step",
@@ -682,7 +470,7 @@
    "name": "2 return: back in view the map has the hand within 3 cm, as seen",
    "passed": true,
    "bound_m": 0.03,
-   "brain_m": 0.015559828032385675,
+   "brain_m": 0.010687854727958464,
    "state": "seen"
   },
   {
@@ -692,110 +480,40 @@
   },
   {
    "name": "3 turn: the apple, out of view behind the body, keeps its place on the map",
-   "passed": false,
+   "passed": true,
    "bound_m": 0.0625,
    "apple": {
     "name": "apple",
     "kind": 2,
     "place": [
-     0.02057,
-     1.16097
+     -0.03657,
+     1.10104
     ],
     "cells": [
-     336,
-     361,
-     362,
-     363,
-     386,
-     387,
-     388,
-     389,
+     384,
+     385,
      410,
-     411,
-     412,
-     413,
-     414,
-     415,
-     435,
-     436,
-     437,
-     438,
-     439,
-     440,
-     441,
-     460,
-     461,
-     462,
-     463,
-     464,
-     465,
-     466,
-     486,
-     487,
-     488,
-     489,
-     490,
-     491,
-     492,
-     513,
-     514,
-     515,
-     516
+     411
     ],
     "shares": [
-     0.2228,
-     0.5174,
-     0.3207,
-     0.168,
-     0.8534,
-     0.6259,
-     0.3879,
-     0.2032,
-     0.9738,
-     1,
-     0.8679,
-     0.6365,
-     0.3945,
-     0.2066,
-     0.685,
-     0.8324,
-     0.8549,
-     0.7419,
-     0.5441,
-     0.3373,
-     0.1767,
-     0.3424,
-     0.4923,
-     0.5982,
-     0.6143,
-     0.5332,
-     0.391,
-     0.2424,
-     0.2068,
-     0.2974,
-     0.3614,
-     0.3711,
-     0.3221,
-     0.2362,
-     0.1464,
-     0.151,
-     0.1835,
-     0.1885,
-     0.1636
+     0.0519,
+     0.093,
+     0.5579,
+     1
     ],
-    "since": 74,
-    "state": "near"
+    "since": 140,
+    "state": "held"
    },
    "when_seen": [
-    -0.0651,
-    1.08049
+    -0.05802,
+    1.10854
    ],
-   "bearing_degrees": -162.3
+   "bearing_degrees": -156.3
   },
   {
    "name": "3 turn: the page says the apple is behind the body, in one sentence",
    "passed": true,
-   "said": "The apple is 0.8 m away, behind you, to the right. It vanished from where it was seen 1 s ago: the map holds it near there, out of sight."
+   "said": "The apple is 0.8 m away, behind you, to the right. The camera last saw it there 3 s ago."
   },
   {
    "name": "nothing is announced: the bread is absent from the map until the camera first sees it, and present after",
@@ -826,9 +544,9 @@
     0.43082980029511586
    ],
    "hidden_moments": 60,
-   "brain_m": 0.0005262769932009075,
-   "worst_m": 0.002097157329455388,
-   "last_seen_m": 1.0241632733503618,
+   "brain_m": 0.0005051029015152699,
+   "worst_m": 0.0011918756867433805,
+   "last_seen_m": 1.0221362538526153,
    "states": [
     "felt"
    ]
@@ -841,15 +559,15 @@
    "frames": 1500,
    "median_ms": 16.69999999999709,
    "p95_ms": 16.700000000004366,
-   "worst_ms": 33.400000000001455,
-   "think_ms": 9.6,
-   "round_trip_ms": 10.900000095367432,
-   "moments": 1026
+   "worst_ms": 150,
+   "think_ms": 12,
+   "round_trip_ms": 13.700000047683716,
+   "moments": 1250
   },
   {
    "name": "a tap on a thing asks the map where it is, and the page answers in one sentence",
    "passed": true,
-   "said": "The apple is 0.8 m away, behind you. It vanished from where it was seen 5 s ago: the map holds it near there, out of sight."
+   "said": "The apple is 0.8 m away, behind you, to the right. The camera last saw it there 8 s ago."
   },
   {
    "name": "a tap on the floor where the map holds nothing: the map says nothing is there",
@@ -865,107 +583,37 @@
    "passed": true,
    "bound_m": 0.0625,
    "moved_m": 0.0,
-   "since": 466
+   "since": 543
   },
   {
    "name": "a thing moved while the camera looks away keeps its old place on the map",
-   "passed": false,
+   "passed": true,
    "bound_m": 0.0625,
    "entry": {
     "name": "apple",
     "kind": 2,
     "place": [
-     0.02057,
-     1.16097
+     -0.03657,
+     1.10104
     ],
     "cells": [
-     336,
-     361,
-     362,
-     363,
-     386,
-     387,
-     388,
-     389,
+     384,
+     385,
      410,
-     411,
-     412,
-     413,
-     414,
-     415,
-     435,
-     436,
-     437,
-     438,
-     439,
-     440,
-     441,
-     460,
-     461,
-     462,
-     463,
-     464,
-     465,
-     466,
-     486,
-     487,
-     488,
-     489,
-     490,
-     491,
-     492,
-     513,
-     514,
-     515,
-     516
+     411
     ],
     "shares": [
-     0.2228,
-     0.5174,
-     0.3207,
-     0.168,
-     0.8534,
-     0.6259,
-     0.3879,
-     0.2032,
-     0.9738,
-     1,
-     0.8679,
-     0.6365,
-     0.3945,
-     0.2066,
-     0.685,
-     0.8324,
-     0.8549,
-     0.7419,
-     0.5441,
-     0.3373,
-     0.1767,
-     0.3424,
-     0.4923,
-     0.5982,
-     0.6143,
-     0.5332,
-     0.391,
-     0.2424,
-     0.2068,
-     0.2974,
-     0.3614,
-     0.3711,
-     0.3221,
-     0.2362,
-     0.1464,
-     0.151,
-     0.1835,
-     0.1885,
-     0.1636
+     0.0519,
+     0.093,
+     0.5579,
+     1
     ],
-    "since": 540,
-    "state": "near"
+    "since": 664,
+    "state": "held"
    },
    "old": [
-    0.02057,
-    1.16097
+    -0.03657,
+    1.10104
    ],
    "true": [
     -0.495014668485544,
@@ -975,10 +623,10 @@
   {
    "name": "a tap on the floor asks the map what is there: the apple at its old place, where it was moved from unseen",
    "passed": true,
-   "said": "0.8 m away, behind you: the apple, as the map holds it.",
+   "said": "0.8 m away, behind you, to the right: the apple, as the map holds it.",
    "point": [
-    0.02057,
-    1.16097
+    -0.03657,
+    1.10104
    ]
   },
   {
@@ -988,23 +636,30 @@
     "name": "apple",
     "kind": 2,
     "place": [
-     0.82037,
-     1.1248
+     0.74907,
+     1.13874
     ],
     "cells": [
-     693,
+     668,
      694,
-     719,
+     695,
+     696,
+     697,
      720,
      721,
      722,
+     723,
+     724,
+     725,
+     726,
      746,
      747,
      748,
      749,
      750,
      751,
-     772,
+     752,
+     753,
      773,
      774,
      775,
@@ -1012,54 +667,45 @@
      777,
      778,
      779,
-     799,
      800,
      801,
      802,
-     803,
-     804,
-     805,
-     826,
-     827,
-     828,
-     829,
-     830
+     803
     ],
     "shares": [
-     0.1607,
-     0.3294,
-     0.1687,
-     0.3457,
-     0.5988,
-     0.8765,
-     0.305,
-     0.5283,
-     0.7733,
-     0.9566,
+     0.2931,
+     0.2991,
+     0.5292,
+     0.7913,
      1,
-     0.8834,
-     0.2262,
-     0.3919,
-     0.5736,
-     0.7095,
-     0.7417,
-     0.6552,
-     0.4892,
-     0.3087,
-     0.2443,
-     0.3576,
-     0.4424,
-     0.4624,
-     0.4085,
-     0.305,
-     0.1924,
-     0.1874,
-     0.2319,
-     0.2424,
-     0.2141,
-     0.1599
+     0.2566,
+     0.4539,
+     0.6788,
+     0.8577,
+     0.916,
+     0.8267,
+     0.6305,
+     0.185,
+     0.3273,
+     0.4894,
+     0.6185,
+     0.6605,
+     0.5961,
+     0.4546,
+     0.293,
+     0.1984,
+     0.2967,
+     0.3749,
+     0.4003,
+     0.3613,
+     0.2756,
+     0.1776,
+     0.1512,
+     0.191,
+     0.204,
+     0.1841
     ],
-    "since": 652,
+    "since": 803,
     "state": "near"
    },
    "camera_sees_old_place": true,
@@ -1069,32 +715,32 @@
    "name": "seen again, it is found within 3 cm, one thing on the map",
    "passed": true,
    "bound_m": 0.03,
-   "off_m": 0.012093826947220276,
+   "off_m": 0.0027800795152165807,
    "entry": {
     "name": "apple",
     "kind": 2,
     "place": [
-     0.02171,
-     1.17301
+     -0.03655,
+     1.09826
     ],
     "cells": [
-     411,
-     412,
-     437,
-     438
+     384,
+     385,
+     410,
+     411
     ],
     "shares": [
-     0.0419,
-     0.1801,
-     0.2324,
+     0.0626,
+     0.0926,
+     0.6759,
      1
     ],
     "since": 0,
     "state": "seen"
    },
    "true": [
-    0.020570028263286952,
-    1.1609700201549669
+    -0.036569957872376824,
+    1.1010400078766538
    ],
    "apple_entries": 1
   },
@@ -1223,7 +869,7 @@
     ],
     [
      "bread",
-     "near"
+     "held"
     ]
    ],
    "after": [
@@ -1241,7 +887,7 @@
     ],
     [
      "bread",
-     "near"
+     "held"
     ]
    ]
   },
@@ -1301,9 +947,9 @@
   {
    "name": "on a phone the card is a sheet from the bottom and the brain stays visible above it",
    "passed": true,
-   "brain_bottom": 591.5978773584906,
+   "brain_bottom": 590.6544811320755,
    "sheet_top": 616.734375,
-   "brain_height": 205.66037735849056,
+   "brain_height": 204.71698113207546,
    "sheet": true
   },
   {
@@ -1319,16 +965,16 @@
     "mode": "canvas2d",
     "hdr": false,
     "fallback": "requested",
-    "frames": 178,
-    "lit": 822,
-    "wave": true,
+    "frames": 152,
+    "lit": 820,
+    "wave": false,
     "synapses": 24
    },
    "frame_times": {
     "frames": 240,
     "median_ms": 16.699999999999818,
-    "p95_ms": 33.399999999999636,
-    "worst_ms": 33.5
+    "p95_ms": 33.400000000000546,
+    "worst_ms": 50
    }
   },
   {
@@ -1337,9 +983,6 @@
    "errors": []
   }
  ],
- "passed": false,
- "failed": [
-  "3 turn: the apple, out of view behind the body, keeps its place on the map",
-  "a thing moved while the camera looks away keeps its old place on the map"
- ]
+ "passed": true,
+ "failed": []
 }
