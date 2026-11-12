@@ -66,9 +66,13 @@ FRAME_MEDIAN = 20.0  # milliseconds a frame with the brain view on
 FRAME_P95 = 34.0
 
 
+class Quiet(http.server.SimpleHTTPRequestHandler):
+    def log_message(self, *args) -> None:  # the check's own lines are the log
+        pass
+
+
 def serve(directory: Path) -> tuple[str, socketserver.TCPServer]:
-    handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(directory))
-    handler.log_message = lambda *args: None
+    handler = functools.partial(Quiet, directory=str(directory))
     server = socketserver.ThreadingTCPServer(("127.0.0.1", 0), handler)
     server.daemon_threads = True
     threading.Thread(target=server.serve_forever, daemon=True).start()
@@ -189,18 +193,24 @@ ROUTE = [  # the promise, by scene steps: across the room in view, into the pill
 ]
 
 
-def scripted(page, teach: bool | None = None, seed: int = 320) -> dict:
+def scripted(page, teach: bool | None = None, seed: int = 320, sight: bool | None = None) -> dict:
     """The promise as a scripted scenario: the brain as it arrives, the scene at its start, the
     camera's noise from a seed, and the hand moved by scene steps (0.5 m/s into the shadow, 70
     moments at rest there). Every run gives the brain the same rows. `teach`: lessons on or off;
-    None leaves the page's own default."""
+    `sight`: the sight evidence given or withheld (it is given only where the pack's library
+    takes it). None leaves the page's own default."""
     shadow = page.evaluate("window.outOfSight.shadowPoint(0.32)")
     route = [{**leg, "to": shadow} if leg.get("to") == "SHADOW" else leg for leg in ROUTE]
-    rows = page.evaluate("([route, teach, seed]) => window.outOfSight.scenario(route, { seed, teach })", [route, teach, seed])
+    rows = page.evaluate("([route, teach, seed, sight]) => window.outOfSight.scenario(route, { seed, teach, sight })", [route, teach, seed, sight])
     first = next(k for k, r in enumerate(rows) if not r["seen"])
     hidden = [r for r in rows if not r["seen"] and r["brain"] is not None]
     seen, back = [r for r in rows[:first] if r["brain"] is not None], [r for r in rows[-10:] if r["brain"] is not None]
+    held = [k for k, r in enumerate(hidden) if r.get("held")]
     return {"teach": page.evaluate("window.outOfSight.state.teach"), "moments": len(rows), "hidden_moments": len(hidden),
+            # the sight evidence: whether the pack's library takes it, whether this run gave it, the hidden
+            # moments the place was held back by it, and the first of them
+            "takes_sight": bool(page.evaluate("window.outOfSight.state.takesSight")), "sight": any(bool(r.get("sight")) for r in rows),
+            "held_moments": len(held), "first_held": held[0] if held else None,
             "in_view_m": mean([r["brain"] for r in seen[-60:]]), "hidden_m": mean([r["brain"] for r in hidden]),
             "hidden_last_m": hidden[-1]["brain"], "kalman_hidden_m": mean([r["kalman"] for r in hidden]),
             "last_seen_hidden_m": mean([r["last"] for r in hidden]), "inside_circle": mean([1.0 if r["inside"] else 0.0 for r in hidden]),
@@ -528,7 +538,8 @@ def main() -> int:
             report["promise"] = promise
             c.add("THE PROMISE: in view the brain's place follows the hand", promise["in_view_m"] <= FOLLOW, bound_m=FOLLOW, **promise)
             c.add("THE PROMISE: the brain's place stays with the hidden hand", promise["hidden_m"] <= HIDDEN, bound_m=HIDDEN,
-                  hidden_m=promise["hidden_m"], last_m=promise["hidden_last_m"], kalman_m=promise["kalman_hidden_m"], last_seen_m=promise["last_seen_hidden_m"])
+                  hidden_m=promise["hidden_m"], last_m=promise["hidden_last_m"], kalman_m=promise["kalman_hidden_m"], last_seen_m=promise["last_seen_hidden_m"],
+                  sight_evidence=promise["sight"], held_moments=promise["held_moments"])
             c.add("THE PROMISE: the stated area holds the hidden hand", promise["inside_circle"] >= COVER, bound=COVER, inside=promise["inside_circle"],
                   radius_first_m=promise["radius_first_m"], radius_last_m=promise["radius_last_m"])
             c.add("THE PROMISE: back in view the place closes on the hand", promise["return_m"] <= RETURN, bound_m=RETURN, return_m=promise["return_m"])

@@ -33,6 +33,10 @@ how far off the place may be (`spread`), and the place a cue or the arm's joint 
   (`predict`), the reports go to their rows (`assign`) and the places are written (`observe`).
   Reports and cues carry what a thing looks like and no name. The answer for the hand is its
   row's place and a circle that holds it nine times in ten (`where`).
+- **The sight evidence:** where the library's `observe` takes `in_sight`, the page's worker says
+  for each predicted place whether the camera would see a thing there, and a place predicted in
+  sight for three moments with no report is put halfway along its hidden path. The wheel this
+  file runs on does not hold that call, so no flag is passed.
 - **The ear:** the module's ear stands at (0.95, 1.35). A cue heard at the page's body is given
   to the module as the direction and distance of the same point from its own ear.
 
@@ -51,20 +55,21 @@ noise from one seed. The scene is also a scene file of the tracking chamber,
 Three runs with lessons on and three with lessons off (`evidence/promise_runs.json`); bounds
 5 cm in view, 10 cm hidden, 0.85 for the circle, 5 cm after the return:
 
-| Lessons | In view | Hidden, mean | Hidden, last | Circle holds the hand | Circle's radius | After return | Lessons taken | A moment |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| on | 1.0 cm | 37 cm | 87 cm | 0.23 | 1.6 cm to 19 cm | 0.2 cm | 321 | 79 ms |
-| on | 1.0 cm | 36 cm | 86 cm | 0.23 | 1.5 cm to 19 cm | 0.2 cm | 319 | 78 ms |
-| on | 1.0 cm | 36 cm | 86 cm | 0.23 | 1.5 cm to 19 cm | 0.2 cm | 319 | 68 ms |
-| off | 1.0 cm | 33 cm | 80 cm | 0.24 | 1.6 cm to 19 cm | 0.3 cm | 0 | 17 ms |
-| off | 1.0 cm | 33 cm | 80 cm | 0.24 | 1.6 cm to 19 cm | 0.3 cm | 0 | 17 ms |
-| off | 1.0 cm | 33 cm | 80 cm | 0.24 | 1.6 cm to 19 cm | 0.3 cm | 0 | 16 ms |
+| Sight evidence | Lessons | In view | Hidden, mean | Hidden, last | Circle holds the hand | Circle's radius | Held back | After return | Lessons taken | A moment |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| none | on | 1.0 cm | 36.4 cm | 86.4 cm | 0.23 | 1.4 cm to 18.5 cm | - | 0.2 cm | 319 | 62 ms |
+| none | on | 1.0 cm | 36.3 cm | 86.3 cm | 0.23 | 1.4 cm to 18.5 cm | - | 0.2 cm | 319 | 54 ms |
+| none | on | 1.0 cm | 36.4 cm | 86.5 cm | 0.23 | 1.4 cm to 18.6 cm | - | 0.2 cm | 319 | 49 ms |
+| none | off | 1.0 cm | 33.3 cm | 80.2 cm | 0.24 | 1.6 cm to 18.9 cm | - | 0.3 cm | 0 | 12 ms |
+| none | off | 1.0 cm | 33.3 cm | 80.2 cm | 0.24 | 1.6 cm to 18.9 cm | - | 0.3 cm | 0 | 11 ms |
+| none | off | 1.0 cm | 33.3 cm | 80.2 cm | 0.24 | 1.6 cm to 18.9 cm | - | 0.3 cm | 0 | 9 ms |
 
 On the same rows the chamber's Kalman filter lay 28 cm from the hidden hand and the last seen
 position 16 cm. With lessons off the three runs are the same to the last digit and a moment
-fits the scene's 33 ms; with lessons on a moment takes more than twice that. The hand stops in
+takes 9 to 12 ms of the scene's 33 ms; with lessons on it takes 49 to 62 ms. The hand stops in
 the shadow, and the module carries its place on along the last seen movement: the promise's
-bound is not held, with lessons or without.
+bound is not held, with lessons or without. The library of this pack takes no sight evidence
+(`library_takes_sight_evidence` in the evidence file), so every run reads without it.
 
 - One knock: 16 knocks at one place with the cue's own error of 6 cm put the place 14 cm from the
   true one on average, 27 cm at the most (measured natively through the page's host).

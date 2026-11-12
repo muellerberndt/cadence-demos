@@ -214,3 +214,50 @@ def test_the_place_modules_host_answers_the_pages_messages(tmp_path):
     assert host.handle({"command": "what", "origin": body["position"], "direction": toward})["name"] == "cup"
     assert host.handle({"command": "what", "origin": body["position"], "direction": toward + 2.0, "point": where["place"]})["by"] == "place"
     assert host.handle({"command": "what", "origin": body["position"], "direction": toward + 2.0})["name"] is None
+
+
+def test_the_sight_evidence_holds_back_a_place_that_did_not_come_out(tmp_path):
+    """A moment in two halves, on a module made here: the host predicts, the caller says which
+    predicted places the camera would see, and a place predicted in sight for three moments
+    with no report is put halfway along its hidden path. It says nothing of a trained module."""
+    import inspect
+
+    space = pytest.importorskip("cadence.space")
+    if "in_sight" not in inspect.signature(space.Space.observe).parameters:
+        pytest.skip("this library's space takes no sight evidence")
+    from spacebrain.host import make
+
+    interface = space.Interface(plane=(-1.0, 1.0, -0.2, 1.4), limits=((0.35, 2.79), (-2.6, -0.3)), hidden=32)
+    donor = space.Space(interface, seed=0)
+    donor.begin(np.array([[-0.5, 0.6]]))
+    for t in range(40):
+        donor.advance(np.array([True]), np.array([[-0.5 + 0.01 * t, 0.6]]), learn=True)
+    host = make({"module": {"name": "place", "path": str(donor.save(tmp_path / "place.npz"))}})
+    assert host.handle({"command": "describe"})["sight"] is True
+
+    def halves(report, in_sight):
+        moment = {"hand": {"report": report}, "joints": JOINTS, "commands": REST, "things": [], "teach": False}
+        first = host.handle({"command": "predict", **moment})
+        assert len(first["predicted"]) == 1 and first["names"] == ["hand"]
+        return host.handle({"command": "observe", "in_sight": in_sight})
+
+    for t in range(20):  # in view, moving right at 2 cm a moment
+        reply = halves([-0.5 + 0.02 * t, 0.6], [True])
+    last = np.array(reply["place"])
+    for _ in range(8):  # hidden, its predicted place out of sight: moved by the brain's answer
+        reply = halves(None, [False])
+        assert reply["sight"]["given"] and not reply["held_back"]
+    before = np.array(reply["place"])
+    for _ in range(3):  # the camera would see it where it is predicted, and no report comes
+        reply = halves(None, [True])
+    assert reply["held_back"] and reply["sight"]["held_back"] == [True]
+    assert np.allclose(reply["place"], (last + before) / 2.0, atol=1e-9)  # halfway along the hidden path
+    assert reply["radius"] >= np.linalg.norm(before - last) / 2.0         # the circle reaches both ends
+    rests = halves(None, [True])
+    assert rests["held_back"] and not rests["asked"] and np.allclose(rests["place"], reply["place"])
+    assert not halves([0.1, 0.6], [True])["held_back"]  # a report takes the place back
+    # one message a moment, without the evidence: nothing is held back
+    plain = host.handle({"command": "step", "hand": {"report": None}, "joints": JOINTS, "commands": REST, "things": [], "teach": False})
+    assert plain["sight"]["given"] is False and not plain["held_back"]
+    with pytest.raises(RuntimeError):
+        host.handle({"command": "observe", "in_sight": [True]})  # no moment is open

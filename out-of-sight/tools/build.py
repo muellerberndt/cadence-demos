@@ -37,6 +37,8 @@ def main() -> None:
     p.add_argument("--module-name", default="place")
     p.add_argument("--module-label", default=None, help="what the page calls this file (its badge)")
     p.add_argument("--module-note", default=None, help="one or two sentences on what this file is")
+    p.add_argument("--space", default=None,
+                   help='settings of cadence.space.Space this module is run with, as JSON, e.g. \'{"course": true}\' (none: the space\'s own)')
     p.add_argument("--wheel-source", default="PyPI")
     a = p.parse_args()
     wheel = Path(a.wheel)
@@ -70,6 +72,8 @@ def main() -> None:
             files.append({"name": Path(source).name, "sha256": sha(folder / Path(source).name),
                           "bytes": (folder / Path(source).name).stat().st_size})
         manifest["module"] = {"name": a.module_name, "label": a.module_label, "note": a.module_note, "files": files}
+        if a.space:
+            manifest["module"]["space"] = json.loads(a.space)
     else:
         manifest["module"] = None
         manifest["brain_kind"] = "baseline, composed on the page"

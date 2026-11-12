@@ -1073,14 +1073,17 @@ export class BrainView {
       });
       this.labelsPlaced = true;
     }
+    // the rings of the parts pointed at lie under the labels: no ring strikes a name through
+    this.drawSpots(c, now);
+    c.font = `600 ${this.compact ? 9 : 10.5}px Inter, system-ui, sans-serif`;
     for (const l of this.labels) {
+      if (this.underCard(l.x - 4, l.y - 1, l.w, 15)) continue;
       c.fillStyle = 'rgba(6,8,14,0.6)';
       c.beginPath(); c.roundRect(l.x - 4, l.y - 1, l.w, 15, 4); c.fill();
       c.fillStyle = css(COLOR[l.region.role] || COLOR.other, 0.95);
       c.fillText(l.text, l.x, l.y + 10);
     }
     this.drawCells(c, now);
-    this.drawSpots(c, now);
     c.restore();
     // a lesson's changed synapses, on the tracts' own layer
     this.view(c, 1);
@@ -1132,6 +1135,15 @@ export class BrainView {
     c.fillStyle = playing ? 'rgba(255,236,200,0.95)' : 'rgba(141,151,178,0.85)';
     c.fillText(playing && playing <= n ? `sweep ${playing} of ${early ? n : s.of}` : this.resting ? (this.restLabel || 'at rest: no sweep needed') : early ? `answer complete after ${n} sweeps` : `${this.verb || 'settled in'} ${s.of} sweeps`, x0 + w + 8, y1 - 2);
     c.restore();
+  }
+
+  /** Whether the open card stands over any of a box of the neurons' layer: a label it would cut
+   *  in two is not drawn while the card is open. */
+  underCard(x, y, w, h) {
+    const r = this.leader?.rect;
+    if (!r) return false;
+    const [x0, y0] = this.onStage(x, y, NEURON_DEPTH), [x1, y1] = this.onStage(x + w, y + h, NEURON_DEPTH);
+    return x1 > r.left - 3 && x0 < r.left + r.w + 3 && y1 > r.top - 3 && y0 < r.top + r.h + 3;
   }
 
   // A thin line from an open card to the part it explains.
@@ -1220,8 +1232,10 @@ export class BrainView {
       const text = this.compact ? 'HIPPOCAMPUS' : `HIPPOCAMPUS · RECORDS ${this.cells.filter((x) => x.record).length} OF ${this.cells.length}`;
       const y = this.cells[0].y - this.cells[0].r - 16, x = this.cells[0].x - this.cells[0].r;
       const w = c.measureText(text).width;
-      c.fillStyle = 'rgba(6,8,14,0.72)'; c.beginPath(); c.roundRect(x - 4, y - 1, w + 8, 15, 4); c.fill();
-      c.fillStyle = css(COLOR.hippocampus, 0.88); c.fillText(text, x, y + 10);
+      if (!this.underCard(x - 4, y - 1, w + 8, 15)) {
+        c.fillStyle = 'rgba(6,8,14,0.72)'; c.beginPath(); c.roundRect(x - 4, y - 1, w + 8, 15, 4); c.fill();
+        c.fillStyle = css(COLOR.hippocampus, 0.88); c.fillText(text, x, y + 10);
+      }
     }
     }
   }

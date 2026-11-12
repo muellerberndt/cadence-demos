@@ -311,10 +311,12 @@ export class Stage {
   follow() {
     const leg = this.route?.[0];
     if (!leg) return;
-    if (leg.rest !== undefined) { leg.rest -= 1; if (leg.rest <= 0) this.route.shift(); return; }
+    // a leg done; with the last of them, `routeEnd` is the moment the route ended at
+    const done = () => { this.route.shift(); if (!this.route.length) this.routeEnd = this.moment + 1; };
+    if (leg.rest !== undefined) { leg.rest -= 1; if (leg.rest <= 0) done(); return; }
     const k = this.names.indexOf(leg.name), p = this.world.things[k];
     const dx = leg.to[0] - p[0], dy = leg.to[1] - p[1], d = Math.hypot(dx, dy), stride = (leg.speed ?? 0.5) * DT;
-    if (d <= stride) { this.world.things[k] = leg.to.slice(); this.route.shift(); return; }
+    if (d <= stride) { this.world.things[k] = leg.to.slice(); done(); return; }
     this.world.things[k] = [p[0] + (dx / d) * stride, p[1] + (dy / d) * stride];
   }
 

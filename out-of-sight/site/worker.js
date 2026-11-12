@@ -2,8 +2,20 @@
 // and the Python host are checked against the pack manifest's SHA-256 before anything runs.
 // Messages: {rid, command, payload} in; {rid, result, arrays} or {rid, error} out; {status}
 // while loading. `arrays` holds the typed arrays a reply names in `buffers`.
+//
+// The sight evidence. A place module's space moves a thing it does not see along its last seen
+// movement. Where the host takes the evidence, a moment is taken in two halves here: the host
+// predicts every thing's place; this worker says, for each predicted place, whether the camera
+// would see a thing there at this moment (the page sends the scene as it stands: the camera's
+// position, heading and field, the pillar where it stands, the arm's joints, and whether the
+// camera is on; `visible` is the scene's own rule for what the camera sees); the host is given
+// those flags with the camera's reports. A thing predicted in sight that sends no report did
+// not come out where its movement carries it.
+import { visible } from './world.js';
+
 let python = null;
 let manifest = null;
+let takesSight = false; // the host's space takes the sight evidence
 let chain = Promise.resolve();
 const status = (message) => self.postMessage({ status: message });
 
@@ -53,7 +65,7 @@ async function initialize(payload) {
     if (files.length) python.FS.mkdirTree('/home/pyodide/module');
     for (const file of files) python.FS.writeFile(`/home/pyodide/module/${file.name}`, await checked(new URL(`module/${file.name}`, base), file.sha256));
     config.module = { name: manifest.module.name, label: manifest.module.label || null, note: manifest.module.note || null,
-      path: files.length ? `/home/pyodide/module/${files[0].name}` : null };
+      space: manifest.module.space || null, path: files.length ? `/home/pyodide/module/${files[0].name}` : null };
   }
   status(manifest.module ? 'Waking the brain' : 'Composing the brain');
   python.globals.set('_space_config', JSON.stringify(config));
@@ -70,6 +82,7 @@ def _space_buffer(name):
     return _space_host.buffers[name]
 `);
   const out = call({ command: 'describe' });
+  takesSight = !!out.reply.sight;
   out.reply.startup_ms = Math.round(performance.now() - began);
   out.reply.manifest = manifest;
   return out;
@@ -94,11 +107,23 @@ function call(message) {
   } finally { handle.destroy(); fetchBuffer.destroy(); }
 }
 
+// One moment. With a view of the scene and a host that takes the sight evidence: the host's
+// predicted places, which of them the camera would see, and the host's answer given that.
+function step(payload) {
+  const { view, ...moment } = payload || {};
+  if (!takesSight || !view) return call({ command: 'step', ...moment });
+  const first = call({ command: 'predict', ...moment });
+  const inSight = first.reply.predicted.map((place, k) => !!view.on && visible(view.geometry, place, view.joints, !!moment.own && k === 0));
+  const out = call({ command: 'observe', in_sight: inSight });
+  out.reply.worker_ms = Math.round((first.reply.worker_ms + out.reply.worker_ms) * 100) / 100;
+  return out;
+}
+
 self.onmessage = ({ data }) => {
   chain = chain.then(async () => {
     const { rid, command, payload } = data;
     try {
-      const outcome = command === 'init' ? await initialize(payload) : call({ command, ...(payload || {}) });
+      const outcome = command === 'init' ? await initialize(payload) : command === 'step' ? step(payload) : call({ command, ...(payload || {}) });
       const transfer = Object.values(outcome.arrays).map((a) => a.buffer);
       self.postMessage({ rid, result: outcome.reply, arrays: outcome.arrays }, transfer);
     } catch (error) {

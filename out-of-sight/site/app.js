@@ -33,6 +33,7 @@ const brainView = new BrainView({ canvas: $('brain'), overlay: $('brain-overlay'
 const state = {
   ready: false, failed: null, kind: 'baseline',
   showHidden: true, more: false, teach: true, selected: 'hand',
+  sight: params.get('sight') !== '0', takesSight: false, held: false, // the sight evidence: asked for, taken by the host, and whether the hand's place was held back
   record: null, previous: null, stepAt: 0, pending: false,
   belief: null, seenBelief: null, sheet: null, pins: {}, history: [],
   controls: null, estimates: null, unseen: 0, moments: 0, refused: 0, lessons: 0, lesson: null, settle: null,
@@ -95,6 +96,8 @@ function tick(now) {
     hand: { report }, joints: record.joints, commands: record.commands, body: record.body, own: stage.own,
     things: stage.names.slice(1).map((name, i) => ({ name, report: record.report[i + 1], cue: record.cue[i + 1] })),
     teach: state.teach, wave: state.waveEvery > 0 && record.moment % state.waveEvery === 0 && !brainView.wave,
+    // the scene as it stands at this moment: the worker says from it which predicted places the camera would see
+    view: state.sight && state.takesSight ? { on: stage.cameraOn, geometry: stage.geometry, joints: stage.world.joints } : null,
   };
   state.pending = true;
   const sent = performance.now();
@@ -111,13 +114,14 @@ function answered(record, estimates, reply, arrays) {
   state.moments = reply.moment;
   state.think.push(reply.ms); if (state.think.length > 600) state.think.shift();
   const row = { moment: record.moment, seen, unseen: seen ? 0 : state.unseen, brain: null, last: distance(estimates.last, truth), kalman: distance(estimates.kalman, truth),
-    area: null, uncertainty: null, inside: null, lesson: false, place: null, pins: {} };
+    area: null, uncertainty: null, inside: null, lesson: false, place: null, pins: {}, held: false, sight: false };
   state.estimates = estimates;
   if (reply.refused) {
     state.refused = reply.refusals;
   } else {
     state.belief = { place: reply.place, sd: reply.sd, area: reply.area, radius: reply.radius ?? null };
     state.asked = reply.asked ?? true; // a module's brain is asked only for a place that may have moved
+    state.held = !!reply.held_back; row.held = state.held; row.sight = !!reply.sight?.given;
     if (seen) state.seenBelief = state.belief;
     state.sheet = { px: arrays.px, py: arrays.py };
     row.brain = distance(reply.place, truth); row.place = reply.place;
@@ -136,7 +140,7 @@ function answered(record, estimates, reply, arrays) {
     state.lessons = reply.lessons; state.changedTotal = reply.changed_total;
     state.settle = { sweeps: reply.sweeps, residual: reply.residual, tolerance: reply.tolerance };
     brainView.resting = reply.sweeps === 0;
-    brainView.restLabel = reply.asked === false ? 'the brain was not asked at this moment' : null;
+    brainView.restLabel = reply.asked === false ? 'nothing says the place moved' : null;
   }
   (reply.things || []).forEach((t, i) => {
     state.pins[t.name] = t.place ? t : null;
@@ -173,9 +177,13 @@ function readouts(record, row) {
   // with the camera off and the hand moving, a module is outside what it was raised on after about 100 moments
   const far = state.describe?.limits?.unseen_moving, moving = state.previous && distance(record.truth[0], state.previous.truth[0]) > 1e-4;
   if (moving) state.movedDark = stage.cameraOn ? 0 : (state.movedDark || 0) + 1; else if (stage.cameraOn) state.movedDark = 0;
-  const caption = !stage.cameraOn && far && state.movedDark > 5 ? ` · raised for about ${far} moments (${Math.round(far * DT)} s) of a moving hand with the camera off` : '';
-  if (!record.in_view[0]) view.textContent = stage.cameraOn ? `out of view ${(state.unseen * DT).toFixed(1)} s` : `camera off ${(state.unseen * DT).toFixed(1)} s${caption}`;
-  if (state.settle) $('readout').textContent = state.asked === false ? 'this moment: the brain was not asked' : `this moment: ${state.settle.sweeps} sweeps · residual ${state.settle.residual.toExponential(1)}`;
+  if (!record.in_view[0]) view.textContent = stage.cameraOn ? `out of view ${(state.unseen * DT).toFixed(1)} s` : `camera off ${(state.unseen * DT).toFixed(1)} s`;
+  const range = $('chip-range'), held = $('chip-held');
+  range.hidden = !(!stage.cameraOn && far && state.movedDark > 5);
+  if (!range.hidden) range.textContent = `this module was raised on up to about ${Math.round(far * DT)} s of a moving hand it does not see`;
+  // the sight evidence held the place back: the camera would see the hand where its movement leads, and does not
+  held.hidden = !(state.held && !record.in_view[0]);
+  if (state.settle) $('readout').textContent = state.asked === false ? 'this moment: the brain was not asked' : `this moment: ${state.settle.sweeps} sweeps run · residual ${state.settle.residual.toExponential(1)}`;
   if (!state.more) return;
   $('chip-error').textContent = `error ${cm(row.brain)}`;
   const area = state.belief?.area;
@@ -211,7 +219,7 @@ function context() {
     belief: state.belief, seenBelief: state.seenBelief, sheet: state.sheet, centres: d.place.centres,
     unseen: state.unseen, pins: state.pins, names: stage.names, settle: state.settle, asked: state.asked,
     lesson: state.lesson ? { ...state.lesson, ageMs: performance.now() - state.lesson.at } : null,
-    lessons: state.lessons || 0, teach: state.teach,
+    lessons: state.lessons || 0, teach: state.teach, held: state.held, sight: state.sight && state.takesSight,
     coverage: rows.length >= 30 ? { moments: rows.length, share: rows.filter((x) => x.inside).length / rows.length } : null,
     act: (name) => brainView.activity(name), regions: state.regions, dt: DT,
     around: (place) => around(stage.geometry, place),
@@ -253,6 +261,8 @@ function placeCard(force = false) {
   brainView.leader = { rect: { left: card.place.left, top: card.place.top, w, h }, id: ids[0] };
 }
 window.addEventListener('resize', () => placeCard(true));
+// a sheet is a share of its pane, which grows while it opens: the brain keeps clear of it as it stands
+new ResizeObserver(() => { if (card.mode && narrow.matches) placeCard(true); }).observe(card.el);
 
 function showCard(mode, pinned) {
   card.mode = mode; card.pinned = pinned; card.html = ''; card.place = null;
@@ -885,6 +895,7 @@ function adopt(describe, arrays) {
   $('brain-badge').hidden = !badge; $('brain-badge').textContent = badge;
   $('brain-note').textContent = badge ? `${b.label}. ${b.note}` : '';
   brainView.verb = state.kind === 'baseline' ? 'settled in' : 'answered in';
+  state.takesSight = !!describe.sight; state.held = false;
   // a module arrives trained: on the page it takes no lessons unless the visitor switches them on (Details)
   if (params.get('teach') !== null) state.teach = params.get('teach') === '1';
   else state.teach = !(describe.brain.trained && state.kind !== 'baseline');
@@ -931,9 +942,10 @@ async function start() {
 // A scripted scenario, for the page check: the brain as it arrives, the scene at its start, the
 // camera's noise from a seed, and a route taken by scene steps. Every run gives the brain the
 // same rows. Resolves with the page's record of its answers over the route.
-async function scenario(route, { seed = 320, teach = null } = {}) {
+async function scenario(route, { seed = 320, teach = null, sight = null } = {}) {
   await reborn({});
   if (teach !== null) { state.teach = teach; $('teach').checked = teach; }
+  if (sight !== null) state.sight = !!sight;
   while (state.pending) await new Promise((r) => setTimeout(r, 5));
   await brain.call('reset', {});
   while (state.pending) await new Promise((r) => setTimeout(r, 5));
@@ -941,10 +953,13 @@ async function scenario(route, { seed = 320, teach = null } = {}) {
   stage.reset(); stage.random = new Random(seed);
   setCase('other', false); restartControls();
   const from = stage.moment;
+  stage.routeEnd = null;
   stage.route = route.map((leg) => ({ ...leg }));
   while (stage.route && stage.route.length) await new Promise((r) => setTimeout(r, 30));
-  while (state.pending || !state.history.length || state.history.at(-1).moment < stage.moment) await new Promise((r) => setTimeout(r, 10));
-  return state.history.filter((r) => r.moment > from).map((r) => ({ m: r.moment - from, seen: r.seen, brain: r.brain, kalman: r.kalman, last: r.last, u: r.uncertainty, inside: r.inside, lesson: r.lesson }));
+  // the route's own moments, up to the one it ended at: a moment the clock adds after it is left out
+  const last = stage.routeEnd ?? stage.moment;
+  while (state.pending || !state.history.length || state.history.at(-1).moment < last) await new Promise((r) => setTimeout(r, 10));
+  return state.history.filter((r) => r.moment > from && r.moment <= last).map((r) => ({ m: r.moment - from, seen: r.seen, brain: r.brain, kalman: r.kalman, last: r.last, u: r.uncertainty, inside: r.inside, lesson: r.lesson, held: r.held, sight: r.sight }));
 }
 
 // what the page check drives

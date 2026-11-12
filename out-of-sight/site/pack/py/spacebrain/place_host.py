@@ -16,6 +16,13 @@ What holds what, as the module is built:
 - Reports and cues reach the space without names, as rows of a position (or a direction and a
   distance) and what the thing looks like: the hand 0, the kinds 1 and up. The space gives each
   to the nearest row of its look (``assign``, ``hear``).
+- The sight evidence, where the library's space takes it (``observe(in_sight=)``): a step is
+  taken in two halves. ``predict`` gives where every row is predicted to be; the page, which
+  knows the camera, the pillar and the arm as they stand at that step, says for every row
+  whether the camera would see a thing at its predicted place; ``observe`` is given that. A row
+  predicted in sight for three steps in a row with no report did not come out where its movement
+  carries it: the space puts it halfway between where it was last seen and where it was before
+  those steps, with a radius that reaches both, and rests it.
 
 The module's ear stands where its interface says. A cue heard at the page's body is given to the
 space as the direction and distance of the same point from the module's own ear.
@@ -26,6 +33,7 @@ change with them: every call into the space is made in one place below.
 
 from __future__ import annotations
 
+import inspect
 import time
 from typing import Any
 
@@ -97,12 +105,18 @@ class PlaceHost:
 
         began = time.perf_counter()
         slots = int(self.config.get("records", 12))
-        # the page teaches as the space teaches itself, with no span of reports left unread
-        self.space = Space.load(self.module, track=True, records=slots, practice=0.0)
+        # the page teaches as the space teaches itself, with no span of reports left unread; the
+        # pack may state further settings of the space this module is run with (``space``)
+        self.settings = dict(self.config["module"].get("space") or {})
+        self.space = Space.load(self.module, **{"track": True, "records": slots, "practice": 0.0, **self.settings})
         self.label = str(self.config["module"].get("label") or f"The {self.module.name} module")
         self.interface = self.space.interface
         self.brain = self.space.brain
         self.load_ms = (time.perf_counter() - began) * 1000.0
+        # whether this library's space takes the caller's sight evidence (observe(in_sight=))
+        self.sight = "in_sight" in inspect.signature(Space.observe).parameters
+        self.held: list[bool] = []  # the row was held back and rests on its hidden path
+        self._open: dict[str, Any] | None = None  # a step begun (predict) and not ended (observe)
         self.names: list[str] = []  # the page's name of each row; row 0 is the hand
         self.ever: list[bool] = []  # the row was seen or heard at least once
         self.source: list[str] = []
@@ -121,29 +135,42 @@ class PlaceHost:
         self.ever = [bool(np.isfinite(p).all()) for p in starts]
         self.source = ["seen" if e else "" for e in self.ever]
         self.latest = [self.moments] * len(names)
+        self.held = [False] * len(names)
 
-    def _advance(self, report_rows: list[list[float]], cue_rows: list[list[float]], commands: Any,
-                 joints: Any, learn: bool, wave: bool = False) -> dict[str, Any]:
-        """One step of the space: the cues to their rows, the brain's answers, the reports to
-        their rows, the places written. Gives which rows were seen and heard, what the brain
-        was given, its activation as it stood after its answers (one row a row it was asked
-        for; a lesson that follows begins from rest and leaves none) and that settle's report.
-        The activation may be of an earlier step where the brain was not asked at this one:
-        ``state()['live']`` says which rows it was asked for."""
+    def _predict(self, cue_rows: list[list[float]], commands: Any, joints: Any, learn: bool,
+                 wave: bool = False) -> dict[str, Any]:
+        """The first half of a step of the space: the cues to their rows and the brain's
+        answers. Gives where every row is predicted to be, what the brain was given, its
+        activation as it stood after its answers (one row a row it was asked for; a lesson that
+        follows begins from rest and leaves none) and that settle's report. The activation may
+        be of an earlier step where the brain was not asked at this one: ``state()['live']``
+        says which rows it was asked for."""
         space = self.space
         cues = space.hear(np.array(cue_rows, dtype=np.float64)) if cue_rows else None
         given = np.array(space.sense(commands, cues, joints))
-        space.predict(commands, cues, joints, learn=learn)
+        predicted = np.asarray(space.predict(commands, cues, joints, learn=learn), dtype=np.float64)
         held = self.brain.basal_ganglia.state
         answered = None if held is None else np.array(held.activation, dtype=np.float64)
         settle = dict(self.brain.last_settlement or {})
         # the wave is replayed here, before a lesson of this step moves a synapse
         replay = self._wave(given, int(settle.get("steps", 0)), answered[0]) if wave and answered is not None and answered.ndim == 2 else None
+        return {"cues": cues, "predicted": predicted, "given": given, "answered": answered, "settle": settle, "wave": replay}
+
+    def _observe(self, half: dict[str, Any], report_rows: list[list[float]], learn: bool,
+                 in_sight: Any = None) -> dict[str, Any]:
+        """The second half: the reports to their rows and the places written. ``in_sight``
+        says, one flag a row, whether the camera would see a thing at the row's predicted place
+        at this step; it is passed where the library's space takes it. Gives which rows were
+        seen and heard and which were held back at this step."""
+        space, cues = self.space, half["cues"]
         seen, z = space.assign(np.array(report_rows, dtype=np.float64).reshape(-1, 3))
-        space.observe(seen, z, learn=learn)
+        given = self.sight and in_sight is not None
+        if given:
+            space.observe(seen, z, learn=learn, in_sight=np.asarray(in_sight, dtype=bool).reshape(space.rows))
+        else:
+            space.observe(seen, z, learn=learn)
         heard = np.zeros(space.rows, dtype=bool) if cues is None else np.isfinite(cues).all(axis=1)
-        return {"seen": np.asarray(seen, dtype=bool), "reports": np.asarray(z), "heard": heard,
-                "given": given, "answered": answered, "settle": settle, "wave": replay}
+        return {**half, "seen": np.asarray(seen, dtype=bool), "reports": np.asarray(z), "heard": heard, "sight": bool(given)}
 
     def _wave(self, given: np.ndarray, steps: int, final: np.ndarray) -> dict[str, Any] | None:
         """The hand's answer, sweep by sweep: the brain settled again from rest under the same
@@ -225,6 +252,7 @@ class PlaceHost:
                         "role": "hippocampus", "held": int(self.space.records.count) if self.space.records is not None else 0},
             "learning": {"temperature": float(f.temperature)},
             "ear": [float(v) for v in f.ear], "limits": dict(LIMITS), "controls": {"kalman": dict(KALMAN)},
+            "sight": bool(self.sight), "space": dict(self.settings),
             "compose_ms": round(self.load_ms, 1), "moments": self.moments, "lessons": self.lessons,
             "index_bits": int(np.dtype(np.intp).itemsize * 8),
         }
@@ -238,6 +266,15 @@ class PlaceHost:
         return [float(np.arctan2(offset[1], offset[0])), float(np.linalg.norm(offset))]
 
     def step(self, m: dict[str, Any]) -> dict[str, Any]:
+        """One moment in one message: both halves, with the sight evidence the message holds
+        (``in_sight``, one flag a row) or none."""
+        self.begin(m)
+        return self.end(m.get("in_sight"))
+
+    def begin(self, m: dict[str, Any]) -> dict[str, Any]:
+        """The first half of a moment: the cues and the brain's answers. Gives the predicted
+        place of every row (the hand first, then the things in the message's order), for the
+        page to say which of them the camera would see."""
         hand = (m.get("hand") or {}).get("report")
         things = m.get("things") or []
         names = ["hand", *[str(t["name"]) for t in things]]
@@ -255,7 +292,6 @@ class PlaceHost:
                 self.ever = ever
             else:
                 self._begin(names, starts, own)
-        rows = len(names)
         body = m.get("body") or {}
         ear = np.asarray(body.get("position") or self.interface.ear, dtype=np.float64)
         report_rows = [[float(p[0]), float(p[1]), float(k)] for k, p in enumerate(given) if p is not None]
@@ -264,17 +300,35 @@ class PlaceHost:
         taught_before = self.space.work["lesson_row_sweeps"]
         began = time.perf_counter()
         self.moments += 1
-        step = self._advance(report_rows, cue_rows, m.get("commands") if own else None, m.get("joints") if own else None,
+        half = self._predict(cue_rows, m.get("commands") if own else None, m.get("joints") if own else None,
                              learn, bool(m.get("wave")))
-        ms = (time.perf_counter() - began) * 1000.0
+        self._open = {"half": half, "reports": report_rows, "learn": learn, "taught_before": taught_before,
+                      "ms": (time.perf_counter() - began) * 1000.0}
+        return {"moment": self.moments, "predicted": [[float(p[0]), float(p[1])] for p in half["predicted"]],
+                "names": list(self.names), "own": own, "sight": bool(self.sight)}
+
+    def end(self, in_sight: Any = None) -> dict[str, Any]:
+        """The second half of the moment begun: the reports, the sight evidence and the places
+        written. Gives the page's reply for the moment."""
+        if self._open is None:
+            raise RuntimeError("observe follows predict: no moment is open")
+        opened, self._open = self._open, None
+        learn, taught_before, rows = opened["learn"], opened["taught_before"], len(self.names)
+        began = time.perf_counter()
+        step = self._observe(opened["half"], opened["reports"], learn, in_sight)
+        ms = opened["ms"] + (time.perf_counter() - began) * 1000.0
         seen, reports, cues, answered, settle = step["seen"], step["reports"], step["heard"], step["answered"], step["settle"]
         at, radius = self._where()
         state = self.space.state()
         live = np.asarray(state.get("live", np.zeros(rows, dtype=bool)))
+        refused = np.asarray(state.get("refused", np.zeros(rows, dtype=bool)), dtype=bool)
         for k in range(rows):
             if seen[k] or cues[k]:
                 self.ever[k], self.latest[k] = True, self.moments
                 self.source[k] = "seen" if seen[k] else "heard"
+                self.held[k] = False
+            elif refused[k]:
+                self.held[k] = True  # it rests on its hidden path until it is seen or heard
         # the hand's row: its place, the radius of its area, and the brain as it was asked
         sd = float(radius[0]) / AREA
         activation = np.zeros(self.n)
@@ -301,7 +355,11 @@ class PlaceHost:
             "place": [float(at[0, 0]), float(at[0, 1])], "sd": [sd, sd], "radius": float(radius[0]),
             "area": float(np.pi * radius[0] ** 2), "since": int(np.asarray(state["since"])[0]),
             "sweeps": sweeps, "residual": residual, "tolerance": 0.0, "qualified": True, "refusals": self.refused,
-            "wave": wave, "lesson": None,
+            "wave": wave, "lesson": None, "held_back": bool(self.held[0]),
+            # the sight evidence of this moment: whether it was given, which predicted places the
+            # camera would see, and which rows were held back at this moment
+            "sight": {"given": step["sight"], "in_sight": [bool(v) for v in in_sight] if step["sight"] else None,
+                      "held_back": [bool(v) for v in refused]},
         }
         if learn and self.space.work["lesson_row_sweeps"] != taught_before and len(self.space.changed):
             delta, where = np.asarray(self.space.changes, dtype=np.float64), np.asarray(self.space.changed, dtype=np.int64)
@@ -325,7 +383,8 @@ class PlaceHost:
         return {"name": name, "slot": k - 1, "source": "seen" if seen else "heard" if heard else "held",
                 "write": bool(seen or heard), "revised": bool(seen or heard),
                 "place": [float(at[k, 0]), float(at[k, 1])], "spread": float(radius[k]) / AREA,
-                "from": self.source[k], "unseen": self.moments - self.latest[k], "stored": self.latest[k]}
+                "from": self.source[k], "unseen": self.moments - self.latest[k], "stored": self.latest[k],
+                "held_back": bool(self.held[k])}
 
     def ask(self, name: str) -> dict[str, Any]:
         """Where is this kind of thing? The space's own answer for what it looks like."""
@@ -363,6 +422,7 @@ class PlaceHost:
 
     def reset(self) -> dict[str, Any]:
         self.names = []  # the next moment begins the rows anew
+        self._open = None
         return {"reset": True, "moments": self.moments}
 
     def reborn(self, config: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -373,12 +433,17 @@ class PlaceHost:
         return self.describe()
 
     def handle(self, m: dict[str, Any]) -> dict[str, Any]:
-        self.buffers = {}
         command = m.get("command")
+        if command != "observe":  # the second half of a moment keeps the first half's arrays (the wave)
+            self.buffers = {}
         if command == "describe":
             reply = self.describe()
         elif command == "step":
             reply = self.step(m)
+        elif command == "predict":
+            reply = self.begin(m)
+        elif command == "observe":
+            reply = self.end(m.get("in_sight"))
         elif command == "ask":
             reply = self.ask(str(m.get("thing")))
         elif command == "what":

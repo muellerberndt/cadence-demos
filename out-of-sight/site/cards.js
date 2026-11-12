@@ -227,11 +227,18 @@ const COPY = {
 function heldLine(ctx) {
   const b = ctx.belief;
   if (!b) return 'No place is held.';
-  const u = uncertainty(b), asked = ctx.asked ? 'The brain was asked for its step at this moment.' : 'The brain was not asked at this moment: nothing says the place moved.';
+  const u = uncertainty(b);
+  // held back by the sight evidence: the camera would see the hand where its movement leads, and no report came
+  const asked = ctx.held ? 'The camera would see the hand where its movement leads, and no report comes: it did not come out there. The program holds the place halfway along its hidden path, with a radius that reaches both ends, and rests it.'
+    : ctx.asked ? 'The brain was asked for its step at this moment.' : 'The brain was not asked at this moment: nothing says the place moved.';
   if (!ctx.unseen) return `The space holds the hand at <span data-place="${num(b.place[0], 3)},${num(b.place[1], 3)}">${at(b.place)}</span>, written by the camera’s report. Its area’s radius is <span data-uncertainty="${u.toFixed(4)}">${cm(u)}</span>.`;
   return `The space holds the hand at <span data-place="${num(b.place[0], 3)},${num(b.place[1], 3)}">${at(b.place)}</span>, unseen for <span data-unseen="${ctx.unseen}">${ctx.unseen} moments</span>. Its area’s radius is <span data-uncertainty="${u.toFixed(4)}">${cm(u)}</span>. ${asked}`;
 }
 const askedLine = (ctx) => (ctx.asked ? `The brain was asked at this moment and answered in ${ctx.settle ? ctx.settle.sweeps : 0} sweeps.` : 'The brain was not asked at this moment. It is asked only for a thing whose place may have moved: one with a command, a seen movement or a cue.');
+// The sight evidence, where the library's space takes it. The sentences follow the docstring of
+// `Space.observe` on the branch the wheel is built from.
+const SIGHT = 'The page also tells the program, at every step, whether the camera would see a thing at its predicted place: the camera’s field, the pillar and the arm’s shadow, as they stand. In sight for three steps in a row with no report, the thing did not come out where its movement carries it. The program puts it halfway between where it was last seen and where it was before those steps, with a radius that reaches both, and rests it.';
+const sightLine = (ctx) => (ctx.held ? ' The hand’s place is held back in this way at this moment.' : '');
 const region = (title, role, what, live = askedLine, draw = null) => ({ title, role, what, live, draw });
 const axes = (name, labels, unit, color) => (ctx) => peakSvg(codeRows(ctx, name, labels, unit, null), color);
 
@@ -269,7 +276,8 @@ COPY.place = {
   tracts: {},
   // The stages are the library guide's "How a position travels" (docs/space.md of the branch
   // the module comes from), word for word but for one phrase: where the guide says the brain
-  // "settles on" what the regions hold, the card says it "reads" it.
+  // "settles on" what the regions hold, the card says it "reads" it. The third stage adds the
+  // sight evidence where the pack's library takes it (SIGHT above).
   stages: [
     { id: 'report', parts: ['place'], title: 'The camera’s report',
       body: 'A report is a position in the plane. The program writes it into the thing’s place. The place region shows that place to the brain as a peak on each axis: the units within two spacings of the position are lit, five at most, and the rest are silent. A thing that is not seen changes nothing here: there is no “nothing seen” pattern.',
@@ -279,7 +287,8 @@ COPY.place = {
       live: heldLine },
     { id: 'move', parts: ['shift', 'motion'], title: 'Movement while unseen',
       body: 'The brain reads what the regions hold and its shift answers how far the place moves in this step. For the arm’s own end the moved region holds the copy of the command. For a thing that moves by itself the motion region holds its last seen movement: the slope of the line through its reports in a row. The program adds the shift to the place.',
-      live: askedLine, draw: axes('shift', ['dx', 'dy'], 'm', '#5cdb9e') },
+      also: (ctx) => (ctx.sight ? SIGHT : ''),
+      live: (ctx) => askedLine(ctx) + sightLine(ctx), draw: axes('shift', ['dx', 'dy'], 'm', '#5cdb9e') },
     { id: 'correct', parts: ['shift', 'spread'], title: 'Correction by sight',
       body: 'When the thing is seen again its report writes the place. The lessons happen only then: the movement the reports show teaches shift, and the distance from the predicted place to the report teaches spread. A lesson is made of six reports in a row, so it lands a few moments after them.',
       live: lessonLine },
@@ -346,6 +355,7 @@ export function stageCard(kind, index, ctx) {
   const [role, color] = ROLE[part.role] || ['', '#8d97b2'];
   return `<div style="--c:${color}" data-stage="${stage.id}"><p class="kicker">The path of a position · ${index + 1} of ${stages.length}</p><h3>${stage.title}</h3>`
     + `<p class="role">${part.title}: ${role}</p><p>${stage.body}</p>`
+    + (stage.also && stage.also(ctx) ? `<p>${stage.also(ctx)}</p>` : '')
     + (stage.draw ? stage.draw(ctx) : '')
     + `<p class="live"><b>At this moment</b>${stage.live(ctx)}</p>`
     + (stage.changes ? `<p class="mark">${MARK}</p>` : '') + (stage.provisional ? `<p class="mark">${PROVISIONAL}</p>` : '') + '</div>';

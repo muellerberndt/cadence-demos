@@ -1,58 +1,88 @@
 {
- "schema": "cadence-out-of-sight-promise-runs/1",
+ "schema": "cadence-out-of-sight-promise-runs/2",
+ "module": {
+  "name": "place",
+  "label": "Feed-forward baseline",
+  "note": "The place module's development file: a feed-forward baseline (development founder 0, 2,000 scenes of the tracking chamber). A program beside the brain holds each place between moments; the brain answers how far a place moves in a step, how far off it may be, and the place a cue names.",
+  "files": [
+   {
+    "name": "place-dev0.npz",
+    "sha256": "268a36746e4e95b126b79beb54aafee8ac963ae14e3788f26264a3a5a511364c",
+    "bytes": 957040
+   }
+  ]
+ },
+ "wheel_sha256": "36e529caeacc06cdbef091ac414212a767b6d1a1d18dafe4b88a26e25e74ea4e",
+ "library_takes_sight_evidence": false,
  "runs": [
   {
    "teach": true,
    "moments": 323,
    "hidden_moments": 91,
+   "takes_sight": false,
+   "sight": false,
+   "held_moments": 0,
+   "first_held": null,
    "in_view_m": 0.009808836618686489,
-   "hidden_m": 0.36529837188346936,
-   "hidden_last_m": 0.8657809485059421,
+   "hidden_m": 0.3639704958101254,
+   "hidden_last_m": 0.8639344850016375,
    "kalman_hidden_m": 0.2781558861607071,
    "last_seen_hidden_m": 0.15544640197644222,
    "inside_circle": 0.23076923076923078,
-   "radius_first_m": 0.015578353105435355,
-   "radius_last_m": 0.18538860337627408,
+   "radius_first_m": 0.013653391376740194,
+   "radius_last_m": 0.18493046046501416,
    "return_m": 0.00217772561115653,
-   "lessons": 321,
-   "think_ms": 78.7
+   "lessons": 319,
+   "think_ms": 61.9
   },
   {
    "teach": true,
    "moments": 323,
    "hidden_moments": 91,
+   "takes_sight": false,
+   "sight": false,
+   "held_moments": 0,
+   "first_held": null,
    "in_view_m": 0.009808836618686489,
-   "hidden_m": 0.36312869275235105,
-   "hidden_last_m": 0.862777197568466,
+   "hidden_m": 0.3634815043761562,
+   "hidden_last_m": 0.8634855232312509,
    "kalman_hidden_m": 0.2781558861607071,
    "last_seen_hidden_m": 0.15544640197644222,
    "inside_circle": 0.23076923076923078,
-   "radius_first_m": 0.014554723915726028,
-   "radius_last_m": 0.18549120523746196,
+   "radius_first_m": 0.01449173189391759,
+   "radius_last_m": 0.185495230630271,
    "return_m": 0.00217772561115653,
    "lessons": 319,
-   "think_ms": 78.3
+   "think_ms": 53.9
   },
   {
    "teach": true,
    "moments": 323,
    "hidden_moments": 91,
+   "takes_sight": false,
+   "sight": false,
+   "held_moments": 0,
+   "first_held": null,
    "in_view_m": 0.009808836618686489,
-   "hidden_m": 0.3624274147427431,
-   "hidden_last_m": 0.8616771159050364,
+   "hidden_m": 0.3638178567650598,
+   "hidden_last_m": 0.8648059169098784,
    "kalman_hidden_m": 0.2781558861607071,
    "last_seen_hidden_m": 0.15544640197644222,
    "inside_circle": 0.23076923076923078,
-   "radius_first_m": 0.014566748799175262,
-   "radius_last_m": 0.18598432234076268,
+   "radius_first_m": 0.014328277788171853,
+   "radius_last_m": 0.1860167436212604,
    "return_m": 0.00217772561115653,
    "lessons": 319,
-   "think_ms": 67.9
+   "think_ms": 48.9
   },
   {
    "teach": false,
    "moments": 323,
    "hidden_moments": 91,
+   "takes_sight": false,
+   "sight": false,
+   "held_moments": 0,
+   "first_held": null,
    "in_view_m": 0.009808836618686489,
    "hidden_m": 0.3331956045144076,
    "hidden_last_m": 0.8017627233753916,
@@ -63,12 +93,16 @@
    "radius_last_m": 0.1889300966195871,
    "return_m": 0.002972479220959637,
    "lessons": 0,
-   "think_ms": 17.1
+   "think_ms": 12
   },
   {
    "teach": false,
    "moments": 323,
    "hidden_moments": 91,
+   "takes_sight": false,
+   "sight": false,
+   "held_moments": 0,
+   "first_held": null,
    "in_view_m": 0.009808836618686489,
    "hidden_m": 0.3331956045144076,
    "hidden_last_m": 0.8017627233753916,
@@ -79,12 +113,16 @@
    "radius_last_m": 0.1889300966195871,
    "return_m": 0.002972479220959637,
    "lessons": 0,
-   "think_ms": 16.8
+   "think_ms": 10.9
   },
   {
    "teach": false,
    "moments": 323,
    "hidden_moments": 91,
+   "takes_sight": false,
+   "sight": false,
+   "held_moments": 0,
+   "first_held": null,
    "in_view_m": 0.009808836618686489,
    "hidden_m": 0.3331956045144076,
    "hidden_last_m": 0.8017627233753916,
@@ -95,7 +133,7 @@
    "radius_last_m": 0.1889300966195871,
    "return_m": 0.002972479220959637,
    "lessons": 0,
-   "think_ms": 16.1
+   "think_ms": 9.2
   }
  ]
 }

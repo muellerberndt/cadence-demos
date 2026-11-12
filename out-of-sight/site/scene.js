@@ -366,10 +366,22 @@ export class SceneView {
     c.fillStyle = core; c.beginPath(); c.arc(bx, by, r, 0, Math.PI * 2); c.fill();
     c.restore();
     if (s.showHidden && s.record && !s.record.in_view[0]) {
-      // while the hand is hidden: a thin line from the belief to where the hand really is
-      const [tx, ty] = this.toScreen(s.record.truth[0]);
-      c.strokeStyle = 'rgba(255,255,255,0.4)'; c.setLineDash([2, 4]); c.lineWidth = 1;
+      // while the hand is hidden: a thin line from the belief to where the hand really is, and,
+      // where the two have parted, how far apart they are
+      const truth = s.record.truth[0], [tx, ty] = this.toScreen(truth);
+      const apart = Math.hypot(s.belief.place[0] - truth[0], s.belief.place[1] - truth[1]), span = Math.hypot(tx - bx, ty - by);
+      c.strokeStyle = 'rgba(255,255,255,0.55)'; c.setLineDash([3, 4]); c.lineWidth = 1.1;
       c.beginPath(); c.moveTo(bx, by); c.lineTo(tx, ty); c.stroke(); c.setLineDash([]);
+      if (apart >= 0.1 && span > 30) {
+        // beside the line's middle, clear of the glow and of the hand
+        const text = `${Math.round(apart * 100)} cm`, side = tx - bx >= 0 ? 1 : -1, off = (14 + 14 * Math.abs((ty - by) / span)) * side;
+        const mx = (bx + tx) / 2 - ((ty - by) / span) * off, my = (by + ty) / 2 + ((tx - bx) / span) * off;
+        c.font = '500 10.5px "JetBrains Mono", ui-monospace, monospace'; c.textAlign = 'center'; c.textBaseline = 'middle';
+        const w = c.measureText(text).width + 10;
+        c.fillStyle = 'rgba(6,8,14,0.82)'; c.beginPath(); c.roundRect(mx - w / 2, my - 8, w, 16, 5); c.fill();
+        c.fillStyle = 'rgba(255,255,255,0.86)'; c.fillText(text, mx, my + 0.5);
+        c.textAlign = 'left'; c.textBaseline = 'alphabetic';
+      }
     }
   }
 
