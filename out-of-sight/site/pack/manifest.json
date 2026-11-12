@@ -1,0 +1,27 @@
+{
+ "schema": "cadence-out-of-sight-pack/1",
+ "packed": "2026-11-12",
+ "pyodide": "314.0.7",
+ "cadence": "0.98.0",
+ "wheel": "cadence_net-0.98.0-py3-none-any.whl",
+ "wheel_sha256": "7eb6faec5e4fe785a8fc4a564107e197aefb5bacecdd76197d4c1391bcd10246",
+ "wheel_source": "PyPI",
+ "sources": [
+  "__init__.py",
+  "host.py"
+ ],
+ "sources_sha256": {
+  "__init__.py": "94e4f42d9d612c5aa91adc5eadb7a3fce757d1a521c351132a2df4787b560544",
+  "host.py": "ad0c749ec32b5fc7631fdc2cef7295c7fe9995ab84b9932d672422b2173527df"
+ },
+ "config": {},
+ "brain": null,
+ "brain_kind": "baseline, composed on the page",
+ "reaches": {
+  "file": "reaches.json",
+  "sha256": "d0e95f09d0a63896e8a97858ea15cc5636c6c313571bc9c4f43032ce9cc0e1dd",
+  "scenes": 5,
+  "world_sha256": "9618c01d42c8b8a25f7fcfaed512cec9d9c91c5101cb362e5e02d96eccfba01f",
+  "source": "benchmarks/tracking/world.py of cadence#320, development draft of 2026-11-12"
+ }
+}
