@@ -221,7 +221,8 @@ python tools/promise_runs.py               # the two scene files, three runs eac
 
 **The page check** (`tools/check_page.py`), run through `tools/check_logged.py`, which records the
 map's apple moment by moment. On the wheel of 824c9ae9 three runs read 47 of 47
-(`evidence/page_check-20261113-0033-75f4dddb.json`, `-0036-`, `-0039-`). Its bounds were set
+(`evidence/page_check-20261113-0033-75f4dddb.json`, `-0036-`, `-0039-`), and a fourth after the
+labels on the table were drawn over the whole scene, 47 of 47 (`-0045-`). Its bounds were set
 before the page ran the map, from the gates of
 [cadence#320](https://github.com/muellerberndt/cadence/issues/320), from last seen on the same
 rows and from the owner's word on the arm's own hand; the model's native readings on the two
