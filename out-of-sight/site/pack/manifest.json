@@ -1,18 +1,18 @@
 {
  "schema": "cadence-out-of-sight-pack/2",
- "packed": "2026-11-12",
+ "packed": "2026-11-13",
  "pyodide": "314.0.7",
  "cadence": "0.98.0",
  "wheel": "cadence_net-0.98.0-py3-none-any.whl",
- "wheel_sha256": "70589f3fee4d2e6971a6459962cbca7145981bcea2673679b747e1868dbfb366",
- "wheel_source": "a development wheel built here from the library's branch lane-099-space at fac45529 (git archive, pip wheel); it holds cadence.space.map, which PyPI's 0.98.0 does not",
+ "wheel_sha256": "3c934ba972e17a6813459cd4825cf69cadf2aae99a5e36143e87fe7d285c2fbd",
+ "wheel_source": "a development wheel built from the library's branch lane-099-space at a155d0dc; it holds cadence.space.map, which PyPI's 0.98.0 does not",
  "sources": [
   "__init__.py",
   "map_host.py"
  ],
  "sources_sha256": {
   "__init__.py": "94e4f42d9d612c5aa91adc5eadb7a3fce757d1a521c351132a2df4787b560544",
-  "map_host.py": "94674769b123a9a47ba4c98946abe045cee1dc92c29e9a9462410822e8714b86"
+  "map_host.py": "e0de2e8a8a8bfb08b0017b5f17ea34bb2063430d664ce1f56dd8e2a1bf5393b3"
  },
  "map": {
   "file": "page-map.npz",
@@ -20,7 +20,7 @@
   "bytes": 1577,
   "label": "The what-where map",
   "note": "The map of things: a sheet of 32 by 26 cells of about 6 cm, 16 code units a cell, whose settled activity is carried from moment to moment. Its graph has no taught synapse.",
-  "source": "a development map file made by the library's branch lane-099-space (the founder's settings, 32 by 26 cells, 16 kinds, a margin of 0.02 m for the camera's error, an empty carried state)",
+  "source": "a development map file made by the library's branch lane-099-space at a155d0dc (the founder's settings, 32 by 26 cells, 16 kinds, a margin of 0.02 m for the camera's error, an empty carried state)",
   "kinds": {
    "hand": 0,
    "own": 1,

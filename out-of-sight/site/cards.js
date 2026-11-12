@@ -9,7 +9,7 @@
 
 import { metres, phrase, LABEL } from './where.js';
 
-export const GUIDE = 'lane-099-space bff49e22';
+export const GUIDE = 'lane-099-space a155d0dc'; // the guide's text is the same from bff49e22 to a155d0dc
 
 const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
 const num = (v, d = 2) => (Object.is(Number(v.toFixed(d)), -0) ? 0 : v).toFixed(d);

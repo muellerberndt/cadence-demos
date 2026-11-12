@@ -1,0 +1,129 @@
+{
+ "schema": "cadence-out-of-sight-promise-runs/4",
+ "map": {
+  "file": "page-map.npz",
+  "sha256": "6fc3a93cad2f54008be4992b60380f3d47a674dd4f01ef100916101bf26b025f",
+  "bytes": 1577,
+  "label": "The what-where map",
+  "note": "The map of things: a sheet of 32 by 26 cells of about 6 cm, 16 code units a cell, whose settled activity is carried from moment to moment. Its graph has no taught synapse.",
+  "source": "a development map file made by the library's branch lane-099-space at a155d0dc (the founder's settings, 32 by 26 cells, 16 kinds, a margin of 0.02 m for the camera's error, an empty carried state)",
+  "kinds": {
+   "hand": 0,
+   "own": 1,
+   "apple": 2,
+   "bread": 3
+  }
+ },
+ "wheel_sha256": "3c934ba972e17a6813459cd4825cf69cadf2aae99a5e36143e87fe7d285c2fbd",
+ "wheel_source": "a development wheel built from the library's branch lane-099-space at a155d0dc; it holds cadence.space.map, which PyPI's 0.98.0 does not",
+ "runs": [
+  {
+   "scene": "default",
+   "file": "promise-scene.json",
+   "moments": 323,
+   "hidden_moments": 91,
+   "in_view_m": 0.012280454258676248,
+   "hidden_m": 0.10654287815152173,
+   "last_seen_hidden_m": 0.15544640197644222,
+   "kalman_hidden_m": 0.2781558861607071,
+   "hidden_last_m": 0.09412854040562957,
+   "cells_hold": 1.0,
+   "cells_mean": 39.0,
+   "states_hidden": {
+    "near": 91
+   },
+   "return_m": 0.009552051803362355,
+   "think_ms": 14.2
+  },
+  {
+   "scene": "default",
+   "file": "promise-scene.json",
+   "moments": 323,
+   "hidden_moments": 91,
+   "in_view_m": 0.012280454258676248,
+   "hidden_m": 0.10654287815152173,
+   "last_seen_hidden_m": 0.15544640197644222,
+   "kalman_hidden_m": 0.2781558861607071,
+   "hidden_last_m": 0.09412854040562957,
+   "cells_hold": 1.0,
+   "cells_mean": 39.0,
+   "states_hidden": {
+    "near": 91
+   },
+   "return_m": 0.009552051803362355,
+   "think_ms": 14.1
+  },
+  {
+   "scene": "default",
+   "file": "promise-scene.json",
+   "moments": 323,
+   "hidden_moments": 91,
+   "in_view_m": 0.012280454258676248,
+   "hidden_m": 0.10654287815152173,
+   "last_seen_hidden_m": 0.15544640197644222,
+   "kalman_hidden_m": 0.2781558861607071,
+   "hidden_last_m": 0.09412854040562957,
+   "cells_hold": 1.0,
+   "cells_mean": 39.0,
+   "states_hidden": {
+    "near": 91
+   },
+   "return_m": 0.009552051803362355,
+   "think_ms": 13
+  },
+  {
+   "scene": "merged",
+   "file": "promise-merged-shadows-scene.json",
+   "moments": 323,
+   "hidden_moments": 91,
+   "in_view_m": 0.012280454258676248,
+   "hidden_m": 0.10654287815152173,
+   "last_seen_hidden_m": 0.15544640197644222,
+   "kalman_hidden_m": 0.2781558861607071,
+   "hidden_last_m": 0.09412854040562957,
+   "cells_hold": 1.0,
+   "cells_mean": 39.0,
+   "states_hidden": {
+    "near": 91
+   },
+   "return_m": 0.009552051803362355,
+   "think_ms": 10.8
+  },
+  {
+   "scene": "merged",
+   "file": "promise-merged-shadows-scene.json",
+   "moments": 323,
+   "hidden_moments": 91,
+   "in_view_m": 0.012280454258676248,
+   "hidden_m": 0.10654287815152173,
+   "last_seen_hidden_m": 0.15544640197644222,
+   "kalman_hidden_m": 0.2781558861607071,
+   "hidden_last_m": 0.09412854040562957,
+   "cells_hold": 1.0,
+   "cells_mean": 39.0,
+   "states_hidden": {
+    "near": 91
+   },
+   "return_m": 0.009552051803362355,
+   "think_ms": 9.4
+  },
+  {
+   "scene": "merged",
+   "file": "promise-merged-shadows-scene.json",
+   "moments": 323,
+   "hidden_moments": 91,
+   "in_view_m": 0.012280454258676248,
+   "hidden_m": 0.10654287815152173,
+   "last_seen_hidden_m": 0.15544640197644222,
+   "kalman_hidden_m": 0.2781558861607071,
+   "hidden_last_m": 0.09412854040562957,
+   "cells_hold": 1.0,
+   "cells_mean": 39.0,
+   "states_hidden": {
+    "near": 91
+   },
+   "return_m": 0.009552051803362355,
+   "think_ms": 8
+  }
+ ]
+}

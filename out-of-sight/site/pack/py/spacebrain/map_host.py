@@ -89,17 +89,6 @@ class MapHost:
         self.pre = np.asarray(self.map.connectome.pre, dtype=np.int64)
         self.post = np.asarray(self.map.connectome.post, dtype=np.int64)
         self.populations = {name: np.asarray(ids, dtype=np.int64) for name, ids in self.map.connectome.populations.items()}
-        # Every neuron's settled potential, where the map's settle hands it back: the regions the
-        # settle's record by sweep leaves out (clock, doubt, lost, held, reference) are drawn from it.
-        self._v: np.ndarray | None = None
-        settle = getattr(self.map, "_settle", None)
-        if callable(settle):
-            def watched(*args: Any, **kwargs: Any) -> Any:
-                v = settle(*args, **kwargs)
-                if np.ndim(v) == 1 and len(v) == self.n:
-                    self._v = np.asarray(v, dtype=np.float64).copy()
-                return v
-            self.map._settle = watched
 
     def _sight(self, flags: np.ndarray | None) -> Any:
         """What the camera sees, as the map is given it: a function of places. At the map's cells'
@@ -178,21 +167,32 @@ class MapHost:
 
     def _reset(self) -> None:
         self.map.reset()
-        self._v = None
         self._traced = False
 
     # -- what the page is given
 
     def _activity(self) -> np.ndarray:
-        """Every neuron's activity above rest after the latest settle; the map's own record by
-        sweep where it holds a region, the settled potentials for the rest."""
+        """Every neuron's activity above rest after the latest settle. A settle kept by sweep
+        gives every region as it settled; otherwise the map's carried state gives ``map``,
+        ``clock``, ``doubt`` and ``lost`` (their settled potentials), and ``observation`` gives
+        ``where`` and ``what``; ``held`` and ``reference``, driven by a question alone, rest."""
         out = np.zeros(self.n)
-        if self._v is not None:
-            out = np.maximum(np.tanh(self._v / 2.0), 0.0)
         trace = (getattr(self.map, "trajectory", None) or {}) if self._traced else {}
-        for name, rows in trace.items():
-            if name in self.populations and isinstance(rows, np.ndarray):
-                out[self.populations[name]] = rows[-1].reshape(-1)
+        if trace:
+            for name, rows in trace.items():
+                if name in self.populations and isinstance(rows, np.ndarray):
+                    out[self.populations[name]] = rows[-1].reshape(-1)
+            return out
+        state = self.map.arrays()
+        for name, key in (("map", "potential"), ("clock", "clock"), ("doubt", "doubt"), ("lost", "lost")):
+            if name in self.populations and key in state:
+                out[self.populations[name]] = np.maximum(np.tanh(np.asarray(state[key], dtype=np.float64).reshape(-1) / 2.0), 0.0)
+        reading = getattr(self.map, "observation", None)
+        if callable(reading) and "where" in self.populations and "what" in self.populations:
+            seen = np.asarray(reading(), dtype=np.float64).reshape(-1)
+            where, what = self.populations["where"], self.populations["what"]
+            if len(seen) == len(where) + len(what):
+                out[where], out[what] = seen[: len(where)], seen[len(where):]
         return out
 
     def _wave(self, final: np.ndarray) -> dict[str, Any] | None:
