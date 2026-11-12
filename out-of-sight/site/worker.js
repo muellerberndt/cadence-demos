@@ -3,16 +3,27 @@
 // runs. Messages: {rid, command, payload} in; {rid, result, arrays} or {rid, error} out; {status}
 // while loading. `arrays` holds the typed arrays a reply names in `buffers`.
 //
-// What the camera sees. The map is told at every moment which of its cells the camera sees: a
-// thing it held in a cell the camera sees, with no report from there, is not where it was. The
-// page sends the scene as it stands (the camera's position, heading and field, the pillar, the
-// arm's joints, whether the camera is on), and `visible` of world.js, the scene's own rule for
-// what the camera reports, is asked about each cell's middle.
+// What the camera sees. The map is told at every moment what the camera sees: a thing whose held
+// place the camera sees, with no report from there, is not where it was. The page sends the scene
+// as it stands (the camera's position, heading and field, the pillar, the arm's joints, whether
+// the camera is on), and `visible` of world.js, the scene's own rule for what the camera reports,
+// is asked about each cell's middle and about any place the map asks of (`look`).
 import { visible, forward } from './world.js';
 
 let python = null;
 let manifest = null;
 let centers = null; // the map's cells' middles: [[x, y], ...]
+let view = null;    // the scene as it stands at the moment being answered
+
+// Would the camera see a thing at each of these places, as the scene stands? `flat` holds x, y,
+// x, y, ...; one flag a place comes back. The map asks it about the places where it holds things.
+function look(flat) {
+  const out = new Array(flat.length >> 1).fill(false);
+  if (!view || !view.on) return out;
+  const chain = forward(view.geometry, view.joints);
+  for (let k = 0; k < out.length; k++) out[k] = visible(view.geometry, [flat[2 * k], flat[2 * k + 1]], view.joints, false, chain);
+  return out;
+}
 
 /** One flag a cell of the map, as a string of 0s and 1s: whether the camera sees the cell's
  *  middle, as the scene stands. */
@@ -80,7 +91,13 @@ def _space_handle(text):
     return json.dumps(_space_host.handle(json.loads(text)), allow_nan=False)
 def _space_buffer(name):
     return _space_host.buffers[name]
+def _space_looks(look):
+    # the page's rule for what the camera sees, as a function of places for the host
+    from pyodide.ffi import to_js
+    import numpy as np
+    _space_host.looks = lambda points: np.array(look(to_js(np.asarray(points, dtype=float).ravel().tolist())).to_py(), dtype=bool)
 `);
+  { const give = python.globals.get('_space_looks'); try { give(look); } finally { give.destroy(); } }
   const out = call({ command: 'describe' });
   const flat = out.arrays.centers;
   centers = Array.from({ length: flat.length >> 1 }, (_, k) => [flat[2 * k], flat[2 * k + 1]]);
@@ -110,8 +127,9 @@ function call(message) {
 
 // One moment: the senses' reports, and the cells the camera sees as the scene stands.
 function step(payload) {
-  const { view, ...moment } = payload || {};
-  return call({ command: 'step', ...moment, lit: view ? litCells(view) : null });
+  const { view: scene, ...moment } = payload || {};
+  view = scene || null;
+  return call({ command: 'step', ...moment, lit: scene ? litCells(scene) : null });
 }
 
 self.onmessage = ({ data }) => {

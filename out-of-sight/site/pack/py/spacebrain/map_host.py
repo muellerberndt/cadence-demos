@@ -65,6 +65,7 @@ class MapHost:
         self.label = str(spec.get("label") or "The what-where map")
         self.note = str(spec.get("note") or "")
         self.moments = 0
+        self.looks: Any = None  # the page's rule for what the camera sees: places -> flags (the worker gives it)
         # learned physics: the pack's settings, or the page's request (``physics``), where the
         # wheel has it; a map file that holds taught kernels brings them
         self.physics_settings = self.config.get("physics", spec.get("physics"))
@@ -100,11 +101,34 @@ class MapHost:
                 return v
             self.map._settle = watched
 
+    def _sight(self, flags: np.ndarray | None) -> Any:
+        """What the camera sees, as the map is given it: a function of places. At the map's cells'
+        middles it gives the page's flags for this moment; at any other place it asks the page
+        (``looks``, the page's own rule for what the camera sees, as the scene stands). Without
+        the page's function, a place is judged by the flag of its cell."""
+        if flags is None:
+            return None
+        centers = np.asarray(self.map.centers)
+        nx, ny = (int(v) for v in self.map.cells)
+        low, size = np.asarray(self.map.plane)[[0, 2]], np.asarray(self.map.size)
+
+        def lit(points: Any) -> np.ndarray:
+            points = np.asarray(points, dtype=np.float64).reshape(-1, 2)
+            if points.shape == centers.shape and np.array_equal(points, centers):
+                return flags
+            if self.looks is not None:
+                return np.asarray(self.looks(points), dtype=bool).reshape(len(points))
+            i = np.clip(np.floor((points - low) / size).astype(np.intp), 0, [nx - 1, ny - 1])
+            return flags[i[:, 0] * ny + i[:, 1]]
+
+        return lit
+
     def _moment(self, seen: list, heard: list, felt: list, lit: Any, trace: bool, learn: bool) -> float | None:
         """One moment. With learned physics and ``learn`` the moment gathers its lessons (a thing
         seen at this moment and at the one before), and every ``TEACH_EVERY`` moments the
         lessons gathered are taught as one batch, whose error is returned."""
         self.map.trace = self._traced = bool(trace)
+        lit = self._sight(lit)
         if self.physics is None:
             self.map.moment(seen=seen, heard=heard, felt=felt, lit=lit)
             return None
@@ -166,16 +190,16 @@ class MapHost:
         if self._v is not None:
             out = np.maximum(np.tanh(self._v / 2.0), 0.0)
         trace = (getattr(self.map, "trajectory", None) or {}) if self._traced else {}
-        for name in ("map", "where", "what"):
-            if name in trace and name in self.populations:
-                out[self.populations[name]] = np.asarray(trace[name])[-1].reshape(-1)
+        for name, rows in trace.items():
+            if name in self.populations and isinstance(rows, np.ndarray):
+                out[self.populations[name]] = rows[-1].reshape(-1)
         return out
 
     def _wave(self, final: np.ndarray) -> dict[str, Any] | None:
-        """The latest settle sweep by sweep, from the map's own record: the regions it keeps by
-        sweep (``map``, ``where``, ``what``) at each sweep, the rest as they settled."""
+        """The latest settle sweep by sweep, from the map's own record: every region it keeps by
+        sweep at each sweep, any other as it settled."""
         trace = (getattr(self.map, "trajectory", None) or {}) if self._traced else {}
-        names = [name for name in ("map", "where", "what") if name in trace and name in self.populations]
+        names = [name for name, rows in trace.items() if name in self.populations and isinstance(rows, np.ndarray)]
         if not names:
             return None
         rows = int(np.asarray(trace[names[0]]).shape[0])

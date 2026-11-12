@@ -49,6 +49,42 @@ def lit_cells(scene: Path, centers: np.ndarray) -> np.ndarray:
     return np.array([[c == "1" for c in line] for line in text.split()], dtype=bool)
 
 
+def visible(geometry: dict, points: np.ndarray, joints: list[float]) -> np.ndarray:
+    """``visible`` of site/world.js for many places at once (not the arm's own end): whether the
+    camera sees each place. Checked against the page's own rule at every cell of every step."""
+    pts = np.asarray(points, dtype=np.float64).reshape(-1, 2)
+    cam = geometry["camera"]
+    eye = np.asarray(cam["position"], dtype=np.float64)
+    rel = pts - eye
+    far = np.hypot(rel[:, 0], rel[:, 1])
+    bearing = np.abs((np.arctan2(rel[:, 1], rel[:, 0]) - cam["heading"] + np.pi) % (2 * np.pi) - np.pi)
+    x0, x1, y0, y1 = geometry["plane"]
+    ok = (far <= cam["range"]) & (bearing <= cam["fov"] / 2) & (pts[:, 0] >= x0) & (pts[:, 0] <= x1) & (pts[:, 1] >= y0) & (pts[:, 1] <= y1)
+
+    def to_segment(p: np.ndarray, a: np.ndarray, b: np.ndarray) -> np.ndarray:  # p: (n, 2); a, b: (n, 2) or (2,)
+        ab, ap = b - a, p - a
+        t = np.clip((ap * ab).sum(-1) / np.maximum((ab * ab).sum(-1), 1e-12), 0.0, 1.0)
+        return np.hypot(*(p - (a + t[..., None] * ab)).T)
+
+    for o in geometry["occluders"]:
+        c = np.broadcast_to(np.asarray(o["center"], dtype=np.float64), pts.shape)
+        ok &= to_segment(c, np.broadcast_to(eye, pts.shape), pts) > o["radius"]
+    arm, angle, chain = geometry["arm"], 0.0, [np.asarray(geometry["arm"]["base"], dtype=np.float64)]
+    for length, q in zip(arm["lengths"], joints, strict=False):
+        angle += q
+        chain.append(chain[-1] + length * np.array([np.cos(angle), np.sin(angle)]))
+    e = np.broadcast_to(eye, pts.shape)
+    cross = lambda u, v: u[..., 0] * v[..., 1] - u[..., 1] * v[..., 0]  # noqa: E731
+    for a, b in zip(chain[:-1], chain[1:], strict=True):
+        A, B = np.broadcast_to(a, pts.shape), np.broadcast_to(b, pts.shape)
+        ends = np.minimum.reduce([to_segment(e, A, B), to_segment(pts, A, B), to_segment(A, e, pts), to_segment(B, e, pts)])
+        s1, s2 = np.sign(cross(pts - e, A - e)), np.sign(cross(pts - e, B - e))
+        s3, s4 = np.sign(cross(B - A, e - A)), np.sign(cross(B - A, pts - A))
+        apart = np.where((s1 != s2) & (s3 != s4), 0.0, ends)
+        ok &= apart > arm["width"] / 2
+    return ok
+
+
 def comparable(entries: list[dict]) -> list[tuple]:
     return sorted((int(e["kind"]), e["state"], e["since"], None if e["place"] is None else tuple(np.round(np.asarray(e["place"], dtype=float), 5)),
                    tuple(int(c) for c in e["cells"])) for e in entries)
@@ -64,9 +100,12 @@ def test_the_host_gives_the_inventory_the_map_gives_driven_directly(scene):
     assert lit.shape == (len(data["truth"]), direct.count)
     errors, last_seen, inside, last = [], [], [], None
     for t, (report, seen) in enumerate(zip(data["report"], data["in_view"], strict=True)):
+        sees = lambda points, t=t: visible(data["geometry"], points, data["joints"][t])  # noqa: E731
+        assert np.array_equal(sees(direct.centers), lit[t]), f"the port of the page's rule differs at moment {t}"
+        host.looks = sees  # as the worker gives the page's rule for any place
         reports = [["hand", *report]] if seen else []
-        reply = host.handle({"command": "step", "seen": reports, "lit": lit[t].tolist(), "wave": t % 3 == 0})
-        direct.moment(seen=[(HAND, np.asarray(report))] if seen else [], lit=lit[t])
+        reply = host.handle({"command": "step", "seen": reports, "lit": "".join("1" if v else "0" for v in lit[t]), "wave": t % 3 == 0})
+        direct.moment(seen=[(HAND, np.asarray(report))] if seen else [], lit=sees)
         want = [{**e, "cells": np.asarray(e["cells"]).tolist()} for e in direct.things()]
         assert comparable(reply["things"]) == comparable(want), f"moment {t}"
         json.dumps(reply, allow_nan=False)  # the reply crosses to the page as JSON
