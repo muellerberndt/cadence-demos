@@ -367,7 +367,7 @@ export class SceneView {
       }
       c.restore();
     }
-    if (hidden) this.tag(c, e.state === 'felt' ? 'felt: its joint readings' : e.state === 'near' ? `near where it vanished · ${this.ago(e.since, s.dt)}` : `last seen · ${this.ago(e.since, s.dt)}`, bx, by - r - 8, rgba([170, 255, 244], 0.95));
+    if (hidden) this.tag(c, e.state === 'felt' ? 'felt: its joint readings' : e.state === 'near' ? `near where it vanished · ${this.ago(e.since, s.dt)}` : e.state === 'moving' ? 'moving unseen' : `last seen · ${this.ago(e.since, s.dt)}`, bx, by - r - 8, rgba([170, 255, 244], 0.95));
   }
 
   // Learned physics: the velocity a thing's moving mass carries, as a faint arrow from its place

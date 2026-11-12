@@ -4,12 +4,12 @@
 // moment, written from the map's live state. The same texts are reachable in order as the
 // stages of "follow the position". The texts are the library guide's own, word for word
 // (docs/space.md of the commit the pack's wheel is built from, GUIDE below): the regions' table
-// for the parts, the eight steps of "How a position travels" for the stages, and the rows of
+// for the parts, the nine steps of "How a position travels" for the stages, and the rows of
 // "What the brain does and what the program does" beside the steps they belong to.
 
 import { metres, phrase, LABEL } from './where.js';
 
-export const GUIDE = 'lane-099-space a155d0dc'; // the guide's text is the same from bff49e22 to a155d0dc
+export const GUIDE = 'lane-099-space 824c9ae9';
 
 const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
 const num = (v, d = 2) => (Object.is(Number(v.toFixed(d)), -0) ? 0 : v).toFixed(d);
@@ -28,6 +28,7 @@ function stateWords(e, dt) {
     case 'heard': return 'placed at this moment by a sound';
     case 'held': return `held where last seen, ${secs(e.since, dt)} ago`;
     case 'near': return `near where it vanished ${secs(e.since, dt)} ago, out of sight`;
+    case 'moving': return 'moving unseen, where learned physics carries it';
     default: return 'known, not known where';
   }
 }
@@ -107,7 +108,7 @@ const PARTS = {
   lost: { title: 'A kind with no place', role: 'lost', holds: 'One a code unit: a one where a thing of the kind is known with no place', live: lostLine },
   // learned physics (cadence.space.physics, the module's docstring word for word)
   physics: { title: 'How things move, learned', role: 'motion',
-    holds: 'The mass on each moving velocity is the next moment’s drive on `went`, and one kernel of three by three cells for each velocity, tied across every cell and every kind, drives `moving`. The kernels are born as “stay”: a brain that has watched nothing answers as the map does. Whenever a thing is seen at two moments in a row, the mass it carried the moment before (its place and velocities) is the drive and the same mass moved by the motion seen is the target. Each velocity’s kernel learns where the mass of things seen moving at that velocity is found a moment later: going on, stopping, or turning',
+    holds: 'One kernel of three by three cells for each velocity, tied across every cell and every kind, moves the mass each moment. The kernels are born to stay: a brain that has watched nothing answers as the map does, moment for moment. Whenever a thing is seen at two moments in a row, the mass it carried the moment before is the drive, and the target is that mass moved, on each velocity, by that velocity and by what the motion seen differs from the thing’s own velocity. Where things keep their motion the kernels learn to move each velocity’s mass by that velocity; where things stop or turn, by less or aside',
     live: physicsLine },
 };
 
@@ -162,9 +163,12 @@ const STAGES = [
     body: 'A report within `step` of a piece of its kind’s activity is that thing. Its old cells are cleared and the report’s cells are written, so in view a thing’s place is the latest report.',
     table: ['which'], live: (ctx) => `${reportLine(ctx)} ${handLine(ctx)}` },
   { id: 'empty', parts: ['map', 'doubt'], title: 'A place seen empty',
-    body: 'A cell the camera sees loses what the map carried into it. A thing whose place is seen empty, with no report of its kind near, is not where it was seen. The map drives it onto the cells out of sight within reach of that place and marks those cells as doubt. With no such cell the thing is kept by its kind with no place.',
-    also: (ctx) => `On this page the map is set as the guide’s founder: “It is driven onto the cells out of sight around where it was held, as a peak <code>reach</code> metres wide; cells farther than two reaches take none. With no such cell it is kept by its kind with no place”, with <code>reach</code> ${ctx.describe.settings?.reach ?? '–'} m. This uses sight alone and no model of movement.`,
+    body: 'The camera sees a thing’s held place (the mean of its activity) and no report of its kind claims it: the thing is not where it was held. The map drives it, once, onto the cells out of sight within reach of that place and marks those cells as doubt. With no such cell the thing is kept by its kind with no place. A place reported the moment before is a report, as far off as the camera’s error: it is seen empty where the camera still sees all it saw around it (within `margin`) when it reported it. A camera turning off a thing leaves it held; a hand that walks into a shadow, which a still camera sees gone, is placed out of sight near there. Any other held place is seen empty only where the camera sees all of it within `margin`, so the camera’s error never decides it.',
+    also: (ctx) => `On this page the map is set as the guide’s founder: “It is driven onto the cells out of sight around where it was held, as a peak <code>reach</code> metres wide; cells farther than two reaches take none. With no such cell it is kept by its kind with no place”, with <code>reach</code> ${ctx.describe.settings?.reach ?? '–'} m and <code>margin</code> ${ctx.describe.settings?.margin ?? '–'} m.`,
     table: ['empty'], live: (ctx) => `${handLine(ctx)} ${doubtLine(ctx)}` },
+  { id: 'only', parts: ['map', 'doubt'], title: 'Sight only takes away',
+    body: 'A thing in doubt is never moved again by sight: the cells of its patch that the camera sees are taken away, and with none left it is kept by its kind with no place.',
+    table: ['empty'], live: (ctx) => `${handLine(ctx)} ${lostLine(ctx)}` },
   { id: 'found', parts: ['map', 'doubt'], title: 'It is found',
     body: 'A report of the kind ends the doubt: the cells of doubt that hold the kind are cleared, and so is the nearest piece of the kind within `stride`, as the same thing moved unseen. With none of its kind that near, the report is a new thing.',
     table: ['which'], live: (ctx) => `${handLine(ctx)} ${lostLine(ctx)}` },
@@ -172,7 +176,7 @@ const STAGES = [
     body: '“Where is the apple”: the carried potentials drive `held`, the apple’s code opens the pools of its units, the sheet settles on those units alone and `where` holds the apple’s places. “What is there”: the settle keeps the cells around the place and `what` holds the code of the thing there.',
     table: ['questions'], live: askedLine },
   { id: 'inventory', parts: ['map', 'clock'], title: 'The inventory',
-    body: 'Every piece of activity is a thing: its kind, its place (the mean of the piece), its cells, the moments since a sense wrote it, and its state.',
+    body: 'Every piece of activity is a thing: its kind, its place (the mean of the piece), its cells, the moments since a sense wrote it, and its state. The pieces a thing in doubt or in motion left, sensed last at one moment, are one thing.',
     also: () => 'The map is wiring and carried activity. Recognising a thing from pixels is another module’s work: the caller says “a thing of this kind at this place”.',
     table: ['inventory', 'list', 'lessons'], live: inventoryLine },
 ];

@@ -17,7 +17,7 @@ a map that holds where things are while they are out of view.
 
 > **Status: under construction on the branch `space`.** The page runs the what-where map
 > (`cadence.space.map.Map`) from a development wheel built from the library's branch
-> lane-099-space at a155d0dc, and a development map file of the founder's settings
+> lane-099-space at 824c9ae9, and a development map file of the founder's settings
 > ([model card](MODEL_CARD.md)). Both sit on this branch only, named as development files in
 > `site/pack/manifest.json`; before any pull request they are replaced by the released wheel
 > and the map the library ships. The headline is provisional (one constant, `PROMISE` in
@@ -41,27 +41,27 @@ a map that holds where things are while they are out of view.
 
 The promise, replayed on the page from the two scene files of the tracking chamber (a hand goes
 behind the pillar at 0.5 m/s, rests there for 70 moments and comes back; 323 moments, 91 of them
-with the hand out of view), as `tools/check_page.py` reads it (`evidence/page_check-20261113-0008-3c934ba9.json`,
-2026-11-13 00:07, on the wheel of a155d0dc; the three runs on that wheel read the same):
+with the hand out of view), as `tools/check_page.py` reads it (`evidence/page_check-20261113-0039-75f4dddb.json`,
+2026-11-13 00:37, on the wheel of 824c9ae9; the three runs on that wheel read the same):
 
 | Scene file | In view | Hidden, mean | Last seen, hidden | Kalman filter, hidden | The hand's cells hold it | Its cells, mean | Back in view | A moment |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| the arm folded (`promise-scene.json`) | 1.2 cm | 10.7 cm | 15.5 cm | 27.8 cm | 1.00 | 39 | 1.0 cm | 14 ms |
-| the arm's shadow joined to the pillar's (`promise-merged-shadows-scene.json`) | 1.2 cm | 10.7 cm | 15.5 cm | 27.8 cm | 1.00 | 39 | 1.0 cm | 10 ms |
+| the arm folded (`promise-scene.json`) | 1.2 cm | 10.7 cm | 15.5 cm | 27.8 cm | 1.00 | 39 | 1.0 cm | 19 ms |
+| the arm's shadow joined to the pillar's (`promise-merged-shadows-scene.json`) | 1.2 cm | 10.7 cm | 15.5 cm | 27.8 cm | 1.00 | 39 | 1.0 cm | 14 ms |
 
 The map holds the hand near where it vanished on every hidden moment, and its cells hold the
 true hand on every hidden moment of both files. The page's readings are the model's own on the
 same files: `tests/test_map_host.py` drives the host natively on the pack's wheel and map file and
 reads the same inventory as `Map` driven directly. The map holds no randomness: replays read
-alike to the digit (`tools/promise_runs.py`; `evidence/promise_runs-20261113-0010-3c934ba9.json`, on the wheel of a155d0dc).
+alike to the digit (`tools/promise_runs.py`; `evidence/promise_runs-20261113-0041-75f4dddb.json`, on the wheel of 824c9ae9).
 
 The arm's own hand, out of the camera's view and moved by the arm, in the tutorial's last step:
-0.5 mm from the hand on average over 57 hidden moments, 1.4 mm at worst (bound 1.5 cm).
+0.6 mm from the hand on average over 64 hidden moments, 1.3 mm at worst (bound 1.5 cm).
 
 A frame took 16.7 ms at the median and 16.7 ms at the 95th percentile with the
 brain view and its bloom on (bounds 20 ms and 34 ms); a moment of the map, with its inventory and
-every neuron's activity for the brain view, took 12.4 ms of the scene's 33 ms at the median. These
-were read with the Mac's load average at 55 to 65 from other work: upper bounds.
+every neuron's activity for the brain view, took 16.9 ms of the scene's 33 ms at the median. These
+were read with the Mac's load average at 50 to 77 from other work: upper bounds.
 
 ![The hand behind the pillar: the map holds it on the cells out of sight near where it vanished (the teal light), the true hand an outline inside them; the map's card open beside the map in the brain](docs/hidden-hand.jpg)
 
@@ -107,12 +107,12 @@ its part, never over it, with a thin line to it; on a phone it is a sheet from t
 the brain moves up above it. It holds the part's name, the role it plays, what the region holds
 in the words of the library's guide, and what it is doing at this moment.
 
-**Follow the position** steps through the guide's eight steps of "How a position travels", word
+**Follow the position** steps through the guide's nine steps of "How a position travels", word
 for word, each with its parts ringed, the rows of the guide's table "What the brain does and what
 the program does" that belong to it, and its live numbers. The texts are in `site/cards.js`,
 taken from `docs/space.md` of the commit the wheel is built from.
 
-![Follow the position, the fifth step: a place seen empty, with the map and the cells of doubt ringed in the brain](docs/follow-the-position.jpg)
+![Follow the position, the fifth of the nine steps: a place seen empty, with the map and the cells of doubt ringed in the brain](docs/follow-the-position.jpg)
 
 | Region of the map's graph | Neurons | Drawn as | Plays the role of |
 | --- | --- | --- | --- |
@@ -192,12 +192,13 @@ the details.
 | `site/where.js` | plain words for where a thing is around the body, and the two answers' sentences |
 | `site/scene.js` | the scene, with what the map holds drawn on it, and the chart |
 | `site/brain.js` | the brain view (WebGL2, with a Canvas2D fallback) and its self-explaining parts |
-| `site/cards.js` | what every part says about itself, and the eight steps of a position's path, in the guide's words |
+| `site/cards.js` | what every part says about itself, and the nine steps of a position's path, in the guide's words |
 | `site/region.js` | a thing's cells as soft light and their edge |
 | `site/worker.js` | Pyodide, the Cadence wheel, the map file and the host, checked against `pack/manifest.json`; the cells the camera sees at each moment |
 | `site/pack/` | the wheel, the map file (`map/`), the host (`py/spacebrain/map_host.py`), `manifest.json` with SHA-256 |
 | `tools/build.py` | builds `site/pack/` from a wheel and a map file |
 | `tools/check_page.py` | the page, end to end, in headless Chromium; writes `evidence/page_check-<date>-<time>-<wheel>.json`, a file a run |
+| `tools/check_logged.py` | the page check with the map's apple logged moment by moment, and each change of its state |
 | `tools/promise_runs.py` | the two scene files replayed on the page, three times each; writes `evidence/promise_runs-<date>-<time>-<wheel>.json` |
 | `tools/export_promise.mjs` | the two scene files of the promise, as the stage they were recorded on gives them |
 | `tools/record_scenes.py`, `tools/record_clip.py` | the parity fixtures from the Python world; a clip of the tutorial |
@@ -214,33 +215,28 @@ node tests/parity.mjs                      # the page's world and controls again
 node tests/region.mjs                      # an area given as a set of cells
 python -m pytest tests/test_map_host.py    # the host natively, on the pack's wheel and map file
 python tools/check_page.py --shots shots   # the page, with the mouse a visitor uses
+python tools/check_logged.py --log apple.json --shots shots   # the same, the map's apple logged
 python tools/promise_runs.py               # the two scene files, three runs each
 ```
 
-**The page check** (`tools/check_page.py`). On the wheel of a155d0dc three runs read 45 of 47
-(`evidence/page_check-20261113-0003-3c934ba9.json`, `-0005-`, `-0008-`). Two later runs, with the
-apple's entries logged moment by moment, read 46 of 47
-(`evidence/page_check-20261113-0013-3c934ba9.json`) and 47 of 47 (`evidence/page_check-20261113-0019-3c934ba9.json`). Its
-bounds were set before the page ran the map, from the gates of
+**The page check** (`tools/check_page.py`), run through `tools/check_logged.py`, which records the
+map's apple moment by moment. On the wheel of 824c9ae9 three runs read 47 of 47
+(`evidence/page_check-20261113-0033-75f4dddb.json`, `-0036-`, `-0039-`). Its bounds were set
+before the page ran the map, from the gates of
 [cadence#320](https://github.com/muellerberndt/cadence/issues/320), from last seen on the same
 rows and from the owner's word on the arm's own hand; the model's native readings on the two
-scene files were known when they were set, the page's were not. The file states every bound and
-how it was set. The earlier models' checks left the page with their hosts.
+scene files were known when they were set, the page's were not. The file states every bound, how
+it was set and its two recorded changes, neither a bound: where "what is there" is asked (made
+before the page first ran the map), and the number of the guide's steps (eight before 824c9ae9,
+nine from it). The earlier models' checks left the page with their hosts.
 
-In the three runs these checks failed:
-
-- **3 turn: the apple, out of view behind the body, keeps its place on the map**
-- **a thing moved while the camera looks away keeps its old place on the map**
-
-After the tutorial's turn away from the apple, the map held the apple "near", on 36 to 38 cells,
-its place 7.3 cm to 9.3 cm from where it was last seen, and kept it so through the steps that follow. The
-same turn, replayed on the page outside the check three times, and both logged runs kept the
-apple held where it was last seen (in the second, whose log is kept, the camera's heading moved at
-most 0.12 rad between moments); natively, turning the field off the apple at a steady 0.25 rad/s to
-4.2 rad/s kept it held in 29 of 30 turns. The moment it went "near" in the three runs is not
-recorded. The first logged run failed "seen again, it is found within 3 cm, one thing on the map": the
-apple found was one thing, 3.4 cm from the true apple. On the wheel of fac45529 one run read 47
-of 47 and an earlier run 45 of 47 (`evidence/page_check-20261112-2350-70589f3f.json` and the
-history of this branch). The checks are not amended.
+In each of the three runs the logger shows the apple held where it was last seen through the
+tutorial's turn, the camera's heading moving at most 0.12 rad between moments; and the apple
+moved unseen held near its old place on 28 to 31 cells once the camera saw that place empty,
+shrinking to none as the field turned over them, read "not known where", and found again as one
+apple. On the earlier wheels the checks on the apple failed in some runs (the history of this
+branch and `evidence/`: 45 of 47 on 38820655; 47 and 45 on fac45529; 45, 45, 45, 46 and 47 on
+a155d0dc), each for a term of the map's sight the next wheel changed. No check was amended for
+it.
 
 Cadence is GPL-3.0.

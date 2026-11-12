@@ -4,8 +4,8 @@
  "pyodide": "314.0.7",
  "cadence": "0.98.0",
  "wheel": "cadence_net-0.98.0-py3-none-any.whl",
- "wheel_sha256": "3c934ba972e17a6813459cd4825cf69cadf2aae99a5e36143e87fe7d285c2fbd",
- "wheel_source": "a development wheel built from the library's branch lane-099-space at a155d0dc; it holds cadence.space.map, which PyPI's 0.98.0 does not",
+ "wheel_sha256": "75f4dddb4ee19e2a160208597c49aa6ac0d1ba2aecc3eb1387c03e674ed50329",
+ "wheel_source": "a development wheel built from the library's branch lane-099-space at 824c9ae9; it holds cadence.space.map, which PyPI's 0.98.0 does not",
  "sources": [
   "__init__.py",
   "map_host.py"
@@ -16,11 +16,11 @@
  },
  "map": {
   "file": "page-map.npz",
-  "sha256": "6fc3a93cad2f54008be4992b60380f3d47a674dd4f01ef100916101bf26b025f",
-  "bytes": 1577,
+  "sha256": "1920649c180a793a2e3fc13db20bb5272c271c7b9e3ec6569085e7703dcb16d2",
+  "bytes": 1937,
   "label": "The what-where map",
   "note": "The map of things: a sheet of 32 by 26 cells of about 6 cm, 16 code units a cell, whose settled activity is carried from moment to moment. Its graph has no taught synapse.",
-  "source": "a development map file made by the library's branch lane-099-space at a155d0dc (the founder's settings, 32 by 26 cells, 16 kinds, a margin of 0.02 m for the camera's error, an empty carried state)",
+  "source": "a development map file made by the library's branch lane-099-space at 824c9ae9 (the founder's settings, 32 by 26 cells, 16 kinds, a margin of 0.02 m, an empty carried state, a checksum of every array and a card)",
   "kinds": {
    "hand": 0,
    "own": 1,

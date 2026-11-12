@@ -43,6 +43,12 @@ ran the map, and changed no bound: "what is there" was first asked by a tap on t
 lands on the bread itself and asks where it is; it is asked at the apple's old place after the
 apple was moved unseen, where the map holds the apple and no apple stands.
 
+Amendment of 13 November 2026, made when the page took the guide of 824c9ae9 and before any page
+run on it: the check of "follow the position" read eight stages, the steps of "How a position
+travels" in the guide the cards took. The guide of 824c9ae9 has nine (it adds "Sight only takes
+away"), and the cards take its steps word for word, so the check reads the guide's number of
+steps (``GUIDE_STEPS``). Every other condition of that check stands as it was.
+
 The earlier models (a plain composed brain, and the place module of a program beside the brain)
 are not hosts of this page; their checks left with them. Their readings are in the
 repository's history (evidence/page_check.json at a8b35eb). Each run's evidence goes to a file of
@@ -83,6 +89,7 @@ KEEP_MOMENTS = 300   # a thing unseen keeps its place this long ...
 FOUND = 0.03         # a thing moved unseen, seen again: its place within 3 cm
 FRAME_MEDIAN = 20.0  # milliseconds a frame with the brain view on
 FRAME_P95 = 34.0
+GUIDE_STEPS = 9      # the steps of "How a position travels" in the guide the cards take (824c9ae9); eight before it
 
 
 class Quiet(http.server.SimpleHTTPRequestHandler):
@@ -444,7 +451,7 @@ def cards(page, c: Check) -> None:
     order = [s["kicker"].upper().endswith(f"{k + 1} OF {count}") for k, s in enumerate(stages)]
     every = " ".join(s["text"] for s in stages)
     c.add(f"follow the position: {count} stages in order, each with live numbers and its part ringed beside it",
-          count == 8 and all(order) and all(s["title"] and "AT THIS MOMENT" in s["live"].upper() and s["spots"] and s["clear"] for s in stages),
+          count == GUIDE_STEPS and all(order) and all(s["title"] and "AT THIS MOMENT" in s["live"].upper() and s["spots"] and s["clear"] for s in stages),
           stages=[{"title": s["title"], "ringed": s["spots"], "beside_its_parts": s["clear"]} for s in stages])
     c.add("the stages say what the program does and what the brain does, and that the map's graph has no taught synapse",
           "The program" in every and "The brain" in every and "no taught synapse" in every)

@@ -454,7 +454,7 @@ const TOUR = {
     { id: 'own', brain: 'map',
       enter: () => { setCase('own'); tour.target = unseenReach(); },
       text: '<b>The arm’s own hand.</b> Tap the ring on the floor: the arm reaches there, where the camera cannot see it. Its joint readings place the hand on the map at every moment.',
-      aside: 'The page works the hand’s place out from the joint readings; the map takes it as a report of the body’s own sense.',
+      aside: 'The place the arm’s joint readings name is the arm’s forward kinematics, which the program computes as a robot knows its own arm; the map takes it as a report of the body’s own sense.',
       guide: () => ({ ring: tour.target || stage.world.things[0], radius: 0.07, target: tour.target }),
       done: (t) => stage.own && state.unseen >= 30 && t.reached },
   ],
