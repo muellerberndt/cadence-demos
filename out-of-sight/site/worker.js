@@ -76,8 +76,7 @@ async function initialize(payload) {
   python.FS.mkdirTree('/home/pyodide/map');
   const path = `/home/pyodide/map/${manifest.map.file}`;
   python.FS.writeFile(path, await checked(new URL(`map/${manifest.map.file}`, base), manifest.map.sha256));
-  const config = { map: { path, kinds: manifest.map.kinds, label: manifest.map.label, note: manifest.map.note, physics: manifest.map.physics ?? null },
-    physics: payload?.physics ?? null };
+  const config = { map: { path, kinds: manifest.map.kinds, label: manifest.map.label, note: manifest.map.note } };
   status('Waking the map');
   python.globals.set('_space_config', JSON.stringify(config));
   python.runPython(`

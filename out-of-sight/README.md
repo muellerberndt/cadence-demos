@@ -30,8 +30,8 @@ a map that holds where things are while they are out of view.
 > with no sensory information the last known place stays in the state. A thing whose place the
 > camera sees empty is held on the cells out of sight near where it was last seen, and as "not
 > known where" where no unseen cell lies within reach. Nothing on the page moves an unseen thing
-> by a model of movement: learning how things move is the model's second stage, and the page
-> shows it when its file arrives.
+> by a model of movement. The second stage, learned physics on the map, follows in a later
+> release.
 >
 > **The earlier models are not on the page.** The plain composed brain and the place module of a
 > program beside the brain, which the page ran before the ruling, are removed with their hosts
@@ -142,24 +142,10 @@ own. Everything drawn is the map's state at that moment:
   (`held`, `reference`, `clock`, `doubt`, `lost`) as they settled, from every neuron's settled
   potential.
 
-## Learned physics, prepared
+## What follows
 
-The model's second stage (`Map(physics=)` in the library's branch from 73e2f635: velocity cells
-beside each cell, a kernel a velocity, taught whenever a thing is seen at two moments in a row)
-has its place on the page, for the model's trained file. Where the pack's map holds learned
-physics (or with `?physics=1`, a map whose kernels are born to stay), the page:
-
-- gives every moment's lessons to the map and has them taught in batches of 15 moments
-  (`TEACH_EVERY` in `map_host.py`);
-- draws, in the brain, what the kernels hold: one slot a velocity, each the 3 by 3 cells where its
-  mass is found a moment later, the velocities that carry the followed hand ringed, and under them
-  the lessons taught and each batch's error, in order;
-- draws, on the scene, the velocity a thing's moving mass carries, as a faint arrow, and the hand's
-  place and cells as the map holds them, wherever the kernels carry them.
-
-It is off on the page as it stands: the pack's map file has no physics, and no check reads it.
-Cost, under Pyodide on a Mac with a load average near 120: a moment with born kernels and lessons
-took 86 ms in the page, against 15 ms without physics.
+The map moves nothing it does not sense. The second stage, learned physics on the map, follows in a
+later release.
 
 ## Details
 
@@ -221,8 +207,9 @@ python tools/promise_runs.py               # the two scene files, three runs eac
 
 **The page check** (`tools/check_page.py`), run through `tools/check_logged.py`, which records the
 map's apple moment by moment. On the wheel of 824c9ae9 three runs read 47 of 47
-(`evidence/page_check-20261113-0033-75f4dddb.json`, `-0036-`, `-0039-`), and a fourth after the
-labels on the table were drawn over the whole scene, 47 of 47 (`-0045-`). Its bounds were set
+(`evidence/page_check-20261113-0033-75f4dddb.json`, `-0036-`, `-0039-`), a fourth after the
+labels on the table were drawn over the whole scene, 47 of 47 (`-0045-`), and a fifth after the
+learned-physics view left the page, 47 of 47 (`-0058-`). Its bounds were set
 before the page ran the map, from the gates of
 [cadence#320](https://github.com/muellerberndt/cadence/issues/320), from last seen on the same
 rows and from the owner's word on the arm's own hand; the model's native readings on the two

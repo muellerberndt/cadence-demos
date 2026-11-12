@@ -171,24 +171,3 @@ def test_the_wave_is_the_maps_own_record_by_sweep():
     sheet = host.populations["map"]
     assert frames[0][sheet].max() == 0.0 and frames[1][sheet].max() > 0.0  # the sheet settles in the first sweep
 
-
-def test_learned_physics_is_taught_in_batches_and_states_what_it_learned():
-    from cadence.space.map import Map as Wheel
-
-    if "physics" not in Wheel.__init__.__code__.co_varnames:
-        pytest.skip("the pack's wheel has no learned physics")
-    from spacebrain.map_host import TEACH_EVERY
-
-    host = MapHost({**CONFIG, "physics": True})
-    d = host.handle({"command": "describe"})
-    assert d["physics"]["lessons"] == 0 and len(d["physics"]["kernels"]["share"]) == len(d["physics"]["kernels"]["velocities"])
-    errors = []
-    for t in range(2 * TEACH_EVERY):
-        reply = host.handle({"command": "step", "seen": [["hand", -0.6 + 0.012 * t, 0.9]], "lit": None})
-        assert "physics" in reply
-        if reply["physics"]["error"] is not None:
-            errors.append(reply["physics"]["error"])
-            assert reply["physics"]["kernels"]["lessons"] == reply["physics"]["lessons"]
-    assert len(errors) == 2 and reply["physics"]["lessons"] > 0
-    (hand,) = reply["things"]
-    assert "moving" in hand

@@ -10,7 +10,7 @@ The page speaks to the host through ``handle``. Messages (JSON objects with a ``
   each plays in the page's drawing of a brain), its cells and its kinds. Fills the buffers
   ``pre``, ``post``, ``weight``, ``bias`` and ``centers``.
 - ``step``: one moment. ``{"seen": [[name, x, y], ...], "heard": [...], "felt": [...],
-  "lit": "0101..." | [flag a cell] | null, "wave": bool, "learn": bool}``: what the camera reports this moment (nothing for
+  "lit": "0101..." | [flag a cell] | null, "wave": bool}``: what the camera reports this moment (nothing for
   a thing it does not see), the place a sound names, the place the arm's joint readings name
   (the page works it out from the readings: a program's step, not the brain's), and which of
   the map's cells the camera sees (the page's own rule for what the camera sees, at each cell's
@@ -34,7 +34,6 @@ import cadence
 import numpy as np
 
 KINDS = {"hand": 0, "own": 1, "apple": 2, "bread": 3}
-TEACH_EVERY = 15  # with learned physics: the moments whose lessons are taught as one batch
 
 # Where each region sits in the page's drawing of a brain seen from the side (front to the
 # left), and the role it plays there: the centre (u, v) and the half size (w, h) of its box, in
@@ -66,11 +65,6 @@ class MapHost:
         self.note = str(spec.get("note") or "")
         self.moments = 0
         self.looks: Any = None  # the page's rule for what the camera sees: places -> flags (the worker gives it)
-        # learned physics: the pack's settings, or the page's request (``physics``), where the
-        # wheel has it; a map file that holds taught kernels brings them
-        self.physics_settings = self.config.get("physics", spec.get("physics"))
-        self.errors: list[float] = []  # each lesson batch's error, in order
-        self._gathered = 0  # moments since the last batch of lessons was taught
         self._build(spec.get("path"))
 
     # -- every call into the map is made in the methods of this block
@@ -81,8 +75,7 @@ class MapHost:
         began = time.perf_counter()
         # trace: a settle kept by sweep, for the brain view's wave; switched on for the moments
         # the page asks a wave of (a traced settle takes two sweeps in place of one)
-        more = {"physics": self.physics_settings} if self.physics_settings else {}
-        self.map = Map.load(path, trace=False, **more) if path else Map((-1.0, 1.0, -0.2, 1.4), trace=False, **more)
+        self.map = Map.load(path, trace=False) if path else Map((-1.0, 1.0, -0.2, 1.4), trace=False)
         self._traced = False
         self.load_ms = (time.perf_counter() - began) * 1000.0
         self.n = int(self.map.connectome.n)
@@ -112,45 +105,9 @@ class MapHost:
 
         return lit
 
-    def _moment(self, seen: list, heard: list, felt: list, lit: Any, trace: bool, learn: bool) -> float | None:
-        """One moment. With learned physics and ``learn`` the moment gathers its lessons (a thing
-        seen at this moment and at the one before), and every ``TEACH_EVERY`` moments the
-        lessons gathered are taught as one batch, whose error is returned."""
+    def _moment(self, seen: list, heard: list, felt: list, lit: Any, trace: bool) -> None:
         self.map.trace = self._traced = bool(trace)
-        lit = self._sight(lit)
-        if self.physics is None:
-            self.map.moment(seen=seen, heard=heard, felt=felt, lit=lit)
-            return None
-        self.map.moment(seen=seen, heard=heard, felt=felt, lit=lit, learn=learn)
-        self._gathered += 1
-        if not learn or self._gathered < TEACH_EVERY:
-            return None
-        self._gathered = 0
-        before = int(self.physics.lessons)
-        error = float(self.map.teach())
-        return error if int(self.physics.lessons) > before else None
-
-    @property
-    def physics(self) -> Any:
-        return getattr(self.map, "physics", None)
-
-    def _motion(self) -> tuple[np.ndarray, np.ndarray] | None:
-        """Each cell's velocity (metres a moment) and the share of its mass that moves."""
-        if self.physics is None:
-            return None
-        velocity, share = self.map.motion()
-        return np.asarray(velocity, dtype=np.float64).reshape(-1, 2), np.asarray(share, dtype=np.float64).ravel()
-
-    def _kernels(self) -> dict[str, Any] | None:
-        """What the physics learned: each velocity's kernel, the share of its mass that goes to
-        each of the nine cells around (``OFFSETS``' order), and the velocities themselves."""
-        physics = self.physics
-        if physics is None:
-            return None
-        from cadence.space.physics import OFFSETS, PASS
-        return {"velocities": np.asarray(physics.velocities, dtype=float).round(5).tolist(), "per": int(physics.per),
-                "offsets": [list(o) for o in OFFSETS], "share": (np.asarray(physics.kernel) / PASS).round(4).tolist(),
-                "lessons": int(physics.lessons)}
+        self.map.moment(seen=seen, heard=heard, felt=felt, lit=self._sight(lit))
 
     def _things(self) -> list[dict[str, Any]]:
         return list(self.map.things())
@@ -213,11 +170,10 @@ class MapHost:
         self.buffers["wave_move"] = move.astype(np.float32)
         return {"frames": rows, "sweeps": list(range(rows)), "of": rows - 1, "asked": trace.get("asked")}
 
-    def _entry(self, e: dict[str, Any], sheets: dict[int, np.ndarray], motion: Any) -> dict[str, Any]:
+    def _entry(self, e: dict[str, Any], sheets: dict[int, np.ndarray]) -> dict[str, Any]:
         """One thing on the map, in few numbers: its name, place, cells with each one's activity
         (relative to the thing's most active cell, to four places), the sizes of its pieces
-        where it lies in several, the moments since a sense wrote it and its state; with
-        physics, the velocity its moving mass carries and the share of its mass that moves."""
+        where it lies in several, the moments since a sense wrote it and its state."""
         kind = int(e["kind"])
         cells = np.asarray(e.get("cells", []), dtype=np.int64)
         if kind not in sheets:
@@ -231,22 +187,11 @@ class MapHost:
         pieces = e.get("pieces") or []
         if len(pieces) > 1:
             out["pieces"] = [len(p) for p in pieces]
-        if motion is not None and len(cells):
-            velocity, moving = motion
-            weight = np.maximum(share, 0.0) * moving[cells]
-            if weight.sum() > 0:  # the moving mass's velocity, over the thing's cells
-                out["velocity"] = [round(float(v), 6) for v in (weight @ velocity[cells]) / weight.sum()]
-            out["moving"] = round(float((np.maximum(share, 0.0) @ moving[cells]) / max(float(np.maximum(share, 0.0).sum()), 1e-300)), 4)
-            units = np.flatnonzero(np.asarray(self.map.codes)[kind])
-            mass = np.maximum(np.asarray(self.physics.mass)[cells][:, units, :], 0.0).sum(axis=(0, 1))
-            if mass.sum() > 0:  # its moving mass by velocity, as shares
-                out["by_velocity"] = (mass / mass.sum()).round(3).tolist()
         return out
 
     def inventory(self) -> list[dict[str, Any]]:
         sheets: dict[int, np.ndarray] = {}
-        motion = self._motion()
-        return [self._entry(e, sheets, motion) for e in self._things()]
+        return [self._entry(e, sheets) for e in self._things()]
 
     def _reports(self, rows: Any) -> list[tuple[int, np.ndarray]]:
         out = []
@@ -281,8 +226,7 @@ class MapHost:
             "neurons": self.n, "synapses": len(self.pre), "regions": regions,
             "plane": [float(v) for v in m.plane], "cells": [nx, ny], "cell": [float(v) for v in m.size], "units": int(m.units),
             "kinds": self.kinds, "codes": {name: np.flatnonzero(codes[k]).tolist() for name, k in self.kinds.items() if k < len(codes)},
-            "settings": {k: v for k, v in m.settings.items() if k != "physics"}, "load_ms": round(self.load_ms, 1), "moments": self.moments,
-            "physics": None if self.physics is None else {**self.physics.settings(), "kernels": self._kernels()},
+            "settings": dict(m.settings), "load_ms": round(self.load_ms, 1), "moments": self.moments,
         }
 
     def step(self, msg: dict[str, Any]) -> dict[str, Any]:
@@ -293,8 +237,7 @@ class MapHost:
             lit = np.asarray(lit, dtype=bool)
         began = time.perf_counter()
         wave = bool(msg.get("wave"))
-        error = self._moment(self._reports(msg.get("seen")), self._reports(msg.get("heard")), self._reports(msg.get("felt")), lit,
-                             trace=wave, learn=bool(msg.get("learn", True)))
+        self._moment(self._reports(msg.get("seen")), self._reports(msg.get("heard")), self._reports(msg.get("felt")), lit, trace=wave)
         settle_ms = (time.perf_counter() - began) * 1000.0
         self.moments += 1
         things = self.inventory()
@@ -302,13 +245,6 @@ class MapHost:
         self.buffers["activation"] = final.astype(np.float32)
         out: dict[str, Any] = {"moment": self.moments, "things": things, "wave": self._wave(final) if wave else None,
                                "settle_ms": round(settle_ms, 2)}
-        if self.physics is not None:
-            if error is not None:
-                self.errors.append(error)
-            out["physics"] = {"lessons": int(self.physics.lessons), "error": None if error is None else round(error, 5),
-                              "taught": error is not None}
-            if error is not None and (len(self.errors) < 20 or len(self.errors) % 15 == 0):
-                out["physics"]["kernels"] = self._kernels()
         out["ms"] = round((time.perf_counter() - began) * 1000.0, 2)
         return out
 

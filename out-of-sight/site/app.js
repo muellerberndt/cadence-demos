@@ -40,7 +40,6 @@ const state = {
   inventory: [], drawn: [], things: {}, handPlace: null, emptied: null,
   history: [], controls: null, estimates: null, unseen: 0, moments: 0,
   waveEvery: Number(params.get('wave') ?? 3), settle: null,
-  physics: null, // learned physics, where the map has it: { lessons, errors }
   frameTimes: [], think: [], roundTrip: [], run: null, undo: [],
 };
 
@@ -116,7 +115,6 @@ function tick(now) {
   const message = {
     seen, heard, felt,
     wave: state.waveEvery > 0 && record.moment % state.waveEvery === 0 && !brainView.wave,
-    learn: true, // with learned physics: the moment gathers its lessons
     view: { on: stage.cameraOn, geometry: g, joints: stage.world.joints },
   };
   state.pending = true;
@@ -170,13 +168,6 @@ function answered(record, estimates, reply, arrays) {
   brainView.update(arrays.activation);
   if (reply.wave && arrays.wave_frames) brainView.playWave(arrays.wave_frames, reply.wave.frames, reply.wave.sweeps, reply.wave.of, arrays.wave_move);
   state.settle = { ms: reply.settle_ms };
-  if (reply.physics && state.physics) {
-    // learned physics: the lessons taught so far and each batch's error, as the brain watches
-    state.physics.lessons = reply.physics.lessons;
-    if (reply.physics.error !== null) { state.physics.errors.push(reply.physics.error); if (state.physics.errors.length > 240) state.physics.errors.shift(); }
-    if (reply.physics.kernels) brainView.setKernels(reply.physics.kernels);
-    brainView.physics = { lessons: state.physics.lessons, errors: state.physics.errors, hand: hand?.by_velocity || null };
-  }
   state.history.push(row); if (state.history.length > 3000) state.history.shift();
   const run = state.run;
   if (run && !run.done && record.moment >= run.first && record.moment <= (run.last ?? Infinity)) {
@@ -217,7 +208,7 @@ function context() {
   return {
     record: r, names: stage.names, unseen: state.unseen, dt: DT, own: stage.own, hand: state.things[handName()] || null, handName: handName(),
     things: state.things, inventory: state.inventory, describe: state.describe, regions: state.regions,
-    act: (name) => brainView.activity(name), around: aroundBody, cameraOn: stage.cameraOn, physics: state.physics,
+    act: (name) => brainView.activity(name), around: aroundBody, cameraOn: stage.cameraOn,
     why: r && !r.in_view[0] ? stage.why(0) : null, asked: state.asked,
   };
 }
@@ -811,14 +802,11 @@ function adopt(describe, arrays) {
   state.regions = Object.fromEntries(describe.regions.map((r) => [r.name, r]));
   closeCard();
   brainView.setBrain(describe, arrays);
-  state.physics = describe.physics ? { lessons: describe.physics.lessons || 0, errors: [] } : null;
-  brainView.physics = state.physics ? { lessons: state.physics.lessons, errors: [], hand: null } : null;
   document.querySelectorAll('[data-promise]').forEach((el) => { el.textContent = TOUR.promise; });
   if (describe.manifest) state.manifest = describe.manifest;
   const m = state.manifest?.map || {};
   $('brain-badge').hidden = !params.has('badge');
   $('brain-note').textContent = m.note || '';
-  if (describe.physics) $('about-motion').textContent = 'This map has learned physics: it carries a moving thing by the velocities it has watched things move at, and learns from every thing it sees at two moments in a row. The arrow on a thing is the velocity its moving mass carries.';
   $('card-wheel').textContent = `cadence-net ${describe.cadence} (${state.manifest?.wheel_source || 'the pack’s wheel'})`;
   const [nx, ny] = describe.cells, s = describe.settings || {};
   const facts = [['The map', `${nx} by ${ny} cells of ${Math.round(describe.cell[0] * 100)} cm, ${describe.units} code units a cell`],
@@ -835,7 +823,7 @@ async function start() {
   requestAnimationFrame(frame);
   try {
     const pack = new URL('pack/', location.href);
-    const { reply, arrays } = await brain.call('init', { pack: pack.href, physics: params.get('physics') === '1' ? true : null });
+    const { reply, arrays } = await brain.call('init', { pack: pack.href });
     adopt(reply, arrays);
     restartControls();
     state.ready = true;

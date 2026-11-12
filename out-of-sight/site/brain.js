@@ -33,7 +33,6 @@ export const COLOR = {
   placecells: [0.95, 0.55, 0.78],
   objects: [0.4, 0.74, 1.0],
   lost: [0.62, 0.72, 0.86],
-  motion: [0.55, 0.95, 0.6],
   other: [0.72, 0.72, 0.82],
   excite: [1.0, 0.62, 0.28],
   inhibit: [0.32, 0.58, 1.0],
@@ -283,7 +282,6 @@ export class BrainView {
 
   setBrain(brain, arrays) {
     this.brain = brain;
-    this.kernels = brain.physics?.kernels || null; // learned physics: what the kernels hold
     const n = this.n = brain.neurons;
     this.pre = arrays.pre; this.post = arrays.post; this.weight = Float32Array.from(arrays.weight); this.bias = arrays.bias;
     this.regionOf = new Int16Array(n).fill(-1);
@@ -398,7 +396,7 @@ export class BrainView {
     const pos = this.pos = new Float32Array(2 * n);
     const size = this.size = new Float32Array(n);
     const hue = this.hue = new Float32Array(3 * n);
-    this.labels = []; this.labelsPlaced = false; this.sheetBox = null; this.physicsBox = null;
+    this.labels = []; this.labelsPlaced = false; this.sheetBox = null;
     this.glows = [];
     // The brain fills its pane: as wide as the pane, and as tall as a brain may be (the cortex
     // with the cerebellum and the stem below it spans 1.06 of the box's height). `inset` is
@@ -503,11 +501,6 @@ export class BrainView {
       if (!units || !coded.size) continue;
       const every = r.layout?.kind === 'row' ? r.neurons.length : units;
       r.neurons.forEach((i, k) => { const h = coded.get(k % every); if (h && (r.layout?.kind === 'row' || units > 1)) hue.set(h, 3 * i); });
-    }
-    if (this.kernels) {
-      // learned physics: a slot a velocity (x across, y up), each the 3 by 3 kernel it learned
-      const [x0, y0] = at(0.125, 0.17), [x1, y1] = at(0.345, 0.43);
-      this.physicsBox = { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
     }
     this.tracts();
     this.placeParts();
@@ -1003,7 +996,6 @@ export class BrainView {
     c.globalCompositeOperation = 'source-over';
     // the place answer as the map it is: the product of its two axes, inside the axes
     this.drawSheet(c);
-    this.drawKernels(c);
     // labels
     c.font = `600 ${this.compact ? 9 : 10.5}px Inter, system-ui, sans-serif`;
     c.textBaseline = 'alphabetic';
@@ -1118,50 +1110,6 @@ export class BrainView {
     c.restore();
   }
 
-  /** Learned physics: the kernels as the latest lessons left them. */
-  setKernels(kernels) { this.kernels = kernels; }
-
-  // What the physics learned, as it stands: one slot a velocity of the grid (x across, y up),
-  // each showing the 3 by 3 kernel of that velocity, the share of its mass found at each cell
-  // around a moment later. A velocity that carries the followed hand's moving mass is ringed as
-  // strongly as its share. Under it, each batch of lessons' error, in order.
-  drawKernels(c) {
-    const box = this.physicsBox, k = this.kernels;
-    if (!box || !k) return;
-    const per = k.per, slot = Math.min(box.w, box.h) / per, mini = slot / 3.6, still = (per * per) >> 1;
-    const ox = box.x + (box.w - slot * per) / 2, oy = box.y + (box.h - slot * per) / 2;
-    const hand = this.physics?.hand || null;
-    c.save();
-    c.fillStyle = 'rgba(8,11,21,0.55)'; c.beginPath(); c.roundRect(ox - 4, oy - 4, slot * per + 8, slot * per + 8, 6); c.fill();
-    for (let g = 0; g < per * per; g++) {
-      const a = Math.floor(g / per), b = g % per; // a: the x velocity's index, b: the y's
-      const cx = ox + (a + 0.5) * slot, cy = oy + (per - b - 0.5) * slot;
-      if (g === still) { c.fillStyle = 'rgba(160,176,228,0.6)'; c.beginPath(); c.arc(cx, cy, 1.6, 0, Math.PI * 2); c.fill(); continue; }
-      const v = g < still ? g : g - 1, share = k.share[v];
-      k.offsets.forEach(([dx, dy], o) => {
-        const w = Math.max(0, Math.min(1, share[o]));
-        c.fillStyle = css(COLOR.motion, 0.08 + 0.85 * Math.sqrt(w));
-        c.fillRect(cx + (dx - 0.5) * mini, cy - (dy + 0.5) * mini, mini - 0.6, mini - 0.6);
-      });
-      const carried = hand ? hand[v] || 0 : 0;
-      if (carried > 0.02) { c.strokeStyle = `rgba(255,255,255,${0.25 + 0.7 * Math.min(1, carried * 2)})`; c.lineWidth = 1.2; c.strokeRect(cx - 1.6 * mini, cy - 1.6 * mini, 3.2 * mini, 3.2 * mini); }
-    }
-    // each batch of lessons' error, in order, under the slots
-    const errors = this.physics?.errors || [], gy = oy + slot * per + 10, gw = slot * per, gh = 22;
-    c.font = `600 ${this.compact ? 9 : 10.5}px Inter, system-ui, sans-serif`; c.fillStyle = css(COLOR.motion, 0.95);
-    c.fillText('HOW THINGS MOVE · LEARNED', ox - 2, oy - 10);
-    if (errors.length > 1) {
-      let top = 1e-9;
-      for (const e of errors) top = Math.max(top, e);
-      c.strokeStyle = css(COLOR.motion, 0.85); c.lineWidth = 1.2; c.beginPath();
-      errors.forEach((e, i) => { const x = ox + (i / (errors.length - 1)) * gw, y = gy + gh - (e / top) * gh; if (i) c.lineTo(x, y); else c.moveTo(x, y); });
-      c.stroke();
-    }
-    c.font = '500 10px "JetBrains Mono", ui-monospace, monospace'; c.fillStyle = 'rgba(200,214,240,0.85)';
-    c.fillText(`${(this.physics?.lessons || 0).toLocaleString('en')} lessons${errors.length ? ` · error ${errors.at(-1).toFixed(2)}` : ''}`, ox - 2, gy + gh + 13);
-    c.restore();
-  }
-
   // The map's sheet as the map it is: each cell lit by its code units' activity, in the colours
   // of the kinds they code, as soft light under its neurons. It is the region's own activity.
   drawSheet(c) {
@@ -1215,7 +1163,6 @@ export class BrainView {
       byPart.get(o.name).neurons.push(...r.neurons);
     }
     for (const [id, part] of byPart) parts.push({ id, kind: 'region', label: part.region.label, region: part.region, neurons: part.neurons, ...box(part.neurons, 9) });
-    if (this.physicsBox) parts.push({ id: 'physics', kind: 'panel', label: 'how things move, as learned', ...this.physicsBox, h: this.physicsBox.h + 40 });
     this.tractParts = [];
     for (const [b, curve] of this.bundle) {
       const [ra, rb] = this.blockNames[b].split('>').map(Number);

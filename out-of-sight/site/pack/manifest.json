@@ -12,7 +12,7 @@
  ],
  "sources_sha256": {
   "__init__.py": "94e4f42d9d612c5aa91adc5eadb7a3fce757d1a521c351132a2df4787b560544",
-  "map_host.py": "e0de2e8a8a8bfb08b0017b5f17ea34bb2063430d664ce1f56dd8e2a1bf5393b3"
+  "map_host.py": "2ebf1a2f66956aa94e43ab11c567ba9c456d3736ea33d1f01aa62cb38f1ba2fe"
  },
  "map": {
   "file": "page-map.npz",

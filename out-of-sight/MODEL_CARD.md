@@ -82,8 +82,9 @@ were read with the Mac's load average at 50 to 77 from other work: upper bounds.
 
 - The map moves nothing it does not sense. A hand that keeps going in the dark is held near where
   it vanished, within 30 cm (two reaches) of it; a hand that comes out farther away is found
-  there as the same thing (within `stride`, 0.5 m) or as a new one. Learning how things move is
-  the second stage of the model, and nothing on this page anticipates a movement.
+  there as the same thing (within `stride`, 0.5 m) or as a new one. Nothing on this page
+  anticipates a movement. The second stage, learned physics on the map, follows in a later
+  release.
 - A thing whose place is seen empty with no cell out of sight within reach is known by its kind
   with no place ("not known where") until a sense reports it.
 - Recognising a thing is not the map's work: the page tells the map the kind of each report.

@@ -10,6 +10,8 @@
 import { metres, phrase, LABEL } from './where.js';
 
 export const GUIDE = 'lane-099-space 824c9ae9';
+// The map moves nothing it does not sense; the one sentence the page says of what comes after it.
+const SECOND_STAGE = 'The second stage, learned physics on the map, follows in a later release.';
 
 const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
 const num = (v, d = 2) => (Object.is(Number(v.toFixed(d)), -0) ? 0 : v).toFixed(d);
@@ -28,7 +30,6 @@ function stateWords(e, dt) {
     case 'heard': return 'placed at this moment by a sound';
     case 'held': return `held where last seen, ${secs(e.since, dt)} ago`;
     case 'near': return `near where it vanished ${secs(e.since, dt)} ago, out of sight`;
-    case 'moving': return 'moving unseen, where learned physics carries it';
     default: return 'known, not known where';
   }
 }
@@ -106,19 +107,7 @@ const PARTS = {
     live: clockLine },
   doubt: { title: 'Doubt', role: 'doubt', holds: 'One a cell: a one where the cell holds a thing that was not seen to be there', live: doubtLine },
   lost: { title: 'A kind with no place', role: 'lost', holds: 'One a code unit: a one where a thing of the kind is known with no place', live: lostLine },
-  // learned physics (cadence.space.physics, the module's docstring word for word)
-  physics: { title: 'How things move, learned', role: 'motion',
-    holds: 'One kernel of three by three cells for each velocity, tied across every cell and every kind, moves the mass each moment. The kernels are born to stay: a brain that has watched nothing answers as the map does, moment for moment. Whenever a thing is seen at two moments in a row, the mass it carried the moment before is the drive, and the target is that mass moved, on each velocity, by that velocity and by what the motion seen differs from the thing’s own velocity. Where things keep their motion the kernels learn to move each velocity’s mass by that velocity; where things stop or turn, by less or aside',
-    live: physicsLine },
 };
-
-function physicsLine(ctx) {
-  const ph = ctx.physics;
-  if (!ph) return 'This map has no learned physics.';
-  const e = ph.errors.at(-1), hand = ctx.hand;
-  const v = hand?.velocity ? ` The ${name(hand.name)}’s moving mass carries it at ${(Math.hypot(...hand.velocity) / ctx.dt * 100).toFixed(0)} cm a second, ${Math.round((hand.moving || 0) * 100)} of 100 of its mass moving.` : '';
-  return `${ph.lessons.toLocaleString('en')} lessons taught so far${e === undefined ? '' : `; the latest batch’s error ${e.toFixed(2)}${ph.errors.length > 3 ? `, from ${ph.errors[0].toFixed(2)} at the first` : ''}`}.${v}`;
-}
 
 const ROLE = {
   map: ['plays the role of the parietal map of where things are', '#3fe0cf'],
@@ -129,7 +118,6 @@ const ROLE = {
   timer: ['plays the role of a timer, drawn where the cerebellum sits', '#9eb8db'],
   doubt: ['plays the role of a confidence estimate: the cells of doubt', '#a88ffa'],
   lost: ['plays the role of knowing a thing with no place', '#9eb8db'],
-  motion: ['plays the role of motion-selective cells: where a thing moving at each velocity is found a moment later', '#8cf299'],
 };
 
 // The guide's table "What the brain does and what the program does", row by row.
@@ -158,6 +146,7 @@ const STAGES = [
     table: ['kinds'], live: handLine },
   { id: 'carries', parts: ['map', 'clock'], title: 'The map carries itself',
     body: 'At the next moment the potentials the sheet settled to drive the same neurons, and a neuron with that drive and no synapse into it settles at that potential. With no report and no sight of the cell nothing changes, to the bit: the last known place is the place in the state.',
+    also: () => SECOND_STAGE,
     table: ['held', 'holding'], live: handLine },
   { id: 'again', parts: ['map'], title: 'Sight again',
     body: 'A report within `step` of a piece of its kind’s activity is that thing. Its old cells are cleared and the report’s cells are written, so in view a thing’s place is the latest report.',
