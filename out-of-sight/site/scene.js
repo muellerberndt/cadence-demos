@@ -170,15 +170,15 @@ export class SceneView {
       c.strokeStyle = s.selected === 'pillar' ? 'rgba(255,255,255,0.9)' : 'rgba(170,185,225,0.55)'; c.lineWidth = 1.4; c.stroke();
     }
 
-    // the things on the table as they are, and the map's pins for every thing but the hand
+    // the things on the table as they are, the arm and the hand as they are, and over them the
+    // map's pins for every thing but the hand
+    this.words = []; // the words on the table: drawn last, over every piece of the scene
     for (let k = 1; k < things.length; k++) this.thing(c, s, k, things[k], m);
+    this.arm(c, g, joints, m, s.own);
+    this.hand(c, s, things[0], m);
     c.save(); c.beginPath(); c.roundRect(x0, y0, x1 - x0, y1 - y0, 10); c.clip(); // a pin's edge stays in the room
     for (const e of entries) if (e !== hand && e.place) this.pin(c, s, e, things);
     c.restore();
-
-    // the arm, and the hand as it is
-    this.arm(c, g, joints, m, s.own);
-    this.hand(c, s, things[0], m);
 
     // the hand as the map holds it: the brightest thing on the table
     c.save(); c.beginPath(); c.roundRect(x0, y0, x1 - x0, y1 - y0, 10); c.clip();
@@ -214,6 +214,9 @@ export class SceneView {
 
     // the camera
     this.cameraGlyph(c, eye, cam.heading, s.cameraOn, s.selected === 'camera');
+
+    // the words on the table, over everything
+    for (const [text, x, y, color] of this.words) this.word(c, text, x, y, color);
 
     // sounds (a scene file may hold them): rings from where the thing is, and what the ear heard of it
     this.rings = this.rings.filter((r) => now - r.start < 1100);
@@ -388,8 +391,10 @@ export class SceneView {
 
   ago(moments, dt) { return `${Math.max(0, Math.round((moments || 0) * (dt || 1 / 30)))} s`; }
 
-  // A short word on the table, on a dark ground.
-  tag(c, text, x, y, color) {
+  // A short word on the table, on a dark ground: kept to be drawn over all the scene's pieces.
+  tag(c, text, x, y, color) { (this.words || (this.words = [])).push([text, x, y, color]); }
+
+  word(c, text, x, y, color) {
     c.save();
     c.font = '500 10.5px "JetBrains Mono", ui-monospace, monospace'; c.textAlign = 'center'; c.textBaseline = 'middle';
     const w = c.measureText(text).width + 10;
