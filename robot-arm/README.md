@@ -30,7 +30,8 @@ python3 -m http.server 8830 --directory site   # from robot-arm/; open http://12
 MuJoCo 3.17 runs as WebAssembly with the same compiled cell the brain trained in. The brain runs in
 a Web Worker in Pyodide with the released wheel, and the page draws every neuron of it after each
 decision. [`site/README.md`](site/README.md) describes the files, the parity tests against the
-Python cell and the checks; [`site/DEPLOY.md`](site/DEPLOY.md) describes hosting.
+Python cell and the checks; the repository README's section
+[Putting a demo on your own site](../README.md#putting-a-demo-on-your-own-site) describes hosting.
 
 The page explains itself: a line at the top left walks the visitor through it, names float over
 the block and the bins, every control and every part of the brain carries a question mark, and
@@ -119,8 +120,8 @@ as the recorded Python trials on all 104 decisions of `site/tests/fixtures/` und
 the page check (`site/tools/check_page.py`, [`page_check.json`](evidence/page_check.json)) places
 the block in bin A in 52 decisions and follows bin B moved mid-carry into its new place. Every
 second decision the brain panel replays that decision's settle sweep by sweep, an exact replay
-checked against the answer's state; it adds about 45 ms of worker time to those decisions
-([`site/README.md`](site/README.md)).
+checked against the answer's state; it adds about 23 ms of worker time to those decisions
+(median 42.2 ms against 18.9 ms, [`page_check.json`](evidence/page_check.json)).
 
 **Stage 2, nominal physics, after 400 episodes** (200 trials; [`stage2_final.json`](evidence/stage2_final.json)):
 

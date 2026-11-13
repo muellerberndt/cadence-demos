@@ -43,20 +43,6 @@ function toast(text, kind = '', ms = 2200) {
   if (ms) toastTimer = setTimeout(() => { ui.toast.hidden = true; }, ms);
 }
 
-// The shared explanation cards (cadence-explain.js) cancel a card's pending opening when the
-// pointer goes straight from one explained part to the next while the first card shows: the
-// pointermove that enters the second part closes towards the first owner and clears the timer.
-// Until the shared file handles it, the page closes the showing card the moment the pointer comes
-// over a different explained part, so the shared timing opens the new card 140 ms later.
-document.addEventListener('pointerover', (ev) => {
-  if (ev.pointerType !== 'mouse' || !window.CadenceExplain) return;
-  const card = document.querySelector('.cx-card');
-  if (!card || card.hidden || card.classList.contains('kept')) return;
-  const next = ev.target.closest?.('[data-explain]');
-  const owner = document.querySelector('[aria-describedby="cx-card"]');
-  if (next && owner && next !== owner && !owner.contains(next)) window.CadenceExplain.close();
-}, true);
-
 // --- the coach: one line that walks the visitor through the page, by what is happening ----------
 const COACH = {
   loading: ['', 'The physics and the brain are loading in your browser.'],
