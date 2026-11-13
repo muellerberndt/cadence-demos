@@ -146,15 +146,15 @@ function makeRow(name, game) {
         color:var(--dim);margin-left:6px">being born</em></span></b>
       <span class="chipwrap" data-explain="The game number, the brain's best whole game at the controls, and the teacher's average over the games it played. The teacher's average is the score to match or beat." data-explain-title="Brain against teacher"><span id="s-${name}"></span></span></div>
     <div class="hud">
-      <div class="stat" data-explain-mark="corner" data-explain-title="Teacher agreement" data-explain="How often the brain's own answer matches the teacher's action, over its last 120 watched screens. The brain answers each screen silently, then learns the teacher's action. At 90%, after at least 500 lessons, it takes the controls."><small>teacher agreement</small>
+      <div class="stat" data-explain-title="Teacher agreement" data-explain="How often the brain's own answer matches the teacher's action, over its last 120 watched screens. The brain answers each screen silently, then learns the teacher's action. At 90%, after at least 500 lessons, it takes the controls."><small>teacher agreement</small>
         <b id="h1-${name}" class="up">0</b><span id="h1s-${name}"></span></div>
-      <div class="stat" data-explain-mark="corner" data-explain-title="Value" data-explain="The reward the brain's critic expects from this screen. At the controls, the reward that comes less this expectation is the dopamine signal that changes the synapses."><small>value · return the critic expects</small>
+      <div class="stat" data-explain-title="Value" data-explain="The reward the brain's critic expects from this screen. At the controls, the reward that comes less this expectation is the dopamine signal that changes the synapses."><small>value · return the critic expects</small>
         <b id="h2-${name}" class="up">0</b></div>
-      <div class="stat" data-explain-mark="corner" data-explain-title="Lessons" data-explain="Screens the brain has learned from while the teacher played. On each one it learns the action the teacher took. It needs at least 500 before it takes the controls."><small>lessons from the teacher</small>
+      <div class="stat" data-explain-title="Lessons" data-explain="Screens the brain has learned from while the teacher played. On each one it learns the action the teacher took. It needs at least 500 before it takes the controls."><small>lessons from the teacher</small>
         <b id="h3-${name}">0</b></div>
-      <div class="stat" data-explain-mark="corner" data-explain-title="Sweeps" data-explain="How many rounds the whole brain took to settle on the last screen. An answer counts only when every neuron agrees with its neighbours within a tolerance."><small>sweeps to settle the last screen</small>
+      <div class="stat" data-explain-title="Sweeps" data-explain="How many rounds the whole brain took to settle on the last screen. An answer counts only when every neuron agrees with its neighbours within a tolerance."><small>sweeps to settle the last screen</small>
         <b id="h4-${name}" class="down">–</b><span id="h4s-${name}"></span></div>
-      <div class="stat" data-explain-mark="corner" data-explain-title="Score" data-explain="${SCORE_HINTS[game] || "The points of the game in progress."}"><small>score this life</small>
+      <div class="stat" data-explain-title="Score" data-explain="${SCORE_HINTS[game] || "The points of the game in progress."}"><small>score this life</small>
         <b id="h5-${name}">0</b></div>
     </div>
     <div class="body">

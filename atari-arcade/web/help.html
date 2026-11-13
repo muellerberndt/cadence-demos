@@ -109,21 +109,35 @@
     <p>The brain is the released <code>cadence-net</code> 0.95.2 library, running in Python inside your browser (Pyodide), in its own thread. The game runs on an Atari 2600 emulator in a second thread.</p>
 
     <h2 id="numbers">The numbers</h2>
+    <h3>Three brains per game, in Python</h3>
     <table>
       <thead><tr><th>Reading</th><th>Freeway</th><th>Atlantis</th></tr></thead>
       <tbody>
         <tr><td>The teacher's own games, average</td><td class="n">21.4</td><td class="n">2,000</td></tr>
-        <tr><td>The brain's games at the controls, average over twelve or more, three brains</td><td class="n">22.5, 22.0, 22.2</td><td class="n">2,008, 2,000, 2,000</td></tr>
+        <tr><td>The brain's games at the controls, average (twelve or more each)</td><td class="n">22.5, 22.0, 22.2</td><td class="n">2,008, 2,000, 2,000</td></tr>
         <tr><td>The brain's best single game</td><td class="n">25, 27, 25</td><td class="n">2,100, 2,000, 2,000</td></tr>
         <tr><td>Its twin that stops learning at the takeover, average</td><td class="n">23.0, 23.3, 23.2</td><td class="n">1,946, 2,000, 2,008</td></tr>
         <tr><td>Lessons before the takeover</td><td class="n">500</td><td class="n">500</td></tr>
-        <tr><td>Faults and refused decisions, all brains</td><td class="n">0</td><td class="n">0</td></tr>
-        <tr id="page-run"><td>On this page, one run: the teacher's games and the brain's first whole games</td><td class="n">teacher 21; brain 21, 22, 27, 26, 20 (23.2)</td><td class="n">teacher 2,000; brain 2,000 in 32 of 34, one 3,100, one 1,600</td></tr>
-        <tr><td>On this page: the takeover, seconds after the page opened</td><td class="n">52</td><td class="n">39</td></tr>
-        <tr><td>On this page: brain time per screen, median</td><td class="n">79 to 81 ms</td><td class="n">79 to 81 ms</td></tr>
+        <tr><td>Faults and refused decisions</td><td class="n">0</td><td class="n">0</td></tr>
       </tbody>
     </table>
-    <p class="note">The first six rows are the Python edition, three brains per game from seeds 0, 1 and 2, each beside a frozen twin: <code>evidence/headless-0952/</code>. The page run is <code>evidence/promise-20261113.json</code>, made by <code>tools/promise_test.py</code> in a headless browser on a machine shared with other jobs; there both brains took the controls 56 and 71 seconds after the page opened. The takeover times and the time per screen are <code>evidence/page_check.json</code>. All files are in the <code>atari-arcade</code> folder of the repository.</p>
+    <p class="note">The Python edition, brains from seeds 0, 1 and 2, each beside a frozen twin: <code>evidence/headless-0952/</code>.</p>
+    <h3>On this page</h3>
+    <table>
+      <thead><tr><th>Reading</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Freeway: the teacher's game</td><td class="n">21</td></tr>
+        <tr><td>Freeway: the brain's first five games</td><td class="n">21, 22, 27, 26, 20</td></tr>
+        <tr><td>Freeway: their average</td><td class="n">23.2</td></tr>
+        <tr><td>Atlantis: the teacher's four games</td><td class="n">2,000 each</td></tr>
+        <tr><td>Atlantis: the brain's 34 games</td><td class="n">32 at 2,000</td></tr>
+        <tr><td>Atlantis: the other two</td><td class="n">3,100 and 1,600</td></tr>
+        <tr><td>The takeover, seconds after the page opened</td><td class="n">39 to 71</td></tr>
+        <tr><td>The brain's time per screen, median</td><td class="n">60 to 81 ms</td></tr>
+        <tr><td>Faults and refused decisions</td><td class="n">0</td></tr>
+      </tbody>
+    </table>
+    <p class="note">The games: <code>evidence/promise-20261113.json</code>, one run of the page by <code>tools/promise_test.py</code> in a headless browser on a machine shared with other jobs (the takeover at 56 and 71 seconds, 60 to 63 ms per screen). The other takeover and timing readings: <code>evidence/page_check.json</code> (39 and 52 seconds, 79 to 81 ms). All files are in the <code>atari-arcade</code> folder of the repository.</p>
 
     <h2 id="limits">Limits</h2>
     <ul>
