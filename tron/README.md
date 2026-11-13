@@ -1,5 +1,14 @@
 # Tron
 
+**What it shows.** Cadence brains play strong games. The deep brain sees the whole arena and
+answers every move with one settle of the whole brain, in the browser, in real time (about 11 ms a
+move, [evidence/page_check.json](evidence/page_check.json)). On its own it beat the `voronoi` bot in
+102 of 128 games; with the page's look-ahead over the rules checking its moves, in 118
+([evidence/search-readings.json](evidence/search-readings.json)). The page draws every neuron of
+every settle, and a neuron's card says what it tracks. The brains are frozen while you play and
+keep nothing from one move to the next: this demo shows strong play from settling brains, not
+learning during life. [The help page](web/help.html) explains every part of the page.
+
 Ride a light cycle against a Cadence brain that runs in your browser tab. The brain sees the
 whole arena and answers every move with one settle of the whole brain; the panel beside the arena
 draws every neuron of it as a brain seen from the side, sweep by sweep. Two brains are on the page:

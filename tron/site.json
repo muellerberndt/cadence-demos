@@ -1,0 +1,18 @@
+{
+  "slug": "tron",
+  "title": "Tron",
+  "page_dir": "web",
+  "card": "Cadence brains play strong games: ride a light cycle against a deep brain and watch every neuron settle on its move.",
+  "tagline": "Light cycles against a brain that sees the whole arena",
+  "kicker": "CADENCE BRAINS PLAY STRONG GAMES",
+  "feature": "A deep Cadence brain sees the whole arena and settles on every move in your browser, in real time. Alone it beat a bot that looks one move ahead in 102 of 128 games; a look-ahead over the rules checks its moves.",
+  "howTo": "Press Space or tap to ride; steer with the arrows, WASD or a swipe. Watch the brain settle on each move: an amber arc marks a move the look-ahead overruled. Point at a neuron to see what it tracks. BRAIN ALONE removes the look-ahead.",
+  "help": "help.html",
+  "evidence": [
+    "tron/evidence/promise-20261113.json",
+    "tron/evidence/search-readings.json",
+    "tron/evidence/deep-ablation.json",
+    "tron/evidence/page_check.json"
+  ],
+  "promise_test": "python tron/tools/promise_test.py --out tron/evidence/promise-<date>.json"
+}

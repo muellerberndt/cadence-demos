@@ -127,6 +127,7 @@ export class RippleView {
     this.layout();
     this.drawStatic();
     this.drawInputs();
+    if (this.onLayout) this.onLayout(); // the page lays its explanation spots out again
   }
 
   layout() {

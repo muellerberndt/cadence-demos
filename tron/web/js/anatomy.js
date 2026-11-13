@@ -17,7 +17,7 @@
 // replaying its own recorded sweeps, with the largest potential repair per sweep falling to rest.
 // The names say which role a population plays, not that it is that structure.
 
-import { DeepView } from "./deep.js";
+import { DeepView, EYE_TEXT, partText } from "./deep.js";
 import { RippleView, glow, rgba, MOTOR_RGB, ARROWS, PLAY_MS } from "./ripple.js";
 
 const MONO = "ui-monospace, Menlo, monospace";
@@ -196,6 +196,52 @@ export class AnatomyView extends DeepView {
       const syn = sizes[`${t.from}>${t.to}`] || t.exc.length + t.inh.length;
       this.tracts.push({ ...t, A, B, C, width: Math.max(1, Math.log10(1 + syn)), shown: [0, 0] });
     }
+  }
+
+  // ---- the page's explanation spots ----------------------------------------------------------
+  // Each part's box hugs its label, so its question mark sits beside the name drawn on the canvas.
+  explainParts(search) {
+    if (!this.bands || !this.field) return [];
+    const d = this.dpr, g = this.ctx, out = [];
+    const box = (x0, y0, x1, y1) => ({ x: x0 / d, y: y0 / d, w: Math.max(8, (x1 - x0) / d), h: Math.max(8, (y1 - y0) / d) });
+    const width = (text, size, weight = 600) => { g.font = `${weight} ${size * d}px ${MONO}`; return g.measureText(text).width; };
+    const label = (text, x, y, size, align = "center", lines = 1) => {
+      const w = width(text, size);
+      const x0 = align === "center" ? x - w / 2 : align === "right" ? x - w : x;
+      return box(x0 - 3 * d, y - size * d * lines - 3 * d, x0 + w + 3 * d, y + 3 * d);
+    };
+    // the visual cortex: its label, where drawStatic puts it
+    const f = this.field;
+    const L1 = this.bands.find((q) => q.L.kind === "hidden");
+    const fy = Math.min(f.y - 9 * d, L1 ? L1.title.y - 24 * d : f.y - 9 * d);
+    const vis = this.W / d < 600 ? "visual cortex" : "visual cortex · the field";
+    out.push({ box: label(vis, Math.min(this.W - 6 * d, f.x + f.S), fy, 8.5, "right"), title: "Visual cortex", text: EYE_TEXT.text });
+    const hidden = this.layers.filter((L) => L.kind === "hidden");
+    for (const b of this.bands) {
+      const { L } = b;
+      const off = L.kind === "trace" && this.hidden[L.start];
+      const what = L.kind === "motor" ? "motor strip" : L.kind === "trace" ? (off ? "prefrontal · off" : `prefrontal · ${L.count}`) : `${L.name} · ${L.count}`;
+      const two = L.kind === "hidden" ? Math.max(width(what, 8.5), width(b.where, 7.5, 500)) : width(what, 8.5);
+      const top = b.title.y - (L.kind === "hidden" ? 20 : 11) * d;
+      out.push({ box: box(b.title.x - two / 2 - 3 * d, top, b.title.x + two / 2 + 3 * d, b.title.y + 3 * d), ...partText(L, hidden, b.where) });
+    }
+    const N = this.nuclei;
+    const nucleus = (q, text, title, card) => out.push({ box: label(text, q.x, q.y + q.r + 10 * d, 7.5), title, text: card });
+    nucleus(N.relay, "relay", "Relay", "Where the eye's signals pass on their way into the first layer, drawn where the thalamus sits in an animal.");
+    nucleus(N.select, "selection", "Selection", "The three motor neurons' activity and the brain's pick, which flares up to the motor strip. It plays the role the basal ganglia play in an animal.");
+    nucleus(N.dopamine, "dopamine · frozen, no reward", "Dopamine", "Dark on purpose: the brain does not learn while you play, so no reward reaches it.");
+    if (search && this.motor) {
+      const top = this.motor.start;
+      const colW = 14 * d;
+      const right = this.px[top + 2] + this.pr[top + 2] * 3.2;
+      const x0 = Math.min(this.W - 3 * colW - 8 * d, right + 10 * d), y0 = this.py[top + 1] - 11 * d;
+      out.push({ box: label("look-ahead · 4 rounds", x0 - 4 * d, y0 - 6 * d, 7.5, "left"), title: "Look-ahead",
+        text: "After each move of the brain, a look-ahead checks it. It plays four rounds ahead by the rules alone (each of its moves, your best reply, and so on) and counts the cells each rider reaches first; the brain's pick gets a head start of 8 cells. The bars are its values for the three moves; an amber arc means it overruled the brain." });
+    }
+    const h = 34 * d, y0 = this.H - h - 28 * d;
+    out.push({ box: label("settling · sweep 00 of 00 · largest repair", 12 * d, y0 - 4 * d, 8, "left"), title: "Settling",
+      text: "The last move's settle: the largest change of any neuron, sweep by sweep, falling until the whole brain agrees with itself. The brain's move is read from that settled state." });
+    return out;
   }
 
   // ---- static: the silhouette, regions, nuclei, labels --------------------------------------

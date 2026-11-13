@@ -1,5 +1,16 @@
 # Atari Arcade
 
+**What it shows.** A Cadence brain learns during its life. Each brain is born in the browser
+knowing nothing, learns a game in about a minute by watching a teacher play, then takes the
+controls and plays in real time: the game never waits for it, and its working trace carries its
+state from one screen to the next. In Freeway its games average above the teacher's: 22.0 to 22.5
+crossings against 21.4 for three brains ([evidence/headless-0952/](evidence/headless-0952/)), and
+21, 22, 27, 26 and 20 against the teacher's 21 in a run of the page
+([evidence/promise-20261113.json](evidence/promise-20261113.json)). In Atlantis they tie with the
+teacher's 2,000. A twin that stops learning at the takeover scores as well, so the edge comes from
+what the brain learned by watching, not from the reward it learns from afterwards.
+[The help page](web/help.html) explains every part of the page.
+
 Brains born at start learn Atari games while you watch. Each brain is a Cadence 0.95.2
 **System 1** brain on raw screen pixels. It begins as a hatchling and watches a scripted
 teacher play. Once its own answers agree with the teacher's actions often enough it takes the
@@ -269,8 +280,8 @@ any game. None did.
 
 The page draws each brain as a stylized brain seen from the left side, front to the left. Every
 lit pixel comes from the brain's state at that moment, sent by the worker with each view; each
-population sits where the animal-brain region whose role it plays sits, and hovering a region
-names the population and its role. The outline, its folds and the slow camera sway are drawing.
+population sits where the animal-brain region whose role it plays sits, and a question mark on
+each part explains what it does. The outline, its folds and the slow camera sway are drawing.
 
 | Region drawn | Cadence population | What lights it |
 | --- | --- | --- |
