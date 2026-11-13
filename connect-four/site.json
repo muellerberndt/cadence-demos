@@ -3,7 +3,7 @@
   "title": "Connect Four",
   "page_dir": "web",
   "card": "Play Connect Four against a Cadence brain, watch every neuron settle on its move, and teach it a better one.",
-  "tagline": "Moving first, it beats a perfect player in 363 of 400 games",
+  "tagline": "Brain + search, moving first, beats a perfect player in 363 of 400 games",
   "kicker": "CADENCE BRAINS EXCEL AT GAMES",
   "feature": "The brain settles on each move and judges the game; a search over the rules checks the move. Moving first against a perfect player, beaten only by flawless play, the pair won 363 of 400 games. Teach it a better column and it learns.",
   "howTo": "Click a column to drop your stone. Watch the brain settle, judge the game and move. After its move, press Teach it and click the column it should have played. Brain alone turns the search off.",
