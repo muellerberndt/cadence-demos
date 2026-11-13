@@ -4,11 +4,18 @@ host takes its place in the pack (INTERFACES P6). Nothing here is learned.
 
 Interface (the composed brain's host keeps it):
   describe()                      -> {name, placeholder, joints, eye, rate_hz, populations, groups, neurons}
-  step(meta, left, right, proprio) -> {targets, group_activity, readout}, buffers "activity", "targets"
+  step(meta, arrays) -> {group_activity, readout, focus, voice?}, buffers "activity", "targets"[, "voice"]
   reset(), silence(group, on)
 
-`left` and `right` are each eye's image, uint8, rows top-down, (h, w, 3), column 0 at the eye's
-rear edge (INTERFACES P2). `proprio` is the joints' angles then speeds on [-1, 1] (P3).
+`arrays` holds `left` and `right`, each eye's image (uint8, rows top-down, (h, w, 3), column 0 at
+the eye's rear edge), `proprio` (the joints' angles then speeds on [-1, 1]), and the moment's sound:
+`audio` (1,600 samples at 16 kHz) and `mel` (ten log-mel frames of 40 bands, frame-major).
+`meta` holds `t`, `reward`, `voice_ok` (the page may play sound) and `cue` (the head-frame azimuth
+and elevation of a thing the visitor clicked, which draws the focus there).
+
+The placeholder is a newborn: it has learned nothing. It hears (its ear populations follow the
+sound's bands) and now and then it babbles: a short run of frames in the ear's format, either a
+random contour of a few moving peaks or a replay of a snippet it heard, shifted and blurred.
 
 The placeholder looks at what stands out: in each eye, the pixels whose colour differs most from
 the eye's own mean colour. It looks as a parrot does: its head still, then a quick turn toward the
@@ -25,7 +32,7 @@ import numpy as np
 
 JOINTS = ["head_yaw", "head_pitch", "head_roll", "neck_pitch", "beak_open", "wing_l", "wing_r",
           "grip_l", "grip_r", "leg_l", "leg_r"]
-RANGE = {"head_yaw": (-170.0, 170.0), "head_pitch": (-50.0, 60.0), "head_roll": (-45.0, 45.0)}
+RANGE = {"head_yaw": (-75.0, 75.0), "head_pitch": (-25.0, 35.0), "head_roll": (-20.0, 20.0)}
 DISTANCE_UNITS = 12
 
 
@@ -57,7 +64,11 @@ class Host:
                 ("retina_r", "Right eye's retina", self.w * self.h // 4, "retina"),
                 ("salience", "What stands out", 2 * 16, "tectum"),
                 ("distance", "Distance units", DISTANCE_UNITS, "distance"),
-                ("motor", "Motor: the joints' targets", len(JOINTS), "motor")]
+                ("motor", "Motor: the joints' targets", len(JOINTS), "motor"),
+                ("ear", "Ear: the sound's 40 bands", 40, "ear"),
+                ("fieldl", "Field L", 40, "fieldl"),
+                ("ncm", "NCM and CM: heard sound, held", 40, "ncm"),
+                ("voice", "Voice: the bands it says", 40, "voice")]
         self.populations = []
         start = 0
         for name, title, size, region in pops:
@@ -74,12 +85,17 @@ class Host:
         self.target = {"head_yaw": 0.0, "head_pitch": 0.0, "head_roll": 0.0}
         self.hold_until = 10
         self.tilt = None  # a slow tilt in progress: (start roll, end roll, first moment, moments)
+        self.focus = None  # where the last turn went: {"az", "el"} in the head's frame at that moment
+        self.heard = np.full((0, 40), math.log(1e-6), np.float32)  # the last 8 s of heard frames
+        self.held = np.zeros(40, np.float32)
+        self.next_babble = 40
+        self.saying = 0
         return {"ok": True}
 
     def describe(self) -> dict[str, Any]:
         return {
-            "name": "placeholder", "placeholder": True,
-            "title": "Placeholder brain: a hand-written controller",
+            "name": "placeholder", "placeholder": True, "newborn": True,
+            "title": "Placeholder brain: a newborn, a hand-written controller",
             "joints": JOINTS, "eye": {"w": self.w, "h": self.h}, "rate_hz": 10,
             "populations": self.populations, "neurons": self.neurons, "synapses": 0,
             "groups": [{
@@ -103,10 +119,40 @@ class Host:
         sat = x.max(axis=2) - x.min(axis=2)
         return d * (0.5 + sat)
 
-    def step(self, meta: dict[str, Any], left: np.ndarray, right: np.ndarray, proprio: np.ndarray) -> dict[str, Any]:
+    def babble(self) -> np.ndarray:
+        """A newborn's sound: a short run of frames, a replay of something heard or a random contour."""
+        rng = self.rng
+        floor = math.log(1e-6)
+        loud = np.flatnonzero(self.heard.max(axis=1) > floor + 9.0) if len(self.heard) else np.array([], int)
+        if len(loud) > 20 and rng.random() < 0.5:
+            start = int(rng.choice(loud)); n = int(rng.integers(25, 70))
+            seg = self.heard[max(0, start - 10): start - 10 + n].copy()
+            shift = int(rng.integers(-3, 4))
+            seg = np.roll(seg, shift, axis=1)
+            seg = 0.5 * seg + 0.25 * (np.roll(seg, 1, axis=1) + np.roll(seg, -1, axis=1))
+            return seg.astype(np.float32)
+        n = int(rng.integers(25, 80))
+        t = np.arange(n) / n
+        frames = np.full((n, 40), floor + 2.0, np.float32)
+        bands = np.arange(40)[None, :]
+        env = np.sin(np.pi * t) ** 0.6 * rng.uniform(0.7, 1.0)
+        for _ in range(int(rng.integers(1, 4))):
+            c0, c1 = rng.uniform(8, 34, 2)
+            wob = rng.uniform(0, 3) * np.sin(2 * np.pi * rng.uniform(2, 7) * t + rng.uniform(0, 6))
+            centre = (c0 + (c1 - c0) * t + wob)[:, None]
+            frames = np.logaddexp(frames, (floor + 14.0 * env[:, None]) - 0.5 * ((bands - centre) / rng.uniform(0.8, 2.0)) ** 2)
+        return frames.astype(np.float32)
+
+    def step(self, meta: dict[str, Any], arrays: dict[str, np.ndarray]) -> dict[str, Any]:
         self.t += 1
+        left, right = arrays["left"], arrays["right"]
+        proprio = arrays.get("proprio", np.zeros(22, np.float32))
         L = left.reshape(self.h, self.w, 3)
         R = right.reshape(self.h, self.w, 3)
+        floor = math.log(1e-6)
+        mel = arrays.get("mel")
+        frames = mel.reshape(-1, 40) if mel is not None and mel.size % 40 == 0 and mel.size else np.full((10, 40), floor, np.float32)
+        self.heard = np.concatenate([self.heard, frames])[-800:]
         sl, sr = self._salience(L), self._salience(R)
         yaw = _value("head_yaw", float(proprio[0]))
         pitch = _value("head_pitch", float(proprio[1]))
@@ -123,17 +169,25 @@ class Host:
         # How a parrot looks: the head still, then a quick turn to something (a head saccade; the page
         # moves the joint there in about 0.2 s), a hold of one to three seconds, now and then a slow
         # tilt to look with one eye. The targets change only at a decision, never each moment.
-        if self.t >= self.hold_until:
+        cue = meta.get("cue")
+        if cue is not None:  # the visitor clicked a thing: the focus goes there at once
+            self.target["head_yaw"] = float(np.clip(yaw + float(cue["az"]), -75.0, 75.0))
+            self.target["head_pitch"] = float(np.clip(pitch + 0.8 * float(cue["el"]), -25.0, 35.0))
+            self.focus = {"az": float(cue["az"]), "el": float(cue["el"]), "why": "you pointed at it"}
+            self.hold_until = self.t + int(self.rng.integers(20, 31))
+        elif self.t >= self.hold_until:
             if strength > 0.35 and self.rng.random() < 0.8:
                 # bring the thing to the middle of the eye that sees it (a parrot looks with one eye)
                 turn = az - math.copysign(55.0, az) if abs(az) > 55.0 else az * 0.5
-                self.target["head_yaw"] = float(np.clip(yaw + turn, -150.0, 150.0))
-                self.target["head_pitch"] = float(np.clip(pitch + 0.6 * el, -35.0, 40.0))
+                self.target["head_yaw"] = float(np.clip(yaw + turn, -75.0, 75.0))
+                self.target["head_pitch"] = float(np.clip(pitch + 0.6 * el, -25.0, 35.0))
+                self.focus = {"az": az, "el": el, "why": "it stood out most"}
             else:
-                self.target["head_yaw"] = float(np.clip(yaw + self.rng.choice([-1, 1]) * self.rng.uniform(40, 110), -150.0, 150.0))
+                self.target["head_yaw"] = float(np.clip(yaw + self.rng.choice([-1, 1]) * self.rng.uniform(30, 70), -75.0, 75.0))
                 self.target["head_pitch"] = float(self.rng.uniform(-15, 10))
+                self.focus = None
             if self.rng.random() < 0.3:
-                end = float(self.rng.choice([-1, 1]) * self.rng.uniform(18, 32))
+                end = float(self.rng.choice([-1, 1]) * self.rng.uniform(10, 18))
                 self.tilt = (self.target["head_roll"], end, self.t, int(self.rng.integers(10, 16)))
             elif self.target["head_roll"] != 0.0 and self.rng.random() < 0.5:
                 self.tilt = (self.target["head_roll"], 0.0, self.t, 8)
@@ -172,9 +226,33 @@ class Host:
         activity[p["salience"]["start"]:p["salience"]["start"] + 32] = np.clip(sal / 1.2, 0, 1)
         activity[p["distance"]["start"]:p["distance"]["start"] + DISTANCE_UNITS] = dist_units
         activity[p["motor"]["start"]:p["motor"]["start"] + len(JOINTS)] = np.nan_to_num((targets + 1) / 2, nan=0.5)
+        # hearing: the ear follows the bands, Field L their change, NCM holds what was heard
+        last = frames[-1]
+        ear = np.clip((last - floor) / 18.0, 0, 1)
+        change = np.clip(np.abs(frames[-1] - frames[0]) / 6.0, 0, 1)
+        self.held = (0.85 * self.held + 0.15 * ear).astype(np.float32)
+        # the voice: now and then, once the page may play sound
+        voice = None
+        if meta.get("voice_ok") and self.t >= self.next_babble and self.saying <= 0:
+            voice = self.babble()
+            self.saying = int(math.ceil(len(voice) / 10)) + 2
+            self.next_babble = self.t + int(self.rng.integers(50, 130))
+        said = np.zeros(40, np.float32)
+        if self.saying > 0:
+            self.saying -= 1
+            said = np.clip(self.rng.random(40).astype(np.float32) * 0.6, 0, 1) if self.saying > 1 else said
+        activity[p["ear"]["start"]:p["ear"]["start"] + 40] = ear
+        activity[p["fieldl"]["start"]:p["fieldl"]["start"] + 40] = change * ear
+        activity[p["ncm"]["start"]:p["ncm"]["start"] + 40] = self.held
+        activity[p["voice"]["start"]:p["voice"]["start"] + 40] = said
         self.buffers = {"activity": activity, "targets": targets}
-        return {"buffers": ["activity", "targets"], "group_activity": {"distance": dist_units.tolist()},
-                "readout": readout, "looked": {"eye": eye, "row": row, "col": col, "strength": round(strength, 3)}}
+        names = ["activity", "targets"]
+        if voice is not None:
+            self.buffers["voice"] = voice.ravel()
+            names.append("voice")
+        return {"buffers": names, "group_activity": {"distance": dist_units.tolist()}, "readout": readout,
+                "looked": {"eye": eye, "row": row, "col": col, "strength": round(strength, 3)},
+                "focus": self.focus, "heard": bool(ear.max() > 0.35), "newborn": True}
 
     def handle(self, message: dict[str, Any]) -> dict[str, Any]:
         cmd = message.get("command")

@@ -41,6 +41,7 @@
       <div class="row">
         <button id="test" class="ghost" aria-pressed="false" data-explain="The experiment's test: things are placed round the parrot one after another, at set places, near and far, beside it and behind it. The chamber that tests the brain uses the same placements." data-explain-mark="none">Test run</button>
         <button id="clear" class="ghost" data-explain="Takes every thing off the table." data-explain-mark="none">Clear</button>
+        <button id="mic" class="mic" aria-pressed="false" data-explain="Turns the microphone on (your browser asks first; it works on this computer or over https). The parrot hears you: its ear regions light up as you speak. Nothing is recorded or sent anywhere; it stays in this page." data-explain-mark="none"><span class="dot"></span>Microphone</button>
         <button id="pistachio" class="nut" data-explain="Gives the parrot a pistachio: a reward its brain learns from while it lives. Give one when it does something right." data-explain-mark="none">Pistachio <b id="pistachios">0</b></button>
         <div class="segmented" id="mode" role="group" aria-label="Who moves the parrot" data-explain-title="Who moves it" data-explain="Brain: the parrot's brain moves its head, beak, wings and feet. You: sliders move each joint, and the brain's moves wait; it still sees." data-explain-mark="none">
           <button class="seg" data-mode="brain" aria-pressed="true">Brain</button>
@@ -51,10 +52,21 @@
       </div>
     </div>
   </section>
+  <section class="mind" id="mind" aria-label="The brain in 3D">
+    <header class="mind-head">
+      <h2 data-explain-title="The brain in 3D, live" data-explain="The parrot&#8217;s brain drawn as a bird&#8217;s brain: each region where it sits in a bird&#8217;s head. Every dot is a neuron and glows with its activity at each moment; the lines are the tracts between regions, brighter while they carry more. Bright regions are in the running brain; faint ones are planned. Drag to turn it; point at a region&#8217;s name to learn what it does.">The brain, live</h2>
+      <span class="newborn" data-explain-title="A newborn" data-explain="This parrot has learned nothing yet. It looks at what stands out, hears, and now and then babbles a sound of its own. Its brain is a placeholder until the composed brain arrives; then it learns from what it sees, hears and is rewarded for.">a newborn: it has learned nothing yet</span>
+    </header>
+    <div class="mind-view"><canvas id="brain3d" aria-label="The parrot's brain in 3D"></canvas><div class="b3-labels" id="b3-labels"></div></div>
+    <footer class="mind-foot">
+      <div class="meter" data-explain-mark="corner" data-explain-title="What it hears" data-explain="The loudness of what the microphone hears, and below it the ear&#8217;s 40 frequency bands (low on the left), as the brain receives them each moment."><span class="lbl">Ear</span><span class="bar"><i id="ear-level"></i></span><canvas id="ear-bands" width="40" height="1"></canvas></div>
+      <div class="meter" data-explain-mark="corner" data-explain-title="What it says" data-explain="The loudness of the parrot&#8217;s own voice. It has no words: it babbles sounds made of the same 40 bands its ear hears, played through a simple voice of its own."><span class="lbl">Voice</span><span class="bar voice"><i id="voice-level"></i></span><span id="voice-note" class="note"></span></div>
+    </footer>
+  </section>
   <aside class="brain" aria-label="The brain">
     <div class="brain-head">
       <div class="brain-name">
-        <h2 data-explain-title="The parrot's brain, live" data-explain="What the brain receives and what it does, ten moments a second: the two eyes' images, its populations of neurons lit by their activity, the neurons it uses for distance, and its joints.">The brain</h2>
+        <h2 data-explain-title="The parrot's brain, in detail" data-explain="What the brain receives and what it does, ten moments a second: the two eyes' images, its populations of neurons lit by their activity, the neurons it uses for distance, and its joints.">The brain</h2>
         <p id="brain-sub">Loading&hellip;</p>
       </div>
       <dl class="stats">

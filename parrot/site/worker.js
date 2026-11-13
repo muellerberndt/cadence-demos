@@ -1,8 +1,9 @@
 // The parrot's brain runs here, off the page's thread, in Python through Pyodide (INTERFACES P6).
 // The pack's manifest names the host's sources, any brain files and any wheel; each is checked
 // against its SHA-256 before anything runs. Messages: {rid, command, payload} in; {rid, result,
-// arrays} or {rid, error} out; {status} while loading. A step carries the two eyes' images and the
-// proprioception as typed arrays; `arrays` holds the typed arrays a reply names in `buffers`.
+// arrays} or {rid, error} out; {status} while loading. A step carries `meta` (JSON) and named typed
+// arrays (the eyes' images, proprioception, the moment's sound); a reply's `arrays` holds the typed
+// arrays it names in `buffers`.
 let python = null;
 let manifest = null;
 let chain = Promise.resolve();
@@ -60,10 +61,11 @@ from ${pkg}.host import Host
 _parrot_host = Host(json.loads(_parrot_config))
 def _parrot_handle(text):
     return json.dumps(_parrot_host.handle(json.loads(text)), allow_nan=False)
-def _parrot_step(text, left, right, proprio):
+_DTYPES = {'left': np.uint8, 'right': np.uint8}
+def _parrot_step(text, names, arrays):
     meta = json.loads(text)
-    out = _parrot_host.step(meta, np.frombuffer(left.to_bytes(), dtype=np.uint8), np.frombuffer(right.to_bytes(), dtype=np.uint8),
-                            np.frombuffer(proprio.to_bytes(), dtype=np.float32))
+    got = {str(n): np.frombuffer(a.to_bytes(), dtype=_DTYPES.get(str(n), np.float32)) for n, a in zip(names, arrays)}
+    out = _parrot_host.step(meta, got)
     return json.dumps(out, allow_nan=False)
 def _parrot_buffer(name):
     return _parrot_host.buffers[name]
@@ -104,7 +106,8 @@ function step(payload) {
   const fn = python.globals.get('_parrot_step');
   const began = performance.now();
   try {
-    const reply = JSON.parse(fn(JSON.stringify(payload.meta || {}), payload.left, payload.right, payload.proprio));
+    const names = Object.keys(payload.arrays || {});
+    const reply = JSON.parse(fn(JSON.stringify(payload.meta || {}), names, names.map((n) => payload.arrays[n])));
     reply.worker_ms = Math.round((performance.now() - began) * 100) / 100;
     return { reply, arrays: arraysOf(reply) };
   } finally { fn.destroy(); }

@@ -7,6 +7,8 @@ import { makeRenderer, Room, BAR_Y, KINDS, TABLE } from './scene.js';
 import { loadRig } from './parrot.js';
 import { Eyes, EYE } from './eyes.js';
 import { BrainView } from './brainview.js';
+import { Brain3D } from './brain3d.js';
+import { ParrotAudio } from './audio.js';
 import { lookList, makeParrot } from './looks.js';
 
 const $ = (id) => document.getElementById(id);
@@ -17,10 +19,12 @@ const ui = {
   sub: $('brain-sub'), moment: $('s-moment'), think: $('s-think'), fps: $('s-fps'), tags: $('tags'),
   eyeL: $('eye-l'), eyeR: $('eye-r'), fields: $('fields'), palette: $('palette'), looks: $('looks'), mode: $('mode'),
   test: $('test'), clear: $('clear'), pistachio: $('pistachio'), pistachios: $('pistachios'), silence: $('silence'), drawer: $('drawer'),
+  mic: $('mic'), earLevel: $('ear-level'), earBands: $('ear-bands'), voiceLevel: $('voice-level'), voiceNote: $('voice-note'),
 };
 const state = { phase: 'loading', mode: 'brain', look: null, moment: 0, brainReady: false, pending: false, lastStep: 0, reward: 0, pistachios: 0,
   silenced: false, subject: null, dragging: null, script: null, thinkMs: [], frameTimes: [], fps: 0, coach: null };
-let rig, parrot, eyes, view, brain, desc;
+let rig, parrot, eyes, view, brain, desc, brain3d;
+const audio = new ParrotAudio();
 
 function setStatus(text, kind = 'busy') { ui.statusText.textContent = text; ui.status.className = `status ${kind}`; }
 let toastTimer = null;
@@ -179,7 +183,7 @@ canvas.addEventListener('pointerdown', (e) => {
   if (!t || !p) return;
   if (state.subject !== id) view?.clearTuning();
   state.subject = id;
-  state.dragging = { id, dx: t.obj.position.x - p.x, dz: t.obj.position.z - p.z };
+  state.dragging = { id, dx: t.obj.position.x - p.x, dz: t.obj.position.z - p.z, x0: e.clientX, y0: e.clientY, moved: false };
   controls.enabled = false;
   canvas.setPointerCapture(e.pointerId);
   canvas.classList.add('dragging');
@@ -189,12 +193,26 @@ canvas.addEventListener('pointermove', (e) => {
   if (!state.dragging) { pick(e); canvas.classList.toggle('over', raycaster.intersectObjects(room.pickables, false).length > 0); return; }
   const p = onTable(e);
   if (!p) return;
+  if (Math.hypot(e.clientX - state.dragging.x0, e.clientY - state.dragging.y0) > 4) state.dragging.moved = true;
+  if (!state.dragging.moved) return;
   room.move(state.dragging.id, p.x + state.dragging.dx, p.z + state.dragging.dz);
   const pos = room.things.get(state.dragging.id).obj.position;
   state.behind = pos.z < -0.08 && Math.abs(Math.atan2(pos.x, -pos.z)) < 0.35;
 });
+// A click on a thing (no drag) points the parrot at it: the brain gets where it lies from the
+// head (azimuth and elevation in the head's frame) as a cue, and its focus goes there.
+function cueFor(id) {
+  const t = room.things.get(id);
+  if (!t || !parrot) return null;
+  const head = parrot.bones.head, hp = new THREE.Vector3(), hq = new THREE.Quaternion();
+  head.getWorldPosition(hp); head.getWorldQuaternion(hq);
+  const c = t.obj.position.clone(); c.y += KINDS[t.kind].size / 2;
+  const d = c.sub(hp).applyQuaternion(hq.invert());
+  return { az: +(Math.atan2(d.x, d.z) * 180 / Math.PI).toFixed(1), el: +(Math.atan2(d.y, Math.hypot(d.x, d.z)) * 180 / Math.PI).toFixed(1), id };
+}
 function endDrag(e) {
   if (!state.dragging) return;
+  if (!state.dragging.moved) { state.cue = cueFor(state.dragging.id); state.focus = { id: state.dragging.id, why: 'you pointed at it' }; }
   state.dragging = null; state.behind = false;
   controls.enabled = true; canvas.classList.remove('dragging');
   if (e?.pointerId !== undefined && canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId);
@@ -241,9 +259,13 @@ async function moment(now) {
   parrot.joints.proprio(proprio);
   const left = eyes.left.rgb.slice(), right = eyes.right.rgb.slice(), pro = proprio.slice();
   const reward = state.reward; state.reward = 0;
+  const sound = audio.moment();
+  const cue = state.cue; state.cue = null;
+  const voiceOk = !!audio.ctx && audio.ctx.state === 'running';
   let reply;
   try {
-    reply = await brain.call('step', { meta: { t: state.moment, reward }, left, right, proprio: pro }, [left.buffer, right.buffer, pro.buffer]);
+    reply = await brain.call('step', { meta: { t: state.moment, reward, voice_ok: voiceOk, cue }, arrays: { left, right, proprio: pro, mel: sound.mel, audio: sound.audio } },
+      [left.buffer, right.buffer, pro.buffer, sound.mel.buffer, sound.audio.buffer]);
   } catch (error) { state.pending = false; setStatus(`The brain stopped: ${error.message}`, 'error'); state.brainReady = false; return; }
   state.pending = false;
   state.moment += 1;
@@ -251,12 +273,67 @@ async function moment(now) {
   if (state.mode === 'brain' && reply.arrays.targets) parrot.joints.setUnitTargets(reply.arrays.targets);
   const subject = state.subject ? distanceOf(state.subject) : null;
   view.update(reply, reply.arrays, subject);
+  brain3d?.update(reply.arrays.activity);
+  if (reply.arrays.voice?.length) { // the voice motor's frames: the parrot says them
+    const spoken = audio.speak(reply.arrays.voice);
+    if (spoken) ui.voiceNote.textContent = `a babble, ${(spoken.env.length / 100).toFixed(1)} s`;
+  }
+  // the focus the brain reports: the thing nearest the direction it turned to
+  const key = reply.focus ? `${reply.focus.az},${reply.focus.el}` : null;
+  if (key !== state.focusKey) { state.focusKey = key; state.focus = reply.focus ? focusFrom(reply.focus) : null; }
   state.thinkMs.push(reply.worker_ms); if (state.thinkMs.length > 50) state.thinkMs.shift();
   ui.moment.textContent = String(state.moment);
   ui.think.textContent = `${Math.round(median(state.thinkMs))} ms`;
   document.body.dataset.moment = String(state.moment);
 }
+// The brain's focus is a direction from the head (at the moment it chose it); the page names the
+// thing that lies nearest that direction, within 25 degrees.
+function focusFrom(f) {
+  const head = parrot.bones.head, hp = new THREE.Vector3(), hq = new THREE.Quaternion();
+  head.getWorldPosition(hp); head.getWorldQuaternion(hq);
+  const a = f.az * Math.PI / 180, e = f.el * Math.PI / 180;
+  const ray = new THREE.Vector3(Math.sin(a) * Math.cos(e), Math.sin(e), Math.cos(a) * Math.cos(e)).applyQuaternion(hq);
+  let best = null;
+  for (const t of room.things.values()) {
+    const c = t.obj.position.clone(); c.y += KINDS[t.kind].size / 2;
+    const miss = c.sub(hp).normalize().angleTo(ray) * 180 / Math.PI;
+    if (!best || miss < best.miss) best = { id: t.id, miss, why: f.why || 'it stood out most' };
+  }
+  return best && best.miss < 25 ? best : null;
+}
 const median = (a) => { const s = [...a].sort((x, y) => x - y); return s.length ? s[s.length >> 1] : 0; };
+
+// --- the ear's bands, and the focus ring --------------------------------------------------------------
+function drawBands() {
+  const c = ui.earBands, g = c.getContext('2d'), f = audio.frames[audio.frames.length - 1];
+  const img = g.createImageData(40, 1);
+  for (let m = 0; m < 40; m++) {
+    const v = f && audio.mic ? Math.max(0, Math.min(1, (f[m] + 9) / 12)) : 0;
+    img.data[4 * m] = 30 + 49 * v * 2.5; img.data[4 * m + 1] = 34 + 161 * v; img.data[4 * m + 2] = 44 + 203 * v; img.data[4 * m + 3] = 255;
+  }
+  g.putImageData(img, 0, 0);
+}
+const ring = new THREE.Mesh(new THREE.RingGeometry(0.5, 0.62, 48), new THREE.MeshBasicMaterial({ color: '#f2b33d', transparent: true, opacity: 0.0, depthWrite: false, side: THREE.DoubleSide }));
+ring.rotation.x = -Math.PI / 2; ring.renderOrder = 2;
+let focusTag = null;
+function placeFocus() {
+  if (!ring.parent) room.scene.add(ring);
+  const f = state.focus, t = f ? room.things.get(f.id) : null;
+  const want = t ? 0.75 : 0;
+  ring.material.opacity += (want - ring.material.opacity) * 0.15;
+  if (!focusTag) {
+    focusTag = document.createElement('span'); focusTag.className = 'focus-tag'; focusTag.textContent = 'focus';
+    focusTag.setAttribute('data-explain-title', 'Its focus');
+    ui.tags.append(focusTag);
+  }
+  if (!t) { focusTag.hidden = true; return; }
+  const size = KINDS[t.kind].size;
+  ring.position.set(t.obj.position.x, 0.002, t.obj.position.z); ring.scale.setScalar(size * 0.85 + 0.03);
+  focusTag.setAttribute('data-explain', `The one thing the parrot attends to now. Its head turns to it, and it is what a heard word is linked to. It won because ${f.why}.`);
+  const v = new THREE.Vector3(t.obj.position.x, 0.0, t.obj.position.z + size * 0.6 + 0.02).project(camera);
+  focusTag.hidden = v.z > 1;
+  focusTag.style.transform = `translate(${Math.round((v.x + 1) / 2 * canvas.clientWidth)}px, ${Math.round((1 - v.y) / 2 * canvas.clientHeight)}px) translate(-50%, 0)`;
+}
 
 // --- the fields of view, seen from above ----------------------------------------------------------------
 function drawFields() {
@@ -295,7 +372,13 @@ let last = performance.now(), slowSince = 0;
 function frame(now) {
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
   if (parrot) {
+    const loud = audio.loudness(now);
+    if (loud > 0 || state.wasSpeaking) { parrot.joints.set('beak_open', 30 * loud); state.wasSpeaking = loud > 0; }
+    ui.voiceLevel.style.width = `${Math.round(loud * 100)}%`;
+    ui.earLevel.style.width = `${Math.round(audio.level * 100)}%`;
+    drawBands();
     parrot.update(dt);
+    placeFocus();
     if (now - state.lastMomentAt >= MOMENT_MS || !state.lastMomentAt) { state.lastMomentAt = now; moment(now); }
     view?.setJoints(parrot.joints.pos, parrot.joints.target);
     syncTags(); drawFields();
@@ -305,6 +388,7 @@ function frame(now) {
   renderer.shadowMap.needsUpdate = true;
   renderer.render(room.scene, camera);
   view?.frame(dt);
+  brain3d?.frame(dt);
   // the frame rate, and a lighter picture when the laptop cannot keep up
   state.frameTimes.push(now); while (state.frameTimes.length && state.frameTimes[0] < now - 1000) state.frameTimes.shift();
   state.fps = state.frameTimes.length;
@@ -367,6 +451,7 @@ ui.test.addEventListener('click', () => { if (state.script) { state.script = nul
 ui.clear.addEventListener('click', () => { state.script = null; room.clear(); state.subject = null; view?.clearTuning(); });
 ui.pistachio.addEventListener('click', () => {
   state.reward = 1; state.pistachios += 1; ui.pistachios.textContent = String(state.pistachios);
+  brain3d?.reward();
   toast('A pistachio: its reward reaches the brain at the next moment', 'good', 1800);
 });
 ui.silence.addEventListener('click', async () => {
@@ -378,6 +463,13 @@ ui.silence.addEventListener('click', async () => {
   document.body.dataset.silenced = state.silenced ? '1' : '0';
 });
 for (const b of ui.mode.querySelectorAll('.seg')) b.addEventListener('click', () => setMode(b.dataset.mode));
+// sound may start only after the visitor's first click (browsers hold it back until then)
+window.addEventListener('pointerdown', () => { audio.unlock().catch(() => {}); }, { once: true, capture: true });
+ui.mic.addEventListener('click', async () => {
+  if (audio.mic) { audio.stopMic(); ui.mic.setAttribute('aria-pressed', 'false'); return; }
+  try { await audio.startMic(); ui.mic.setAttribute('aria-pressed', 'true'); toast('The parrot hears you: speak, and watch its ear light up', 'good', 2400); }
+  catch (error) { toast(error.message || 'The microphone did not start', 'bad', 3200); }
+});
 $('home').addEventListener('click', () => { camera.position.copy(HOME.pos); controls.target.copy(HOME.at); controls.update(); });
 
 // --- start --------------------------------------------------------------------------------------------------------
@@ -405,8 +497,9 @@ async function start() {
     setStatus(`The room failed to load: ${error.message}`, 'error');
     throw error;
   }
+  brain3d = new Brain3D($('brain3d'), $('b3-labels'));
   view = new BrainView({ canvas: $('brain'), units: $('dist-units'), tuning: $('dist-tuning'), readout: $('dist-readout'), silence: ui.silence, joints: $('joints') });
-  window.parrotPage = { room, state, eyes, get parrot() { return parrot; }, place, addThing, move: (id, x, z) => room.move(id, x, z), remove: (id) => room.remove(id),
+  window.parrotPage = { room, state, eyes, audio, get parrot() { return parrot; }, place, addThing, move: (id, x, z) => room.move(id, x, z), remove: (id) => room.remove(id),
     describe: () => room.describe(), load: (d) => room.load(d), script: runScript, TEST, setLook, setMode, distanceOf, camera, THREE,
     view(name) { const v = VIEWS[name]; if (!v) return; camera.position.set(...v[0]); controls.target.set(...v[1]); controls.update(); },
     screenOf(x, y, z) { const v = new THREE.Vector3(x, y, z).project(camera); const r = canvas.getBoundingClientRect(); return [r.left + (v.x + 1) / 2 * r.width, r.top + (1 - v.y) / 2 * r.height]; } };
@@ -416,6 +509,7 @@ async function start() {
     const out = await brain.call('init', { pack: PACK, config: { eye: { w: EYE.w, h: EYE.h, field: EYE.field, vfield: EYE.vfield, fovea: EYE.fovea, axis: EYE.axis } } });
     desc = out;
     view.setup(desc, rig.joints);
+    brain3d.setup(desc);
     ui.sub.textContent = desc.placeholder ? `${desc.title} · ${desc.neurons} units` : `${desc.title || desc.name} · ${desc.neurons.toLocaleString('en')} neurons`;
     const g = (desc.groups || []).find((x) => x.variable === 'distance');
     if (g) { $('dist-title').textContent = g.title; $('dist-card').setAttribute('data-explain', g.explain); $('dist-card').setAttribute('data-explain-title', g.title); }
