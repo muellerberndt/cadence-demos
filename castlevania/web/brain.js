@@ -118,8 +118,9 @@
       this.canvas = canvas; this.ctx = canvas.getContext("2d");
       this.snap = null; this.cache = null; this.hover = null; this.thumbs = new Map(); this.opts = opts;
       this.regionsForHover = [];
-      if (!opts.offline) canvas.addEventListener("mousemove", (e) => this.onMove(e));
-      if (!opts.offline) canvas.addEventListener("mouseleave", () => { this.hover = null; });
+      // opts.hoverCards === false: the page explains the regions itself (the player's shared cards)
+      if (!opts.offline && opts.hoverCards !== false) canvas.addEventListener("mousemove", (e) => this.onMove(e));
+      if (!opts.offline && opts.hoverCards !== false) canvas.addEventListener("mouseleave", () => { this.hover = null; });
     }
     setSnap(snap) {
       if (!snap || !snap.trajectory) return;
@@ -405,4 +406,16 @@
   }
   window.BrainView = BrainView;
   window.BRAIN_VIEW_SIZE = [W, H];
+  // each part's box in the view's own units (W x H), for a page that explains the parts itself
+  window.BRAIN_VIEW_PARTS = {
+    settle: [24, 12, 330, 112], eye: [V1.x0 - 6, V1.y0 - 32, V1.x0 + 2 * 16 * V1.cell + V1.gap + 6, V1.y0 + 2 * (12 * V1.cell + 30) - 6],
+    body: [S1.x - 50, S1.y - 4, S1.x + 100, S1.y + 76],
+    module_0: [REGIONS.module_0.cx - 115, REGIONS.module_0.cy - 85, REGIONS.module_0.cx + 115, REGIONS.module_0.cy + 65],
+    association: [REGIONS.association.cx - 128, REGIONS.association.cy - 75, REGIONS.association.cx + 128, REGIONS.association.cy + 55],
+    prefrontal: [REGIONS.prefrontal.cx - 95, REGIONS.prefrontal.cy - 70, REGIONS.prefrontal.cx + 95, REGIONS.prefrontal.cy + 65],
+    motor: [MOTOR.x - 125, MOTOR.top - 30, MOTOR.x + 70, POS.motor[9][1] + 12],
+    striatum: [STRI.x - 75, STRI.y - 45, STRI.x + 30, STRI.y + 70], thalamus: [THAL.x - 50, THAL.y - 40, THAL.x + 70, THAL.y + 58],
+    hippocampus: [HIPPO.x0, HIPPO.y - 52, HIPPO.x1, HIPPO.y + 68], recalled: [280, 784, 670, 870], read: [112, 744, 250, 890],
+    lookahead: [26, 566, 330, 624], dopamine: [VTA.x + 56, VTA.y - 4, VTA.x + 424, VTA.y + 30],
+  };
 })();

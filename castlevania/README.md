@@ -1,5 +1,16 @@
 # Castlevania
 
+**What it shows.** A Cadence brain with real memory and a real state, running in real time. A
+frozen brain plays NES Castlevania from what its eye sees, with a recall memory of this game's
+moments and a state it carries from one decision to the next, five decisions a second. A
+look-ahead on the emulator checks its moves near enemies: together they reach stage 3 on all nine
+selection starts, and lives lost fall from 36 (the brain alone) to 5
+(`evidence/lookahead_receipt.json`). The look-ahead is not the brain: 93 of every 100 moves played
+are the brain's own, and the giant bat is not beaten. The demos site serves [`player/`](player/)
+(two recordings and the brain running in your browser; no ROM); its [help page](player/help.html)
+explains every part of the screen, what you can do and the limits, and on the page every part
+explains itself (a small **?**).
+
 A Cadence brain plays NES Castlevania from the screen. Every 12 frames its eye reads the
 picture and a few RAM readings, the whole brain settles, and the settled motor slots press the
 pad: left or right, up or down, whip, jump. The page shows the game beside what the eye sees,
@@ -88,11 +99,11 @@ The game's first block ends with that bat. The brain has not beaten it. The per-
 renderer (`web/render.html` in a headless Chromium), piped to ffmpeg;
 [`highlights.py`](highlights.py) cuts the highlights from that recording and its log.
 
-**The recorded run beside the brain, in your browser** ([`player/`](player/)): a static page that
-plays the game video and drives the brain view from the recorded trace, in step with play, pause,
-seek and speed changes. Its live mode runs the brain itself in the tab (Pyodide and the released
-wheel) on the recorded eye inputs and checks its buttons against the recording. See
-[Player](#player) below.
+**The recorded runs beside the brain, in your browser** ([`player/`](player/)): a static page with
+two recordings. *Brain + look-ahead* plays the highlights above. *Brain alone* plays the game
+video and drives the brain view from the recorded trace, in step with play, pause, seek and speed
+changes; its live mode runs the brain itself in the tab (Pyodide and the released wheel) on the
+recorded eye inputs and checks its buttons against the recording. See [Player](#player) below.
 
 Stage numbers here are the game's RAM counter: stage 0 is the courtyard and stage 1 the hall (the
 screen shows both as STAGE 01), stage 2 is the screen's STAGE 02 and stage 3 its STAGE 03.
@@ -120,7 +131,13 @@ the enemies are when Simon starts.
 
 ## Player
 
-[`player/`](player/) is a static page (no server, no ROM): the game video
+[`player/`](player/) is a static page (no server, no ROM) and a folder a static host serves by
+itself: the demos site serves it as `/demos/castlevania/`. Its pack holds copies of the brain and
+of the two videos, and the page's `brain.js` and `style.css` are copies of `web/`'s
+(`tests/test_player_page.py` checks every copy and hash; git stores each copy once). Its first
+recording, *Brain + look-ahead*, plays the highlights
+([`docs/castlevania-highlights.mp4`](docs/castlevania-highlights.mp4)) with the page's
+explanations over the parts of each frame. Its second, *Brain alone*, plays the game video
 ([`docs/castlevania-game.mp4`](docs/castlevania-game.mp4), the game alone, the same run as the
 brain-alone videos above) beside the brain view, driven from a trace of that run
 ([`player/pack/trace.json.gz`](player/pack/trace.json.gz), 6.7 MB). The trace holds, per decision,
@@ -140,10 +157,19 @@ state, and counts how many of its chosen buttons equal the recording's. If it fa
 video it says by how many decisions.
 
 ```sh
-cd castlevania && python -m http.server 8846     # open http://localhost:8846/player/
+python -m http.server 8846 --directory castlevania/player   # open http://localhost:8846/
 python player/pack.py --trace <record.py --trace output>   # rebuild the pack
-python player/check_player.py --live 60                    # the page's promise, headless
+python player/check_player.py --live 60                    # the brain-alone recording, headless
+python tools/promise_test.py --out evidence/promise_test-<date>.json   # the claim, on the page
 ```
+
+Every control and every part of the brain on the page carries a small **?** whose card opens when
+the pointer rests on it (the demos' shared `cadence-explain.js`); *Help* opens
+[`player/help.html`](player/help.html). `tools/promise_test.py` plays the claim on the page served
+from `player/` alone: the highlights load, match their hash and play; the brain view follows the
+brain-alone video; its recall memory fills with the game's moments; live mode presses the
+recorded buttons; and the claim's numbers are those of `evidence/lookahead_receipt.json` (record:
+`evidence/promise_test-20261113.json`).
 
 [`player/check_player.py`](player/check_player.py) (`player/evidence/player_check.json`, headless
 Chromium on a c7i): the page plays, stays on the decision the video shows after a seek to 2:30, a
@@ -399,6 +425,8 @@ is used in training only; the page plays the brain alone unless started with `--
 | Path | What |
 | --- | --- |
 | `server.py`, `web/` | the local server and the page |
+| `player/` | the static page the demos site serves: two recordings, the brain view, live mode, the help page |
+| `site.json`, `tools/promise_test.py` | the claim on the demos site, and the claim played on the page |
 | `simon/` | the pad, the eye, the console (`Console`, with savestates), the player, the look-ahead (`lookahead.py`), the ROM import |
 | `brain/brain.npz` | the brain the page plays |
 | `integration/Castlevania-Nes-v0/` | stable-retro's description of the game, with the PRG1 hash; your `rom.nes` goes here |

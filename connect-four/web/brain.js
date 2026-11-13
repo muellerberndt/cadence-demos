@@ -164,8 +164,8 @@ function program(gl, vs, fs) {
 const hash = (k) => { let x = (k + 0x9e3779b9) | 0; x = Math.imul(x ^ (x >>> 16), 0x85ebca6b); x = Math.imul(x ^ (x >>> 13), 0xc2b2ae35); return ((x ^ (x >>> 16)) >>> 0) / 4294967296; };
 
 export class BrainView {
-  constructor({ canvas, overlay, tooltip, onFrame, renderer = 'auto' }) {
-    this.canvas = canvas; this.overlay = overlay; this.tooltip = tooltip; this.onFrame = onFrame;
+  constructor({ canvas, overlay, tooltip, onFrame, onLayout, renderer = 'auto' }) {
+    this.canvas = canvas; this.overlay = overlay; this.tooltip = tooltip; this.onFrame = onFrame; this.onLayout = onLayout;
     this.stage = canvas.parentElement;
     this.ctx = overlay.getContext('2d');
     this.gl = null;
@@ -180,7 +180,7 @@ export class BrainView {
     }
     if (!this.gl) this.use2D(renderer === '2d' ? 'requested' : 'no fast WebGL2');
     this.frames = 0;
-    this.hover = -1; this.pinned = false;
+    this.hover = -1; this.pinned = false; this.hoverWant = -1; this.hoverTimer = 0;
     this.flashes = null;
     this.running = false;
     this.playhead = 0;
@@ -190,7 +190,7 @@ export class BrainView {
     new ResizeObserver(() => this.resize()).observe(this.stage);
     this.stage.addEventListener('pointermove', (e) => this.pointer(e));
     this.stage.addEventListener('pointerdown', (e) => this.pointer(e, true));
-    this.stage.addEventListener('pointerleave', () => { if (!this.pinned) this.setHover(-1); });
+    this.stage.addEventListener('pointerleave', () => { if (!this.pinned) this.hoverSoon(-1); });
   }
 
   // Draw with Canvas2D from now on, on a fresh canvas when the old one holds a WebGL context.
@@ -441,6 +441,7 @@ export class BrainView {
     if (this.gl) { this.uploadLayout(); this.uploadSynapses(); }
     this.drawOverlay();
     this.wake();
+    this.onLayout?.();
   }
 
   // The centre of each region, and the bundled path every synapse takes between two regions: a
@@ -881,6 +882,7 @@ export class BrainView {
       if (c.measureText(text).width > room && r.short) text = r.short.toUpperCase();
       if (c.measureText(text).width > room) text = r.name.toUpperCase();
       const w = c.measureText(text).width;
+      r.box = { x: r.x - 4, y: r.y - 1, w: w + 8, h: 15 };
       c.fillStyle = 'rgba(6,8,14,0.72)';
       c.beginPath(); c.roundRect(r.x - 4, r.y - 1, w + 8, 15, 4); c.fill();
       c.fillStyle = r.silent || r.faint ? 'rgba(150,160,190,0.62)' : 'rgba(190,200,228,0.9)';
@@ -978,6 +980,8 @@ export class BrainView {
 
   pointer(event, tap = false) {
     if (!this.pos) return;
+    // over a region's explanation: that card speaks, not a neuron's
+    if (event.target?.closest?.('.cx-spot, .cx-q')) { if (!this.pinned) this.hoverSoon(-1); return; }
     const box = this.canvas.getBoundingClientRect();
     const x = event.clientX - box.left, y = event.clientY - box.top;
     let best = -1, bestD = Infinity;
@@ -986,8 +990,18 @@ export class BrainView {
       const reach = Math.max(7, this.size[i] + 4);
       if (d < reach * reach && d < bestD) { best = i; bestD = d; }
     }
-    if (tap) this.pinned = best >= 0;
-    if (tap || !this.pinned) this.setHover(best);
+    if (tap) { this.pinned = best >= 0; clearTimeout(this.hoverTimer); this.hoverTimer = 0; this.hoverWant = best; this.setHover(best); return; }
+    if (!this.pinned) this.hoverSoon(best);
+  }
+
+  // The neuron card opens when the pointer rests on a neuron 140 ms and closes 450 ms after it
+  // leaves (the timing of the page's other explanations), so it neither flickers nor vanishes.
+  hoverSoon(i) {
+    if (i === this.hover) { clearTimeout(this.hoverTimer); this.hoverTimer = 0; this.hoverWant = i; return; }
+    if (i === this.hoverWant && this.hoverTimer) return;
+    clearTimeout(this.hoverTimer);
+    this.hoverWant = i;
+    this.hoverTimer = setTimeout(() => { this.hoverTimer = 0; this.setHover(i); }, i >= 0 ? 140 : 450);
   }
 
   setHover(i) {
@@ -1014,7 +1028,7 @@ export class BrainView {
     const region = (this.regions || []).find((r) => r.name === (SIDES.includes(role) ? 'sensory' : role));
     if (region && region.role) note += `<p class="note">${region.role}</p>`;
     tip.innerHTML = `<h4>${this.name(i)}</h4><p class="act">activation <b>${this.display[i].toFixed(3)}</b> · bias ${Number(this.bias[i]).toFixed(3)}</p>`
-      + `<p class="sub">${outward ? 'strongest outputs now' : 'strongest inputs now'} <span>(of ${count.toLocaleString()} drawn)</span></p><ul>${lines}</ul>${note}`;
+      + `<p class="sub">${outward ? 'strongest outputs in this sweep' : 'strongest inputs in this sweep'} <span>(of ${count.toLocaleString()} drawn)</span></p><ul>${lines}</ul>${note}`;
     tip.hidden = false;
     const x = this.pos[2 * i], y = this.pos[2 * i + 1];
     const w = tip.offsetWidth || 240, h = tip.offsetHeight || 140;
@@ -1031,6 +1045,14 @@ export class BrainView {
   // The deliberation after a settle: the verdict neurons' judgement, and what the search (a
   // look-ahead over the rules, not neurons) did with the column neurons' proposal.
   setDeliberation(final) { this.deliberation = final || null; this.overlayDirty = true; this.wake(); }
+
+  // Where the deliberation panel is drawn (after a move), for the page's explanation.
+  deliberationBox() {
+    const d = this.deliberation, b = this.brainBox;
+    if (!d || !b || !(d.verdict || d.search)) return null;
+    const w = Math.min(210, b.w * 0.3);
+    return { x: b.x + b.w * 0.02 - 4, y: b.y + b.h * 0.86 - 12, w: w + 8, h: d.search && d.search.values ? 66 : 18 };
+  }
 
   drawDeliberation(c) {
     const d = this.deliberation, b = this.brainBox;
@@ -1051,7 +1073,7 @@ export class BrainView {
       const soft = Object.values(s.values).filter((v) => Math.abs(v) < 950).map(Math.abs);
       const scale = Math.max(1e-3, ...soft);
       c.fillStyle = 'rgba(190,200,228,0.75)';
-      c.fillText(s.immediate ? 'search (rules, not neurons): a win now' : `search (rules, not neurons): ${s.depth} moves ahead · ${(s.nodes || 0).toLocaleString()} positions`, x0, top + h + 14);
+      c.fillText(s.immediate ? 'search (rules, not neurons): a win on this move' : `search (rules, not neurons): ${s.depth} moves ahead · ${(s.nodes || 0).toLocaleString()} positions`, x0, top + h + 14);
       for (let col = 0; col < 7; col++) {
         const v = s.values[col];
         if (v === undefined) continue;

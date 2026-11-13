@@ -15,7 +15,7 @@ const app = {
   moves: [], game: null, empty: null, first: 'you', nextFirst: 'you',
   brain: null, manifest: null, startup: null,
   turn: 0, thinkRid: null, lastBrain: null, imagined: null, player: 'search',
-  timings: [], lessons: 0, lastLesson: null, settle: null, lastFinal: null,
+  timings: [], lessons: 0, lastLesson: null, settle: null, lastFinal: null, hints: 0,
   settles: [], // every brain move of this game: its board, settle and readout, for undo
 };
 let worker, requestId = 0;
@@ -47,6 +47,7 @@ const view = new BrainView({
   canvas: $('brain-gl'), overlay: $('brain-overlay'), tooltip: $('tooltip'),
   onFrame: (f) => onSettleFrame(f),
   renderer: new URLSearchParams(location.search).get('render') || 'auto', // 'webgl' or '2d' to force one
+  onLayout: () => placeSpots(),
 });
 
 const brainPlayer = () => (app.first === 'brain' ? 0 : 1);
@@ -75,7 +76,8 @@ function refresh() {
   $('lessons-note').textContent = app.lessons ? `taught ${app.lessons}× in this tab` : '';
   if (p === 'human') {
     const last = app.lastBrain && app.moves.length && (app.moves.length - 1) % 2 === brainPlayer() ? app.moves.at(-1) : null;
-    setStatus(last === null ? 'Your move. Tap a column.' : `It played <span class="c-brain">column ${last + 1}</span>. Your move.`);
+    const hint = app.lessons === 0 && app.hints < 2 ? ' Should it have played elsewhere? Press <b>Teach it</b>.' : '';
+    setStatus(last === null ? 'Your move: click a column to drop your stone.' : `It played <span class="c-brain">column ${last + 1}</span>. Your move.${hint}`);
   } else if (p === 'thinking') setStatus('The brain is settling…');
   else if (p === 'over') {
     if (g.winner === null) setStatus('The board is full. A draw.');
@@ -101,6 +103,7 @@ async function newGame() {
   board.set(owners(app.game)); board.setMarks(); board.setMotor(null); board.setGhosts(null); setVerdict(null); setSearch(null);
   view.rest(); view.setChosen(null); view.setDeliberation(null); setReadout('at rest');
   drawSpark([]);
+  placeSpots();
   if (app.first === 'brain') return brainTurn();
   app.phase = 'human'; refresh();
 }
@@ -166,6 +169,8 @@ async function brainTurn() {
     if (token !== app.turn) return;
     if (app.game.over) return finish();
     app.phase = 'human'; refresh();
+    app.hints++;
+    placeSpots();
   } catch (error) {
     if (token !== app.turn) return;
     view.show(view.display); // stop the playback where it is
@@ -233,7 +238,7 @@ async function teachColumn(column) {
   if (reply.refused) {
     message = `The lesson was refused: ${reply.refused}`;
   } else if (!reply.accepted) {
-    message = `No lesson needed: it already answers column ${column + 1} on this board.`;
+    message = `No lesson needed: it answers column ${column + 1} on this board.`;
   } else {
     app.lessons = reply.lessons;
     view.setWeights(arrays.weight, arrays.bias);
@@ -252,8 +257,8 @@ async function teachColumn(column) {
     board.setMotor(final.motor, { chosen: final.column, legal: final.legal, before: reply.before });
     setReadout(`settled again in ${final.sweeps} sweeps · ${final.ms.toFixed(0)} ms`, 'settled');
     const b = reply.before[column], a = final.motor[column];
-    const now = final.column === column ? `It would now play <b>column ${column + 1}</b> here.` : `It would still play column ${final.column + 1} here.`;
-    message = `One lesson changed <b>${fmt(reply.changed)}</b> synapses. Column ${column + 1}’s motor neuron: ${b.toFixed(3)} → <b>${a.toFixed(3)}</b>. ${now} Tap again to repeat the lesson.`;
+    const now = final.column === column ? `After the lesson it plays <b>column ${column + 1}</b> here.` : `After the lesson it plays column ${final.column + 1} here.`;
+    message = `One lesson changed <b>${fmt(reply.changed)}</b> synapses. Column ${column + 1}’s motor neuron: ${b.toFixed(3)} → <b>${a.toFixed(3)}</b>. ${now} Click the column again to repeat the lesson.`;
   }
   app.phase = 'taught'; refresh();
   setStatus(message, 'teach');
@@ -292,29 +297,28 @@ async function resetBrain() {
 
 // What the search did with the brain's proposal.
 function setSearch(final) {
-  const el = $('search-note'), s = final?.search;
-  if (!s) { el.hidden = true; return; }
+  const el = $('search-note'), row = $('search-row'), s = final?.search;
+  if (!s) { row.hidden = true; return; }
+  row.hidden = false;
   const brain = final.brain_column + 1, played = final.column + 1;
   if (s.immediate) {
-    el.innerHTML = `<b>Search</b> column ${played} wins now${final.column === final.brain_column ? '' : ` (the brain preferred column ${brain})`}`;
-    el.hidden = false;
+    el.innerHTML = `<b>Search</b> column ${played} wins on this move${final.column === final.brain_column ? '' : ` (the brain preferred column ${brain})`}`;
     return;
   }
   const why = s.reason === 'win' ? `found a forced win: column ${played}`
     : final.column === final.brain_column ? `kept the brain's column ${brain}`
     : `overruled the brain's column ${brain}: column ${played}`;
   el.innerHTML = `<b>Search</b> ${why} · ${s.depth} moves ahead · ${(s.nodes || 0).toLocaleString()} positions · ${Math.round(s.ms)} ms`;
-  el.hidden = false;
 }
 
 // The verdict slot: the brain's judgement of the position it moved from, for itself.
 function setVerdict(v) {
-  const el = $('verdict');
-  if (!v) { el.hidden = true; return; }
+  const el = $('verdict'), row = $('verdict-row');
+  if (!v) { row.hidden = true; return; }
+  row.hidden = false;
   const [loss, draw, win] = v;
   const word = win >= draw && win >= loss ? 'it is winning' : loss >= draw ? 'it is losing' : 'a draw';
   el.innerHTML = `<span>Its verdict before this move: <b>${word}</b></span><span class="bar" title="loss ${pct(loss)} · draw ${pct(draw)} · win ${pct(win)}"><i class="loss" style="width:${100 * loss}%"></i><i class="draw" style="width:${100 * draw}%"></i><i class="win" style="width:${100 * win}%"></i></span><span>win ${pct(win)}</span>`;
-  el.hidden = false;
 }
 
 function setReadout(text, cls = '') {
@@ -354,7 +358,7 @@ function measured(t, pending) {
   const r = t.readings, last = (t.curve || []).at(-1);
   const held = r?.heldout || last;
   if (!held) return `<p>Held-out readings: ${pending}.</p>`;
-  const lines = [`<p>On ${fmt(held.positions || 3000)} held-out positions from solver games, never taught: the solver’s optimal move <b>${pct(held.optimal)}</b> of the time; a move that keeps the theoretical result where it is not already lost <b>${pct(held.keep_not_lost)}</b>; an immediate win taken <b>${pct(held.wins_now)}</b>; a forced block made <b>${pct(held.blocks)}</b>${held.verdict !== undefined ? `; the verdict agrees with the solver’s result <b>${pct(held.verdict)}</b>` : ''}.</p>`];
+  const lines = [`<p>On ${fmt(held.positions || 3000)} held-out positions from solver games, never taught: the solver’s optimal move <b>${pct(held.optimal)}</b> of the time; a move that keeps the theoretical result in positions it can win or draw <b>${pct(held.keep_not_lost)}</b>; an immediate win taken <b>${pct(held.wins_now)}</b>; a forced block made <b>${pct(held.blocks)}</b>${held.verdict !== undefined ? `; the verdict agrees with the solver’s result <b>${pct(held.verdict)}</b>` : ''}.</p>`];
   for (const g of r?.games || []) {
     lines.push(`<p>${g.games} games from the empty board, ${g.policy_first ? 'the brain first, against the perfect solver' : `the solver first${g.strength < 1 ? `, playing its best move ${Math.round(100 * g.strength)}% of the time` : ''}`}: <b>${g.win} won, ${g.draw} drawn, ${g.loss} lost</b>.</p>`);
   }
@@ -424,6 +428,29 @@ function renderCard() {
     </section>`;
 }
 
+// What each region of the brain does, in the role it plays; a spot over each label on the canvas.
+const REGION_TEXT = {
+  sensory: ['Visual cortex: the board', 'Where the board enters the brain: one neuron for each cell of its own stones, of your stones, and of the cells where a stone would land. They hold what the board shows while the rest of the brain settles.'],
+  module_0: ['Module 0', 'The first stage after the board: 1,024 neurons that read the board cells and pass on what they see. Each one sits where the cells it reads are.'],
+  association: ['Association', '1,024 neurons wired both ways with module 0 and with the motor neurons. Here the settle comes to agree on a move. Each one sits under the column it drives.'],
+  prefrontal: ['Prefrontal, silent', 'Where Cadence\u2019s working memory enters a brain. A Connect Four board shows everything, so this brain settles fresh on every move with no memory, and this region stays dark.'],
+  motor: ['Motor strip', 'Seven motor neurons, one per column; the bars above the board show the same neurons. The strongest one whose column has room is the brain\u2019s own column.'],
+  verdict: ['Verdict', 'Three neurons that judge the game for the side to move: loss, draw or win. They settle together with the move, and the move does not read them.'],
+};
+function placeSpots() {
+  const stage = $('brain-stage');
+  if (!window.CadenceExplain || !view.regions) return;
+  CadenceExplain.clearSpots(stage);
+  for (const r of view.regions) {
+    const text = REGION_TEXT[r.name];
+    if (!text || !r.box) continue;
+    CadenceExplain.spot(stage, r.box, text[1], { title: text[0], id: r.name });
+  }
+  const d = view.deliberationBox?.();
+  if (d) CadenceExplain.spot(stage, d, 'What happened before the move. The first line is the brain\u2019s verdict. The bars are the search\u2019s score for each column, found by looking ahead over the rules (code, not neurons): up is good for the brain, down is bad. A solid box marks the column played; a dashed box and arc mark the brain\u2019s own column when the search overruled it.', { title: 'Verdict and search', id: 'deliberation' });
+}
+addEventListener('load', () => placeSpots());
+
 function fail(error) {
   app.error = error?.message || String(error);
   console.error(error);
@@ -480,9 +507,10 @@ document.querySelectorAll('[data-player]').forEach((b) => b.addEventListener('cl
 $('undo').addEventListener('click', guard(undo));
 $('teach').addEventListener('click', () => (app.phase === 'teach' || app.phase === 'taught' ? finishTeach() : guard(startTeach)()));
 $('reset-brain').addEventListener('click', guard(resetBrain));
-$('ghost-info').addEventListener('click', () => {
-  const open = $('ghost-note').hidden;
-  $('ghost-note').hidden = !open; $('ghost-info').setAttribute('aria-expanded', String(open));
+$('imagine-toggle').addEventListener('change', () => {
+  const on = $('imagine-toggle').checked;
+  $('ghost-head').hidden = !on; $('ghosts').hidden = !on;
+  if (!on) { app.imagined = null; board.setGhosts(null); }
 });
 $('model-card').addEventListener('toggle', () => { if ($('model-card').open) renderCard(); });
 document.addEventListener('keydown', (e) => {

@@ -1,0 +1,59 @@
+{
+ "url": "player/index.html?rec=alone",
+ "checks": {
+  "plays": {
+   "ok": true,
+   "time": 4.0806,
+   "frame": 244,
+   "decision": 20,
+   "shown": 20,
+   "expected": 20
+  },
+  "seek_150s": {
+   "ok": true,
+   "time": 151.1012,
+   "frame": 9066,
+   "decision": 755,
+   "shown": 755,
+   "expected": 755
+  },
+  "pause": {
+   "ok": true,
+   "time": 151.1037,
+   "frame": 9066,
+   "decision": 755,
+   "shown": 755,
+   "expected": 755
+  },
+  "speed_2x": {
+   "ok": true,
+   "time": 157.1284,
+   "frame": 9435,
+   "decision": 786,
+   "shown": 786,
+   "expected": 785
+  },
+  "live_matches": {
+   "ok": true,
+   "matches": 40,
+   "of": 40
+  }
+ },
+ "frame_ms": {
+  "median": 16.7,
+  "p95": 16.7,
+  "samples": 184
+ },
+ "live_status_at_ready": "0 of 0 live choices match the recording \u00b7 1 decision behind",
+ "live_load_seconds": 14.7,
+ "live": {
+  "decisions": 40,
+  "matches": 40,
+  "mismatched": [],
+  "ms_per_decision_median": 102.4,
+  "seconds": 13.6,
+  "real_time_needs_ms": 200
+ },
+ "page_errors": [],
+ "ok": true
+}

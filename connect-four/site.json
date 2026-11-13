@@ -1,0 +1,18 @@
+{
+  "slug": "connect-four",
+  "title": "Connect Four",
+  "page_dir": "web",
+  "card": "Play Connect Four against a Cadence brain, watch every neuron settle on its move, and teach it a better one.",
+  "tagline": "Brain + search, moving first, beats a perfect player in 363 of 400 games",
+  "kicker": "CADENCE BRAINS EXCEL AT GAMES",
+  "feature": "The brain settles on each move and judges the game; a search over the rules checks the move. Moving first against a perfect player, beaten only by flawless play, the pair won 363 of 400 games. Teach it a better column and it learns.",
+  "howTo": "Click a column to drop your stone. Watch the brain settle, judge the game and move. After its move, press Teach it and click the column it should have played. Brain alone turns the search off.",
+  "help": "help.html",
+  "evidence": [
+    "connect-four/evidence/search_reading.json",
+    "connect-four/evidence/reading.json",
+    "connect-four/evidence/page_check.json",
+    "connect-four/evidence/promise_test-20261113.json"
+  ],
+  "promise_test": "python connect-four/tools/promise_test.py --out connect-four/evidence/promise_test-<date>.json"
+}
