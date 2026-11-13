@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Sora:wght@500;600&display=swap">
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="cadence-explain.css">
+<link rel="stylesheet" href="brain3d.css">
 <script src="cadence-explain.js" defer></script>
 <script type="importmap">{ "imports": { "three": "./vendor/three/three.module.min.js" } }</script>
 </head>
@@ -63,10 +64,10 @@
   <section class="mind" id="mind" aria-label="The brain in 3D">
     <header class="mind-head">
       <div class="tabs" role="tablist" aria-label="Brain or memory"><button class="tab" id="tab-brain" role="tab" aria-selected="true" data-explain="The brain in 3D: its regions and their neurons, live." data-explain-mark="none">Brain</button><button class="tab" id="tab-memory" role="tab" aria-selected="false" data-explain="What the parrot remembers of what it heard: its records and its synapses, as the library holds them." data-explain-mark="none">Memory</button></div>
-      <h2 data-explain-title="The brain in 3D, live" data-explain="The parrot&#8217;s brain drawn as a bird&#8217;s brain: each region where it sits in a bird&#8217;s head. Every dot is a neuron and glows with its activity at each moment; the lines are the tracts between regions, brighter while they carry more. Bright regions are in the running brain; faint ones are planned. Drag to turn it; point at a region&#8217;s name to learn what it does.">The brain, live</h2>
+The ring at the back holds the sounds it kept, the card in the hippocampus is its map of things, and the dots in Words are the things a sound can name. Point at How it connects to light the path of each kind of memory. Drag to turn the brain; point at a region to light its card on the right.">The brain, live</h2>
       <span class="newborn" data-explain-title="A newborn" data-explain="This parrot has learned nothing yet. It looks at what stands out, hears, and at times calls with a sound of its own. Its brain is a placeholder until the composed brain arrives; then it learns from what it sees, hears and is rewarded for.">a newborn: it has learned nothing yet</span>
     </header>
-    <div class="mind-view" id="view-brain"><canvas id="brain3d" aria-label="The parrot's brain in 3D"></canvas><div class="b3-labels" id="b3-labels"></div><p class="dopamine" id="dopamine" hidden data-explain-title="Dopamine from VTA" data-explain="A pistachio tells the brain that what it just did was good, and the connections that just fired get stronger. In the composed brain the reward changes those synapses; this placeholder brain learns nothing from it, so here the rush only shows where the reward goes.">Dopamine from VTA: a pistachio tells the brain that what it just did was good, and the connections that just fired get stronger.<span id="dopamine-note"></span></p></div>
+    <div class="mind-view" id="view-brain"><canvas id="brain3d" aria-label="The parrot's brain in 3D"></canvas><div class="b3-labels" id="b3-labels"></div><p class="dopamine" id="dopamine" hidden data-explain-title="A pistachio" data-explain="The reward reaches the VTA, the midbrain&#8217;s dopamine nucleus. In a brain with dopamine, a reward above what it expected makes the connections that just fired stronger. The 3D view marks the pistachio&#8217;s arrival; a gold wash runs out from the VTA only when the running brain reports its dopamine.">A pistachio: the reward reaches the VTA, the midbrain&#8217;s dopamine nucleus.<span id="dopamine-note"></span></p></div>
     <div class="mind-view" id="view-memory" hidden><canvas id="memory" aria-label="The parrot's memory of sounds: records and synapses"></canvas></div>
     <footer class="mind-foot">
       <div class="meter" data-explain-mark="corner" data-explain-title="What it hears" data-explain="The loudness of what the microphone hears, and below it the ear&#8217;s 40 frequency bands (low on the left), as the brain receives them each moment."><span class="lbl">Ear</span><span class="bar"><i id="ear-level"></i></span><canvas id="ear-bands" width="40" height="1"></canvas></div>
@@ -79,7 +80,7 @@
   <aside class="brain" aria-label="The brain">
     <div class="brain-head">
       <div class="brain-name">
-        <h2 data-explain-title="The parrot's brain, in detail" data-explain="What the brain receives and what it does, ten moments a second: the two eyes' images, its populations of neurons lit by their activity, the neurons it uses for distance, and its joints.">The brain</h2>
+        <h2 data-explain-title="The parrot's brain, in detail" data-explain="What the brain receives and what it does, ten moments a second: the two eyes' images, then one card a region of the brain, each the neurons of that region lit by their activity, in the order a memory travels: seeing, the map of things, hearing, the sounds kept and the links that make them words. Each card has its region&#8217;s colour in the 3D view; point at one to light its region there. Below: the distance neurons and the joints.">The brain</h2>
         <p id="brain-sub">Loading&hellip;</p>
         <label class="brain-kind" data-explain-title="Which brain" data-explain="Composed: the parrot brain the experiment builds (its eyes, the distance it learns from head turns, its focus and its map), with the page&#8217;s hearing beside it. Placeholder: a hand-written newborn the page falls back to if the composed brain does not start.">brain <select id="brain-kind"><option value="composed">composed</option><option value="placeholder">placeholder</option></select></label>
       </div>
@@ -96,7 +97,7 @@
       </div>
       <figure class="fields-fig" data-explain-title="Its fields of view, from above" data-explain="The parrot's head from above, its beak pointing at the dot's line. Blue: the left eye's field; amber: the right eye's. They overlap a little in front of the beak; behind the head is a blind spot. White dots are things in view; grey dots are things in the blind spot."><canvas id="fields"></canvas></figure>
     </section>
-    <div class="canvas-wrap" id="brain-wrap"><canvas id="brain" aria-hidden="true"></canvas></div>
+    <div class="regions" id="brain" aria-label="The brain's regions, each with its neurons, live"></div>
     <section class="dist" id="dist-card" data-explain-title="Distance neurons" data-explain="The neurons the brain uses for distance, named by the brain itself.">
       <h3 id="dist-title">Distance neurons</h3>
       <canvas id="dist-units" aria-hidden="true"></canvas>

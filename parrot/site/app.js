@@ -268,7 +268,7 @@ async function moment(now) {
     const focusKind = state.focus ? room.things.get(state.focus.id)?.kind || null : null;
     const scene = state.composed && room.version !== state.sentVersion ? room.describe() : null;
     if (scene) state.sentVersion = room.version;
-    reply = await brain.call('step', { meta: { t: state.moment, reward, voice_ok: voiceOk, cue, things: room.things.size, focus_kind: focusKind, scene }, arrays: { left, right, proprio: pro, mel: sound.mel, audio: sound.audio } },
+    reply = await brain.call('step', { meta: { t: state.moment, reward, voice_ok: voiceOk, cue, things: room.things.size, focus_kind: focusKind, scene, learn: true }, arrays: { left, right, proprio: pro, mel: sound.mel, audio: sound.audio } },
       [left.buffer, right.buffer, pro.buffer, sound.mel.buffer, sound.audio.buffer]);
   } catch (error) { state.pending = false; setStatus(`The brain stopped: ${error.message}`, 'error'); state.brainReady = false; return; }
   state.pending = false;
@@ -280,7 +280,7 @@ async function moment(now) {
   if (reply.arrays.left && desc?.eye) { drawHostEye(ui.eyeL, reply.arrays.left, desc.eye.w, desc.eye.h, false); drawHostEye(ui.eyeR, reply.arrays.right, desc.eye.w, desc.eye.h, true); }
   const subject = state.subject ? distanceOf(state.subject) : null;
   view.update(reply, reply.arrays, subject);
-  brain3d?.update(reply.arrays.activity);
+  brain3d?.update(reply.arrays.activity, reply);
   if (reply.arrays.voice?.length) { // the voice motor's frames: the parrot says them
     const spoken = audio.speak(reply.arrays.voice);
     const what = reply.said ? (reply.said.source === 'you' ? 'a sound learned from you' : reply.said.source === 'recording' ? `a ${reply.said.tag}` : 'a babble') : 'a sound';
@@ -617,7 +617,7 @@ ui.pistachio.addEventListener('click', () => {
     state.reward = 1; state.pistachios += 1; ui.pistachios.textContent = String(state.pistachios);
     brain3d?.reward();
     $('dopamine').hidden = false;
-    $('dopamine-note').textContent = desc?.placeholder ? 'This placeholder brain learns nothing from it: the composed brain does the strengthening.' : '';
+    $('dopamine-note').textContent = typeof state.lastReply?.vta === 'number' ? 'Its dopamine runs out from the VTA (the gold wash), and the tracts it strengthens glow.' : 'This brain has no dopamine signal: the view marks the pistachio arriving, and no synapse changes.';
     clearTimeout(state.dopTimer); state.dopTimer = setTimeout(() => { $('dopamine').hidden = true; }, 4200);
   }, () => {});
   if (!thrown) toast('It is eating the last one', '', 1400);
@@ -706,8 +706,8 @@ async function start() {
       void panel;
     });
   }
-  view = new BrainView({ canvas: $('brain'), units: $('dist-units'), tuning: $('dist-tuning'), readout: $('dist-readout'), silence: ui.silence, joints: $('joints') });
-  window.parrotPage = { room, state, eyes, audio, get parrot() { return parrot; }, place, addThing, move: (id, x, z) => room.move(id, x, z), remove: (id) => room.remove(id),
+  view = new BrainView({ regions: $('brain'), units: $('dist-units'), tuning: $('dist-tuning'), readout: $('dist-readout'), silence: ui.silence, joints: $('joints') });
+  window.parrotPage = { room, state, eyes, audio, get brainView() { return view; }, get brain3d() { return brain3d; }, get parrot() { return parrot; }, place, addThing, move: (id, x, z) => room.move(id, x, z), remove: (id) => room.remove(id),
     describe: () => room.describe(), load: (d) => room.load(d), script: runScript, TEST, setLook, setMode, distanceOf, camera, THREE,
     view(name) { const v = VIEWS[name]; if (!v) return; camera.position.set(...v[0]); controls.target.set(...v[1]); controls.update(); },
     screenOf(x, y, z) { const v = new THREE.Vector3(x, y, z).project(camera); const r = canvas.getBoundingClientRect(); return [r.left + (v.x + 1) / 2 * r.width, r.top + (1 - v.y) / 2 * r.height]; } };
@@ -739,7 +739,7 @@ async function start() {
     brain3d.setup(desc);
     ui.sub.textContent = desc.placeholder ? `${desc.title} · ${desc.neurons} units` : `${desc.title || desc.name} · ${desc.neurons.toLocaleString('en')} neurons${desc.newborn ? ' · a newborn' : ''}`;
     const g = (desc.groups || []).find((x) => x.variable === 'distance');
-    if (g) { $('dist-title').textContent = g.title; $('dist-card').setAttribute('data-explain', g.explain); $('dist-card').setAttribute('data-explain-title', g.title); }
+    void g; // the brain panel names the distance card (the arcopallium's distance neurons)
     state.brainReady = true;
     setStatus('Ready', 'ready');
     ui.status.title = `Brain loaded in ${(desc.startup_ms / 1000).toFixed(1)} s`;

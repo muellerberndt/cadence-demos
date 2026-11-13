@@ -2,7 +2,7 @@
 // y up, z toward the beak), each with its bird counterpart, its role, its status (in the library,
 // being built, planned) and its size; and the tracts between them. The page's 3D brain view draws
 // these and fills the regions the running brain has with its neurons.
-export const SYS = { vision: 'Eyes and seeing', map: 'Map and memory', hearing: 'Hearing and voice', words: 'Words', motor: 'Body and movement', reward: 'Reward' };
+export const SYS = { vision: 'Eyes and seeing', map: 'Map and memory', hearing: 'Hearing and voice', words: 'Words', motor: 'Body and movement', reward: 'Reward', mod: 'Neuromodulators' };
 export const R = [
   // vision
   { id: 'retina', name: 'Retina', bird: 'the two eyes, on the sides of the head', sys: 'vision', st: 'wip', n: 1100, at: [2.7, -0.15, 1.1], r: [0.12, 0.55, 0.55], bi: true, issue: 332,
@@ -58,8 +58,13 @@ export const R = [
   // reward
   { id: 'striatum', name: 'Striatum', bird: 'the basal ganglia: the actor', sys: 'reward', st: 'built', n: 128, at: [0.7, -0.25, 0.95], r: [0.3, 0.22, 0.3], bi: true, issue: 331,
     role: 'Learns which choices pay. With the critic it is the actor-critic of the library.' },
-  { id: 'vta', name: 'VTA and SNc: dopamine', bird: 'the midbrain’s dopamine', sys: 'reward', st: 'built', n: 32, at: [0, -0.95, -0.4], r: [0.22, 0.15, 0.2], bi: false, issue: 326,
+  { id: 'vta', name: 'VTA and SNc: dopamine', bird: 'the midbrain’s dopamine', sys: 'reward', hue: '#ffc23d', st: 'built', n: 32, at: [0, -0.95, -0.4], r: [0.22, 0.15, 0.2], bi: false, issue: 326,
     role: 'The pistachio arrives here. The difference between the reward and what was expected turns tentative links into lasting ones.' },
+  // the neuromodulators' nuclei (each sends one chemical far through the brain)
+  { id: 'lc', name: 'Locus coeruleus: noradrenaline', bird: 'a small nucleus in the brainstem that sends noradrenaline to nearly the whole brain', sys: 'mod', hue: '#5b8cff', st: 'planned', n: 24, at: [0.22, -0.85, -1.95], r: [0.1, 0.08, 0.12], bi: true, issue: 337,
+    role: 'Fires when something surprising happens and raises the brain’s alertness: learning is faster and the moment is kept more readily.' },
+  { id: 'bf', name: 'Basal forebrain: acetylcholine', bird: 'cholinergic nuclei below the forebrain (and the isthmic nuclei for the tectum)', sys: 'mod', hue: '#5fd08e', st: 'planned', n: 24, at: [0.4, -0.7, 0.55], r: [0.14, 0.09, 0.14], bi: true, issue: 337,
+    role: 'Turns up the gain where attention is: the place in focus is seen sharper and learned from more.' },
 ];
 // The tracts (from -> to, a weight, what they carry)
 export const T = [
@@ -77,6 +82,43 @@ export const T = [
   ['arco', 'joints', 0.9, 'joint targets'], ['joints', 'body', 0.7, 'the body moved'],
   ['vta', 'striatum', 0.6, 'dopamine'], ['vta', 'ncl', 0.4, 'dopamine'], ['vta', 'words', 0.4, 'dopamine: a link made lasting'], ['striatum', 'arco', 0.4, 'the choice that pays'], ['ncl', 'striatum', 0.4, 'the moment’s state'],
 ];
-export const HUE = { vision: '#6cb6ff', map: '#3fd6c2', hearing: '#b49cff', words: '#f2e48a', motor: '#ffb454', reward: '#ff6b78' };
+export const HUE = { vision: '#6cb6ff', map: '#3fd6c2', hearing: '#b49cff', words: '#f2e48a', motor: '#ffb454', reward: '#ff6b78', mod: '#9aa7b8' };
+/** A region's own colour: its hue, else its system's. */
+export const hueOf = (r) => r.hue || HUE[r.sys];
+
+// Short names (the 3D labels) and what each region does, in a few words (the right panel's cards)
+export const SHORT = { tectum: 'Tectum', rotundus: 'Rotundus', wulst: 'Wulst', flow: 'Flow nuclei', place: 'Gaze to place', map: 'Hippocampus',
+  records: 'Records', heads: 'Memory heads', ncl: 'NCL', trace: 'Trace', words: 'Words', ear: 'Ears', brainstem_aud: 'Cochlear nuclei',
+  mld: 'MLd', fieldl: 'Field L', ncm: 'NCM, CM', vocal: 'Vocal core', voice: 'Voice', arco: 'Arcopallium', body: 'Body sense',
+  joints: 'Joints', cerebellum: 'Cerebellum', striatum: 'Striatum', vta: 'VTA: dopamine', retina: 'Retina', lc: 'Locus coeruleus', bf: 'Basal forebrain' };
+export const DOES = { retina: 'what each eye sees', tectum: 'what stands out, the focus', rotundus: 'what a thing looks like, its kind', wulst: 'two views compared',
+  arco: 'how far, the moves', map: 'the map of things', ear: 'the sound’s bands', fieldl: 'sound features', ncm: 'heard sound, held', voice: 'the bands it says',
+  records: 'sounds kept', words: 'links from sounds to things', vocal: 'the word chosen to say', place: 'where it is', ncl: 'the present moment' };
+
+// The neuromodulators: each a nucleus, a colour, and where its fibres go (weights for the wash)
+export const MOD = {
+  dopamine: { name: 'Dopamine', from: 'vta', colour: '#ffc23d', to: { striatum: 1, ncl: 0.8, vocal: 0.6, words: 0.6, records: 0.4, map: 0.3 },
+    explain: 'Dopamine, from the VTA in the midbrain. It answers a reward against what was expected: more than expected (a pistachio after a good try) and it surges, less and it dips. Where it arrives, the synapses that just fired are made lasting. Drawn as a gold wash travelling out from the VTA.' },
+  noradrenaline: { name: 'Noradrenaline', from: 'lc', colour: '#5b8cff', to: { ncl: 1, map: 0.8, tectum: 0.8, fieldl: 0.6, ncm: 0.6, rotundus: 0.5, cerebellum: 0.5 },
+    explain: 'Noradrenaline, from the locus coeruleus in the brainstem. It fires when something surprising happens and wakes the whole brain up: what follows is learned faster and kept more readily. Drawn as a blue wash.' },
+  acetylcholine: { name: 'Acetylcholine', from: 'bf', colour: '#5fd08e', to: { tectum: 1, ncl: 0.8, rotundus: 0.6, fieldl: 0.6, map: 0.5 },
+    explain: 'Acetylcholine, from the basal forebrain. It turns up the gain where attention is: the thing in focus is seen sharper and learned from more. Drawn as a green wash toward the focus.' },
+};
+
+// How the memories connect: the path of each kind of memory through the regions, in order
+export const PATHS = [
+  { id: 'images', name: 'Images', colour: '#6cb6ff', via: ['retina', 'rotundus', 'map'],
+    steps: ['eyes', 'what it looks like, its kind', 'where it is'],
+    explain: 'How the parrot keeps a thing it sees. The eyes’ images reach the retina; rotundus and the entopallium learn what the thing looks like and which kind it is; the hippocampus writes it on the map of things at its place, and holds it there when it goes out of view.' },
+  { id: 'sounds', name: 'Sounds', colour: '#b49cff', via: ['ear', 'fieldl', 'ncm', 'records'],
+    steps: ['the ear’s bands', 'sound features', 'the sound, held', 'a record slot'],
+    explain: 'How the parrot keeps a sound. The ear splits it into frequency bands; Field L and NCM compress it; the whole sound is kept in a record slot, as a sound and never as letters. Heard again, its record grows deeper and fades more slowly.' },
+  { id: 'words', name: 'Words', colour: '#f2e48a', via: ['records', 'words', 'rotundus'],
+    steps: ['the sound’s record', 'its link', 'the thing in focus'],
+    explain: 'How a sound comes to mean a thing. When a sound is heard while the parrot looks at a thing, synapses link the sound’s record to that thing. Said again while it looks at the same thing, the link grows: the sound becomes the thing’s word.' },
+  { id: 'saying', name: 'Saying', colour: '#ff8a5c', via: ['records', 'vocal', 'voice'],
+    steps: ['the word’s record', 'the vocal core', 'the voice'],
+    explain: 'How the parrot says a word. Its record is read out to the vocal core, which drives the voice with the bands it remembers. It hears itself, compares, and says it a little better the next time.' },
+];
 export const STC = { built: '#3fd6c2', wip: '#ffb454', planned: '#6c737c' };
 export const STN = { built: 'in the library', wip: 'being built', planned: 'planned' };
