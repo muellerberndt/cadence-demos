@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tron · Help</title>
+  <meta name="description" content="What the Tron demo shows: Cadence brains play strong games. A deep brain sees the whole arena and settles on every move in your browser, and the page draws every neuron of the settle.">
+  <link rel="stylesheet" href="cadence-help.css">
+  <script src="cadence-explain.js" defer></script>
+  <style>
+    .svg-label { font: 500 11px ui-monospace, "IBM Plex Mono", Menlo, monospace; fill: #cfe0e3; }
+    .svg-quiet { font: 500 9.5px ui-monospace, "IBM Plex Mono", Menlo, monospace; fill: #8ea4aa; }
+    .svg-you { font: 700 12px ui-monospace, "IBM Plex Mono", Menlo, monospace; fill: #2de2ff; }
+    .svg-them { font: 700 12px ui-monospace, "IBM Plex Mono", Menlo, monospace; fill: #ff4fd8; }
+  </style>
+</head>
+<body>
+  <header class="help-bar"><span class="crumb">cadence / <b>tron</b> / help</span><span class="spacer"></span><a href="./">Back to the demo</a></header>
+  <main class="help">
+    <h1>Tron</h1>
+    <p class="lede">A light-cycle game in your browser. You ride the blue cycle, a Cadence brain rides the pink one, and each leaves a wall of light behind it. Beside the arena you see every neuron of the brain settle on each of its moves.</p>
+    <p class="shows"><b>What it shows about Cadence</b>Cadence brains play strong games. This brain sees the whole arena and answers every move with one settle of the whole brain, in your browser, in real time. On its own it beat a bot that looks one move ahead in 102 of 128 games. The page shows how it reaches each answer: every neuron, sweep by sweep, until the whole brain agrees.</p>
+    <nav class="toc" aria-label="On this page"><a href="#see">What you see</a><a href="#why">Why it matters</a><a href="#do">What you can do</a><a href="#how">How it works</a><a href="#numbers">The numbers</a><a href="#limits">Limits</a><a href="#keys">Keys</a></nav>
+
+    <h2 id="see">What you see</h2>
+    <figure>
+      <svg viewBox="0 0 720 380" role="img" aria-label="The page: the header with the score and the switches; the arena on the left with the blue and the pink trails; the brain on the right seen from the side, with the visual cortex at the back, the layers L1, L2 and L3, the motor strip on top with the look-ahead's bars beside it, the selection nucleus below, and the settling curve at the bottom.">
+        <rect x="0.5" y="0.5" width="719" height="379" rx="10" fill="#03060c" stroke="#22323a"/>
+        <text class="svg-you" x="14" y="26">TRON</text><text class="svg-quiet" x="56" y="26">vs</text><text class="svg-them" x="76" y="26">MAKO DEEP</text>
+        <text class="svg-you" x="300" y="27">2</text><text class="svg-quiet" x="316" y="27">:</text><text class="svg-them" x="328" y="27">5</text>
+        <rect x="420" y="12" width="152" height="20" rx="4" fill="none" stroke="#3a4a5a"/><rect x="420" y="12" width="82" height="20" rx="4" fill="#ff4fd8" fill-opacity="0.85"/>
+        <text class="svg-quiet" x="426" y="26" style="fill:#000">BRAIN+SEARCH</text><text class="svg-quiet" x="508" y="26">ALONE</text>
+        <rect x="580" y="12" width="70" height="20" rx="4" fill="none" stroke="#3a4a5a"/><text class="svg-quiet" x="586" y="26">FLAT DEEP</text>
+        <text class="svg-quiet" x="660" y="26">HELP</text>
+        <!-- the arena -->
+        <rect x="14" y="44" width="300" height="300" rx="10" fill="#050b18" stroke="#2a4a7a"/>
+        <polyline points="60,300 60,200 140,200 140,120" fill="none" stroke="#2de2ff" stroke-width="5" stroke-linecap="round"/>
+        <polyline points="270,90 270,170 200,170 200,250" fill="none" stroke="#ff4fd8" stroke-width="5" stroke-linecap="round"/>
+        <text class="svg-label" x="164" y="366" text-anchor="middle">the arena: you are blue, the brain pink</text>
+        <!-- the brain -->
+        <rect x="330" y="44" width="376" height="300" rx="10" fill="#060c18" stroke="#1d2c44"/>
+        <text class="svg-quiet" x="340" y="60">ANATOMY LAYERS</text>
+        <ellipse cx="520" cy="190" rx="176" ry="112" fill="#141c34" stroke="#2c3a60"/>
+        <rect x="630" y="140" width="56" height="56" fill="#0b1a2c" stroke="#8cc8ff" stroke-opacity="0.6"/>
+        <text class="svg-label" x="658" y="132" text-anchor="middle">visual cortex</text>
+        <ellipse cx="600" cy="196" rx="30" ry="22" fill="#6ea0ff" fill-opacity="0.25"/><text class="svg-quiet" x="600" y="200" text-anchor="middle">L1</text>
+        <ellipse cx="530" cy="220" rx="24" ry="18" fill="#5ad7ff" fill-opacity="0.25"/><text class="svg-quiet" x="530" y="224" text-anchor="middle">L2</text>
+        <ellipse cx="452" cy="196" rx="16" ry="13" fill="#9682ff" fill-opacity="0.3"/><text class="svg-quiet" x="452" y="200" text-anchor="middle">L3</text>
+        <ellipse cx="380" cy="200" rx="16" ry="20" fill="#50ebc8" fill-opacity="0.08" stroke="#50ebc8" stroke-opacity="0.2"/><text class="svg-quiet" x="380" y="236" text-anchor="middle">trace, off</text>
+        <g fill="#dce6ff"><circle cx="490" cy="110" r="6"/><circle cx="510" cy="110" r="6"/><circle cx="530" cy="110" r="6"/></g>
+        <text class="svg-label" x="510" y="92" text-anchor="middle">motor strip ← ↑ →</text>
+        <g fill="#ffc45a"><rect x="560" y="100" width="7" height="16"/><rect x="574" y="94" width="7" height="22"/><rect x="588" y="108" width="7" height="8"/></g>
+        <text class="svg-quiet" x="604" y="112">look-ahead</text>
+        <path d="M490 102 Q 500 82 510 102" fill="none" stroke="#ffc45a" stroke-width="2"/>
+        <circle cx="508" cy="272" r="12" fill="#e6e6ff" fill-opacity="0.15" stroke="#e6e6ff" stroke-opacity="0.3"/><text class="svg-quiet" x="508" y="296" text-anchor="middle">selection</text>
+        <polyline points="346,320 366,326 386,330 406,333 426,334 446,335" fill="none" stroke="#78c8ff"/>
+        <text class="svg-quiet" x="346" y="312">settling, sweep by sweep</text>
+        <text class="svg-label" x="518" y="366" text-anchor="middle">the brain, every neuron, live</text>
+      </svg>
+      <figcaption>The page, drawn by hand. The amber arc over the motor strip marks a move the look-ahead overruled. Every part of the real page carries a question mark that explains it.</figcaption>
+    </figure>
+    <ul>
+      <li><b>The header</b>: the score (your wins : the brain's wins), the switches for who plays and which brain, your record against this brain, this help, and the sound.</li>
+      <li><b>The arena</b>: 24 by 24 cells. Each rider leaves a trail; hitting a wall or a trail ends the round, and the last rider moving wins.</li>
+      <li><b>The brain</b>, drawn as a brain seen from the side, front to the left. At the back, the <b>visual cortex</b>: what the brain sees. Then the <b>layers</b> L1, L2 and L3 (one region for the flat brain), the <b>motor strip</b> on top with its three neurons (turn left, ride straight, turn right), the <b>selection</b> nucleus below that shows the pick, and a dark <b>dopamine</b> nucleus: nothing rewards the brain while you play. The fibres between the regions light up with the signals they carry.</li>
+      <li><b>The look-ahead's bars</b> beside the motor strip, when the look-ahead plays: its value for each move. An amber arc means it overruled the brain.</li>
+      <li><b>The settling curve</b> at the bottom left: the largest change of any neuron, sweep by sweep, falling to rest.</li>
+    </ul>
+
+    <h2 id="why">Why it matters</h2>
+    <p><b>Strong play from a brain that settles.</b> A Cadence brain does not compute its move in one pass from input to output. All its neurons adjust to one another, sweep after sweep, until the whole brain agrees; the move is read from that agreement. This brain plays well that way: on its own it wins most games against a bot that looks one move ahead, and the page runs it in your browser at about 11 ms a move, well inside the game's 120 ms tick.</p>
+    <p><b>You can watch it think.</b> The page draws every neuron of every settle. Point at a neuron and it tells you what it tracks, such as a wall within two cells ahead or your head close by on the right, and whether silencing it changes the move.</p>
+    <p><b>The depth is real.</b> The deep brain's deeper layers decide its moves: with their pathway cut, it changes 82% of its moves and loses every game against the same bot.</p>
+    <p>A conventional network could also learn to play Tron well. This demo shows that Cadence brains play strong games, and lets you see how they reach each move.</p>
+
+    <h2 id="do">What you can do</h2>
+    <ul>
+      <li><b>Ride.</b> Press Space (or tap the arena) to start a round. Steer with the arrow keys or WASD, or swipe on a touch screen.</li>
+      <li><b>Choose who plays.</b> BRAIN + SEARCH, the default: the brain proposes each move and a look-ahead over the rules checks it. BRAIN ALONE: only the brain's settled move.</li>
+      <li><b>Choose the brain.</b> DEEP (three layers) or FLAT (one region).</li>
+      <li><b>Choose the drawing.</b> ANATOMY shows the brain seen from the side; LAYERS shows the same neurons layer by layer, grouped by what they track, with what each layer knows.</li>
+      <li><b>Point at a neuron</b> to see its card: what it tracks, the evidence, its live activity, and its receptive field drawn on the arena. Click a neuron to keep its card; click it again or press Escape to let go.</li>
+      <li><b>Rest the pointer on a question mark</b> to see what a part of the page does.</li>
+      <li><b>Your record</b> against each brain and player is kept in this browser.</li>
+    </ul>
+
+    <h2 id="how">How it works</h2>
+    <dl class="words">
+      <dt>What it sees</dt><dd>2,470 inputs: the whole arena turned so that its own heading points up, as four sheets (walls and trails, your trail, its head, your head), a 9 by 9 close-up around its head (walls and trails, your head), and your heading.</dd>
+      <dt>The brain</dt><dd>Deep: three layers of 256, 128 and 32 neurons, 2,921 neurons and 708,806 synapses in all. Flat: one region of 256, 2,985 neurons and 699,398 synapses.</dd>
+      <dt>One move</dt><dd>The brain starts from rest, settles on the arena, and its strongest motor neuron is the move. It keeps nothing from one move to the next.</dd>
+      <dt>The look-ahead</dt><dd>A search over the game's rules, four rounds deep: each of its moves, your best reply knowing it, and so on. It scores positions by the cells each rider reaches first and by who crashes first, and gives the brain's pick a head start of 8 cells, so it keeps the brain's move unless another is clearly better. It contains no neural network.</dd>
+      <dt>How it learned</dt><dd>Offline, before the page: by imitating a search bot, then from positions a search labelled along its own games, and by playing against its own earlier generations and other bots. The deep brain grew its layers from the flat one, then learned from its own brain guiding a tree search. While you play it learns nothing.</dd>
+    </dl>
+    <p>The brain runs on the released <code>cadence-net</code> 0.95.2 library, in Python inside your browser (Pyodide), in its own thread. The look-ahead runs in a second thread.</p>
+
+    <h2 id="numbers">The numbers</h2>
+    <table>
+      <thead><tr><th>Player</th><th>voronoi</th><th>voronoi2</th><th>voronoi3</th><th>ab5</th></tr></thead>
+      <tbody>
+        <tr><td>Deep brain alone</td><td class="n">0.80</td><td class="n">0.13</td><td class="n">0.20</td><td class="n">0.08</td></tr>
+        <tr><td>Deep brain + look-ahead (the page)</td><td class="n">0.93</td><td class="n">0.70</td><td class="n">0.70</td><td class="n">0.45</td></tr>
+        <tr><td>Flat brain alone</td><td class="n">0.80</td><td class="n">0.20</td><td class="n">0.25</td><td class="n">0.14</td></tr>
+        <tr><td>Flat brain + look-ahead</td><td class="n">0.91</td><td class="n">0.66</td><td class="n">0.65</td><td class="n">0.51</td></tr>
+      </tbody>
+    </table>
+    <p class="note">The share of points in 128 games against each bot (64 arenas, each played from both seats; a draw counts half): <code>evidence/search-readings.json</code>. The deep brain alone won 102 and lost 26 against <code>voronoi</code>. The bots: <code>voronoi</code> moves to the cell that leaves it the most cells it reaches first, one move ahead for both riders; <code>voronoi2</code> and <code>voronoi3</code> look two and three rounds ahead; <code>ab5</code> is the look-ahead itself at five rounds, with no brain.</p>
+    <table>
+      <thead><tr><th>Reading</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Deep pathway cut: moves that change</td><td class="n">82%</td></tr>
+        <tr><td>Deep pathway cut: score against voronoi (64 games)</td><td class="n">0.80 → 0.00</td></tr>
+        <tr><td>On the page: the brain's time per move, median (deep)</td><td class="n">11.1 ms</td></tr>
+        <tr><td>On the page: the look-ahead's time per move, median and largest (deep)</td><td class="n">11.6 ms, 31.5 ms</td></tr>
+        <tr><td>On the page: the deep brain plays the native brain's moves, every move</td><td class="n">yes</td></tr>
+        <tr id="page-run"><td>On this page, 32 scripted games against voronoi, the brain in its page seat: brain alone</td><td class="n">25 won, 7 lost</td></tr>
+        <tr><td>The same 32 arenas: brain + look-ahead (it overruled 462 of 4,639 moves)</td><td class="n">29 won, 2 lost, 1 draw</td></tr>
+      </tbody>
+    </table>
+    <p class="note">The cut: <code>evidence/deep-ablation.json</code>. The times and the move check: <code>evidence/page_check.json</code>. The scripted games: <code>evidence/promise-20261113.json</code>, made by <code>tools/promise_test.py</code> on the page in a headless browser; its first four games match the native brain move for move. All files are in the <code>tron</code> folder of the repository.</p>
+
+    <h2 id="limits">Limits</h2>
+    <ul>
+      <li><b>The look-ahead knows the rules.</b> The default player's strength against the bots comes from the brain and the search together. The brain alone loses most games to bots that look two or more rounds ahead.</li>
+      <li><b>No learning while you play, no memory between moves.</b> These brains are frozen on the page and settle every move from rest. This demo does not show learning during life or memory; other Cadence demos do.</li>
+      <li><b>Not only possible with Cadence.</b> Other kinds of networks also play Tron. The demo shows strong play from settling brains, and lets you watch the settle.</li>
+      <li><b>Settled is not right.</b> A settled state means the brain agrees with itself within a tolerance; it says nothing about the quality of the move.</li>
+      <li><b>Readings depend on the arenas.</b> Games from one start seed are alike, so two sets of arenas can read differently by more than the margin of either.</li>
+    </ul>
+
+    <h2 id="keys">Keys</h2>
+    <div class="keys">
+      <span><kbd>Space</kbd> or <kbd>Enter</kbd></span><span>Start a round (or ride again)</span>
+      <span><kbd>←</kbd> <kbd>↑</kbd> <kbd>→</kbd> <kbd>↓</kbd> or <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd></span><span>Steer</span>
+      <span><kbd>M</kbd></span><span>Sound on or off</span>
+      <span><kbd>Esc</kbd></span><span>Let go of a neuron's card</span>
+    </div>
+
+    <footer>The brain runs in your browser with cadence-net 0.95.2. <a href="https://github.com/muellerberndt/cadence-demos/tree/main/tron" target="_blank" rel="noopener">The demo on GitHub</a> · <a href="https://github.com/muellerberndt/cadence" target="_blank" rel="noopener">Cadence on GitHub</a></footer>
+  </main>
+</body>
+</html>

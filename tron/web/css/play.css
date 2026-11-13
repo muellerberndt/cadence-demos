@@ -109,3 +109,15 @@ button { font: inherit; color: inherit; }
   .bar .right { grid-column: 1 / -1; justify-self: stretch; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
   .pick a { padding: 4px 6px; font-size: 9px; letter-spacing: 0.12em; }
 }
+
+/* The page's explanations (cadence-explain.css): over the arena and the brain only the question
+   marks take the pointer, so a click on the arena starts a round and the neurons stay pointable. */
+.arena-wrap .cx-spot, .brain-wrap .cx-spot { pointer-events: none; }
+.arena-wrap .cx-spot > .cx-q, .brain-wrap .cx-spot > .cx-q { pointer-events: auto; }
+.bar .pick, .bar .score { position: relative; overflow: visible; }
+.pick a:first-child { border-radius: 5px 0 0 5px; } .pick a:last-child { border-radius: 0 5px 5px 0; }
+.views { overflow: visible; }
+.bar a.help { font-family: var(--display); font-weight: 700; font-size: 10px; letter-spacing: 0.18em; padding: 5px 8px;
+  color: var(--dim); text-decoration: none; border: 1px solid rgba(255,255,255,0.18); border-radius: 6px; }
+.bar a.help:hover, .bar a.help:focus-visible { color: var(--ink); border-color: var(--them); }
+.statswrap { display: inline-flex; align-items: center; }

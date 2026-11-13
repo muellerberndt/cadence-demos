@@ -69,6 +69,31 @@ const arena = new ArenaView($("arena"));
 const VIEW = new URLSearchParams(location.search).get("view") === "layers" ? "layers" : "anatomy";
 const brain = VIEW === "layers" ? new DeepView($("brain"), $("zoom")) : new AnatomyView($("brain"), $("zoom"));
 const sound = new Sound();
+
+// ---- the explanations (cadence-explain.js): question marks over the brain's parts and the arena --
+// Only the question marks take the pointer, so the neurons under a part stay pointable.
+const brainWrap = document.querySelector(".brain-wrap");
+const arenaWrap = $("arena-wrap");
+function placeBrainSpots() {
+  const CX = window.CadenceExplain;
+  if (!CX || !brain.explainParts) return;
+  CX.clearSpots(brainWrap);
+  for (const p of brain.explainParts(PLAYER === "search")) CX.spot(brainWrap, p.box, p.text, { title: p.title });
+}
+brain.onLayout = placeBrainSpots;
+function placeArenaSpot() {
+  const CX = window.CadenceExplain;
+  if (!CX) return;
+  CX.clearSpots(arenaWrap);
+  const w = arenaWrap.clientWidth, h = arenaWrap.clientHeight;
+  const el = CX.spot(arenaWrap, { x: 14, y: 14, w: w - 28, h: h - 28 },
+    "The arena, 24 by 24 cells: you ride the blue light cycle, the brain the pink one, and each leaves a wall of light behind it. Hit a wall or a trail and you lose; the last rider moving wins. Press Space or tap to ride, and steer with the arrow keys, WASD or a swipe.",
+    { title: "The arena" });
+  // A tap on the question mark explains; it does not start a round.
+  const q = el.querySelector(".cx-q");
+  if (q) for (const t of ["pointerdown", "pointerup"]) q.addEventListener(t, (e) => e.stopPropagation());
+}
+new ResizeObserver(placeArenaSpot).observe(arenaWrap);
 const steering = new Steering();
 const link = new Link((s) => { if (app.phase === "loading") els.status.textContent = s; });
 
