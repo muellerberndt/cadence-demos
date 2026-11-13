@@ -17,7 +17,7 @@ export function ArenaCanvas({ frame, specs, frameIndex, selected, onSelect, deal
   }, [frame, specs, frameIndex, selected, dealt]);
   return (
     <canvas
-      ref={ref} width={W} height={H} className="block w-full h-auto cursor-crosshair"
+      ref={ref} width={W} height={H} className="arena-canvas block cursor-crosshair"
       onClick={(e) => {
         if (!frame) return;
         const rect = e.currentTarget.getBoundingClientRect();
