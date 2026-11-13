@@ -2,12 +2,12 @@
  "schema": "cadence-ask-pack/1",
  "packed": "2026-11-13",
  "pyodide": "314.0.7",
- "cadence": "0.99.0+words.0e822a29",
+ "cadence": "0.99.0+words.7e772d38",
  "build": "development",
- "commit": "0e822a29dec8fb45ed70e3f3745703079fd6453c",
+ "commit": "7e772d38687bb69e0ad4f7c092a1b01a8d944d7e",
  "branch": "origin/lane-0100-words",
- "wheel": "0e822a29/cadence_net-0.99.0+words.0e822a29-py3-none-any.whl",
- "wheel_sha256": "00b76eebf7155d384e21d4095c91fcdca1909dba04a04de91f143ef7e6093cb2",
+ "wheel": "7e772d38/cadence_net-0.99.0+words.7e772d38-py3-none-any.whl",
+ "wheel_sha256": "0474ac7643a5e40ae74ea742eecbe39f81ec4c8563cd667b55c065f61457c392",
  "sources": [
   "__init__.py",
   "brain.py",
@@ -22,8 +22,8 @@
  },
  "brain": {
   "file": "parrot.npz",
-  "sha256": "74caab5f6d31f77dbb0783024fcfa4cdc53a75409d89573bf18ed7fbfc7d5999",
-  "bytes": 10635,
-  "readings": "raised-20261113-2047-0e822a29.json"
+  "sha256": "7e11414cf3cfd4c2838b579473149c9a60950e99d0b0e631f2ed056cd3a91ee2",
+  "bytes": 10827,
+  "readings": "raised-20261113-2104-7e772d38.json"
  }
 }

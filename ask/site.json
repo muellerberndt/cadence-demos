@@ -9,8 +9,8 @@
   "howTo": "Click a question or type one, and give a pistachio for a right answer. Drag the floor to turn the parrot, then ask what is behind it. Click the yellow kettle, name it three times, and ask where it is.",
   "help": "help.html",
   "evidence": [
-    "ask/evidence/raised-20261113-2047-0e822a29.json",
-    "ask/evidence/promise-20261113-2101-0e822a29.json"
+    "ask/evidence/raised-20261113-2104-7e772d38.json",
+    "ask/evidence/promise-20261113-2106-7e772d38.json"
   ],
   "promise_test": "python tools/check_page.py --shots <dir>",
   "about": "An African Grey parrot on its perch answers typed questions about its room: where a thing is, its colour, what is red, what is behind it. Its Cadence brain learned every word from naming, holds the room on its map (its blind spot too), and learns a new word in three namings.",

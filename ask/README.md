@@ -25,7 +25,7 @@ This is the demonstration page of the words lane of the library
 
 The brain the page loads, raised by `tools/raise_brain.py --practice reward` (seed 1: naming, then
 pistachios for right answers, the answer told only where there is nothing to find) and read on rooms
-it never saw (`evidence/raised-20261113-2047-0e822a29.json`, on `0.99.0+words.0e822a29`):
+it never saw (`evidence/raised-20261113-2104-7e772d38.json`, on `0.99.0+words.7e772d38`):
 
 | Reading | Right |
 | --- | --- |

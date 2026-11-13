@@ -227,7 +227,7 @@ async function name(word) {
   word = String(word || '').trim().toLowerCase().replace(/\s+/g, ' ');
   const t = S.things.find((x) => x.id === S.teach);
   if (!t || !S.ready || S.busy) return;
-  if (!/^[a-z' ]{1,16}$/.test(word)) { $('teach-count').textContent = 'letters only, up to 16'; return; }
+  if (!/^[a-z']{1,16}$/.test(word)) { $('teach-count').textContent = 'one word, letters only'; return; }
   S.busy = true; setBusy();
   try {
     while (momentBusy) await new Promise((r) => setTimeout(r, 30));
