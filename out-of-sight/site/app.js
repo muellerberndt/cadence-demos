@@ -149,7 +149,7 @@ function showOnMap(entries) {
   const ago = (e) => `${Math.max(0, Math.round((e.since || 0) * DT))} s`;
   const word = (e) => (e.state === 'held' || e.state === 'near' ? `${e.state} · ${ago(e)}` : e.state);
   const items = entries.map((e) => { const [name, color] = ON_MAP[e.name] || [e.name, '#c7d0ea']; return `<span><i style="background:${color}"></i>${name} <em>${word(e)}</em></span>`; });
-  const html = `<span class="lead">On the brain’s map</span>${items.length ? items.join('') : '<span><em>nothing</em></span>'}`;
+  const html = items.length ? items.join('') : '<span><em>nothing</em></span>';
   if (html !== state.onMap) { state.onMap = html; $('onmap').innerHTML = html; }
 }
 
@@ -545,6 +545,18 @@ const tour = {
 // -- drawing
 
 let lastFrame = performance.now();
+// The room's name and the "out of view" chip stand at the room's top left corner, wherever the
+// room is drawn inside its pane.
+function placeRoomWords() {
+  const g = stage.geometry, [x, y] = sceneView.toScreen([g.plane[0], g.plane[3]]);
+  const key = `${Math.round(x)},${Math.round(y)}`;
+  if (key === state.roomWordsAt) return;
+  state.roomWordsAt = key;
+  $('room-label').style.left = `${x + 8}px`; $('room-label').style.top = `${y + 6}px`;
+  const chips = document.querySelector('.chips');
+  if (chips) { chips.style.left = `${x + 8}px`; chips.style.top = `${y + 28}px`; }
+}
+
 function frame(now) {
   const interval = now - lastFrame; lastFrame = now;
   state.frameTimes.push(interval); if (state.frameTimes.length > 1800) state.frameTimes.shift();
@@ -560,6 +572,7 @@ function frame(now) {
     asked: state.said && now - state.said.at < 2200 ? state.said : null,
     hint: press || tour.active ? null : state.hover,
   }, now);
+  placeRoomWords();
   if (state.more) chartView.draw(state.history, { compare: true, dt: DT });
   brainView.frame(now, interval);
   if (card.mode) renderCard();

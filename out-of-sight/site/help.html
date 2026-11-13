@@ -2,63 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#06080e">
-  <meta name="description" content="What the Out of sight page shows: a robot, its camera and arm, a brain's map of what is where, and how the map holds a thing it cannot see.">
-  <title>Out of sight · Help</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Out of Sight · Help</title>
+  <meta name="description" content="What the Out of Sight demo shows: a robot's brain keeps a map of where everything is, even what its camera cannot see.">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="cadence-help.css">
+  <script src="cadence-explain.js" defer></script>
   <style>
-    .help-page { max-width: 760px; margin: 0 auto; padding: 28px 16px 64px; color: #c6cde3; font-size: 15.5px; line-height: 1.62; }
-    .help-page h1 { margin: 0 0 6px; color: var(--text); font-size: clamp(24px, 4vw, 32px); font-weight: 650; letter-spacing: -0.02em; line-height: 1.2; }
-    .help-page .lede { margin: 0 0 22px; color: var(--muted); font-size: 16.5px; }
-    .help-page h2 { margin: 40px 0 10px; color: var(--text); font-size: 19px; font-weight: 650; letter-spacing: -0.01em; }
-    .help-page p { margin: 0 0 12px; }
-    .help-page b { color: var(--text); font-weight: 600; }
-    .help-page ul, .help-page ol { margin: 0 0 14px; padding-left: 22px; }
-    .help-page li { margin: 0 0 7px; }
-    .help-page li::marker { color: var(--faint); }
-    .help-page nav.toc { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0 0 6px; font-size: 13.5px; }
-    .help-page nav.toc a { color: var(--muted); text-decoration: none; }
-    .help-page nav.toc a:hover { color: var(--brain); }
-    .help-page figure { margin: 18px 0 8px; }
-    .help-page figure svg { display: block; width: 100%; height: auto; border: 1px solid var(--line-2); border-radius: 12px; background: #0a0f1d; }
-    .help-page figcaption { margin-top: 8px; color: var(--faint); font-size: 13px; }
-    .help-page dl.words { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0 0 14px; }
-    .help-page dl.words dt { font: 500 13px/1.6 var(--mono); color: var(--text); white-space: nowrap; }
-    .help-page dl.words dd { margin: 0; }
-    .help-page table { width: 100%; border-collapse: collapse; margin: 6px 0 14px; font-size: 14px; }
-    .help-page th, .help-page td { padding: 7px 10px 7px 0; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
-    .help-page th { color: var(--muted); font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
-    .help-page td.n { font-family: var(--mono); color: var(--text); white-space: nowrap; }
-    .help-page .back { display: inline-block; margin-top: 30px; }
-    .help-page .note { color: var(--muted); font-size: 14px; }
-    .help-page .keys { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; font-size: 14.5px; }
-    .help-page .keys span:nth-child(odd) { white-space: nowrap; }
-    .svg-label { font: 500 10px 'JetBrains Mono', ui-monospace, monospace; fill: #c7d0ea; }
-    .svg-quiet { font: 500 9px 'JetBrains Mono', ui-monospace, monospace; fill: #8d97b2; }
-    @media (max-width: 560px) { .help-page { font-size: 15px; } .help-page dl.words, .help-page .keys { grid-template-columns: 1fr; gap: 2px; } .help-page dl.words dd { margin-bottom: 8px; } }
+    .svg-label { font: 500 10px ui-monospace, "IBM Plex Mono", Menlo, monospace; fill: #cfe0e3; }
+    .svg-quiet { font: 500 9px ui-monospace, "IBM Plex Mono", Menlo, monospace; fill: #8ea4aa; }
   </style>
 </head>
 <body>
-  <header class="bar">
-    <a class="brand" href="./" aria-label="Back to the page"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 17h5l4-10 7 20 4-13h6"/></svg><span class="lib">cadence</span><span class="slash">/</span><span class="sub">out of sight · help</span></a>
-    <span style="flex:1"></span>
-    <nav class="tools" aria-label="The page"><a class="help" href="./">Back to the page</a></nav>
-  </header>
+  <header class="help-bar"><span class="crumb">cadence / <b>out of sight</b> / help</span><span class="spacer"></span><a href="./">Back to the demo</a></header>
+  <main class="help">
+    <h1>Out of Sight</h1>
+    <p class="lede">A robot looks around a room. Its camera sees only part of it. Hide a hand behind a pillar, and the robot’s brain keeps track of it anyway.</p>
+    <p class="shows"><b>What it shows about Cadence</b>A Cadence brain keeps a map of what is where in its own state: real memory of the room that lasts from moment to moment and runs in real time, like the brain of a living being keeps track of the things around it. Nothing outside the brain keeps a list.</p>
+    <nav class="toc" aria-label="On this page"><a href="#see">What you see</a><a href="#why">Why it matters</a><a href="#do">What you can do</a><a href="#how">How it works</a><a href="#numbers">The numbers</a><a href="#limits">Limits</a><a href="#keys">Keys</a></nav>
 
-  <main class="help-page">
-    <h1>What the page shows</h1>
-    <p class="lede">A robot sees only part of a room. To act safely around people and things, it has to know where everything is, including what its camera cannot see. This page shows a Cadence brain doing that: it keeps a map of what is where, and a thing that goes out of sight stays on the map.</p>
-    <nav class="toc" aria-label="On this page">
-      <a href="#room">The room</a><a href="#map">The map</a><a href="#line">The “On the map” line</a><a href="#hands">The two hands</a><a href="#apple">The apple and the bread</a><a href="#arm">When the arm moves</a><a href="#brain">The brain</a><a href="#details">Details</a><a href="#limits">What the map does not do</a><a href="#try">Things to try</a><a href="#keys">Keys</a>
-    </nav>
-
-    <h2 id="room">The room</h2>
-    <p>The left half of the page is a room seen from above. The right half is the robot’s brain.</p>
+    <h2 id="see">What you see</h2>
+    <p>The left half of the page is a room seen from above. The right half is the robot’s brain, live.</p>
     <figure>
       <svg viewBox="0 0 400 320" role="img" aria-label="The room from above: the robot near the middle with its camera looking left, the lit view, the pillar and its shadow, the robot's arm folded at the bottom with its shadow, the hand and the apple in view, and the bread behind the robot.">
         <defs>
@@ -100,19 +64,39 @@
         <text class="svg-quiet" x="58" y="191" text-anchor="middle">out of view</text>
         <text class="svg-quiet" x="232" y="32" text-anchor="middle">lit: the camera sees it</text>
       </svg>
-      <figcaption>The room as the page opens. The teal ring around the hand is where the map holds it.</figcaption>
+      <figcaption>The room as the page opens. The teal ring around the hand is where the brain’s map holds it.</figcaption>
     </figure>
     <ul>
       <li><b>The robot</b> carries a camera. The lit area is what the camera sees, and in view it reports each thing’s position about a centimetre off.</li>
       <li><b>Out of view</b> are the hatched shadows of the pillar and the arm, and everything beside or behind the robot. The camera reports nothing there.</li>
       <li><b>The robot’s arm</b> has two links on a base. Its joints carry sensors that read their angles.</li>
       <li><b>Three things</b> stand in the room: a hand, an apple and a slice of bread.</li>
+      <li><b>The switch</b> above the room picks the hand the brain follows: a person’s hand, which moves by itself, or the robot’s own hand at the end of its arm.</li>
+      <li><b>The line under the room</b> lists everything on the brain’s map and how the map holds it.</li>
     </ul>
-    <p>You can drag the hand, the apple, the bread and the pillar. Drag the floor to turn the robot, and click the robot to switch its camera off and on. Rest the mouse anywhere in the room and a few words beside it say what a drag and a click do there.</p>
 
-    <h2 id="map">The map</h2>
-    <p>The brain holds a map of what is where. The map is a sheet of 32 by 26 cells laid over the room, each about 6 cm across. Every cell has 16 units, and their pattern names a kind of thing: hand, apple or bread. A thing on the map is a small patch of active cells at its place, carrying the pattern of its kind. So at any moment the map reads like “a hand here, an apple there, bread over there”. Several things can be on it at once, each tied to its kind.</p>
-    <p>The map starts empty, and nothing about the room is given to the brain beforehand. Only the senses change the map, by these rules:</p>
+    <h2 id="why">Why it matters</h2>
+    <p>A robot that works near people has to know where their hands are, including the moments its camera cannot see them. Out of Sight shows a Cadence brain doing that with a map in its own state. The map is real memory: it lasts from one moment to the next without being fed the past again, and it changes only when the robot senses something.</p>
+    <p><b>Several things, each tied to its kind.</b> The map holds an apple behind the robot and a slice of bread in front of it at the same time. Turn the robot away from the apple, and the apple stays on the map at its place. The bread joins the map the moment the camera first sees it. Nobody tells the brain what is in the room: it finds out by looking.</p>
+    <p><b>The robot’s own body.</b> The robot feels its joints, the way you know where your hand is with your eyes closed. Those readings place its own hand on the map whether the camera sees it or not.</p>
+    <p><b>Questions by settling.</b> Ask where the apple is, and the brain answers the way it does everything: its neurons drive each other until their activity rests, and the answer is read from the resting state.</p>
+
+    <h2 id="do">What you can do</h2>
+    <ul>
+      <li><b>Drag the hand behind the pillar</b>, then bring it back. The map holds it near where it vanished.</li>
+      <li><b>Drag the floor</b> to turn the robot away from the apple, then toward the bread.</li>
+      <li><b>Hide the apple in a shadow while the robot looks away</b>, then turn back: the map finds its old place empty and holds it near there.</li>
+      <li><b>Click a thing</b> to ask the brain where it is; <b>click the floor</b> to ask what is there.</li>
+      <li><b>Click the robot</b> to switch its camera off; move things; switch it on again.</li>
+      <li><b>Drag the pillar</b> to make a new shadow.</li>
+      <li><b>Choose “The robot’s own hand”</b> and click a spot in a shadow: the arm reaches there. The arm moves only when you move it this way, or when a loaded scene file moves it.</li>
+      <li><b>Rest the mouse</b> anywhere in the room: a few words beside it say what a drag and a click do there. Rest it on a part of the brain, or on a <b>?</b>, for an explanation.</li>
+      <li><b>Tutorial</b> walks through the main steps; <b>Details</b> opens the comparison chart; <b>Load a scene</b> (in Details) replays a recorded scene file (<code>cadence-tracking-scene/1</code>).</li>
+    </ul>
+
+    <h2 id="how">How it works</h2>
+    <h3>The map</h3>
+    <p>The map is a sheet of 32 by 26 cells laid over the room, each about 6 cm across. Every cell has 16 units, and their pattern names a kind of thing: hand, apple or bread. A thing on the map is a small patch of active cells at its place, carrying the pattern of its kind. The map starts empty, and only the senses change it:</p>
     <ol>
       <li><b>A thing enters</b> the map the first time a sense reports it.</li>
       <li><b>Seen</b>: a thing the camera sees is written where it is seen.</li>
@@ -121,11 +105,7 @@
       <li><b>Sight only takes away</b>: once a thing is spread over a patch, every cell of the patch the camera sees is removed from it. The patch only shrinks.</li>
       <li><b>Found</b>: when the camera reports the thing again, the patch clears and the thing is written where it is seen.</li>
     </ol>
-    <p>In the room, the teal glow is where the map holds the hand. The other things on the map are marked with pins where the map holds them.</p>
-    <p><b>Asking the map.</b> Tap a thing to ask where the map holds it, or tap the floor to ask what is there. The brain answers by settling: its neurons drive each other until their activity rests, and the answer is read from the resting state. A line from the robot shows the answer.</p>
-
-    <h2 id="line">The “On the map” line</h2>
-    <p>The line under the room lists every thing on the map and how the map holds it:</p>
+    <h3>The line under the room</h3>
     <dl class="words">
       <dt>seen</dt><dd>The camera reports it at this moment.</dd>
       <dt>felt</dt><dd>The robot’s joint readings place it at this moment. This is the robot’s own hand.</dd>
@@ -134,43 +114,8 @@
       <dt>near · 2 s</dt><dd>Its last place was seen empty, and it lies somewhere on the patch of hidden cells close by.</dd>
       <dt>not known where</dt><dd>The map knows the thing by its kind and holds no place for it.</dd>
     </dl>
-    <p class="note">The robot’s hand is on the map in both settings of the switch, because the robot always knows its own hand.</p>
-
-    <h2 id="hands">The two hands</h2>
-    <p>The switch above the room picks which hand the page follows.</p>
-    <p><b>A person’s hand</b> moves by itself. The brain knows it only through the camera. When you drag it into a shadow, the map holds it at its last known place. Once the camera sees that place empty, the map holds it near where it vanished. The map keeps no path, so for a moving hand it holds the area where the hand can be. The exact point inside that area is unknown.</p>
-    <p><b>The robot’s own hand</b> is the end of its arm. The robot reads its joint angles at every moment, the way you know where your hand is with your eyes closed. Those readings place the hand on the map whether the camera sees it or not.</p>
-    <table>
-      <thead><tr><th>Reading</th><th>Distance from the true hand</th></tr></thead>
-      <tbody>
-        <tr><td>A person’s hand, hidden: the map</td><td class="n">10.7 cm</td></tr>
-        <tr><td>A person’s hand, hidden: its last seen place</td><td class="n">15.5 cm</td></tr>
-        <tr><td>A person’s hand, hidden: a constant-velocity Kalman filter</td><td class="n">27.8 cm</td></tr>
-        <tr><td>A person’s hand, in view</td><td class="n">1.2 cm</td></tr>
-        <tr><td>The robot’s own hand, hidden</td><td class="n">0.5 mm</td></tr>
-      </tbody>
-    </table>
-    <p class="note">The readings for a person’s hand are averages over the page’s recorded test scene. The map’s patch held the true hand at every hidden moment.</p>
-
-    <h2 id="apple">The apple and the bread</h2>
-    <p>The apple and the bread show the map holding several things, each tied to its kind: an apple behind you, a slice of bread in front of you.</p>
-    <ul>
-      <li><b>Turn the robot away from the apple.</b> The apple leaves the view, and the map keeps it behind the robot, at its place. Nobody moved it, so the place is exact.</li>
-      <li><b>The bread</b> stands behind the robot when the page opens, so it is off the map. Turn the robot toward it: the bread enters the map the moment the camera first sees it.</li>
-      <li><b>Hide the apple in a shadow while the robot looks away</b>, then turn back. The camera sees the apple’s old place empty, and the map holds it near there, or knows it by its kind with no place.</li>
-    </ul>
-
-    <h2 id="arm">When the arm moves</h2>
-    <p>The arm moves only when you move it, and it never moves by itself.</p>
-    <ul>
-      <li>With <b>The robot’s own hand</b> chosen, tap the floor or drag the hand, and the arm reaches there.</li>
-      <li>A loaded scene file moves the arm as the file records it.</li>
-      <li>With <b>A person’s hand</b> chosen, the arm stands folded and casts its shadow.</li>
-    </ul>
-
-    <h2 id="brain">The brain</h2>
-    <p>The right half draws every neuron and every synapse of the map: 29,168 neurons and 39,936 synapses, none of them taught. It is laid out as a brain seen from the side, with each region placed where the part whose role it plays sits in a brain.</p>
-    <p>Every region’s name carries a small question mark. Rest the pointer on a region or its name and its card opens, telling what the region does at this moment. The card stays while the pointer is on the region or on the card, and a click keeps it open. Click a bundle of synapses between two regions to see what it carries. “Follow the position” walks through the nine steps a position takes through the map.</p>
+    <h3>The brain</h3>
+    <p>The right half draws every neuron and every synapse of the map: 29,168 neurons and 39,936 synapses, none of them taught. Each region sits where the part whose role it plays sits in a brain. Every region’s name carries a small question mark: rest the pointer on it and its card says what the region does at this moment. “Follow the position” walks through the nine steps a position takes through the map.</p>
     <dl class="words">
       <dt>The map</dt><dd>The sheet of cells and kind units that holds what is where.</dd>
       <dt>Replay</dt><dd>The map replayed for a question.</dd>
@@ -181,26 +126,23 @@
       <dt>Doubt</dt><dd>One neuron a cell: the cell holds a thing that was not seen to be there.</dd>
       <dt>No place</dt><dd>One neuron a kind unit: a thing of the kind is known with no place.</dd>
     </dl>
-    <p>Each moment of the room, 33 ms, the map settles in two sweeps. The time it took shows at the bottom of the brain.</p>
+    <p>Each moment of the room, 33 ms, the map settles in two sweeps; the time it took shows at the bottom of the brain.</p>
 
-    <h2 id="details">Details</h2>
-    <p><b>Details</b> in the top bar opens a chart of the hand’s distance from the true hand over the last ten seconds. Three estimates get the same camera reports: the map, the last seen place, and a constant-velocity Kalman filter that carries the hand on along its seen movement. Shaded stretches are out of view. Under the chart are the brain’s time for one moment, the frame time and the number of cells that hold the hand.</p>
-    <p><b>Load a scene</b> replays a recorded scene file in the format <code>cadence-tracking-scene/1</code>. The brain then gets exactly what the file holds, and the chart compares it on that scene.</p>
+    <h2 id="numbers">The numbers</h2>
+    <table>
+      <thead><tr><th>Reading</th><th>Distance from the true hand</th></tr></thead>
+      <tbody>
+        <tr><td>A person’s hand, hidden: the map</td><td class="n">10.7 cm</td></tr>
+        <tr><td>A person’s hand, hidden: its last seen place</td><td class="n">15.5 cm</td></tr>
+        <tr><td>A person’s hand, hidden: a constant-velocity Kalman filter</td><td class="n">27.8 cm</td></tr>
+        <tr><td>A person’s hand, in view</td><td class="n">1.2 cm</td></tr>
+        <tr><td>The robot’s own hand, hidden</td><td class="n">0.5 mm</td></tr>
+      </tbody>
+    </table>
+    <p class="note">Averages over the page’s recorded test scene, three runs alike (<code>evidence/promise_runs-20261113-0225-1879e461.json</code>). The map’s patch held the true hand at every hidden moment. The page check: <code>evidence/page_check-20261113-1051-1879e461.json</code>.</p>
 
-    <h2 id="limits">What the map does not do</h2>
-    <p>The map moves nothing it does not sense. For a hidden person’s hand it holds the patch where the hand can be. Predicting where an unseen thing goes, from movements seen before, is learned physics, planned for a later Cadence release.</p>
-
-    <h2 id="try">Things to try</h2>
-    <ul>
-      <li>Drag the hand behind the pillar, then bring it back.</li>
-      <li>Turn the robot away from the apple, then toward the bread.</li>
-      <li>Hide the apple in a shadow while the robot looks away, then turn back.</li>
-      <li>Tap the robot to switch its camera off, move things, and switch it on again.</li>
-      <li>Move the pillar to make a new shadow.</li>
-      <li>Choose <b>The robot’s own hand</b> and tap a spot in a shadow.</li>
-      <li>Press <kbd>H</kbd> to show where hidden things truly are.</li>
-      <li>Press <b>Tutorial</b> for a four-step walk through all of this.</li>
-    </ul>
+    <h2 id="limits">Limits</h2>
+    <p>The map moves nothing it does not sense. For a hidden person’s hand it holds the area where the hand can be, and the exact point inside that area is unknown. Predicting where an unseen thing goes, from movements seen before, is learned physics, planned for a later Cadence release. The room is flat and seen from above; a real robot sees in three dimensions.</p>
 
     <h2 id="keys">Keys</h2>
     <p class="note">With the room in focus:</p>
@@ -214,9 +156,7 @@
       <span><kbd>Z</kbd> <kbd>R</kbd></span><span>Undo, reset</span>
       <span><kbd>Tab</kbd> <kbd>Esc</kbd></span><span>In the brain: move from part to part, close a card</span>
     </div>
-
-    <p class="note" style="margin-top:34px">The brain runs in your browser, in Python through Pyodide, with cadence-net 0.99.0. Nothing is sent to a server. <a href="https://github.com/muellerberndt/cadence" target="_blank" rel="noopener">Cadence on GitHub</a></p>
-    <a class="back" href="./">Back to the page</a>
+    <footer>The brain runs in your browser, in Python through Pyodide, with cadence-net 0.99.0. Nothing is sent to a server. <a href="https://github.com/muellerberndt/cadence-demos/tree/main/out-of-sight" target="_blank" rel="noopener">The demo on GitHub</a> · <a href="https://github.com/muellerberndt/cadence" target="_blank" rel="noopener">Cadence on GitHub</a></footer>
   </main>
 </body>
 </html>

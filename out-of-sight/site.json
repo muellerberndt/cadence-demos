@@ -1,0 +1,13 @@
+{
+  "slug": "out-of-sight",
+  "title": "Out of Sight",
+  "page_dir": "site",
+  "card": "A robot's brain keeps a map of where everything is, even what its camera cannot see.",
+  "tagline": "Hide the hand, and the brain knows where it is",
+  "kicker": "A MAP OF THE WORLD IN THE BRAIN'S OWN STATE",
+  "feature": "The robot sees only part of the room. Its brain keeps a live map of what is where, in its own state, and holds a hidden thing where it can be: a person's hand within 11 cm, its own hand within half a millimetre.",
+  "howTo": "Drag the hand behind the pillar. Drag the floor to turn the robot away from the apple. Click a thing to ask the brain where it is. Switch to the robot's own hand and click a shadow.",
+  "help": "help.html",
+  "evidence": ["out-of-sight/evidence/promise_runs-20261113-0225-1879e461.json", "out-of-sight/evidence/page_check-20261113-1051-1879e461.json"],
+  "promise_test": "python tools/check_logged.py --log <log.json> --shots <dir>"
+}

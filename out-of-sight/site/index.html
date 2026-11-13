@@ -11,33 +11,36 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="cadence-explain.css">
+  <script src="cadence-explain.js" defer></script>
 </head>
 <body>
   <header class="bar">
-    <a class="brand" href="../" aria-label="Cadence demos"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 17h5l4-10 7 20 4-13h6"/></svg><span class="lib">cadence</span><span class="slash">/</span><span class="sub">out of sight</span></a>
+    <a class="brand" href="../" aria-label="Cadence demos" data-standalone><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 17h5l4-10 7 20 4-13h6"/></svg><span class="lib">cadence</span><span class="slash">/</span><span class="sub">out of sight</span></a>
     <span class="runtime" id="runtime" role="status"><i id="runtime-dot"></i><span id="runtime-text">Starting the brain</span></span>
     <nav class="tools" aria-label="The page">
-      <button id="tour" type="button" title="Play the tutorial">Tutorial</button>
-      <button id="undo" type="button" title="Take the last move back" disabled>Undo</button>
-      <button id="reset" type="button" title="Put everything back where it stood">Reset</button>
-      <button id="details" type="button" aria-pressed="false" aria-controls="details-panel" title="The chart against two controls, the numbers and scene files">Details</button>
-      <a class="help" href="help.html" target="_blank" rel="noopener" title="What the page shows, in full">Help</a>
+      <button id="tour" type="button" data-explain="Four short steps: hide the hand, bring it back, turn away from the apple, and the robot's own hand." data-explain-mark="none">Tutorial</button>
+      <button id="undo" type="button" data-explain="Takes your last move back." data-explain-mark="none" disabled>Undo</button>
+      <button id="reset" type="button" data-explain="Puts everything back where it stood and empties the brain's map: it learns the room again by looking." data-explain-mark="none">Reset</button>
+      <button id="details" type="button" aria-pressed="false" aria-controls="details-panel" data-explain="A chart of how far the brain's place for the hand is from the true hand, against two simple trackers given the same camera, and the brain's timing." data-explain-mark="none">Details</button>
+      <a class="help" data-help href="help.html" target="_blank" rel="noopener" data-explain="Everything this page shows, explained in full." data-explain-mark="none">Help</a>
     </nav>
   </header>
 
   <main class="app">
     <section class="pane world" aria-label="The scene">
-      <h1 class="promise" data-promise>Hide the hand, and the brain knows where it is.</h1>
-      <p class="problem">This robot sees only part of the room. Its brain keeps a map of where everything is, even what its camera cannot see.</p>
+      <h1 class="promise" data-promise data-standalone>Hide the hand, and the brain knows where it is.</h1>
+      <p class="problem" data-standalone>This robot sees only part of the room. Its brain keeps a map of where everything is, even what its camera cannot see.</p>
       <div class="scene-wrap" id="scene-wrap">
         <canvas id="scene" tabindex="0" role="application" aria-describedby="keys"
           aria-label="A room seen from above: a robot with a camera and an arm, a hand, an apple and a slice of bread. The camera lights the part of the room it sees; a pillar and the arm cast shadows. Drag the hand, a thing or the pillar; drag the floor to turn the camera; tap a thing to ask where the brain's map holds it, or the floor to ask what is there; tap the robot to switch its camera."></canvas>
         <div class="chips" aria-hidden="true">
           <span class="chip" id="chip-view" hidden>out of view</span>
         </div>
-        <div class="segmented case" role="group" aria-label="Whose hand the brain follows">
-          <button type="button" data-case="other" aria-pressed="true" title="A person's hand moves by itself: the brain knows it from the camera">A person’s hand</button>
-          <button type="button" data-case="own" aria-pressed="false" title="The robot's own hand: its joint readings place it, seen or not. Tap the floor and the arm reaches there">The robot’s own hand</button>
+        <span class="room-label" id="room-label" data-explain="The room, seen from above. The robot's camera lights what it sees; the pillar and the arm cast shadows it cannot see into. The teal glow is where the brain's map holds the hand." data-explain-title="The room">The room, from above</span>
+        <div class="segmented case" role="group" aria-label="Whose hand the brain follows" data-explain="Which hand the brain follows. A person's hand moves by itself, and the brain knows it only from the camera. The robot's own hand: the robot feels its joints, so it knows where its hand is without seeing it." data-explain-title="Whose hand">
+          <button type="button" data-case="other" aria-pressed="true">A person’s hand</button>
+          <button type="button" data-case="own" aria-pressed="false">The robot’s own hand</button>
         </div>
         <div class="welcome" id="welcome" hidden>
           <h2>Out of sight</h2>
@@ -48,7 +51,7 @@
         </div>
       </div>
       <div class="below">
-        <p class="onmap" id="onmap" aria-live="off"></p>
+        <p class="onmap" aria-live="off"><span class="lead" data-explain="Every thing the brain's map holds, and how. Seen: the camera reports it. Felt: the robot's joints place it. Held: kept at its last known place. Near: its place was seen empty, so it is somewhere close by, out of sight. Not known where: known by its kind, with no place." data-explain-title="The brain's map">On the brain’s map</span><span id="onmap"></span></p>
         <p class="said" id="said" role="status" aria-live="polite"></p>
         <div class="coach" id="coach" role="status" aria-live="polite">
           <span class="dots" id="coach-dots" aria-hidden="true"></span>
@@ -65,7 +68,7 @@
         <div class="parts" id="parts" role="group" aria-label="The parts of the brain. Each one explains itself."></div>
         <p class="brain-title">The robot’s brain, live <span>Point at a <i>?</i> to see what a part does</span></p>
         <div class="readout" id="readout" aria-live="off"></div>
-        <button class="follow" id="follow" type="button" title="Step through how a position travels through the map, one part at a time">Follow the position ›</button>
+        <button class="follow" id="follow" type="button" data-explain="Walks through the nine steps a position takes through the map, one part of the brain at a time." data-explain-mark="none">Follow the position ›</button>
         <div class="card" id="card" role="dialog" aria-label="A part of the brain, explained" hidden></div>
       </div>
     </section>

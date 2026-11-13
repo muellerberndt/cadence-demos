@@ -33,9 +33,13 @@ SECTIONS = ("see", "why", "do", "how", "numbers", "limits")
 BANNED = re.compile(r"\b(now|still|already|remains|currently|honest|honestly)\b|no longer|not yet|—", re.I)
 
 
+class Quiet(http.server.SimpleHTTPRequestHandler):
+    def log_message(self, *args) -> None:  # no request log on the console
+        pass
+
+
 def serve(directory: Path) -> tuple[str, socketserver.TCPServer]:
-    handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(directory))
-    handler.log_message = lambda *a: None
+    handler = functools.partial(Quiet, directory=str(directory))
     server = socketserver.ThreadingTCPServer(("127.0.0.1", 0), handler)
     server.daemon_threads = True
     threading.Thread(target=server.serve_forever, daemon=True).start()
@@ -107,12 +111,21 @@ def main() -> int:
             check(not info["sideways"] and not info["embedded"], f"{w}x{h} by itself: no sideways scroll, not marked embedded", info)
             if args.shots:
                 page.screenshot(path=str(args.shots / f"alone-{w}x{h}.png"))
-            # the page inside a frame, as the demos site shows it under its header
+            # the page inside a frame, as the demos site shows it under its header. The wrapper is
+            # written into a page of the same origin, so the frame is a secure context as on the
+            # site (https): crypto.subtle and the like exist in it.
             frame_page = ctx.new_page()
+            ferrors: list[str] = []
+            frame_page.on("console", lambda m: ferrors.append(m.text) if m.type == "error" else None)
+            frame_page.on("pageerror", lambda e: ferrors.append(str(e)))
+            frame_page.on("requestfailed", lambda r: ferrors.append("failed " + r.url))
+            frame_page.goto(base + meta.get("help", "help.html"))
             frame_page.set_content(f'<html><body style="margin:0;background:#0b1215"><div style="height:150px"></div>'
                                    f'<iframe src="{base}" style="border:0;width:100%;height:{h - 150}px"></iframe></body></html>')
             frame_page.wait_for_timeout(int(args.wait * 1000))
             frame = frame_page.frames[1] if len(frame_page.frames) > 1 else None
+            fstatus = frame.evaluate("document.querySelector('.runtime, #runtime, .status')?.innerText || ''") if frame else ""
+            check(not ferrors, f"{w}x{h} in a frame: no console error, page error or failed request", {"errors": ferrors[:5], "status": fstatus[:120]})
             emb = frame.evaluate("""() => ({ embedded: document.documentElement.classList.contains('embedded'),
                 shown: [...document.querySelectorAll('[data-standalone]')].filter(e => e.getClientRects().length).length,
                 sideways: document.documentElement.scrollWidth > innerWidth + 1 })""") if frame else None
