@@ -9,6 +9,8 @@
 //   memory      the recall memory's attention over its slots, each read slot tied to the place it stored
 // Regions are named for the role their Cadence population plays, not as claims of anatomy.
 
+import { brainColor } from "./cadence-palette.js";
+const SIGNAL = brainColor("signal").join(","), INHIBIT = brainColor("inhibit").join(","), MEMORY = brainColor("memory").join(",");
 const TAU = Math.PI * 2;
 const ACTIONS = ['north', 'east', 'south', 'west', 'eat', 'drink'];
 const VISION_KINDS = ['berry', 'root', 'leaf', 'water', 'predator', 'creature'];
@@ -77,7 +79,7 @@ export class BrainView {
     this.cur = null; this.prev = null; this.recvAt = 0; this.duration = 300;
     this.dopa = { v: 0, at: -1e9 }; this.changedTotal = 0; this.flash = new Map(); this.store = -1e9;
     this.particles = []; this.hover = null; this.terrain = null; this.world = { w: 48, h: 32 };
-    this.sprites = { pos: sprite('80,240,225'), neg: sprite('255,110,140'), gold: sprite('255,206,102'), blue: sprite('110,170,255'), white: sprite('255,255,255') };
+    this.sprites = { pos: sprite(SIGNAL), neg: sprite(INHIBIT), gold: sprite(MEMORY), blue: sprite('110,170,255'), white: sprite('255,255,255') };
     this.frameMs = 0; this.frames = 0;
     this.silhouette = this.drawSilhouette();
     // the explanations: a spot over every region and its name (shared/cadence-explain.js), laid out
@@ -265,7 +267,7 @@ export class BrainView {
     g.globalAlpha = 1;
     if (aroused) {
       const halo = g.createRadialGradient(R.lc.x, R.lc.y, 5, 480, 260, 520);
-      halo.addColorStop(0, `rgba(255,206,102,${0.22 + 0.1 * Math.sin(now / 160)})`); halo.addColorStop(1, 'rgba(255,206,102,0)');
+      halo.addColorStop(0, `rgba(255,206,102,${0.08 + 0.03 * Math.sin(now / 160)})`); halo.addColorStop(1, 'rgba(255,206,102,0)');
       g.fillStyle = halo; g.fillRect(0, 0, W, H);
     }
     // dopamine: a wash from the nucleus over striatum and cortex, fading over a second

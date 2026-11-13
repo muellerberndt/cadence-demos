@@ -9,19 +9,12 @@
 // software renderer, or if frames get slow, a Canvas2D view draws the neurons and the
 // strongest messages instead.
 
+import { brainUnit } from "./cadence-palette.js";
 const COLOR = {
-  own: [0.24, 0.89, 0.82],
-  opp: [1.0, 0.68, 0.33],
-  association: [0.56, 0.62, 1.0],
-  prefrontal: [0.42, 0.47, 0.62],
-  motor: [0.24, 0.89, 0.82],
-  play: [0.78, 0.8, 0.5],
-  module_0: [0.4, 0.74, 1.0],
-  verdict: [1.0, 0.8, 0.42],
-  other: [0.72, 0.72, 0.82],
-  excite: [1.0, 0.62, 0.28],
-  inhibit: [0.32, 0.58, 1.0],
-  pulse: [1.0, 0.95, 0.86],
+ own: brainUnit('signal'), opp: brainUnit('memory'), association: brainUnit('inhibit'),
+ prefrontal: brainUnit('dim'), motor: brainUnit('signal'), play: brainUnit('recall'),
+ module_0: brainUnit('signal'), verdict: brainUnit('memory'), other: brainUnit('white'),
+ excite: brainUnit('signal'), inhibit: brainUnit('inhibit'), pulse: brainUnit('white'),
 };
 const css = (rgb, a = 1) => `rgba(${rgb.map((v) => Math.round(v * 255)).join(',')},${a})`;
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));

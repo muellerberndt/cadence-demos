@@ -6,9 +6,11 @@
 // the animal-brain region whose role it plays sits, and named as playing that role, not as being it.
 // The outline, its folds and the gentle camera sway are drawing, not data.
 
+import { brainColor } from "./cadence-palette.js";
 const W = 960, H = 540;
-const AMBER = [232, 144, 28], GOLD = [255, 205, 96], CYAN = [79, 184, 192], BLUE = [90, 140, 255],
-  BONE = [216, 203, 184], RED = [230, 80, 70], GREEN = [96, 214, 120], VIOLET = [170, 120, 255];
+const AMBER = brainColor("signal"), GOLD = brainColor("memory"), CYAN = brainColor("inhibit"), BLUE = brainColor("inhibit"),
+  BONE = brainColor("white"), RED = brainColor("trace"), GREEN = brainColor("recall"), VIOLET = brainColor("trace");
+const REST = brainColor("rest"), DIM = brainColor("dim");
 const rgba = (c, a) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
 const clamp = (v, lo = 0, hi = 1) => Math.max(lo, Math.min(hi, v));
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -229,19 +231,19 @@ export class BrainView {
       this.folds = f;
     }
     const g = ctx.createRadialGradient(480, 210, 30, 480, 230, 470);
-    g.addColorStop(0, rgba([60, 38, 22], 0.55 * tone));
-    g.addColorStop(1, rgba([16, 10, 8], 0.35));
+    g.addColorStop(0, rgba(REST, 0.55 * tone));
+    g.addColorStop(1, rgba(REST, 0.35));
     ctx.fillStyle = g;
     ctx.fill(this.outline);
-    ctx.fillStyle = rgba([40, 26, 18], 0.45 * tone);
+    ctx.fillStyle = rgba(REST, 0.45 * tone);
     ctx.fill(this.cerebellum); ctx.fill(this.stem);
     ctx.lineWidth = 1.4;
-    ctx.strokeStyle = rgba([150, 110, 70], 0.38 * tone);
+    ctx.strokeStyle = rgba(DIM, 0.38 * tone);
     ctx.stroke(this.outline); ctx.stroke(this.cerebellum); ctx.stroke(this.stem);
     ctx.lineWidth = 1;
-    ctx.strokeStyle = rgba([150, 110, 70], 0.12 * tone);
+    ctx.strokeStyle = rgba(DIM, 0.12 * tone);
     ctx.stroke(this.folds);
-    ctx.fillStyle = rgba([90, 60, 40], 0.22 * tone);   // deep structures seen through the cortex
+    ctx.fillStyle = rgba(REST, 0.22 * tone);   // deep structures seen through the cortex
     ctx.beginPath(); ctx.ellipse(...this.striatum, 54, 30, -0.2, 0, 7); ctx.fill();
     ctx.beginPath(); ctx.ellipse(595, 330, 82, 26, 0.1, 0, 7); ctx.fill();
     ctx.beginPath(); ctx.ellipse(...this.vta, 22, 14, 0, 0, 7); ctx.fill();
@@ -255,8 +257,8 @@ export class BrainView {
     ctx.globalCompositeOperation = 'lighter';
     const r = 120 + (1 - this.wash) * 420;
     const g = ctx.createRadialGradient(...this.vta, 4, ...this.vta, r);
-    g.addColorStop(0, rgba(c, 0.55 * this.wash));
-    g.addColorStop(0.6, rgba(c, 0.16 * this.wash));
+    g.addColorStop(0, rgba(c, 0.2 * this.wash));
+    g.addColorStop(0.6, rgba(c, 0.06 * this.wash));
     g.addColorStop(1, rgba(c, 0));
     ctx.fillStyle = g;
     ctx.clip(this.outline);
@@ -269,7 +271,7 @@ export class BrainView {
     if (retina && retina.length === 1764) {
       if (!this.retinaCanvas) { this.retinaCanvas = document.createElement('canvas'); this.retinaCanvas.width = this.retinaCanvas.height = 42; }
       const rc = this.retinaCanvas.getContext('2d'), im = rc.createImageData(42, 42);
-      for (let i = 0; i < 1764; i++) { const q = retina[i]; im.data[i * 4] = q; im.data[i * 4 + 1] = q * 0.7; im.data[i * 4 + 2] = q * 0.3; im.data[i * 4 + 3] = 255; }
+      for (let i = 0; i < 1764; i++) { const q = retina[i]; im.data[i * 4] = q; im.data[i * 4 + 1] = q * 0.95; im.data[i * 4 + 2] = q; im.data[i * 4 + 3] = 255; }
       rc.putImageData(im, 0, 0);
       this.retinaPixels = retina;
     }
@@ -277,7 +279,7 @@ export class BrainView {
     ctx.transform(1, -0.08, 0.06, 1, 0, 40);   // the screen lies on the occipital surface
     ctx.globalAlpha = 0.92;
     if (this.retinaCanvas) { ctx.imageSmoothingEnabled = false; ctx.drawImage(this.retinaCanvas, R.x, R.y - 40, R.w, R.h); }
-    ctx.strokeStyle = rgba([150, 110, 70], 0.45);
+    ctx.strokeStyle = rgba(DIM, 0.45);
     ctx.strokeRect(R.x, R.y - 40, R.w, R.h);
     ctx.restore();
   }
@@ -301,7 +303,7 @@ export class BrainView {
       if (!b) { b = { col, a: (level + 0.6) / 6, list: [] }; buckets.set(key, b); }
       b.list.push(i);
     }
-    const COL = { in: [200, 150, 90], ex: AMBER, ih: CYAN };
+    const COL = { in: AMBER, ex: AMBER, ih: CYAN };
     for (const b of buckets.values()) {
       ctx.strokeStyle = rgba(COL[b.col], (b.col === 'in' ? 0.5 : 0.42) * b.a);
       ctx.lineWidth = b.col === 'in' ? 0.6 : 0.5 + b.a * 0.9;

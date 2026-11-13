@@ -7,7 +7,8 @@ const KIND = { // synapse pair -> drawing class
   'sensory>module_0': 'ff', 'module_0>module_1': 'ff', 'module_1>association': 'ff', 'association>motor': 'ff',
   'module_1>module_0': 'td', 'association>module_1': 'td', 'motor>association': 'td', 'prefrontal>association': 'mem',
 };
-const COLORS = { ff: [79, 195, 247], td: [180, 140, 255], mem: [79, 209, 181] };
+import { brainColor } from "./cadence-palette.js";
+const COLORS = { ff: brainColor("signal"), td: brainColor("inhibit"), mem: brainColor("recall") };
 // What each part does, in plain words: the question marks over the panel (CadenceExplain spots).
 const DESCRIPTIONS = {
   motor: ['Motor: the next move', 'The brain\u2019s choice at each decision: move the hand \u22122 to +2 cm along x, y and z, and open or close the gripper. The bars show how strongly the brain favours each choice; the outlined one is chosen.'],
@@ -198,7 +199,7 @@ export class BrainView {
     this.pos = pos;
     this.boxes = boxes;
     this.sizes = { s1, s2, s3, ss };
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     this.canvas.width = Math.round(W * dpr); this.canvas.height = Math.round(this.H * dpr);
     this.canvas.style.height = `${this.H}px`;
     this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);

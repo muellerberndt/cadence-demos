@@ -20,10 +20,11 @@
 import { DeepView, EYE_TEXT, partText } from "./deep.js";
 import { RippleView, glow, rgba, MOTOR_RGB, ARROWS, PLAY_MS } from "./ripple.js";
 
+import { brainColor } from "../cadence-palette.js";
 const MONO = "ui-monospace, Menlo, monospace";
-const EXC_RGB = [255, 176, 92];
-const INH_RGB = [120, 140, 255];
-const AMBER = [255, 196, 90];
+const EXC_RGB = brainColor("signal");
+const INH_RGB = brainColor("inhibit");
+const AMBER = brainColor("memory");
 const FAMILY_NAME = { ahead: "ahead", left: "left", right: "right", edge: "edges", opponent: "opponent",
   territory: "territory", apart: "walled apart", cutoff: "cut-off", teacher: "teacher", other: "other roles",
   mixed: "mixed", silent: "silent", neurons: "neurons" };

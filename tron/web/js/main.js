@@ -170,6 +170,7 @@ async function startGame() {
   }
   overlay(`<div class="big count you">GO</div>`, false);
   sound.count(true);
+  sound.music(true);
   setTimeout(() => { if (app.phase === "playing") overlay("", false); }, 380);
   app.phase = "playing";
   sound.engine(0, true, 1, 0);

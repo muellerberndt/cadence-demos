@@ -2,6 +2,7 @@
 // drawn and every lesson comes from the Cadence brain running in the worker.
 import { Board } from './board.js';
 import { BrainView } from './brain.js';
+import { sfx } from './sfx.js';
 
 const $ = (id) => document.getElementById(id);
 // Where the runtime pack lives: <meta name="cadence-pack" content="..."> if the host page sets one,
@@ -118,6 +119,7 @@ async function humanMove(column) {
   app.moves = reply.game.moves; app.game = reply.game;
   const cell = newCell(before, app.game);
   board.setGhosts(null);
+  sfx.drop(column, 'you');
   await board.set(owners(app.game), { animate: cell, last: cell, line: app.game.line });
   if (token !== app.turn) return;
   if (app.game.over) return finish();
@@ -139,6 +141,7 @@ async function brainTurn() {
       board.setGhosts(null);
     }
     view.setChosen(null);
+    sfx.think();
     view.beginSettle();
     app.settle = { sweeps: 0, movement: [] };
     const { reply: final } = await request('think', { moves: movesBefore, search: app.player === 'search' }, (progress, arrays) => {
@@ -165,6 +168,7 @@ async function brainTurn() {
     app.lastBrain = { moves: movesBefore, column: final.column, motor: final.motor, legal: final.legal, cell,
       activation: Float32Array.from(view.display), sweeps: final.sweeps, ms: final.ms, settled: final.settled, movement: app.settle.movement.slice() };
     app.settles.push(app.lastBrain);
+    sfx.stopThink(); sfx.drop(final.column, 'brain');
     await board.set(owners(app.game), { animate: cell, last: cell, line: app.game.line });
     if (token !== app.turn) return;
     if (app.game.over) return finish();
@@ -173,6 +177,7 @@ async function brainTurn() {
     placeSpots();
   } catch (error) {
     if (token !== app.turn) return;
+    sfx.stopThink();
     view.show(view.display); // stop the playback where it is
     app.phase = 'human'; refresh();
     fail(error);
@@ -181,6 +186,8 @@ async function brainTurn() {
 
 function finish() {
   app.phase = 'over';
+  const w = app.game.winner;
+  sfx.end(w === null ? 'draw' : w === brainPlayer() ? 'loss' : 'win');
   board.setGhosts(null);
   refresh();
 }

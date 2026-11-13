@@ -2,6 +2,7 @@
 // page, which draws it into pixels. One Cadence brain in a worker sees nothing but those
 // pixels: each tracked shape has an eye, a window of them, and every frame the brain answers
 // where in each window its shape is; the eye jumps there. The brain view shows one eye's stream.
+import { brainColor, brainUnit } from "./cadence-palette.js";
 import { BrainScan, decodeAtlas } from "./brain_scan.js";
 import { HELD_OUT, KINDS, ROTATES, TRAINED, backdrop, render } from "./shapes.js";
 
@@ -703,10 +704,12 @@ async function boot() {
     }
     bg = backdrop(H, W, 0.1, 0.03, 7);
     const { atlas } = await atlasPromise;
+    atlas.palette = [brainColor("signal"), brainColor("inhibit"), brainColor("memory"), brainColor("recall")];
+    atlas.regions.forEach((r, i) => { r.color = atlas.palette[i % atlas.palette.length]; });
     scan = new BrainScan($("scan"), decodeAtlas(atlas), {
       style: "brain", labels: $("labels"), spin: true, spinRate: 0.05,
       labelCount: 8, labelTop: 8, heatDecay: 0.88, dpr: 1.5, lineBudget: 15000,
-      particleBudget: 8000,
+      particleBudget: 4000, hot: brainUnit("signal"), cool: brainUnit("inhibit"),
     });
     explainRegions(scan);
     scan.onhover = (hit) => {

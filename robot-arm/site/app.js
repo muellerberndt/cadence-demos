@@ -100,9 +100,9 @@ class BrainWorker {
 // --- three.js -----------------------------------------------------------------------------------
 const canvas = $('scene');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.type = THREE.PCFShadowMap;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 const scene = new THREE.Scene();
@@ -163,6 +163,7 @@ scene.add(catcher);
 
 // Post-processing: bloom on what glows (the lamp, the target bin, the hand's aim and trail).
 const composer = new EffectComposer(renderer);
+composer.setPixelRatio(1);
 composer.addPass(new RenderPass(scene, camera));
 const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.5, 0.4, 1.6);
 composer.addPass(bloom);
