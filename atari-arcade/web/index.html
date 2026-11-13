@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cadence Arcade</title>
+<meta name="description" content="Two newborn Cadence brains learn Atari games in your browser: each watches a teacher play, takes the controls, and plays on its own.">
+<link rel="stylesheet" href="cadence-explain.css">
+<script src="cadence-explain.js" defer></script>
 <style>
   :root { --bg: #070605; --panel: #0f0c0a; --line: #2a201b;
           --amber: #e8901c; --bone: #d8cbb8; --dim: #6f6353;
@@ -38,7 +41,7 @@
                  text-shadow: 0 0 12px rgba(79, 184, 192, .5); }
   .stat svg { position: absolute; right: 6px; bottom: 6px; opacity: .8; }
   .body { display: flex; gap: 14px; align-items: stretch; }
-  .game { flex: 0 0 auto; }
+  .game { flex: 0 0 auto; position: relative; }
   .game canvas { width: 430px; max-width: 100%; display: block; image-rendering: pixelated;
                  border: 1px solid var(--line); background: #000;
                  border-radius: 6px; }
@@ -54,40 +57,31 @@
   .foot .err { color: #c25b5b; font-weight: 600; }
   .start { background: var(--amber); color: #1a1208; border: 0; border-radius: 6px;
            font: inherit; font-weight: 600; letter-spacing: .1em; padding: 10px 16px; cursor: pointer; }
-  .about { max-width: 1560px; margin: 0 auto; padding: 8px 24px 32px; font-size: 11px;
-           color: var(--dim); line-height: 1.6; }
-  .about p { margin: 0 0 8px; max-width: 980px; }
-  .about a { color: var(--bone); }
+  header a.help { color: var(--bone); font-size: 11px; text-decoration: none; border: 1px solid var(--line);
+                  border-radius: 10px; padding: 1px 9px; }
+  header a.help:hover { color: var(--amber); border-color: var(--amber); }
+  .brainbox { position: relative; }
+  .chipwrap { position: relative; }
+  .first { color: var(--dim); font-size: 11px; padding: 0 4px 10px; }
+  .first b { color: var(--bone); font-weight: 600; }
   @media (max-width: 900px) {
     .body { flex-direction: column; }
     .game canvas { width: 100%; }
     #rows { padding: 12px; }
     header { padding: 12px; }
-    .about { padding: 8px 12px 24px; }
   }
 </style>
 </head>
 <body>
-<header><h1>CADENCE ARCADE</h1>
-  <span>two Cadence 0.95.2 System 1 brains born in your browser, learning live ·
-  an Atari 2600 core and the released library run in web workers ·
-  every fiber and number is measured, nothing is staged</span>
-  <span class="pace">speed
+<header><h1 data-standalone>CADENCE ARCADE</h1>
+  <span data-standalone>two newborn Cadence brains learn Atari games in your browser</span>
+  <span class="pace" data-explain="How fast the games run. Full is four times the speed of the real console. The brain is not sped up or slowed: it takes the newest screen whenever it has settled on the last, so a slower game lets it see more of the screens." data-explain-title="Speed">speed
     <input id="pace" type="range" min="0" max="0.4" step="0.05" value="0"
       style="vertical-align:middle" aria-label="Game speed"> <em id="pace-label"
-      style="font-style:normal">full · 4× real time</em></span></header>
+      style="font-style:normal">full · 4× real time</em></span>
+  <a class="help" data-help href="help.html" target="_blank" rel="noopener" data-explain="What the page shows, every part explained, and the measured numbers." data-explain-mark="none">help</a></header>
+<p class="first" data-standalone id="first"><b>Watch:</b> each brain is born knowing nothing. It watches the teacher, takes the controls once it agrees with the teacher, then plays alone. Compare its score with the teacher's in the row's header. Rest the pointer on a <b>?</b> to see what a part does.</p>
 <div id="rows"></div>
-<section class="about" id="about">
-  <p><b>What runs here.</b> Each game is an Atari 2600 emulated in a worker. Its brain is born in a second worker with
-  a fixed seed: a Cadence 0.95.2 System 1 brain, 7,056 sensory neurons for the 84 × 84 screen, an association cortex
-  with a working trace, a motor cortex with one neuron per action, a critic and an associative memory, 456,000
-  synapses that settle together for every answer. It watches a scripted teacher play (Freeway: always up; Atlantis:
-  always fire) and takes each watched screen as a lesson. Once its own answers agree with the teacher's often enough
-  and it has watched one whole game, it takes the controls, and from then on it learns from the reward of its own
-  actions. The brain is the released <code>cadence-net</code> wheel running in Python in your browser (Pyodide), the
-  same <code>Brain.compose</code> call as the Python edition; the emulator is the 6502.ts core.
-  <a href="https://github.com/muellerberndt/cadence-demos/tree/main/atari-arcade">Source and receipts.</a></p>
-</section>
 <script type="module">
 import { AGENT_HINTS } from './arcade.js';
 import { BrainView } from './brainview.js';
@@ -107,6 +101,15 @@ document.addEventListener('input', (e) => {
   document.getElementById('pace-label').textContent = v === 0 ? 'full · 4× real time' : `${v}s per step`;
   for (const w of emulators) w.postMessage({ type: 'pace', sleep: v });
 });
+
+const SCORE_HINTS = {
+  Freeway: "Points in the game in progress: one point for every time the chicken crosses the road.",
+  Atlantis: "Points in the game in progress: points for every enemy ship the three guns shoot down.",
+};
+const TEACHER_HINTS = {
+  Freeway: "The teacher always presses up.",
+  Atlantis: "The teacher always fires the centre gun.",
+};
 
 const BADGE_COLORS = {hatchling: "#6f6353", noob: "#c25b5b",
                       intermediate: "#e0d24f", expert: "#4fc06a",
@@ -136,33 +139,34 @@ function makeRow(name, game) {
   row.className = "row";
   row.innerHTML = `
     <div class="head"><b>${game.toUpperCase()}
-      <em id="b-${name}" style="font-style:normal;font-size:11px;
+      <span class="chipwrap" data-explain="The brain's skill badge: the average of its last five games at the controls against the teacher's average. Hatchling until its first game of its own; then noob (under 30% of the teacher), intermediate (under 80%), expert (up to the teacher's score) and legend (above it)." data-explain-title="Skill badge"><em id="b-${name}" style="font-style:normal;font-size:11px;
         border:1px solid var(--line);border-radius:10px;
-        padding:1px 8px;margin-left:8px">hatchling</em>
-      <em id="p-${name}" style="font-style:normal;font-size:11px;
-        color:var(--dim);margin-left:6px">being born</em></b>
-      <span id="s-${name}"></span></div>
+        padding:1px 8px;margin-left:8px">hatchling</em></span>
+      <span class="chipwrap" data-explain="What the brain is doing: being born (Python and the Cadence library start in your browser), watching the teacher play, or playing for itself at the controls." data-explain-title="Phase"><em id="p-${name}" style="font-style:normal;font-size:11px;
+        color:var(--dim);margin-left:6px">being born</em></span></b>
+      <span class="chipwrap" data-explain="The game number, the brain's best whole game at the controls, and the teacher's average over the games it played. The teacher's average is the score to match or beat." data-explain-title="Brain against teacher"><span id="s-${name}"></span></span></div>
     <div class="hud">
-      <div class="stat"><small>teacher agreement</small>
+      <div class="stat" data-explain-mark="corner" data-explain-title="Teacher agreement" data-explain="How often the brain's own answer matches the teacher's action, over its last 120 watched screens. The brain answers each screen silently, then learns the teacher's action. At 90%, after at least 500 lessons, it takes the controls."><small>teacher agreement</small>
         <b id="h1-${name}" class="up">0</b><span id="h1s-${name}"></span></div>
-      <div class="stat"><small>value · return the critic expects</small>
+      <div class="stat" data-explain-mark="corner" data-explain-title="Value" data-explain="The reward the brain's critic expects from this screen. At the controls, the reward that comes less this expectation is the dopamine signal that changes the synapses."><small>value · return the critic expects</small>
         <b id="h2-${name}" class="up">0</b></div>
-      <div class="stat"><small>lessons from the teacher</small>
+      <div class="stat" data-explain-mark="corner" data-explain-title="Lessons" data-explain="Screens the brain has learned from while the teacher played. On each one it learns the action the teacher took. It needs at least 500 before it takes the controls."><small>lessons from the teacher</small>
         <b id="h3-${name}">0</b></div>
-      <div class="stat"><small>sweeps to settle the last screen</small>
+      <div class="stat" data-explain-mark="corner" data-explain-title="Sweeps" data-explain="How many rounds the whole brain took to settle on the last screen. An answer counts only when every neuron agrees with its neighbours within a tolerance."><small>sweeps to settle the last screen</small>
         <b id="h4-${name}" class="down">–</b><span id="h4s-${name}"></span></div>
-      <div class="stat"><small>score this life</small>
+      <div class="stat" data-explain-mark="corner" data-explain-title="Score" data-explain="${SCORE_HINTS[game] || "The points of the game in progress."}"><small>score this life</small>
         <b id="h5-${name}">0</b></div>
     </div>
     <div class="body">
-      <div class="game"><canvas id="c-${name}" width="320" height="420"></canvas></div>
-      <div class="net"><canvas id="n-${name}"></canvas></div>
+      <div class="game" data-explain-mark="corner" data-explain-title="The game" data-explain="The game, live, on an Atari 2600 emulated in your browser. The brain sees only this screen, shrunk to 84 by 84 grey pixels. Until the takeover the teacher holds the joystick; after it, the brain. ${TEACHER_HINTS[game] || ""}"><canvas id="c-${name}" width="320" height="420"></canvas></div>
+      <div class="net"><div class="brainbox" id="nb-${name}"><canvas id="n-${name}"></canvas></div></div>
     </div>
     <div class="foot">
       <span class="agent">${AGENT_HINTS[game] || "the brain is the player"}</span>
-      <span id="l-${name}">waking the emulator…</span>
+      <span class="chipwrap" data-explain="What the brain is doing, live. While it watches: its lessons and how far it is from taking the controls. At the controls: its decisions, the outcomes it learned from, decisions it refused because its brain did not settle, its time per screen, and a small line of its whole games." data-explain-title="Status"><span id="l-${name}">waking the emulator…</span></span>
     </div>`;
   document.getElementById("rows").appendChild(row);
+  if (window.CadenceExplain) window.CadenceExplain.scan(row);   // the row's question marks
   return row;
 }
 
@@ -220,6 +224,7 @@ function startGame(name, game, row) {
     if (m.type === "ready") {
       graph = m.graph;
       view = new BrainView(document.getElementById(`n-${name}`), graph);
+      view.explain(document.getElementById(`nb-${name}`));
       views.push(view);
       life.textContent = "born · watching the teacher play";
       requestAnimationFrame(anim);
@@ -311,8 +316,9 @@ function boot() {
       startGame(name, game, row);
     } else {
       const life = document.getElementById(`l-${name}`);
-      life.innerHTML = `<button class="start" type="button">START ${game.toUpperCase()}</button>
+      life.innerHTML = `<button class="start" type="button" data-explain="Starts this game and a second newborn brain. On a small screen only the first game starts by itself, since each game needs two threads of your device." data-explain-mark="none">START ${game.toUpperCase()}</button>
         <span style="margin-left:10px">a second brain and emulator, two more threads for your device</span>`;
+      if (window.CadenceExplain) window.CadenceExplain.scan(life);
       life.querySelector("button").addEventListener("click", () => startGame(name, game, row));
     }
   });

@@ -48,13 +48,8 @@ export class BrainView {
     this.weights = Float32Array.from(graph.edges.map((e) => e[3]));
     this.replay = null; this.replayStart = 0;
     this.wash = 0; this.washSign = 1; this.lastLesson = 0; this.lessonPulse = 0;
-    this.shown = null; this.hover = null; this.retinaCanvas = null; this.retinaPixels = null;
+    this.shown = null; this.retinaCanvas = null; this.retinaPixels = null;
     this.frames = []; this.lastFrame = 0;
-    canvas.addEventListener('mousemove', (e) => {
-      const r = canvas.getBoundingClientRect();
-      this.hover = [(e.clientX - r.left) / r.width * W, (e.clientY - r.top) / r.height * H];
-    });
-    canvas.addEventListener('mouseleave', () => { this.hover = null; });
   }
 
   // ---- anatomy: where each population sits -------------------------------------------------------
@@ -82,14 +77,19 @@ export class BrainView {
     this.pos = pos;
     this.retina = { x: 778, y: 168, w: 104, h: 124 };   // occipital: where the screen enters
     this.striatum = [470, 282]; this.vta = [560, 400]; this.cx = 500; this.cy = 240;
+    // The parts of the brain the page explains (the question marks over the canvas): a box in the
+    // view's own 960 x 540 units, a title and what the part does.
     this.regions = [
-      { at: [610, 110], r: 140, name: 'association cortex', pop: A, role: 'plays the role of parietal and temporal association cortex: reads the screen, exchanges activity with the motor strip' },
-      { at: [240, 190], r: 115, name: 'working trace', pop: T, role: "plays the role of prefrontal cortex: holds the association cortex's activity of the moments before" },
-      { at: [395, 160], r: 60, name: 'motor cortex', pop: M, role: 'plays the role of the motor strip: one neuron per joystick action; the settled winner is the action' },
-      { at: this.striatum, r: 50, name: 'critic', pop: V, role: 'plays the role of the striatum: the value the critic expects from this screen' },
-      { at: this.vta, r: 34, name: 'dopamine', pop: null, role: "plays the role of the midbrain dopamine nucleus: the critic's prediction error after each outcome, the signal that moves the synapses" },
-      { at: [595, 330], r: 64, name: 'associative memory', pop: Mem, role: 'plays the role of the hippocampus: reward recalled per action for a similar screen' },
-      { at: [830, 230], r: 70, name: 'retina', pop: null, role: '7,056 sensory neurons, the 84 x 84 screen less its background: plays the role of visual cortex' },
+      { box: [455, 36, 310, 200], title: 'Association cortex', text: `${A.count} neurons that read the screen and settle together with the motor strip. Warm dots are active neurons, cool dots inhibited ones; the fibres light up with the signals they carry.` },
+      { box: [140, 50, 205, 258], title: 'Working trace', text: `${T.count} neurons that hold what the association cortex did a moment before. They carry the brain's state from one screen to the next, so each answer starts from where the last one ended.` },
+      { box: [348, 50, 104, 206], title: 'Motor strip', text: 'One neuron per joystick action, each named. The strongest neuron of the settled brain is the action. While the brain watches, the teacher\'s action glows green, and red marks an answer of its own that disagreed.' },
+      { box: [425, 258, 100, 76], title: 'Critic', text: 'How much reward the brain expects from this screen. It plays the role of the striatum.' },
+      { box: [528, 300, 162, 80], title: 'Associative memory', text: 'The reward the brain recalls for each action on screens like this one. It plays the role of the hippocampus.' },
+      { box: [520, 382, 92, 58], title: 'Dopamine', text: 'The surprise after each outcome at the controls: the reward that came less the reward the critic expected. A gold wash means better than expected, blue worse. This signal moves the synapses.' },
+      { box: [770, 100, 125, 200], title: 'The eye', text: 'Everything the brain sees: 7,056 sensory neurons, one per pixel of the screen shrunk to 84 by 84 grey pixels. No positions of anything in the game and no game memory: only pixels.' },
+      { box: [12, 8, 536, 26], title: 'What it is doing', text: 'Watching the teacher: every screen is a lesson, and the brain learns the teacher\'s action for it. At the controls: the brain plays and learns from the reward its own actions bring.' },
+      { box: [12, 462, 214, 60], title: 'Settling', text: 'How the brain reaches an answer: every neuron adjusts to its neighbours, sweep after sweep, until the largest change falls under the tolerance (the dotted line). The whole brain then agrees, and that agreement is the answer.' },
+      { box: [698, 462, 250, 60], title: 'Learning, live', text: 'How many synapses changed since the last picture. While the brain watches: the lesson count and whether its own answer agreed. At the controls: the dopamine, the expected value and the reward.' },
     ];
     // where each drawn synapse starts and the tract it belongs to; tracts share control points
     this.edgeGeom = this.graph.edges.map(([k, s, t]) => {
@@ -108,6 +108,22 @@ export class BrainView {
       }
       return { S, P, C: core };
     });
+  }
+
+  // Lay the explanation spots over the canvas, scaled to its size on the page (again on a resize).
+  explain(host) {
+    if (!window.CadenceExplain || !host) return;
+    const place = () => {
+      const k = this.canvas.clientWidth / W;
+      if (!k) return;
+      window.CadenceExplain.clearSpots(host);
+      for (const r of this.regions) {
+        const [x, y, w, h] = r.box;
+        window.CadenceExplain.spot(host, { x: x * k, y: y * k, w: w * k, h: h * k }, r.text, { title: r.title });
+      }
+    };
+    place();
+    new ResizeObserver(place).observe(this.canvas);
   }
 
   which(i) {
@@ -183,7 +199,6 @@ export class BrainView {
     this.drawLabels(ctx, v);
     ctx.restore();
     this.drawHud(ctx, v, sweep, phase, live, calm);
-    this.drawHover(ctx);
   }
 
   drawSilhouette(ctx, tone) {
@@ -422,26 +437,6 @@ export class BrainView {
     ctx.fillStyle = rgba(BONE, 0.5);
     ctx.fillText(phase === 'playing' ? `REWARD SINCE THE LAST VIEW ${v.reward ?? 0}`
       : (v.own != null && v.own !== v.teacher ? 'ITS OWN ANSWER (RED) DISAGREED' : 'ITS OWN ANSWER AGREED'), nx + 8, ny + 48);
-  }
-
-  drawHover(ctx) {
-    if (!this.hover) return;
-    const [hx, hy] = this.hover;
-    let best = null, bd = 1e9;
-    for (const r of this.regions) { const d = Math.hypot(hx - r.at[0], hy - r.at[1]) / r.r; if (d < bd) { bd = d; best = r; } }
-    if (!best || bd > 1.2) return;
-    const text = `${best.name}${best.pop ? ` · ${best.pop.count} neurons` : ''}: ${best.role}`;
-    ctx.font = '11px ui-monospace, monospace';
-    const lines = [''];
-    for (const w of text.split(' ')) {
-      if ((lines[lines.length - 1] + ' ' + w).length > 52) lines.push(w);
-      else lines[lines.length - 1] += (lines[lines.length - 1] ? ' ' : '') + w;
-    }
-    const bw = 360, bh = 14 * lines.length + 10, x = Math.min(W - bw - 6, hx + 12), y = Math.min(H - bh - 6, hy + 12);
-    ctx.fillStyle = 'rgba(12,9,7,0.92)'; ctx.fillRect(x, y, bw, bh);
-    ctx.strokeStyle = rgba(AMBER, 0.5); ctx.strokeRect(x, y, bw, bh);
-    ctx.fillStyle = rgba(BONE, 0.95);
-    lines.forEach((l, i) => ctx.fillText(l, x + 8, y + 16 + 14 * i));
   }
 
   frameStats() {

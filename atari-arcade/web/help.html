@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atari Arcade · Help</title>
+  <meta name="description" content="What the Atari Arcade demo shows: a newborn Cadence brain learns an Atari game during its life by watching a teacher, then plays it alone in real time.">
+  <link rel="stylesheet" href="cadence-help.css">
+  <script src="cadence-explain.js" defer></script>
+  <style>
+    .svg-label { font: 500 11px ui-monospace, "IBM Plex Mono", Menlo, monospace; fill: #cfe0e3; }
+    .svg-quiet { font: 500 9.5px ui-monospace, "IBM Plex Mono", Menlo, monospace; fill: #8ea4aa; }
+    .svg-head { font: 600 12px ui-monospace, "IBM Plex Mono", Menlo, monospace; fill: #e8901c; }
+  </style>
+</head>
+<body>
+  <header class="help-bar"><span class="crumb">cadence / <b>atari arcade</b> / help</span><span class="spacer"></span><a href="./">Back to the demo</a></header>
+  <main class="help">
+    <h1>Atari Arcade</h1>
+    <p class="lede">Two Atari games run in your browser, Freeway and Atlantis. In each, a Cadence brain is born knowing nothing. It watches a teacher play, takes the joystick once it agrees with the teacher, and then plays the game alone.</p>
+    <p class="shows"><b>What it shows about Cadence</b>A Cadence brain learns during its life. Nothing is trained before the page opens: the brain learns each game in your browser in about a minute, from the screen's pixels alone, and then plays it on its own. It has a real state that carries from one screen to the next, and it runs in real time like the brain of a living being: the game never waits for it. In Freeway its own games score above its teacher's; in Atlantis they match the teacher's.</p>
+    <nav class="toc" aria-label="On this page"><a href="#see">What you see</a><a href="#why">Why it matters</a><a href="#do">What you can do</a><a href="#how">How it works</a><a href="#numbers">The numbers</a><a href="#limits">Limits</a></nav>
+
+    <h2 id="see">What you see</h2>
+    <p>The page has one row per game. Each row is one game and its own brain.</p>
+    <figure>
+      <svg viewBox="0 0 720 360" role="img" aria-label="One row of the page: the game's name, its skill badge, its phase and the score line on top; five numbers below; the game screen on the left; the brain on the right, seen from the side, with the eye at the back, the association cortex on top, the working trace at the front, the motor strip, the critic, the associative memory and the dopamine nucleus; the settling chart and the learning numbers at the bottom.">
+        <rect x="0.5" y="0.5" width="719" height="359" rx="10" fill="#0f0c0a" stroke="#2a201b"/>
+        <text class="svg-head" x="14" y="24">FREEWAY</text>
+        <rect x="80" y="11" width="62" height="18" rx="9" fill="none" stroke="#e8901c"/><text class="svg-quiet" x="90" y="24" style="fill:#e8901c">legend</text>
+        <text class="svg-quiet" x="152" y="24">playing for itself</text>
+        <text class="svg-label" x="706" y="24" text-anchor="end">episode 7 · best 24 · teacher 21</text>
+        <g>
+          <rect x="14" y="38" width="128" height="34" rx="5" fill="#070605" stroke="#2a201b"/><text class="svg-quiet" x="22" y="51">TEACHER AGREEMENT</text><text class="svg-label" x="22" y="66" style="fill:#4fc06a">98%</text>
+          <rect x="152" y="38" width="128" height="34" rx="5" fill="#070605" stroke="#2a201b"/><text class="svg-quiet" x="160" y="51">VALUE</text><text class="svg-label" x="160" y="66">0.31</text>
+          <rect x="290" y="38" width="128" height="34" rx="5" fill="#070605" stroke="#2a201b"/><text class="svg-quiet" x="298" y="51">LESSONS</text><text class="svg-label" x="298" y="66">500</text>
+          <rect x="428" y="38" width="128" height="34" rx="5" fill="#070605" stroke="#2a201b"/><text class="svg-quiet" x="436" y="51">SWEEPS TO SETTLE</text><text class="svg-label" x="436" y="66">3</text>
+          <rect x="566" y="38" width="140" height="34" rx="5" fill="#070605" stroke="#2a201b"/><text class="svg-quiet" x="574" y="51">SCORE THIS LIFE</text><text class="svg-label" x="574" y="66">12</text>
+        </g>
+        <!-- the game -->
+        <rect x="14" y="84" width="180" height="236" rx="6" fill="#000" stroke="#2a201b"/>
+        <g stroke="#3a3a3a" stroke-dasharray="6 6"><line x1="14" y1="130" x2="194" y2="130"/><line x1="14" y1="170" x2="194" y2="170"/><line x1="14" y1="234" x2="194" y2="234"/><line x1="14" y1="274" x2="194" y2="274"/></g>
+        <rect x="40" y="140" width="26" height="12" rx="3" fill="#c25b5b"/><rect x="120" y="244" width="26" height="12" rx="3" fill="#4fb8c0"/><rect x="150" y="182" width="26" height="12" rx="3" fill="#e0d24f"/>
+        <circle cx="104" cy="300" r="6" fill="#e0d24f"/>
+        <text class="svg-label" x="104" y="342" text-anchor="middle">the game</text>
+        <!-- the brain -->
+        <path d="M262 262 C 228 196, 238 110, 320 86 C 400 62, 560 62, 630 92 C 700 122, 712 200, 690 240 C 670 270, 610 266, 560 280 C 480 300, 380 304, 320 290 C 292 284, 272 276, 262 262 Z" fill="#14100c" stroke="#3a2c22"/>
+        <rect x="640" y="140" width="52" height="62" rx="4" fill="#1b1612" stroke="#4fb8c0" stroke-opacity="0.6"/>
+        <text class="svg-label" x="666" y="222" text-anchor="middle">eye</text>
+        <ellipse cx="520" cy="112" rx="96" ry="24" fill="#e8901c" fill-opacity="0.14" stroke="#e8901c" stroke-opacity="0.4"/>
+        <text class="svg-label" x="520" y="116" text-anchor="middle">association cortex</text>
+        <ellipse cx="320" cy="170" rx="54" ry="56" fill="#e8901c" fill-opacity="0.1" stroke="#e8901c" stroke-opacity="0.35"/>
+        <text class="svg-label" x="320" y="166" text-anchor="middle">working</text><text class="svg-label" x="320" y="180" text-anchor="middle">trace</text>
+        <g fill="#ffcd60"><circle cx="404" cy="104" r="6"/><circle cx="398" cy="140" r="6"/><circle cx="388" cy="176" r="6"/></g>
+        <text class="svg-label" x="416" y="196">motor strip</text>
+        <ellipse cx="452" cy="232" rx="34" ry="18" fill="#e8901c" fill-opacity="0.12" stroke="#e8901c" stroke-opacity="0.35"/>
+        <text class="svg-quiet" x="452" y="236" text-anchor="middle">critic</text>
+        <ellipse cx="566" cy="232" rx="54" ry="16" fill="#aa78ff" fill-opacity="0.12" stroke="#aa78ff" stroke-opacity="0.4"/>
+        <text class="svg-quiet" x="566" y="236" text-anchor="middle">associative memory</text>
+        <circle cx="510" cy="282" r="9" fill="#ffcd60" fill-opacity="0.5"/>
+        <text class="svg-quiet" x="524" y="286">dopamine</text>
+        <rect x="214" y="300" width="160" height="40" rx="3" fill="#0a0806" stroke="#3a2c22"/>
+        <polyline points="222,310 250,318 280,326 310,330 340,332 366,333" fill="none" stroke="#e8901c"/>
+        <text class="svg-quiet" x="222" y="352">settling, sweep by sweep</text>
+        <rect x="540" y="300" width="166" height="40" rx="3" fill="#0a0806" stroke="#3a2c22"/>
+        <text class="svg-quiet" x="548" y="316" style="fill:#ffcd60">SYNAPSES CHANGED: 412</text>
+        <text class="svg-quiet" x="548" y="330">DOPAMINE +0.120</text>
+        <text class="svg-quiet" x="548" y="352">learning, live</text>
+      </svg>
+      <figcaption>One row of the page, drawn by hand: the game on the left, its brain on the right. Every part of the real page carries a question mark that explains it.</figcaption>
+    </figure>
+    <ul>
+      <li><b>The row's header</b> names the game, shows the brain's skill badge and its phase (being born, watching the teacher, playing for itself), and, on the right, the game number, the brain's best game and the teacher's average.</li>
+      <li><b>Five numbers</b>: how often the brain agrees with the teacher, the reward its critic expects, its lessons from the teacher, how many sweeps the last settle took, and the score of the game in progress.</li>
+      <li><b>The game</b>, live on an emulated Atari 2600. In Freeway the brain is the chicken crossing the road; in Atlantis it fires the three gun bases.</li>
+      <li><b>The brain</b>, drawn as a brain seen from the side, front to the left. Every lit dot is a neuron's measured activity; the fibres are synapses, lit by the signals they carry. The chips on top say what the brain is doing.</li>
+      <li><b>The status line</b> under the row: progress toward taking the controls, and then the brain's decisions and its time per screen.</li>
+    </ul>
+
+    <h2 id="why">Why it matters</h2>
+    <p><b>It learns during its life.</b> Game-playing networks are usually trained before anyone sees them play. This brain is born when you open the page, with random synapses. It learns the game in front of you, in about a minute, from the pixels of the screen, with no description of the game and no game memory. Then it plays alone and keeps learning from the game's reward.</p>
+    <p><b>It can do better than its teacher.</b> In Freeway the teacher always presses up. The brain learns to press up too, but its own play is not an exact copy: over three measured brains of twelve games each, its games averaged 22.0 to 22.5 crossings against the teacher's 21.4, with single games up to 27. In Atlantis it matches the teacher's 2,000 points.</p>
+    <p><b>It runs in real time, like an animal's brain.</b> The game does not wait for the brain. While the brain settles on the next action, the game goes on with its last one. Its working trace carries its state from one screen to the next, so each answer starts from where the last one ended.</p>
+    <p><b>One brain all along.</b> The brain that watches is the brain that plays: there is no second model and no swap. For a builder of games or robots this means a character that learns on the spot from a demonstration, then carries on by itself.</p>
+
+    <h2 id="do">What you can do</h2>
+    <ul>
+      <li><b>Watch the takeover.</b> At first the phase reads <i>watching the teacher play</i> and the teacher agreement climbs. When it reaches 90% after at least 500 lessons, and the brain has seen one whole game of the teacher, the phase changes to <i>playing for itself</i>.</li>
+      <li><b>Compare scores.</b> The header of each row shows the brain's best game and the teacher's average. The badge turns <i>legend</i> when the brain's last five games average above the teacher's.</li>
+      <li><b>Slow the games down</b> with the speed slider at the top, to watch single screens and the brain's answers.</li>
+      <li><b>Rest the pointer on a question mark</b>, or on any part of the brain, to see what it does. Click a question mark to keep its card open.</li>
+      <li><b>Start again.</b> Reloading the page gives birth to two new brains: nothing is saved. On a narrow screen only Freeway starts by itself; a button starts Atlantis.</li>
+    </ul>
+
+    <h2 id="how">How it works</h2>
+    <dl class="words">
+      <dt>The eye</dt><dd>7,056 sensory neurons, one per pixel of the screen shrunk to 84 by 84 grey pixels, less a fixed background taken before birth. One screen at a time, nothing else.</dd>
+      <dt>Association cortex</dt><dd>64 neurons that read the eye and settle together with the motor strip.</dd>
+      <dt>Working trace</dt><dd>64 neurons that hold the association cortex's activity of the moments before: the brain's short-term state.</dd>
+      <dt>Motor strip</dt><dd>One neuron per joystick action (Freeway: no move, up, down; Atlantis: hold fire, or fire the centre, right or left gun). The strongest one in the settled brain is the action.</dd>
+      <dt>Critic</dt><dd>The reward the brain expects from the screen.</dd>
+      <dt>Dopamine</dt><dd>The reward that came less the reward expected: the signal that changes the synapses at the controls.</dd>
+      <dt>Associative memory</dt><dd>The reward recalled for each action on screens like this one.</dd>
+    </dl>
+    <p><b>Settling.</b> For each screen the whole brain, 7,187 neurons and 456,064 synapses for Freeway, settles: every neuron adjusts to the neurons it is connected to, sweep after sweep, until no neuron moves by more than a small tolerance. That agreement is the answer. A settle that does not reach it is refused: the game keeps the last action and the brain is credited with nothing.</p>
+    <p><b>Watching.</b> While the teacher plays, the brain first gives its own answer to each screen (not played, only compared), then learns the teacher's action for that screen. That is one lesson.</p>
+    <p><b>The takeover.</b> After at least 500 lessons, once 90% of its last 120 answers agreed with the teacher (or after 2,000 lessons at the latest), and after watching one whole game of the teacher, the brain takes the controls.</p>
+    <p><b>At the controls.</b> Each decision is one call: the brain receives the screen and the reward since its last decision, learns from that outcome, and settles on its next action.</p>
+    <p>The brain is the released <code>cadence-net</code> 0.95.2 library, running in Python inside your browser (Pyodide), in its own thread. The game runs on an Atari 2600 emulator in a second thread.</p>
+
+    <h2 id="numbers">The numbers</h2>
+    <table>
+      <thead><tr><th>Reading</th><th>Freeway</th><th>Atlantis</th></tr></thead>
+      <tbody>
+        <tr><td>The teacher's own games, average</td><td class="n">21.4</td><td class="n">2,000</td></tr>
+        <tr><td>The brain's games at the controls, average over twelve or more, three brains</td><td class="n">22.5, 22.0, 22.2</td><td class="n">2,008, 2,000, 2,000</td></tr>
+        <tr><td>The brain's best single game</td><td class="n">25, 27, 25</td><td class="n">2,100, 2,000, 2,000</td></tr>
+        <tr><td>Its twin that stops learning at the takeover, average</td><td class="n">23.0, 23.3, 23.2</td><td class="n">1,946, 2,000, 2,008</td></tr>
+        <tr><td>Lessons before the takeover</td><td class="n">500</td><td class="n">500</td></tr>
+        <tr><td>Faults and refused decisions, all brains</td><td class="n">0</td><td class="n">0</td></tr>
+        <tr id="page-run"><td>On this page, one run: the teacher's games and the brain's first whole games</td><td class="n">teacher 21; brain 21, 22, 27, 26, 20 (23.2)</td><td class="n">teacher 2,000; brain 2,000 in 32 of 34, one 3,100, one 1,600</td></tr>
+        <tr><td>On this page: the takeover, seconds after the page opened</td><td class="n">52</td><td class="n">39</td></tr>
+        <tr><td>On this page: brain time per screen, median</td><td class="n">79 to 81 ms</td><td class="n">79 to 81 ms</td></tr>
+      </tbody>
+    </table>
+    <p class="note">The first six rows are the Python edition, three brains per game from seeds 0, 1 and 2, each beside a frozen twin: <code>evidence/headless-0952/</code>. The page run is <code>evidence/promise-20261113.json</code>, made by <code>tools/promise_test.py</code> in a headless browser on a machine shared with other jobs; there both brains took the controls 56 and 71 seconds after the page opened. The takeover times and the time per screen are <code>evidence/page_check.json</code>. All files are in the <code>atari-arcade</code> folder of the repository.</p>
+
+    <h2 id="limits">Limits</h2>
+    <ul>
+      <li><b>The teachers are simple.</b> Freeway's teacher always presses up and Atlantis's always fires the centre gun. Matching them shows that the brain learns from pixels which action the teacher holds; it does not show that the brain understands the game.</li>
+      <li><b>The edge over the teacher comes from what the brain learned by watching.</b> A twin of each brain that stops learning at the takeover scores as well in Freeway and Atlantis. Learning from reward after the takeover keeps the skill; it adds no measured gain.</li>
+      <li><b>Only some games.</b> The Python edition also plays Space Invaders, where the brain's last five games beat the teacher's 225 in two brains of three (303 and 339) and fall short in the third, and Carnival, where all three brains fall below the teacher. Those games are not on this page.</li>
+      <li><b>Atlantis is a tie.</b> The brain scores the teacher's 2,000 in most games; a game can end lower.</li>
+      <li><b>Timing depends on your machine.</b> The game does not wait for the brain, so a slower device means fewer screens seen and a later takeover.</li>
+      <li><b>Nothing is kept.</b> The brain lives as long as the page is open. A reload is a new birth.</li>
+      <li><b>A bootstrap.</b> A lesson on every watched screen is a way to start a brain quickly. It is not the general way Cadence brains are meant to learn, which is from witnessed surprises during a continuing life.</li>
+    </ul>
+
+    <footer>The brain runs in your browser with cadence-net 0.95.2. <a href="https://github.com/muellerberndt/cadence-demos/tree/main/atari-arcade" target="_blank" rel="noopener">The demo on GitHub</a> · <a href="https://github.com/muellerberndt/cadence" target="_blank" rel="noopener">Cadence on GitHub</a></footer>
+  </main>
+</body>
+</html>

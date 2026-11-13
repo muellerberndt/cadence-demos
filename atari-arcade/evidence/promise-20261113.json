@@ -1,0 +1,236 @@
+{
+ "what": "tools/promise_test.py: the Atari Arcade page in headless Chromium, both games, until each brain played 5 whole games at the controls",
+ "checks": {
+  "two_brains_born_on_the_wheel": true,
+  "both_watched_the_teacher": true,
+  "both_took_the_controls": true,
+  "whole_games_at_the_controls": true,
+  "no_faults_or_refusals": true,
+  "page_shows_teacher_and_badge": true,
+  "freeway_above_the_teacher": true,
+  "atlantis_at_the_teacher": true,
+  "no_page_errors": true,
+  "PASS": true
+ },
+ "games": {
+  "Atlantis": {
+   "teacher_games": [
+    2000,
+    2000,
+    2000,
+    2000
+   ],
+   "teacher_mean": 2000,
+   "brain_games": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000,
+    2000,
+    2000,
+    2000,
+    2000,
+    2000,
+    2000,
+    2000,
+    2000,
+    2000,
+    2000,
+    2000,
+    2000,
+    2000,
+    2000,
+    2000,
+    2000,
+    2000,
+    2000,
+    2000,
+    2000,
+    2000,
+    2000,
+    2000,
+    1600,
+    2000,
+    3100,
+    2000,
+    2000,
+    2000
+   ],
+   "brain_mean": 2020.59,
+   "brain_median": 2000.0,
+   "games_at_or_above_the_teacher": 33,
+   "brain_best": 3100,
+   "badge": "legend",
+   "page_shows": {
+    "header": "episode 40 \u00b7 best 3100 \u00b7 teacher 2000",
+    "badge": "legend",
+    "phase": "playing for itself"
+   }
+  },
+  "Freeway": {
+   "teacher_games": [
+    21
+   ],
+   "teacher_mean": 21,
+   "brain_games": [
+    21,
+    22,
+    27,
+    26,
+    20
+   ],
+   "brain_mean": 23.2,
+   "brain_median": 22,
+   "games_at_or_above_the_teacher": 4,
+   "brain_best": 27,
+   "badge": "legend",
+   "page_shows": {
+    "header": "episode 7 \u00b7 best 27 \u00b7 teacher 21",
+    "badge": "legend",
+    "phase": "playing for itself"
+   }
+  }
+ },
+ "brains": {
+  "brain1": {
+   "phase": "playing",
+   "takeover": {
+    "lessons": 684,
+    "agreement": 1,
+    "seconds": 59.3
+   },
+   "took_the_controls_s_after_open": 70.9,
+   "life": {
+    "decisions": 4985,
+    "outcomes": 4984,
+    "refused": 0,
+    "rewarded": 139,
+    "calm": 0,
+    "think_ms": 60.4,
+    "think_ms_scope": "median of the latest 200 brain handlers, watching and play, including refusals",
+    "value": 0.568,
+    "dopamine": -0.85
+   },
+   "brain": {
+    "beat_age": 0,
+    "faults": 0,
+    "last_error": null
+   }
+  },
+  "brain2": {
+   "phase": "playing",
+   "takeover": {
+    "lessons": 500,
+    "agreement": 1,
+    "seconds": 43.9
+   },
+   "took_the_controls_s_after_open": 55.6,
+   "life": {
+    "decisions": 5067,
+    "outcomes": 5066,
+    "refused": 0,
+    "rewarded": 71,
+    "calm": 0,
+    "think_ms": 63.1,
+    "think_ms_scope": "median of the latest 200 brain handlers, watching and play, including refusals",
+    "value": 0.679,
+    "dopamine": -0.015
+   },
+   "brain": {
+    "beat_age": 0,
+    "faults": 0,
+    "last_error": null
+   }
+  }
+ },
+ "cadence": [
+  "0.95.2",
+  "0.95.2"
+ ],
+ "seconds": 441.8,
+ "load_average": [
+  [
+   52.6,
+   77.6,
+   121.2
+  ],
+  [
+   52.6,
+   77.6,
+   121.2
+  ],
+  [
+   66.5,
+   78.4,
+   119.9
+  ],
+  [
+   65.9,
+   77.4,
+   118.1
+  ],
+  [
+   81.4,
+   80.5,
+   117.9
+  ],
+  [
+   99.7,
+   85.1,
+   118.2
+  ],
+  [
+   79.0,
+   82.0,
+   116.0
+  ],
+  [
+   65.0,
+   78.2,
+   113.4
+  ],
+  [
+   97.5,
+   84.4,
+   114.2
+  ],
+  [
+   99.8,
+   86.5,
+   114.0
+  ],
+  [
+   118.1,
+   92.0,
+   115.0
+  ],
+  [
+   111.7,
+   92.9,
+   114.5
+  ],
+  [
+   106.8,
+   93.4,
+   114.0
+  ],
+  [
+   102.6,
+   93.3,
+   113.2
+  ],
+  [
+   109.6,
+   95.7,
+   113.4
+  ],
+  [
+   74.5,
+   88.6,
+   110.2
+  ]
+ ],
+ "page_errors": [],
+ "checked_utc": "2026-11-13T05:25:02Z"
+}
