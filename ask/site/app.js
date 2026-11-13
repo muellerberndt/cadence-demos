@@ -4,6 +4,7 @@
 // stands, which way the parrot faces) and no part of the brain.
 import { KIND_WORDS, COLOUR_WORDS, PLACE_WORDS, NAMED, RADIUS, PERCH, firstRoom, newRoom, clampPlace, frame, drawRoom, drawRetina, drawThing, truth, wrap, inView } from './room.js';
 import { BrainView } from './brain.js';
+import { canListen, listen, RATE } from './ears.js';
 
 const params = new URLSearchParams(location.search);
 const $ = (id) => document.getElementById(id);
@@ -383,6 +384,23 @@ $('reset').addEventListener('click', async () => {
 });
 $('tour').addEventListener('click', () => tour.start());
 
+// the ears: open only where the pack's brain has them (manifest.ears); the raw sound goes to the
+// brain's host, with no recogniser in between (cadence#329)
+let hearing = null;
+$('mic').addEventListener('click', async () => {
+  if (!S.ready || S.busy) return;
+  if (hearing) { hearing.stop(); return; }
+  try {
+    hearing = await listen({ most: 6000 });
+    $('mic').classList.add('on');
+    const samples = await hearing.samples;
+    hearing = null; $('mic').classList.remove('on');
+    S.busy = true; setBusy();
+    const out = await send('hear', { samples: Array.from(samples), rate: RATE });
+    if (out.reply.refused) logLine(esc(out.reply.refused));
+  } catch (e) { hearing = null; $('mic').classList.remove('on'); logLine(esc(e.message)); } finally { S.busy = false; setBusy(); }
+});
+
 async function startRoom(things, heading = S.heading) {
   S.busy = true; setBusy(); closeTeach(); bubble(null); brain.clearStory();
   S.things = things; S.heading = heading; S.focus = null; S.askPlace = null; S.last = null; show('chips');
@@ -466,6 +484,7 @@ async function start() {
       ? 'A pistachio for a right answer. The parrot cracks it, and the reward goes into its brain: the words that asked (such as "where" or "colour") learn to ask for what its answer gave, as much as the pistachio surprised it. Sure of its answer, it learns little; unsure, more. This is how it learned what those words ask for.'
       : 'A pistachio for a right answer. The parrot cracks it, and its brain takes its own answer as the right one: the words that asked learn to ask for what the answer gave.';
     S.ready = true;
+    $('mic').disabled = !(m.ears && canListen());
     await startRoom(firstRoom(), 0);
     let seen = null;
     try { seen = localStorage.getItem('ask-parrot-tour'); } catch (e) { /* storage blocked */ }

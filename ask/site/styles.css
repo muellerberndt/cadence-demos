@@ -101,6 +101,7 @@ button:focus-visible, input:focus-visible, a:focus-visible, canvas:focus-visible
 .ask button.mic { width: 38px; padding: 0; display: grid; place-items: center; border-color: var(--line-2); background: transparent; }
 .ask button.mic svg { width: 18px; height: 18px; fill: none; stroke: var(--muted); stroke-width: 1.8; stroke-linecap: round; }
 .ask button.mic:disabled { opacity: 0.55; cursor: help; }
+.ask button.mic.on { border-color: var(--danger); } .ask button.mic.on svg { stroke: var(--danger); }
 .chips { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; min-height: 26px; }
 .chips button { height: 26px; padding: 0 10px; border: 1px solid var(--line-2); border-radius: 13px; background: var(--panel); color: #c7d0ea; font: 500 12.5px/1 var(--mono); cursor: pointer; }
 .chips button:hover:not(:disabled) { border-color: rgba(63, 224, 207, 0.6); color: var(--text); }
