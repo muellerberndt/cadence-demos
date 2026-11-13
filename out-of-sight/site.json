@@ -8,6 +8,17 @@
   "feature": "The robot sees only part of the room. Its brain keeps a live map of what is where, in its own state, and holds a hidden thing where it can be: a person's hand within 11 cm, its own hand within half a millimetre.",
   "howTo": "Drag the hand behind the pillar. Drag the floor to turn the robot away from the apple. Click a thing to ask the brain where it is. Switch to the robot's own hand and click a shadow.",
   "help": "help.html",
-  "evidence": ["out-of-sight/evidence/promise_runs-20261113-0225-1879e461.json", "out-of-sight/evidence/page_check-20261113-1051-1879e461.json"],
-  "promise_test": "python tools/check_logged.py --log <log.json> --shots <dir>"
+  "evidence": [
+    "out-of-sight/evidence/promise_runs-20261113-0225-1879e461.json",
+    "out-of-sight/evidence/page_check-20261113-1051-1879e461.json"
+  ],
+  "promise_test": "python tools/check_logged.py --log <log.json> --shots <dir>",
+  "about": "A robot looks around a room with a camera that sees part of it; a pillar and its own arm cast shadows. Its brain keeps a map of what is where, in its own state: hide the hand behind the pillar and the map holds it near where it vanished; turn away from the apple and the apple stays on the map, behind the robot. The robot's own hand is placed by its joint readings, seen or not.",
+  "runsOn": "The library's built-in map of things (cadence.modules.load(\"place\")), cadence-net 0.99.0 in Pyodide",
+  "brainLabel": "the map of things",
+  "zones": [
+    "sensory",
+    "cortex",
+    "episodic"
+  ]
 }
