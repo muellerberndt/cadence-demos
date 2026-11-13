@@ -12,7 +12,9 @@
     "patch-world/evidence/flip.json",
     "patch-world/evidence/seasons.json",
     "patch-world/evidence/controls.json",
-    "patch-world/evidence/promise-flip-20261113.json"
+    "patch-world/evidence/promise-flip-20261113.json",
+    "patch-world/evidence/promise-flip-20261113-run1.json",
+    "patch-world/evidence/promise-flip-20261113-run2.json"
   ],
   "promise_test": "python patch-world/tools/promise_flip.py --out <dir> --shots <dir>"
 }

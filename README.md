@@ -118,7 +118,7 @@ bundle names the pack's address in the host page's `<head>`:
 <meta name="cadence-pack" content="/demos/connect-four/pack/">
 ```
 
-Without the tag a page uses `pack/` beside itself (Robot Arena: `/pack/`). The pack must be served
+Without the tag a page uses `pack/` beside itself. The pack must be served
 as files, not answered by a single-page app's fallback page. Pyodide and NumPy load from
 jsDelivr on the first visit.
 

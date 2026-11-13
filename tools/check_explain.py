@@ -88,7 +88,15 @@ def main() -> int:
     server = None
     base = args.url
     if not base:
-        base, server = serve(page_dir)
+        # a built app is served from its build output (deploy_dir) when the page folder holds only
+        # its static files
+        served = page_dir
+        if not (page_dir / "index.html").exists() and meta.get("deploy_dir"):
+            served = args.demo / meta["deploy_dir"]
+            if not (served / "index.html").exists():
+                print(f"build the app first: {meta.get('build', 'its build')} (in {args.demo})", file=sys.stderr)
+                return 1
+        base, server = serve(served)
     if args.shots:
         args.shots.mkdir(parents=True, exist_ok=True)
 

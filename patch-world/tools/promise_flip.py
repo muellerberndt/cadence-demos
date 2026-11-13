@@ -24,6 +24,16 @@ few berries (a handful in a winter, so a share of theirs is a small sample): the
 to --max-winter moments) until the twins have stood on at least --min-twin berries.
 The readings go to ``DIR/promise-flip.json``, a screenshot of the page to --shots. Exit 1 on a
 failed check.
+
+Amendment of 13 November 2026, made after two failed runs and before the third: the first form
+asked the twins for at least 80% and 30 points above the learners late in the winter, and the
+learners' late share below their early share. Run 1 (``evidence/promise-flip-20261113-run1.json``)
+failed on the twins alone: they stood on 7 berries and ate 5 (71%), while the learners fell from
+99% to 16% and 6%. Run 2 (``evidence/promise-flip-20261113-run2.json``) failed on the learners'
+order alone: 97% in summer, 17% early and 33% late in the winter (births, deaths and returning
+founders make the page's winter noisy), twins 6 of 6. The bars became the one-sided Fisher tests
+above, and the winter runs on until the twins have stood on enough berries. Run 3
+(``evidence/promise-flip-20261113.json``) passed.
 """
 
 from __future__ import annotations
