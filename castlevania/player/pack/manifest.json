@@ -18,7 +18,7 @@
   "player.py": "60d2d4331d1f28ef5672efdcd7f3c4aa63c15380719c980bba849beec0ca10a7"
  },
  "brain": {
-  "file": "../../brain/brain.npz",
+  "file": "brain.npz",
   "sha256": "b868dc955e544df98c5b63a41c705f149d29c2aea72cc6bec1ade1153801a6ed"
  },
  "trace": {
@@ -26,6 +26,12 @@
   "sha256": "421be85caea718bb713a0083e538174719e46ed29c06a42e9d02acee015426d5"
  },
  "video": {
-  "file": "../../docs/castlevania-game.mp4"
+  "file": "castlevania-game.mp4",
+  "sha256": "b6697d9774d3c701d46f0300ea5f543a403649ed0d09491a5be025fa330b52f8"
+ },
+ "highlights": {
+  "file": "castlevania-highlights.mp4",
+  "sha256": "29de6f1e15287992adef0d123832ab1ed9a3bb2fcb9154b53006bd9df3d1f178",
+  "poster": "castlevania-highlights-poster.png"
  }
 }
