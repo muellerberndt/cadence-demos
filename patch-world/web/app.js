@@ -203,16 +203,21 @@ function applySnapshot(s, first = false) {
   if (wasSummer !== s.summer) { buildTerrain(); brainView.terrain = state.terrainCanvas; if (!s.summer) state.winterSince = s.t; }
   updateHud(); renderTally(); renderChart(); updateCoach();
   if (state.selected != null && !state.cur.has(state.selected)) {
-    // the open brain's creature died: a moment later the brain of another learner opens
+    // the open brain's creature died. The brain the page opened by itself gives way, a moment
+    // later, to another learner's; a creature the visitor chose stays, marked dead.
     const gone = state.selected;
     if (state.replacing !== gone) {
       state.replacing = gone;
-      $('insp-sub').textContent = 'This creature has died. Another learner’s brain opens.';
-      setTimeout(() => {
-        if (state.selected !== gone) return;
-        const next = [...state.cur.values()].find((c) => c.kind === 'live');
-        if (next) select(next.id, false);
-      }, 1500);
+      if (state.autoOpened) {
+        $('insp-sub').textContent = 'This creature has died. Another learner’s brain opens.';
+        setTimeout(() => {
+          if (state.selected !== gone) return;
+          const next = [...state.cur.values()].find((c) => c.kind === 'live');
+          if (next) select(next.id, false);
+        }, 1500);
+      } else {
+        $('insp-sub').textContent = 'This creature has died. Click another creature to watch its brain.';
+      }
     }
   } else if (state.selected != null) updateInspectorLive();
 }
@@ -502,7 +507,7 @@ function renderEvo(hist) {
 
 function select(id, byVisitor = true) {
   if (!state.cur.has(id)) return;
-  state.selected = id; state.levels = []; state.details.delete(id);
+  state.selected = id; state.autoOpened = !byVisitor; state.levels = []; state.details.delete(id);
   $('inspector').hidden = false;
   const kind = state.cur.get(id).kind;
   brainView.setAnatomy(null, kind);

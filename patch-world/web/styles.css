@@ -218,3 +218,6 @@ main { max-width: 1380px; margin: 0 auto; padding: 16px clamp(16px, 3vw, 28px) 2
 .right-col .inspector { margin-top: 0; }
 #side { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; align-items: start; }
 @media (max-width: 980px) { #stage { grid-template-columns: minmax(0, 1fr); } }
+/* the world keeps the controls and the first hint on the screen: no taller than the window allows */
+.world-wrap { max-width: max(420px, calc((100vh - 250px) * 1.5)); }
+html.embedded .world-wrap { max-width: max(420px, calc((100vh - 180px) * 1.5)); }

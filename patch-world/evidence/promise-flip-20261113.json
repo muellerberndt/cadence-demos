@@ -1,0 +1,580 @@
+{
+ "schema": "patch-world-promise-flip/1",
+ "url": "http://127.0.0.1:49627/",
+ "checked_utc": "2026-11-13T05:17:09.977152+00:00",
+ "checks": [
+  {
+   "check": "summer: the learners eat most berries they stand on (at least 80%)",
+   "ok": true,
+   "learners": {
+    "ate": 68,
+    "passed": 2,
+    "stood_on": 70,
+    "share": 0.971
+   }
+  },
+  {
+   "check": "winter: the learners eat at most half their summer share, early in the winter and from moment 500 on",
+   "ok": true,
+   "summer": 0.971,
+   "winter": 0.237,
+   "first_150": 0.205,
+   "from_500": 0.212,
+   "stood_on_late": 33,
+   "fisher_p": 2.1e-25
+  },
+  {
+   "check": "winter: the frozen twins keep eating the berries (at least 60%, more than the learners in the same winter)",
+   "ok": true,
+   "twins": {
+    "ate": 15,
+    "passed": 0,
+    "stood_on": 15,
+    "share": 1.0
+   },
+   "learners_winter": 0.237,
+   "fisher_p": 6.6e-09
+  },
+  {
+   "check": "no console errors, page errors or failed requests",
+   "ok": true,
+   "errors": []
+  }
+ ],
+ "errors": [],
+ "boot_seconds": 5.2,
+ "flip_moment": 403,
+ "last_moment": 1303,
+ "creatures": {
+  "live": 8,
+  "frozen": 2,
+  "random": 2
+ },
+ "ms_per_moment": 136.3,
+ "learners": {
+  "summer": {
+   "ate": 68,
+   "passed": 2,
+   "stood_on": 70,
+   "share": 0.971
+  },
+  "winter_first_150": {
+   "ate": 8,
+   "passed": 31,
+   "stood_on": 39,
+   "share": 0.205
+  },
+  "winter_from_500": {
+   "ate": 7,
+   "passed": 26,
+   "stood_on": 33,
+   "share": 0.212
+  },
+  "winter": {
+   "ate": 27,
+   "passed": 87,
+   "stood_on": 114,
+   "share": 0.237
+  }
+ },
+ "frozen_twins": {
+  "summer": {
+   "ate": 4,
+   "passed": 3,
+   "stood_on": 7,
+   "share": 0.571
+  },
+  "winter": {
+   "ate": 15,
+   "passed": 0,
+   "stood_on": 15,
+   "share": 1.0
+  }
+ },
+ "random_walkers": {
+  "summer": {
+   "ate": 2,
+   "passed": 2,
+   "stood_on": 4,
+   "share": 0.5
+  },
+  "winter": {
+   "ate": 6,
+   "passed": 27,
+   "stood_on": 33,
+   "share": 0.182
+  }
+ },
+ "tally": {
+  "frozen": {
+   "lives": 21,
+   "ended": 19,
+   "mean_age_at_death": 128.7,
+   "poisonings_per_1000": 5.756,
+   "good_berries_per_1000": 1.535,
+   "income_per_moment": 0.0715
+  },
+  "random": {
+   "lives": 15,
+   "ended": 13,
+   "mean_age_at_death": 192.2,
+   "poisonings_per_1000": 2.302,
+   "good_berries_per_1000": 0.767,
+   "income_per_moment": 0.0216
+  },
+  "live": {
+   "lives": 29,
+   "ended": 21,
+   "mean_age_at_death": 469.4,
+   "poisonings_per_1000": 2.798,
+   "good_berries_per_1000": 8.393,
+   "income_per_moment": 0.146
+  }
+ },
+ "founders_reentered": 0,
+ "per_50_moments": [
+  {
+   "t": 50,
+   "summer": true,
+   "alive": {
+    "live": 12,
+    "frozen": 2,
+    "random": 2
+   },
+   "learners": [
+    9,
+    1
+   ],
+   "twins": [
+    0,
+    0
+   ]
+  },
+  {
+   "t": 100,
+   "summer": true,
+   "alive": {
+    "live": 12,
+    "frozen": 2,
+    "random": 2
+   },
+   "learners": [
+    16,
+    0
+   ],
+   "twins": [
+    0,
+    0
+   ]
+  },
+  {
+   "t": 150,
+   "summer": true,
+   "alive": {
+    "live": 12,
+    "frozen": 2,
+    "random": 2
+   },
+   "learners": [
+    5,
+    1
+   ],
+   "twins": [
+    4,
+    2
+   ]
+  },
+  {
+   "t": 200,
+   "summer": true,
+   "alive": {
+    "live": 12,
+    "frozen": 2,
+    "random": 2
+   },
+   "learners": [
+    11,
+    0
+   ],
+   "twins": [
+    0,
+    1
+   ]
+  },
+  {
+   "t": 250,
+   "summer": true,
+   "alive": {
+    "live": 12,
+    "frozen": 2,
+    "random": 2
+   },
+   "learners": [
+    21,
+    1
+   ],
+   "twins": [
+    0,
+    0
+   ]
+  },
+  {
+   "t": 300,
+   "summer": true,
+   "alive": {
+    "live": 12,
+    "frozen": 2,
+    "random": 2
+   },
+   "learners": [
+    8,
+    0
+   ],
+   "twins": [
+    0,
+    0
+   ]
+  },
+  {
+   "t": 350,
+   "summer": true,
+   "alive": {
+    "live": 12,
+    "frozen": 2,
+    "random": 2
+   },
+   "learners": [
+    15,
+    0
+   ],
+   "twins": [
+    0,
+    0
+   ]
+  },
+  {
+   "t": 400,
+   "summer": true,
+   "alive": {
+    "live": 12,
+    "frozen": 2,
+    "random": 2
+   },
+   "learners": [
+    8,
+    0
+   ],
+   "twins": [
+    0,
+    0
+   ]
+  },
+  {
+   "t": 450,
+   "summer": false,
+   "alive": {
+    "live": 12,
+    "random": 2,
+    "frozen": 2
+   },
+   "learners": [
+    4,
+    2
+   ],
+   "twins": [
+    0,
+    0
+   ]
+  },
+  {
+   "t": 500,
+   "summer": false,
+   "alive": {
+    "live": 12,
+    "frozen": 2,
+    "random": 2
+   },
+   "learners": [
+    3,
+    16
+   ],
+   "twins": [
+    0,
+    0
+   ]
+  },
+  {
+   "t": 550,
+   "summer": false,
+   "alive": {
+    "live": 12,
+    "frozen": 2,
+    "random": 2
+   },
+   "learners": [
+    2,
+    8
+   ],
+   "twins": [
+    0,
+    0
+   ]
+  },
+  {
+   "t": 600,
+   "summer": false,
+   "alive": {
+    "live": 10,
+    "frozen": 2,
+    "random": 2
+   },
+   "learners": [
+    3,
+    7
+   ],
+   "twins": [
+    1,
+    0
+   ]
+  },
+  {
+   "t": 650,
+   "summer": false,
+   "alive": {
+    "live": 9,
+    "frozen": 2,
+    "random": 2
+   },
+   "learners": [
+    6,
+    10
+   ],
+   "twins": [
+    1,
+    0
+   ]
+  },
+  {
+   "t": 700,
+   "summer": false,
+   "alive": {
+    "live": 8,
+    "random": 2,
+    "frozen": 2
+   },
+   "learners": [
+    1,
+    4
+   ],
+   "twins": [
+    0,
+    0
+   ]
+  },
+  {
+   "t": 750,
+   "summer": false,
+   "alive": {
+    "live": 7,
+    "random": 2,
+    "frozen": 2
+   },
+   "learners": [
+    1,
+    6
+   ],
+   "twins": [
+    0,
+    0
+   ]
+  },
+  {
+   "t": 800,
+   "summer": false,
+   "alive": {
+    "live": 6,
+    "random": 2,
+    "frozen": 2
+   },
+   "learners": [
+    1,
+    5
+   ],
+   "twins": [
+    1,
+    0
+   ]
+  },
+  {
+   "t": 850,
+   "summer": false,
+   "alive": {
+    "live": 4,
+    "frozen": 2,
+    "random": 2
+   },
+   "learners": [
+    3,
+    5
+   ],
+   "twins": [
+    0,
+    0
+   ]
+  },
+  {
+   "t": 900,
+   "summer": false,
+   "alive": {
+    "live": 4,
+    "random": 2,
+    "frozen": 2
+   },
+   "learners": [
+    0,
+    0
+   ],
+   "twins": [
+    3,
+    0
+   ]
+  },
+  {
+   "t": 950,
+   "summer": false,
+   "alive": {
+    "live": 5,
+    "random": 2,
+    "frozen": 2
+   },
+   "learners": [
+    0,
+    0
+   ],
+   "twins": [
+    4,
+    0
+   ]
+  },
+  {
+   "t": 1000,
+   "summer": false,
+   "alive": {
+    "live": 5,
+    "random": 2,
+    "frozen": 2
+   },
+   "learners": [
+    1,
+    0
+   ],
+   "twins": [
+    1,
+    0
+   ]
+  },
+  {
+   "t": 1050,
+   "summer": false,
+   "alive": {
+    "live": 4,
+    "random": 2,
+    "frozen": 2
+   },
+   "learners": [
+    2,
+    9
+   ],
+   "twins": [
+    0,
+    0
+   ]
+  },
+  {
+   "t": 1100,
+   "summer": false,
+   "alive": {
+    "live": 5,
+    "frozen": 2,
+    "random": 2
+   },
+   "learners": [
+    1,
+    5
+   ],
+   "twins": [
+    4,
+    0
+   ]
+  },
+  {
+   "t": 1150,
+   "summer": false,
+   "alive": {
+    "live": 3,
+    "random": 2,
+    "frozen": 2
+   },
+   "learners": [
+    3,
+    11
+   ],
+   "twins": [
+    0,
+    0
+   ]
+  },
+  {
+   "t": 1200,
+   "summer": false,
+   "alive": {
+    "live": 4,
+    "random": 2,
+    "frozen": 2
+   },
+   "learners": [
+    0,
+    1
+   ],
+   "twins": [
+    0,
+    0
+   ]
+  },
+  {
+   "t": 1250,
+   "summer": false,
+   "alive": {
+    "live": 5,
+    "random": 2,
+    "frozen": 2
+   },
+   "learners": [
+    0,
+    0
+   ],
+   "twins": [
+    0,
+    0
+   ]
+  },
+  {
+   "t": 1300,
+   "summer": false,
+   "alive": {
+    "live": 8,
+    "frozen": 2,
+    "random": 2
+   },
+   "learners": [
+    0,
+    0
+   ],
+   "twins": [
+    0,
+    0
+   ]
+  }
+ ],
+ "passed": true
+}

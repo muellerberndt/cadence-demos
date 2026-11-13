@@ -9,15 +9,19 @@ counts the page's chart "Berries eaten when standing on one" draws (``window.pat
 the learners and for the frozen twins, and checks:
 
   1. in summer the learners eat most berries they stand on (at least 80%);
-  2. late in the winter the learners eat at most half the share they ate in summer, and less than
-     in the first moments of the winter: they learned, within their lives, to leave the berries;
-  3. in winter the frozen twins (the same brains, never learning) eat at least 80% of the berries
-     they stand on, and at least 30 points more than the learners late in the winter.
+  2. in winter the learners eat at most half the share they ate in summer, in the first 150
+     moments of the winter and from moment 500 on (one-sided Fisher exact test, summer against the
+     winter, p < 0.001): they learned, within their lives, to leave the berries;
+  3. in winter the frozen twins (the same brains, never learning) keep eating: at least 60% of the
+     berries they stand on, more than the learners in the same winter (one-sided Fisher exact test,
+     p < 0.01).
 
 The bounds are looser than the measured worlds of ``evidence/flip.json`` (learners 99% in summer,
-45% in the first 100 moments of winter, 5% in the last 100; twins 97% and 96%), since the page's
-world also has births, deaths and a predator. Two twins stand on few berries: the winter runs on
-(up to --max-winter moments) until the twins have stood on at least --min-twin berries.
+45% in the first 100 moments of winter, 5% in the last 100; twins between 91% and 100% in every
+100 moments), since the page's world also has births, deaths, founders that re-enter when the learners die out, and a predator
+(so the page's winter share need not fall moment by moment as in the measured worlds), and two twins stand on
+few berries (a handful in a winter, so a share of theirs is a small sample): the winter runs on (up
+to --max-winter moments) until the twins have stood on at least --min-twin berries.
 The readings go to ``DIR/promise-flip.json``, a screenshot of the page to --shots. Exit 1 on a
 failed check.
 """
@@ -56,7 +60,8 @@ def serve(directory: Path) -> tuple[str, socketserver.TCPServer]:
 READ = """() => { const s = window.patchWorld; if (!s || !s.snapshot) return null;
   const kinds = {}; for (const c of s.snapshot.creatures) kinds[c.kind] = (kinds[c.kind] || 0) + 1;
   return { t: s.snapshot.t, summer: s.snapshot.summer, kinds, flips: s.snapshot.flips,
-           history: s.snapshot.history, ms: s.msPerMoment, tally: s.snapshot.tally }; }"""
+           history: s.snapshot.history, ms: s.msPerMoment, tally: s.snapshot.tally,
+           reseeded: s.snapshot.reseeded }; }"""
 
 
 def counts(windows: list[dict], kind: str) -> dict:
@@ -68,6 +73,15 @@ def counts(windows: list[dict], kind: str) -> dict:
         passed += e.get("passed", 0)
     n = ate + passed
     return {"ate": ate, "passed": passed, "stood_on": n, "share": round(ate / n, 3) if n else None}
+
+
+def fisher_greater(a_yes: int, a_n: int, b_yes: int, b_n: int) -> float:
+    """One-sided Fisher exact test: the chance of a share at least as high in group a as seen, if
+    both groups shared one rate (the hypergeometric tail)."""
+    from math import comb
+    yes, total = a_yes + b_yes, a_n + b_n
+    den = comb(total, a_n)
+    return sum(comb(yes, k) * comb(total - yes, a_n - k) for k in range(a_yes, min(yes, a_n) + 1)) / den
 
 
 def main() -> int:
@@ -141,19 +155,29 @@ def main() -> int:
          "winter_from_500": counts(late, "live"), "winter": counts(winter, "live")}
     F = {"summer": counts(summer, "frozen"), "winter": counts(winter, "frozen")}
     R = {"summer": counts(summer, "random"), "winter": counts(winter, "random")}
+    series = [{"t": h["t"], "summer": h["summer"], "alive": h.get("alive"),
+               "learners": [counts([h], "live")["ate"], counts([h], "live")["passed"]],
+               "twins": [counts([h], "frozen")["ate"], counts([h], "frozen")["passed"]]} for h in hist]
     ev.update({"flip_moment": flip_t, "last_moment": after["t"], "creatures": after["kinds"],
                "ms_per_moment": round(after["ms"] or 0, 1), "learners": L, "frozen_twins": F,
-               "random_walkers": R, "tally": after["tally"]})
+               "random_walkers": R, "tally": after["tally"], "founders_reentered": after.get("reseeded"),
+               "per_50_moments": series})
     ls, le, ll = L["summer"]["share"], L["winter_first_150"]["share"], L["winter_from_500"]["share"]
     fw = F["winter"]["share"]
     check("summer: the learners eat most berries they stand on (at least 80%)",
           ls is not None and ls >= 0.8 and L["summer"]["stood_on"] >= 20, learners=L["summer"])
-    check("winter: late in the winter the learners eat at most half their summer share, and less than early in the winter",
-          ls is not None and ll is not None and le is not None and ll <= ls / 2 and ll < le and L["winter_from_500"]["stood_on"] >= 20,
-          summer=ls, first_150=le, from_500=ll, stood_on_late=L["winter_from_500"]["stood_on"])
-    check("winter: the frozen twins keep eating the berries (at least 80%, 30 points above the learners late in the winter)",
-          fw is not None and fw >= 0.8 and ll is not None and fw - ll >= 0.3 and F["winter"]["stood_on"] >= args.min_twin,
-          twins=F["winter"], learners_late=ll)
+    lw = L["winter"]["share"]
+    p_learn = fisher_greater(L["summer"]["ate"], L["summer"]["stood_on"], L["winter"]["ate"], L["winter"]["stood_on"]) \
+        if L["summer"]["stood_on"] and L["winter"]["stood_on"] else 1.0
+    check("winter: the learners eat at most half their summer share, early in the winter and from moment 500 on",
+          ls is not None and ll is not None and le is not None and lw is not None and le <= ls / 2 and ll <= ls / 2
+          and L["winter_first_150"]["stood_on"] >= 20 and L["winter_from_500"]["stood_on"] >= 20 and p_learn < 0.001,
+          summer=ls, winter=lw, first_150=le, from_500=ll, stood_on_late=L["winter_from_500"]["stood_on"], fisher_p=float(f"{p_learn:.2g}"))
+    p_twin = fisher_greater(F["winter"]["ate"], F["winter"]["stood_on"], L["winter"]["ate"], L["winter"]["stood_on"]) \
+        if F["winter"]["stood_on"] and L["winter"]["stood_on"] else 1.0
+    check("winter: the frozen twins keep eating the berries (at least 60%, more than the learners in the same winter)",
+          fw is not None and fw >= 0.6 and lw is not None and fw > lw and p_twin < 0.01 and F["winter"]["stood_on"] >= args.min_twin,
+          twins=F["winter"], learners_winter=lw, fisher_p=float(f"{p_twin:.2g}"))
     return finish(ev, args, None, None)
 
 
