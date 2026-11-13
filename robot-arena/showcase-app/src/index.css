@@ -18,4 +18,4 @@ a.help-link { text-decoration: none; color: #8f98a9; }
 a.help-link:hover { color: #e8ebf2; }
 /* the ring keeps its toolbar on the screen: as wide as its column, no taller than the window allows */
 .arena-canvas { width: auto; height: auto; max-width: 100%; max-height: max(320px, calc(100vh - 210px)); margin: 0 auto; }
-html.embedded .arena-canvas { max-height: max(320px, calc(100vh - 120px)); }
+html.embedded .arena-canvas { max-height: max(300px, calc(100vh - 175px)); }
