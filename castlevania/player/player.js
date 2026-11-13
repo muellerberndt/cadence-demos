@@ -106,7 +106,7 @@ window.addEventListener("resize", () => { fitBrain(); videoSpots(); });
 // -- the explanations: what each part of the brain does, in the role it plays
 const PARTS = {
   settle: ["The settle", "Each decision the whole brain settles: every neuron updates from the neurons it reads, sweep by sweep, until nothing changes. The line is the largest change in a sweep, falling to the dashed tolerance."],
-  eye: ["Visual cortex: the eye", "What the eye sees at this decision, as four small maps: the whole screen, what moved since the last decision, and a sharp window ahead of Simon and one behind him (the red and blue boxes on the game)."],
+  eye: ["Visual cortex: the eye", "What the eye sees at this decision, as four small maps: the whole screen, what moved since the last decision, and a sharp window ahead of Simon and one behind him (in the highlights, the red and blue boxes on the game)."],
   body: ["Body sense", "Simon's position, health, lives and facing, and which stage, block and floor he is on, read from the console's memory."],
   module_0: ["Module 0", "256 neurons that read the eye's maps and the body sense and pass on what they find."],
   association: ["Association", "128 neurons, the hub: every other region reads it and writes to it, so the eye, the memory and the motor strip come to agree here."],
