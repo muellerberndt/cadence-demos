@@ -1,5 +1,21 @@
 # From connectome to Cadence
 
+## What it shows
+
+**A Cadence brain on real animal wiring, which learns.** A connectome is the complete wiring
+diagram of a nervous system: which cell connects to which, by how many synapses, traced cell by
+cell in electron microscope images. Cadence runs two measured connectomes as live brains in the
+browser: the whole body of a Platynereis larva (25,609 cells), whose wiring turns it toward light
+and stops it after a tap, with fixed connections; and one side of a zebrafish hindbrain (2,884
+neurons), whose gaze circuit holds a glance in its own activity. Teach the fish to hold its gaze,
+let it return and hold again: the strengths of its measured connections change while it lives and
+keep what they learned (12 of 12 seeded runs, `web/data/learning_reteach.json`). The page's
+[help page](web/help.html) explains what a connectome is, every part of the screen, how the fish
+learns, the numbers with their evidence files, and the limits. The site's text for the demo is
+[`site.json`](site.json).
+
+## The demo
+
 Two animal connectomes running as Cadence rate patch nets. Teach the zebrafish's gaze
 circuit to hold, return, and hold again on the same acquired brain. Explore the
 Platynereis larva's compiled sensory and motor circuit, whose weights stay fixed.
@@ -52,6 +68,12 @@ python tools/check_learning_ui.py    # visible practice, pause, test and reset
 python tools/scenario_fish.py        # compiled-weight fish behavior
 python tools/scenario_larva.py       # larva behavior
 ```
+
+The promise test of the demos site (`site.json`) is the visible teaching and the larva's loop:
+`python tools/check_learning_ui.py --out runs/learning_ui.json && python tools/scenario_larva.py
+--no-screenshot --receipt runs/scenario_larva.json`. On a busy machine `--hardware` renders
+`check_site.py` and `check_learning_ui.py` with the GPU instead of SwiftShader. A run kept as
+evidence goes to a new dated receipt (`--receipt`, `--out`); the historical receipts stay as they are.
 
 ## Source
 
