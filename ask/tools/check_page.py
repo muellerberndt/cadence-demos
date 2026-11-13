@@ -10,7 +10,8 @@ tutorial off, and checks, against what a teacher would answer about the room as 
 2. **The other way round:** "what is red?" names every red thing the parrot has a word for.
 3. **From memory:** the parrot turned by a drag across the floor (no thing moved), "what is behind
    you?" names the things behind it, one at least in its blind spot.
-4. **A pistachio** for a right answer: the parrot cracks it and its brain's synapses change.
+4. **A pistachio** for a right answer: the parrot cracks it, the reward arrives with a surprise above
+   zero, and synapses change.
 5. **A new word:** the kettle (a kind the parrot has no word for) clicked and named three times by
    typing; then "where is the kettle?", "what colour is the kettle?" and "what is yellow?" use it.
 6. **A word never taught:** "where is the zebra?" is answered "i do not know".
@@ -148,8 +149,12 @@ def main() -> int:
         page.wait_for_timeout(200)
         idle()
         log = page.inner_text("#log")
-        checks.append({"check": "a pistachio: cracked, and the brain takes it", "said_before": said,
-                       "log": log.splitlines()[-1] if log else "", "ok": "pistachio" in log and before >= 0})
+        last = log.splitlines()[-1] if log else ""
+        # the reward path: a surprise above zero, and synapses changed by it
+        import re
+        found = re.search(r"Surprise ([0-9.]+): ([0-9]+) synapse", last)
+        checks.append({"check": "a pistachio: cracked, and the reward changes synapses", "said_before": said,
+                       "log": last, "ok": bool(found) and float(found.group(1)) > 0 and int(found.group(2)) > 0 and before >= 0})
         shot("5-pistachio")
         # 5. a new word, taught by three namings, and used
         kettle = by_kind[8]

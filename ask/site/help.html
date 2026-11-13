@@ -51,7 +51,7 @@
     <h2 id="do">What you can do</h2>
     <ul>
       <li><b>Ask a question.</b> Type it and press Enter, or click a question under the box. The parrot understands "where is the ball?", "what colour is the cup?" (or "color"), "what is red?", "what is behind you?", "what is in front of you?", "what is left of you?" and the like, in the words it knows.</li>
-      <li><b>Give a pistachio</b> for a right answer. The parrot cracks it, the brain view washes green and the synapses the lesson changed flash.</li>
+      <li><b>Give a pistachio</b> for a right answer. The parrot cracks it, the brain view washes green with the reward's surprise (its dopamine), and the synapses the reward changed flash.</li>
       <li><b>Tell it the right answer</b> when it was wrong: type the answer beside the pistachio and press Tell.</li>
       <li><b>Turn the parrot.</b> Drag across the floor, or press the arrow keys. Things move in and out of its eyes' fans; the map holds what it saw.</li>
       <li><b>Move things.</b> Drag a thing. Moved where the parrot sees it, the map follows; moved within the blind spot, the map holds it where it was last seen.</li>
@@ -69,16 +69,16 @@
     <h3>A question</h3>
     <ol>
       <li><b>Hearing.</b> The question's words drive their neurons, and the concept neurons settle (the brain view plays this sweep by sweep).</li>
-      <li><b>Understood.</b> The most active concept is what the question is about; the read neurons say what it asks for: a thing, a colour or a place. Question words such as "where" and "colour" learned their reads from questions answered for the parrot.</li>
+      <li><b>Understood.</b> The most active concept is what the question is about; the read neurons say what it asks for: a thing, a colour or a place. Question words such as "where" and "colour" learned their reads from pistachios.</li>
       <li><b>The map.</b> The map is asked by settling: where are the things of that kind, of that colour, or on the cells of that place around the body.</li>
       <li><b>Saying.</b> For each thing found, its concepts, weighted by what the question asks for, drive the word neurons, and they settle.</li>
       <li><b>The motor.</b> The most active word is heard back, and said: its letters, one by one.</li>
     </ol>
     <p>No table maps a word to a concept or a question word to what it asks for: the meaning of every word is in the synapses drawn on the page. With those synapses at zero the same brain answers nothing.</p>
     <h3>How the parrot was raised</h3>
-    <p>Before the page, a scripted teacher raised the brain the page loads: 40 rooms of the eight named kinds, 15 namings each (the parrot turns, attends to a thing and hears one word: its kind, its colour or its place), then 24 rooms of 10 questions answered for it, about the ball, the cup, the box and the book only. The shoe, the key, the apple and the lamp were named and never asked about. The words are the teacher's English; to the brain they are letters.</p>
+    <p>Before the page, a scripted teacher raised the brain the page loads. First naming: 40 rooms of the eight named kinds, 15 namings each (the parrot turns, attends to a thing and hears one word: its kind, its colour or its place). Then pistachios: in 24 rooms the teacher asked 10 questions each about the ball, the cup, the box and the book, never saying the answer; the parrot answered, trying what a question might ask for, and a right answer earned a pistachio. It earned 112 in 152 answers. The teacher said the answer only where there was nothing to find ("i do not know", a word the parrot can say only once it has heard it). So the words that ask ("where", "colour", "what") learned what they ask for from pistachios. The shoe, the key, the apple and the lamp were named and never asked about. The words are the teacher's English; to the brain they are letters.</p>
     <h3>A pistachio</h3>
-    <p>A right answer earns a pistachio. In this development build the brain takes its rewarded answer as the right one: the lesson of a question answered (<code>Words.practice</code>), so the question's words move toward asking for what the answer named. The brain's reward path, through which a reward arrives as dopamine, is the next step of the library's words lane; the page takes it the moment the brain it loads has it.</p>
+    <p>A right answer earns a pistachio, and the reward goes into the brain (<code>Words.reward</code>): the question's words of asking (those that name no thing, colour or place) learn to ask for what the answer gave, at the reward's surprise: the pistachio less how sure the parrot was of that answer. That surprise is the dopamine the brain view shows. A parrot sure of its answer learns little from a pistachio; an unsure one learns more. A wrong answer earns nothing, and you can tell it the right one (<code>Words.practice</code>).</p>
 
     <h2 id="numbers">The numbers</h2>
     <table>
@@ -92,11 +92,12 @@
         <tr><td>A word never taught, or a thing not in the room: "i do not know"</td><td class="n">120 of 120</td></tr>
         <tr><td>A new word after three namings, where and colour, right</td><td class="n">48 of 48</td></tr>
         <tr><td>With the lexicon's synapses at zero, right</td><td class="n">0 of 284</td></tr>
+        <tr><td>Pistachios earned while it learned what question words ask for (first half of its answers, second half)</td><td class="n">112 of 152 (.71, .76)</td></tr>
         <tr><td>Learned parameters (the lexicon's synapse pairs)</td><td class="n">6,656</td></tr>
         <tr><td>The promise test on the page (questions both ways, from memory, a pistachio, a new word, a word never taught)</td><td class="n">10 of 10</td></tr>
       </tbody>
     </table>
-    <p class="note">The readings of the brain the page loads are in <code>ask/evidence/raised-20261113-2023-17e690a7.json</code> (written by <code>tools/raise_brain.py</code>, which raised it); the promise test on the page in the <code>promise-*.json</code> files of the same folder (<code>tools/check_page.py</code>). One brain, raised once: these numbers read a single parrot, not a population.</p>
+    <p class="note">The readings of the brain the page loads are in <code>ask/evidence/raised-20261113-2047-0e822a29.json</code> (written by <code>tools/raise_brain.py</code>, which raised it); the promise test on the page in the <code>promise-*.json</code> files of the same folder (<code>tools/check_page.py</code>). One brain, raised once: these numbers read a single parrot, not a population.</p>
 
     <h2 id="limits">Limits</h2>
     <ul>
@@ -105,7 +106,7 @@
       <li><b>One thing of a kind.</b> Each room has one thing of each kind; "the red ball" among several balls is a later rung.</li>
       <li><b>No past or future.</b> "Where was the ball?" (from the brain's records) and "where will it be?" (from its forecast) are the next rungs of the words lane.</li>
       <li><b>No ears.</b> Questions are typed; the microphone button opens when the brain hears raw sound.</li>
-      <li><b>The pistachio teaches through the told-answer lesson</b> in this development build (see How it works).</li>
+      <li><b>Pistachios teach what a question asks for.</b> The names of things, colours and places are learned from naming; a pistachio teaches the words of asking.</li>
       <li><b>A development build.</b> The page runs a wheel built from a development branch of the library (the commit is in the page's header); its numbers are from that build.</li>
       <li><b>One brain.</b> The numbers read the one brain the page loads; the library's chamber reads many.</li>
     </ul>

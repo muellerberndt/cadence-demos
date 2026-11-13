@@ -31,7 +31,7 @@ function send(command, payload) {
 // -- the state of the page
 
 const S = {
-  things: firstRoom(), heading: 0, pose: { heading: 0, body: 0, tilt: 0, blink: 0, bob: 0, beakOpen: 0 },
+  things: firstRoom(), heading: 0, pose: { heading: 0, body: 0, tilt: 0, blink: 0, bob: 0, beakOpen: 0, fluff: 0 },
   held: [], words: [], info: null, ready: false, busy: false,
   last: null, // the latest answer: {question, said, story}
   rewarded: false, teach: null, hover: null, focus: null, askPlace: null, nut: null,
@@ -76,6 +76,7 @@ function frameLoop(now) {
   p.bob = brain.speaking ? Math.abs(Math.sin(now / 90)) : p.bob * 0.85;
   p.beakOpen = brain.speaking ? Math.abs(Math.sin(now / 70)) : 0;
   if (S.nut) { S.nut.t = Math.min(1, (now - S.nut.began) / 1500); if (S.nut.t >= 1) S.nut = null; }
+  p.fluff = S.nut && S.nut.t > 0.45 ? Math.sin(((S.nut.t - 0.45) / 0.55) * Math.PI) * (0.6 + 0.4 * Math.abs(Math.sin(now / 60))) : p.fluff * 0.9;
   drawRoom(rctx, roomSize, { things: S.things, heading: S.heading, pose: p, held: S.held, focus: S.focus, ask: { place: S.askPlace }, teach: S.teach, hover: S.hover, nut: S.nut });
   const rb = retina.getBoundingClientRect();
   drawRetina(ectx, rb.width, rb.height, S.things, p.heading);
@@ -166,7 +167,10 @@ async function pistachio() {
     const out = await send('pistachio', {});
     apply(out);
     brain.lesson(out.reply.changed, out.reply.how === 'reward' ? 'dopamine' : 'lesson', out.reply.dopamine);
-    logLine(`<span class="nutted">A pistachio for “${esc(S.last.said.join(', '))}”: it cracks it, and its brain ${out.reply.how === 'reward' ? 'takes the reward' : 'takes its answer as right'}.</span>`);
+    const n = out.reply.changed.length;
+    logLine(out.reply.how === 'reward'
+      ? `<span class="nutted">A pistachio for “${esc(S.last.said.join(', '))}”: it cracks it. Surprise ${out.reply.dopamine.toFixed(2)}: ${n} synapse${n === 1 ? '' : 's'} change.</span>`
+      : `<span class="nutted">A pistachio for “${esc(S.last.said.join(', '))}”: it cracks it, and takes its answer as right.</span>`);
     bubble('<span class="none">crack!</span>');
     setTimeout(() => { if (!S.busy) bubble(null); }, 1600);
     tour.event({ type: 'pistachio' });
@@ -372,7 +376,7 @@ const tour = {
   steps: [
     { text: 'Ask the parrot <b>where is the ball?</b> Click the question below, or type it.', chip: 'where is the ball?', done: (e) => e.type === 'ask' && e.story.about && e.story.about[0] === 'kind' && e.story.said.some((w) => PLACE_WORDS.includes(w)) },
     { text: 'It answered from what its brain holds, in a word it learned by being shown things. Right? <b>Give it a pistachio.</b>', nut: true, done: (e) => e.type === 'pistachio' },
-    { text: 'Ask it the other way round: <b>what is red?</b>', chip: 'what is red?', done: (e) => e.type === 'ask' && e.story.about && e.story.about[0] === 'colour' },
+    { text: 'The green wash was its surprise, its dopamine: the words that asked learned a little. Ask it the other way round: <b>what is red?</b>', chip: 'what is red?', done: (e) => e.type === 'ask' && e.story.about && e.story.about[0] === 'colour' },
     { text: 'Turn the parrot: <b>drag across the floor</b> (or press ← →). Then ask <b>what is behind you?</b> It cannot see behind itself: it answers from its map.', chip: 'what is behind you?', done: (e) => e.type === 'ask' && e.story.about && e.story.about[0] === 'place' && S.turned > 0.4 },
     { text: 'The parrot has no word for some things in the room. <b>Click the yellow kettle</b>, type a name for it and press <b>Say it</b>, three times.', done: (e) => e.type === 'name' && e.kind >= NAMED && e.count >= 3 },
     { text: () => `Ask about it: <b>where is the ${esc(tour.word || 'kettle')}?</b>`, chip: () => `where is the ${tour.word || 'kettle'}?`, done: (e) => e.type === 'ask' && tour.word && e.question.toLowerCase().includes(tour.word) && e.story.said.some((w) => PLACE_WORDS.includes(w)) },
@@ -434,8 +438,9 @@ async function start() {
     const dev = m.build === 'development' ? ' · <b>a development build</b>' : '';
     status(`The brain runs in your browser · cadence-net ${esc(m.cadence)}${dev}`, 'ready');
     $('runtime').title = `wheel ${m.wheel} (${m.branch || 'released'}, ${m.commit || ''}), brain ${m.brain.file}; started in ${(info.startup_ms / 1000).toFixed(1)} s`;
-    if (info.reward_path) $('nut').dataset.explain = 'A pistachio for a right answer. The parrot cracks it, and the reward goes into its brain: the synapses its answer used are strengthened, as dopamine strengthens them in an animal.';
-    else $('nut').dataset.explain = 'A pistachio for a right answer. The parrot cracks it, and its brain takes its own answer as the right one: the question\'s words move toward asking for what the answer named. In this development build the pistachio teaches through that lesson; the brain\'s reward path joins in the next build.';
+    $('nut').dataset.explain = info.reward_path
+      ? 'A pistachio for a right answer. The parrot cracks it, and the reward goes into its brain: the words that asked (such as "where" or "colour") learn to ask for what its answer gave, as much as the pistachio surprised it. Sure of its answer, it learns little; unsure, more. This is how it learned what those words ask for.'
+      : 'A pistachio for a right answer. The parrot cracks it, and its brain takes its own answer as the right one: the words that asked learn to ask for what the answer gave.';
     S.ready = true;
     await startRoom(firstRoom(), 0);
     let seen = null;

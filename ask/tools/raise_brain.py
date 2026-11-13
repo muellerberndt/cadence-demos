@@ -108,6 +108,7 @@ def main() -> int:
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--out", type=Path, default=HERE / "site" / "pack" / "brain" / "parrot.npz")
     ap.add_argument("--evidence", type=Path, default=HERE / "evidence")
+    ap.add_argument("--practice", choices=("told", "reward"), default="reward")
     a = ap.parse_args()
     import cadence
 
@@ -132,18 +133,26 @@ def main() -> int:
     # 2. practice: kinds 0 to 3 only
     t0 = time.time()
     practised = list(range(4))
+    pistachios: list[bool] = []
     for _ in range(SETTINGS["practice_rooms"]):
         r = world.room(rng, practised, 3, avoid=unseen)
         parrot.look_around(brain, r.things, r.heading)
         asked = room_questions(r, rng, absent=practised, foils=list(range(6)))
         for i in rng.permutation(len(asked))[: SETTINGS["asked"]]:
             q = asked[int(i)]
-            brain.practice(q.text, q.answer if len(q.answer) > 1 else q.answer[0])
+            if a.practice == "told" or q.answer == [world.NONE_WORD]:
+                brain.practice(q.text, q.answer if len(q.answer) > 1 else q.answer[0])
+                continue
+            right = world.right(q, brain.ask(q.text, explore=True))
+            pistachios.append(right)
+            brain.reward(1.0 if right else 0.0)
     seconds["practice"] = time.time() - t0
     lessons = {"naming_and_practice": int(brain.lexicon.lessons),
                "words": list(brain.lexicon.forms)}
     raised_macs = int(brain.lexicon.work["macs"])
     card = {"seed": a.seed, "cadence": cadence.__version__, "settings": SETTINGS,
+            "practice": a.practice, "pistachios": int(sum(pistachios)),
+            "rewarded_answers": len(pistachios),
             "teacher": "tools/raise_brain.py", "raised": time.strftime("%Y-%m-%d %H:%M")}
     path = parrot.save(brain, a.out, card)
     digest = hashlib.sha256(path.read_bytes()).hexdigest()
@@ -209,7 +218,11 @@ def main() -> int:
     out = {
         "what": "the page's brain raised by the scripted teacher and read on rooms it never saw",
         "cadence": cadence.__version__, "seed": a.seed, "settings": SETTINGS,
-        "brain_file": str(path.relative_to(HERE)), "brain_sha256": digest,
+        "practice": a.practice,
+        "pistachios": {"earned": int(sum(pistachios)), "answers": len(pistachios),
+                       "first_half": float(np.mean(pistachios[: len(pistachios) // 2])) if pistachios else None,
+                       "last_half": float(np.mean(pistachios[len(pistachios) // 2:])) if pistachios else None},
+        "brain_file": str(path.relative_to(HERE)) if path.is_relative_to(HERE) else path.name, "brain_sha256": digest,
         "lessons": lessons, "unseen_colours": {world.KIND_WORDS[k]: world.COLOUR_WORDS[c]
                                                for k, c in unseen.items()},
         "readings": {g: {"rate": float(np.mean(v)), "n": len(v)} for g, v in sorted(readings.items())},
@@ -226,7 +239,7 @@ def main() -> int:
     commit = cadence.__version__.split(".")[-1]
     target = a.evidence / f"raised-{time.strftime('%Y%m%d-%H%M')}-{commit}.json"
     target.write_text(json.dumps(out, indent=1) + "\n")
-    print(json.dumps({k: out[k] for k in ("readings", "pools", "parameters", "seconds")}, indent=1))
+    print(json.dumps({k: out[k] for k in ("practice", "pistachios", "readings", "pools", "parameters", "seconds")}, indent=1))
     print(target)
     return 0
 

@@ -23,8 +23,9 @@ This is the demonstration page of the words lane of the library
 
 ## Readings
 
-The brain the page loads, raised by `tools/raise_brain.py` (seed 1) and read on rooms it never saw
-(`evidence/raised-20261113-2023-17e690a7.json`, on `0.99.0+words.17e690a7`):
+The brain the page loads, raised by `tools/raise_brain.py --practice reward` (seed 1: naming, then
+pistachios for right answers, the answer told only where there is nothing to find) and read on rooms
+it never saw (`evidence/raised-20261113-2047-0e822a29.json`, on `0.99.0+words.0e822a29`):
 
 | Reading | Right |
 | --- | --- |
@@ -36,6 +37,7 @@ The brain the page loads, raised by `tools/raise_brain.py` (seed 1) and read on 
 | A word never taught or a thing not in the room: "i do not know" | 120 of 120 |
 | A new word after three namings | 48 of 48 |
 | The lexicon's synapses at zero | 0 of 284 |
+| Pistachios earned while it learned what question words ask for | 112 of 152 answers (.71 in the first half, .76 in the second) |
 
 6,656 learned parameters (the lexicon's synapse pairs); the map's wiring has no taught synapse.
 
@@ -55,9 +57,10 @@ from the brain. Results in `evidence/promise-*.json`.
 - **A voice.** It answers in text: the brain's motor spells the word.
 - **Ears.** A microphone button sits beside the question box, closed until the brain has ears
   (cadence#329); `site/ears.js` records 16 kHz sound for the host's `hear` command.
-- **Pistachios.** A right answer earns one. In this build a pistachio gives the brain its answer as
-  the right one (`Words.practice`); the host calls `Words.reward` instead where the brain it loads
-  has a reward path.
+- **Pistachios.** A right answer earns one: the reward goes into the brain (`Words.reward(1)`), and
+  the question's words of asking learn what the answer took, at the reward's surprise (the brain view
+  shows it as dopamine). The parrot learned what "where" and "colour" ask for from pistachios. A wrong
+  answer earns none; "tell it the right answer" gives the answer (`Words.practice`).
 
 ## Run it locally
 

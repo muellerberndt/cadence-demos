@@ -6,11 +6,10 @@ way it faces) and a lexicon learned from naming (``cadence.words.Lexicon``). Not
 a question; this file builds the brain, shows it the room through its eyes and keeps its lexicon
 in a file.
 
-The file (``cadence-ask-brain/1``, an ``.npz``) holds the lexicon's arrays as the library gives
-them (``Lexicon.arrays``: its synapses, the motor's letters, the word forms), its settings, and
-the lessons each word has had (``Lexicon.counts``), so a word named again on the page goes on
-from its earlier lessons. The map is not kept: a room on the page is new to the brain, and it
-learns it by looking.
+The file (``cadence-ask-brain/2``, an ``.npz``) holds the lexicon's arrays as the library gives
+them (``Lexicon.arrays``: its synapses, the motor's letters, the word forms and each word's
+lessons, so a word named again on the page goes on from its earlier lessons) and its settings.
+The map is not kept: a room on the page is new to the brain, and it learns it by looking.
 """
 
 from __future__ import annotations
@@ -24,7 +23,7 @@ import numpy as np
 
 from . import world
 
-FORMAT = "cadence-ask-brain/1"
+FORMAT = "cadence-ask-brain/2"
 
 
 def make_map() -> Any:
@@ -59,15 +58,12 @@ def look_around(brain: Any, things: list[world.Thing], heading: float) -> None:
 
 
 def save(brain: Any, path: str | Path, card: dict[str, Any] | None = None) -> Path:
-    """The brain's lexicon in a file, with the lessons of each word and a card."""
+    """The brain's lexicon in a file, as the library gives its arrays, with a card."""
     lexicon = brain.lexicon
     arrays = dict(lexicon.arrays())
-    groups = {",".join(k): v for k, v in lexicon.counts.items()}
-    for key, value in groups.items():
-        arrays[f"counts:{key}"] = np.asarray(value, dtype=np.int64)
-    record = {"format": FORMAT, "lexicon": lexicon.settings, "lessons": int(lexicon.lessons),
-              "counts": sorted(groups), "words": {"shares": dict(brain.shares),
-                                                  "floor": brain.floor},
+    record = {"format": FORMAT, "lexicon": lexicon.settings,
+              "words": {"shares": dict(brain.shares), "floor": brain.floor,
+                        "temperature": brain.temperature, "sharpness": brain.sharpness},
               "card": card or {}}
     arrays["record"] = np.array(json.dumps(record))
     path = Path(path)
@@ -86,13 +82,11 @@ def load(path: str | Path) -> tuple[Any, dict[str, Any]]:
         record = json.loads(str(held["record"]))
         if record.get("format") != FORMAT:
             raise ValueError(f"a brain file states {FORMAT!r}")
-        arrays = {k: held[k] for k in ("efficacy", "letters", "forms")}
-        counts = {tuple(k.split(",")): np.asarray(held[f"counts:{k}"], dtype=np.int64)
-                  for k in record["counts"]}
+        arrays = {k: held[k] for k in held.files if k != "record"}
     lexicon = Lexicon.from_arrays(record["lexicon"], arrays)
-    lexicon.counts = {k: v.copy() for k, v in counts.items()}
-    lexicon.lessons = int(record.get("lessons", 0))
     told = record.get("words") or {}
     brain = Words(make_map(), lexicon=lexicon, shares=dict(told.get("shares") or {}) or None,
-                  floor=float(told.get("floor", 0.05)))
+                  floor=float(told.get("floor", 0.05)),
+                  temperature=float(told.get("temperature", 0.1)),
+                  sharpness=float(told.get("sharpness", 0.02)))
     return brain, record

@@ -163,8 +163,9 @@ export function drawPistachio(ctx, x, y, r, open = 0, alpha = 1) {
  *  eyes, a black hooked beak. `pose`: heading (where the head faces), body (where the body faces),
  *  tilt, blink (0 to 1), bob (0 to 1, while it speaks), beakOpen (0 to 1). Original drawing. */
 export function drawParrot(ctx, px, py, scale, pose) {
-  const { heading, body = heading, tilt = 0, blink = 0, bob = 0, beakOpen = 0 } = pose;
+  const { heading, body = heading, tilt = 0, blink = 0, bob = 0, beakOpen = 0, fluff = 0 } = pose;
   const s = scale * BIRD;
+  const puff = 1 + 0.12 * fluff; // a happy parrot fluffs its feathers
   // the perch: a round stump of wood under the bird
   ctx.save(); ctx.translate(px, py);
   const pr = 0.24 * s;
@@ -185,11 +186,12 @@ export function drawParrot(ctx, px, py, scale, pose) {
   ctx.strokeStyle = 'rgba(120,20,18,0.7)'; ctx.lineWidth = 1;
   for (const k of [-0.5, 0, 0.5]) { ctx.beginPath(); ctx.moveTo(-s * 0.15, k * s * 0.05); ctx.lineTo(-s * 0.31, k * s * 0.09); ctx.stroke(); }
   // body
-  ctx.fillStyle = grey; ctx.beginPath(); ctx.ellipse(-s * 0.02, 0, s * 0.14, s * 0.1, 0, 0, 2 * Math.PI); ctx.fill();
+  ctx.fillStyle = grey; ctx.beginPath(); ctx.ellipse(-s * 0.02, 0, s * 0.14 * puff, s * 0.1 * puff, 0, 0, 2 * Math.PI); ctx.fill();
   // wings: folded along the sides, darker, their feathers scalloped
   for (const side of [-1, 1]) {
     ctx.fillStyle = dark;
-    ctx.beginPath(); ctx.moveTo(s * 0.06, side * s * 0.06); ctx.quadraticCurveTo(-s * 0.05, side * s * 0.125, -s * 0.21, side * s * 0.05); ctx.quadraticCurveTo(-s * 0.1, side * s * 0.04, s * 0.06, side * s * 0.06); ctx.fill();
+    const w = puff * puff;
+    ctx.beginPath(); ctx.moveTo(s * 0.06, side * s * 0.06 * w); ctx.quadraticCurveTo(-s * 0.05, side * s * 0.125 * w, -s * 0.21, side * s * 0.05 * w); ctx.quadraticCurveTo(-s * 0.1, side * s * 0.04 * w, s * 0.06, side * s * 0.06 * w); ctx.fill();
     ctx.strokeStyle = 'rgba(40,44,50,0.5)'; ctx.lineWidth = 0.9;
     for (let k = 0; k < 4; k++) { const x = s * (0.03 - k * 0.05); ctx.beginPath(); ctx.arc(x, side * s * 0.075, s * 0.016, Math.PI * 0.5, Math.PI * 1.5); ctx.stroke(); }
   }
@@ -199,7 +201,7 @@ export function drawParrot(ctx, px, py, scale, pose) {
   ctx.restore();
   // the head, facing `heading`, a little tilted
   ctx.save(); ctx.translate(px, py); ctx.rotate(-heading);
-  const hx = s * (0.1 + 0.012 * bob);
+  const hx = s * (0.1 + 0.012 * Math.max(bob, fluff));
   ctx.translate(hx, 0); ctx.rotate(tilt);
   ctx.fillStyle = light; ctx.beginPath(); ctx.arc(0, 0, s * 0.075, 0, 2 * Math.PI); ctx.fill();
   ctx.strokeStyle = 'rgba(110,116,124,0.5)'; ctx.lineWidth = 0.7;

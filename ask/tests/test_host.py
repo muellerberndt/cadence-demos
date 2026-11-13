@@ -119,7 +119,10 @@ def test_a_pistachio_and_a_told_answer(host: Host) -> None:
     assert "refused" in host.handle({"command": "pistachio"})
     host.handle({"command": "ask", "question": "where is the ball?"})
     out = host.handle({"command": "pistachio"})
-    assert out["how"] in ("reward", "practice") and out["changed"]
+    assert out["how"] == "reward" and 0.0 < out["dopamine"] < 1.0 and out["changed"]
+    # the same answer rewarded again surprises the parrot less
+    host.handle({"command": "ask", "question": "where is the ball?"})
+    assert host.handle({"command": "pistachio"})["dopamine"] < out["dopamine"]
     host.handle({"command": "ask", "question": "what colour is the ball?"})
     out = host.handle({"command": "tell", "answer": "red"})
     assert out["how"] == "practice" and out["changed"]
