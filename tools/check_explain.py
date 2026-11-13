@@ -11,7 +11,9 @@ and checks:
   - help.html loads, has the template's sections and links back to the demo;
   - inside a frame the page is marked embedded and hides what only the page by itself shows;
   - neither view scrolls sideways at 1512x860 and 1280x720.
-It writes nothing outside --shots. Exit 1 on a failed check.
+In the frame the page wears the demos site's theme (shared/site/cadence-theme.css, a copy of the
+site's file, with data-demo on <body>), as the site serves it. It writes nothing outside --shots.
+Exit 1 on a failed check.
 """
 from __future__ import annotations
 
@@ -59,6 +61,8 @@ def main() -> int:
     ap.add_argument("--min-explain", type=int, default=6)
     ap.add_argument("--url", help="a running server for the page folder")
     ap.add_argument("--wait", type=float, default=8.0, help="seconds to let the page start")
+    ap.add_argument("--theme", type=Path, default=Path(__file__).resolve().parents[1] / "shared" / "site" / "cadence-theme.css",
+                    help="the demos site's theme, put on the page in the frame")
     args = ap.parse_args()
     results: list[tuple[bool, str, object]] = []
 
@@ -124,6 +128,10 @@ def main() -> int:
                                    f'<iframe src="{base}" style="border:0;width:100%;height:{h - 150}px"></iframe></body></html>')
             frame_page.wait_for_timeout(int(args.wait * 1000))
             frame = frame_page.frames[1] if len(frame_page.frames) > 1 else None
+            if frame and args.theme and args.theme.exists():
+                frame.add_style_tag(content=args.theme.read_text())
+                frame.evaluate("(slug) => document.body.setAttribute('data-demo', slug)", meta["slug"])
+                frame_page.wait_for_timeout(600)
             fstatus = frame.evaluate("document.querySelector('.runtime, #runtime, .status')?.innerText || ''") if frame else ""
             check(not ferrors, f"{w}x{h} in a frame: no console error, page error or failed request", {"errors": ferrors[:5], "status": fstatus[:120]})
             emb = frame.evaluate("""() => ({ embedded: document.documentElement.classList.contains('embedded'),

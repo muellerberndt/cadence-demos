@@ -137,6 +137,8 @@ button.primary { border-color: rgba(63, 224, 207, 0.5) !important; background: r
 .parts { position: absolute; inset: 0; }
 .part { position: absolute; padding: 0; border: 0; border-radius: 12px; background: transparent; cursor: help; }
 .part:focus-visible { outline: 2px solid rgba(255, 255, 255, 0.75); outline-offset: 2px; }
+/* the demos site's theme styles every button; the brain's hit areas and names stay invisible */
+.parts .part, .parts .part:hover, .parts .part:focus-visible { min-height: 0 !important; border: 0 !important; background: transparent !important; box-shadow: none !important; }
 /* a region's name and its question mark: one button */
 .part.ask { display: flex; justify-content: flex-end; align-items: center; border-radius: 5px; }
 .part.ask::after { content: '?'; display: grid; place-items: center; width: 13px; height: 13px; border: 1px solid rgba(199, 208, 234, 0.5); border-radius: 50%; background: rgba(6, 8, 14, 0.8); color: #c7d0ea; font: 700 9px/1 Inter, system-ui, sans-serif; transition: color 0.15s, border-color 0.15s; }

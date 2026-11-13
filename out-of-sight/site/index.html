@@ -43,9 +43,10 @@
           <button type="button" data-case="own" aria-pressed="false">The robot’s own hand</button>
         </div>
         <div class="welcome" id="welcome" hidden>
-          <h2>Out of sight</h2>
-          <p data-promise>Hide the hand, and the brain knows where it is.</p>
-          <p class="small">The robot sees only part of the room. Its brain keeps a map of where everything is, even what its camera cannot see. Four short steps show it.</p>
+          <h2 data-standalone>Out of sight</h2>
+          <p data-promise data-standalone>Hide the hand, and the brain knows where it is.</p>
+          <p class="small" data-standalone>The robot sees only part of the room. Its brain keeps a map of where everything is, even what its camera cannot see.</p>
+          <p class="small">Four short steps show what the brain does.</p>
           <div class="row"><button class="primary" id="welcome-go" type="button">Show me</button><button id="welcome-skip" type="button">Explore on my own</button></div>
           <p class="small link"><a href="help.html" target="_blank" rel="noopener">What am I looking at?</a></p>
         </div>
