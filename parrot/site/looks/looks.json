@@ -1,0 +1,7 @@
+{"looks": [
+ {"id": "realistic", "title": "Realistic", "file": "looks/realistic.glb", "rig": "looks/realistic.rig.json", "shading": "pbr", "envMapIntensity": 1.0,
+  "credit": "The realistic body was made for this page with Meshy (an image of an African Grey, then image to 3D)."},
+ {"id": "anime", "title": "Anime", "file": "looks/anime.glb", "rig": "looks/anime.rig.json", "shading": "toon", "outline": 0.0007,
+  "credit": "The anime body is an original design, made for this page with Meshy (an image, then image to 3D)."},
+ {"id": "drawn", "title": "Drawn", "file": null, "fallback": true, "credit": "The drawn body is the page’s own placeholder."}
+]}

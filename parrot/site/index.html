@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cadence Parrot</title>
+<meta name="description" content="An African Grey parrot on a low perch sees through two eyes on the sides of its head. Place things round it and watch what its eyes see and how its brain answers. Everything runs in your browser.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Sora:wght@500;600&display=swap">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="cadence-explain.css">
+<script src="cadence-explain.js" defer></script>
+<script type="importmap">{ "imports": { "three": "./vendor/three/three.module.min.js" } }</script>
+</head>
+<body>
+<div class="app">
+  <section class="stage" id="stage">
+    <canvas id="scene" aria-label="An African Grey parrot on a low wooden perch on a table, with things round it: an apple, a ball, a cup and a block. Drag a thing to move it; drag empty space to look round; scroll to zoom."></canvas>
+    <div class="tags" id="tags" aria-hidden="true"></div>
+    <header class="topbar">
+      <div class="lead">
+        <div class="title" data-standalone>
+          <h1>Cadence Parrot</h1>
+          <p>Two eyes, a wide view, and a brain that learns where things are</p>
+        </div>
+        <p class="coach" id="coach" role="status" aria-live="polite"><span class="step" id="coach-step"></span><span id="coach-text">The room, the parrot and its brain are loading in your browser.</span></p>
+      </div>
+      <div class="top-right">
+        <div class="status" id="status" role="status" data-explain="What the page is doing: building the room, loading the brain, or ready. All of it runs inside your browser; nothing runs on a server." data-explain-mark="none"><span class="dot"></span><span id="status-text">Loading</span></div>
+        <a class="help" data-help href="help.html" target="_blank" rel="noopener" data-explain="What this page shows and why, every part explained, the numbers and the credits for every model used." data-explain-mark="none">Help</a>
+      </div>
+    </header>
+    <div class="toast" id="toast" hidden></div>
+    <div class="drawer" id="drawer" hidden aria-label="The joints, moved by you"></div>
+    <div class="controls">
+      <div class="row">
+        <div class="palette" id="palette" role="group" aria-label="Add a thing" data-explain-title="Add a thing" data-explain="Puts a thing of that kind on the table, beside or in front of the parrot. Each is a real object at its real size. Drag it anywhere on the table afterwards, even behind the parrot."><span class="lbl">Add</span></div>
+      </div>
+      <div class="row">
+        <button id="test" class="ghost" aria-pressed="false" data-explain="The experiment's test: things are placed round the parrot one after another, at set places, near and far, beside it and behind it. The chamber that tests the brain uses the same placements." data-explain-mark="none">Test run</button>
+        <button id="clear" class="ghost" data-explain="Takes every thing off the table." data-explain-mark="none">Clear</button>
+        <button id="pistachio" class="nut" data-explain="Gives the parrot a pistachio: a reward its brain learns from while it lives. Give one when it does something right." data-explain-mark="none">Pistachio <b id="pistachios">0</b></button>
+        <div class="segmented" id="mode" role="group" aria-label="Who moves the parrot" data-explain-title="Who moves it" data-explain="Brain: the parrot's brain moves its head, beak, wings and feet. You: sliders move each joint, and the brain's moves wait; it still sees." data-explain-mark="none">
+          <button class="seg" data-mode="brain" aria-pressed="true">Brain</button>
+          <button class="seg" data-mode="you" aria-pressed="false">You</button>
+        </div>
+        <div class="segmented" id="looks" role="group" aria-label="The parrot's look" data-explain-title="Its look" data-explain="Two bodies for the same parrot: one as real as a photograph, one drawn in an anime style. Both have the same joints and the same eyes, so its brain moves either one." data-explain-mark="none" hidden></div>
+        <button id="home" class="ghost icon" aria-label="Back to the first view" data-explain="Back to the first view of the room." data-explain-mark="none">&#8634;</button>
+      </div>
+    </div>
+  </section>
+  <aside class="brain" aria-label="The brain">
+    <div class="brain-head">
+      <div class="brain-name">
+        <h2 data-explain-title="The parrot's brain, live" data-explain="What the brain receives and what it does, ten moments a second: the two eyes' images, its populations of neurons lit by their activity, the neurons it uses for distance, and its joints.">The brain</h2>
+        <p id="brain-sub">Loading&hellip;</p>
+      </div>
+      <dl class="stats">
+        <div><dt data-explain="How many moments the brain has lived on this page. Each moment it receives both eyes' images and its joints' readings, and sends its joints' targets back. Ten moments a second.">Moment</dt><dd id="s-moment">&ndash;</dd></div>
+        <div><dt data-explain="How long the brain took for one moment, in your browser (the median of the last 50). A moment lasts 100 ms; while this stays below that, the brain keeps up with real time.">Think</dt><dd id="s-think">&ndash;</dd></div>
+        <div><dt data-explain="How many pictures a second the page draws. The room, the parrot and its two eyes are drawn on your graphics card.">Frames/s</dt><dd id="s-fps">&ndash;</dd></div>
+      </dl>
+    </div>
+    <section class="eyes">
+      <div class="eye-pair">
+        <figure data-explain-title="The left eye" data-explain="What the left eye sees, the image its brain receives: 64 by 32 colours over a field of 175 degrees. Its rear edge is on the left, the beak side on the right. It is sharpest in the middle, where the eye looks."><canvas id="eye-l" width="64" height="32"></canvas><figcaption>Left eye</figcaption></figure>
+        <figure data-explain-title="The right eye" data-explain="What the right eye sees, shown mirrored, so the two images read from the left rear, round the front, to the right rear. Things straight ahead show at the inner edges of both: there the two fields overlap."><canvas id="eye-r" width="64" height="32"></canvas><figcaption>Right eye</figcaption></figure>
+      </div>
+      <figure class="fields-fig" data-explain-title="Its fields of view, from above" data-explain="The parrot's head from above, its beak pointing at the dot's line. Blue: the left eye's field; amber: the right eye's. They overlap a little in front of the beak; behind the head is a blind spot. White dots are things in view; grey dots are things in the blind spot."><canvas id="fields"></canvas></figure>
+    </section>
+    <div class="canvas-wrap" id="brain-wrap"><canvas id="brain" aria-hidden="true"></canvas></div>
+    <section class="dist" id="dist-card" data-explain-title="Distance neurons" data-explain="The neurons the brain uses for distance, named by the brain itself.">
+      <h3 id="dist-title">Distance neurons</h3>
+      <canvas id="dist-units" aria-hidden="true"></canvas>
+      <canvas id="dist-tuning" aria-label="Each distance neuron's activity against the true distance of the thing you move"></canvas>
+      <div class="dist-row"><span id="dist-readout">Its sense of distance: &ndash;</span><button id="silence" class="ghost small" aria-pressed="false" data-explain="Silences the distance neurons inside the brain: they stay at zero while the brain settles. Watch its sense of distance go; press again to wake them." data-explain-mark="none">Silence them</button></div>
+    </section>
+    <section class="joints-card" data-explain-title="The joints" data-explain="Each joint the brain drives: head turn, tilt and cock, neck, beak, both wings, both feet's grip and both legs. The bar is where the joint stands; the thin mark is the brain's target. Each joint moves toward its target at most at its own speed."><h3>Joints</h3><div id="joints" class="joints"></div></section>
+    <footer class="foot"><span id="credit"></span> &middot; Objects, textures and light: Poly Haven (CC0) &middot; <a href="https://github.com/muellerberndt/cadence" target="_blank" rel="noopener">Cadence on GitHub</a></footer>
+  </aside>
+</div>
+<script type="module" src="app.js"></script>
+</body>
+</html>

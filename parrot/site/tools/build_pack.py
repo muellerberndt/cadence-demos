@@ -1,0 +1,57 @@
+"""Write the brain pack's manifest (site/pack/manifest.json): the host's sources, any brain files and
+any wheel, each with its SHA-256, which the page's worker checks before it runs anything.
+
+    python tools/build_pack.py [--package parrotbrain] [--wheel FILE] [--cadence VERSION] [--file NAME ...] [--brain TEXT]
+
+The pack ships the placeholder host by default (pack/py/parrotbrain, NumPy only). The composed
+brain's host replaces it: its package under pack/py/<package>/, its files (weights, settings) in
+pack/, its wheel in pack/, then this tool again.
+"""
+from __future__ import annotations
+
+import argparse
+import datetime
+import hashlib
+import json
+import sys
+from pathlib import Path
+
+PACK = Path(__file__).resolve().parents[1] / "pack"
+PYODIDE = "314.0.7"
+
+
+def sha(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("--package", default="parrotbrain")
+    ap.add_argument("--wheel")
+    ap.add_argument("--cadence")
+    ap.add_argument("--file", action="append", default=[], help="a brain file in pack/ the host reads")
+    ap.add_argument("--brain", default="placeholder: a hand-written controller, nothing learned")
+    args = ap.parse_args()
+    src = PACK / "py" / args.package
+    sources = sorted(p.name for p in src.glob("*.py"))
+    manifest = {
+        "schema": "cadence-parrot-pack/1",
+        "packed": datetime.date.today().isoformat(),
+        "pyodide": PYODIDE,
+        "packages": ["numpy"],
+        "package": args.package,
+        "brain": args.brain,
+        "sources": sources,
+        "sources_sha256": {n: sha(src / n) for n in sources},
+        "files": {n: sha(PACK / n) for n in args.file},
+        "config": {"eye": {"w": 64, "h": 32, "field": 87.5, "vfield": 60, "fovea": 0.4, "axis": 75}},
+    }
+    if args.wheel:
+        manifest.update({"wheel": args.wheel, "wheel_sha256": sha(PACK / args.wheel), "cadence": args.cadence})
+    (PACK / "manifest.json").write_text(json.dumps(manifest, indent=1) + "\n")
+    print(f"pack: {len(sources)} sources, {len(args.file)} files" + (f", wheel {args.wheel}" if args.wheel else ""))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
