@@ -33,6 +33,13 @@
       </div>
     </header>
     <div class="toast" id="toast" hidden></div>
+    <div class="talk" id="talk" role="dialog" aria-labelledby="talk-title" hidden>
+      <h3 id="talk-title">Talk to the parrot</h3>
+      <p>It hears through your microphone: its ear lights up as you speak, and it may answer with sounds of its own.</p>
+      <div class="talk-buttons"><button id="talk-yes" class="primary">Let it hear me</button><button id="talk-no" class="ghost">Not now</button></div>
+      <p class="talk-error" id="talk-error" role="alert" hidden></p>
+      <p class="talk-note">Your browser asks first. The sound stays in this page: nothing is recorded or sent.</p>
+    </div>
     <div class="drawer" id="drawer" hidden aria-label="The joints, moved by you"></div>
     <div class="controls">
       <div class="row">
@@ -41,7 +48,7 @@
       <div class="row">
         <button id="test" class="ghost" aria-pressed="false" data-explain="The experiment's test: things are placed round the parrot one after another, at set places, near and far, beside it and behind it. The chamber that tests the brain uses the same placements." data-explain-mark="none">Test run</button>
         <button id="clear" class="ghost" data-explain="Takes every thing off the table." data-explain-mark="none">Clear</button>
-        <button id="mic" class="mic" aria-pressed="false" data-explain="Turns the microphone on (your browser asks first; it works on this computer or over https). The parrot hears you: its ear regions light up as you speak. Nothing is recorded or sent anywhere; it stays in this page." data-explain-mark="none"><span class="dot"></span>Microphone</button>
+        <button id="mic" class="mic" aria-pressed="false" data-explain="Turns the microphone on (your browser asks first; it works on this computer or over https). The parrot hears you: its ear regions light up as you speak. Nothing is recorded or sent anywhere; it stays in this page." data-explain-mark="none"><span class="dot"></span>Microphone<span class="lvl"><i id="mic-level"></i></span></button>
         <button id="pistachio" class="nut" data-explain="Gives the parrot a pistachio: a reward its brain learns from while it lives. Give one when it does something right." data-explain-mark="none">Pistachio <b id="pistachios">0</b></button>
         <div class="segmented" id="mode" role="group" aria-label="Who moves the parrot" data-explain-title="Who moves it" data-explain="Brain: the parrot's brain moves its head, beak, wings and feet. You: sliders move each joint, and the brain's moves wait; it still sees." data-explain-mark="none">
           <button class="seg" data-mode="brain" aria-pressed="true">Brain</button>

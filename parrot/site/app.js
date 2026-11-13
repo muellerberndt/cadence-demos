@@ -376,6 +376,7 @@ function frame(now) {
     if (loud > 0 || state.wasSpeaking) { parrot.joints.set('beak_open', 30 * loud); state.wasSpeaking = loud > 0; }
     ui.voiceLevel.style.width = `${Math.round(loud * 100)}%`;
     ui.earLevel.style.width = `${Math.round(audio.level * 100)}%`;
+    $('mic-level').style.width = `${Math.round(audio.level * 100)}%`;
     drawBands();
     parrot.update(dt);
     placeFocus();
@@ -465,11 +466,43 @@ ui.silence.addEventListener('click', async () => {
 for (const b of ui.mode.querySelectorAll('.seg')) b.addEventListener('click', () => setMode(b.dataset.mode));
 // sound may start only after the visitor's first click (browsers hold it back until then)
 window.addEventListener('pointerdown', () => { audio.unlock().catch(() => {}); }, { once: true, capture: true });
+// The microphone: the first-visit card asks; the toolbar's button turns it on and off. The choice
+// is remembered in this browser.
+const remember = { get() { try { return localStorage.getItem('parrot.mic'); } catch (e) { return null; } },
+  set(v) { try { localStorage.setItem('parrot.mic', v); } catch (e) { /* storage blocked: the card asks again */ } } };
+function micError(error) {
+  const name = error?.name || '';
+  if (!window.isSecureContext) return 'The microphone needs a secure page. Open it at http://localhost:8842/ (on this computer) or over https.';
+  if (name === 'NotAllowedError' || name === 'SecurityError') return 'The microphone is blocked for this page. Allow it in the address bar (the site settings by the address), then press Let it hear me again.';
+  if (name === 'NotFoundError' || name === 'OverconstrainedError') return 'No microphone was found. Plug one in or choose one in your computer\u2019s sound settings, then try again.';
+  if (name === 'NotReadableError') return 'The microphone is busy in another app. Close it there, then try again.';
+  return `The microphone did not start: ${error?.message || name || 'unknown error'}.`;
+}
+async function startMic() {
+  await audio.startMic();
+  ui.mic.setAttribute('aria-pressed', 'true');
+  document.body.dataset.mic = 'on';
+}
 ui.mic.addEventListener('click', async () => {
-  if (audio.mic) { audio.stopMic(); ui.mic.setAttribute('aria-pressed', 'false'); return; }
-  try { await audio.startMic(); ui.mic.setAttribute('aria-pressed', 'true'); toast('The parrot hears you: speak, and watch its ear light up', 'good', 2400); }
-  catch (error) { toast(error.message || 'The microphone did not start', 'bad', 3200); }
+  if (audio.mic) { audio.stopMic(); ui.mic.setAttribute('aria-pressed', 'false'); document.body.dataset.mic = 'off'; return; }
+  try { await startMic(); remember.set('yes'); toast('The parrot hears you: speak, and watch its ear light up', 'good', 2400); }
+  catch (error) { toast(micError(error), 'bad', 6000); }
 });
+$('talk-yes').addEventListener('click', async () => {
+  $('talk-error').hidden = true;
+  try { await audio.unlock(); await startMic(); remember.set('yes'); $('talk').hidden = true; toast('It hears you: speak, and watch its ear light up', 'good', 2600); }
+  catch (error) { $('talk-error').textContent = micError(error); $('talk-error').hidden = false; }
+});
+$('talk-no').addEventListener('click', () => { remember.set('no'); $('talk').hidden = true; audio.unlock().catch(() => {}); });
+function offerMic() {
+  const choice = remember.get();
+  if (choice === 'no') return;
+  if (choice === 'yes') { // asked before: the first click anywhere turns it on (a browser lets sound start only from a click)
+    window.addEventListener('pointerdown', () => { startMic().catch(() => { $('talk').hidden = false; }); }, { once: true });
+    return;
+  }
+  $('talk').hidden = false;
+}
 $('home').addEventListener('click', () => { camera.position.copy(HOME.pos); controls.target.copy(HOME.at); controls.update(); });
 
 // --- start --------------------------------------------------------------------------------------------------------
@@ -517,6 +550,7 @@ async function start() {
     setStatus('Ready', 'ready');
     ui.status.title = `Brain loaded in ${(desc.startup_ms / 1000).toFixed(1)} s`;
     document.body.dataset.ready = '1';
+    offerMic();
     if (query.get('test')) runScript(TEST);
   } catch (error) {
     setStatus(`The brain failed to load: ${error.message}`, 'error');
