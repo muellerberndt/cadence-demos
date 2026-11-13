@@ -67,7 +67,7 @@ header.top nav a { color:var(--muted); padding:3px 8px; } header.top nav a.on { 
 .strip .k { display:block; color:var(--primary); font-size:11px; text-transform:uppercase; margin-bottom:2px; }
 .strip .try { color:var(--muted); font-size:13px; } .strip .try .k { color:var(--muted); }
 iframe { display:block; width:100%; height:calc(100vh - 200px); min-height:560px; border:0; }
-.local { padding:30px 26px; color:var(--muted); }
+.local { margin:0; padding:6px 26px; border-bottom:1px solid var(--border); color:var(--muted); font-size:11px; }
 </style></head><body>
 <header class="top"><a class="brand" href="#/">&Lambda; Cadence</a><nav id="nav"></nav></header>
 <main id="main"></main>
@@ -86,7 +86,7 @@ function route() {
   const d = DEMOS.find((x) => x.slug === slug);
   main.innerHTML = `<section class="strip"><h2>${esc(d.title)}<span><a href="${d.help}" target="_blank">[help]</a><a href="${d.github}" target="_blank">[github]</a></span></h2>`
     + `<div class="claim"><span class="k">Cadence / ${esc(d.mechanism)}</span>${esc(d.feature)}</div><div class="try"><span class="k">Try it</span>${esc(d.howTo)}</div></section>`
-    + (d.localOnly ? `<p class="local">${esc(d.localOnly.reason || 'This demo runs on your own machine.')}</p>` : '')
+    + (d.localOnly ? `<p class="local">${esc(d.localOnly.reason || 'This demo runs on your own machine.')} <code>${esc(d.localOnly.command || '')}</code></p>` : '')
     + `<iframe src="${d.embed}" title="${esc(d.title)}" allow="fullscreen"></iframe>`;
 }
 addEventListener('hashchange', route); route();
