@@ -80,6 +80,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outlin
 .segmented .seg { border: 0 !important; border-radius: 0 !important; background: transparent !important; height: 36px !important; color: var(--ink-2); }
 .segmented .seg[aria-pressed="true"] { background: var(--raised) !important; color: var(--ink); box-shadow: inset 0 -2px 0 var(--accent); }
 .speed { margin-left: auto; }
+.segmented.target > .cx-q { align-self: center; margin: 0 9px 0 3px; }
 
 .brain { background: var(--panel); border-left: 1px solid var(--line); display: flex; flex-direction: column; min-width: 0; overflow-y: auto;
   padding: max(18px, env(safe-area-inset-top, 0px)) max(18px, env(safe-area-inset-right, 0px)) max(14px, env(safe-area-inset-bottom, 0px)) 18px; gap: 12px; }

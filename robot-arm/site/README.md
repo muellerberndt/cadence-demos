@@ -82,6 +82,8 @@ as the brain is ready.
 | Path | What |
 | --- | --- |
 | `index.html`, `styles.css`, `favicon.svg` | the page |
+| `help.html`, `help-figure.jpg` | the help page and its labelled screenshot |
+| `cadence-explain.js`, `cadence-explain.css`, `cadence-help.css` | the question marks and the help page's style, copies of `../../shared/` (`python tools/sync_shared.py`) |
 | `app.js` | three.js scene, placing things, the run loop |
 | `sim.js` | the contact cell: MuJoCo, the IK reflex, grasp and release, the observation (a line-for-line port of `../arm2`) |
 | `brainview.js` | the brain panel |

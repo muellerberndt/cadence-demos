@@ -1,5 +1,13 @@
 # Robot Arm
 
+**What it shows.** A Cadence brain that runs in real time, like the brain of a living being: about
+five times a second it senses where its hand, the block and the target bin are, and settles on its
+next move. Move the bin while the arm carries the block, something it never met while it learned,
+and its next moves head for the new place, with its synapses unchanged. On the page you drag the
+block and the bins, pick the target bin, press Run, and drag the lit bin while the arm carries the
+block. The [help page](site/help.html) explains every part; the promise test
+([`tools/promise_moved_bin.py`](tools/promise_moved_bin.py)) works the real page with the mouse.
+
 A Cadence brain drives a Franka Panda arm under contact physics (MuJoCo). It picks up a block
 and places it in the bin that a lit lamp names. The brain learned the job during its life by
 imitating a scripted teacher, and is then read frozen on trials it never trained on. The page in
@@ -23,6 +31,17 @@ MuJoCo 3.17 runs as WebAssembly with the same compiled cell the brain trained in
 a Web Worker in Pyodide with the released wheel, and the page draws every neuron of it after each
 decision. [`site/README.md`](site/README.md) describes the files, the parity tests against the
 Python cell and the checks; [`site/DEPLOY.md`](site/DEPLOY.md) describes hosting.
+
+The page explains itself: a line at the top left walks the visitor through it, names float over
+the block and the bins, every control and every part of the brain carries a question mark, and
+[`site/help.html`](site/help.html) explains everything in detail. The promise test works the real
+page in headless Chromium with the mouse: it drags the target bin to a new place while the arm
+carries the block, and checks that the block lands in the moved bin (it writes a new file in
+`evidence/`):
+
+```sh
+python robot-arm/tools/promise_moved_bin.py --shots /tmp/arm-shots   # from the repository root
+```
 
 ## The brain
 

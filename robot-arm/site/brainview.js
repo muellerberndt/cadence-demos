@@ -144,7 +144,10 @@ export class BrainView {
     const wmX = l3 ? l3.w + 30 : 0;
     const wm = this.pop.prefrontal ? cellIn('prefrontal', 8, 8, wmX, y, s3) : null;
     if (wm) boxes.push({ name: 'prefrontal', label: 'Working memory', ...wm });
-    this.historyBox = wm ? { x: wm.x + wm.w + 12, y, w: W - (wm.x + wm.w + 12), h: wm.h } : null;
+    // the history strip starts after the working memory's label and its question mark
+    this.ctx.font = '500 10.5px "IBM Plex Mono", monospace';
+    const wmRight = wm ? wm.x + Math.max(wm.w, this.ctx.measureText('WORKING MEMORY').width + 24) : 0;
+    this.historyBox = wm ? { x: wmRight + 12, y, w: W - (wmRight + 12), h: wm.h } : null;
     y += (l3 ? l3.h : 0) + 34;
     // Layer 2: 16 x 8
     const s2 = Math.floor(Math.min(12, (W - 15) / 16 - 1));
@@ -346,6 +349,6 @@ export class BrainView {
       }
     });
     g.fillStyle = '#6c7583'; g.font = '400 9.5px "IBM Plex Mono", monospace';
-    g.textAlign = 'end'; g.fillText('now →', b.x + b.w, b.y + b.h + 12); g.textAlign = 'start';
+    g.textAlign = 'end'; g.fillText('latest →', b.x + b.w, b.y + b.h + 12); g.textAlign = 'start';
   }
 }
