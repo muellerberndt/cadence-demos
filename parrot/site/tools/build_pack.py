@@ -30,7 +30,8 @@ def main() -> int:
     ap.add_argument("--wheel")
     ap.add_argument("--cadence")
     ap.add_argument("--file", action="append", default=[], help="a brain file in pack/ the host reads")
-    ap.add_argument("--brain", default="placeholder: a hand-written controller, nothing learned")
+    ap.add_argument("--brain", default="composed: cadence.parrot (the parrot-brain lane), with the page's hearing layer; placeholder: a hand-written controller")
+    ap.add_argument("--wheel-source", default="")
     args = ap.parse_args()
     src = PACK / "py" / args.package
     sources = sorted(p.name for p in src.glob("*.py"))
@@ -45,9 +46,10 @@ def main() -> int:
         "sources_sha256": {n: sha(src / n) for n in sources},
         "files": {n: sha(PACK / n) for n in args.file},
         "config": {"eye": {"w": 64, "h": 32, "field": 87.5, "vfield": 60, "fovea": 0.4, "axis": 75}},
+        "hosts": {"composed": "parrotbrain.page", "placeholder": "parrotbrain.host"},
     }
     if args.wheel:
-        manifest.update({"wheel": args.wheel, "wheel_sha256": sha(PACK / args.wheel), "cadence": args.cadence})
+        manifest.update({"wheel": args.wheel, "wheel_sha256": sha(PACK / args.wheel), "cadence": args.cadence, "wheel_source": args.wheel_source})
     (PACK / "manifest.json").write_text(json.dumps(manifest, indent=1) + "\n")
     print(f"pack: {len(sources)} sources, {len(args.file)} files" + (f", wheel {args.wheel}" if args.wheel else ""))
     return 0

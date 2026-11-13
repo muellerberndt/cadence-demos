@@ -106,6 +106,10 @@ class Host:
         self.held = np.zeros(40, np.float32)
         self.saying = 0
         self.drive = 0.6
+        self.running = math.log(1e-6)  # the ear's running level, which a sudden sound breaks
+        self.quiet_for = 0
+        self.startled = -100
+        self.last_match = None
         self.things = None
         self.sound = []          # frames of the sound being heard
         self.quiet = 0           # quiet frames since it ended
@@ -178,8 +182,11 @@ class Host:
         """Records deep enough to say back: the repertoire's sounds learned from the visitor."""
         out = []
         for slot in self.mem.sayable():
+            prog = self.mem.programs.get(slot)
             out.append({"id": f"you-{slot}", "tag": "learned from you", "source": "you", "slot": slot,
-                        "frames": self.mem.frames_of(slot), "deep": float(self.mem.records.deep[slot])})
+                        "frames": self.mem.frames_of(slot), "deep": float(self.mem.records.deep[slot]),
+                        "heard": int(self.mem.heard[slot]), "program": self.mem.pronunciation(slot),
+                        "matches": [] if prog is None else prog["matches"][-20:]})
         return out
 
     def remember(self, saved: dict) -> dict[str, Any]:
@@ -191,10 +198,13 @@ class Host:
         return {"repertoire": self.repertoire_list(), "memory": self.mem.view()}
 
     def choose(self) -> dict:
-        options = self.repertoire + self.you_sounds()
-        def weight(r):
-            w = (1.0 + 2.0 * self.paid.get(r["id"], 0.0)) * (0.5 if r["id"] == "babble" else 1.0)
-            return w * (1.0 + 0.5 * r["deep"]) if "deep" in r else w
+        words = self.you_sounds()
+        options = self.repertoire + words
+        def weight(r):  # learned words by depth, pistachio-paid sounds more often; calls fewer once it has words
+            w = (1.0 + 2.0 * self.paid.get(r["id"], 0.0))
+            if "deep" in r:
+                return w * (1.0 + 0.5 * r["deep"])
+            return w * (0.2 if r["id"] == "babble" else 1.0) * (0.3 if words else 1.0)
         w = np.array([weight(r) for r in options])
         return options[int(self.rng.choice(len(w), p=w / w.sum()))]
 
@@ -202,6 +212,10 @@ class Host:
         """The frames it says: a sound it learned comes out the more faithfully the stronger it is."""
         if pick["frames"] is None:
             return self.babble()
+        if pick.get("source") == "you":  # a learned word: one attempt of practice, said from its motor program
+            frames, m = self.mem.practice(pick["slot"])
+            self.last_match = m
+            return frames
         f = pick["frames"].copy()
         if "deep" in pick:
             blur = 1.0 / (1.0 + pick["deep"])
@@ -216,7 +230,8 @@ class Host:
             row = {"id": r["id"], "tag": r["tag"], "source": r["source"], "paid": round(self.paid.get(r["id"], 0.0), 2),
                    "frames": None if r["frames"] is None else r["frames"].ravel().round(2).tolist()}
             if "deep" in r:
-                row.update(deep=round(r["deep"], 2), slot=r["slot"])
+                row.update(deep=round(r["deep"], 2), slot=r["slot"], heard=r["heard"], matches=[round(m, 3) for m in r["matches"]],
+                           program=r["program"].ravel().round(2).tolist())
             out.append(row)
         return out
 
@@ -361,9 +376,14 @@ class Host:
         change = np.clip(np.abs(frames[-1] - frames[0]) / 6.0, 0, 1)
         self.held = (0.85 * self.held + 0.15 * ear).astype(np.float32)
         # sounds the visitor makes: onset to offset, from the frames' total energy (not while it calls)
-        learned, ended = None, False
+        learned, ended, startle = None, False, False
         for f in frames:
             e = float(np.log(np.exp(f.astype(np.float64)).sum()))
+            # a sudden sound: a loud onset after quiet that the ear's running level did not predict
+            if self.saying <= 0 and e - self.running > 5.0 and self.quiet_for > 30 and self.t - self.startled > 20:
+                startle = True; self.startled = self.t
+            self.quiet_for = self.quiet_for + 1 if e < self.running + 2.0 else 0
+            self.running += 0.05 * (e - self.running)
             # the background's level: a low percentile of the last three seconds' frames
             self.levels[self.level_at % len(self.levels)] = e; self.level_at += 1
             seen = self.levels[: min(self.level_at, len(self.levels))]
@@ -402,7 +422,11 @@ class Host:
             call = {"id": pick["id"], "tag": pick["tag"], "source": pick["source"]}
             self.last_said = (pick["id"], self.t)
             self.saying = int(math.ceil(len(voice) / 10)) + 2
-            self.drive = 0.1
+            # saying relaxes its boredom, a word said well the most
+            relief = 0.4 + 0.5 * (self.last_match or 0.0) if pick.get("source") == "you" else 0.6
+            self.drive = max(0.0, self.drive - relief - 0.2)
+            call["match"] = None if pick.get("source") != "you" else round(self.last_match or 0.0, 3)
+            self.last_match = None
         said = np.zeros(40, np.float32)
         if self.saying > 0:
             self.saying -= 1
@@ -419,9 +443,9 @@ class Host:
         return {"buffers": names, "group_activity": {"distance": dist_units.tolist()}, "readout": readout,
                 "looked": {"eye": eye, "row": row, "col": col, "strength": round(strength, 3)},
                 "focus": self.focus, "heard": bool(ear.max() > 0.35), "newborn": True,
-                "drive": round(min(1.0, self.drive), 3), "said": call, "heard_sound": learned,
+                "drive": round(min(1.0, self.drive), 3), "said": call, "heard_sound": learned, "startle": startle,
                 "memory": self.mem.view() if (learned is not None or self.t % 10 == 0) else None,
-                "repertoire": self.repertoire_list() if learned is not None else None,
+                "repertoire": self.repertoire_list() if (learned is not None or call is not None) else None,
                 "paid": {k: round(v, 2) for k, v in self.paid.items() if v}}
 
     def handle(self, message: dict[str, Any]) -> dict[str, Any]:

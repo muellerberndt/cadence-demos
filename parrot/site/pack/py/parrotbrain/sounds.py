@@ -15,9 +15,18 @@ and takes the background's spectrum out) is told to two stores of the Cadence li
   consolidated matrix (the library's rule), so "Apfel" said while it looks at the apple links the
   sound to the apple.
 
-Two behaviours belong to the library, not here: a revision takes the newest take's key and value
-(it does not average the takes), and a record's depth does not weigh the read. Options for both are
-the library lane's to add; the page draws what the stores hold.
+A word told again must get cleaner with every hearing: the record moves to the running mean of its
+hearings. The library's revision takes the newest take whole; its `blend` option (the memory lane,
+#336) does the running mean. Until it lands, `_blend_running_mean` below does it here, in one place.
+
+**Pronunciation by practice** (the songbird's way: an auditory template and practice by hearing
+itself). Each word the parrot can say has a motor program of its own, which starts immature
+(blurred and noisy, unlike the template). Each attempt the voice says what the program holds, with
+a little exploration noise; the parrot's own ear hears the attempt (the voice's frames looped back
+through the ear's channel: the voice's measured round-trip grain, about half a nat a band); the
+program moves toward the template by the error, and when an attempt matches better than its recent
+average, a self-reward keeps that attempt's exploration (the performance-error dopamine of songbirds,
+Gadagkar et al. 2016). The match rises attempt by attempt. The voice never replays the template.
 """
 from __future__ import annotations
 
@@ -61,6 +70,9 @@ class SoundMemory:
         self.synapses.reset(1)
         self.last_read: dict[str, Any] | None = None
         self.last_write: dict[str, Any] | None = None
+        self.heard = np.zeros(capacity, int)        # hearings a record holds (the running mean's weight)
+        self.programs: dict[int, dict[str, Any]] = {}  # each word's motor program and its attempts
+        self.rng = np.random.default_rng(31)
 
     def hear(self, frames: np.ndarray, focus_kind: str | None) -> dict[str, Any]:
         """Tell the stores a heard sound: read with its code (the attention over the records), then
@@ -75,11 +87,74 @@ class SoundMemory:
             cos = float(np.max(k @ key / np.maximum(np.linalg.norm(k, axis=1), 1e-12)))
         value = np.concatenate([resample(frames.astype(np.float64), VALUE_FRAMES).ravel(), [len(frames)]])
         slot, revised = self.records.write(key, value)
-        self.last_write = {"slot": int(slot), "revised": bool(revised), "best_cosine": None if cos is None else round(cos, 3)}
+        if not revised:
+            self.heard[slot] = 0
+            self.programs.pop(slot, None)
+        self._blend_running_mean(slot, frames, revised)
+        self.last_write = {"slot": int(slot), "revised": bool(revised), "best_cosine": None if cos is None else round(cos, 3),
+                           "heard": int(self.heard[slot])}
         if focus_kind in KINDS:
             onehot = np.zeros(len(KINDS)); onehot[KINDS.index(focus_kind)] = 1.0
             self.synapses.observe(key[None, :], onehot[None, :])
         return {"read": self.last_read, "write": self.last_write}
+
+    def _blend_running_mean(self, slot: int, frames: np.ndarray, revised: bool) -> None:
+        """STAND-IN for the library's `blend` option (#336): the record told again moves to the running
+        mean of its hearings, so the stored form gets cleaner with every repetition. The library's
+        write took the newest take whole; this replaces the slot's value and key with the mean."""
+        r = self.records
+        n = int(self.heard[slot]) + 1
+        self.heard[slot] = n
+        if not revised or n == 1:
+            return
+        new = resample(frames.astype(np.float64), VALUE_FRAMES)
+        old = r.values[slot][:-1].reshape(VALUE_FRAMES, BANDS)
+        mean = old + (new - old) / n
+        length = r.values[slot][-1] + (len(frames) - r.values[slot][-1]) / n
+        r.values[slot] = np.concatenate([mean.ravel(), [length]])
+        key = code(self.frames_of_value(r.values[slot]))
+        r.keys[slot] = key
+        if r.cosine:
+            r.norms[slot] = float(np.linalg.norm(key))
+
+    def template(self, slot: int) -> np.ndarray:
+        return self.records.values[slot][:-1].reshape(VALUE_FRAMES, BANDS)
+
+    def program(self, slot: int) -> dict[str, Any]:
+        """The word's motor program: immature at first (the template blurred to its mean and noisy)."""
+        if slot not in self.programs:
+            t = self.template(slot)
+            immature = 0.25 * t + 0.75 * t.mean() + self.rng.normal(0.0, 1.2, t.shape)
+            self.programs[slot] = {"P": immature, "matches": [], "attempts": 0}
+        return self.programs[slot]
+
+    @staticmethod
+    def match(a: np.ndarray, b: np.ndarray) -> float:
+        """How well two sounds agree: the cosine of their codes, 0 to 1."""
+        return float(max(0.0, code(a) @ code(b)))
+
+    def practice(self, slot: int) -> tuple[np.ndarray, float]:
+        """One attempt at a word: the voice says the program with a little exploration; the parrot's
+        own ear hears it; the program moves toward the template by the error; an attempt better than
+        the recent average keeps its exploration (the self-reward)."""
+        prog, t = self.program(slot), self.template(slot)
+        explore = self.rng.normal(0.0, 0.3, t.shape)
+        said = prog["P"] + explore
+        heard = said + self.rng.normal(0.0, 0.5, t.shape)  # its own voice, through its own ear
+        m = self.match(heard, t)
+        recent = float(np.mean(prog["matches"][-5:])) if prog["matches"] else 0.0
+        if m > recent:
+            prog["P"] = prog["P"] + explore  # the self-reward keeps what helped
+        prog["P"] = prog["P"] + 0.15 * (t - heard)  # the error moves the program toward the template
+        prog["matches"].append(m)
+        prog["attempts"] += 1
+        n = max(2, int(round(self.records.values[slot][-1])))
+        return resample(said, n).astype(np.float32), m
+
+    def pronunciation(self, slot: int) -> np.ndarray:
+        """What the parrot says for a word: its program, at the word's length (never the template)."""
+        n = max(2, int(round(self.records.values[slot][-1])))
+        return resample(self.program(slot)["P"], n).astype(np.float32)
 
     def moment(self) -> None:
         self.records.moment()
@@ -116,7 +191,9 @@ class SoundMemory:
         rows = []
         for s in range(r.count):
             slow, fast = self.links(s)
-            rows.append({"slot": s, "deep": round(float(r.deep[s]), 3), "faded": round(float(r.faded[s]), 2),
+            prog = self.programs.get(s)
+            rows.append({"slot": s, "deep": round(float(r.deep[s]), 3), "faded": round(float(r.faded[s]), 2), "heard": int(self.heard[s]),
+                         "match": None if not prog or not prog["matches"] else round(prog["matches"][-1], 3),
                          "recent": round(float(r.recent[s]), 4), "thumb": self.thumb(r.keys[s]), "frames": int(round(r.values[s][-1])),
                          "slow": slow, "fast": fast})
         return {"records": rows, "things": KINDS, "level": self.LEVEL, "revise": r.revise,
@@ -124,7 +201,9 @@ class SoundMemory:
 
     def save(self) -> dict[str, Any]:
         r = self.records
-        return {"records": [{"value": np.round(r.values[s], 3).tolist(), "deep": float(r.deep[s])} for s in range(r.count)],
+        return {"records": [{"value": np.round(r.values[s], 3).tolist(), "deep": float(r.deep[s]), "heard": int(self.heard[s]),
+                             "program": None if s not in self.programs else np.round(self.programs[s]["P"], 3).tolist(),
+                             "matches": [] if s not in self.programs else [round(m, 3) for m in self.programs[s]["matches"][-20:]]} for s in range(r.count)],
                 "consolidated": np.round(self.synapses.consolidated, 5).tolist()}
 
     def load(self, saved: dict[str, Any]) -> None:
@@ -133,6 +212,10 @@ class SoundMemory:
             frames = self.frames_of_value(v)
             slot, _ = self.records.write(code(frames), v)
             self.records.deep[slot] = float(rec.get("deep", 1.0))
+            self.heard[slot] = int(rec.get("heard", 1))
+            if rec.get("program") is not None:
+                self.programs[slot] = {"P": np.asarray(rec["program"], np.float64).reshape(VALUE_FRAMES, BANDS),
+                                       "matches": list(rec.get("matches", [])), "attempts": len(rec.get("matches", []))}
         c = saved.get("consolidated")
         if c is not None and np.asarray(c).shape == self.synapses.consolidated.shape:
             self.synapses.consolidated = np.asarray(c, np.float64)

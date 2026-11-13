@@ -6,16 +6,18 @@
   "numpy"
  ],
  "package": "parrotbrain",
- "brain": "placeholder: a hand-written controller, nothing learned",
+ "brain": "composed: cadence.parrot (the parrot-brain lane), with the page's hearing layer; placeholder: a hand-written controller",
  "sources": [
   "__init__.py",
   "host.py",
+  "page.py",
   "sounds.py"
  ],
  "sources_sha256": {
   "__init__.py": "aad6e4970d412d3fc56376e9321f46760a285a32d2086c5fc76d1740b02c082f",
-  "host.py": "b7bf5a34b1f3299fb107f7080f60222ace7b884b14d46656bd81ced873b7242d",
-  "sounds.py": "9377ad79d260e1565a8a01c7bb86cdff7316c1ac8b58376c6579d367fedf339d"
+  "host.py": "df7f095a9bbfd631d992f4fde629d31238ab7dff418af1bf75364f3954ec8f9d",
+  "page.py": "3190193eb5e7709075d1e2e265d9e3d92fde319ed2de7daf587eca7e5048dd78",
+  "sounds.py": "1b9566c503648a7e2f0690631e3e60ea43f356966464814c73e891a9038a6fe7"
  },
  "files": {
   "calls.json": "f2f6a662b6a604fc580b227e0c255496f954450dd0430f98c86674738c065b82"
@@ -30,7 +32,12 @@
    "axis": 75
   }
  },
- "wheel": "cadence_net-0.99.0-py3-none-any.whl",
- "wheel_sha256": "1879e46117499cb63050b3b6ea0c02528a67037550b75efe2840c70945c4bd16",
- "cadence": "0.99.0"
+ "hosts": {
+  "composed": "parrotbrain.page",
+  "placeholder": "parrotbrain.host"
+ },
+ "wheel": "cadence_net-0.99.0-lane-parrot-69eec0a0.whl",
+ "wheel_sha256": "7feb2b866fc040f34bf59fb3bb401524cd70763a480229c1ce694bc200adbe5e",
+ "cadence": "0.99.0 with cadence.parrot (lane-0100-parrot 69eec0a0)",
+ "wheel_source": "built from muellerberndt/cadence lane-0100-parrot at 69eec0a0577c6327a2a63f019783d9092d199cbd"
 }

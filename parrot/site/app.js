@@ -254,8 +254,7 @@ async function runScript(list) {
 // --- the brain's moment ------------------------------------------------------------------------------
 const proprio = new Float32Array(22);
 async function moment(now) {
-  eyes.render();
-  eyes.draw('left', ui.eyeL); eyes.draw('right', ui.eyeR);
+  if (!state.composed) { eyes.render(); eyes.draw('left', ui.eyeL); eyes.draw('right', ui.eyeR); }
   if (!state.brainReady || state.pending) return;
   state.pending = true; state.lastStep = now;
   parrot.joints.proprio(proprio);
@@ -267,13 +266,18 @@ async function moment(now) {
   let reply;
   try {
     const focusKind = state.focus ? room.things.get(state.focus.id)?.kind || null : null;
-    reply = await brain.call('step', { meta: { t: state.moment, reward, voice_ok: voiceOk, cue, things: room.things.size, focus_kind: focusKind }, arrays: { left, right, proprio: pro, mel: sound.mel, audio: sound.audio } },
+    const scene = state.composed && room.version !== state.sentVersion ? room.describe() : null;
+    if (scene) state.sentVersion = room.version;
+    reply = await brain.call('step', { meta: { t: state.moment, reward, voice_ok: voiceOk, cue, things: room.things.size, focus_kind: focusKind, scene }, arrays: { left, right, proprio: pro, mel: sound.mel, audio: sound.audio } },
       [left.buffer, right.buffer, pro.buffer, sound.mel.buffer, sound.audio.buffer]);
   } catch (error) { state.pending = false; setStatus(`The brain stopped: ${error.message}`, 'error'); state.brainReady = false; return; }
   state.pending = false;
   state.moment += 1;
   state.lastReply = reply;
-  if (state.mode === 'brain' && reply.arrays.targets) parrot.joints.setUnitTargets(reply.arrays.targets);
+  if (state.mode === 'brain' && reply.arrays.angles && state.composed) { // the composed brain's body: its angles, smoothed by the page
+    reply.arrays.angles.forEach((v, i) => { if (i < parrot.joints.n && parrot.joints.spec[i].name !== 'beak_open') parrot.joints.target[i] = v; });
+  } else if (state.mode === 'brain' && reply.arrays.targets) parrot.joints.setUnitTargets(reply.arrays.targets);
+  if (reply.arrays.left && desc?.eye) { drawHostEye(ui.eyeL, reply.arrays.left, desc.eye.w, desc.eye.h, false); drawHostEye(ui.eyeR, reply.arrays.right, desc.eye.w, desc.eye.h, true); }
   const subject = state.subject ? distanceOf(state.subject) : null;
   view.update(reply, reply.arrays, subject);
   brain3d?.update(reply.arrays.activity);
@@ -283,13 +287,28 @@ async function moment(now) {
     if (spoken) { ui.voiceNote.textContent = `${what}, ${(spoken.env.length / 100).toFixed(1)} s`; state.saying = reply.said?.id; markChip(reply.said?.id); }
   }
   if (reply.drive !== undefined) ui.driveLevel.style.width = `${Math.round(reply.drive * 100)}%`;
+  if (reply.startle) { // a sudden sound: the head turns toward the visitor (the camera, from the head)
+    const head = parrot.bones.head, hp = new THREE.Vector3(), hq = new THREE.Quaternion();
+    head.getWorldPosition(hp); head.getWorldQuaternion(hq);
+    const d = camera.position.clone().sub(hp).applyQuaternion(hq.invert());
+    state.cue = { az: +(Math.atan2(d.x, d.z) * 180 / Math.PI).toFixed(1), el: +(Math.atan2(d.y, Math.hypot(d.x, d.z)) * 180 / Math.PI).toFixed(1), you: true };
+    state.focus = null; state.focusYou = performance.now();
+  }
+  $('you-focus').hidden = !(state.focusYou && performance.now() - state.focusYou < 2600);
   if (reply.memory) memview?.update(reply.memory);
   if (reply.repertoire) syncChips(reply.repertoire);
   if (reply.heard_sound) saveMemory();
   if (reply.paid) for (const [id] of Object.entries(reply.paid)) ui.sounds.querySelector(`[data-sound="${id}"]`)?.classList.add('paid');
   // the focus the brain reports: the thing nearest the direction it turned to
-  const key = reply.focus ? `${reply.focus.az},${reply.focus.el}` : null;
-  if (key !== state.focusKey) { state.focusKey = key; state.focus = reply.focus ? focusFrom(reply.focus) : null; }
+  if (state.composed) { // the composed brain's focus is a place on the map: the thing nearest it
+    const f = reply.focus;
+    let best = null;
+    if (f?.place) for (const t of room.things.values()) { const d = Math.hypot(t.obj.position.x - f.place[0], t.obj.position.z - f.place[1]); if (d < 0.15 && (!best || d < best.d)) best = { id: t.id, d, why: f.why || 'it won the focus' }; }
+    state.focus = best;
+  } else {
+    const key = reply.focus ? `${reply.focus.az},${reply.focus.el}` : null;
+    if (key !== state.focusKey) { state.focusKey = key; state.focus = reply.focus ? focusFrom(reply.focus) : null; }
+  }
   state.thinkMs.push(reply.worker_ms); if (state.thinkMs.length > 50) state.thinkMs.shift();
   ui.moment.textContent = String(state.moment);
   ui.think.textContent = `${Math.round(median(state.thinkMs))} ms`;
@@ -309,6 +328,17 @@ function focusFrom(f) {
     if (!best || miss < best.miss) best = { id: t.id, miss, why: f.why || 'it stood out most' };
   }
   return best && best.miss < 25 ? best : null;
+}
+// An eye image from the brain host (D2: rows top-down, column 0 at the eye's rear edge), drawn as
+// the page's own eye images are: the right eye mirrored, so the two read round from left to right.
+function drawHostEye(canvas, data, w, h, mirror) {
+  if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+  const g = canvas.getContext('2d'), img = g.createImageData(w, h);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const sx = mirror ? w - 1 - x : x, s = 3 * (y * w + sx), d = 4 * (y * w + x);
+    img.data[d] = data[s]; img.data[d + 1] = data[s + 1]; img.data[d + 2] = data[s + 2]; img.data[d + 3] = 255;
+  }
+  g.putImageData(img, 0, 0);
 }
 const median = (a) => { const s = [...a].sort((x, y) => x - y); return s.length ? s[s.length >> 1] : 0; };
 
@@ -364,7 +394,16 @@ function syncChips(list) {
   for (const r of list) {
     addChip(r);
     const c = ui.sounds.querySelector(`[data-sound="${r.id}"]`);
-    if (c && r.deep !== undefined) { c.querySelector('.deep i').style.width = `${Math.round(Math.min(1, r.deep / 10) * 100)}%`; c.title = `learned from you: depth ${r.deep.toFixed(1)}`; if (r.frames) soundFrames.set(r.id, Float32Array.from(r.frames)); }
+    if (c && r.deep !== undefined) {
+      c.querySelector('.deep i').style.width = `${Math.round(Math.min(1, r.deep / 20) * 100)}%`;
+      const m = r.matches?.length ? r.matches[r.matches.length - 1] : null;
+      c.querySelector('.heard').textContent = `heard ${r.heard}`;
+      c.querySelector('.match').textContent = m === null ? 'not said yet' : `said ${Math.round(m * 100)}%`;
+      sparkline(c.querySelector('.spark'), r.matches || []);
+      c.title = `A word learned from you. Click: hear how the parrot says it. Shift-click: the word as it remembers hearing it.`;
+      if (r.frames) soundFrames.set(r.id, Float32Array.from(r.frames));
+      if (r.program) programFrames.set(r.id, Float32Array.from(r.program));
+    }
   }
   ui.forget.hidden = !ui.sounds.querySelector('.chip-s.you');
 }
@@ -377,15 +416,33 @@ function spectro(frames, canvas) {
   }
   g.putImageData(img, 0, 0);
 }
-const soundFrames = new Map();
+const soundFrames = new Map(), programFrames = new Map();
+function sparkline(c, values) {
+  const g = c.getContext('2d'), W = c.width, H = c.height; g.clearRect(0, 0, W, H);
+  if (values.length < 2) return;
+  g.strokeStyle = '#5fd08e'; g.lineWidth = 1.2; g.beginPath();
+  values.forEach((v, i) => { const x = (i / (values.length - 1)) * (W - 1), y = H - 1 - v * (H - 2); if (i) g.lineTo(x, y); else g.moveTo(x, y); });
+  g.stroke();
+}
 function addChip(r) {
   if (ui.sounds.querySelector(`[data-sound="${r.id}"]`)) return;
   const b = document.createElement('button'); b.className = `chip-s ${r.source === 'you' ? 'you' : ''} ${r.paid ? 'paid' : ''}`; b.dataset.sound = r.id;
   b.title = r.source === 'recording' ? `${r.tag}: an African Grey call from a recording` : r.source === 'you' ? 'learned from you' : 'its own babble';
   if (r.frames) { const c = document.createElement('canvas'); spectro(r.frames, c); b.append(c); soundFrames.set(r.id, Float32Array.from(r.frames)); }
-  b.append(document.createTextNode(r.source === 'you' ? 'from you' : r.tag));
-  if (r.source === 'you') { const d = document.createElement('span'); d.className = 'deep'; d.append(document.createElement('i')); b.append(d); }
-  b.addEventListener('click', async () => { await audio.unlock(); const f = soundFrames.get(r.id); if (f) { audio.speak(f); markChip(r.id); ui.voiceNote.textContent = `${b.title} (you played it)`; } });
+  b.append(document.createTextNode(r.source === 'you' ? 'word' : r.tag));
+  if (r.source === 'you') {
+    const d = document.createElement('span'); d.className = 'deep'; d.append(document.createElement('i'));
+    const heard = document.createElement('span'); heard.className = 'heard';
+    const match = document.createElement('span'); match.className = 'match';
+    const spark = document.createElement('canvas'); spark.className = 'spark'; spark.width = 36; spark.height = 12;
+    b.append(heard, d, match, spark);
+  }
+  b.addEventListener('click', async (ev) => {
+    await audio.unlock();
+    const template = ev.shiftKey || r.source !== 'you';
+    const f = template ? soundFrames.get(r.id) : programFrames.get(r.id) || soundFrames.get(r.id);
+    if (f) { audio.speak(f); markChip(r.id); ui.voiceNote.textContent = r.source === 'you' ? (template ? 'the word as it remembers hearing it' : 'the word as the parrot says it') : `${b.title} (you played it)`; }
+  });
   ui.sounds.append(b);
   if (r.source === 'you') ui.forget.hidden = false;
 }
@@ -393,6 +450,10 @@ function markChip(id) {
   for (const c of ui.sounds.querySelectorAll('.chip-s')) c.classList.toggle('playing', c.dataset.sound === id);
   setTimeout(() => ui.sounds.querySelector(`[data-sound="${id}"]`)?.classList.remove('playing'), 1500);
 }
+$('brain-kind').addEventListener('change', (e) => {
+  try { localStorage.setItem('parrot.brain', e.target.value); } catch (err) { /* storage blocked */ }
+  const u = new URL(location.href); u.searchParams.set('brain', e.target.value); location.href = u.href;
+});
 ui.forget.addEventListener('click', async () => {
   learnedStore.clear();
   for (const c of ui.sounds.querySelectorAll('.chip-s.you')) c.remove();
@@ -651,16 +712,32 @@ async function start() {
     view(name) { const v = VIEWS[name]; if (!v) return; camera.position.set(...v[0]); controls.target.set(...v[1]); controls.update(); },
     screenOf(x, y, z) { const v = new THREE.Vector3(x, y, z).project(camera); const r = canvas.getBoundingClientRect(); return [r.left + (v.x + 1) / 2 * r.width, r.top + (1 - v.y) / 2 * r.height]; } };
   if (query.get('brain') === 'off') { setStatus('Ready (no brain)', 'ready'); document.body.dataset.ready = '1'; return; }
-  brain = new BrainWorker();
+  // the composed brain (the parrot-brain lane's), or the placeholder; the placeholder also when the
+  // composed brain does not start
+  let wanted = query.get('brain') || (() => { try { return localStorage.getItem('parrot.brain'); } catch (e) { return null; } })() || 'composed';
+  const config = { eye: { w: EYE.w, h: EYE.h, field: EYE.field, vfield: EYE.vfield, fovea: EYE.fovea, axis: EYE.axis } };
   try {
-    const out = await brain.call('init', { pack: PACK, config: { eye: { w: EYE.w, h: EYE.h, field: EYE.field, vfield: EYE.vfield, fovea: EYE.fovea, axis: EYE.axis } } });
+    let out;
+    try {
+      brain = new BrainWorker();
+      out = await brain.call('init', { pack: PACK, brain: wanted, config });
+    } catch (error) {
+      if (wanted === 'placeholder') throw error;
+      console.warn(`The composed brain did not start (${error.message}); the placeholder runs.`);
+      brain.worker.terminate(); wanted = 'placeholder';
+      brain = new BrainWorker();
+      out = await brain.call('init', { pack: PACK, brain: wanted, config });
+    }
     desc = out;
+    state.composed = !desc.placeholder;
+    document.body.dataset.brain = state.composed ? 'composed' : 'placeholder';
+    $('brain-kind').value = state.composed ? 'composed' : 'placeholder';
     view.setup(desc, rig.joints);
     for (const r of desc.repertoire || []) addChip(r);
     const kept = learnedStore.get();
     if (kept?.records?.length) { const out = await brain.call('remember', { saved: kept }); syncChips(out.repertoire || []); memview?.update(out.memory); }
     brain3d.setup(desc);
-    ui.sub.textContent = desc.placeholder ? `${desc.title} · ${desc.neurons} units` : `${desc.title || desc.name} · ${desc.neurons.toLocaleString('en')} neurons`;
+    ui.sub.textContent = desc.placeholder ? `${desc.title} · ${desc.neurons} units` : `${desc.title || desc.name} · ${desc.neurons.toLocaleString('en')} neurons${desc.newborn ? ' · a newborn' : ''}`;
     const g = (desc.groups || []).find((x) => x.variable === 'distance');
     if (g) { $('dist-title').textContent = g.title; $('dist-card').setAttribute('data-explain', g.explain); $('dist-card').setAttribute('data-explain-title', g.title); }
     state.brainReady = true;

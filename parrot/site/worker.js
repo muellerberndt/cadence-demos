@@ -51,13 +51,17 @@ async function initialize(payload) {
   }
   status('Waking the brain');
   python.globals.set('_parrot_config', JSON.stringify({ ...(manifest.config || {}), ...(payload?.config || {}), files: '/home/pyodide/brain' }));
+  const hosts = manifest.hosts || { placeholder: `${pkg}.host` };
+  const chosen = hosts[payload?.brain] ? payload.brain : (hosts.composed ? 'composed' : 'placeholder');
+  python.globals.set('_parrot_module', hosts[chosen]);
   python.runPython(`
 import sys, json, warnings
 import numpy as np
 warnings.simplefilter('ignore')
 if '/home/pyodide' not in sys.path:
     sys.path.insert(0, '/home/pyodide')
-from ${pkg}.host import Host
+import importlib
+Host = importlib.import_module(_parrot_module).Host
 _parrot_host = Host(json.loads(_parrot_config))
 def _parrot_handle(text):
     return json.dumps(_parrot_host.handle(json.loads(text)), allow_nan=False)
@@ -73,6 +77,7 @@ def _parrot_buffer(name):
   const out = call({ command: 'describe' });
   out.reply.startup_ms = Math.round(performance.now() - began);
   out.reply.manifest = { schema: manifest.schema, packed: manifest.packed, cadence: manifest.cadence || null, brain: manifest.brain || null };
+  out.reply.brain_kind = chosen;
   return out;
 }
 

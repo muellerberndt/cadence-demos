@@ -205,3 +205,15 @@ html.embedded .toast { top: 100px; }
   color: #ffd9de; background: rgb(60 14 22 / 0.72); border: 1px solid rgb(255 107 120 / 0.5); }
 .dopamine[hidden] { display: none; }
 .dopamine span { display: block; color: var(--ink-3); font-size: 11px; margin-top: 2px; }
+
+.you-focus { position: absolute; left: 50%; bottom: 120px; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px 4px 6px;
+  border-radius: 999px; font: 600 12px/1.3 var(--mono); color: #1b1407; background: color-mix(in srgb, var(--accent) 90%, transparent); }
+.you-focus[hidden] { display: none; }
+.you-focus .ring { width: 16px; height: 16px; border-radius: 50%; border: 3px solid #1b1407; }
+.chip-s .heard, .chip-s .match { font: 400 9.5px/1 var(--mono); color: var(--ink-3); }
+.chip-s .match { color: #5fd08e; }
+.chip-s .spark { width: 36px; height: 12px; }
+.chip-s.you { height: 26px; }
+
+.brain-kind { display: inline-flex; gap: 6px; align-items: center; margin-top: 4px; font: 500 10.5px/1 var(--mono); color: var(--ink-3); }
+.brain-kind select { background: var(--raised); color: var(--ink-2); border: 1px solid var(--line); border-radius: 6px; font: inherit; padding: 2px 4px; }

@@ -56,6 +56,7 @@ export class Room {
     this.gltf = new GLTFLoader();
     this.pickables = [];
     this.serial = 0;
+    this.version = 0; // changes whenever a thing is placed, moved or removed
   }
 
   async build() {
@@ -198,6 +199,7 @@ export class Room {
     [x, z] = this.allowed(x, z);
     t.obj.position.set(x, 0, z);
     if (yaw !== null) t.obj.rotation.y = yaw * Math.PI / 180;
+    this.version++;
   }
 
   remove(id) {
@@ -206,6 +208,7 @@ export class Room {
     this.scene.remove(t.obj);
     this.pickables = this.pickables.filter((m) => m.userData.thing !== id);
     this.things.delete(id);
+    this.version++;
   }
 
   clear() { for (const id of [...this.things.keys()]) this.remove(id); }
