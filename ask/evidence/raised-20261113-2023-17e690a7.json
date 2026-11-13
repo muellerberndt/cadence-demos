@@ -1,0 +1,149 @@
+{
+ "what": "the page's brain raised by the scripted teacher and read on rooms it never saw",
+ "cadence": "0.99.0+words.17e690a7",
+ "seed": 1,
+ "settings": {
+  "naming_rooms": 40,
+  "namings": 15,
+  "practice_rooms": 24,
+  "asked": 10,
+  "test_rooms": 30,
+  "unseen_rooms": 16,
+  "new_rooms": 16
+ },
+ "brain_file": "site/pack/brain/parrot.npz",
+ "brain_sha256": "6f46793959331f6c5335a4afb49017ef728caee19805a41163ad004d5c1bba2c",
+ "lessons": {
+  "naming_and_practice": 840,
+  "words": [
+   "ball",
+   "black",
+   "box",
+   "right",
+   "green",
+   "apple",
+   "lamp",
+   "left",
+   "behind",
+   "cup",
+   "book",
+   "white",
+   "front",
+   "key",
+   "red",
+   "shoe",
+   "blue",
+   "yellow",
+   "what",
+   "is",
+   "of",
+   "you",
+   "colour",
+   "the",
+   "i do not know",
+   "where",
+   "in",
+   "color"
+  ]
+ },
+ "unseen_colours": {
+  "ball": "blue",
+  "cup": "black",
+  "box": "green",
+  "book": "black",
+  "shoe": "red",
+  "key": "yellow",
+  "apple": "red",
+  "lamp": "red"
+ },
+ "readings": {
+  "W1_named_only": {
+   "rate": 1.0,
+   "n": 126
+  },
+  "W1_practised": {
+   "rate": 1.0,
+   "n": 158
+  },
+  "W2_colour": {
+   "rate": 1.0,
+   "n": 24
+  },
+  "W2_where": {
+   "rate": 1.0,
+   "n": 24
+  },
+  "W3_by_colour": {
+   "rate": 1.0,
+   "n": 16
+  },
+  "W3_colour": {
+   "rate": 1.0,
+   "n": 16
+  },
+  "W3_where": {
+   "rate": 1.0,
+   "n": 16
+  },
+  "W4_never_seen": {
+   "rate": 1.0,
+   "n": 60
+  },
+  "W4_never_taught": {
+   "rate": 1.0,
+   "n": 60
+  },
+  "W4_out_of_view": {
+   "rate": 1.0,
+   "n": 56
+  },
+  "W5_by_colour": {
+   "rate": 1.0,
+   "n": 30
+  },
+  "W5_by_place": {
+   "rate": 1.0,
+   "n": 120
+  },
+  "W6_ablated": {
+   "rate": 0.0,
+   "n": 284
+  }
+ },
+ "pools": {
+  "W1": {
+   "rate": 1.0,
+   "n": 284
+  },
+  "W2": {
+   "rate": 1.0,
+   "n": 48
+  },
+  "W3": {
+   "rate": 1.0,
+   "n": 32
+  },
+  "W5": {
+   "rate": 1.0,
+   "n": 150
+  }
+ },
+ "parameters": 6656,
+ "macs": {
+  "lexicon_raising": 479232000,
+  "lexicon_all": 818688000,
+  "map_synapses": 55296,
+  "map_work": {
+   "moments": 1770,
+   "questions": 3912
+  }
+ },
+ "seconds": {
+  "naming": 34.7,
+  "practice": 4.7,
+  "test": 12.3,
+  "new_words": 1.8
+ },
+ "wrong": [],
+ "when": "2026-11-13 20:23"
+}

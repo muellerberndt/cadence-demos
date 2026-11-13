@@ -1,0 +1,141 @@
+{
+ "what": "the promise test of the page (tools/check_page.py)",
+ "when": "2026-11-13 20:38",
+ "cadence": "0.99.0+words.17e690a7",
+ "build": "development",
+ "wheel_sha256": "16c39fb33d04d5ef8e07a332aee18ab4a772c072c99527fc0339d050c4f42736",
+ "brain_sha256": "6f46793959331f6c5335a4afb49017ef728caee19805a41163ad004d5c1bba2c",
+ "viewport": [
+  1512,
+  860
+ ],
+ "startup_seconds": 10.5,
+ "passed": 10,
+ "checks": 10,
+ "console_errors": [],
+ "results": [
+  {
+   "check": "where: thing to place",
+   "question": "where is the ball?",
+   "expected": [
+    "front"
+   ],
+   "said": [
+    "front"
+   ],
+   "bubble": "front",
+   "seconds": 3.67,
+   "ok": true
+  },
+  {
+   "check": "colour: thing to colour",
+   "question": "what colour is the cup?",
+   "expected": [
+    "blue"
+   ],
+   "said": [
+    "blue"
+   ],
+   "bubble": "blue",
+   "seconds": 3.65,
+   "ok": true
+  },
+  {
+   "check": "both directions: colour to things",
+   "question": "what is red?",
+   "expected": [
+    "ball",
+    "book"
+   ],
+   "said": [
+    "book",
+    "ball"
+   ],
+   "bubble": "book, ball",
+   "seconds": 4.79,
+   "ok": true
+  },
+  {
+   "check": "both directions: place to things, from memory",
+   "question": "what is behind you?",
+   "expected": [
+    "apple"
+   ],
+   "said": [
+    "apple"
+   ],
+   "bubble": "apple",
+   "seconds": 3.77,
+   "ok": true,
+   "heading": 1.874,
+   "behind_out_of_view": [
+    "apple"
+   ]
+  },
+  {
+   "check": "a pistachio: cracked, and the brain takes it",
+   "said_before": [
+    "apple"
+   ],
+   "log": "A pistachio for \u201capple\u201d: it cracks it, and its brain takes its answer as right.",
+   "ok": true
+  },
+  {
+   "check": "naming: three namings heard",
+   "count": "heard 3\u00d7",
+   "ok": true
+  },
+  {
+   "check": "a new word: where",
+   "question": "where is the kettle?",
+   "expected": [
+    "front"
+   ],
+   "said": [
+    "front"
+   ],
+   "bubble": "front",
+   "seconds": 3.68,
+   "ok": true
+  },
+  {
+   "check": "a new word: colour",
+   "question": "what colour is the kettle?",
+   "expected": [
+    "yellow"
+   ],
+   "said": [
+    "yellow"
+   ],
+   "bubble": "yellow",
+   "seconds": 3.9,
+   "ok": true
+  },
+  {
+   "check": "a new word: the other way round",
+   "question": "what is yellow?",
+   "expected": [
+    "kettle"
+   ],
+   "said": [
+    "kettle"
+   ],
+   "bubble": "kettle",
+   "seconds": 3.73,
+   "ok": true
+  },
+  {
+   "check": "a word never taught",
+   "question": "where is the zebra?",
+   "expected": [
+    "i do not know"
+   ],
+   "said": [
+    "i do not know"
+   ],
+   "bubble": "i do not know",
+   "seconds": 3.6,
+   "ok": true
+  }
+ ]
+}

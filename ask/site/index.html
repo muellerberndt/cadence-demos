@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#06080e">
+  <meta name="description" content="Ask an African Grey parrot about its room. Its Cadence brain answers in words it learned by being shown things and told their names; teach it a new word, and reward a right answer with a pistachio. The brain runs in your browser.">
+  <title>Ask the parrot · Cadence</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="cadence-explain.css">
+  <script src="cadence-explain.js" defer></script>
+</head>
+<body>
+  <header class="bar">
+    <a class="brand" href="../" aria-label="Cadence demos" data-standalone><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 17h5l4-10 7 20 4-13h6"/></svg><span class="lib">cadence</span><span class="slash">/</span><span class="sub">ask the parrot</span></a>
+    <span class="runtime" id="runtime" role="status"><i id="runtime-dot"></i><span id="runtime-text">Starting the brain</span></span>
+    <nav class="tools" aria-label="The page">
+      <button id="tour" type="button" data-explain="Six short steps: ask where a thing is, reward a right answer, ask the other way round, turn the parrot, teach it a word, and use the word." data-explain-mark="none">Tutorial</button>
+      <button id="new-room" type="button" data-explain="A new room with other things in other colours. The parrot looks around once and learns where everything is; the words it knows stay." data-explain-mark="none" disabled>New room</button>
+      <button id="reset" type="button" data-explain="The first room again, and the brain as it was raised: the words you taught it and the pistachios it ate are forgotten." data-explain-mark="none" disabled>Reset</button>
+      <a class="help" data-help href="help.html" target="_blank" rel="noopener" data-explain="Everything this page shows, explained in full." data-explain-mark="none">Help</a>
+    </nav>
+  </header>
+
+  <main class="app">
+    <section class="pane world" aria-label="The room">
+      <h1 class="promise" data-standalone>Ask the parrot. It answers in words it learned by being shown things.</h1>
+      <div class="retina-wrap" data-explain="What the parrot's two eyes see. Its eyes sit on the sides of its head: the left strip is its left eye, from behind it round to its beak, the right strip its right eye. Nearer things look taller; the two eyes meet in front, and behind it is a blind spot.&#10;&#10;The brain is given what the eyes report of each thing they see: its kind, its colour and where it is. Finding things in these images by itself is the retina's step, which comes next." data-explain-title="The eyes" data-explain-mark="corner">
+        <canvas id="retina" aria-label="What the parrot's two eyes see"></canvas>
+        <span class="strip-label">left eye</span><span class="strip-label right">right eye</span>
+      </div>
+      <div class="room-wrap" id="room-wrap">
+        <canvas id="room" tabindex="0" role="application" aria-label="The room from above: an African Grey parrot on its perch in the middle, the fans its two eyes see lit, things around it. Drag a thing to move it; drag the floor or press the arrow keys to turn the parrot; click a thing to teach a word for it."></canvas>
+        <span class="room-label" data-explain="The room, seen from above, with an African Grey parrot on its perch. The two lit fans are what its eyes see, one to each side; the dark wedge behind it is its blind spot. The dashed lines split the floor into the four places the teacher names around the parrot: in front, right, behind and left.&#10;&#10;A teal glow is where the brain's map holds a thing. A faded outline is a thing the map holds where the thing is not: it moved where the parrot could not see." data-explain-title="The room">The room, from above</span>
+        <div class="bubble" id="bubble" role="status" aria-live="polite" hidden></div>
+        <div class="hint" id="hint" aria-hidden="true">drag things · drag the floor to turn the parrot · click a thing to teach it a word</div>
+      </div>
+      <div class="talk">
+        <form class="ask" id="ask" autocomplete="off" data-explain="Type a question in plain words and press Enter. The parrot understands the words it was taught: things (ball, cup, box, book, shoe, key, apple, lamp), colours, the four places around it, and question words such as where, what, colour and is.&#10;&#10;A word it never heard means nothing to it." data-explain-title="Ask the parrot" data-explain-mark="none">
+          <input id="question" type="text" placeholder="Ask the parrot: where is the ball?" aria-label="Your question" disabled>
+          <button id="send" type="submit" disabled>Ask</button>
+          <button id="mic" class="mic" type="button" aria-label="Ask aloud" disabled data-explain="Ask aloud. The ears are the next step: the raw sound of your question goes into the brain, with no speech recogniser in between. This button works once the brain has ears." data-explain-title="Ask aloud" data-explain-mark="none"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+        </form>
+        <div class="chips" id="chips" aria-label="Questions to try" data-explain="Questions to try, made from this room. Click one to ask it." data-explain-mark="none"></div>
+        <div class="actions">
+        <div class="reward" id="reward" hidden>
+          <button id="nut" type="button" class="nut" data-explain="A pistachio for a right answer. The parrot cracks it, and its brain learns from it." data-explain-title="A pistachio" data-explain-mark="none"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12c0-4 4-7 8-7s8 3 8 7H4z" fill="#e9d6ae" stroke="#a88a5a"/><path d="M4 12c0 4 4 7 8 7s8-3 8-7H4z" fill="#dcc596" stroke="#a88a5a"/><ellipse cx="12" cy="12" rx="5" ry="2.2" fill="#8fbf4a"/></svg>Give a pistachio</button>
+          <form id="tell-form" class="tell" autocomplete="off" data-explain="Not right? Type the right answer and tell it. The parrot hears your answer, finds in its own words what kind of answer it is (a place, a colour or a thing), and the question's words learn to ask for that." data-explain-title="Tell it the answer" data-explain-mark="none">
+            <input id="tell" type="text" maxlength="40" placeholder="or tell it the right answer" aria-label="The right answer">
+            <button type="submit">Tell</button>
+          </form>
+        </div>
+        <div class="teach" id="teach" hidden data-explain="Naming: the parrot looks at the thing while it hears your word. Each time, the word's synapses move toward what it attends to: the thing's kind, its colour and where it is. Three namings are enough for a new word.&#10;&#10;A word keeps what its namings share: name two different red things with one word, and the word means red." data-explain-title="Teach a word" data-explain-mark="corner">
+          <canvas id="teach-thing" width="68" height="68" aria-hidden="true"></canvas>
+          <form id="teach-form" autocomplete="off">
+            <label for="teach-word">What is this called?</label>
+            <input id="teach-word" type="text" maxlength="16" placeholder="a word" aria-label="A word for this thing">
+            <button id="teach-say" type="submit">Say it</button>
+          </form>
+          <span class="count" id="teach-count"></span>
+          <button id="teach-done" type="button" class="quiet">Done</button>
+        </div>
+        </div>
+        <ol class="log" id="log" aria-live="polite" aria-label="The conversation"></ol>
+        <div class="coach" id="coach" role="status" aria-live="polite">
+          <span class="dots" id="coach-dots" aria-hidden="true"></span>
+          <p id="coach-text">The parrot's brain is waking up in your browser.</p>
+          <button id="coach-skip" type="button" hidden>Skip</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="pane brain" aria-label="The whole brain">
+      <p class="brain-title">The parrot’s brain, live <span>Point at a <i>?</i> or a part to see what it does</span></p>
+      <p class="stage" id="stage" aria-live="off"></p>
+      <div class="brain-stage" id="brain-stage">
+        <canvas id="brain" aria-label="The parrot's brain: its lexicon of word and concept neurons and every synapse between them, its map of things and its motor"></canvas>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

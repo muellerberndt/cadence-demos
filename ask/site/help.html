@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ask the Parrot · Help</title>
+  <meta name="description" content="What Ask the Parrot shows: an African Grey's Cadence brain answers questions about its room in words it learned from naming, and learns a new word in three namings.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="cadence-help.css">
+  <script src="cadence-explain.js" defer></script>
+  <style>
+    .parts { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 10px 0 16px; }
+    .parts dt { color: var(--h-strong); font: 500 13px/1.6 var(--h-mono); }
+    .parts dd { margin: 0; }
+    .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; vertical-align: 0; margin-right: 4px; }
+    @media (max-width: 560px) { .parts { grid-template-columns: 1fr; gap: 2px; } .parts dd { margin-bottom: 8px; } }
+  </style>
+</head>
+<body>
+  <header class="help-bar"><span class="crumb">cadence / <b>ask the parrot</b> / help</span><span class="spacer"></span><a href="./">Back to the demo</a></header>
+  <main class="help">
+    <h1>Ask the Parrot</h1>
+    <p class="lede">An African Grey parrot sits on its perch in a room full of things. Ask it where the ball is, or what is red, and it answers in words. It learned every one of those words by being shown things and told their names.</p>
+    <p class="shows"><b>What it shows about Cadence</b>A Cadence brain learns words the way an animal does: by being shown a thing and hearing its name. The words are bound to what the brain knows (the things on its map, their colours, where they are around it), so one word works in every question, both ways round, and a new word works after three namings. The brain has a real state and real memory, and it runs and learns in real time, in your browser, like the brain of a living being.</p>
+    <nav class="toc" aria-label="On this page"><a href="#see">What you see</a><a href="#why">Why it matters</a><a href="#do">What you can do</a><a href="#how">How it works</a><a href="#numbers">The numbers</a><a href="#limits">Limits</a><a href="#keys">Keys</a></nav>
+
+    <h2 id="see">What you see</h2>
+    <p>The left half of the page is the parrot's world; the right half is its brain, live.</p>
+    <figure>
+      <img src="help-screen.jpg" alt="The page: on the left the parrot on its perch in a room seen from above, its eyes' two fans lit, a ball, a cup, a book, an apple and a kettle around it, the question box and a pistachio button; on the right the parrot's lexicon, its map of things and its motor." width="1512" height="860">
+      <figcaption>The page after "where is the ball?": the parrot said "front", the brain's motor spelled it, and the pistachio waits.</figcaption>
+    </figure>
+    <dl class="parts">
+      <dt>The eyes</dt><dd>The strip at the top: what the parrot's two eyes see. A parrot's eyes sit on the sides of its head, so each eye sees a wide fan to its own side; the left strip is the left eye, from behind the parrot round to its beak, the right strip the right eye. The eyes meet in front.</dd>
+      <dt>The room</dt><dd>Seen from above. The parrot sits on its perch in the middle, its red tail behind it. The two lit fans are what its eyes see; the dark wedge behind it is its blind spot. Dashed lines split the floor into the four places the teacher names around the parrot: in front, right, behind and left. A teal glow is where the brain's map holds a thing; a faded outline is a thing held where the thing is not (it moved where the parrot could not see).</dd>
+      <dt>The speech bubble</dt><dd>What the parrot says: the letters its brain's motor spells.</dd>
+      <dt>The question box</dt><dd>Type a question, or click one of the questions below it. The microphone beside it is for questions asked aloud, once the parrot has ears.</dd>
+      <dt>The pistachio</dt><dd>After an answer: give the parrot a pistachio when it was right, or type the right answer and tell it.</dd>
+      <dt>The lexicon</dt><dd>On the right: one row a word neuron (the words the parrot has heard), one column a concept neuron (the kinds of thing its eyes tell apart, the colours, the four places around it, what a question asks for, and "nothing found"), and every synapse between them as a cell, teal where it excites, violet where it inhibits. The dots light with each neuron's activity.</dd>
+      <dt>The map of things</dt><dd>The brain's own map of the room: 32 by 32 cells, each with a unit for every kind and every colour. A thing is lit in its colour where the map holds it.</dd>
+      <dt>The motor</dt><dd>The letters of the word the parrot says, one a slot.</dd>
+      <dt>The steps</dt><dd>Above the brain, while a question plays: hearing, understood, the map, saying, the motor.</dd>
+    </dl>
+
+    <h2 id="why">Why it matters</h2>
+    <p>The parrot's words are symbols bound to what its brain knows. "Red" is whatever word it heard while red things held its attention; "behind" whatever word it heard about things behind it. Because the binding lives in synapses between word neurons and concept neurons, the same word works in every question: "what colour is the ball?" goes from the thing to its colour, "what is red?" from the colour to the things, through the same synapses. That is what shows the words are understood and not stored as one-way pairs.</p>
+    <p>The answers come from the brain's own state. The book behind the parrot lies in its blind spot; the parrot answers "book" to "what is behind you?" because its map holds the book where it last saw it. A word it never heard means nothing to it, and it says "i do not know".</p>
+    <p>A new word takes three namings, and works at once in every question: where the thing is, its colour, and the other way round. Words bound to concepts are the ground for reasoning with symbols, the next steps of this demo.</p>
+    <p>The library's words chamber (<a href="https://github.com/muellerberndt/cadence/issues/326" target="_blank" rel="noopener">cadence#326</a>) reads this brain design on twelve fresh brains with words drawn at random for each, beside an LSTM and a transformer of the same size given the same namings and questions.</p>
+
+    <h2 id="do">What you can do</h2>
+    <ul>
+      <li><b>Ask a question.</b> Type it and press Enter, or click a question under the box. The parrot understands "where is the ball?", "what colour is the cup?" (or "color"), "what is red?", "what is behind you?", "what is in front of you?", "what is left of you?" and the like, in the words it knows.</li>
+      <li><b>Give a pistachio</b> for a right answer. The parrot cracks it, the brain view washes green and the synapses the lesson changed flash.</li>
+      <li><b>Tell it the right answer</b> when it was wrong: type the answer beside the pistachio and press Tell.</li>
+      <li><b>Turn the parrot.</b> Drag across the floor, or press the arrow keys. Things move in and out of its eyes' fans; the map holds what it saw.</li>
+      <li><b>Move things.</b> Drag a thing. Moved where the parrot sees it, the map follows; moved within the blind spot, the map holds it where it was last seen.</li>
+      <li><b>Teach it a word.</b> Click a thing: the parrot turns to look at it. Type a word and press Say it, three times. Then ask about it. The kettle (and the drum, the vase and the clock in other rooms) are things it has no word for.</li>
+      <li><b>New room</b> draws other things in other colours; <b>Reset</b> brings back the first room and the brain as it was raised; <b>Tutorial</b> walks through all of this in six steps.</li>
+      <li>Point at anything with a small question mark, or any part of the brain, for a short explanation.</li>
+    </ul>
+
+    <h2 id="how">How it works</h2>
+    <p>The parrot's brain is <code>cadence.words.Words</code> from the Cadence library, running in your browser in Python (Pyodide). It has three parts, all the library's own.</p>
+    <h3>The senses: the map and the body</h3>
+    <p>Each moment the eyes report every thing they see: its kind, its colour and where it is (the eyes' report is the program's step; finding things in the eyes' images by itself is the next step of this demo). The map of things (<code>cadence.space.map.Map</code>) takes the reports into its own state: a thing enters when it is first seen, its colour rides with it on the same cells, and it stays at its last known place while out of view. The body tells the brain which way it faces, so a place on the map is a place around the body: in front, to the right, behind, to the left.</p>
+    <h3>The lexicon: words bound to concepts</h3>
+    <p>A word takes a free word neuron the first time the parrot hears it. Every word neuron and every concept neuron are joined by a pair of synapses that starts at zero. A naming is a lesson of the library's settling: the word's neuron is driven, the concept neurons settle, and the lesson pulls them toward what the parrot attends to at that moment: the thing's kind, its colour and its place around it. A word's later lessons close a smaller share of its error, so a word keeps what its namings share: "ball" the kind, "red" the colour, "behind" the place.</p>
+    <h3>A question</h3>
+    <ol>
+      <li><b>Hearing.</b> The question's words drive their neurons, and the concept neurons settle (the brain view plays this sweep by sweep).</li>
+      <li><b>Understood.</b> The most active concept is what the question is about; the read neurons say what it asks for: a thing, a colour or a place. Question words such as "where" and "colour" learned their reads from questions answered for the parrot.</li>
+      <li><b>The map.</b> The map is asked by settling: where are the things of that kind, of that colour, or on the cells of that place around the body.</li>
+      <li><b>Saying.</b> For each thing found, its concepts, weighted by what the question asks for, drive the word neurons, and they settle.</li>
+      <li><b>The motor.</b> The most active word is heard back, and said: its letters, one by one.</li>
+    </ol>
+    <p>No table maps a word to a concept or a question word to what it asks for: the meaning of every word is in the synapses drawn on the page. With those synapses at zero the same brain answers nothing.</p>
+    <h3>How the parrot was raised</h3>
+    <p>Before the page, a scripted teacher raised the brain the page loads: 40 rooms of the eight named kinds, 15 namings each (the parrot turns, attends to a thing and hears one word: its kind, its colour or its place), then 24 rooms of 10 questions answered for it, about the ball, the cup, the box and the book only. The shoe, the key, the apple and the lamp were named and never asked about. The words are the teacher's English; to the brain they are letters.</p>
+    <h3>A pistachio</h3>
+    <p>A right answer earns a pistachio. In this development build the brain takes its rewarded answer as the right one: the lesson of a question answered (<code>Words.practice</code>), so the question's words move toward asking for what the answer named. The brain's reward path, through which a reward arrives as dopamine, is the next step of the library's words lane; the page takes it the moment the brain it loads has it.</p>
+
+    <h2 id="numbers">The numbers</h2>
+    <table>
+      <thead><tr><th>Reading</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Questions about the named kinds in 30 rooms the brain never saw (where, colour), right</td><td class="n">284 of 284</td></tr>
+        <tr><td>Of those, about the four kinds named and never asked about in practice</td><td class="n">126 of 126</td></tr>
+        <tr><td>"What is red?" and "what is behind you?" the other way round, right</td><td class="n">150 of 150</td></tr>
+        <tr><td>A thing held out of view, asked about, right</td><td class="n">56 of 56</td></tr>
+        <tr><td>A kind in a colour it never had in training, right</td><td class="n">32 of 32</td></tr>
+        <tr><td>A word never taught, or a thing not in the room: "i do not know"</td><td class="n">120 of 120</td></tr>
+        <tr><td>A new word after three namings, where and colour, right</td><td class="n">48 of 48</td></tr>
+        <tr><td>With the lexicon's synapses at zero, right</td><td class="n">0 of 284</td></tr>
+        <tr><td>Learned parameters (the lexicon's synapse pairs)</td><td class="n">6,656</td></tr>
+        <tr><td>The promise test on the page (questions both ways, from memory, a pistachio, a new word, a word never taught)</td><td class="n">10 of 10</td></tr>
+      </tbody>
+    </table>
+    <p class="note">The readings of the brain the page loads are in <code>ask/evidence/raised-20261113-2023-17e690a7.json</code> (written by <code>tools/raise_brain.py</code>, which raised it); the promise test on the page in the <code>promise-*.json</code> files of the same folder (<code>tools/check_page.py</code>). One brain, raised once: these numbers read a single parrot, not a population.</p>
+
+    <h2 id="limits">Limits</h2>
+    <ul>
+      <li><b>The eyes report, the retina is next.</b> The brain is given each seen thing's kind, colour and place; it does not find things in the images of the eyes strip.</li>
+      <li><b>Questions are words, not sentences.</b> The brain hears a question's words together, with no order: "where is the ball?" and "ball the is where?" are one question to it. Words it never heard are ignored.</li>
+      <li><b>One thing of a kind.</b> Each room has one thing of each kind; "the red ball" among several balls is a later rung.</li>
+      <li><b>No past or future.</b> "Where was the ball?" (from the brain's records) and "where will it be?" (from its forecast) are the next rungs of the words lane.</li>
+      <li><b>No ears.</b> Questions are typed; the microphone button opens when the brain hears raw sound.</li>
+      <li><b>The pistachio teaches through the told-answer lesson</b> in this development build (see How it works).</li>
+      <li><b>A development build.</b> The page runs a wheel built from a development branch of the library (the commit is in the page's header); its numbers are from that build.</li>
+      <li><b>One brain.</b> The numbers read the one brain the page loads; the library's chamber reads many.</li>
+    </ul>
+
+    <h2 id="keys">Keys</h2>
+    <div class="keys">
+      <kbd>Enter</kbd><span>ask the question typed, or say the word typed when naming</span>
+      <kbd>←</kbd><span>with the room in focus: turn the parrot to its left</span>
+      <kbd>→</kbd><span>with the room in focus: turn the parrot to its right</span>
+      <kbd>Esc</kbd><span>close an explanation</span>
+    </div>
+
+    <footer>The brain runs in your browser with a development build of cadence-net (0.99.0 and the words lane). <a href="https://github.com/muellerberndt/cadence-demos/tree/ask/ask" target="_blank" rel="noopener">The demo on GitHub</a> · <a href="https://github.com/muellerberndt/cadence" target="_blank" rel="noopener">Cadence on GitHub</a></footer>
+  </main>
+</body>
+</html>

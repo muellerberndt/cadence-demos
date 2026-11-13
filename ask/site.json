@@ -1,0 +1,24 @@
+{
+  "slug": "ask",
+  "title": "Ask the Parrot",
+  "page_dir": "site",
+  "card": "An African Grey answers questions about its room in words it learned by being shown things. Teach it a word; reward it with a pistachio.",
+  "tagline": "Ask where the ball is, and it tells you in words it learned",
+  "kicker": "WORDS LEARNED FROM NAMING",
+  "feature": "The parrot's Cadence brain learned every word by being shown things and told their names. It answers from what it holds, both ways round (\"where is the ball?\", \"what is red?\"), its blind spot too, and learns a new word in three namings.",
+  "howTo": "Click a question or type one, and give a pistachio for a right answer. Drag the floor to turn the parrot, then ask what is behind it. Click the yellow kettle, name it three times, and ask where it is.",
+  "help": "help.html",
+  "evidence": [
+    "ask/evidence/raised-20261113-2023-17e690a7.json",
+    "ask/evidence/promise-20261113-2038-17e690a7.json"
+  ],
+  "promise_test": "python tools/check_page.py --shots <dir>",
+  "about": "An African Grey parrot on its perch answers typed questions about its room: where a thing is, its colour, what is red, what is behind it. Its Cadence brain learned every word from naming, holds the room on its map (its blind spot too), and learns a new word in three namings.",
+  "runsOn": "cadence.words.Words, a development build of cadence-net (0.99.0 and the words lane) in Pyodide",
+  "brainLabel": "the lexicon and the map of things",
+  "zones": [
+    "sensory",
+    "cortex",
+    "language"
+  ]
+}
