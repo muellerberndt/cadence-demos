@@ -105,7 +105,8 @@ def changed_copy(args, folder: Path, src: Path, slug: str, meta: dict) -> None:
         shutil.rmtree(dst)
     rel = src.relative_to(ROOT).as_posix()
     known = subprocess.run(["git", "-C", str(ROOT), "cat-file", "-e", f"{args.since}:{rel}"], capture_output=True).returncode == 0
-    if meta.get("deploy_dir") or not known:  # a built app, or a demo new to the site: whole
+    new = slug in args.new_on_site.split(",")
+    if meta.get("deploy_dir") or not known or new:  # a built app, or a demo new to the site: whole
         shutil.copytree(full, dst)
         return
     out = subprocess.run(["git", "-C", str(ROOT), "diff", "--name-only", f"{args.since}...HEAD", "--", rel], capture_output=True, text=True, check=True).stdout.split()
@@ -135,7 +136,11 @@ analytics and the consent banner as they are.
 1. **Files.** The attached files belong under `public/` at the paths they carry
    (`public/demos/<slug>/...`). Add the new ones and replace the existing ones with the same path.
    {"Only changed files are attached; every other file of a demo folder stays as it is." if changed else "Each demo folder is complete."}
-   A new demo folder, `public/demos/out-of-sight/`, comes whole.
+   New demo folders (`public/demos/out-of-sight/`, `public/demos/castlevania/`) come whole.
+   Large files (`.whl`, `.npz`, `.mp4`, `.wasm`) may go to the project's asset storage, with the
+   references to them rewritten the way they were for the demos already on the site. Keep the
+   files already on the site that are not attached (for example the brain packs' manifests and the
+   MuJoCo loader, whose references point at the asset storage).
 
 2. **The demo list.** In the array that lists the demos (each entry has slug, title, tagline,
    mechanism, feature, howTo, embed, ...), set these fields of every entry to the values below, in
@@ -143,7 +148,9 @@ analytics and the consent banner as they are.
    runsOn, localOnly) as they are, unless the value below gives them. Add the entry `out-of-sight`
    (a new demo, "Out of Sight": a robot's brain keeps a map of where everything is): give it a card
    picture in the style of the others (a top view of a room with a hand and a shadow), seed 101.
-   Add a `help` field to the entry type.
+   Add a `help` field to the entry type. Every entry, Castlevania too, shows its `embed` page in the
+   frame under the header: Castlevania's page plays the recordings and runs its brain, in place of
+   the video the site plays for it; its local-only note becomes one short line under the header.
 
 ```json
 {rows}
@@ -170,6 +177,7 @@ def main() -> int:
     ap.add_argument("--theme", type=Path, help="the site's cadence-theme.css, for the preview")
     ap.add_argument("--home", type=Path, help="a JSON file with the home page's lines: {title, lines: [...]}")
     ap.add_argument("--since", help="a git ref: also write DIR/changed/ with the files changed since it")
+    ap.add_argument("--new-on-site", default="", help="slugs whose folder the site does not have yet: copied whole into DIR/changed/")
     args = ap.parse_args()
     metas = {}
     for site in sorted(ROOT.glob("*/site.json")):
