@@ -1,5 +1,15 @@
 # Connect Four
 
+**What it shows.** Cadence brains excel at games. The brain settles on each move and judges the
+game (loss, draw or win for the side to move); a search over the rules checks the move. Moving
+first against a perfect player, which only flawless play beats, the pair won 363 of 400 games
+(`evidence/search_reading.json`); the brain alone, from the same seat, won 119 of 200
+(`evidence/reading.json`). Teach it a better column and it learns it in your browser, with
+Cadence's local rule. Connect Four is won by the first player with perfect play, so moving second
+against the perfect player every player loses, and so did this one (0 of 40). The page's
+[help](web/help.html) explains every part of the screen, what you can do and the limits; on the
+page, every control and every region of the brain explains itself (a small **?**).
+
 Play Connect Four against a deep Cadence brain and watch every neuron settle on its move. You
 and the brain take turns dropping stones; four in a row wins. On its turn the whole brain
 settles once on the board it sees, and the page draws that settle sweep by sweep: every neuron
@@ -109,8 +119,13 @@ phases of a fixed 32 sweeps. 3,208 neurons and 3,295,232 synapses.
   strengthened and blue where they weakened, with the number changed. Lessons live in the tab;
   *Reset brain* or a reload restores the shipped brain.
 - **Game controls:** *Brain + search* or *Brain alone*, new game, who starts, undo, keys 1–7,
-  and a collapsed model card with the sizes, the training, the readings, the timings in this tab
-  and the provenance.
+  and, on the page opened by itself, a collapsed model card with the sizes, the training, the
+  readings, the timings in this tab and the provenance.
+- **Explanations:** every control and every region of the brain carries a small **?** whose card
+  opens when the pointer rests on it (the demos' shared `cadence-explain.js`); the neuron card
+  opens after the same short rest and stays a moment after the pointer leaves. *Help* opens
+  `web/help.html`. Inside the demos site (in a frame) the page's title, introduction, model card
+  and footer hide, since the site's header carries the title, the claim and what to try.
 
 ## How it learned
 
@@ -317,7 +332,15 @@ python -m venv .venv
 .venv/bin/python -m pytest tests -q
 .venv/bin/python check_page.py
 node tests/parity_search.mjs        # the page's search against connect4/search.py
+.venv/bin/python tools/promise_test.py --out evidence/promise_test-<date>.json   # the claim, on the page
 ```
+
+`tools/promise_test.py` plays the claim on the real page: brain + search is the player, every
+brain move is a finished settle with a verdict and the search's report, the brain's column is its
+strongest legal motor neuron, a visitor who builds threats of four has every single threat blocked
+and the brain takes every immediate win it has, brain alone plays its strongest legal column with
+no search, lessons on the brain's first move make the taught column its move, and the claim's
+numbers are those of `evidence/search_reading.json` (record: `evidence/promise_test-20261113.json`).
 
 The tests check the rules and the three-plane encoding, the search (wins it must take, blocks it
 must make, cells it must not open, the brain's column where the search sees no difference), that the drawn settle is the
@@ -340,7 +363,8 @@ learning module a NumPy whose `repeat` casts its counts. The shim does nothing o
 | `pack.py` | packs the wheel, the brain, the receipt's numbers and the host into `web/pack/` |
 | `training/` | the trainer (`c4train`), the solver bridge, the readings and the page copy |
 | `tests/`, `check_page.py` | the rules, the host and the search (Python), the search's port (`parity_search.mjs` with `fixtures/`); the page's promise in headless Chromium |
-| `evidence/` | `reading.json`, `search_reading.json`, `page_check.json` |
+| `tools/promise_test.py`, `site.json`, `web/help.html` | the claim on the demos site (`site.json`), its help page, and the claim played on the page |
+| `evidence/` | `reading.json`, `search_reading.json`, `page_check.json`, `promise_test-20261113.json` |
 | `MODEL_CARD.md` | the brain: composition, training, readings, limits |
 | `docs/` | the screenshot |
 
