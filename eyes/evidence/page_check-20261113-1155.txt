@@ -1,0 +1,14 @@
+check_page.py, 2026-11-13 11:55, renderer GPU (Metal), load average 130 201 210
+ok    the brain loads in Pyodide (7.0 s): ready
+      2,413 neurons · 74,612 synapses · Cadence 0.95.2 in Pyodide 314.0.7 · 6 workers
+ok    six eyes answer (0.5 s): 6 of 6
+ok    while every shape moves, eyes on their own shape: 5.93 of 6 on average over 30 samples (needs 4.5)
+      moving: 60 of the last 60 frames settled, 35.7 sweeps and 62 ms per frame on average
+ok    with the shapes held, the brain comes to rest (0.5 s): 4 ms per frame
+ok    nothing moves, the brain does no work: 65 of 65 frames in 3 s at zero sweeps, 3.6 ms per frame
+      dragged the cross from (51.4, 95.3) to (69.4, 96.2) in 150 ms
+ok    the dragged shape is found again (0.5 s): its eye is centred on it, 0.7 px away
+      after the release the eye jumped 1 time(s) to centre its shape; 2 frame(s) settled, up to 32 sweeps
+ok    the shape found, the brain rests again: 65 of 65 frames in 3 s at zero sweeps, 3.5 ms per frame
+ok    console errors: 0
+PASS

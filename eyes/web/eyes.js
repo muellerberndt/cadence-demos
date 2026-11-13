@@ -113,9 +113,10 @@ function closeEye(t) {
   call("close", { id: t.id });
   if (selectedEye === t.id) selectEye(eyes().length ? eyes()[0].id : null);
 }
-function selectEye(id) {
+function selectEye(id, byHand = false) {
   selectedEye = id;
   if (id !== null) call("select", { id });
+  if (byHand) coach.onSelect();
 }
 function add(kind, x, y, withEye = true) {
   const size = uniform(6, 10);
@@ -271,18 +272,21 @@ function onResult(r, snapshot) {
   return finish(r);
 }
 
-const frameLog = []; // the brain's time per frame and whether the frame carried a wave, for the page check
+const frameLog = []; // the brain's time per frame, whether the frame carried a wave, and its sweeps, for the page check
+const gazeLog = []; // per brain frame: its time, its sweeps and every eye's gaze, for the page check
 function finish(r) {
   result = r;
-  frameLog.push([r.worker_ms, r.wave ? 1 : 0]);
+  frameLog.push([r.worker_ms, r.wave ? 1 : 0, r.sweeps]);
   if (frameLog.length > 4000) frameLog.shift();
+  gazeLog.push({ t: performance.now(), sweeps: r.sweeps, ms: r.worker_ms, eyes: r.eyes.map((e) => [e.id, e.gaze[0], e.gaze[1], e.own ? 1 : 0]) });
+  if (gazeLog.length > 600) gazeLog.shift();
   history.push(r.sweeps);
   if (history.length > 300) history.shift();
   const now = performance.now();
   doneTimes.push(now);
   while (doneTimes.length && now - doneTimes[0] > 2000) doneTimes.shift();
   const pill = $("state");
-  pill.textContent = r.sweeps === 0 ? "equilibrium: no work" : `repair: ${r.sweeps} sweeps`;
+  pill.textContent = r.sweeps === 0 ? "at rest: no work" : `settling: ${r.sweeps} sweeps`;
   pill.className = "pill " + (r.sweeps === 0 ? "still" : "repair");
   $("sweeps").textContent = r.sweeps;
   $("ms").textContent = r.worker_ms.toFixed(0);
@@ -297,11 +301,12 @@ function finish(r) {
   }
   quiet.target = r.sweeps === 0 ? QUIET_EXPOSURE : ACTIVE_EXPOSURE;
   if (r.sweeps === 0 && !wave) {
-    $("wavetext").textContent = "nothing moves: the brain holds its equilibrium, no sweeps, no work";
+    $("wavetext").textContent = "nothing moves: the brain rests, no sweeps, no work";
     const c = $("wavecurve"); c.getContext("2d").clearRect(0, 0, c.width, c.height);
+  } else if (r.sweeps > 0 && !wave && $("wavetext").textContent.startsWith("nothing moves")) {
+    $("wavetext").textContent = `settling: ${r.sweeps} sweeps; the next settle plays here sweep by sweep`;
   }
-  const sel = things.find((t) => t.id === r.selected);
-  $("legend").textContent = `Showing the stream of ${sel ? `the ${sel.kind}'s eye` : "no eye"}. The regions play the roles their names say: the retina is the Cadence population visual/input (the eye's receptors, where the input enters), V1 visual cortex is visual/v1, the superior colliculus map is the association region, and the gaze neurons are the motor population. Glow marks neurons that changed; several times a second the settle of one frame plays sweep by sweep, a wave from the retina through V1 and the map to the gaze neurons that dies down as the brain agrees. When nothing moves the brain does no work and goes dark.`;
+  coach.onFrame(r);
 }
 
 // -- the settle as a wave: a wave frame carries the selected eye's settle sweep by sweep (the
@@ -469,7 +474,7 @@ function drawStrip() {
   });
   stctx.fillStyle = "#98a1b3";
   stctx.font = "12px system-ui";
-  stctx.fillText("settling sweeps per brain frame (flat: equilibrium held, no work)", 6, 13);
+  stctx.fillText("settling sweeps per frame (flat: at rest, no work)", 6, 13);
 }
 
 function drawEyeViews(r) {
@@ -482,7 +487,7 @@ function drawEyeViews(r) {
       c.width = c.height = VIEW;
       const cap = document.createElement("figcaption");
       f.append(c, cap);
-      f.onclick = () => selectEye(e.id);
+      f.onclick = () => selectEye(e.id, true);
       box.appendChild(f);
     });
   }
@@ -554,7 +559,7 @@ surfaceCanvas.addEventListener("pointerdown", (ev) => {
   const t = hitTest(x, y);
   selectedThing = t ? t.id : null;
   if (t) {
-    if (t.eye) selectEye(t.id);
+    if (t.eye) selectEye(t.id, true);
     drag = { id: t.id, dx: t.x - x, dy: t.y - y };
     surfaceCanvas.classList.add("drag");
     surfaceCanvas.setPointerCapture(ev.pointerId);
@@ -570,7 +575,7 @@ surfaceCanvas.addEventListener("pointermove", (ev) => {
   t.y = Math.min(Math.max(y + drag.dy, m), H - m);
 });
 function endDrag() {
-  if (drag) held.set(drag.id, performance.now() + 600);
+  if (drag) { held.set(drag.id, performance.now() + 600); coach.onDrop(drag.id); }
   drag = null;
   surfaceCanvas.classList.remove("drag");
 }
@@ -579,7 +584,7 @@ surfaceCanvas.addEventListener("pointercancel", endDrag);
 surfaceCanvas.addEventListener("dblclick", (ev) => {
   const [x, y] = surfacePoint(ev);
   const t = hitTest(x, y);
-  if (t) { if (t.eye) closeEye(t); else openEye(t); }
+  if (t) { if (t.eye) closeEye(t); else openEye(t); coach.onEyeToggle(); }
 });
 surfaceCanvas.addEventListener("contextmenu", (ev) => {
   ev.preventDefault();
@@ -609,16 +614,14 @@ document.addEventListener("keydown", (ev) => {
 // -- start
 
 function palette() {
-  const pal = $("palette");
-  pal.innerHTML = "";
-  for (const kind of [...KINDS].sort((a, b) => UNSEEN.includes(a) - UNSEEN.includes(b))) {
-    const b = document.createElement("button");
-    const unseen = UNSEEN.includes(kind);
-    b.className = "add" + (unseen ? " unseen" : "");
-    b.textContent = LABELS[kind];
-    b.title = unseen ? "never seen while learning" : "seen while learning";
-    b.onclick = () => ready && add(kind);
-    pal.appendChild(b);
+  const menu = $("add");
+  menu.length = 1; // keep the "+ add a shape" line
+  menu.querySelectorAll("optgroup").forEach((g) => g.remove());
+  for (const [label, kinds] of [["seen while raised", KINDS.filter((k) => !UNSEEN.includes(k))], ["never seen", KINDS.filter((k) => UNSEEN.includes(k))]]) {
+    const group = document.createElement("optgroup");
+    group.label = label;
+    for (const kind of kinds) group.appendChild(new Option(LABELS[kind], kind));
+    menu.appendChild(group);
   }
 }
 
@@ -626,7 +629,56 @@ function controls() {
   document.querySelectorAll("[data-preset]").forEach((b) => b.addEventListener("click", () => ready && preset(b.dataset.preset)));
   $("clear").addEventListener("click", () => ready && preset("clear"));
   $("rate").addEventListener("input", (e) => { $("ratev").textContent = e.target.value; });
+  $("add").addEventListener("change", (e) => { const kind = e.target.value; e.target.value = ""; if (ready && kind) add(kind); });
+  $("coach-next").addEventListener("click", () => coach.next());
 }
+
+// -- the walk-through: three things to try, one line under the surface. Each step ends when the
+// visitor has done it and the page has shown its result.
+
+const coach = {
+  step: 0, // 0: loading; 1: rest; 2: drag; 3: eyes and streams; 4: done
+  calm: 0, // consecutive frames at rest with the shapes still
+  dropped: null, // {id, at, peak} after a drag of a shape with an eye
+  timer: 0,
+  steps: [
+    null,
+    'Untick <b>shapes move on their own</b> below. When nothing moves, watch the brain\'s work fall to zero.',
+    'Next, drag one shape away. Only then does the brain work, and the shape\'s eye jumps after it.',
+    '<b>Double-click</b> a shape to give it an eye or take its eye away. <b>Click</b> a shape with an eye to watch that eye in the brain.',
+    'Tick <b>shapes move on their own</b> to set them moving again. The <b>help</b> link explains everything on the page.',
+  ],
+  show(html, step = this.step) {
+    $("coach-text").innerHTML = html;
+    const dots = $("coach-dots");
+    dots.innerHTML = "";
+    for (let k = 1; k <= 3; k++) { const i = document.createElement("i"); i.className = k < step || step >= 4 ? "done" : k === step ? "on" : ""; dots.appendChild(i); }
+    $("coach-next").hidden = step < 1 || step >= 4;
+    $("coach").classList.toggle("done", step >= 4);
+  },
+  go(step) { clearTimeout(this.timer); this.step = step; this.calm = 0; this.dropped = null; this.show(this.steps[step], step); },
+  next() { if (this.step >= 1 && this.step < 4) this.go(this.step + 1); },
+  later(html, step) { this.show(html, this.step); clearTimeout(this.timer); this.timer = setTimeout(() => this.go(step), 4200); },
+  start() { this.go(1); },
+  onFrame(r) {
+    if (this.step === 1 && !$("animate").checked) {
+      this.calm = r.sweeps === 0 ? this.calm + 1 : 0;
+      if (this.calm === 4) this.later(`At rest: <b>0 sweeps</b>, ${r.worker_ms.toFixed(0)} ms. Nothing changed, so the brain does no work, like a resting animal.`, 2);
+    }
+    if (this.step === 2 && this.dropped) {
+      this.dropped.peak = Math.max(this.dropped.peak, r.sweeps);
+      const e = r.eyes.find((x) => x.id === this.dropped.id);
+      if (e && e.own && r.sweeps === 0) this.later(`Its eye found it again. The brain worked only for that move (up to <b>${this.dropped.peak} sweeps</b> a frame), then rested.`, 3);
+      else if (e && e.own && $("animate").checked) this.later("Its eye found it again. Untick <b>shapes move on their own</b> to see the brain rest between your moves.", 3);
+    }
+  },
+  onDrop(id) {
+    const t = things.find((o) => o.id === id);
+    if (this.step === 2 && t && t.eye) this.dropped = { id, peak: 0 };
+  },
+  onEyeToggle() { if (this.step === 3) this.go(4); },
+  onSelect() { if (this.step === 3) this.go(4); },
+};
 
 async function boot() {
   palette();
@@ -646,18 +698,17 @@ async function boot() {
     if (EYE.eye === "fovea") {
       EYE.inner = manifest.fovea.inner;
       VIEW = EYE.receptors;
-      $("about").textContent = "One Cadence brain runs in this page and follows every tracked shape. Each tracked shape has an eye that sees sharply at its centre and coarsely around it, and also sees what changed since the last frame. Every frame the brain answers, for each eye, where its own shape is, and the eye jumps there, a small step or a long saccade. The pixels are all the brain gets. While nothing moves it stays in equilibrium and does no settling at all.";
-      $("legend-eye").textContent = "Each eye's solid square is its fovea and the dashed square how far it sees; the box is its answer, solid on its own shape and dashed off it, larger the farther out it points. The eye views show what each eye sees, with change in red.";
     } else {
       VIEW = WIN;
     }
     bg = backdrop(H, W, 0.1, 0.03, 7);
     const { atlas } = await atlasPromise;
     scan = new BrainScan($("scan"), decodeAtlas(atlas), {
-      style: "brain", labels: $("labels"), strip: $("montage"), spin: true, spinRate: 0.05,
+      style: "brain", labels: $("labels"), spin: true, spinRate: 0.05,
       labelCount: 8, labelTop: 8, heatDecay: 0.88, dpr: 1.5, lineBudget: 15000,
-      particleBudget: 8000, montageRows: 6,
+      particleBudget: 8000,
     });
+    explainRegions(scan);
     scan.onhover = (hit) => {
       if (hit) $("inspector").textContent = `${hit.region} · neuron ${hit.neuron} · activity ${hit.activation.toFixed(3)}`;
     };
@@ -667,6 +718,7 @@ async function boot() {
     $("loading").className = "loading ready";
     ready = true;
     preset("six");
+    coach.start();
   } catch (error) {
     $("loading").textContent = `the brain did not load: ${error.message}`;
     $("loading").className = "loading failed";
@@ -675,5 +727,25 @@ async function boot() {
 }
 boot();
 
+// What each region of the brain does, in the role it plays; its name on the brain view carries the card.
+const REGIONS = {
+  "Retina": ["The retina", "The eye's 625 receptors, 25 by 25: one pixel apart at the centre, spreading out to 40 pixels at the edge. Each reports brightness and the change since the last frame. The page's pixels enter the brain here."],
+  "V1 visual cortex": ["V1, the visual cortex", "Eight feature maps that read the retina through small fields, in brightness and in change: edges, blobs and what moved. Every place uses the same weights, as in a visual cortex."],
+  "Superior colliculus association map": ["The superior colliculus map", "A 13 by 13 map of the space around the eye's centre, wired both ways with V1. It settles on where the eye's own shape is, as the superior colliculus does in an animal's brain."],
+  "Horizontal gaze motor": ["Horizontal gaze neurons", "13 neurons for left and right. The most active one is the eye's jump: none, or 2.5, 4.5, 7.1, 13.4, 25 or 40 pixels either way."],
+  "Vertical gaze motor": ["Vertical gaze neurons", "13 neurons for up and down. The most active one is the eye's jump: none, or 2.5, 4.5, 7.1, 13.4, 25 or 40 pixels either way."],
+};
+function explainRegions(view) {
+  view.atlas.regions.forEach((region, k) => {
+    const el = view.labelElements[k], said = REGIONS[region.name];
+    if (!el || !said) return;
+    el.style.pointerEvents = "auto";
+    el.setAttribute("data-explain-title", said[0]);
+    el.setAttribute("data-explain", said[1]);
+  });
+  if (window.CadenceExplain) window.CadenceExplain.scan($("labels"));
+  else addEventListener("DOMContentLoaded", () => window.CadenceExplain && window.CadenceExplain.scan($("labels")));
+}
+
 // A read-only handle for checks and the curious: the shapes and the brain's latest frame.
-window.cadenceEyes = { get things() { return things; }, get result() { return result; }, get workers() { return pool.length; }, get frames() { return frameLog.slice(); } };
+window.cadenceEyes = { get things() { return things; }, get result() { return result; }, get workers() { return pool.length; }, get frames() { return frameLog.slice(); }, get gazes() { return gazeLog.slice(); } };
