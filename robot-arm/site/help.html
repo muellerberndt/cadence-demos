@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Robot Arm · Help</title>
+  <meta name="description" content="What the Robot Arm demo shows: a Cadence brain that runs in real time steers a robot arm, and follows a bin you move while it carries the block.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="cadence-help.css">
+  <script src="cadence-explain.js" defer></script>
+  <style>
+    .fig-n circle { fill: #f2b33d; stroke: #0b1215; stroke-width: 3; }
+    .fig-n text { font: 700 22px ui-monospace, "IBM Plex Mono", Menlo, monospace; fill: #0b1215; text-anchor: middle; dominant-baseline: central; }
+    ol.parts { counter-reset: part; list-style: none; padding-left: 0; }
+    ol.parts li { counter-increment: part; position: relative; padding-left: 30px; }
+    ol.parts li::before { content: counter(part); position: absolute; left: 0; top: 2px; width: 20px; height: 20px; border-radius: 50%; background: #f2b33d; color: #0b1215; font: 700 11px/20px ui-monospace, "IBM Plex Mono", Menlo, monospace; text-align: center; }
+  </style>
+</head>
+<body>
+  <header class="help-bar"><span class="crumb">cadence / <b>robot arm</b> / help</span><span class="spacer"></span><a href="./">Back to the demo</a></header>
+  <main class="help">
+    <h1>Robot Arm</h1>
+    <p class="lede">A robot arm on a table picks up a red block and puts it in one of two bins. A lit lamp names the bin it should use. You can move that bin while the arm carries the block, and the arm follows it.</p>
+    <p class="shows"><b>What it shows about Cadence</b>The arm’s brain runs in real time, like the brain of a living being: about five times a second it senses where its hand, the block and the target bin are, and settles on its next move. Because it senses the bin anew at every decision, moving the bin in the middle of a carry, something it never met while it learned, turns its next moves toward the new place. It needs no new lesson for that. The brain also has a real state that lasts from moment to moment: a working memory of the last moments.</p>
+    <nav class="toc" aria-label="On this page"><a href="#see">What you see</a><a href="#why">Why it matters</a><a href="#do">What you can do</a><a href="#how">How it works</a><a href="#numbers">The numbers</a><a href="#limits">Limits</a></nav>
+
+    <h2 id="see">What you see</h2>
+    <p>On the left, the arm in a physics simulation. On the right, its brain, live. Both run inside your browser.</p>
+    <figure>
+      <svg viewBox="0 0 1280 800" role="img" aria-label="The page while the arm carries the block: the arm over the table, the block in its gripper, bin A lit as the target with the words drag bin A over it, bin B, the line at the top left that says what to do, the buttons at the bottom, and the brain panel on the right with the motor choices at the top, the three layers and the working memory, and the senses at the bottom.">
+        <image href="help-figure.jpg" width="1280" height="800"/>
+        <g class="fig-n"><circle cx="560" cy="232" r="17"/><text x="560" y="232">1</text></g>
+        <g class="fig-n"><circle cx="368" cy="470" r="17"/><text x="368" y="470">2</text></g>
+        <g class="fig-n"><circle cx="300" cy="548" r="17"/><text x="300" y="548">3</text></g>
+        <g class="fig-n"><circle cx="548" cy="600" r="17"/><text x="548" y="600">4</text></g>
+        <g class="fig-n"><circle cx="410" cy="104" r="17"/><text x="410" y="104">5</text></g>
+        <g class="fig-n"><circle cx="455" cy="762" r="17"/><text x="455" y="762">6</text></g>
+        <g class="fig-n"><circle cx="1262" cy="118" r="17"/><text x="1262" y="118">7</text></g>
+        <g class="fig-n"><circle cx="1140" cy="400" r="17"/><text x="1140" y="400">8</text></g>
+        <g class="fig-n"><circle cx="1200" cy="690" r="17"/><text x="1200" y="690">9</text></g>
+      </svg>
+      <figcaption>The page at 1280 by 800 pixels, while the arm carries the block toward bin A. The numbers match the list below.</figcaption>
+    </figure>
+    <ol class="parts">
+      <li><b>The arm</b>, a Franka Panda robot with a two-finger gripper (its hand), simulated with real contact physics: the block can slip, tip and bounce. A blue trail follows the fingertips, and a small blue dot marks where the brain’s last move sends the hand.</li>
+      <li><b>The block</b>, the thing the arm picks up.</li>
+      <li><b>The target bin</b> (here bin A), with its lamp lit. The words over it say which bin it is. While the arm carries the block they read “drag bin A”: that is the moment to move it. A small amber dot above the bin marks where the hand lets go.</li>
+      <li><b>The other bin</b> (here bin B), with its lamp dark.</li>
+      <li><b>The line at the top left</b> says what is happening and what you can do next.</li>
+      <li><b>The buttons</b>: which bin is the target, Run (Stop while it runs), Reset, Shuffle, and the speed.</li>
+      <li><b>Motor, the next move</b>: what the brain chose at this decision. Three rows of bars for moving the hand −2 to +2 cm along x, y and z, and one for open or close. The outlined bar is the choice.</li>
+      <li><b>The brain’s layers</b>: Layer 3 (the top), the working memory beside it with its history (memory over time), then Layer 2 and Layer 1. Every square is a neuron, brighter when more active. Lines show the strongest signals: cyan going up, violet coming back down, teal from the working memory.</li>
+      <li><b>The senses</b>: what the brain is told at each decision, in groups. The group <b>Target bin − hand</b> is where the target bin is, seen from the hand; it changes the moment you move the bin.</li>
+    </ol>
+    <p>Above the brain, three numbers: <b>Decision</b> (how many moves so far), <b>Settle</b> (how many sweeps the brain took to settle; on every second decision the panel replays the settle sweep by sweep and this counts along) and <b>Think</b> (how long the settle took in your browser). Every part of the page has a small <b>?</b>, or explains itself when you rest the pointer on it.</p>
+
+    <h2 id="why">Why it matters</h2>
+    <p><b>A living brain runs in real time.</b> It senses, settles and acts in one continuing loop, so a change in the world changes the next move. A robot needs the same, because things around it move. This brain decides about five times per second of arm time, and each decision gives it 200 ms. In your browser one settle takes tens of milliseconds (a median of 16.3 ms in the page check), so the arm on screen moves at the speed of real time, without pauses.</p>
+    <p><b>It meets something new without a new lesson.</b> While it learned, the bins never moved: they stood at two fixed places. Here you can move the target bin in the middle of a carry. The brain senses the bin’s new place at its next decision, and the moves it settles on head there. Its synapses stay exactly as they were trained; nothing is retrained.</p>
+    <p><b>Its answer is the settled state of the whole brain.</b> At each decision the senses, the three layers, the working memory and the motor neurons settle together into one state, signals going up and coming back down, and the move is read from that state. Every second decision the panel replays that settle, sweep by sweep.</p>
+    <p><b>A fair comparison.</b> A conventional network of the same task, trained by backpropagation on the same teacher (a control), placed as many blocks on the physics it trained on: 0.968 against 0.973 for this brain’s design, and on held-out physics it did better, 0.738 against 0.698. The moved bin was tested on Cadence brains only. So this page shows a real-time brain that settles and follows a moving target; it does not show an advantage over a conventional network on this task. What the brain did beyond its teacher: on the hardest physics it never trained on (light, slippery, bouncy blocks), it placed 0.465 of the blocks, the teacher it learned from 0.295.</p>
+
+    <h2 id="do">What you can do</h2>
+    <ul>
+      <li><b>Move the bin while the arm carries the block.</b> Press Run. Once the arm has picked up the block, the top line says “Your turn” and the target bin reads “drag bin A” (or B). Press on that bin and drag it to a new place. The arm turns toward the new place and drops the block there.</li>
+      <li><b>Change the target while it carries the block.</b> Press the other bin’s button (or click the other bin) during the carry: the lamps switch, and the arm takes the block to the other bin.</li>
+      <li><b>Set up the table before Run.</b> Drag the block, or a bin, to a new place. A dashed outline shows where it may go: the block inside the area the brain learned on, the bins inside the band where the brain was tested.</li>
+      <li><b>Choose the target bin.</b> Click a bin in the scene, or press Bin A or Bin B. Its lamp lights.</li>
+      <li><b>Run, Stop, Run again.</b> Each Run starts the arm from home with an empty working memory.</li>
+      <li><b>Reset</b> puts the arm home and the block back where you placed it. <b>Shuffle</b> puts the block at a random place and picks a random target.</li>
+      <li><b>Speed</b>: 1× is real time; 2× and 4× play it faster. The physics and the brain compute the same moves at every speed.</li>
+      <li><b>Look around</b>: drag empty space to turn the view, and scroll to zoom.</li>
+      <li><b>Explore the brain</b>: point at a <b>?</b> on the brain panel to see what each part does.</li>
+    </ul>
+
+    <h2 id="how">How it works</h2>
+    <p><b>The senses.</b> At each decision the brain is given 262 numbers about the true state of the scene (not camera pixels): where the hand is; where the block is, seen from the hand; where the target bin is, seen from the hand; the angles and speeds of the arm’s seven joints; how far the gripper is open, and whether it is closed and holding; its own last move, fed back in; and which lamp is lit.</p>
+    <p><b>The brain.</b> One deep Cadence brain (<code>Brain.compose</code>) with three layers of 256, 128 and 64 neurons, a working memory of 64, and 17 motor neurons: 791 neurons and 155,264 synapses. Each higher layer sends a signal back down to the one below (the apical, top-down signal). At each decision the whole brain settles: its parts repair their disagreements with one another until they agree, and the strongest motor neuron in each row gives the move.</p>
+    <p><b>Its memory.</b> Long-term, what it knows lives in its synapses, learned during its life and unchanged on this page. Short-term, the working memory is written at every decision and read by Layer 3, so the last moments shape the next move; it starts empty at each Run.</p>
+    <p><b>Its acts.</b> Each decision moves the hand by −2 to +2 cm along x, y and z and opens or closes the gripper. A fixed reflex (inverse kinematics, part of the application, not learned) turns the hand move into targets for the seven joints, and the physics then runs 0.2 s of arm time.</p>
+    <p><b>How it learned.</b> By imitating a scripted teacher (reach over the block, close, lift, carry, let go) for 400 episodes, with the block’s size, mass, friction and bounciness varied. A lesson came only where the brain disagreed with the teacher. At first the teacher moved the arm half of the time; by the end the brain did all of it. The bins stood at their two places the whole time. There is no reward in this demo.</p>
+    <p><b>Following a moved bin.</b> One of the senses is where the target bin is, seen from the hand. When you move the bin, those numbers change at the next decision, and the brain settles on moves toward the new place. When you switch the target, the lit lamp and that sense both change.</p>
+    <p><b>The page.</b> The physics is MuJoCo 3.17, compiled to WebAssembly, with the same simulated table, arm and bins the brain learned in. The brain is the released Cadence library (cadence-net 0.95.2) running in Python inside your browser (Pyodide). Replayed against recorded Python trials, the page’s brain gives the same command at all 104 recorded decisions.</p>
+
+    <h2 id="numbers">The numbers</h2>
+    <table>
+      <thead><tr><th>Reading</th><th>Value</th><th>Evidence</th></tr></thead>
+      <tbody>
+        <tr><td>On the page, mouse only: the target bin dragged to a new place while the arm carries the block; the block lands in the moved bin</td><td class="n">5 of 5, in each of two runs</td><td><code>promise_moved_bin-20261113-1134.json</code>, <code>promise_moved_bin-20261113-1206.json</code></td></tr>
+        <tr><td>On the page: the target switched to the other bin mid-carry; the block lands in that bin</td><td class="n">1 of 1, in each of two runs</td><td><code>promise_moved_bin-20261113-1134.json</code>, <code>promise_moved_bin-20261113-1206.json</code></td></tr>
+        <tr><td>On the page: bin B moved to (0.66, −0.12) m mid-carry; placed in the moved bin</td><td class="n">60 decisions</td><td><code>page_check.json</code></td></tr>
+        <tr><td>On the page: time for one settle (median)</td><td class="n">16.3 ms</td><td><code>page_check.json</code></td></tr>
+        <tr><td>On the page, on a machine at a load average near 250: time for one settle (median per run); share of arm time shown at clock speed at 1×</td><td class="n">83 to 114 ms; 0.80 to 0.98</td><td><code>promise_moved_bin-20261113-1134.json</code></td></tr>
+        <tr><td>On the page at 1×: share of arm time shown on screen at clock speed</td><td class="n">1.0</td><td><code>page_check.json</code></td></tr>
+        <tr><td>Target bin put at five places it never trained with, before the trial: blocks placed right, of 20 each</td><td class="n">20, 19, 19, 20, 19</td><td><code>moved_bins.jsonl</code></td></tr>
+        <tr><td>Target bin at its two trained places: placed right, of 20 each</td><td class="n">19, 19</td><td><code>moved_bins.jsonl</code></td></tr>
+        <tr><td>Target bin in a far corner (0.72, 0.32) m: placed right, of 20</td><td class="n">10</td><td><code>moved_bins.jsonl</code></td></tr>
+        <tr><td>Varied physics it trained on, 200 new trials: placed right, brain / teacher</td><td class="n">0.955 / 0.955</td><td><code>stage2b_final.json</code></td></tr>
+        <tr><td>Hardest physics it never trained on, 200 trials: placed right, brain / teacher</td><td class="n">0.465 / 0.295</td><td><code>stage2b_final.json</code></td></tr>
+        <tr><td>Controls with no learned brain (random moves, a blind brain, a newborn brain): placed right</td><td class="n">0.0 each</td><td><code>stage2b_final.json</code></td></tr>
+        <tr><td>Earlier stage, mean of three seeds: placed right, this brain’s design / backpropagation network (control)</td><td class="n">0.973 / 0.968</td><td><code>stage2_final.json</code></td></tr>
+        <tr><td>Earlier stage, held-out physics: this brain’s design / backpropagation network</td><td class="n">0.698 / 0.738</td><td><code>stage2_final.json</code></td></tr>
+      </tbody>
+    </table>
+    <p class="note">Each file is in the demo’s <code>evidence/</code> folder of the repository. Positions are in metres on the table; the bins learned at (0.62, −0.22) and (0.62, 0.22). The promise run works the real page in a headless browser, with the mouse, as a visitor does (<code>robot-arm/tools/promise_moved_bin.py</code>): it drags the target bin to four new places, as soon as the arm has lifted the block or once it has carried it half the way across, and switches the target once.</p>
+
+    <h2 id="limits">Limits</h2>
+    <ul>
+      <li>The brain does not learn on this page. It follows a moved bin by sensing it, with its synapses unchanged.</li>
+      <li>It learned by imitating a scripted teacher. The teacher and the reflex that turns hand moves into joint angles are fixed parts of the application, not learned.</li>
+      <li>Its senses are the true positions of things; it sees no camera image.</li>
+      <li>The part the working memory plays in following a moved bin was not measured: no run switched it off.</li>
+      <li>A conventional network trained the same way placed as many blocks on this task; the page shows no advantage over one.</li>
+      <li>The page keeps the bins inside the band where the brain placed 19 or 20 of 20 blocks. In the far corners it placed 10 of 20, so the page keeps the bins out of them.</li>
+      <li>On the hardest physics it places fewer than half of the blocks. The page uses one block (5 cm, 80 g), always set down square to the table’s edges.</li>
+      <li>On a busy computer the brain can fall behind real time: on a machine at a load average near 250, a settle took about 100 ms and the screen showed 0.80 to 0.98 of the arm time, so the arm paused at times. Its moves stay the same; only the picture waits.</li>
+      <li>The readings certify these trials only, not general manipulation.</li>
+    </ul>
+
+    <footer>The brain runs in your browser with cadence-net 0.95.2 and MuJoCo 3.17. <a href="https://github.com/muellerberndt/cadence-demos/tree/main/robot-arm" target="_blank" rel="noopener">The demo on GitHub</a> · <a href="https://github.com/muellerberndt/cadence" target="_blank" rel="noopener">Cadence on GitHub</a></footer>
+  </main>
+</body>
+</html>

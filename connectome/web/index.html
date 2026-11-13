@@ -10,6 +10,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <link rel="stylesheet" href="./site.css">
+<link rel="stylesheet" href="./cadence-explain.css">
+<script src="./cadence-explain.js" defer></script>
 <style>
   #toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:4px 5px;padding:6px 12px;flex-shrink:0;background:rgba(2,14,7,.96);border-top:1px solid var(--line)}
   #toolbar button{font-size:11px;padding:3px 7px;white-space:nowrap}
@@ -21,17 +23,21 @@
   #toast{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);color:var(--ink);font-size:12px;opacity:0;transition:opacity .4s;pointer-events:none;z-index:3;text-shadow:0 0 6px #000;white-space:nowrap}
   #toast.show{opacity:1}
   #noscan{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+  .try{position:absolute;left:10px;top:8px;z-index:3;max-width:calc(100% - 20px);padding:5px 9px;border:1px solid rgba(255,209,102,.45);border-radius:5px;background:rgba(2,14,7,.86);color:var(--ink);font-size:11px;line-height:1.5}
+  .try b{color:var(--burst);font-weight:500}.try a{white-space:nowrap}
+  .view .top .h{cursor:help;overflow:visible}
   @media(max-width:760px){#hint{display:none}}
 </style>
 </head>
 <body>
 <div id="page">
-  <header id="mast"></header>
+  <header id="mast" data-standalone></header>
   <nav id="nav" aria-label="Pages"></nav>
   <main id="main" class="two">
     <section class="view" id="tank" aria-label="Aquarium">
-      <div class="top"><p class="h" id="tank-title">Platynereis larva · compiled whole-body wiring, declared dynamics</p></div>
+      <div class="top"><p class="h" id="tank-title" data-explain-title="The larva" data-explain="A three-day-old larva of the marine worm Platynereis dumerilii, swimming in a tank. Every cell of its body was traced in electron microscope images, with every connection between them: 25,609 cells. That measured wiring runs here as a Cadence brain and steers the body: the lamp reaches its real eye cells, a tap its real touch cells, and its cilia and muscles move by what the brain's real motor cells say.">The larva</p></div>
       <div class="host" id="tank-host">
+        <div class="try" id="try" role="status"><span id="try-text">Try <b>tap left</b> or <b>move light</b> below: the measured wiring steers the larva. Then </span><a href="./fish.html" data-explain="On the fish page you teach a gaze circuit built from measured zebrafish wiring: its connections learn." data-explain-mark="none">teach the fish ›</a></div>
         <div id="hint">drag to orbit · wheel to zoom · space pauses</div>
         <div id="toast"></div>
       </div>
@@ -48,7 +54,9 @@
       </div>
     </section>
     <section class="view" id="brain" aria-label="Cadence patch net, compiled from the whole-body connectome">
-      <div class="top"><p class="h">Cadence patch net · every cell lit by its activity · gold while it repairs</p><div class="tools"><button id="fit" type="button" data-tip="The brain view back to its resting frame." data-tip-side="below">fit</button><button id="spin" type="button" class="on" data-tip="A slow spin of the brain view until you drag it." data-tip-side="below">spin</button></div></div>
+      <div class="top"><p class="h" data-explain-title="The larva's brain, live" data-explain="Every traced cell of the larva, laid out as in its body and lit by its activity in the running Cadence brain. Gold flashes where a cell repairs its disagreement with the cells it hears from: after a tap or a change of light, a wave of repairs runs through the net until it settles again.
+
+The connections stay fixed: this brain runs, it does not learn. Point at a cell type below to see what it does.">The larva's brain, live</p><div class="tools"><button id="fit" type="button" data-tip="The brain view back to its resting frame." data-tip-side="below">fit</button><button id="spin" type="button" class="on" data-tip="A slow spin of the brain view until you drag it." data-tip-side="below">spin</button></div></div>
       <div class="host" id="view-host"></div>
     </section>
   </main>

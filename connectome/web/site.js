@@ -1,7 +1,7 @@
 // The shared shell of the explainer pages: the masthead with the title, the nav with the current
 // page marked, the status strip with the credit, the collapsed info card, and the helpers every
 // page uses. The words come from content/copy.js and are rendered verbatim.
-import { TITLE, SUBTITLE, PAGES, APPENDIX } from "./content/copy.js";
+import { TITLE, SUBTITLE, PAGES, MORE_PAGES, APPENDIX } from "./content/copy.js";
 
 export { TITLE, SUBTITLE, PAGES, APPENDIX };
 export const $ = (id) => document.getElementById(id);
@@ -40,7 +40,7 @@ export function el(tag, attrs = {}, ...children) {
   return node;
 }
 
-export const pageById = (id) => PAGES.find((p) => p.id === id) || APPENDIX.find((p) => p.id === id) || null;
+export const pageById = (id) => PAGES.find((p) => p.id === id) || MORE_PAGES.find((p) => p.id === id) || APPENDIX.find((p) => p.id === id) || null;
 export const int = (n) => Number(n).toLocaleString("en-US");
 /** A number for a table: integers with separators, large values to one decimal, the rest to `digits` significant figures. */
 export function num(x, digits = 3) {
@@ -66,16 +66,26 @@ const credit = (options = {}) => `powered by <a href="https://github.com/mueller
 
 /** Fill the masthead and the nav of the page `pageId`, append the status strip and the info card.
  *  Returns {page, status(text), card(content), open(flag)}; `card` takes html strings (one <p>
- *  each) or nodes. */
+ *  each) or nodes. The two demo pages (the larva and the fish) pass `brief: true`: no preprint
+ *  line in the masthead and no info card, since their explanations live in help.html and in the
+ *  question marks of the shared explanations (cadence-explain.js). */
 export function mountShell(pageId, options = {}) {
   const page = pageById(pageId);
   document.title = page ? `${page.nav.replace(/^\d+\.\s*/, "")} · ${TITLE}` : TITLE;
-  $("mast").replaceChildren(el("h1", {}, el("a", { href: "./index.html" }, TITLE)), el("p", { class: "sub" }, SUBTITLE),
-    el("p", { class: "papers" }, "the preprints: ", el("a", { href: PAPERS[0].url }, PAPERS[0].title), " · ", el("a", { href: PAPERS[1].url }, PAPERS[1].title)));
-  $("nav").replaceChildren(...PAGES.map((p) => el("a", { href: `./${p.id}.html`, "aria-current": p.id === pageId ? "page" : null }, p.nav)));
+  $("mast").replaceChildren(...[el("h1", {}, el("a", { href: "./index.html" }, TITLE)), el("p", { class: "sub" }, SUBTITLE),
+    options.brief ? null : el("p", { class: "papers" }, "the preprints: ", el("a", { href: PAPERS[0].url }, PAPERS[0].title), " · ", el("a", { href: PAPERS[1].url }, PAPERS[1].title))].filter(Boolean));
+  $("nav").replaceChildren(...PAGES.map((p) => el("a", { href: `./${p.id}.html`, "aria-current": p.id === pageId ? "page" : null, "data-explain": p.explain || null, "data-explain-mark": p.explain ? "none" : null }, p.nav)),
+    el("a", { class: "help", href: "./help.html", target: "_blank", rel: "noopener", "data-help": true, "data-explain": "Everything these pages show, explained in full: what a connectome is, what runs, how the fish learns, the numbers and the limits.", "data-explain-mark": "none" }, "help"));
+  // Inside the demos site only the larva page (served as play.html) carries the site's theme; the
+  // fish page, opened from the tabs inside the same frame, puts it on itself so both look alike.
+  if (options.brief && pageId !== "index" && document.documentElement.classList.contains("embedded") && !document.querySelector('link[href$="cadence-theme.css"]')) {
+    document.head.append(el("link", { rel: "stylesheet", href: "/cadence-theme.css" }));
+    document.body.setAttribute("data-demo", "connectome");
+  }
   const statusText = el("span", { id: "status-text" }, options.status || "");
-  const toggle = el("button", { id: "card-toggle", type: "button", "aria-expanded": "false", "aria-controls": "card", title: "what is running here" }, "about");
+  const toggle = options.brief ? null : el("button", { id: "card-toggle", type: "button", "aria-expanded": "false", "aria-controls": "card", title: "what is running here" }, "about");
   document.body.append(el("footer", { id: "status" }, statusText, toggle, el("p", { id: "credit", html: credit(options) })));
+  if (options.brief) return { page, status: (text) => { statusText.textContent = text; }, card: () => {}, open: () => {} };
   const close = el("button", { class: "close", type: "button", "aria-label": "Close" }, "×");
   const body = el("div", { id: "card-body" });
   document.body.append(el("aside", { id: "card", class: "glass", role: "dialog", "aria-label": "What is running here" }, el("h3", {}, close, "What is running here"), body));
@@ -87,22 +97,24 @@ export function mountShell(pageId, options = {}) {
   return { page, status: (text) => { statusText.textContent = text; }, card, open };
 }
 
-/** Hover explanations: every element with a data-tip inside `root` shows it in one shared box above
- *  itself (below, with data-tip-side="below"), kept inside root's box so nothing clips at an edge. */
+/** Hover explanations: every element with a data-tip inside `root` explains itself through the
+ *  demos' shared explanation cards (cadence-explain.js, loaded by the page): the card opens after
+ *  the pointer rests on the element, stays while the pointer is on the element or inside the card,
+ *  and closes a moment after it leaves both. A button is its own mark (no question mark). */
 export function tooltips(root) {
-  const box = el("div", { class: "tip", role: "tooltip", id: `${root.id || "controls"}-tooltip` });
-  root.append(box);
-  const show = (e) => {
-    const t = e.currentTarget;
-    box.textContent = t.dataset.tip; box.style.visibility = "hidden"; box.classList.add("show");
-    const r = root.getBoundingClientRect(), b = t.getBoundingClientRect(), w = box.offsetWidth, h = box.offsetHeight;
-    const x = Math.max(8, Math.min(r.width - w - 8, b.left - r.left + b.width / 2 - w / 2));
-    const y = t.dataset.tipSide === "below" ? b.bottom - r.top + 8 : b.top - r.top - h - 8;
-    box.style.left = `${x}px`; box.style.top = `${Math.max(4, y)}px`; box.style.visibility = "";
-  };
-  const hide = () => box.classList.remove("show");
-  for (const t of root.querySelectorAll("[data-tip]")) { t.setAttribute("aria-describedby", box.id); t.addEventListener("pointerenter", show); t.addEventListener("focus", show); t.addEventListener("pointerleave", hide); t.addEventListener("blur", hide); t.addEventListener("click", (e) => e.pointerType === "touch" ? show(e) : hide()); }
-  return box;
+  for (const t of root.querySelectorAll("[data-tip]")) {
+    if (!t.hasAttribute("data-explain")) t.setAttribute("data-explain", t.dataset.tip);
+    if (!t.hasAttribute("data-explain-mark")) t.setAttribute("data-explain-mark", "none");
+    t.removeAttribute("data-tip");
+  }
+  explainScan(root);
+  return null;
+}
+
+/** Bind the shared explanation cards inside `root`, once the shared script has loaded. */
+export function explainScan(root) {
+  if (window.CadenceExplain) window.CadenceExplain.scan(root);
+  else addEventListener("DOMContentLoaded", () => window.CadenceExplain && window.CadenceExplain.scan(root));
 }
 
 /** The card's standard lines from a brain payload (web/data/brain.json). */

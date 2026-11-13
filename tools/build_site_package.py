@@ -94,7 +94,7 @@ addEventListener('hashchange', route); route();
 """
 
 
-ALWAYS = ("play.html", "help.html", "cadence-explain.js", "cadence-explain.css", "cadence-help.css")
+ALWAYS = ("play.html", "index.html", "help.html", "cadence-explain.js", "cadence-explain.css", "cadence-help.css")
 
 
 def changed_copy(args, folder: Path, src: Path, slug: str, meta: dict) -> None:
@@ -194,7 +194,11 @@ def main() -> int:
         shutil.copytree(src, dst, ignore=SKIP)
         index = dst / "index.html"
         if index.exists():
-            (dst / "play.html").write_text(play_html(index.read_text(), slug))
+            # play.html is the address the site frames; index.html carries the theme as well, for
+            # pages that link to it (a tab, a back link)
+            themed = play_html(index.read_text(), slug)
+            (dst / "play.html").write_text(themed)
+            index.write_text(themed)
         entry = {"slug": slug, "title": meta["title"], "tagline": meta["tagline"], "mechanism": meta["kicker"],
                  "feature": meta["feature"], "howTo": meta["howTo"], "embed": f"/demos/{slug}/play.html",
                  "help": f"/demos/{slug}/{meta.get('help', 'help.html')}",

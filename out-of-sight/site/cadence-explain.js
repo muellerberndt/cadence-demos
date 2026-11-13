@@ -2,7 +2,8 @@
  *
  * Any element with data-explain="..." gets a small question mark and a card. The card opens when
  * the pointer rests on the element 140 ms, stays while the pointer is on the element or inside the
- * card, and closes 450 ms after the pointer has left both. Keyboard focus opens it at once; a tap
+ * card, and closes 450 ms after the pointer has left both; a part under the card on show opens
+ * after a rest of 400 ms. Keyboard focus opens it at once; a tap
  * or a click on the question mark keeps it open until a click elsewhere or Escape. The card lets
  * the pointer through to what lies under it until it is kept open.
  *
@@ -27,7 +28,7 @@
   var root = document.documentElement;
   try { if (window.self !== window.top) root.classList.add('embedded'); } catch (e) { root.classList.add('embedded'); }
 
-  var OPEN_MS = 140, CLOSE_MS = 450, MARGIN = 6;
+  var OPEN_MS = 140, COVERED_MS = 400, CLOSE_MS = 450, MARGIN = 6;
   var card = null, owner = null, kept = false, timerOpen = 0, timerClose = 0;
   var pending = null; // the part whose card opens when its timer runs out
 
@@ -86,12 +87,14 @@
     return ev.clientX >= r.left - MARGIN && ev.clientX <= r.right + MARGIN && ev.clientY >= r.top - MARGIN && ev.clientY <= r.bottom + MARGIN;
   }
 
+  // A part under the card on show opens after a longer rest: a pointer that only crosses the card
+  // leaves it as it is, a pointer that rests on the covered part gets that part's card.
   function soonOpen(el, ev) {
-    if (kept || owner === el || inCard(ev)) { clearTimeout(timerClose); timerClose = 0; return; }
+    if (kept || owner === el) { clearTimeout(timerClose); timerClose = 0; return; }
     clearTimeout(timerClose); timerClose = 0;
     clearTimeout(timerOpen);
     pending = el;
-    timerOpen = setTimeout(function () { timerOpen = 0; pending = null; if (!kept) open(el, false); }, OPEN_MS);
+    timerOpen = setTimeout(function () { timerOpen = 0; pending = null; if (!kept) open(el, false); }, inCard(ev) ? COVERED_MS : OPEN_MS);
   }
 
   function soonClose() {
