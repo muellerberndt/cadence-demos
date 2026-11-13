@@ -113,6 +113,7 @@ def changed_copy(args, folder: Path, src: Path, slug: str, meta: dict) -> None:
     if any(n == "index.html" for n in names):
         names.add("play.html")
     names.update(n for n in ALWAYS if (full / n).exists())
+    names.update(h.relative_to(full).as_posix() for h in full.rglob("*.html"))  # every page carries the theme
     for n in sorted(names):
         if (full / n).exists():
             (dst / n).parent.mkdir(parents=True, exist_ok=True)
@@ -194,11 +195,12 @@ def main() -> int:
         shutil.copytree(src, dst, ignore=SKIP)
         index = dst / "index.html"
         if index.exists():
-            # play.html is the address the site frames; index.html carries the theme as well, for
-            # pages that link to it (a tab, a back link)
-            themed = play_html(index.read_text(), slug)
-            (dst / "play.html").write_text(themed)
-            index.write_text(themed)
+            # play.html is the address the site frames; every other page of the demo (index.html,
+            # a tab, a second view) carries the site's theme as well, the help page keeps its own
+            (dst / "play.html").write_text(play_html(index.read_text(), slug))
+        for page in dst.rglob("*.html"):
+            if page.name not in ("play.html", meta.get("help", "help.html")) and "<head" in page.read_text(errors="ignore").lower():
+                page.write_text(play_html(page.read_text(), slug))
         entry = {"slug": slug, "title": meta["title"], "tagline": meta["tagline"], "mechanism": meta["kicker"],
                  "feature": meta["feature"], "howTo": meta["howTo"], "embed": f"/demos/{slug}/play.html",
                  "help": f"/demos/{slug}/{meta.get('help', 'help.html')}",

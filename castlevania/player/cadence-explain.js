@@ -172,7 +172,20 @@
   window.addEventListener('scroll', function () { if (owner && !kept) close(); else if (owner) place(owner); }, true);
   window.addEventListener('resize', function () { if (owner) place(owner); });
 
-  function start() { ensureCard(); scan(document); }
+  // Parts a page builds after this script ran (rows made by a page's own script, a framework's
+  // render) are found too: added elements are scanned, at most once a frame.
+  var scanQueued = false;
+  function queueScan() {
+    if (scanQueued) return;
+    scanQueued = true;
+    requestAnimationFrame(function () { scanQueued = false; scan(document); });
+  }
+  function start() {
+    ensureCard(); scan(document);
+    if (window.MutationObserver) new MutationObserver(function (records) {
+      for (var i = 0; i < records.length; i++) if (records[i].addedNodes.length) { queueScan(); return; }
+    }).observe(document.body, { childList: true, subtree: true });
+  }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 
   window.CadenceExplain = { scan: scan, spot: spot, clearSpots: clearSpots, open: function (el) { open(el, true); }, close: close };

@@ -92,19 +92,22 @@ settled state behind every action, and Eyes shows the whole brain settling for o
 
 ## The demos
 
-Every demo runs on `cadence-net` 0.95.2.
+Every demo runs on `cadence-net` 0.95.2, except Out of Sight (0.99.0). Each says on its page what it
+shows about Cadence and why that matters, explains every part of itself under a small question
+mark, and has a help page; [shared/STANDARD.md](shared/STANDARD.md) states the standard they share.
 
 | Demo | What it shows | Runs on |
 | --- | --- | --- |
-| [Tron](tron/) · [live](https://cadence.floatingpragma.ai/demos/tron) | Ride a light cycle against a flat or a deep brain that sees the whole arena, and watch every neuron settle on its move | `Brain.compose`, flat (256) and deep (256-128-32); in the browser, the released library itself, in Pyodide |
-| [Connect Four](connect-four/) · [live](https://cadence.floatingpragma.ai/demos/connect-four) | Play a deep brain that judges every position (loss, draw, win) beside its move, and teach it a column | A deep `Brain.compose` (1024, 1024) with a verdict slot; in the browser, the released library itself, in Pyodide |
-| [Castlevania](castlevania/) · [watch](https://cadence.floatingpragma.ai/demos/castlevania) | A brain plays the NES game from what its eye sees on the screen, on your own copy of the game | A deep `Brain.compose` with recall, raised by a savestate teacher and search; a local server runs the emulator |
-| [Patch World](patch-world/) · [live](https://cadence.floatingpragma.ai/demos/patch-world) | Creatures with Cadence brains forage, get poisoned when the season turns, relearn and evolve; click one to watch its brain | One continuing `Brain.live` brain per creature, bred by evolution; in the browser, the released library itself, in Pyodide |
-| [Atari Arcade](atari-arcade/) · [live](https://cadence.floatingpragma.ai/demos/atari-arcade) | Brains that learn Atari games from pixels: a teacher first, then reward | `Brain.compose` (System 1); in the browser, the released library itself, in Pyodide |
-| [Robot Arena](robot-arena/) · [live](https://cadence.floatingpragma.ai/demos/robot-arena) | Robots built from parts, one continuing brain per robot, raised in a nursery and fighting live in the browser with a brain inspector | `Brain.compose` with one motor slot per motor, learning through `Brain.live`; in the browser, in Pyodide |
-| [Robot Arm](robot-arm/) · [live](https://cadence.floatingpragma.ai/demos/robot-arm) | A Franka Panda that picks up a block and places it in the bin you choose, under contact physics; move the bin while it carries the block and it follows | A deep `Brain.compose` taught by a scripted teacher in MuJoCo; in the browser, MuJoCo as WebAssembly and the library in Pyodide |
-| [Eyes](eyes/) · [live](https://cadence.floatingpragma.ai/demos/eyes) | One brain that follows every shape you drag with its own eye, from the page's pixels only | A raised visual brain run by `cadence.Brain`; in the browser, the released library itself, in Pyodide |
-| [Connectome](connectome/) · [live](https://cadence.floatingpragma.ai/demos/connectome) | Teach a fish gaze circuit to hold, return and hold again on measured wiring; explore a larva with fixed connections | Cadence rate patches in JavaScript, with plastic fish connections and declared body models |
+| [Tron](tron/) · [live](https://cadence.floatingpragma.ai/demos/tron) | **Cadence brains play strong games.** A deep Cadence brain sees the whole arena and settles on every move in your browser, in real time. Alone it beat a bot that looks one move ahead in 102 of 128 games; a look-ahead over the rules checks its moves. | `Brain.compose`, flat (256) and deep (256-128-32); in the browser, the released library itself, in Pyodide |
+| [Connect Four](connect-four/) · [live](https://cadence.floatingpragma.ai/demos/connect-four) | **Cadence brains excel at games.** The brain settles on each move and judges the game; a search over the rules checks the move. Moving first against a perfect player, beaten only by flawless play, the pair won 363 of 400 games. Teach it a better column and it learns. | A deep `Brain.compose` (1024, 1024) with a verdict slot; in the browser, the released library itself, in Pyodide |
+| [Atari Arcade](atari-arcade/) · [live](https://cadence.floatingpragma.ai/demos/atari-arcade) | **Learns during its life, from a teacher.** A newborn brain learns each game in your browser: it watches a teacher for about a minute, then takes the controls and plays in real time, the game never waiting for it. In Freeway it beats its teacher; in Atlantis it ties. | `Brain.compose` (System 1); in the browser, the released library itself, in Pyodide |
+| [Robot Arena](robot-arena/) · [live](https://cadence.floatingpragma.ai/demos/robot-arena) | **Calm in routine, learning on surprise.** Each robot has one Cadence brain for life, with real memory and a real state, running live in your browser. Routine settles calmly; a surprise, or less pay than usual, wakes learning (amber). Each brain carries on from fight to fight. | `Brain.compose` with one motor slot per motor, learning through `Brain.live`; in the browser, in Pyodide |
+| [Robot Arm](robot-arm/) · [live](https://cadence.floatingpragma.ai/demos/robot-arm) | **Adapts in real time when the target moves.** The arm's brain runs in real time, like a living brain: it senses and settles about five times a second. Move the bin while the arm carries the block, and its next moves head for the new place, which it never saw in training. | A deep `Brain.compose` taught by a scripted teacher in MuJoCo; in the browser, MuJoCo as WebAssembly and the library in Pyodide |
+| [Out of Sight](out-of-sight/) · [live](https://cadence.floatingpragma.ai/demos/out-of-sight) | **A map of the world in the brain's own state.** The robot sees only part of the room. Its brain keeps a live map of what is where, in its own state, and holds a hidden thing where it can be: a person's hand within 11 cm, its own hand within half a millimetre. | The library's built-in map of things (`cadence.modules.load("place")`) in a `Brain`; in the browser, the released library itself, in Pyodide |
+| [Eyes](eyes/) · [live](https://cadence.floatingpragma.ai/demos/eyes) | **It works only when something moves.** One Cadence brain follows every shape with its own eye, from pixels alone. Its state holds what each eye saw, so a motionless scene costs it zero settling sweeps, like a resting animal. A network without state recomputes every frame. | A raised visual brain run by `cadence.Brain`; in the browser, the released library itself, in Pyodide |
+| [Connectome](connectome/) · [live](https://cadence.floatingpragma.ai/demos/connectome) | **A brain on real animal wiring that learns.** Cadence runs wiring measured cell by cell in real animals as a live brain. A fish's gaze circuit holds a glance in its own activity: teach it to hold, let go and hold again, and its measured connections learn and keep what they learned. | Cadence rate patches in JavaScript, with plastic fish connections and declared body models |
+| [Patch World](patch-world/) · [live](https://cadence.floatingpragma.ai/demos/patch-world) | **A brain that learns while it lives.** Each creature's Cadence brain has real memory and a real state, runs in real time and learns while it lives. When winter makes berries poisonous, learners learn to leave them (99% eaten in summer, 5% late in winter); frozen twins do not. | One continuing `Brain.live` brain per creature, bred by evolution; in the browser, the released library itself, in Pyodide |
+| [Castlevania](castlevania/) · [watch](https://cadence.floatingpragma.ai/demos/castlevania) | **Real memory, a real state, in real time.** A frozen Cadence brain plays from what its eye sees, with a memory of this game's moments and a state it carries from move to move. A look-ahead on the emulator checks its moves near enemies: stage 3 on all nine starts, lives lost 36 to 5. | A deep `Brain.compose` with recall, raised by a savestate teacher and search; a local server runs the emulator |
 
 ## Putting a demo on your own site
 
@@ -237,6 +240,26 @@ python3 -m http.server 8830 --directory robot-arm/site   # open http://localhost
 ```
 
 See the [Robot Arm README](robot-arm/README.md) to train the brain, read it and check the page.
+
+## [Out of Sight](out-of-sight/): a map of the world in the brain's own state
+
+[Open it on the site](https://cadence.floatingpragma.ai/demos/out-of-sight).
+
+A robot looks around a room with a camera that sees only part of it; a pillar and the robot's own
+arm cast shadows. Its brain keeps a map of what is where in its own state: a thing enters the map
+when a sense first reports it, stays at its last known place while unseen, and spreads over the
+hidden cells near its old place when that place is seen empty. Hide a person's hand behind the
+pillar and the map holds it near where it vanished; turn the robot away from the apple and the apple
+stays on the map, behind it. The robot's own hand is placed by its joint readings, seen or not.
+The page runs the library's built-in map (`cadence.modules.load("place")`) on cadence-net 0.99.0 in
+Pyodide and draws every neuron and synapse of it.
+
+```sh
+python3 -m http.server 8000 --directory out-of-sight/site   # open http://localhost:8000/
+```
+
+See the [Out of Sight README](out-of-sight/README.md) for the scene format, the checks and the
+readings.
 
 ## [Eyes](eyes/): one brain, an eye on every shape
 

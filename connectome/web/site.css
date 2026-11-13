@@ -1,4 +1,3 @@
-@import url("/cadence-theme.css");
 /* The shell of the explainer pages: the Matrix palette of the fly pages, a masthead, a nav,
    a main area beside a brain view, a status strip with the credit, and a collapsed info card. */
 :root{--ink:#c8ffd8;--soft:#7fe39a;--dim:#679774;--line:rgba(97,186,121,.25);--glass:rgba(2,14,7,.84);--cold:#7fe39a;--hot:#ff7583;--matrix:#67e78e;--pass:#9df5b4;--fail:#ff7583;--int:#67e78e;--abdm:#d2ff78;--abdi:#4cc9bb;--burst:#ffd166;--strip:30px}
