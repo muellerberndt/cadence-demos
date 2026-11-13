@@ -77,7 +77,9 @@ button:focus-visible, input:focus-visible, a:focus-visible, canvas:focus-visible
 .bubble .none { color: var(--muted); font-weight: 500; font-style: italic; font-family: Inter, system-ui, sans-serif; font-size: 13px; }
 
 /* a pistachio, or the right answer told; or a naming: one slot, so the room keeps its size */
-.actions { min-height: 48px; display: flex; flex-direction: column; justify-content: center; }
+.actions { min-height: 34px; display: flex; flex-direction: column; justify-content: center; }
+.reward .more { flex: none; height: 32px; padding: 0 8px; border: 0; background: transparent; color: var(--muted); font-size: 12.5px; cursor: pointer; white-space: nowrap; }
+.reward .more:hover { color: var(--text); }
 .reward { display: flex; align-items: center; gap: 8px; }
 .reward .nut { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px 0 8px; border: 1px solid rgba(143, 191, 74, 0.7); border-radius: 16px; background: rgba(143, 191, 74, 0.12); color: #e4f2cf; font-weight: 600; cursor: pointer; white-space: nowrap; }
 .reward .nut svg { width: 22px; height: 22px; }
@@ -99,7 +101,7 @@ button:focus-visible, input:focus-visible, a:focus-visible, canvas:focus-visible
 .ask button.mic { width: 38px; padding: 0; display: grid; place-items: center; border-color: var(--line-2); background: transparent; }
 .ask button.mic svg { width: 18px; height: 18px; fill: none; stroke: var(--muted); stroke-width: 1.8; stroke-linecap: round; }
 .ask button.mic:disabled { opacity: 0.55; cursor: help; }
-.chips { display: flex; flex-wrap: wrap; gap: 5px; min-height: 26px; }
+.chips { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; min-height: 26px; }
 .chips button { height: 26px; padding: 0 10px; border: 1px solid var(--line-2); border-radius: 13px; background: var(--panel); color: #c7d0ea; font: 500 12.5px/1 var(--mono); cursor: pointer; }
 .chips button:hover:not(:disabled) { border-color: rgba(63, 224, 207, 0.6); color: var(--text); }
 .chips button.lit { border-color: var(--gold); color: var(--gold); box-shadow: 0 0 0 2px rgba(255, 206, 102, 0.18); }
@@ -113,7 +115,7 @@ button:focus-visible, input:focus-visible, a:focus-visible, canvas:focus-visible
 .teach button { height: 30px; padding: 0 12px; border: 1px solid rgba(255, 159, 74, 0.6); border-radius: 8px; background: rgba(255, 159, 74, 0.14); color: var(--text); font-weight: 600; cursor: pointer; }
 .teach button.quiet { border-color: var(--line-2); background: transparent; color: var(--muted); font-weight: 500; }
 .teach .count { color: var(--you); font: 500 12px var(--mono); white-space: nowrap; }
-.log { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 1px; height: 56px; overflow: hidden; justify-content: flex-end; font-size: 12.5px; }
+.log { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 1px; height: 54px; overflow: hidden; justify-content: flex-end; font-size: 12.5px; }
 .log li { flex: none; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .log li b { color: #c7d0ea; font-weight: 500; font-family: var(--mono); }
 .log li .said { color: var(--gold); font-family: var(--mono); }
@@ -138,6 +140,9 @@ button:focus-visible, input:focus-visible, a:focus-visible, canvas:focus-visible
 
 html.embedded .pane.world { padding-top: 6px; }
 @media (max-height: 760px) {
-  .log { height: 40px; }
+  .log { height: 36px; font-size: 12px; }
   .hint { display: none; }
+  .talk { gap: 4px; }
+  .coach { min-height: 30px; padding: 4px 10px; }
+  .coach p { font-size: 12.5px; }
 }

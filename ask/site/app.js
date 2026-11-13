@@ -127,7 +127,7 @@ async function ask(text) {
   S.busy = true; setBusy();
   closeTeach();
   $('question').value = '';
-  $('reward').hidden = true;
+  show('chips');
   logLine(`<b>You:</b> ${esc(text)}`);
   bubble('<span class="none">…</span>');
   try {
@@ -144,7 +144,7 @@ async function ask(text) {
     const said = story.said.filter((w) => w);
     bubble(said.length ? said.map(esc).join(', ') : '<span class="none">(it has no word to say)</span>');
     logLine(`<b>Parrot:</b> <span class="said">${esc(said.join(', ') || '…')}</span>`);
-    $('reward').hidden = false; $('nut').disabled = false; $('tell').value = '';
+    show('reward'); $('nut').disabled = false; $('tell').value = '';
     tour.event({ type: 'ask', story, question: text });
   } catch (e) {
     bubble(null); logLine(`<span class="none">${esc(e.message)}</span>`);
@@ -173,6 +173,7 @@ async function pistachio() {
       : `<span class="nutted">A pistachio for “${esc(S.last.said.join(', '))}”: it cracks it, and takes its answer as right.</span>`);
     bubble('<span class="none">crack!</span>');
     setTimeout(() => { if (!S.busy) bubble(null); }, 1600);
+    show('chips');
     tour.event({ type: 'pistachio' });
   } catch (e) { logLine(esc(e.message)); } finally { S.busy = false; setBusy(); }
 }
@@ -188,6 +189,7 @@ async function tell(text) {
     brain.lesson(out.reply.changed, 'lesson');
     logLine(`<b>You told it:</b> <span class="taught">${esc(text)}</span>`);
     $('tell').value = '';
+    show('chips');
     tour.event({ type: 'tell' });
   } catch (e) { logLine(esc(e.message)); } finally { S.busy = false; setBusy(); }
 }
@@ -199,7 +201,7 @@ function openTeach(id) {
   const t = S.things.find((x) => x.id === id);
   if (!t) return;
   S.teach = id;
-  $('teach').hidden = false; $('reward').hidden = true;
+  show('teach'); $('teach').hidden = false;
   const c = $('teach-thing'), g = c.getContext('2d');
   g.clearRect(0, 0, c.width, c.height);
   drawThing(g, t.kind, t.colour, c.width / 2, c.height / 2, c.width * 0.36);
@@ -211,7 +213,15 @@ function openTeach(id) {
   moment();
   tour.event({ type: 'teach-open', kind: t.kind });
 }
-function closeTeach() { S.teach = null; $('teach').hidden = true; }
+function closeTeach() { S.teach = null; $('teach').hidden = true; show('chips'); }
+
+// one slot under the question box: the questions to try, the pistachio row, or the naming panel
+function show(which) {
+  $('chips').hidden = which !== 'chips';
+  $('reward').hidden = which !== 'reward';
+  if (which !== 'teach') $('teach').hidden = true;
+  if (which === 'chips') fitChips();
+}
 
 async function name(word) {
   word = String(word || '').trim().toLowerCase().replace(/\s+/g, ' ');
@@ -255,6 +265,14 @@ function makeChips() {
   setBusy();
   tour.light();
 }
+// the questions to try keep to one line: those that would wrap are left out
+function fitChips() {
+  const list = [...$('chips').querySelectorAll('button')];
+  list.forEach((b) => { b.hidden = false; });
+  const top = list.length ? list[0].offsetTop : 0;
+  list.forEach((b) => { if (b.offsetTop > top + 2) b.hidden = true; });
+}
+window.addEventListener('resize', () => fitChips());
 $('chips').addEventListener('click', (e) => { const b = e.target.closest('button[data-q]'); if (b) ask(b.dataset.q); });
 
 function setBusy() {
@@ -322,6 +340,7 @@ room.addEventListener('pointermove', (ev) => {
   if (drag.kind === 'thing') {
     if (!drag.moved && Math.hypot(ev.clientX - drag.x0, ev.clientY - drag.y0) < 5) return;
     drag.moved = true;
+    if (!$('reward').hidden) show('chips');
     const t = S.things.find((q) => q.id === drag.id);
     [t.x, t.y] = clampPlace(x, y);
     moment();
@@ -341,6 +360,7 @@ room.addEventListener('keydown', (ev) => {
   if (ev.key === 'ArrowRight') { turnTo(S.heading - Math.PI / 12); ev.preventDefault(); }
 });
 function turnTo(h) {
+  if (!$('reward').hidden) show('chips'); // the room changed: the offer of a pistachio passes
   S.turned += Math.abs(wrap(h - S.heading));
   S.heading = wrap(h);
   moment();
@@ -351,6 +371,7 @@ $('ask').addEventListener('submit', (e) => { e.preventDefault(); ask($('question
 $('teach-form').addEventListener('submit', (e) => { e.preventDefault(); name($('teach-word').value); });
 $('teach-done').addEventListener('click', () => closeTeach());
 $('nut').addEventListener('click', () => pistachio());
+$('more').addEventListener('click', () => show('chips'));
 $('tell-form').addEventListener('submit', (e) => { e.preventDefault(); tell($('tell').value); });
 $('new-room').addEventListener('click', () => startRoom(newRoom()));
 $('reset').addEventListener('click', async () => {
@@ -364,7 +385,7 @@ $('tour').addEventListener('click', () => tour.start());
 
 async function startRoom(things, heading = S.heading) {
   S.busy = true; setBusy(); closeTeach(); bubble(null); brain.clearStory();
-  S.things = things; S.heading = heading; S.focus = null; S.askPlace = null; S.last = null; $('reward').hidden = true;
+  S.things = things; S.heading = heading; S.focus = null; S.askPlace = null; S.last = null; show('chips');
   try { apply(await send('room', scene())); } finally { S.busy = false; }
   makeChips();
 }
@@ -404,9 +425,12 @@ const tour = {
     const s = this.step >= 0 ? this.steps[this.step] : null;
     const chip = s && (typeof s.chip === 'function' ? s.chip() : s.chip);
     for (const b of $('chips').querySelectorAll('button')) b.classList.toggle('lit', !!chip && b.dataset.q === chip);
-    if (chip && ![...$('chips').querySelectorAll('button')].some((b) => b.dataset.q === chip)) {
-      const b = document.createElement('button'); b.type = 'button'; b.dataset.q = chip; b.textContent = chip; b.className = 'lit'; $('chips').appendChild(b);
+    if (chip) {
+      let b = [...$('chips').querySelectorAll('button')].find((x) => x.dataset.q === chip);
+      if (!b) { b = document.createElement('button'); b.type = 'button'; b.dataset.q = chip; b.textContent = chip; b.className = 'lit'; }
+      $('chips').prepend(b);
     }
+    fitChips();
     $('nut').classList.toggle('lit', !!(s && s.nut));
   },
   event(e) {

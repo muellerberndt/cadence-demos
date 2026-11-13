@@ -1,0 +1,159 @@
+{
+ "what": "the promise test of the page (tools/check_page.py)",
+ "when": "2026-11-13 21:01",
+ "cadence": "0.99.0+words.0e822a29",
+ "build": "development",
+ "wheel_sha256": "00b76eebf7155d384e21d4095c91fcdca1909dba04a04de91f143ef7e6093cb2",
+ "brain_sha256": "74caab5f6d31f77dbb0783024fcfa4cdc53a75409d89573bf18ed7fbfc7d5999",
+ "viewport": [
+  1512,
+  860
+ ],
+ "startup_seconds": 5.5,
+ "passed": 11,
+ "checks": 11,
+ "console_errors": [],
+ "results": [
+  {
+   "check": "where: thing to place",
+   "question": "where is the ball?",
+   "expected": [
+    "front"
+   ],
+   "said": [
+    "front"
+   ],
+   "bubble": "front",
+   "seconds": 3.65,
+   "ok": true
+  },
+  {
+   "check": "colour: thing to colour",
+   "question": "what colour is the cup?",
+   "expected": [
+    "blue"
+   ],
+   "said": [
+    "blue"
+   ],
+   "bubble": "blue",
+   "seconds": 3.59,
+   "ok": true
+  },
+  {
+   "check": "both directions: colour to things",
+   "question": "what is red?",
+   "expected": [
+    "ball",
+    "book"
+   ],
+   "said": [
+    "book",
+    "ball"
+   ],
+   "bubble": "book, ball",
+   "seconds": 4.61,
+   "ok": true
+  },
+  {
+   "check": "both directions: place to things, from memory",
+   "question": "what is behind you?",
+   "expected": [
+    "apple"
+   ],
+   "said": [
+    "apple"
+   ],
+   "bubble": "apple",
+   "seconds": 3.63,
+   "ok": true,
+   "heading": 1.874,
+   "behind_out_of_view": [
+    "apple"
+   ]
+  },
+  {
+   "check": "a pistachio: cracked, and the reward changes synapses",
+   "said_before": [
+    "apple"
+   ],
+   "log": "A pistachio for \u201capple\u201d: it cracks it. Surprise 0.23: 9 synapses change.",
+   "ok": true
+  },
+  {
+   "check": "naming: three namings heard",
+   "count": "heard 3\u00d7",
+   "ok": true
+  },
+  {
+   "check": "a new word: where",
+   "question": "where is the kettle?",
+   "expected": [
+    "front"
+   ],
+   "said": [
+    "front"
+   ],
+   "bubble": "front",
+   "seconds": 3.64,
+   "ok": true
+  },
+  {
+   "check": "a new word: colour",
+   "question": "what colour is the kettle?",
+   "expected": [
+    "yellow"
+   ],
+   "said": [
+    "yellow"
+   ],
+   "bubble": "yellow",
+   "seconds": 3.71,
+   "ok": true
+  },
+  {
+   "check": "a new word: the other way round",
+   "question": "what is yellow?",
+   "expected": [
+    "kettle"
+   ],
+   "said": [
+    "kettle"
+   ],
+   "bubble": "kettle",
+   "seconds": 3.69,
+   "ok": true
+  },
+  {
+   "check": "a word never taught",
+   "question": "where is the zebra?",
+   "expected": [
+    "i do not know"
+   ],
+   "said": [
+    "i do not know"
+   ],
+   "bubble": "i do not know",
+   "seconds": 3.6,
+   "ok": true
+  },
+  {
+   "check": "the tutorial: six steps performed, each closed by the visitor's action",
+   "steps": [
+    0,
+    1,
+    2,
+    3,
+    3,
+    4,
+    4,
+    4,
+    4,
+    5,
+    -1
+   ],
+   "coach": "Done. Every word the parrot said, it learned from naming. Ask it anything in its words, move things, turn it, teach it words, and reward right answers with pistachios.",
+   "ok": true
+  }
+ ]
+}

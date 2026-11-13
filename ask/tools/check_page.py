@@ -15,6 +15,9 @@ tutorial off, and checks, against what a teacher would answer about the room as 
 5. **A new word:** the kettle (a kind the parrot has no word for) clicked and named three times by
    typing; then "where is the kettle?", "what colour is the kettle?" and "what is yellow?" use it.
 6. **A word never taught:** "where is the zebra?" is answered "i do not know".
+7. **The tutorial:** on a fresh page with the tutorial on, its six steps performed as its coach
+   says (the lit question clicked, the pistachio given, the floor dragged, the kettle named), each
+   step closing on the visitor's action.
 
 Writes ``evidence/promise-<date>-<time>-<commit>.json`` (every question, the answer expected and
 the words said, the seconds) unless --no-evidence. Exit 1 on a failed check.
@@ -182,6 +185,55 @@ def main() -> int:
         shot("7-new-word")
         # 6. a word never taught
         ask("where is the zebra?", [NONE], "a word never taught")
+
+        # 7. the tutorial, on a fresh page
+        tour = browser.new_page(viewport={"width": 1512, "height": 860})
+        tour.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
+        tour.on("pageerror", lambda e: errors.append(str(e)))
+        tour.goto(base + "?tour=1")
+        tour.wait_for_function("window.__ask && window.__ask.ready", timeout=300000)
+        steps: list[int] = []
+
+        def calm() -> None:
+            tour.wait_for_function("window.__ask && !window.__ask.busy()", timeout=120000)
+            tour.wait_for_timeout(200)
+            steps.append(tour.evaluate("window.__ask.tourStep()"))
+
+        calm()
+        tour.click("#chips button.lit")          # 1: where is the ball?
+        calm()
+        tour.click("#nut")                       # 2: a pistachio
+        calm()
+        tour.click("#chips button.lit")          # 3: what is red?
+        calm()
+        q0 = tour.evaluate("window.__ask.floorPx(1.5, -0.5)")
+        q1 = tour.evaluate("window.__ask.floorPx(-0.5, 1.6)")
+        tour.mouse.move(*q0)
+        tour.mouse.down()
+        for k in range(1, 9):
+            tour.mouse.move(q0[0] + (q1[0] - q0[0]) * k / 8, q0[1] + (q1[1] - q0[1]) * k / 8)
+            tour.wait_for_timeout(40)
+        tour.mouse.up()
+        calm()
+        tour.click("#chips button.lit")          # 4: what is behind you?
+        calm()
+        kid = tour.evaluate("window.__ask.state.things.find((t) => t.kind === 8).id")
+        tour.mouse.click(*tour.evaluate(f"window.__ask.thingPx({kid})"))
+        tour.wait_for_selector("#teach:not([hidden])", timeout=5000)
+        for _ in range(3):                       # 5: the kettle named three times
+            calm()
+            tour.fill("#teach-word", "kettle")
+            tour.keyboard.press("Enter")
+            tour.wait_for_timeout(200)
+        calm()
+        tour.click("#teach-done")
+        tour.click("#chips button.lit")          # 6: where is the kettle?
+        calm()
+        if a.shots:
+            tour.screenshot(path=str(a.shots / "8-tutorial-done.png"))
+        checks.append({"check": "the tutorial: six steps performed, each closed by the visitor's action",
+                       "steps": steps, "coach": tour.inner_text("#coach-text"),
+                       "ok": steps[-1] == -1 and steps[:7] == [0, 1, 2, 3, 3, 4, 4]})
         browser.close()
     if server:
         server.shutdown()

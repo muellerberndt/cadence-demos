@@ -43,8 +43,8 @@ it never saw (`evidence/raised-20261113-2047-0e822a29.json`, on `0.99.0+words.0e
 
 **The promise test** (`tools/check_page.py`) performs the page's claim with the keyboard and the
 mouse: questions both ways, the parrot turned and asked what is behind it (from memory), a
-pistachio, the kettle named three times by typing and then asked about three ways, and a word never
-taught. Its expected answers come from the room's own geometry (`truth` in `site/room.js`), never
+pistachio (its surprise above zero, synapses changed), the kettle named three times by typing and
+then asked about three ways, a word never taught, and the six steps of the tutorial on a fresh page. Its expected answers come from the room's own geometry (`truth` in `site/room.js`), never
 from the brain. Results in `evidence/promise-*.json`.
 
 ## The parrot

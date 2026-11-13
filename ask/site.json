@@ -10,7 +10,7 @@
   "help": "help.html",
   "evidence": [
     "ask/evidence/raised-20261113-2047-0e822a29.json",
-    "ask/evidence/promise-20261113-2050-0e822a29.json"
+    "ask/evidence/promise-20261113-2101-0e822a29.json"
   ],
   "promise_test": "python tools/check_page.py --shots <dir>",
   "about": "An African Grey parrot on its perch answers typed questions about its room: where a thing is, its colour, what is red, what is behind it. Its Cadence brain learned every word from naming, holds the room on its map (its blind spot too), and learns a new word in three namings.",
