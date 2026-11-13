@@ -45,7 +45,8 @@ def main() -> int:
         "sources": sources,
         "sources_sha256": {n: sha(src / n) for n in sources},
         "files": {n: sha(PACK / n) for n in args.file},
-        "config": {"eye": {"w": 64, "h": 32, "field": 87.5, "vfield": 60, "fovea": 0.4, "axis": 75}},
+        "config": {"eye": {"w": 64, "h": 32, "field": 87.5, "vfield": 60, "fovea": 0.4, "axis": 75},
+                   "whole": "page", "genes": {"map_cells": 32}},  # the whole brain's page preset: 36 ms a moment in Pyodide (#332 E6)
         "hosts": {"composed": "parrotbrain.page", "placeholder": "parrotbrain.host"},
     }
     if args.wheel:

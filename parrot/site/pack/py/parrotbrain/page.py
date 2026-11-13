@@ -24,8 +24,9 @@ EAR = ("ear", "fieldl", "ncm", "voice")
 
 class Host:
     def __init__(self, config: dict[str, Any]):
-        self.brain = Composed({"files": config.get("files"), "whole": bool(config.get("whole", False)), "learn": bool(config.get("learn", False))})
-        self.hearing = Hearing({"eye": {"w": 16, "h": 8}, "files": config.get("files"), "revise": config.get("revise", 0.85)})
+        self.brain = Composed({"files": config.get("files"), "whole": config.get("whole", False), "learn": bool(config.get("learn", False)),
+                               **({"genes": config["genes"]} if config.get("genes") else {})})
+        self.hearing = Hearing({"eye": {"w": 16, "h": 8}, "files": config.get("files"), "revise": config.get("revise", 0.7)})
         self.blank = np.zeros(16 * 8 * 3, np.uint8)
         d = self.brain.describe()
         self.base = int(d["neurons"])
@@ -51,7 +52,7 @@ class Host:
         out = self.brain.step({**meta, "show_eyes": True}, {} if audio is None else {"audio": audio})
         heard = self.hearing.step({k: meta.get(k) for k in ("t", "reward", "voice_ok", "things", "focus_kind")},
                                   {"left": self.blank, "right": self.blank, "proprio": np.zeros(22, np.float32),
-                                   "mel": arrays.get("mel", np.zeros(0, np.float32))})
+                                   "mel": arrays.get("mel", np.zeros(0, np.float32)), "pcm": arrays.get("pcm")})
         activity = np.zeros(self.neurons, np.float32)
         activity[: self.base] = self.brain.buffers["activity"]
         ha = self.hearing.buffers["activity"]
@@ -62,13 +63,17 @@ class Host:
         if "voice" in self.hearing.buffers and "voice" in heard["buffers"]:
             self.buffers["voice"] = self.hearing.buffers["voice"]
             names.append("voice")
-        out.update(buffers=names, drive=heard["drive"], said_sound=heard["said"], heard_sound=heard["heard_sound"],
+            if "voice_pcm" in heard["buffers"]:
+                self.buffers["voice_pcm"] = self.hearing.buffers["voice_pcm"]
+                names.append("voice_pcm")
+        lessons = int(getattr(getattr(self.brain.parrot, "distance", None), "lessons", 0) or 0)
+        out.update(voice_rate=heard.get("voice_rate", 8000), knows=heard.get("knows", []), recalled=heard.get("recalled"), buffers=names, lessons=lessons, words=len(self.hearing.mem.sayable()), drive=heard["drive"], said_sound=heard["said"], heard_sound=heard["heard_sound"],
                    memory=heard["memory"], repertoire=heard["repertoire"], heard=heard["heard"], paid_sounds=heard["paid"])
         return out
 
     def handle(self, message: dict[str, Any]) -> dict[str, Any]:
         cmd = message.get("command")
-        if cmd in ("remember", "forget", "memory", "repertoire"):
+        if cmd in ("remember", "forget", "memory", "repertoire", "debug"):
             return self.hearing.handle(message)
         if cmd == "describe":
             return self.describe()

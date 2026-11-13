@@ -214,7 +214,7 @@ function cueFor(id) {
 }
 function endDrag(e) {
   if (!state.dragging) return;
-  if (!state.dragging.moved) { state.cue = cueFor(state.dragging.id); state.focus = { id: state.dragging.id, why: 'you pointed at it' }; }
+  if (!state.dragging.moved) { state.cue = cueFor(state.dragging.id); state.focus = { id: state.dragging.id, why: 'you pointed at it' }; state.pointed = { id: state.dragging.id, until: performance.now() + 6000 }; }
   state.dragging = null; state.behind = false;
   controls.enabled = true; canvas.classList.remove('dragging');
   if (e?.pointerId !== undefined && canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId);
@@ -268,8 +268,8 @@ async function moment(now) {
     const focusKind = state.focus ? room.things.get(state.focus.id)?.kind || null : null;
     const scene = state.composed && room.version !== state.sentVersion ? room.describe() : null;
     if (scene) state.sentVersion = room.version;
-    reply = await brain.call('step', { meta: { t: state.moment, reward, voice_ok: voiceOk, cue, things: room.things.size, focus_kind: focusKind, scene, learn: true }, arrays: { left, right, proprio: pro, mel: sound.mel, audio: sound.audio } },
-      [left.buffer, right.buffer, pro.buffer, sound.mel.buffer, sound.audio.buffer]);
+    reply = await brain.call('step', { meta: { t: state.moment, reward, voice_ok: voiceOk, cue, things: room.things.size, focus_kind: focusKind, scene, learn: true }, arrays: { left, right, proprio: pro, mel: sound.mel, audio: sound.audio, pcm: sound.pcm } },
+      [left.buffer, right.buffer, pro.buffer, sound.mel.buffer, sound.audio.buffer, sound.pcm.buffer]);
   } catch (error) { state.pending = false; setStatus(`The brain stopped: ${error.message}`, 'error'); state.brainReady = false; return; }
   state.pending = false;
   state.moment += 1;
@@ -282,11 +282,17 @@ async function moment(now) {
   view.update(reply, reply.arrays, subject);
   brain3d?.update(reply.arrays.activity, reply);
   if (reply.arrays.voice?.length) { // the voice motor's frames: the parrot says them
-    const spoken = audio.speak(reply.arrays.voice);
+    const spoken = reply.arrays.voice_pcm?.length ? audio.speakPcm(reply.arrays.voice_pcm, reply.voice_rate || 8000) : audio.speak(reply.arrays.voice); // a remembered sound: its own audio
     const what = reply.said ? (reply.said.source === 'you' ? 'a sound learned from you' : reply.said.source === 'recording' ? `a ${reply.said.tag}` : 'a babble') : 'a sound';
     if (spoken) { ui.voiceNote.textContent = `${what}, ${(spoken.env.length / 100).toFixed(1)} s`; state.saying = reply.said?.id; markChip(reply.said?.id); }
   }
   if (reply.drive !== undefined) ui.driveLevel.style.width = `${Math.round(reply.drive * 100)}%`;
+  teachUpdate(reply);
+  // the focused thing recalls its word: that word's chip is ringed while the parrot looks at the thing
+  for (const c of ui.sounds.querySelectorAll('.chip-s.you')) {
+    const on = reply.recalled && c.dataset.sound === reply.recalled.id;
+    c.style.outline = on ? '2px solid #f5c542' : ''; c.title = on ? `The ${reply.recalled.kind} brings this word back from memory (link ${reply.recalled.link})` : c.title;
+  }
   if (reply.startle) { // a sudden sound: the head turns toward the visitor (the camera, from the head)
     const head = parrot.bones.head, hp = new THREE.Vector3(), hq = new THREE.Quaternion();
     head.getWorldPosition(hp); head.getWorldQuaternion(hq);
@@ -296,6 +302,11 @@ async function moment(now) {
   }
   $('you-focus').hidden = !(state.focusYou && performance.now() - state.focusYou < 2600);
   if (reply.memory) memview?.update(reply.memory);
+  // the badge says what it has learned so far
+  const words = reply.words || 0, lessons = reply.lessons || 0;
+  const badge = words || lessons ? `learning: ${words} word${words === 1 ? '' : 's'}${state.composed ? `, distance taught by ${lessons} head turn${lessons === 1 ? '' : 's'}` : ''}` : 'a newborn: it has learned nothing yet';
+  const el = document.querySelector('.newborn');
+  if (el && el.firstChild.textContent !== badge) el.firstChild.textContent = badge;
   if (reply.repertoire) syncChips(reply.repertoire);
   if (reply.heard_sound) saveMemory();
   if (reply.paid) for (const [id] of Object.entries(reply.paid)) ui.sounds.querySelector(`[data-sound="${id}"]`)?.classList.add('paid');
@@ -309,6 +320,9 @@ async function moment(now) {
     const key = reply.focus ? `${reply.focus.az},${reply.focus.el}` : null;
     if (key !== state.focusKey) { state.focusKey = key; state.focus = reply.focus ? focusFrom(reply.focus) : null; }
   }
+  // joint attention: a thing you pointed at holds the parrot's attention for six seconds
+  if (state.pointed && performance.now() < state.pointed.until && room.things.has(state.pointed.id)) state.focus = { id: state.pointed.id, why: 'you pointed at it' };
+  else state.pointed = null;
   state.thinkMs.push(reply.worker_ms); if (state.thinkMs.length > 50) state.thinkMs.shift();
   ui.moment.textContent = String(state.moment);
   ui.think.textContent = `${Math.round(median(state.thinkMs))} ms`;
@@ -403,6 +417,7 @@ function syncChips(list) {
       c.title = `A word learned from you. Click: hear how the parrot says it. Shift-click: the word as it remembers hearing it.`;
       if (r.frames) soundFrames.set(r.id, Float32Array.from(r.frames));
       if (r.program) programFrames.set(r.id, Float32Array.from(r.program));
+      if (r.pcm?.length) soundPcm.set(r.id, { pcm: Float32Array.from(r.pcm), rate: r.pcm_rate || 8000 });
     }
   }
   ui.forget.hidden = !ui.sounds.querySelector('.chip-s.you');
@@ -416,7 +431,7 @@ function spectro(frames, canvas) {
   }
   g.putImageData(img, 0, 0);
 }
-const soundFrames = new Map(), programFrames = new Map();
+const soundFrames = new Map(), programFrames = new Map(), soundPcm = new Map();
 function sparkline(c, values) {
   const g = c.getContext('2d'), W = c.width, H = c.height; g.clearRect(0, 0, W, H);
   if (values.length < 2) return;
@@ -429,6 +444,7 @@ function addChip(r) {
   const b = document.createElement('button'); b.className = `chip-s ${r.source === 'you' ? 'you' : ''} ${r.paid ? 'paid' : ''}`; b.dataset.sound = r.id;
   b.title = r.source === 'recording' ? `${r.tag}: an African Grey call from a recording` : r.source === 'you' ? 'learned from you' : 'its own babble';
   if (r.frames) { const c = document.createElement('canvas'); spectro(r.frames, c); b.append(c); soundFrames.set(r.id, Float32Array.from(r.frames)); }
+  if (r.pcm?.length) soundPcm.set(r.id, { pcm: Float32Array.from(r.pcm), rate: r.pcm_rate || 8000 });
   b.append(document.createTextNode(r.source === 'you' ? 'word' : r.tag));
   if (r.source === 'you') {
     const d = document.createElement('span'); d.className = 'deep'; d.append(document.createElement('i'));
@@ -439,6 +455,8 @@ function addChip(r) {
   }
   b.addEventListener('click', async (ev) => {
     await audio.unlock();
+    const kept = soundPcm.get(r.id);
+    if (kept?.pcm?.length && !ev.shiftKey) { audio.speakPcm(kept.pcm, kept.rate); markChip(r.id); ui.voiceNote.textContent = r.source === 'you' ? 'the word as the parrot remembers it' : `${b.title} (you played it)`; return; }
     const template = ev.shiftKey || r.source !== 'you';
     const f = template ? soundFrames.get(r.id) : programFrames.get(r.id) || soundFrames.get(r.id);
     if (f) { audio.speak(f); markChip(r.id); ui.voiceNote.textContent = r.source === 'you' ? (template ? 'the word as it remembers hearing it' : 'the word as the parrot says it') : `${b.title} (you played it)`; }
@@ -450,6 +468,35 @@ function markChip(id) {
   for (const c of ui.sounds.querySelectorAll('.chip-s')) c.classList.toggle('playing', c.dataset.sound === id);
   setTimeout(() => ui.sounds.querySelector(`[data-sound="${id}"]`)?.classList.remove('playing'), 1500);
 }
+// --- teaching: the lesson's steps light as you go, and the list shows what it knows ----------------------
+function teachUpdate(reply) {
+  const kind = state.focus ? room.things.get(state.focus.id)?.kind || null : null;
+  const rec = reply.recalled && reply.recalled.kind === kind ? reply.recalled : null;
+  const saidIt = rec && reply.said && reply.said.id === rec.id;
+  if (saidIt) state.askPistachio = performance.now();
+  const asking = state.askPistachio && performance.now() - state.askPistachio < 4000;
+  const step = !kind ? 1 : asking ? 4 : rec && rec.link > 0.2 ? 3 : 2;
+  for (const li of document.querySelectorAll('.teach-steps li')) { const n = +li.dataset.step; li.classList.toggle('now', n === step); li.classList.toggle('done', n < step); }
+  ui.pistachio.classList.toggle('ask', !!asking);
+  const box = $('knows'), knows = reply.knows || [];
+  const sig = JSON.stringify(knows);
+  if (sig === state.knowsSig) return;
+  state.knowsSig = sig; box.textContent = '';
+  if (!knows.length) { const e = document.createElement('span'); e.className = 'knows-empty'; e.textContent = 'It links no word to a thing yet.'; box.append(e); return; }
+  for (const k of knows) {
+    const el = document.createElement('span'); el.className = 'know'; el.title = `Looking at the ${k.kind} brings back this word (link ${k.link}). Click: hear it.`;
+    const bar = document.createElement('span'); bar.className = 'bar'; const i = document.createElement('i'); i.style.width = `${Math.round(Math.min(1, k.link) * 100)}%`; bar.append(i);
+    el.append(document.createTextNode(`${k.kind} \u2192 word`), bar);
+    el.addEventListener('click', async () => { await audio.unlock(); const kept = soundPcm.get(k.id); if (kept?.pcm?.length) audio.speakPcm(kept.pcm, kept.rate); });
+    box.append(el);
+  }
+}
+$('sound-report').addEventListener('click', async () => {
+  const r = await brain.call('debug', {});
+  const blob = new Blob([JSON.stringify({ saved: new Date().toISOString(), ...(r.reply || r) })], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `parrot-sound-report-${Date.now()}.json`; a.click();
+  toast('Saved the sound report to your downloads', 'good', 2200);
+});
 $('brain-kind').addEventListener('change', (e) => {
   try { localStorage.setItem('parrot.brain', e.target.value); } catch (err) { /* storage blocked */ }
   const u = new URL(location.href); u.searchParams.set('brain', e.target.value); location.href = u.href;
@@ -528,7 +575,10 @@ function frame(now) {
     const loud = audio.loudness(now);
     const eating = nut ? nut.update(dt) : null;
     if (eating !== null) { parrot.joints.set('beak_open', eating); state.wasEating = true; }
-    else if (loud > 0 || state.wasSpeaking || state.wasEating) { parrot.joints.set('beak_open', 30 * loud); state.wasSpeaking = loud > 0; state.wasEating = false; }
+    else {
+      state.beakEnv = Math.max(loud, (state.beakEnv || 0) * Math.exp(-dt / 0.12)); // opens at once with the sound, closes over about a tenth of a second
+      if (state.beakEnv > 0.01 || state.wasSpeaking || state.wasEating) { parrot.joints.set('beak_open', 33 * Math.sqrt(state.beakEnv)); state.wasSpeaking = state.beakEnv > 0.01; state.wasEating = false; }
+    }
     ui.voiceLevel.style.width = `${Math.round(loud * 100)}%`;
     ui.earLevel.style.width = `${Math.round(audio.level * 100)}%`;
     $('mic-level').style.width = `${Math.round(audio.level * 100)}%`;

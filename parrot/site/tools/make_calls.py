@@ -89,7 +89,12 @@ def main() -> int:
         dur = (b - a) / 100
         tag = "whistle" if flat < 0.08 else ("chatter" if bursts >= 4 else ("squawk" if centre > 18 else "call"))
         return {"duration_s": round(dur, 2), "flatness": round(flat, 3), "centre_band": round(centre, 1), "bursts": bursts, "tag": tag}
-    rows = [dict(start_s=round(a / 100, 2), **traits(a, b), frames=np.round(F[a:b], 3).tolist()) for a, b in calls]
+    def audio(a, b):  # the call's own sound (16 kHz), 30 ms either side, faded in and out over 10 ms
+        lo, hi = max(0, a * 160 - 480), min(len(x), b * 160 + 480)
+        y = x[lo:hi].copy(); ramp = np.linspace(0, 1, 160)
+        y[:160] *= ramp; y[-160:] *= ramp[::-1]
+        return np.round(y, 4).tolist()
+    rows = [dict(start_s=round(a / 100, 2), **traits(a, b), frames=np.round(F[a:b], 3).tolist(), pcm=audio(a, b), pcm_rate=16000) for a, b in calls]
     # up to ten, varied: by tag first, then by duration
     keep, seen = [], {}
     for r in sorted(rows, key=lambda r: -r["duration_s"]):
@@ -99,8 +104,8 @@ def main() -> int:
         r["id"] = f"grey-{k + 1}"
     out = {"source": {"title": "Psittacus erithacus making some noise", "author": "Amada44", "licence": "CC BY 3.0",
                       "licence_url": "https://creativecommons.org/licenses/by/3.0/", "page": PAGE, "file": URL, "sha1": SHA1,
-                      "changes": "cut into calls and turned into the ear's log-mel frames (40 bands, 10 ms)"},
-           "format": "log-mel frames: 40 bands, 100 frames a second (cadence.speech.frontend.log_mel at its defaults)",
+                      "changes": "cut into calls; each call kept as its own sound (16 kHz) and as the ear's log-mel frames (40 bands, 10 ms)"},
+           "format": "pcm: the call's sound at pcm_rate; frames: log-mel, 40 bands, 100 frames a second (cadence.speech.frontend.log_mel at its defaults)",
            "calls": keep}
     (SITE / "pack" / "calls.json").write_text(json.dumps(out, separators=(",", ":")))
     print(f"{len(calls)} calls found, {len(keep)} kept:", [(r["id"], r["tag"], r["duration_s"]) for r in keep])

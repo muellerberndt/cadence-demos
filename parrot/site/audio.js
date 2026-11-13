@@ -11,7 +11,7 @@ const SILENT = Math.log(1e-6);
 export class ParrotAudio {
   constructor() {
     this.ctx = null; this.mic = false; this.level = 0;
-    this.frames = []; this.samples = new Float32Array(1600); this.heardLoud = false;
+    this.frames = []; this.queue = []; this.pcmQueue = []; this.samples = new Float32Array(1600); this.heardLoud = false;
     this.speaking = null;
   }
 
@@ -46,18 +46,31 @@ export class ParrotAudio {
 
   heard({ samples, frame, rms }) {
     this.samples.copyWithin(0, HOP); this.samples.set(samples, 1600 - HOP);
-    if (frame) { this.frames.push(frame); if (this.frames.length > 10) this.frames.shift(); }
+    if (frame) {
+      this.frames.push(frame); if (this.frames.length > 10) this.frames.shift(); // the ear's display
+      this.queue.push(frame); if (this.queue.length > 300) this.queue.shift(); // every frame since the last moment, for the brain
+      this.pcmQueue.push(samples); if (this.pcmQueue.length > 300) this.pcmQueue.shift(); // and its 160 samples of audio
+    }
     this.level += (Math.min(1, rms * 6) - this.level) * 0.3;
     if (rms > 0.02) this.heardLoud = true;
   }
 
-  /** The moment's sound for the brain: the last 1,600 samples and ten log-mel frames (frame-major). */
+  /** The moment's sound for the brain: the last 1,600 samples and every log-mel frame heard since the
+   *  last moment (frame-major), so no sound is lost when a moment takes longer than 100 ms. */
   moment() {
-    const mel = new Float32Array(10 * MELS).fill(SILENT);
-    if (this.mic) this.frames.forEach((f, i) => mel.set(f, (10 - this.frames.length + i) * MELS));
+    let mel, pcm = new Float32Array(0);
+    if (this.mic && this.queue.length) {
+      mel = new Float32Array(this.queue.length * MELS);
+      this.queue.forEach((f, i) => mel.set(f, i * MELS));
+      if (this.pcmQueue.length === this.queue.length) {
+        pcm = new Float32Array(this.pcmQueue.length * HOP);
+        this.pcmQueue.forEach((a, i) => pcm.set(a, i * HOP));
+      }
+      this.queue = []; this.pcmQueue = [];
+    } else mel = new Float32Array(10 * MELS).fill(SILENT);
     const audio = this.mic ? this.samples.slice() : new Float32Array(1600);
     const loud = this.heardLoud; this.heardLoud = false;
-    return { mel, audio, loud };
+    return { mel, audio, loud, pcm };
   }
 
   /** Say frames (k x 40, frame-major) through the voice; returns the loudness every 10 ms. */
@@ -73,6 +86,24 @@ export class ParrotAudio {
     const node = this.ctx.createBufferSource(); node.buffer = buf; node.connect(this.gain); node.start();
     const env = [];
     for (let i = 0; i < samples.length; i += HOP) { let e = 0; for (let k = i; k < Math.min(samples.length, i + HOP); k++) e += samples[k] * samples[k]; env.push(Math.sqrt(e / HOP)); }
+    const top = Math.max(1e-6, ...env);
+    this.speaking = { start: performance.now(), env: env.map((v) => v / top), node };
+    return this.speaking;
+  }
+
+  /** Say a remembered sound as it was heard: its audio (8 kHz), played back as it is. */
+  speakPcm(pcm8k, rate = 8000) {
+    if (!this.ctx || this.ctx.state !== 'running' || !pcm8k?.length) return null;
+    let peak = 0; for (const v of pcm8k) peak = Math.max(peak, Math.abs(v));
+    const g = peak > 0 ? Math.min(0.9 / peak, 30) : 1;
+    const buf = this.ctx.createBuffer(1, pcm8k.length, rate);
+    const ch = buf.getChannelData(0); for (let i = 0; i < pcm8k.length; i++) ch[i] = pcm8k[i] * g;
+    const node = this.ctx.createBufferSource(); node.buffer = buf;
+    node.playbackRate.value = 1 + (Math.random() - 0.5) * 0.08; // recalled, never replayed exactly: a little higher or lower, faster or slower each time
+    node.connect(this.gain); node.start();
+    const env = [];
+    const step = Math.round(rate / 100); // the loudness every 10 ms
+    for (let i = 0; i < ch.length; i += step) { let e = 0; for (let k = i; k < Math.min(ch.length, i + step); k++) e += ch[k] * ch[k]; env.push(Math.sqrt(e / step)); }
     const top = Math.max(1e-6, ...env);
     this.speaking = { start: performance.now(), env: env.map((v) => v / top), node };
     return this.speaking;

@@ -3,55 +3,335 @@
  "frame": "metres; y up; the parrot faces +z at rest; its left is +x; origin: the middle of the perch bar's axis",
  "bar_radius": 0.011,
  "bones": [
-  {"name": "root", "parent": null, "at": [0, 0, 0]},
-  {"name": "body", "parent": "root", "at": [0, 0.040, -0.010]},
-  {"name": "tail", "parent": "body", "at": [0, 0.024, -0.050]},
-  {"name": "neck", "parent": "body", "at": [0, 0.146, 0.014]},
-  {"name": "head", "parent": "neck", "at": [0, 0.186, 0.027]},
-  {"name": "upper_mandible", "parent": "head", "at": [0, 0.198, 0.052]},
-  {"name": "lower_mandible", "parent": "head", "at": [0, 0.184, 0.050]},
-  {"name": "wing_l_shoulder", "parent": "body", "at": [0.036, 0.128, 0.004]},
-  {"name": "wing_l_elbow", "parent": "wing_l_shoulder", "at": [0.046, 0.100, -0.026]},
-  {"name": "wing_l_wrist", "parent": "wing_l_elbow", "at": [0.046, 0.082, -0.046]},
-  {"name": "wing_r_shoulder", "parent": "body", "at": [-0.036, 0.128, 0.004]},
-  {"name": "wing_r_elbow", "parent": "wing_r_shoulder", "at": [-0.046, 0.100, -0.026]},
-  {"name": "wing_r_wrist", "parent": "wing_r_elbow", "at": [-0.046, 0.082, -0.046]},
-  {"name": "leg_l", "parent": "body", "at": [0.016, 0.034, 0.002]},
-  {"name": "leg_r", "parent": "body", "at": [-0.016, 0.034, 0.002]},
-  {"name": "foot_l", "parent": "root", "at": [0.016, 0.0125, 0.0]},
-  {"name": "foot_r", "parent": "root", "at": [-0.016, 0.0125, 0.0]}
+  {
+   "name": "root",
+   "parent": null,
+   "at": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "body",
+   "parent": "root",
+   "at": [
+    0,
+    0.04,
+    -0.01
+   ]
+  },
+  {
+   "name": "tail",
+   "parent": "body",
+   "at": [
+    0,
+    0.024,
+    -0.05
+   ]
+  },
+  {
+   "name": "neck",
+   "parent": "body",
+   "at": [
+    0,
+    0.146,
+    0.014
+   ]
+  },
+  {
+   "name": "head",
+   "parent": "neck",
+   "at": [
+    0,
+    0.186,
+    0.027
+   ]
+  },
+  {
+   "name": "upper_mandible",
+   "parent": "head",
+   "at": [
+    0,
+    0.198,
+    0.052
+   ]
+  },
+  {
+   "name": "lower_mandible",
+   "parent": "head",
+   "at": [
+    0,
+    0.184,
+    0.05
+   ]
+  },
+  {
+   "name": "wing_l_shoulder",
+   "parent": "body",
+   "at": [
+    0.036,
+    0.128,
+    0.004
+   ]
+  },
+  {
+   "name": "wing_l_elbow",
+   "parent": "wing_l_shoulder",
+   "at": [
+    0.046,
+    0.1,
+    -0.026
+   ]
+  },
+  {
+   "name": "wing_l_wrist",
+   "parent": "wing_l_elbow",
+   "at": [
+    0.046,
+    0.082,
+    -0.046
+   ]
+  },
+  {
+   "name": "wing_r_shoulder",
+   "parent": "body",
+   "at": [
+    -0.036,
+    0.128,
+    0.004
+   ]
+  },
+  {
+   "name": "wing_r_elbow",
+   "parent": "wing_r_shoulder",
+   "at": [
+    -0.046,
+    0.1,
+    -0.026
+   ]
+  },
+  {
+   "name": "wing_r_wrist",
+   "parent": "wing_r_elbow",
+   "at": [
+    -0.046,
+    0.082,
+    -0.046
+   ]
+  },
+  {
+   "name": "leg_l",
+   "parent": "body",
+   "at": [
+    0.016,
+    0.034,
+    0.002
+   ]
+  },
+  {
+   "name": "leg_r",
+   "parent": "body",
+   "at": [
+    -0.016,
+    0.034,
+    0.002
+   ]
+  },
+  {
+   "name": "foot_l",
+   "parent": "root",
+   "at": [
+    0.016,
+    0.0125,
+    0.0
+   ]
+  },
+  {
+   "name": "foot_r",
+   "parent": "root",
+   "at": [
+    -0.016,
+    0.0125,
+    0.0
+   ]
+  }
  ],
  "toes": {
   "note": "zygodactyl: toes 2 and 3 point forward, 1 and 4 backward; three segments each, bones toe_<side>_<n><a|b|c> under foot_<side>",
-  "segments": [0.0085, 0.0070, 0.0060],
-  "radius": [0.0029, 0.0024, 0.0019],
+  "segments": [
+   0.0085,
+   0.007,
+   0.006
+  ],
+  "radius": [
+   0.0029,
+   0.0024,
+   0.0019
+  ],
   "toes": [
-   {"n": 1, "dir": 180, "splay": -12, "scale": 0.85},
-   {"n": 2, "dir": 0, "splay": -14, "scale": 1.0},
-   {"n": 3, "dir": 0, "splay": 12, "scale": 1.05},
-   {"n": 4, "dir": 180, "splay": 14, "scale": 0.95}
+   {
+    "n": 1,
+    "dir": 180,
+    "splay": -12,
+    "scale": 0.85
+   },
+   {
+    "n": 2,
+    "dir": 0,
+    "splay": -14,
+    "scale": 1.0
+   },
+   {
+    "n": 3,
+    "dir": 0,
+    "splay": 12,
+    "scale": 1.05
+   },
+   {
+    "n": 4,
+    "dir": 180,
+    "splay": 14,
+    "scale": 0.95
+   }
   ]
  },
  "sockets": {
-  "eye_l": {"bone": "head", "at": [0.0192, 0.1975, 0.0405], "yaw": 75},
-  "eye_r": {"bone": "head", "at": [-0.0192, 0.1975, 0.0405], "yaw": -75}
+  "eye_l": {
+   "bone": "head",
+   "at": [
+    0.0192,
+    0.1975,
+    0.0405
+   ],
+   "yaw": 75
+  },
+  "eye_r": {
+   "bone": "head",
+   "at": [
+    -0.0192,
+    0.1975,
+    0.0405
+   ],
+   "yaw": -75
+  }
  },
- "share": {"note": "of the head's turn and tilt, the neck carries this share and the head the rest, as a bird's neck vertebrae do", "neck": 0.4},
+ "share": {
+  "note": "of the head's turn and tilt, the neck carries this share and the head the rest, as a bird's neck vertebrae do",
+  "neck": 0.4
+ },
  "combined": [
-  {"joint": "head_pitch", "by": "head_yaw", "shrink": 0.4, "note": "at the full turn the pitch range is 60 % of its own"},
-  {"joint": "head_roll", "by": "head_yaw", "shrink": 0.3}
+  {
+   "joint": "head_pitch",
+   "by": "head_yaw",
+   "shrink": 0.4,
+   "note": "at the full turn the pitch range is 60 % of its own"
+  },
+  {
+   "joint": "head_roll",
+   "by": "head_yaw",
+   "shrink": 0.3
+  }
  ],
  "joints": [
-  {"name": "head_yaw", "min": -75, "max": 75, "rest": 0, "rate": 360, "unit": "deg", "what": "turn the head left (+) or right"},
-  {"name": "head_pitch", "min": -25, "max": 35, "rest": 0, "rate": 240, "unit": "deg", "what": "beak up (+) or down"},
-  {"name": "head_roll", "min": -20, "max": 20, "rest": 0, "rate": 240, "unit": "deg", "what": "cock the head: left eye up (+)"},
-  {"name": "neck_pitch", "min": -10, "max": 15, "rest": 0, "rate": 120, "unit": "deg", "what": "lean the neck forward (+) or back"},
-  {"name": "beak_open", "min": 0, "max": 35, "rest": 0, "rate": 200, "unit": "deg", "what": "open the beak"},
-  {"name": "wing_l", "min": 0, "max": 1, "rest": 0, "rate": 3, "unit": "fraction", "what": "left wing folded (0) to spread (1)"},
-  {"name": "wing_r", "min": 0, "max": 1, "rest": 0, "rate": 3, "unit": "fraction", "what": "right wing folded (0) to spread (1)"},
-  {"name": "grip_l", "min": 0, "max": 1, "rest": 1, "rate": 4, "unit": "fraction", "what": "left toes open (0) to closed round the perch (1)"},
-  {"name": "grip_r", "min": 0, "max": 1, "rest": 1, "rate": 4, "unit": "fraction", "what": "right toes open (0) to closed round the perch (1)"},
-  {"name": "leg_l", "min": 0, "max": 1, "rest": 0.3, "rate": 2, "unit": "fraction", "what": "left leg standing tall (0) to crouched (1)"},
-  {"name": "leg_r", "min": 0, "max": 1, "rest": 0.3, "rate": 2, "unit": "fraction", "what": "right leg standing tall (0) to crouched (1)"}
+  {
+   "name": "head_yaw",
+   "min": -75,
+   "max": 75,
+   "rest": 0,
+   "rate": 360,
+   "unit": "deg",
+   "what": "turn the head left (+) or right"
+  },
+  {
+   "name": "head_pitch",
+   "min": -25,
+   "max": 35,
+   "rest": 0,
+   "rate": 240,
+   "unit": "deg",
+   "what": "beak up (+) or down"
+  },
+  {
+   "name": "head_roll",
+   "min": -20,
+   "max": 20,
+   "rest": 0,
+   "rate": 240,
+   "unit": "deg",
+   "what": "cock the head: left eye up (+)"
+  },
+  {
+   "name": "neck_pitch",
+   "min": -10,
+   "max": 15,
+   "rest": 0,
+   "rate": 120,
+   "unit": "deg",
+   "what": "lean the neck forward (+) or back"
+  },
+  {
+   "name": "beak_open",
+   "min": 0,
+   "max": 35,
+   "rest": 0,
+   "rate": 600,
+   "unit": "deg",
+   "what": "open the beak"
+  },
+  {
+   "name": "wing_l",
+   "min": 0,
+   "max": 1,
+   "rest": 0,
+   "rate": 3,
+   "unit": "fraction",
+   "what": "left wing folded (0) to spread (1)"
+  },
+  {
+   "name": "wing_r",
+   "min": 0,
+   "max": 1,
+   "rest": 0,
+   "rate": 3,
+   "unit": "fraction",
+   "what": "right wing folded (0) to spread (1)"
+  },
+  {
+   "name": "grip_l",
+   "min": 0,
+   "max": 1,
+   "rest": 1,
+   "rate": 4,
+   "unit": "fraction",
+   "what": "left toes open (0) to closed round the perch (1)"
+  },
+  {
+   "name": "grip_r",
+   "min": 0,
+   "max": 1,
+   "rest": 1,
+   "rate": 4,
+   "unit": "fraction",
+   "what": "right toes open (0) to closed round the perch (1)"
+  },
+  {
+   "name": "leg_l",
+   "min": 0,
+   "max": 1,
+   "rest": 0.3,
+   "rate": 2,
+   "unit": "fraction",
+   "what": "left leg standing tall (0) to crouched (1)"
+  },
+  {
+   "name": "leg_r",
+   "min": 0,
+   "max": 1,
+   "rest": 0.3,
+   "rate": 2,
+   "unit": "fraction",
+   "what": "right leg standing tall (0) to crouched (1)"
+  }
  ]
 }

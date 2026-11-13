@@ -7,10 +7,11 @@
 const THING_LABEL = { apple: 'apple', ball: 'ball', cup: 'cup', banana: 'banana', block: 'block', duck: 'duck', lemon: 'lemon', pear: 'pear' };
 
 function thumbCanvas(thumb) {
-  const c = document.createElement('canvas'); c.width = 24; c.height = 20;
-  const g = c.getContext('2d'), img = g.createImageData(24, 20);
-  for (let x = 0; x < 24; x++) for (let y = 0; y < 20; y++) {
-    const v = thumb[x * 20 + (19 - y)] / 255, k = 4 * (y * 24 + x);
+  const n = Math.max(1, Math.round(thumb.length / 20));
+  const c = document.createElement('canvas'); c.width = n; c.height = 20;
+  const g = c.getContext('2d'), img = g.createImageData(n, 20);
+  for (let x = 0; x < n; x++) for (let y = 0; y < 20; y++) {
+    const v = thumb[x * 20 + (19 - y)] / 255, k = 4 * (y * n + x);
     img.data[k] = 20 + 210 * v; img.data[k + 1] = 28 + 190 * v; img.data[k + 2] = 40 + 120 * v; img.data[k + 3] = 255;
   }
   g.putImageData(img, 0, 0);

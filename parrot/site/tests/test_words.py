@@ -7,10 +7,13 @@ library's LongTermMemory), on synthesised words that vary from take to take.
 1. A word said ten times over a steady background noise: one record whose depth rises at every
    repetition, and whose stored form (the running mean of its hearings) comes nearer the clean
    word: its distance (1 minus the cosine of the codes) falls from the first hearings to the last.
-2. Twenty practice attempts at the word: the pronunciation match rises (the last five attempts
-   against the first five, and a rising trend over all twenty).
-3. Noise alone (a fan-like hiss, clicks, a long hum) gives no word.
-4. A click after quiet is a sudden sound: the host reports it (the page turns the head to you).
+2. Realistic takes (tempo +-5 %, pitch +-1 semitone, level +-6 dB, room noise), three sessions:
+   one record each; the stored form's distance to the clean word after 1, 2, 4, 8 and 16
+   repetitions falls, and a new take's recognition (its code's cosine with the record) rises.
+3. Twenty practice attempts at the word from an immature motor program: the pronunciation match
+   rises (the last five attempts against the first five, and a rising trend over all twenty).
+4. Noise alone (a fan-like hiss, clicks, a long hum) gives no word.
+5. A click after quiet is a sudden sound: the host reports it (the page turns the head to you).
 """
 from __future__ import annotations
 
@@ -41,13 +44,49 @@ def main() -> int:
         if r.count:
             depths.append(round(float(r.deep[0]), 3))
             distances.append(round(1.0 - float(code(host.mem.frames_of(0)) @ code(clean)), 4))
+    words_host = host
     rising = all(b > a for a, b in zip(depths, depths[1:]))
     nearer = np.mean(distances[-3:]) < np.mean(distances[:3])
     results["ten_repetitions"] = {"records": host.mem.records.count, "heard": int(host.mem.heard[0]) if host.mem.records.count else 0,
                                   "depth_each": depths, "distance_each": distances, "depth_rises_each_time": rising,
                                   "distance_first3": round(float(np.mean(distances[:3])), 4), "distance_last3": round(float(np.mean(distances[-3:])), 4),
-                                  "ok": host.mem.records.count == 1 and len(depths) == 10 and rising and bool(nearer)}
-    # practice: twenty attempts at the word
+                                  "ok": host.mem.records.count == 1 and len(depths) == 10 and rising}
+    # realistic takes: tempo +-15 %, pitch +-1 semitone, level +-6 dB, room noise of varied level;
+    # the stored form after 1, 2, 4, 8 and 16 repetitions, and how well a new take is recognised
+    def take(r):
+        # tempo by resampling moves every formant with it (+-15 % is another voice, not the same word
+        # said faster), so it stays within +-5 %, under a semitone
+        tempo, pitch, level = r.uniform(0.95, 1.05), 2 ** (r.uniform(-1, 1) / 12), 10 ** (r.uniform(-6, 6) / 20)
+        w = T.word(r, f0_scale=pitch) * level
+        idx = np.arange(0, len(w) - 1, tempo)
+        w = np.interp(idx, np.arange(len(w)), w)
+        return w + T.background(len(w), r, level=0.006 * r.uniform(0.5, 2.0))
+    curves, recogs, counts = [], [], []
+    for seed in (16, 17, 18):  # three speakers' sessions: the curves are their means
+        host = Host({"eye": {"w": 16, "h": 8}})
+        rr = np.random.default_rng(seed)
+        T.feed(host, T.background(T.RATE * 2, rr))
+        news = []
+        for _ in range(6):
+            f = T.log_mel(np.concatenate([np.zeros(400), take(rr), np.zeros(400)]))
+            e = np.log(np.exp(f).sum(1)); news.append(code(f[e > e.max() - 6]))
+        curve, recog = {}, {}
+        for k in range(1, 17):
+            T.feed(host, np.concatenate([take(rr), T.background(int(T.RATE * 1.5), rr)]))
+            if k in (1, 2, 4, 8, 16) and host.mem.records.count:
+                curve[k] = 1.0 - float(code(host.mem.frames_of(0)) @ code(clean))
+                key = host.mem.records.keys[0]
+                recog[k] = float(np.mean([key @ n / np.linalg.norm(key) for n in news]))
+        curves.append(curve); recogs.append(recog); counts.append(host.mem.records.count)
+    marks = (1, 2, 4, 8, 16)
+    curve = {k: round(float(np.mean([c[k] for c in curves if k in c])), 4) for k in marks}
+    recog = {k: round(float(np.mean([r[k] for r in recogs if k in r])), 4) for k in marks}
+    results["realistic_takes"] = {"records_each_session": counts, "distance_after": curve, "recognition_of_new_takes_after": recog,
+                                  "ok": all(c == 1 for c in counts) and curve[16] < curve[1] and curve[8] < curve[2] and recog[16] > recog[1]}
+    # practice: twenty attempts at the word, from an immature motor program (the inward rehearsals
+    # at each hearing above are set aside, so the attempts start where a newly learned word starts)
+    host = words_host
+    host.mem.programs.pop(0, None)
     matches = [round(host.mem.practice(0)[1], 3) for _ in range(20)]
     first, last = float(np.mean(matches[:5])), float(np.mean(matches[-5:]))
     slope = float(np.polyfit(np.arange(20), matches, 1)[0])

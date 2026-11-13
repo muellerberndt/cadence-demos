@@ -12,7 +12,8 @@
     "parrot/evidence/page_check.json",
     "parrot/evidence/dsp_parity.json",
     "parrot/evidence/voice_roundtrip.json",
-    "parrot/evidence/sound_memory.json"
+    "parrot/evidence/sound_memory.json",
+    "parrot/evidence/words.json"
   ],
-  "promise_test": "python parrot/site/tests/test_sound_memory.py && node parrot/site/tests/dsp_parity.mjs && node parrot/site/tests/voice_roundtrip.mjs && python parrot/site/tools/check_page.py --shots <dir>"
+  "promise_test": "python parrot/site/tests/test_words.py && python parrot/site/tests/test_sound_memory.py && node parrot/site/tests/dsp_parity.mjs && node parrot/site/tests/voice_roundtrip.mjs && python parrot/site/tools/check_text.py && python parrot/site/tools/check_page.py --shots <dir>"
 }

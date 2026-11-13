@@ -217,3 +217,17 @@ html.embedded .toast { top: 100px; }
 
 .brain-kind { display: inline-flex; gap: 6px; align-items: center; margin-top: 4px; font: 500 10.5px/1 var(--mono); color: var(--ink-3); }
 .brain-kind select { background: var(--raised); color: var(--ink-2); border: 1px solid var(--line); border-radius: 6px; font: inherit; padding: 2px 4px; }
+
+/* teaching: the lesson's steps and what it knows */
+.teach { margin-top: 8px; padding: 8px 10px; border: 1px solid rgba(245, 197, 66, .35); border-radius: 8px; background: rgba(245, 197, 66, .05); font-size: 12px; }
+.teach-title { font-weight: 600; margin-bottom: 4px; }
+.teach-steps { margin: 0 0 6px 18px; padding: 0; }
+.teach-steps li { opacity: .55; margin: 1px 0; }
+.teach-steps li.now { opacity: 1; color: #f5c542; font-weight: 600; }
+.teach-steps li.done { opacity: .8; text-decoration: line-through; text-decoration-color: rgba(255,255,255,.35); }
+.knows { display: flex; flex-wrap: wrap; gap: 6px; }
+.knows-empty { opacity: .6; }
+.know { display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; border-radius: 6px; background: rgba(255,255,255,.06); cursor: pointer; }
+.know .bar { width: 36px; height: 4px; background: rgba(255,255,255,.12); border-radius: 2px; overflow: hidden; }
+.know .bar i { display: block; height: 100%; background: #f5c542; }
+#pistachio.ask { box-shadow: 0 0 0 2px #f5c542; }

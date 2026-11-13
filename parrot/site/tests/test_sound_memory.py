@@ -66,8 +66,8 @@ def formant_voice(dur, f0, formants, rng, amp=0.25):
     return amp * x * env / max(1e-9, np.abs(x).max())
 
 
-def word(rng):
-    f0 = 170 * rng.uniform(0.95, 1.05)
+def word(rng, f0_scale=None):
+    f0 = 170 * (rng.uniform(0.95, 1.05) if f0_scale is None else f0_scale)
     a = formant_voice(0.20, f0, [(700, 150), (1200, 200)], rng)
     burst = 0.08 * rng.standard_normal(int(0.06 * RATE)) * np.hanning(int(0.06 * RATE))
     burst = np.convolve(burst, [1, -0.9], mode="same")  # bright, like p and f

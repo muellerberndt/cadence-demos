@@ -41,7 +41,7 @@ from typing import Any
 
 import numpy as np
 
-from .sounds import SoundMemory
+from .sounds import KINDS, SoundMemory
 
 JOINTS = ["head_yaw", "head_pitch", "head_roll", "neck_pitch", "beak_open", "wing_l", "wing_r",
           "grip_l", "grip_r", "leg_l", "leg_r"]
@@ -90,7 +90,7 @@ class Host:
         self.neurons = start
         self.pop = {p["name"]: p for p in self.populations}
         self.preferred = np.geomspace(0.012, 0.25, DISTANCE_UNITS)  # apparent sizes (fractions of a field) each unit prefers
-        self.revise = float(config.get("revise", 0.85))
+        self.revise = float(config.get("revise", 0.7))
         self.focus_kind = None
         self.reset()
         self.load_calls(config.get("files"))
@@ -108,10 +108,18 @@ class Host:
         self.drive = 0.6
         self.running = math.log(1e-6)  # the ear's running level, which a sudden sound breaks
         self.quiet_for = 0
+        self.pre: list = []      # the last 80 ms before a sound's onset (its soft start: an h, an f)
+        self.spoiled = False     # the visitor's sound overlapped the parrot's own: only a fragment was heard
+        self.since_loud = 99     # frames since the last loud one
         self.startled = -100
         self.last_match = None
         self.things = None
         self.sound = []          # frames of the sound being heard
+        self.sound_pcm: list = []  # and the audio itself, 160 samples a frame
+        self.pre_pcm: list = []
+        self.say_pcm = None      # the audio of the word being said
+        self.say_rate = 8000
+        self.events: list = []   # the last sounds heard and what became of each (the page's sound report)
         self.quiet = 0           # quiet frames since it ended
         self.floor = math.log(1e-6)
         self.levels = np.zeros(300)  # the last three seconds' frame energies
@@ -131,7 +139,8 @@ class Host:
             with open(f"{files}/calls.json") as fh:
                 data = json.load(fh)
             for c in data["calls"]:
-                self.repertoire.append({"id": c["id"], "tag": c["tag"], "source": "recording", "frames": np.asarray(c["frames"], np.float32)})
+                self.repertoire.append({"id": c["id"], "tag": c["tag"], "source": "recording", "frames": np.asarray(c["frames"], np.float32),
+                                        "pcm": np.asarray(c.get("pcm", []), np.float32), "pcm_rate": int(c.get("pcm_rate", 16000))})
             self.credit = data.get("source")
         except (OSError, KeyError, ValueError, TypeError):
             pass
@@ -142,7 +151,8 @@ class Host:
         steady broadband hiss (a fan: a flat spectrum), not a steady tone (a hum: its bands barely
         change from frame to frame)."""
         n = len(frames)
-        if n < 12:
+        e = np.log(np.exp(frames.astype(np.float64)).sum(axis=1))
+        if n < 12 or int(np.sum(e > self.floor + 4.0)) < 12:  # under 120 ms of loud sound: a pop or a click, not a word
             return False, "click"
         if n > 200:
             return False, "too long"
@@ -158,12 +168,12 @@ class Host:
 
     def clean(self, frames: np.ndarray) -> np.ndarray:
         """The background's spectrum taken out of a sound's frames (power subtraction, kept above a
-        twentieth of the frame's own power)."""
+        fifth of the frame's own power, so soft consonants stay)."""
         p = np.exp(frames.astype(np.float64))
-        q = np.maximum(p - 1.5 * np.exp(self.noise)[None, :], 0.05 * p)
+        q = np.maximum(p - np.exp(self.noise)[None, :], 0.2 * p)
         return np.log(q + 1e-6).astype(np.float32)
 
-    def hear_sound(self, frames: np.ndarray) -> dict | None:
+    def hear_sound(self, frames: np.ndarray, pcm: np.ndarray | None = None) -> dict | None:
         """A voice-like sound the visitor made, cleaned of the background, told to the memories."""
         ok, _ = self.voice_like(frames)
         if not ok:
@@ -171,11 +181,13 @@ class Host:
         cleaned = self.clean(frames)
         # what stands above the background once its spectrum is out (a sound the background has
         # taken in, such as a hum going on, stands at or below it)
-        excess = float(np.mean(np.log(np.exp(cleaned.astype(np.float64)).sum(axis=1))) - np.log(np.exp(self.noise).sum()))
+        excess = float(np.percentile(np.log(np.exp(cleaned.astype(np.float64)).sum(axis=1)), 75) - np.log(np.exp(self.noise).sum()))  # its louder part (its soft start and end are kept too)
         if excess < 2.0:
             return None
-        self.heard_event = self.mem.hear(cleaned, self.focus_kind)
+        self.heard_event = self.mem.hear(cleaned, self.focus_kind, pcm)
         slot = self.heard_event["write"]["slot"]
+        if slot in self.mem.sayable():  # a word it knows, heard again: it rehearses it inwardly once
+            self.mem.practice(slot)
         return {"id": f"you-{slot}", "slot": slot, "deep": round(float(self.mem.records.deep[slot]), 2)}
 
     def you_sounds(self) -> list:
@@ -197,13 +209,31 @@ class Host:
         self.mem.clear()
         return {"repertoire": self.repertoire_list(), "memory": self.mem.view()}
 
+    def knows(self) -> list:
+        """What it knows: each kind of thing and the word it recalls for it (the link's strength)."""
+        out = []
+        for kind in KINDS:
+            slot, link = self.mem.recall(kind)
+            if slot is not None and link > 0.05:
+                out.append({"kind": kind, "id": f"you-{slot}", "link": round(link, 3)})
+        return out
+
+    def mem_recalled(self) -> dict | None:
+        slot, link = self.mem.recall(self.focus_kind)
+        return None if slot is None else {"kind": self.focus_kind, "id": f"you-{slot}", "slot": int(slot), "link": round(link, 3)}
+
     def choose(self) -> dict:
         words = self.you_sounds()
         options = self.repertoire + words
+        slot, link = self.mem.recall(self.focus_kind)  # the focused thing recalls its word
+        self.recalled = None if slot is None else {"kind": self.focus_kind, "slot": int(slot), "id": f"you-{slot}", "link": round(link, 3)}
         def weight(r):  # learned words by depth, pistachio-paid sounds more often; calls fewer once it has words
             w = (1.0 + 2.0 * self.paid.get(r["id"], 0.0))
             if "deep" in r:
-                return w * (1.0 + 0.5 * r["deep"])
+                w *= 1.0 + 0.5 * r["deep"]
+                if slot is not None and r["slot"] == slot:
+                    w *= 1.0 + 40.0 * link  # the word the focused thing recalls comes to mind first
+                return w
             return w * (0.2 if r["id"] == "babble" else 1.0) * (0.3 if words else 1.0)
         w = np.array([weight(r) for r in options])
         return options[int(self.rng.choice(len(w), p=w / w.sum()))]
@@ -214,8 +244,12 @@ class Host:
             return self.babble()
         if pick.get("source") == "you":  # a learned word: one attempt of practice, said from its motor program
             frames, m = self.mem.practice(pick["slot"])
+            self.say_pcm = self.mem.pcm_of(pick["slot"])  # the word as it heard it: the audio its memory keeps
+            self.say_rate = 8000
             self.last_match = m
             return frames
+        if pick.get("source") == "recording" and len(pick.get("pcm", [])):  # an African Grey's own call, as recorded
+            self.say_pcm, self.say_rate = pick["pcm"], pick["pcm_rate"]
         f = pick["frames"].copy()
         if "deep" in pick:
             blur = 1.0 / (1.0 + pick["deep"])
@@ -228,10 +262,11 @@ class Host:
         out = []
         for r in self.repertoire + self.you_sounds():
             row = {"id": r["id"], "tag": r["tag"], "source": r["source"], "paid": round(self.paid.get(r["id"], 0.0), 2),
+                   **({"pcm": np.round(r["pcm"], 4).tolist(), "pcm_rate": r["pcm_rate"]} if r.get("source") == "recording" and len(r.get("pcm", [])) else {}),
                    "frames": None if r["frames"] is None else r["frames"].ravel().round(2).tolist()}
             if "deep" in r:
                 row.update(deep=round(r["deep"], 2), slot=r["slot"], heard=r["heard"], matches=[round(m, 3) for m in r["matches"]],
-                           program=r["program"].ravel().round(2).tolist())
+                           program=r["program"].ravel().round(2).tolist(), pcm=np.round(self.mem.pcm_of(r["slot"]), 4).tolist())
             out.append(row)
         return out
 
@@ -296,6 +331,8 @@ class Host:
         floor = math.log(1e-6)
         mel = arrays.get("mel")
         frames = mel.reshape(-1, 40) if mel is not None and mel.size % 40 == 0 and mel.size else np.full((10, 40), floor, np.float32)
+        pcm = arrays.get("pcm")
+        chunks = pcm.reshape(-1, 160) if pcm is not None and pcm.size == len(frames) * 160 else [None] * len(frames)
         self.heard = np.concatenate([self.heard, frames])[-800:]
         sl, sr = self._salience(L), self._salience(R)
         yaw = _value("head_yaw", float(proprio[0]))
@@ -377,7 +414,7 @@ class Host:
         self.held = (0.85 * self.held + 0.15 * ear).astype(np.float32)
         # sounds the visitor makes: onset to offset, from the frames' total energy (not while it calls)
         learned, ended, startle = None, False, False
-        for f in frames:
+        for f, chunk in zip(frames, chunks):
             e = float(np.log(np.exp(f.astype(np.float64)).sum()))
             # a sudden sound: a loud onset after quiet that the ear's running level did not predict
             if self.saying <= 0 and e - self.running > 5.0 and self.quiet_for > 30 and self.t - self.startled > 20:
@@ -390,19 +427,42 @@ class Host:
             self.floor = float(np.percentile(seen, 10)) if len(seen) >= 20 else max(self.floor, e)
             if e < self.floor + 2.0:
                 self.noise = np.logaddexp(self.noise + math.log(0.97), f.astype(np.float64) + math.log(0.03))
-            if e > self.floor + 4.0 and self.saying <= 0:
-                self.sound.append(f); self.quiet = 0
+            loud = e > self.floor + 4.0
+            self.since_loud = 0 if loud else self.since_loud + 1
+            if loud and self.saying > 0:
+                self.spoiled = True  # the visitor spoke while the parrot was making a sound
+            elif self.since_loud >= 25 and not self.sound:
+                self.spoiled = False
+            if loud and self.saying <= 0:
+                if not self.sound:
+                    self.sound = list(self.pre)  # the word's soft start, heard just before its onset
+                    self.sound_pcm = list(self.pre_pcm)
+                self.sound.append(f); self.sound_pcm.append(chunk); self.quiet = 0
                 if len(self.sound) > 250:  # a sound that never ends is the background
-                    self.sound = []
+                    self.sound = []; self.sound_pcm = []
                     self.noise = f.astype(np.float64).copy()
             elif self.sound:
-                self.quiet += 1
-                if self.quiet >= 8:
-                    heard = np.asarray(self.sound, np.float32)
-                    if self.voice_like(heard)[0]:
-                        learned = self.hear_sound(heard) or learned
+                # the quiet inside a word (the closure of a p, a t) belongs to it; the word ends after
+                # a quarter second of quiet, keeping its last 60 ms (its soft end)
+                self.sound.append(f); self.sound_pcm.append(chunk); self.quiet += 1
+                if self.quiet >= 25:
+                    keep = len(self.sound) - self.quiet + 6
+                    heard = np.asarray(self.sound[:keep], np.float32)
+                    parts = self.sound_pcm[:keep]
+                    heard_pcm = np.concatenate(parts) if parts and all(c is not None for c in parts) else None
+                    ok, why = self.voice_like(heard)
+                    got = None
+                    if ok and not self.spoiled:  # a fragment heard over its own voice is not learned
+                        got = self.hear_sound(heard, heard_pcm)
+                        learned = got or learned
                         ended = True
-                    self.sound = []; self.quiet = 0
+                    e_h = np.log(np.exp(heard.astype(np.float64)).sum(axis=1))
+                    self.events = (self.events + [{"t": self.t, "frames": len(heard), "loud": int(np.sum(e_h > self.floor + 4.0)), "kind": why,
+                                                   "spoiled": bool(self.spoiled), "audio": 0 if heard_pcm is None else int(len(heard_pcm)),
+                                                   "kept": got is not None, "write": None if got is None else self.heard_event["write"]}])[-40:]
+                    self.sound = []; self.sound_pcm = []; self.quiet = 0; self.spoiled = False
+            self.pre = (self.pre + [f])[-8:]
+            self.pre_pcm = (self.pre_pcm + [chunk])[-8:]
         self.mem.moment()
         self.focus_kind = meta.get("focus_kind")
         # the drive to call: quiet time (about a call every two to six seconds), more when a new
@@ -415,12 +475,14 @@ class Host:
         reward = float(meta.get("reward") or 0.0)
         if reward > 0 and self.last_said and self.t - self.last_said[1] < 60:
             self.paid[self.last_said[0]] = self.paid.get(self.last_said[0], 0.0) + reward
+            if self.last_said[0].startswith("you-"):  # the thing it looked at and the word it said: their link grows
+                self.mem.reward_link(int(self.last_said[0][4:]), self.last_said[2], reward)
         voice, call = None, None
         if meta.get("voice_ok") and self.drive >= 1.0 and self.saying <= 0 and not self.sound:
             pick = self.choose()
             voice = self.say(pick)
             call = {"id": pick["id"], "tag": pick["tag"], "source": pick["source"]}
-            self.last_said = (pick["id"], self.t)
+            self.last_said = (pick["id"], self.t, self.focus_kind)
             self.saying = int(math.ceil(len(voice) / 10)) + 2
             # saying relaxes its boredom, a word said well the most
             relief = 0.4 + 0.5 * (self.last_match or 0.0) if pick.get("source") == "you" else 0.6
@@ -439,11 +501,17 @@ class Host:
         names = ["activity", "targets"]
         if voice is not None:
             self.buffers["voice"] = voice.ravel()
+            if self.say_pcm is not None and len(self.say_pcm):
+                self.buffers["voice_pcm"] = self.say_pcm
+                names.append("voice_pcm")
+                self.voice_rate = self.say_rate
+            self.say_pcm = None
             names.append("voice")
         return {"buffers": names, "group_activity": {"distance": dist_units.tolist()}, "readout": readout,
                 "looked": {"eye": eye, "row": row, "col": col, "strength": round(strength, 3)},
                 "focus": self.focus, "heard": bool(ear.max() > 0.35), "newborn": True,
-                "drive": round(min(1.0, self.drive), 3), "said": call, "heard_sound": learned, "startle": startle,
+                "drive": round(min(1.0, self.drive), 3), "said": call, "heard_sound": learned, "startle": startle, "recalled": self.mem_recalled(), "voice_rate": getattr(self, "voice_rate", 8000), "knows": self.knows(),
+                "words": len(self.mem.sayable()),
                 "memory": self.mem.view() if (learned is not None or self.t % 10 == 0) else None,
                 "repertoire": self.repertoire_list() if (learned is not None or call is not None) else None,
                 "paid": {k: round(v, 2) for k, v in self.paid.items() if v}}
@@ -462,6 +530,10 @@ class Host:
             return {"memory": self.mem.view(), "saved": self.mem.save()}
         if cmd == "forget":
             return self.forget()
+        if cmd == "debug":
+            r = self.mem.records
+            return {"floor": self.floor, "events": self.events, "records": [{"slot": s, "heard": int(self.mem.heard[s]), "deep": float(r.deep[s]),
+                    "frames": self.mem.frames_of(s).round(2).tolist(), "audio": self.mem.pcm_of(s).round(4).tolist()} for s in range(r.count)]}
         if cmd == "repertoire":
             return {"repertoire": self.repertoire_list()}
         raise ValueError(f"unknown command {cmd!r}")

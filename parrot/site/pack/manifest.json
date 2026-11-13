@@ -1,6 +1,6 @@
 {
  "schema": "cadence-parrot-pack/1",
- "packed": "2026-11-13",
+ "packed": "2026-11-14",
  "pyodide": "314.0.7",
  "packages": [
   "numpy"
@@ -15,12 +15,12 @@
  ],
  "sources_sha256": {
   "__init__.py": "aad6e4970d412d3fc56376e9321f46760a285a32d2086c5fc76d1740b02c082f",
-  "host.py": "df7f095a9bbfd631d992f4fde629d31238ab7dff418af1bf75364f3954ec8f9d",
-  "page.py": "3190193eb5e7709075d1e2e265d9e3d92fde319ed2de7daf587eca7e5048dd78",
-  "sounds.py": "1b9566c503648a7e2f0690631e3e60ea43f356966464814c73e891a9038a6fe7"
+  "host.py": "664a6c704e5f4ef449843b3457ba4241a3c677be096b881d466aac41a2df3d72",
+  "page.py": "8cd65798b051166f4dd4a6a4dbfe878a36a33150eeea2783c7209320d5110039",
+  "sounds.py": "7152ec84d1542bbdd357add699d834cf32c36776a7ef75d8f644e97a162688b8"
  },
  "files": {
-  "calls.json": "f2f6a662b6a604fc580b227e0c255496f954450dd0430f98c86674738c065b82"
+  "calls.json": "645453a2f0c7c4874addbf143bac95861505484018dac7f64bb5fe39fde0dbf7"
  },
  "config": {
   "eye": {
@@ -30,14 +30,18 @@
    "vfield": 60,
    "fovea": 0.4,
    "axis": 75
+  },
+  "whole": "page",
+  "genes": {
+   "map_cells": 32
   }
  },
  "hosts": {
   "composed": "parrotbrain.page",
   "placeholder": "parrotbrain.host"
  },
- "wheel": "cadence_net-0.99.0-lane-parrot-69eec0a0.whl",
- "wheel_sha256": "7feb2b866fc040f34bf59fb3bb401524cd70763a480229c1ce694bc200adbe5e",
- "cadence": "0.99.0 with cadence.parrot (lane-0100-parrot 69eec0a0)",
- "wheel_source": "built from muellerberndt/cadence lane-0100-parrot at 69eec0a0577c6327a2a63f019783d9092d199cbd"
+ "wheel": "cadence_net-0.99.0-lane-parrot-16b8b642.whl",
+ "wheel_sha256": "7714ed8d681570dcd973e675cb8b060e2e9d250903a2988a3aa08b42c235237b",
+ "cadence": "0.99.0 with cadence.parrot (lane-0100-parrot 16b8b642)",
+ "wheel_source": "built from muellerberndt/cadence lane-0100-parrot at 16b8b642"
 }
