@@ -16,7 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SHARED = ROOT / "shared"
-FILES = ("cadence-explain.js", "cadence-explain.css", "cadence-help.css")
+FILES = ("cadence-explain.js", "cadence-explain.css", "cadence-help.css", "cadence-palette.js")
 
 
 def demos() -> list[tuple[Path, dict]]:

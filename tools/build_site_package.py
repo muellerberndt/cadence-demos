@@ -94,7 +94,7 @@ addEventListener('hashchange', route); route();
 """
 
 
-ALWAYS = ("play.html", "index.html", "help.html", "cadence-explain.js", "cadence-explain.css", "cadence-help.css")
+ALWAYS = ("play.html", "index.html", "help.html", "cadence-explain.js", "cadence-explain.css", "cadence-help.css", "cadence-palette.js")
 
 
 def changed_copy(args, folder: Path, src: Path, slug: str, meta: dict) -> None:
