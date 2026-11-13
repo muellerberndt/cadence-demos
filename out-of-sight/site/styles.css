@@ -1,0 +1,251 @@
+:root {
+  --bg: #06080e;
+  --panel: #0a0e19;
+  --panel-2: #0d1220;
+  --line: #1a2135;
+  --line-2: #242d47;
+  --text: #e9edf7;
+  --muted: #8d97b2;
+  --faint: #5c6684;
+  --you: #ff9f4a;
+  --brain: #3fe0cf;
+  --gold: #ffce66;
+  --violet: #b79cff;
+  --danger: #ff6b7f;
+  --radius: 14px;
+  --bar: 44px;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(1100px 520px at 78% -12%, rgba(60, 80, 160, 0.20), transparent 62%),
+    radial-gradient(700px 420px at 8% 0%, rgba(40, 140, 140, 0.09), transparent 60%),
+    var(--bg);
+  color: var(--text);
+  font: 15px/1.5 Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+button, select { font: inherit; color: inherit; }
+a { color: var(--brain); }
+code { font-family: var(--mono); font-size: 0.86em; color: #c7d0ea; }
+kbd { display: inline-block; min-width: 1.5em; padding: 0 4px; border: 1px solid var(--line-2); border-radius: 4px; background: var(--panel-2); font: 500 10.5px/1.5 var(--mono); text-align: center; color: #c7d0ea; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+button:focus-visible, select:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid var(--brain); outline-offset: 2px; }
+
+/* the bar: one line */
+.bar { display: flex; align-items: center; gap: 12px; height: var(--bar); padding: 0 clamp(12px, 2vw, 22px); border-bottom: 1px solid var(--line); }
+.brand { display: flex; align-items: center; gap: 7px; color: var(--text); text-decoration: none; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; }
+.brand svg { width: 20px; height: 20px; fill: none; stroke: var(--brain); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.brand .slash { color: var(--faint); font-weight: 400; }
+.brand .sub { color: var(--muted); font-weight: 500; }
+.runtime { display: flex; align-items: center; gap: 7px; min-width: 0; margin-right: auto; color: var(--faint); font-size: 12px; }
+.runtime span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.runtime i { flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 10px var(--gold); animation: blink 1.2s ease-in-out infinite; }
+.runtime i.ready { background: var(--brain); box-shadow: 0 0 8px var(--brain); animation: none; }
+.runtime i.error { background: var(--danger); box-shadow: 0 0 10px var(--danger); animation: none; }
+@keyframes blink { 50% { opacity: 0.35; } }
+.tools { display: flex; gap: 4px; }
+.tools button { height: 30px; padding: 0 11px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: var(--muted); font-size: 13px; font-weight: 550; cursor: pointer; transition: color 0.15s, border-color 0.15s, background 0.15s; }
+.tools button:hover:not(:disabled) { color: var(--text); border-color: var(--line-2); }
+.tools button:disabled { opacity: 0.35; cursor: default; }
+.tools a.help { display: inline-flex; align-items: center; height: 30px; padding: 0 11px; border: 1px solid transparent; border-radius: 8px; color: var(--muted); font-size: 13px; font-weight: 550; text-decoration: none; transition: color 0.15s, border-color 0.15s; }
+.tools a.help:hover { color: var(--text); border-color: var(--line-2); }
+.tools button[aria-pressed="true"] { color: var(--text); border-color: rgba(63, 224, 207, 0.45); background: rgba(63, 224, 207, 0.08); }
+
+/* one screen: the scene and the brain */
+.app { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); height: calc(100vh - var(--bar)); height: calc(100dvh - var(--bar)); min-height: 420px; }
+.pane { position: relative; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
+.pane.brain { border-left: 1px solid var(--line); }
+/* the scene's pane: the promise, the table and the coach's line as one group, in the middle of
+   the pane, on a floor lit from the table */
+.pane.world { justify-content: center; padding: 6px clamp(8px, 1.2vw, 18px) 10px;
+  background: radial-gradient(ellipse 62% 46% at 50% 50%, rgba(56, 96, 170, 0.16), rgba(30, 50, 110, 0.05) 62%, transparent 82%); }
+.promise { margin: 0 0 clamp(8px, 1.6vh, 18px); padding: 0 16px; font-size: clamp(17px, 1.55vw, 23px); line-height: 1.25; font-weight: 600; letter-spacing: -0.018em; color: #dfe5f6; text-wrap: balance; }
+.problem { margin: calc(-1 * clamp(4px, 1.2vh, 14px)) 0 clamp(8px, 1.4vh, 16px); padding: 0 16px; color: var(--muted); font-size: clamp(13.5px, 1.05vw, 15.5px); line-height: 1.4; text-wrap: balance; }
+.brain-title { position: absolute; left: 14px; top: 10px; z-index: 1; margin: 0; color: #c7d0ea; font-size: 12.5px; font-weight: 600; pointer-events: none; }
+.brain-title span { display: block; color: var(--faint); font-size: 11.5px; font-weight: 500; }
+.brain-title i { display: inline-grid; place-items: center; width: 13px; height: 13px; border: 1px solid rgba(199, 208, 234, 0.5); border-radius: 50%; font: 700 9px/1 Inter, system-ui, sans-serif; font-style: normal; color: #c7d0ea; vertical-align: 1px; }
+.coach p a { color: var(--brain); }
+.coach p b { color: var(--text); font-weight: 600; }
+.scene-wrap { position: relative; flex: 0 1 auto; width: 100%; aspect-ratio: 2.1 / 1.7; max-height: calc(100% - 240px); min-height: 0; }
+.below { min-height: 150px; padding: 12px 16px 0; }
+.onmap { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 14px; margin: 0 0 8px; min-height: 18px; color: var(--muted); font: 500 11.5px/1.5 var(--mono); }
+.onmap .lead { color: var(--faint); font: 600 10px/1.5 Inter, system-ui, sans-serif; letter-spacing: 0.08em; text-transform: uppercase; }
+.onmap span { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; color: #c7d0ea; }
+.onmap i { width: 7px; height: 7px; border-radius: 50%; }
+.onmap em { font-style: normal; color: var(--muted); }
+.said { margin: 0 0 6px; min-height: 22px; color: var(--gold); font-size: 14.5px; font-weight: 550; line-height: 1.4; transition: opacity 0.4s; }
+.said.old { opacity: 0; }
+#scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: default; outline: none; }
+#scene.grab { cursor: grab; }
+#scene.dragging { cursor: grabbing; }
+#scene.tap { cursor: pointer; }
+#scene.keys:focus { box-shadow: inset 0 0 0 2px rgba(63, 224, 207, 0.4); }
+.chips { position: absolute; left: 12px; top: 10px; display: flex; flex-wrap: wrap; gap: 6px; pointer-events: none; }
+.chip { padding: 2px 9px; border: 1px dashed var(--line-2); border-radius: 999px; background: rgba(8, 11, 20, 0.78); color: var(--muted); font: 500 11.5px/1.5 var(--mono); white-space: nowrap; }
+.chip.brainc { color: var(--brain); border-style: solid; }
+.chip.held { color: var(--brain); border-color: rgba(63, 224, 207, 0.4); }
+.chip.gone { color: var(--gold); border-color: rgba(255, 206, 102, 0.45); }
+body:not(.more) .more { display: none; }
+/* whose hand the brain follows: two buttons over the scene's corner */
+.segmented.case { position: absolute; right: 10px; top: 8px; z-index: 2; background: rgba(8, 11, 20, 0.8); }
+.segmented.case button { height: 26px; padding: 0 10px; font-size: 12px; }
+/* the guide's table of what the program does and what the brain does, in a stage's card */
+.card p.who { margin: 5px 0 0; padding-top: 5px; border-top: 1px solid var(--line); font-size: 11.5px; line-height: 1.38; color: #b9c2dc; }
+.card p.who b { color: var(--text); }
+.card p.who i { font-style: normal; color: var(--muted); }
+.card code { font-size: 0.9em; }
+
+.welcome { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(380px, calc(100% - 32px)); padding: 20px 22px 18px; border: 1px solid var(--line-2); border-radius: var(--radius); background: rgba(9, 12, 22, 0.92); backdrop-filter: blur(8px); box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55); text-align: center; }
+.welcome h2 { margin: 0 0 6px; font-size: 22px; font-weight: 650; letter-spacing: -0.02em; }
+.welcome p { margin: 0 0 8px; font-size: 15px; }
+.welcome .small { color: var(--muted); font-size: 13px; }
+.welcome .small a { color: var(--muted); }
+.welcome .small.link { margin: 12px 0 0; }
+.welcome .row { display: flex; justify-content: center; gap: 8px; margin-top: 14px; }
+.welcome button, .coach button, .knobs > button, .card .nav button {
+  height: 34px; padding: 0 14px; border: 1px solid var(--line-2); border-radius: 9px; background: var(--panel-2); color: var(--text); font-size: 13.5px; font-weight: 550; cursor: pointer;
+}
+button.primary { border-color: rgba(63, 224, 207, 0.5) !important; background: rgba(63, 224, 207, 0.12) !important; }
+
+.coach { display: flex; align-items: flex-start; gap: 12px; }
+.coach .dots { margin-top: 7px; }
+.coach p { flex: 1; margin: 0; font-size: 15px; line-height: 1.4; text-wrap: balance; }
+.coach.quiet p { color: var(--muted); font-size: 13.5px; }
+.coach.done p { color: var(--brain); }
+.coach button { height: 28px; padding: 0 10px; font-size: 12.5px; color: var(--muted); flex: none; }
+.dots { display: flex; gap: 5px; flex: none; }
+.dots:empty { display: none; }
+.dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--line-2); }
+.dots i.on { background: var(--brain); box-shadow: 0 0 8px var(--brain); }
+.dots i.did { background: rgba(63, 224, 207, 0.45); }
+
+/* the brain */
+.brain-stage { position: relative; flex: 1; min-height: 0; overflow: hidden; touch-action: manipulation; }
+.brain-stage canvas { position: absolute; inset: 0; display: block; pointer-events: none; }
+.parts { position: absolute; inset: 0; }
+.part { position: absolute; padding: 0; border: 0; border-radius: 12px; background: transparent; cursor: help; }
+.part:focus-visible { outline: 2px solid rgba(255, 255, 255, 0.75); outline-offset: 2px; }
+/* a region's name and its question mark: one button */
+.part.ask { display: flex; justify-content: flex-end; align-items: center; border-radius: 5px; }
+.part.ask::after { content: '?'; display: grid; place-items: center; width: 13px; height: 13px; border: 1px solid rgba(199, 208, 234, 0.5); border-radius: 50%; background: rgba(6, 8, 14, 0.8); color: #c7d0ea; font: 700 9px/1 Inter, system-ui, sans-serif; transition: color 0.15s, border-color 0.15s; }
+.part.ask:hover::after, .part.ask:focus-visible::after { border-color: var(--brain); color: var(--brain); }
+.badge { position: absolute; left: 14px; top: 10px; padding: 1px 8px; border: 1px solid rgba(255, 206, 102, 0.5); border-radius: 999px; color: var(--gold); font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; pointer-events: none; }
+.readout { position: absolute; left: 14px; bottom: 10px; color: var(--faint); font: 500 11px/1.4 var(--mono); pointer-events: none; white-space: nowrap; }
+.follow { position: absolute; right: 12px; bottom: 6px; height: 26px; padding: 0 9px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: var(--faint); font-size: 12px; font-weight: 550; cursor: pointer; }
+.follow:hover, .follow[aria-pressed="true"] { color: var(--text); border-color: var(--line-2); }
+
+/* a part's card: nothing shows until the visitor points at something */
+.card {
+  position: absolute; z-index: 6; width: min(330px, calc(100% - 20px)); padding: 12px 14px 12px;
+  border: 1px solid var(--line-2); border-radius: 12px; background: rgba(9, 12, 22, 0.95); backdrop-filter: blur(8px);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55); font-size: 13px; line-height: 1.45; pointer-events: none;
+}
+.card.pinned { pointer-events: auto; }
+.card.wide { width: min(420px, calc(100% - 20px)); }
+.card .kicker { margin: 0 0 4px; color: var(--faint); font-size: 10.5px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; }
+.card h3 { margin: 0; font-size: 14.5px; font-weight: 650; letter-spacing: -0.005em; }
+.card .role { margin: 1px 0 7px; color: var(--c, var(--brain)); font-size: 12px; font-weight: 550; }
+.card p { margin: 0 0 7px; color: #cfd6ea; }
+.card .live { margin: 8px 0 0; padding: 8px 10px; border-radius: 9px; background: rgba(63, 224, 207, 0.07); border: 1px solid rgba(63, 224, 207, 0.18); color: var(--text); }
+.card .live b { display: block; margin-bottom: 2px; color: var(--brain); font-size: 10.5px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; }
+.card .live span { font-variant-numeric: tabular-nums; }
+.card .unit { margin: 7px 0 0; color: var(--muted); font-size: 12px; }
+.card .mark { margin: 8px 0 0; color: var(--gold); font-size: 11.5px; }
+.card svg.peak { display: block; width: 100%; height: auto; margin: 4px 0 2px; }
+.card svg.peak text { font: 500 9px var(--mono); fill: var(--faint); }
+.card .nav { display: flex; align-items: center; gap: 6px; margin-top: 10px; }
+.card .nav span { flex: 1; color: var(--faint); font: 500 11.5px var(--mono); text-align: center; }
+.card .nav button { height: 28px; padding: 0 10px; font-size: 13px; }
+
+/* details: off until asked for; they open over the brain's pane, so the page stays one screen */
+.details { position: fixed; z-index: 30; right: 12px; bottom: 12px; width: min(680px, calc(50vw - 24px)); max-height: calc(100dvh - var(--bar) - 24px); overflow: auto;
+  padding: 12px 14px 14px; border: 1px solid var(--line-2); border-radius: var(--radius); background: rgba(9, 12, 22, 0.94); backdrop-filter: blur(8px); box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55); }
+.details .close { position: absolute; right: 8px; top: 6px; width: 26px; height: 26px; border: 0; border-radius: 7px; background: transparent; color: var(--muted); font-size: 18px; line-height: 1; cursor: pointer; }
+.details .close:hover { color: var(--text); background: var(--panel-2); }
+.details .panel figcaption { padding-right: 26px; }
+.panels { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+.panel { margin: 0; min-width: 0; padding: 9px 11px 8px; border: 1px solid var(--line); border-radius: 12px; background: rgba(10, 14, 25, 0.7); }
+.panel figcaption { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 10px; color: var(--muted); font-size: 11.5px; margin-bottom: 4px; }
+.panel figcaption b { color: var(--text); font-size: 12.5px; font-weight: 650; }
+.panel canvas { display: block; width: 100%; height: 170px; }
+.panel .legend b { color: var(--text); font: 500 11px var(--mono); }
+.legend { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+.legend > span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.legend .sw.shade { display: inline-block; width: 8px; height: 8px; border-radius: 2px; background: rgba(120, 135, 190, 0.35); }
+.legend .ln { display: inline-block; width: 14px; height: 2px; border-radius: 1px; }
+.legend .ln.brain { background: var(--brain); height: 3px; }
+.legend .ln.kalman { background: var(--violet); }
+.legend .ln.last { background: var(--gold); }
+.settings { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 22px; margin-top: 12px; }
+.stats { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; }
+.stats dt { color: var(--faint); font-size: 10px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; }
+.stats dd { margin: 0; font: 500 12.5px/1.3 var(--mono); color: var(--text); white-space: nowrap; }
+.knobs { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.knobs > button:disabled { opacity: 0.4; cursor: default; }
+.segmented { display: inline-flex; padding: 2px; border: 1px solid var(--line-2); border-radius: 10px; background: var(--panel-2); }
+.segmented button { height: 28px; border: 0; border-radius: 7px; background: transparent; color: var(--muted); padding: 0 11px; font-size: 13px; font-weight: 550; cursor: pointer; }
+.segmented button[aria-pressed="true"] { background: #1a2340; color: var(--text); }
+.select select { height: 34px; max-width: 240px; padding: 0 28px 0 11px; border: 1px solid var(--line-2); border-radius: 9px; background: var(--panel-2); font-size: 13px; appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%); background-position: calc(100% - 15px) 15px, calc(100% - 10px) 15px; background-size: 5px 5px; background-repeat: no-repeat; }
+.toggle { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 13px; cursor: pointer; }
+.toggle input { accent-color: var(--brain); }
+
+/* a narrow window, and a phone: the scene above the brain */
+@media (max-width: 860px), (max-aspect-ratio: 1 / 1) {
+  .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1.12fr) minmax(0, 1fr); min-height: 560px; transition: grid-template-rows 0.25s; }
+  .pane.world { padding: 4px 8px 6px; }
+  .promise, .problem { display: none; }
+  .brain-title span { display: none; }
+  .scene-wrap { max-height: calc(100% - 134px); }
+  .chips { left: 8px; right: 8px; top: 6px; gap: 4px; }
+  .chip { font-size: 10.5px; white-space: normal; }
+  .chip .wide { display: none; } /* a narrow screen keeps a chip to its first words */
+  .segmented.case { right: 4px; top: 4px; padding: 1px; }
+  .segmented.case button { height: 22px; padding: 0 6px; font-size: 10.5px; }
+  .below { min-height: 128px; padding: 6px 6px 0; overflow: hidden; }
+  .said { min-height: 0; margin-bottom: 2px; font-size: 13px; }
+  .pane.brain { border-left: 0; border-top: 1px solid var(--line); }
+  /* the steps' dots and Skip on one line, the step's text under them across the pane */
+  .coach { min-height: 0; padding: 0; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+  .coach .dots { margin-top: 0; }
+  .coach button { order: 1; margin-left: auto; height: 24px; }
+  .coach p { order: 2; flex: 1 1 100%; font-size: 14px; line-height: 1.35; }
+  .coach.quiet p { font-size: 13px; }
+  /* an answer's sentence takes the place of the standing hint while it shows */
+  .said:not(:empty):not(.old) + .coach.quiet, .said:not(:empty):not(.old) + .coach .aside { display: none; }
+  /* a card is a sheet from the bottom; while it is open the brain's pane grows and the brain moves up above it */
+  .card { left: 0 !important; right: 0; top: auto !important; bottom: 0; width: auto; height: 46%; overflow: auto; padding: 10px 14px 12px; font-size: 12.5px;
+    border-radius: 14px 14px 0 0; border-width: 1px 0 0; box-shadow: 0 -12px 34px rgba(0, 0, 0, 0.5); pointer-events: auto; }
+  .card p { margin-bottom: 5px; }
+  .card svg.peak { max-height: 64px; }
+  body.sheet .app { grid-template-rows: minmax(0, 0.62fr) minmax(0, 1fr); }
+  body.sheet .follow, body.sheet .readout { display: none; }
+  /* with a sheet open the scene's pane is short: the scene and an answer's sentence, no coach */
+  body.sheet .coach { display: none; }
+  body.sheet .scene-wrap { max-height: calc(100% - 50px); }
+  body.sheet .below { min-height: 0; }
+  .panels { grid-template-columns: minmax(0, 1fr); }
+  .details { left: 8px; right: 8px; bottom: 8px; width: auto; max-height: 52dvh; }
+  .onmap { gap: 0 10px; margin-bottom: 4px; font-size: 10.5px; }
+}
+@media (max-width: 560px) {
+  :root { --bar: 42px; }
+  .bar { gap: 6px; padding: 0 10px; }
+  .brand .lib, .brand .slash { display: none; }
+  .runtime span { display: none; }
+  .tools button { padding: 0 8px; font-size: 12.5px; }
+  .readout { font-size: 10px; }
+  .follow { font-size: 11.5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+.coach .aside { display: block; margin-top: 2px; color: var(--muted); font-size: 12.5px; }
+.coach b { font-weight: 650; color: #fff; }

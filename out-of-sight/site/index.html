@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#06080e">
+  <meta name="description" content="Hide the hand, and the brain knows where it is: a Cadence brain holds a map of what is where, in its own activity. The brain runs in your browser.">
+  <title>Out of sight · Cadence</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="bar">
+    <a class="brand" href="../" aria-label="Cadence demos"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 17h5l4-10 7 20 4-13h6"/></svg><span class="lib">cadence</span><span class="slash">/</span><span class="sub">out of sight</span></a>
+    <span class="runtime" id="runtime" role="status"><i id="runtime-dot"></i><span id="runtime-text">Starting the brain</span></span>
+    <nav class="tools" aria-label="The page">
+      <button id="tour" type="button" title="Play the tutorial">Tutorial</button>
+      <button id="undo" type="button" title="Take the last move back" disabled>Undo</button>
+      <button id="reset" type="button" title="Put everything back where it stood">Reset</button>
+      <button id="details" type="button" aria-pressed="false" aria-controls="details-panel" title="The chart against two controls, the numbers and scene files">Details</button>
+      <a class="help" href="help.html" target="_blank" rel="noopener" title="What the page shows, in full">Help</a>
+    </nav>
+  </header>
+
+  <main class="app">
+    <section class="pane world" aria-label="The scene">
+      <h1 class="promise" data-promise>Hide the hand, and the brain knows where it is.</h1>
+      <p class="problem">This robot sees only part of the room. Its brain keeps a map of where everything is, even what its camera cannot see.</p>
+      <div class="scene-wrap" id="scene-wrap">
+        <canvas id="scene" tabindex="0" role="application" aria-describedby="keys"
+          aria-label="A room seen from above: a robot with a camera and an arm, a hand, an apple and a slice of bread. The camera lights the part of the room it sees; a pillar and the arm cast shadows. Drag the hand, a thing or the pillar; drag the floor to turn the camera; tap a thing to ask where the brain's map holds it, or the floor to ask what is there; tap the robot to switch its camera."></canvas>
+        <div class="chips" aria-hidden="true">
+          <span class="chip" id="chip-view" hidden>out of view</span>
+        </div>
+        <div class="segmented case" role="group" aria-label="Whose hand the brain follows">
+          <button type="button" data-case="other" aria-pressed="true" title="A person's hand moves by itself: the brain knows it from the camera">A person’s hand</button>
+          <button type="button" data-case="own" aria-pressed="false" title="The robot's own hand: its joint readings place it, seen or not. Tap the floor and the arm reaches there">The robot’s own hand</button>
+        </div>
+        <div class="welcome" id="welcome" hidden>
+          <h2>Out of sight</h2>
+          <p data-promise>Hide the hand, and the brain knows where it is.</p>
+          <p class="small">The robot sees only part of the room. Its brain keeps a map of where everything is, even what its camera cannot see. Four short steps show it.</p>
+          <div class="row"><button class="primary" id="welcome-go" type="button">Show me</button><button id="welcome-skip" type="button">Explore on my own</button></div>
+          <p class="small link"><a href="help.html" target="_blank" rel="noopener">What am I looking at?</a></p>
+        </div>
+      </div>
+      <div class="below">
+        <p class="onmap" id="onmap" aria-live="off"></p>
+        <p class="said" id="said" role="status" aria-live="polite"></p>
+        <div class="coach" id="coach" role="status" aria-live="polite">
+          <span class="dots" id="coach-dots" aria-hidden="true"></span>
+          <p id="coach-text">The brain is waking up in your browser.</p>
+          <button id="coach-skip" type="button" hidden>Skip</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="pane brain" aria-label="The whole brain">
+      <div class="brain-stage" id="brain-stage">
+        <canvas id="brain" aria-hidden="true"></canvas>
+        <canvas id="brain-overlay" aria-hidden="true"></canvas>
+        <div class="parts" id="parts" role="group" aria-label="The parts of the brain. Each one explains itself."></div>
+        <p class="brain-title">The robot’s brain, live <span>Point at a <i>?</i> to see what a part does</span></p>
+        <div class="readout" id="readout" aria-live="off"></div>
+        <button class="follow" id="follow" type="button" title="Step through how a position travels through the map, one part at a time">Follow the position ›</button>
+        <div class="card" id="card" role="dialog" aria-label="A part of the brain, explained" hidden></div>
+      </div>
+    </section>
+  </main>
+
+  <section class="details" id="details-panel" aria-label="Details" hidden>
+    <button class="close" id="details-close" type="button" aria-label="Close the details" title="Close">×</button>
+    <div class="panels">
+      <figure class="panel wide">
+        <figcaption><b>Distance from the true hand</b>
+          <span class="legend"><span><i class="ln brain"></i>the map <b id="e-brain">–</b></span><span><i class="ln kalman"></i>Kalman filter <b id="e-kalman">–</b></span><span><i class="ln last"></i>last seen <b id="e-last">–</b></span><span><i class="sw shade"></i>out of view</span></span>
+        </figcaption>
+        <canvas id="chart" aria-label="The distance from the true hand of the map's place, of the Kalman filter and of the last seen place, over the last ten seconds"></canvas>
+      </figure>
+    </div>
+    <div class="settings">
+      <dl class="stats">
+        <div><dt>A moment</dt><dd id="s-ms">–</dd></div>
+        <div><dt>Frame</dt><dd id="s-frame">–</dd></div>
+        <div title="The cells of the map that hold the hand"><dt>The hand’s cells</dt><dd id="s-cells">–</dd></div>
+      </dl>
+      <div class="knobs">
+        <button id="load" type="button" title="Replay a scene file of the tracking chamber (cadence-tracking-scene/1)">Load a scene</button>
+        <input id="file" type="file" accept=".json,application/json" hidden>
+      </div>
+    </div>
+  </section>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
