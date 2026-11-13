@@ -1,0 +1,18 @@
+{
+  "slug": "patch-world",
+  "title": "Patch World",
+  "page_dir": "web",
+  "card": "Creatures whose brains learn while they live: when winter makes berries poisonous, learners stop eating them and frozen twins do not.",
+  "tagline": "Creatures that learn while they live, and evolve across generations",
+  "kicker": "A BRAIN THAT LEARNS WHILE IT LIVES",
+  "feature": "Each creature's Cadence brain has real memory and a real state, runs in real time and learns while it lives. When winter makes berries poisonous, learners learn to leave them (99% eaten in summer, 5% late in winter); frozen twins do not.",
+  "howTo": "Press Flip the season: berries turn poisonous. Watch the chart: the learners' teal line falls, the frozen twins' blue line stays up. Click a creature to watch its brain learn. Drop berries, roots or a predator on the map.",
+  "help": "help.html",
+  "evidence": [
+    "patch-world/evidence/flip.json",
+    "patch-world/evidence/seasons.json",
+    "patch-world/evidence/controls.json",
+    "patch-world/evidence/promise-flip-20261113.json"
+  ],
+  "promise_test": "python patch-world/tools/promise_flip.py --out <dir> --shots <dir>"
+}

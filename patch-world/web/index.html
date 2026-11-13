@@ -11,55 +11,94 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="cadence-explain.css">
+  <script src="cadence-explain.js" defer></script>
 </head>
 <body>
   <header class="masthead">
-    <a class="brand" href="../" aria-label="Cadence demos"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 17h5l4-10 7 20 4-13h6"/></svg><span>cadence</span><span class="slash">/</span><span class="sub">patch world</span></a>
-    <span class="runtime" id="runtime"><i id="runtime-dot"></i><span id="runtime-text">Starting the world…</span><span class="runtime-more" id="runtime-more"></span></span>
+    <a class="brand" href="../" aria-label="Cadence demos" data-standalone><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 17h5l4-10 7 20 4-13h6"/></svg><span>cadence</span><span class="slash">/</span><span class="sub">patch world</span></a>
+    <span class="runtime" id="runtime" data-explain="The world and every creature's brain run in this browser tab, in Python, with the released Cadence library. This line says how long a moment takes." data-explain-mark="none"><i id="runtime-dot"></i><span id="runtime-text">Starting the world…</span><span class="runtime-more" id="runtime-more"></span></span>
   </header>
 
   <main>
-    <section class="intro">
-      <h1>Creatures with Cadence brains forage, get poisoned, learn and evolve while you watch.</h1>
-      <p class="task">Berries nourish in summer and sicken in winter, and nothing a creature senses says which season it is. Each learner is one continuing Cadence brain that learns from what its own actions bring; a poisoning surprises it, and the surprise wakes its learning. Beside the learners live two controls: <b class="k-frozen">frozen twins</b>, the same brains that never learn, and <b class="k-random">random walkers</b>. Flip the season and watch who keeps eating the berries.</p>
+    <section class="intro" data-standalone>
+      <h1>Creatures whose brains learn while they live.</h1>
+      <p class="task">Berries nourish in summer and sicken in winter. Flip the season and watch who stops eating them: the <b class="k-live">learners</b> or their <b class="k-frozen">frozen twins</b>.</p>
     </section>
 
-    <div class="stage">
+    <div class="stage" id="stage">
       <section class="world-col" aria-label="The world">
         <div class="world-wrap" id="world-wrap">
           <canvas id="world" width="960" height="640" aria-label="The world: ground, meadows, berry thickets, ponds, creatures and predators"></canvas>
           <div class="hud">
-            <span class="season" id="season"><i id="season-icon"></i><span id="season-text">summer</span><span class="ring"><b id="season-bar"></b></span></span>
-            <span class="clock" id="clock">moment 0</span>
-            <span class="daynight" id="daynight">day</span>
+            <span class="season" id="season" data-explain="In summer a berry nourishes; in winter it makes a creature sick. Nothing a creature senses names the season: it finds out by eating. The bar shows how far the season has run; a season lasts 1,500 moments." data-explain-title="The season"><i id="season-icon"></i><span id="season-text">summer</span><span class="ring"><b id="season-bar"></b></span></span>
+            <span class="clock" data-explain="A moment is one step of the world: every creature senses, its brain settles on an action, and it acts." data-explain-title="Moments"><span id="clock">moment 0</span></span>
+            <span class="daynight" data-explain="At night the creatures' senses reach half as far. The air turns cold slowly after winter begins, so for a while the air of a new winter feels like summer." data-explain-title="Day, night and the air"><span id="daynight">day</span></span>
           </div>
+          <span class="world-label" data-explain="The world, seen from above. Teal creatures are learners, blue ones with an ice rim are frozen twins, orange ones with a question mark are random walkers; red triangles are predators. The ring around a creature is its stored energy. Click a creature to watch its brain." data-explain-title="The world">The world · click a creature</span>
           <div class="tool-hint" id="tool-hint" hidden></div>
           <div class="loading" id="loading"><div class="spinner"></div><p id="loading-text">Starting Python in your browser. The first visit downloads Pyodide and NumPy and takes a moment…</p></div>
         </div>
         <div class="controls">
-          <button class="primary" id="play" type="button" disabled>Pause</button>
-          <div class="segmented" role="group" aria-label="Speed">
+          <button class="primary" id="play" type="button" disabled data-explain="Pauses the world, or lets it run again." data-explain-mark="none">Pause</button>
+          <div class="segmented" role="group" aria-label="Speed" data-explain="How fast the world runs: Slow and Normal show 3 and 10 moments a second; Fast runs as fast as the brains settle in your browser. A learner leaves the berries within a few hundred moments of winter, so Fast shows it sooner." data-explain-mark="none">
             <button type="button" data-speed="3" aria-pressed="false">Slow</button>
             <button type="button" data-speed="10" aria-pressed="true">Normal</button>
             <button type="button" data-speed="1000" aria-pressed="false">Fast</button>
           </div>
-          <button id="flip" type="button" disabled title="Turn the season now">Flip the season</button>
+          <button id="flip" type="button" disabled data-explain="Turns the season at once. In winter every berry makes a creature sick. A learner finds out by eating one, and the surprise wakes its learning: it learns to leave berries. A frozen twin never learns and keeps eating them." data-explain-mark="none">Flip the season</button>
           <div class="segmented tools" role="group" aria-label="Click the map to">
-            <button type="button" data-tool="berry" aria-pressed="false" title="Click the map to drop berries">Drop berries</button>
-            <button type="button" data-tool="root" aria-pressed="false" title="Click the map to drop roots">Drop roots</button>
-            <button type="button" data-tool="predator" aria-pressed="false" title="Click the map to add a predator">Add predator</button>
+            <button type="button" data-tool="berry" aria-pressed="false" data-explain="Choose it, then click the map: berries appear on a 3 x 3 patch." data-explain-mark="none">Drop berries</button>
+            <button type="button" data-tool="root" aria-pressed="false" data-explain="Choose it, then click the map: roots appear on a 3 x 3 patch. Roots nourish in every season." data-explain-mark="none">Drop roots</button>
+            <button type="button" data-tool="predator" aria-pressed="false" data-explain="Choose it, then click the map: a predator appears there and hunts the creatures it senses (up to four predators)." data-explain-mark="none">Add predator</button>
           </div>
-          <button id="calm" type="button" disabled title="Remove the newest predator">Remove predator</button>
+          <button id="calm" type="button" disabled data-explain="Removes the newest predator." data-explain-mark="none">Remove predator</button>
+          <a class="help" data-help href="help.html" target="_blank" rel="noopener" data-explain="Everything this page shows, explained in full." data-explain-mark="none">Help</a>
         </div>
+        <div class="coach" id="coach" role="status" aria-live="polite" hidden><b id="coach-step"></b><p id="coach-text"></p><button id="coach-skip" type="button" aria-label="Hide the hints">×</button></div>
         <div class="legend">
-          <span><i class="dot live"></i>learner</span><span><i class="dot frozen"></i>frozen twin</span><span><i class="dot random"></i>random walker</span><span><i class="tri"></i>predator</span>
-          <span><i class="food berry"></i>berry</span><span><i class="food root"></i>root</span><span><i class="food leaf"></i>leaf</span><span><i class="cache"></i>hidden cache</span><span><i class="sq water"></i>water</span>
+          <span data-explain="A learner: one continuing Cadence brain that learns from what its own actions bring, while it lives. It glows gold while it is learning. A well-fed learner bears a child with a copy of its brain." data-explain-mark="none"><i class="dot live"></i>learner</span><span data-explain="A frozen twin: a founder's brain that acts but never learns. It shows what the same brain does without learning during its life." data-explain-mark="none"><i class="dot frozen"></i>frozen twin</span><span data-explain="A random walker has no brain: it picks one of its six actions at random. The baseline." data-explain-mark="none"><i class="dot random"></i>random walker</span><span data-explain="A predator hunts the creatures it senses. A bite costs energy; a resting predator is faded." data-explain-mark="none"><i class="tri"></i>predator</span>
+          <span><i class="food berry"></i>berry</span><span><i class="food root"></i>root</span><span><i class="food leaf"></i>leaf</span><span data-explain="Nuts hidden in four caches, marked here for you. A creature finds a cache only by standing on it." data-explain-mark="none"><i class="cache"></i>hidden cache</span><span><i class="sq water"></i>water</span>
         </div>
       </section>
 
-      <aside class="side">
+      <div class="right-col">
+        <section class="panel chart-panel" id="chart-panel">
+          <div class="panel-head"><h2 data-explain="Of the berries a creature stood on, the share it ate, per 50 moments: learners in teal, frozen twins in blue. Shaded: winter, when every berry eaten makes a creature sick. After a flip into winter the learners' line falls as they learn to leave berries; the twins' line stays up, since they never learn." data-explain-title="The learning, as a chart">Berries eaten when standing on one</h2><span class="sub">share, per 50 moments</span></div>
+          <canvas id="chart" width="560" height="190" aria-label="Share of berries eaten when standing on one, learners against frozen twins"></canvas>
+        </section>
+        <section class="inspector" id="inspector" aria-label="The selected creature">
+          <div class="insp-head">
+            <div><h2 id="insp-title">Creature</h2><p id="insp-sub"></p></div>
+            <div class="insp-tools"><span class="insp-live" data-explain="Every light on this brain is the creature's real state at this moment, read from its brain in your browser. Point at a part, or at its question mark, for what it does. Gold over the whole brain means it is learning." data-explain-title="Its brain, live">its brain, live</span><button type="button" id="insp-close" aria-label="Close" data-explain="Closes the brain view." data-explain-mark="none">×</button></div>
+          </div>
+          <div class="bv-wrap">
+            <canvas id="brainview" width="1000" height="560" aria-label="The creature's brain seen from the side: every neuron, tract, the dopamine and arousal nuclei and the hippocampus, lit by its real state this moment"></canvas>
+          </div>
+          <div class="insp-grid">
+            <div class="insp-col">
+              <div class="bars">
+                <div class="bar"><span data-explain="Its stored energy. Food raises it; every neuron, every move and every moment of learning costs some. At zero it starves." data-explain-mark="none">energy</span><b><i id="bar-energy"></i></b><em id="val-energy"></em></div>
+                <div class="bar"><span data-explain="How thirsty it is. Drinking beside water lowers it; thirst burns energy." data-explain-mark="none">thirst</span><b><i id="bar-thirst"></i></b><em id="val-thirst"></em></div>
+                <div class="bar"><span data-explain="How aroused its brain is. A surprise (a berry that poisons) or a want (too little food) raises it; above the creature's threshold the brain learns." data-explain-mark="none">arousal</span><b><i id="bar-level"></i></b><em id="val-level"></em></div>
+              </div>
+              <div class="mode-line" data-explain="Calm: the brain answers from one settle and learns nothing. Aroused: it tries alternatives and learns from what they bring. The settle: how many sweeps its neurons took to agree, and the action it chose." data-explain-title="Calm or learning"><span class="chip" id="mode-chip">routine</span><span id="settle-line"></span></div>
+              <div class="spark-wrap" data-explain="Its arousal over the last 160 moments; shaded where it was aroused and learning." data-explain-mark="none"><canvas id="arousal-spark" width="320" height="56" aria-label="Arousal level over the last moments"></canvas></div>
+            </div>
+            <div class="insp-col">
+              <section class="genes"><h3 class="insp-h" data-explain="Its genes: inherited from its parent, mutated at birth. They set how fast it learns, how widely it tries alternatives when aroused, when it bears young, how far it senses and how big it is." data-explain-title="Genes">genes</h3>
+              <dl class="gene-list" id="genes"></dl></section>
+              <section class="story"><h3 class="insp-h" data-explain="What this creature ate, drank and suffered since it was born." data-explain-mark="none">its life so far</h3>
+              <div class="story-text" id="story"></div></section>
+              <p class="foot" id="brain-size"></p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <aside class="side" id="side">
         <section class="panel">
-          <div class="panel-head"><h2>Who eats well</h2><span class="sub">since the page opened</span></div>
+          <div class="panel-head"><h2 data-explain="For each kind of creature, since the page opened: how many are alive, their intake (the food and water their own actions brought, per moment of life), poisonings per 1,000 moments, lives ended and the mean age at death. Learners bear young, and each child takes half its parent's energy." data-explain-title="Who eats well">Who eats well</h2><span class="sub">since the page opened</span></div>
           <table class="tally" id="tally">
             <thead><tr><th></th><th>alive</th><th>intake / moment</th><th>poisonings / 1k</th><th>lives ended</th><th>age at death</th></tr></thead>
             <tbody></tbody>
@@ -67,54 +106,17 @@
           <p class="foot" id="tally-foot"></p>
         </section>
         <section class="panel">
-          <div class="panel-head"><h2>Berries eaten when standing on one</h2><span class="sub">share, per 50 moments</span></div>
-          <canvas id="chart" width="560" height="190" aria-label="Share of berries eaten when standing on one, learners against frozen twins"></canvas>
-          <p class="foot">Shaded: winter, when every berry eaten is a poisoning. A poisoned learner is surprised, learns from the outcome and leaves the next berries it stands on; when summer returns it tries them again. The frozen twins never change.</p>
-        </section>
-        <section class="panel">
-          <div class="panel-head"><h2>The population evolving</h2><span class="sub">learners' mean genes</span></div>
+          <div class="panel-head"><h2 data-explain="A well-fed learner bears a child: a copy of its brain as it is at that moment, and mutated genes. Everything a brain and a body have costs energy every moment, so the genes that pay off spread. Each line is the living learners' mean of one gene over time." data-explain-title="Evolution">The population evolving</h2><span class="sub">learners' mean genes</span></div>
           <div class="evo" id="evo"></div>
-          <p class="foot">A well-fed learner bears a child that inherits a copy of its brain and mutated genes; everything a brain and a body have costs energy every moment.</p>
         </section>
         <section class="panel feed-panel">
-          <div class="panel-head"><h2>What happened</h2></div>
+          <div class="panel-head"><h2 data-explain="Births, deaths, poisonings, and learners that were poisoned before and walk past a berry. Click a name to watch that creature's brain." data-explain-title="What happened">What happened</h2></div>
           <ol class="feed" id="feed"></ol>
         </section>
       </aside>
     </div>
 
-    <section class="inspector" id="inspector" aria-label="The selected creature" hidden>
-      <div class="insp-head">
-        <div><h2 id="insp-title">Creature</h2><p id="insp-sub"></p></div>
-        <div class="insp-tools"><label class="toggle"><input type="checkbox" id="follow"> follow</label><button type="button" id="insp-close" aria-label="Close">×</button></div>
-      </div>
-      <div class="bv-wrap">
-        <canvas id="brainview" width="1000" height="560" aria-label="The creature's brain seen from the side: every neuron, tract, the dopamine and arousal nuclei and the hippocampus, lit by its real state this moment"></canvas>
-        <div class="bv-tip" id="bv-tip" hidden></div>
-      </div>
-      <p class="foot">Every light is this creature's real state this moment. Neurons light with the activation they settle to, played sweep by sweep through the settle its action came from; tracts glow with the signal their synapses carry (warm excitatory, cool inhibitory) and flash white where this moment's lesson changed synapses; the dopamine nucleus washes gold or blue with the critic's prediction error; the locus coeruleus glows with arousal, and the brain brightens while it learns; hippocampal slots light when the recall memory reads them, threaded to the places they remember. Regions are named for the role their population plays. Hover a region for what it is.</p>
-      <div class="insp-grid">
-        <div class="insp-col">
-          <div class="bars">
-            <div class="bar"><span>energy</span><b><i id="bar-energy"></i></b><em id="val-energy"></em></div>
-            <div class="bar"><span>thirst</span><b><i id="bar-thirst"></i></b><em id="val-thirst"></em></div>
-            <div class="bar"><span>arousal</span><b><i id="bar-level"></i></b><em id="val-level"></em></div>
-          </div>
-          <div class="mode-line"><span class="chip" id="mode-chip">routine</span><span id="settle-line"></span></div>
-          <canvas id="arousal-spark" width="320" height="56" aria-label="Arousal level over the last moments"></canvas>
-        </div>
-        <div class="insp-col">
-          <dl class="genes" id="genes"></dl>
-          <div class="story" id="story"></div>
-          <p class="foot" id="brain-size"></p>
-        </div>
-      </div>
-    </section>
 
-    <details class="model-card" id="model-card">
-      <summary><span>About the creatures</span><span class="summary-line" id="card-summary">founders, measured results, provenance and licence</span></summary>
-      <div class="card-body" id="card-body"><p>Loading…</p></div>
-    </details>
   </main>
 
   <footer class="footer">Made with <a href="https://github.com/muellerberndt/cadence" target="_blank" rel="noreferrer">Cadence</a>. The world and every brain run in this tab, in Python, through Pyodide. GPL-3.0.</footer>

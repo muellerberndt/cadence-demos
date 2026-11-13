@@ -15,18 +15,18 @@ const CELL = 20;
 
 const $ = (id) => document.getElementById(id);
 const canvas = $('world');
-const brainView = new BrainView($('brainview'), $('bv-tip'));
+const brainView = new BrainView($('brainview'), document.querySelector('.bv-wrap'));
 const ctx = canvas.getContext('2d');
 
 const state = {
-  ready: false, running: true, speed: 10, tool: null, selected: null, follow: false,
+  ready: false, running: true, speed: 10, tool: null, selected: null,
   width: 48, height: 32, terrain: null, food: null, snapshot: null, requests: [],
   prev: new Map(), cur: new Map(), tickAt: 0, tickMs: 100, assign: new Map(),
   details: new Map(), levels: [], particles: [], feed: [], loads: [], busy: false,
   lastTickWall: 0, moments: 0, msPerMoment: 0, manifest: null, terrainCanvas: null,
   terrainSummer: null, describe: null, inspect: null, lastInspect: 0, controls: [], modes: new Map(), heading: new Map(),
   snow: Array.from({ length: 140 }, (_, i) => ({ x: Math.random(), y: Math.random(), v: 0.4 + Math.random() * 0.6, p: i })),
-  sickened: new Map(), remembered: new Map(),
+  sickened: new Map(), remembered: new Map(), winterSince: null, coach: 0, coachOff: false,
 };
 
 // -------------------------------------------------------------------- workers
@@ -77,13 +77,16 @@ async function boot() {
     await placeBirths(opening.births);
     state.requests = opening.requests;
     applySnapshot(opening.snapshot, true);
+    // the brain of a learner is open from the start; a click on any creature opens its brain instead
+    const firstLearner = opening.snapshot.creatures.find((c) => c.kind === 'live');
+    if (firstLearner) select(firstLearner.id, false);
     state.ready = true;
     $('loading').hidden = true;
     $('runtime-dot').className = 'ready';
     const ms = Math.max(...inits.map((r) => r.startup_ms));
     setRuntime(`Cadence ${state.manifest.cadence} in ${brains.length} brain workers`, ` · ready in ${(ms / 1000).toFixed(1)} s`);
     for (const id of ['play', 'flip', 'calm']) $(id).disabled = false;
-    renderCard();
+    updateCoach();
     loop();
   } catch (error) { fail(error.message || String(error)); }
 }
@@ -197,10 +200,20 @@ function applySnapshot(s, first = false) {
   }
   state.tickMs = Math.max(30, Math.min(400, performance.now() - state.tickAt));
   state.tickAt = performance.now();
-  if (wasSummer !== s.summer) { buildTerrain(); brainView.terrain = state.terrainCanvas; }
-  updateHud(); renderTally(); renderChart();
+  if (wasSummer !== s.summer) { buildTerrain(); brainView.terrain = state.terrainCanvas; if (!s.summer) state.winterSince = s.t; }
+  updateHud(); renderTally(); renderChart(); updateCoach();
   if (state.selected != null && !state.cur.has(state.selected)) {
-    $('insp-sub').textContent = 'This creature has died.';
+    // the open brain's creature died: a moment later the brain of another learner opens
+    const gone = state.selected;
+    if (state.replacing !== gone) {
+      state.replacing = gone;
+      $('insp-sub').textContent = 'This creature has died. Another learner’s brain opens.';
+      setTimeout(() => {
+        if (state.selected !== gone) return;
+        const next = [...state.cur.values()].find((c) => c.kind === 'live');
+        if (next) select(next.id, false);
+      }, 1500);
+    }
   } else if (state.selected != null) updateInspectorLive();
 }
 
@@ -325,7 +338,6 @@ function draw(now) {
     ctx.strokeRect((state.hover.x - (state.tool === 'predator' ? 0 : 1)) * CELL, (state.hover.y - (state.tool === 'predator' ? 0 : 1)) * CELL,
       CELL * (state.tool === 'predator' ? 1 : 3), CELL * (state.tool === 'predator' ? 1 : 3));
   }
-  if (state.follow && state.selected != null && state.cur.has(state.selected)) { /* the page keeps the whole world in view */ }
 }
 
 function drawNight(dark, now) {
@@ -413,7 +425,7 @@ function updateHud() {
   $('season-bar').style.width = `${Math.round(s.season_progress * 100)}%`;
   $('clock').textContent = `moment ${s.t.toLocaleString()}`;
   const air = s.temperature > 0.66 ? 'warm' : s.temperature > 0.33 ? 'cooling' : 'cold';
-  const turning = (s.summer && s.temperature < 0.9) ? ' (warming)' : (!s.summer && s.temperature > 0.1) ? (air === 'warm' ? ' (still warm)' : '') : '';
+  const turning = (s.summer && s.temperature < 0.9) ? ' (warming)' : (!s.summer && air === 'warm') ? ' (summer air)' : '';
   $('daynight').textContent = `${s.light ? 'day' : 'night: senses reach half as far'} · air ${air}${turning}`;
 }
 
@@ -427,7 +439,7 @@ function renderTally() {
     return `<tr class="${k}"><td>${KIND_NAME[k]}s</td><td>${alive[k]}</td><td><b>${fmt(r.income_per_moment, 3)}</b></td><td>${fmt(r.poisonings_per_1000, 1)}</td><td>${fmt(r.ended)}</td><td>${fmt(r.mean_age_at_death)}</td></tr>`;
   }).join('');
   const gens = s.creatures.filter((c) => c.kind === 'live').map((c) => c.generation);
-  $('tally-foot').textContent = `Intake: the food and water a creature's own actions brought it, per moment of its life. Learners bear young when well fed: each child takes half its parent's energy, a copy of its brain and mutated genes, so in a full world learners' lives end younger than they would alone (alone, without births, learners lived 3,933 moments on average, twins 284, random walkers 300; see the card below). Generation now up to ${gens.length ? Math.max(...gens) : 0}${s.reseeded ? `; founders re-entered ${s.reseeded} times after the learners died out` : ''}. Dead controls are replaced.`;
+  $('tally-foot').textContent = `Learners up to generation ${gens.length ? Math.max(...gens) : 0}${s.reseeded ? `; founders re-entered ${s.reseeded} times after the learners died out` : ''}. A dead frozen twin or random walker is replaced.`;
 }
 
 function renderChart() {
@@ -488,7 +500,7 @@ function renderEvo(hist) {
 
 // -------------------------------------------------------------------- inspector
 
-function select(id) {
+function select(id, byVisitor = true) {
   if (!state.cur.has(id)) return;
   state.selected = id; state.levels = []; state.details.delete(id);
   $('inspector').hidden = false;
@@ -499,10 +511,11 @@ function select(id) {
   if (at !== undefined && kind !== 'random') brains[at].call('anatomy', { id }).then((r) => { if (state.selected === id) brainView.setAnatomy(r.anatomy, kind); });
   refreshInspector();
   updateInspectorLive();
+  if (!byVisitor) return;
   $('inspector').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  if (state.coach === 3) setCoach(4);
 }
 $('insp-close').onclick = () => { state.selected = null; $('inspector').hidden = true; };
-$('follow').onchange = (e) => { state.follow = e.target.checked; };
 
 async function refreshInspector() {
   state.lastInspect = performance.now();
@@ -587,7 +600,7 @@ function control(payload) {
 $('flip').onclick = async () => {
   await control({ action: 'flip' });
   const s = state.snapshot;
-  addFeed(s.t, 'flip', `The season turned: ${s.summer ? 'summer, berries nourish again' : 'winter, berries now sicken'}`);
+  addFeed(s.t, 'flip', `The season turned: ${s.summer ? 'summer, berries nourish again' : 'winter, berries sicken'}`);
 };
 $('calm').onclick = () => control({ action: 'calm' });
 function cellAt(e) {
@@ -605,23 +618,39 @@ canvas.addEventListener('click', (e) => {
   if (best) select(best.id);
 });
 
-// -------------------------------------------------------------------- the card
+// -------------------------------------------------------------------- the hints
+// Three steps walk a first visit through the page's promise: flip the season, watch the chart,
+// open a learner's brain. The x hides them.
 
-function renderCard() {
-  const m = state.manifest; if (!m) return;
-  const f = m.founders || [];
-  const rows = f.map((x) => `<tr><td>${x.name}</td><td>${x.structure}</td><td>${x.neurons}</td><td>${x.synapses.toLocaleString()}</td><td>${x.generation ?? ''}</td><td><code>${x.sha256.slice(0, 12)}…</code></td></tr>`).join('');
-  const r = m.readings || {};
-  const line = (k, text) => (r[k] ? `<li>${text(r[k])}</li>` : '');
-  $('card-summary').textContent = `${f.length} founders on cadence-net ${m.cadence}, packed ${m.packed}`;
-  $('card-body').innerHTML = `
-    <p>Each learner is one <code>Brain.compose(..., arousal=True)</code> brain living through <code>brain.live</code>: every moment it receives the outcome of its last action and its senses, settles, and acts. It learns only when aroused, by surprise or by want. The founders were raised in a nursery world where nobody dies and then evolved in the mortal world, offline, with the same Python code that runs here. On this page they keep living, learning, bearing young and dying.</p>
-    <h4>Measured on fresh seeds (receipts in the repository's <code>evidence/</code>)</h4>
-    <ul>${['controls', 'flip', 'seasons', 'evolution', 'competition', 'caches'].map((k) => line(k, (v) => v)).join('')}</ul>
-    <h4>The founders</h4>
-    <table><thead><tr><th>name</th><th>anatomy</th><th>neurons</th><th>synapses</th><th>generation</th><th>SHA-256</th></tr></thead><tbody>${rows}</tbody></table>
-    <p>Runtime: Pyodide ${m.pyodide} from jsDelivr, the released <code>cadence-net ${m.cadence}</code> wheel (<code>${m.wheel_sha256.slice(0, 16)}…</code>); every file is checked against the manifest's SHA-256 before it runs. Nothing is saved in your browser; a reload starts a new world. GPL-3.0.</p>`;
+const COACH = {
+  1: ['1 / 3', 'Press <em>Flip the season</em>. Winter makes every berry poisonous, and nothing the creatures sense says so.'],
+  2: ['2 / 3', 'Watch <em>Berries eaten when standing on one</em>: within a few hundred moments the learners’ teal line falls, the frozen twins’ blue line stays up. <em>Fast</em> gets there sooner.'],
+  3: ['3 / 3', 'Click a teal learner to watch its brain at the right. It glows gold while a surprise has it learning.'],
+  4: ['done', 'Flip again for summer: the learners come back to the berries slowly. Point at a <em>?</em> or open <em>Help</em> for more.'],
+};
+function setCoach(step) {
+  if (state.coachOff || state.coach === step) return;
+  state.coach = step;
+  const box = $('coach');
+  box.hidden = false;
+  box.classList.toggle('done', step === 4);
+  $('coach-step').textContent = COACH[step][0];
+  $('coach-text').innerHTML = COACH[step][1];
+  $('flip').classList.toggle('pulse', step === 1);
+  $('chart-panel').classList.toggle('pulse', step === 2);
 }
+function updateCoach() {
+  if (!state.ready || state.coachOff) return;
+  const s = state.snapshot;
+  if (state.coach < 1) setCoach(1);
+  if (state.coach === 1 && state.winterSince !== null) setCoach(2);
+  if (state.coach === 2 && s && s.t >= state.winterSince + 350) setCoach(3);
+}
+$('coach-skip').onclick = () => {
+  state.coachOff = true; $('coach').hidden = true;
+  $('flip').classList.remove('pulse');
+  $('chart-panel').classList.remove('pulse');
+};
 
 window.patchWorld = state; // read by check_page.py
 state.brainView = brainView;

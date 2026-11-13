@@ -145,10 +145,10 @@ main { max-width: 1380px; margin: 0 auto; padding: 16px clamp(16px, 3vw, 28px) 2
 .chip.aroused { background: #4a3510; color: var(--gold); } .chip.routine { background: #123c39; color: #bff7ef; }
 .chip.frozen { background: #1d2547; color: var(--frozen); } .chip.random { background: #40260f; color: var(--random); } .chip.refused { background: #4a1520; color: var(--danger); }
 #arousal-spark { display: block; width: 100%; height: 56px; }
-.genes { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; margin: 10px 0 0; font-size: 12.5px; }
-.genes dt { color: var(--faint); } .genes dd { margin: 0; font-family: var(--mono); font-size: 12px; }
-.story { margin-top: 10px; font-size: 12.5px; color: var(--muted); line-height: 1.5; }
-.story b { color: var(--text); font-weight: 600; }
+.gene-list { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; margin: 4px 0 0; font-size: 12.5px; }
+.gene-list dt { color: var(--faint); } .gene-list dd { margin: 0; font-family: var(--mono); font-size: 12px; }
+.story-text { margin-top: 4px; font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+.story-text b { color: var(--text); font-weight: 600; }
 #brain { display: block; width: 100%; height: auto; }
 
 .model-card { margin-top: 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); }
@@ -185,6 +185,36 @@ main { max-width: 1380px; margin: 0 auto; padding: 16px clamp(16px, 3vw, 28px) 2
 
 .bv-wrap { position: relative; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #05070d; }
 #brainview { display: block; width: 100%; height: auto; }
-.bv-tip { position: absolute; max-width: 250px; padding: 7px 10px; border-radius: 8px; background: rgba(10,14,25,0.94); border: 1px solid var(--line-2); font-size: 12px; color: var(--muted); pointer-events: none; }
-.bv-tip b { color: var(--text); }
 .insp-grid { margin-top: 12px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+
+/* the demo standard: explanations, the help link, the hints */
+.k-live { color: var(--live); }
+.hud > span { pointer-events: auto; cursor: help; }
+.world-label { position: absolute; left: 10px; bottom: 9px; z-index: 2; padding: 3px 9px; border-radius: 999px; background: rgba(6, 8, 14, 0.72); border: 1px solid rgba(255, 255, 255, 0.08); color: var(--muted); font-size: 12px; cursor: help; }
+.controls a.help { display: inline-flex; align-items: center; height: 34px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line-2); color: var(--muted); font-size: 13.5px; text-decoration: none; }
+.controls a.help:hover { color: var(--text); border-color: #36416a; }
+.legend [data-explain] { cursor: help; }
+.panel-head h2[data-explain], .insp-h[data-explain], .bar span[data-explain], .mode-line[data-explain], .spark-wrap { cursor: help; }
+.coach { display: flex; align-items: center; gap: 10px; margin-top: 10px; padding: 7px 8px 7px 12px; border: 1px solid rgba(255, 206, 102, 0.35); border-radius: 10px; background: rgba(255, 206, 102, 0.06); font-size: 13.5px; }
+.coach b { flex: none; color: var(--gold); font-family: var(--mono); font-size: 12px; font-weight: 500; }
+.coach p { flex: 1; margin: 0; color: var(--text); line-height: 1.4; }
+.coach p em { font-style: normal; color: var(--gold); }
+.coach button { flex: none; width: 26px; height: 26px; border-radius: 7px; border: 1px solid var(--line-2); background: var(--panel-2); color: var(--muted); cursor: pointer; font-size: 15px; line-height: 1; }
+.coach.done { border-color: rgba(63, 224, 207, 0.35); background: rgba(63, 224, 207, 0.06); }
+.coach.done b { color: var(--live); }
+.controls button.pulse { border-color: var(--gold); box-shadow: 0 0 0 0 rgba(255, 206, 102, 0.5); animation: pulse 1.6s ease-out infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 206, 102, 0.45); } 100% { box-shadow: 0 0 0 10px rgba(255, 206, 102, 0); } }
+.panel.pulse { border-color: rgba(255, 206, 102, 0.6); }
+.insp-live { color: var(--faint); font-size: 12.5px; cursor: help; }
+.insp-h { margin: 12px 0 2px; color: var(--faint); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.insp-col > .insp-h:first-child { margin-top: 0; }
+.spark-wrap { position: relative; }
+@media (prefers-reduced-motion: reduce) { .controls button.pulse { animation: none; } }
+
+/* the layout: the world at the left; the chart of the claim and the open brain at the right; the
+   counts below. Ids keep it under the demos site's theme as well. */
+#stage { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.right-col { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.right-col .inspector { margin-top: 0; }
+#side { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; align-items: start; }
+@media (max-width: 980px) { #stage { grid-template-columns: minmax(0, 1fr); } }

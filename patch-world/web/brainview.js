@@ -16,23 +16,39 @@ const DIRS = ['N', 'E', 'S', 'W'];
 const BODY = ['energy', 'thirst', 'light', 'nausea', 'cold'];
 const UNDER = ['berry', 'root', 'leaf', 'cache', 'water'];
 
-// region centres in a 1000 x 560 frame; the front of the head is on the left
+// region centres in a 1000 x 560 frame; the front of the head is on the left. `role` names the
+// Cadence population; `explain` is the card a visitor reads on the page.
 const R = {
-  prefrontal: { x: 205, y: 215, rx: 95, ry: 70, label: 'prefrontal cortex', role: 'the working trace: the last moment’s settled association, carried into this settle (population "prefrontal")' },
-  motor: { x: 395, y: 120, rx: 120, ry: 26, label: 'motor strip', role: 'the six motor neurons; their settled state is the action (population "motor")' },
-  module_0: { x: 560, y: 175, rx: 85, ry: 55, label: 'parietal association cortex', role: 'the first of two association regions (population "module_0")' },
-  association: { x: 470, y: 265, rx: 120, ry: 75, label: 'association cortex', role: 'the region every sense, memory and the motor strip settle with (population "association")' },
-  vision: { x: 790, y: 245, rx: 85, ry: 80, label: 'visual cortex', role: 'what it sees in four directions: berries, roots, leaves, water, predators, creatures (sensory neurons 1-24)' },
-  body: { x: 640, y: 120, rx: 70, ry: 30, label: 'insula: the body', role: 'energy, thirst, daylight, nausea, cold (sensory neurons 30-34)' },
-  under: { x: 590, y: 350, rx: 55, ry: 26, label: 'taste and touch', role: 'what lies underfoot: berry, root, leaf, a cache, water beside it (sensory neurons 25-29)' },
-  place: { x: 545, y: 412, rx: 42, ry: 20, label: 'entorhinal: place', role: 'where it is, as two phases (sensory neurons 35-38)' },
-  hippo: { x: 430, y: 395, rx: 120, ry: 40, label: 'hippocampus', role: 'the recall memory’s slots of recent moments (with the recall gene), and the associative store that records what an action brought in a situation' },
-  recall: { x: 345, y: 455, rx: 55, ry: 22, label: 'recall read', role: 'what the recall memory gives back this moment (population "recall")' },
-  next: { x: 470, y: 470, rx: 55, ry: 20, label: 'recall: what came next', role: 'the moment after the recalled one (population "next")' },
-  striatum: { x: 345, y: 300, rx: 42, ry: 30, label: 'striatum', role: 'plays the role of the striatum: the critic’s value of the situation, read from the association region, and the actor’s choice' },
-  thalamus: { x: 560, y: 285, rx: 26, ry: 18, label: 'thalamus', role: 'where the observation enters: the world drives the sensory neurons each moment' },
-  vta: { x: 455, y: 340, rx: 20, ry: 13, label: 'dopamine nucleus', role: 'the critic’s prediction error of this moment’s lesson, broadcast to every eligible synapse (gold: better than expected, blue: worse)' },
-  lc: { x: 560, y: 470, rx: 18, ry: 12, label: 'locus coeruleus', role: 'the arousal level: surprise at the outcome or want; at or above the threshold the brain samples and learns' },
+  prefrontal: { x: 205, y: 215, rx: 95, ry: 70, label: 'prefrontal cortex', role: 'population "prefrontal": the working trace',
+    explain: 'The working trace: it carries what the brain made of the last moment into this one. A short-term memory of the creature’s own state.' },
+  motor: { x: 395, y: 120, rx: 120, ry: 26, label: 'motor strip', role: 'population "motor": six motor neurons',
+    explain: 'Six neurons, one for each action: north, east, south, west, eat, drink. The one brightest when the brain has settled is what the creature does; its name lights white.' },
+  module_0: { x: 560, y: 175, rx: 85, ry: 55, label: 'parietal association cortex', role: 'population "module_0"',
+    explain: 'A second association region, which some creatures inherit. It settles together with the rest of the brain.' },
+  association: { x: 470, y: 265, rx: 120, ry: 75, label: 'association cortex', role: 'population "association"',
+    explain: 'Where the senses, the memory and the motor strip meet. All of them settle together into one agreed state, and the action is read from it.' },
+  vision: { x: 790, y: 245, rx: 85, ry: 80, label: 'visual cortex', role: 'sensory neurons 1-24',
+    explain: 'What the creature sees in four directions: the nearest berry, root, leaf, water, predator and other creature within its sense range. At night it sees half as far.' },
+  body: { x: 640, y: 120, rx: 70, ry: 30, label: 'insula: the body', role: 'sensory neurons 30-34',
+    explain: 'How its body feels: energy, thirst, daylight, nausea while a poisoning lasts, and the cold of the air. Nothing here names the season.' },
+  under: { x: 590, y: 350, rx: 55, ry: 26, label: 'taste and touch', role: 'sensory neurons 25-29',
+    explain: 'What lies underfoot: a berry, a root, a leaf or a hidden cache, and water beside it.' },
+  place: { x: 545, y: 412, rx: 42, ry: 20, label: 'entorhinal: place', role: 'sensory neurons 35-38',
+    explain: 'Where the creature is in the world.' },
+  hippo: { x: 430, y: 395, rx: 120, ry: 40, label: 'hippocampus', role: 'the recall memory’s slots and the associative store',
+    explain: 'Its memory. It stores what an action brought in a situation (a purple ring flashes when it writes). With the recall gene it also keeps its recent moments in slots, which light gold when the brain reads them.' },
+  recall: { x: 345, y: 455, rx: 55, ry: 22, label: 'recall read', role: 'population "recall"',
+    explain: 'What the recall memory gives back this moment: a remembered moment that resembles this one.' },
+  next: { x: 470, y: 470, rx: 55, ry: 20, label: 'recall: what came next', role: 'population "next"',
+    explain: 'The moment that followed the remembered one: a hint of what may come next.' },
+  striatum: { x: 345, y: 300, rx: 42, ry: 30, label: 'striatum', role: 'the critic and the actor',
+    explain: 'The critic judges how good the situation is; the actor picks the action. Calm, the brain takes its settled answer; aroused, it tries alternatives.' },
+  thalamus: { x: 560, y: 285, rx: 26, ry: 18, label: 'thalamus', role: 'where the observation enters',
+    explain: 'Where each moment’s senses enter the brain.' },
+  vta: { x: 455, y: 340, rx: 20, ry: 13, label: 'dopamine nucleus', role: 'the critic’s prediction error',
+    explain: 'After each lesson it flashes gold when the outcome was better than the brain expected, blue when worse, as when a berry poisons. That signal tells the synapses which way to change.' },
+  lc: { x: 560, y: 470, rx: 18, ry: 12, label: 'locus coeruleus', role: 'the arousal level',
+    explain: 'Arousal. A surprise (a berry that poisons) or a want (too little food) raises it; above the creature’s threshold the brain learns from what its actions bring, and the whole brain glows gold. Calm, it acts and learns nothing.' },
 };
 
 function sunflower(n, rx, ry) {
@@ -54,8 +70,8 @@ function sprite(rgb, size = 32) {
 }
 
 export class BrainView {
-  constructor(canvas, tip) {
-    this.cv = canvas; this.g = canvas.getContext('2d'); this.tip = tip;
+  constructor(canvas, wrap) {
+    this.cv = canvas; this.g = canvas.getContext('2d'); this.wrap = wrap;
     this.W = 1000; this.H = 560;
     this.anat = null; this.kind = 'live'; this.layout = null;
     this.cur = null; this.prev = null; this.recvAt = 0; this.duration = 300;
@@ -64,15 +80,16 @@ export class BrainView {
     this.sprites = { pos: sprite('80,240,225'), neg: sprite('255,110,140'), gold: sprite('255,206,102'), blue: sprite('110,170,255'), white: sprite('255,255,255') };
     this.frameMs = 0; this.frames = 0;
     this.silhouette = this.drawSilhouette();
-    canvas.addEventListener('mousemove', (e) => this.onHover(e));
-    canvas.addEventListener('mouseleave', () => { this.hover = null; this.tip.hidden = true; });
+    // the explanations: a spot over every region and its name (shared/cadence-explain.js), laid out
+    // again when the canvas changes size
+    if (window.ResizeObserver) new ResizeObserver(() => this.layoutSpots()).observe(canvas);
     requestAnimationFrame((t) => this.loop(t));
   }
 
   setAnatomy(anat, kind) {
     this.anat = anat; this.kind = kind; this.cur = null; this.prev = null; this.changedTotal = 0;
     this.flash.clear(); this.particles = [];
-    if (!anat) { this.layout = null; return; }
+    if (!anat) { this.layout = null; this.layoutSpots(); return; }
     const P = anat.populations, L = {};
     const place = (key, region, n) => { const r = R[region]; L[key] = sunflower(n, r.rx, r.ry).map(([dx, dy]) => [r.x + dx, r.y + dy]); };
     // sensory neurons: vision as a 4 x 6 grid, the others in their own regions
@@ -111,6 +128,47 @@ export class BrainView {
       return [R.hippo.x - Math.cos(a) * R.hippo.rx, R.hippo.y + 8 - Math.sin(a) * R.hippo.ry * 0.9];
     });
     this.layout = L;
+    this.layoutSpots();
+  }
+
+  shown(key) {
+    const L = this.layout; if (!L) return false;
+    if (key === 'module_0' || key === 'recall' || key === 'next') return !!L[key];
+    return true;
+  }
+
+  layoutSpots() {
+    const X = window.CadenceExplain, wrap = this.wrap;
+    if (!X || !wrap) return;
+    X.clearSpots(wrap);
+    const w = this.cv.clientWidth;
+    if (!this.layout || !w) return;
+    const k = w / this.W, g = this.g;
+    g.save(); g.setTransform(1, 0, 0, 1, 0, 0); g.font = '16px Inter, sans-serif';
+    const add = (b, text, title, key, mark) => {
+      const el = X.spot(wrap, { x: b.x * k, y: b.y * k, w: b.w * k, h: b.h * k }, text, { title, mark });
+      if (key) {
+        el.addEventListener('pointerenter', () => { this.hover = key; });
+        el.addEventListener('pointerleave', () => { if (this.hover === key) this.hover = null; });
+      }
+    };
+    // the regions, the largest first so that the small nuclei lie on top; then their names, each
+    // with a question mark
+    const keys = Object.keys(R).filter((key) => this.shown(key)).sort((a, b) => R[b].rx * R[b].ry - R[a].rx * R[a].ry);
+    for (const key of keys) {
+      const r = R[key];
+      add({ x: r.x - r.rx * 0.9, y: r.y - r.ry * 0.9, w: r.rx * 1.8, h: r.ry * 1.8 }, r.explain, r.label, key, 'none');
+    }
+    for (const key of keys) {
+      const r = R[key], tw = g.measureText(r.label).width, ly = r.y - r.ry - (key === 'motor' ? 30 : 8);
+      add({ x: r.x - tw / 2 - 3, y: ly - 15, w: tw + 20, h: 20 }, r.explain, r.label, key, 'top-right');
+    }
+    g.restore();
+    add({ x: 8, y: 8, w: 560, h: 38 }, 'Whether the brain is learning at this moment (gold: aroused, learning; grey: calm), its settle sweep by sweep (its neurons drive one another until they agree, and the largest change shrinks every sweep), and the dopamine of its last lesson.', 'This moment', null, 'top-left');
+    add({ x: 470, y: 482, w: 522, h: 76 }, 'Counts from the brain: the synapses this moment’s lesson changed, and all it changed since you opened it; the surprise and the want that add up to its arousal; its size.', 'The counts', null, 'top-right');
+    if (this.slots && this.slots.length) {
+      add({ x: 36, y: 384, w: 226, h: 164 }, 'A small map of the world. A thread runs from each memory slot the brain reads to the place where it stored that moment; the teal dot is where the creature is.', 'Where its memories happened', null, 'top-right');
+    }
   }
 
   push(reply, context) {
@@ -219,14 +277,14 @@ export class BrainView {
       g.fillStyle = wash; g.fillRect(0, 0, W, H);
     }
     // labelled regions (soft outlines)
-    g.font = '11px Inter, sans-serif'; g.textAlign = 'center';
+    g.font = '16px Inter, sans-serif'; g.textAlign = 'center';
     for (const [key, r] of Object.entries(R)) {
       if ((key === 'module_0' && !this.layout.module_0) || ((key === 'recall' || key === 'next') && !this.layout[key])) continue;
       g.beginPath(); g.ellipse(r.x, r.y, r.rx, r.ry, 0, 0, TAU);
       g.fillStyle = this.hover === key ? 'rgba(120,150,230,0.12)' : 'rgba(120,150,230,0.04)'; g.fill();
       g.strokeStyle = this.hover === key ? 'rgba(170,190,255,0.5)' : 'rgba(150,170,240,0.13)'; g.lineWidth = 1; g.stroke();
       g.fillStyle = this.hover === key ? '#e9edf7' : 'rgba(175,188,225,0.62)';
-      g.fillText(r.label, r.x, r.y - r.ry - (key === 'motor' ? 22 : 6));
+      g.fillText(r.label, r.x, r.y - r.ry - (key === 'motor' ? 30 : 8));
     }
     this.drawTracts(g, now, false);
     // the glowing layer (neurons, impulses, nuclei), drawn once sharp and once blurred for bloom
@@ -343,7 +401,7 @@ export class BrainView {
     const sAge = (performance.now() - this.store) / 1200;
     if (sAge < 1) { g.strokeStyle = `rgba(190,140,255,${0.8 * (1 - sAge)})`; g.lineWidth = 3; g.beginPath(); g.ellipse(r.x, r.y, r.rx + 6 * sAge, r.ry + 4 * sAge, 0, 0, TAU); g.stroke(); }
     if (!this.slots || !this.slots.length) {
-      g.fillStyle = 'rgba(175,188,225,0.5)'; g.font = '10px Inter, sans-serif'; g.textAlign = 'center';
+      g.fillStyle = 'rgba(175,188,225,0.5)'; g.font = '14px Inter, sans-serif'; g.textAlign = 'center';
       g.fillText('no recall memory: the associative store only', r.x, r.y + 4); return;
     }
     const read = new Map(((c && c.recall && c.recall.read) || []).map((e) => [e.slot, e]));
@@ -362,7 +420,7 @@ export class BrainView {
     if (this.terrain) {
       g.globalAlpha = 0.85; g.drawImage(this.terrain, map.x, map.y, map.w, map.h); g.globalAlpha = 1;
       g.strokeStyle = 'rgba(150,170,240,0.35)'; g.lineWidth = 1; g.strokeRect(map.x, map.y, map.w, map.h);
-      g.fillStyle = 'rgba(175,188,225,0.7)'; g.font = '10px Inter, sans-serif'; g.textAlign = 'left';
+      g.fillStyle = 'rgba(175,188,225,0.7)'; g.font = '14px Inter, sans-serif'; g.textAlign = 'left';
       g.fillText('where the recalled moments happened', map.x, map.y - 5);
       const here = c && c.context && c.context.here;
       if (here) { g.fillStyle = '#3fe0cf'; g.beginPath(); g.arc(map.x + (here.x + 0.5) / this.world.w * map.w, map.y + (here.y + 0.5) / this.world.h * map.h, 3.5, 0, TAU); g.fill(); }
@@ -374,7 +432,7 @@ export class BrainView {
         g.beginPath(); g.moveTo(sx, sy); g.quadraticCurveTo((sx + px) / 2, Math.max(sy, py) + 30, px, py); g.stroke();
         g.fillStyle = '#ffce66'; g.beginPath(); g.arc(px, py, 2.5 + 3 * e.weight, 0, TAU); g.fill();
         if (e.weight > 0.3) {
-          g.fillStyle = '#ffe6a8'; g.font = '10px Inter, sans-serif';
+          g.fillStyle = '#ffe6a8'; g.font = '13px Inter, sans-serif';
           g.fillText(`${e.age} moment${e.age === 1 ? '' : 's'} ago${e.underfoot && e.underfoot.length ? `, ${e.underfoot.join(' + ')} underfoot` : ''}${e.nausea > 0 ? ', sick' : ''}`, px + 8, py + 4);
         }
       }
@@ -383,24 +441,24 @@ export class BrainView {
 
   drawMotorLabels(g) {
     const L = this.layout, c = this.cur; if (!L.motor) return;
-    g.font = '10px Inter, sans-serif'; g.textAlign = 'center';
+    g.font = '14px Inter, sans-serif'; g.textAlign = 'center';
     L.motor.forEach(([x, y], i) => {
       const chosen = c && c.action === i && (this.sweepNow()?.done);
       g.fillStyle = chosen ? '#ffffff' : 'rgba(175,188,225,0.6)';
-      g.font = `${chosen ? 600 : 400} 10px Inter, sans-serif`;
+      g.font = `${chosen ? 600 : 400} 14px Inter, sans-serif`;
       g.fillText(ACTIONS[i], x, y - 14);
     });
   }
 
   drawHud(g, now) {
     const c = this.cur, ar = c?.arousal || {}, sw = this.sweepNow();
-    g.font = '12px Inter, sans-serif'; g.textAlign = 'left';
+    g.font = '17px Inter, sans-serif'; g.textAlign = 'left';
     const learning = ar.mode === 'aroused';
     const pill = (x, y, text, on, rgb) => {
       const w = g.measureText(text).width + 18;
       g.fillStyle = on ? `rgba(${rgb},0.2)` : 'rgba(255,255,255,0.05)'; g.strokeStyle = on ? `rgba(${rgb},0.8)` : 'rgba(255,255,255,0.12)';
-      g.beginPath(); g.roundRect(x, y, w, 22, 11); g.fill(); g.stroke();
-      g.fillStyle = on ? `rgb(${rgb})` : '#8d97b2'; g.fillText(text, x + 9, y + 15); return w;
+      g.beginPath(); g.roundRect(x, y, w, 30, 15); g.fill(); g.stroke();
+      g.fillStyle = on ? `rgb(${rgb})` : '#8d97b2'; g.fillText(text, x + 9, y + 21); return w;
     };
     let x = 14;
     x += pill(x, 12, learning ? 'aroused: learning on' : this.kind === 'frozen' ? 'frozen: never learns' : 'calm: not learning', learning, '255,206,102') + 8;
@@ -408,27 +466,10 @@ export class BrainView {
     if (sw && sw.movement !== null && sw.movement !== undefined) x += pill(x, 12, `largest change ${sw.movement.toExponential(1)}`, false, '63,224,207') + 8;
     const dAge = (performance.now() - this.dopa.at) / 1100;
     if (dAge < 2.5) x += pill(x, 12, `last lesson's dopamine ${this.dopa.v >= 0 ? '+' : ''}${this.dopa.v.toFixed(2)}`, true, this.dopa.v >= 0 ? '255,206,102' : '110,170,255') + 8;
-    g.textAlign = 'right'; g.fillStyle = '#8d97b2';
-    g.fillText(`synapses changed this moment: ${(c && c.changed) || 0}  ·  since selected: ${this.changedTotal.toLocaleString()}`, this.W - 14, this.H - 50);
-    g.fillText(`surprise ${(ar.surprise || 0).toFixed(2)}  ·  want ${(ar.want || 0).toFixed(2)}  ·  arousal level ${(ar.level || 0).toFixed(2)}`, this.W - 14, this.H - 32);
+    g.textAlign = 'right'; g.fillStyle = '#8d97b2'; g.font = '16px Inter, sans-serif';
+    g.fillText(`synapses changed this moment: ${(c && c.changed) || 0}  ·  since selected: ${this.changedTotal.toLocaleString()}`, this.W - 14, this.H - 56);
+    g.fillText(`surprise ${(ar.surprise || 0).toFixed(2)}  ·  want ${(ar.want || 0).toFixed(2)}  ·  arousal level ${(ar.level || 0).toFixed(2)}`, this.W - 14, this.H - 35);
     if (this.anat) g.fillText(`${this.anat.neurons} neurons · ${this.anat.synapses.toLocaleString()} synapses`, this.W - 14, this.H - 14);
-  }
-
-  onHover(e) {
-    const rect = this.cv.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width * this.W, y = (e.clientY - rect.top) / rect.height * this.H;
-    let best = null;
-    for (const [key, r] of Object.entries(R)) {
-      const d = ((x - r.x) / r.rx) ** 2 + ((y - r.y) / r.ry) ** 2;
-      if (d < 1 && (!best || d < best.d)) best = { key, d };
-    }
-    this.hover = best ? best.key : null;
-    if (!best) { this.tip.hidden = true; return; }
-    const r = R[best.key];
-    this.tip.hidden = false;
-    this.tip.innerHTML = `<b>${r.label}</b><br>${r.role}`;
-    this.tip.style.left = `${Math.min(rect.width - 260, e.clientX - rect.left + 12)}px`;
-    this.tip.style.top = `${e.clientY - rect.top + 12}px`;
   }
 }
 
