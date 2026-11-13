@@ -1,0 +1,195 @@
+{
+ "schema": "castlevania-promise/1",
+ "checked_utc": "2026-11-13T05:14:24.093091+00:00",
+ "claim": "A frozen Cadence brain plays from what its eye sees, with a memory of this game's moments and a state it carries from move to move. A look-ahead on the emulator checks its moves near enemies: stage 3 on all nine starts, lives lost 36 to 5.",
+ "checks": [
+  {
+   "name": "claim_numbers_are_the_evidence",
+   "passed": true,
+   "detail": {
+    "starts": [
+     0,
+     3,
+     7,
+     10,
+     14,
+     21,
+     28,
+     35,
+     42
+    ],
+    "stage3": [
+     3,
+     9
+    ],
+    "lives_lost": [
+     36,
+     5
+    ]
+   }
+  },
+  {
+   "name": "the_first_recording_is_brain_plus_lookahead_and_plays",
+   "passed": true,
+   "detail": {
+    "first": "lookahead",
+    "digest": {
+     "expected": "29de6f1e15287992adef0d123832ab1ed9a3bb2fcb9154b53006bd9df3d1f178",
+     "got": "29de6f1e15287992adef0d123832ab1ed9a3bb2fcb9154b53006bd9df3d1f178",
+     "bytes": 22002957
+    },
+    "played_s": 2.0222
+   }
+  },
+  {
+   "name": "the_brain_view_follows_the_video",
+   "passed": true,
+   "detail": {
+    "early": {
+     "time": 4.0049,
+     "decision": 20,
+     "shown": 20,
+     "expected": 20,
+     "held": 22
+    },
+    "late": {
+     "time": 151.7879,
+     "decision": 759,
+     "shown": 759,
+     "expected": 758,
+     "held": 128
+    }
+   }
+  },
+  {
+   "name": "its_recall_memory_fills_with_moments_of_the_game",
+   "passed": true,
+   "detail": [
+    [
+     0,
+     2,
+     128
+    ],
+    [
+     10,
+     12,
+     128
+    ],
+    [
+     50,
+     52,
+     128
+    ],
+    [
+     100,
+     102,
+     128
+    ],
+    [
+     127,
+     128,
+     128
+    ],
+    [
+     200,
+     128,
+     128
+    ],
+    [
+     500,
+     128,
+     128
+    ],
+    [
+     750,
+     128,
+     128
+    ]
+   ]
+  },
+  {
+   "name": "live_the_brain_runs_in_the_tab_and_presses_the_recorded_buttons",
+   "passed": true,
+   "detail": {
+    "decisions": 40,
+    "matches": 40,
+    "ms_per_decision_median": 90.4,
+    "real_time_needs_ms": 200,
+    "status": "40 of 40 live choices match the recording \u00b7 13 decisions behind \u00b7 101 ms a decision",
+    "load_average": [
+     61.3232421875,
+     85.46728515625,
+     132.24365234375
+    ]
+   }
+  },
+  {
+   "name": "no_console_error_page_error_or_failed_request",
+   "passed": true,
+   "detail": []
+  }
+ ],
+ "errors": [],
+ "load_average": [
+  46.78515625,
+  86.58740234375,
+  134.6083984375
+ ],
+ "memory_held_by_decision": [
+  [
+   0,
+   2,
+   128
+  ],
+  [
+   10,
+   12,
+   128
+  ],
+  [
+   50,
+   52,
+   128
+  ],
+  [
+   100,
+   102,
+   128
+  ],
+  [
+   127,
+   128,
+   128
+  ],
+  [
+   200,
+   128,
+   128
+  ],
+  [
+   500,
+   128,
+   128
+  ],
+  [
+   750,
+   128,
+   128
+  ]
+ ],
+ "live_load_seconds": 8.6,
+ "live": {
+  "decisions": 40,
+  "matches": 40,
+  "ms_per_decision_median": 90.4,
+  "real_time_needs_ms": 200,
+  "status": "40 of 40 live choices match the recording \u00b7 13 decisions behind \u00b7 101 ms a decision",
+  "load_average": [
+   61.3232421875,
+   85.46728515625,
+   132.24365234375
+  ]
+ },
+ "seconds": 33.4,
+ "passed": true
+}

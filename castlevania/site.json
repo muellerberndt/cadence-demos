@@ -14,6 +14,7 @@
     "castlevania/evidence/castlevania-run.json",
     "castlevania/evidence/castlevania-brain-alone-run.json",
     "castlevania/player/evidence/player_check.json",
+    "castlevania/player/evidence/player_check-20261113.json",
     "castlevania/evidence/promise_test-20261113.json"
   ],
   "promise_test": "python castlevania/tools/promise_test.py --out castlevania/evidence/promise_test-<date>.json",

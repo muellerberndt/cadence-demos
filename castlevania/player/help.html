@@ -94,9 +94,10 @@
       <tr><td>The brain</td><td class="n">4,697 neurons · 724,736 synapses</td></tr>
       <tr><td>Recall memory</td><td class="n">128 slots · 2 read heads</td></tr>
       <tr><td>The uncut brain + look-ahead game (start 21): the brain's move · overruled · route recovery</td><td class="n">1,407 · 65 · 28 of 1,500</td></tr>
-      <tr><td>Live in a browser: decisions matching the recording, time a decision (headless Chromium on a cloud CPU; the game needs 200 ms)</td><td class="n">60 of 60 · 99 ms</td></tr>
+      <tr><td>Live in a browser, headless Chromium on a cloud CPU: decisions matching the recording · time a decision (the game needs 200 ms)</td><td class="n">60 of 60 · 99 ms</td></tr>
+      <tr><td>The same on an Apple M4 shared with other jobs (load average 61): matching · time a decision</td><td class="n">40 of 40 · 90 ms</td></tr>
     </tbody></table>
-    <p class="note">Selection starts (0, 3, 7, 10, 14, 21, 28, 35, 42 idle decisions before Simon starts) were used to pick the brain among its checkpoints; fresh starts (1, 5, 11, 17, 25, 31, 38, 45, 49) were read once, after the pick. Where the files are, in the <code>castlevania/</code> folder of the repository: both tables' comparisons, <code>evidence/lookahead_receipt.json</code>; the brain and its readings, <code>evidence/receipt.json</code>; the uncut games, <code>evidence/castlevania-run.json</code> and <code>evidence/castlevania-brain-alone-run.json</code>; live mode, <code>player/evidence/player_check.json</code>; this page's promise, played on the page, <code>evidence/promise_test-20261113.json</code>.</p>
+    <p class="note">Selection starts (0, 3, 7, 10, 14, 21, 28, 35, 42 idle decisions before Simon starts) were used to pick the brain among its checkpoints; fresh starts (1, 5, 11, 17, 25, 31, 38, 45, 49) were read once, after the pick. Where the files are, in the <code>castlevania/</code> folder of the repository: both tables' comparisons, <code>evidence/lookahead_receipt.json</code>; the brain and its readings, <code>evidence/receipt.json</code>; the uncut games, <code>evidence/castlevania-run.json</code> and <code>evidence/castlevania-brain-alone-run.json</code>; live mode, <code>player/evidence/player_check.json</code> (cloud CPU) and <code>evidence/promise_test-20261113.json</code> (Apple M4); this page's promise, played on the page, <code>evidence/promise_test-20261113.json</code>.</p>
 
     <h2 id="limits">Limits</h2>
     <ul>
