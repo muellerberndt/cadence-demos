@@ -29,6 +29,7 @@
 
   var OPEN_MS = 140, CLOSE_MS = 450, MARGIN = 6;
   var card = null, owner = null, kept = false, timerOpen = 0, timerClose = 0;
+  var pending = null; // the part whose card opens when its timer runs out
 
   function ensureCard() {
     if (card) return card;
@@ -62,7 +63,7 @@
   }
 
   function open(el, keep) {
-    clearTimeout(timerOpen); clearTimeout(timerClose); timerOpen = timerClose = 0;
+    clearTimeout(timerOpen); clearTimeout(timerClose); timerOpen = timerClose = 0; pending = null;
     owner = el; kept = !!keep;
     fill(el);
     card.hidden = false;
@@ -89,11 +90,12 @@
     if (kept || owner === el || inCard(ev)) { clearTimeout(timerClose); timerClose = 0; return; }
     clearTimeout(timerClose); timerClose = 0;
     clearTimeout(timerOpen);
-    timerOpen = setTimeout(function () { timerOpen = 0; if (!kept) open(el, false); }, OPEN_MS);
+    pending = el;
+    timerOpen = setTimeout(function () { timerOpen = 0; pending = null; if (!kept) open(el, false); }, OPEN_MS);
   }
 
   function soonClose() {
-    clearTimeout(timerOpen); timerOpen = 0;
+    clearTimeout(timerOpen); timerOpen = 0; pending = null;
     if (kept || !owner || timerClose) return;
     timerClose = setTimeout(function () { timerClose = 0; if (!kept) close(); }, CLOSE_MS);
   }
@@ -156,6 +158,8 @@
   document.addEventListener('pointermove', function (ev) {
     if (ev.pointerType !== 'mouse' || kept || !owner) return;
     if (inCard(ev)) { clearTimeout(timerClose); timerClose = 0; return; }
+    // the pointer on a part whose card is about to open: that card takes over, nothing closes
+    if (pending && pending.contains(ev.target)) return;
     if (!owner.contains(ev.target)) soonClose();
   }, { passive: true });
   document.addEventListener('pointerdown', function (ev) {
