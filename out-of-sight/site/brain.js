@@ -1017,6 +1017,7 @@ export class BrainView {
         for (let step = 1; step <= 6 && rows.slice(0, k).some((a) => meets(a, b)); step++) b.y = home + (step % 2 ? 1 : -1) * 17 * Math.ceil(step / 2);
       });
       this.labelsPlaced = true;
+      this.placeMarks();
     }
     // the rings of the parts pointed at lie under the labels: no ring strikes a name through
     this.drawSpots(c, now);
@@ -1188,6 +1189,25 @@ export class BrainView {
       b.addEventListener('click', (e) => { this.pointerAt = this.local(e); this.onPart?.(part.id, 'tap', e); });
       this.partsRoot.append(b);
       part.button = b;
+    }
+  }
+
+  // Each region's name carries a small question mark: the name and the mark are one button,
+  // which explains the region as its box does. It lies in the parts' layer, so it drifts with them.
+  placeMarks() {
+    if (!this.partsRoot || !this.parts) return;
+    this.partsRoot.querySelectorAll('.part.ask').forEach((b) => b.remove());
+    for (const l of this.labels) {
+      const part = this.parts.find((p) => p.kind === 'region' && p.region === l.region) || this.parts.find((p) => p.kind === 'region' && p.region.role === l.region.role);
+      if (!part) continue;
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'part ask'; b.dataset.part = part.id;
+      b.setAttribute('aria-label', `Explain ${part.label}`); b.title = '';
+      Object.assign(b.style, { left: `${l.x - 4}px`, top: `${l.y - 1}px`, width: `${l.w + 19}px`, height: '15px' });
+      b.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') this.onPart?.(part.id, 'enter', e); });
+      b.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') this.onPart?.(part.id, 'leave', e); });
+      b.addEventListener('click', (e) => { this.pointerAt = this.local(e); this.onPart?.(part.id, 'tap', e); });
+      this.partsRoot.append(b);
     }
   }
 

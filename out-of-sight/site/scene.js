@@ -184,7 +184,6 @@ export class SceneView {
     c.save(); c.beginPath(); c.roundRect(x0, y0, x1 - x0, y1 - y0, 10); c.clip();
     if (hand?.place) this.peak(c, s, hand, things[0], m);
     c.restore();
-    this.lost(c, s, entries, x0, y1);
 
     // the comparison's markers (Details)
     if (s.compare && s.controls) {
@@ -212,11 +211,17 @@ export class SceneView {
     // the tutorial's guide: a ring on what to take hold of, and where to bring it
     if (s.guide) this.guide(c, s.guide, m, now);
 
-    // the camera
+    // the camera, and quiet names on the robot and its arm
     this.cameraGlyph(c, eye, cam.heading, s.cameraOn, s.selected === 'camera');
+    const base = S(g.arm.base);
+    this.name(c, 'robot', eye[0], eye[1] + 26);
+    this.name(c, 'robot’s arm', base[0], base[1] + Math.max(5, g.arm.width * m) * 1.15 + 13);
 
     // the words on the table, over everything
     for (const [text, x, y, color] of this.words) this.word(c, text, x, y, color);
+
+    // beside the mouse: what a drag and a click do here
+    if (s.hint) this.hintChip(c, s.hint, w, h);
 
     // sounds (a scene file may hold them): rings from where the thing is, and what the ear heard of it
     this.rings = this.rings.filter((r) => now - r.start < 1100);
@@ -372,6 +377,26 @@ export class SceneView {
     if (hidden) this.tag(c, e.state === 'felt' ? 'felt: its joint readings' : e.state === 'near' ? `near where it vanished · ${this.ago(e.since, s.dt)}` : `last seen · ${this.ago(e.since, s.dt)}`, bx, by - r - 8, rgba([170, 255, 244], 0.95));
   }
 
+  // A few words beside the mouse, kept inside the room's canvas.
+  hintChip(c, hint, w, h) {
+    c.save();
+    c.font = '500 11px Inter, system-ui, sans-serif'; c.textAlign = 'left'; c.textBaseline = 'middle';
+    const tw = c.measureText(hint.text).width + 14;
+    const x = Math.min(hint.x + 14, w - tw - 4), y = Math.min(hint.y + 22, h - 12);
+    c.fillStyle = 'rgba(6,8,14,0.88)'; c.strokeStyle = 'rgba(150,165,210,0.35)'; c.lineWidth = 1;
+    c.beginPath(); c.roundRect(x, y - 10, tw, 20, 6); c.fill(); c.stroke();
+    c.fillStyle = 'rgba(233,237,247,0.92)'; c.fillText(hint.text, x + 7, y + 0.5);
+    c.restore();
+  }
+
+  // A part's name, small and quiet, with no ground under it.
+  name(c, text, x, y) {
+    c.save();
+    c.font = '500 10px "JetBrains Mono", ui-monospace, monospace'; c.textAlign = 'center'; c.textBaseline = 'middle';
+    c.fillStyle = 'rgba(141,151,178,0.72)'; c.fillText(text, x, y);
+    c.restore();
+  }
+
   ago(moments, dt) { return `${Math.max(0, Math.round((moments || 0) * (dt || 1 / 30)))} s`; }
 
   // A short word on the table, on a dark ground: kept to be drawn over all the scene's pieces.
@@ -433,19 +458,6 @@ export class SceneView {
     const word = e.state === 'near' ? `near · ${this.ago(e.since, s.dt)}` : e.state === 'held' ? `${this.ago(e.since, s.dt)} ago` : e.state;
     if (!inView) this.tag(c, word, x, y + 11, rgba(color, 0.95));
   }
-
-  // Things the map knows by their kind with no place: a line in the scene's corner.
-  lost(c, s, entries, x0, y1) {
-    const names = entries.filter((e) => !e.place).map((e) => (e.name === 'own' ? 'arm’s hand' : e.name === 'bread' ? 'bread' : e.name));
-    if (!names.length) return;
-    c.save();
-    c.font = '500 11px "JetBrains Mono", ui-monospace, monospace'; c.textBaseline = 'alphabetic';
-    const text = `on the map, not known where: ${names.join(', ')}`, w = c.measureText(text).width + 14;
-    c.fillStyle = 'rgba(6,8,14,0.85)'; c.beginPath(); c.roundRect(x0 + 8, y1 - 26, w, 18, 6); c.fill();
-    c.fillStyle = rgba(GOLD, 0.95); c.fillText(text, x0 + 15, y1 - 13);
-    c.restore();
-  }
-
 
   arm(c, g, joints, m, own) {
     const chain = forward(g, joints).map((p) => this.toScreen(p));

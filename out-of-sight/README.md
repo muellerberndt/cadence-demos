@@ -2,14 +2,15 @@
 
 Hide the hand, and the brain knows where it is.
 
-A room seen from above: a robot arm, a hand, an apple and a slice of bread, and a body that
-carries a camera, whose view a pillar and the arm cut into light and shadow. A Cadence brain
+A room seen from above: a robot with a camera and an arm, a hand, an apple and a slice of bread.
+A pillar and the arm cut the camera's view into light and shadow. A Cadence brain
 holds a map of what is where, in its own activity. A thing enters the map at the moment the
 camera first sees it. Drag the hand behind the pillar, and the map holds it out of sight, near
 where it vanished; turn away from the apple, and the apple stays on the map, behind you. The page
 is one screen: the scene on the left, with what the map holds drawn on it, and on the right the
 whole brain, every neuron and every synapse, laid out as a brain seen from the side. The scene
-and the brain run in the browser. There is no server.
+and the brain run in the browser. There is no server. The page carries little text; the help
+page ([`site/help.html`](site/help.html)) explains everything it shows.
 
 This is the demonstration page of
 [cadence#320](https://github.com/muellerberndt/cadence/issues/320), spatial object awareness:
@@ -67,13 +68,15 @@ The tutorial, performed with the mouse: [`docs/out-of-sight.mp4`](docs/out-of-si
 ## What a visitor does
 
 - **Drag the hand** behind the pillar and back.
-- **Drag the floor** around the body to turn the camera, or twist with two fingers. Things leave
-  its view and end up beside or behind the body.
+- **Drag the floor** around the robot to turn its camera, or twist with two fingers. Things leave
+  its view and end up beside or behind the robot.
 - **Tap a thing** to ask the map where it is; **tap the floor** to ask what is there. Each answer
   is a settle of the map with the question as its cue, and one sentence under the scene.
-- **Tap the body** to switch the camera off.
-- **Switch the hand** (over the scene's corner): a person's hand, or the arm's own hand. Tap the
-  floor and the arm reaches there.
+- **Tap the robot** to switch the camera off.
+- **Switch the hand** (over the scene's corner): a person's hand, or the robot's own hand. Tap the
+  floor and the arm reaches there. The arm moves only then, and when a scene file moves it.
+- **On the map**, a line under the scene, lists every thing the map holds and how: seen, felt,
+  heard, held, near, or not known where.
 - **Undo** and **Reset**. Reset empties the map: it holds no thing until the camera sees one.
 
 A tutorial of four steps, which the visitor performs, opens on the first visit: hide the hand;
@@ -100,8 +103,10 @@ camera reports, is in Details.
 
 ## The brain explains itself
 
-Nothing is written over the brain until the visitor points at something. Every part (a region
-or a fibre tract) opens a card on hover, on a tap and on keyboard focus. The card stands beside
+Nothing is written over the brain until the visitor points at something. Every region's name
+carries a small question mark. A region opens its card when the pointer rests on it, on a tap
+and on keyboard focus; the card stays while the pointer is on the region or on the card. A fibre
+tract opens its card on a tap. The card stands beside
 its part, never over it, with a thin line to it; on a phone it is a sheet from the bottom, and
 the brain moves up above it. It holds the part's name, the role it plays, what the region holds
 in the words of the library's guide, and what it is doing at this moment.
@@ -148,7 +153,7 @@ later release.
 
 ## Details
 
-One switch, off until asked for, holds the chart of the hand's distance from the map's place,
+One switch, off until asked for, opens a panel over the brain's pane (the page stays one screen) with the chart of the hand's distance from the map's place,
 the last seen place and the Kalman filter (ports of the tracking chamber's controls, with their
 markers on the scene), the milliseconds of a moment, the hand's cells, and **Load a scene**,
 which replays a scene file of the tracking chamber (`cadence-tracking-scene/1`, also by dropping
@@ -171,6 +176,7 @@ the details.
 | Path | What |
 | --- | --- |
 | `site/index.html`, `site/styles.css`, `site/favicon.svg` | the page |
+| `site/help.html` | the help page: what the page shows, in full |
 | `site/app.js` | the loop, dragging and tapping, the questions, undo and reset, the tutorial, the cards, scene files |
 | `site/world.js` | the scene's geometry, the camera's view, the step and the scene file reader: a port of the tracking chamber's world |
 | `site/controls.js` | the last seen position and the Kalman filter: a port of the chamber's controls |
@@ -211,9 +217,12 @@ before the page ran the map, from the gates of
 [cadence#320](https://github.com/muellerberndt/cadence/issues/320), from last seen on the same
 rows and from the owner's word on the arm's own hand; the model's native readings on the two
 scene files were known when they were set, the page's were not. The file states every bound, how
-it was set and its two recorded changes, neither a bound: where "what is there" is asked (made
-before the page first ran the map), and the number of the guide's steps (eight in the guide's
-first form, nine in the release).
+it was set and its recorded changes, none a bound: where "what is there" is asked (made before
+the page first ran the map); the number of the guide's steps (eight in the guide's first form,
+nine in the release); and the cards' timing with three added conditions (question marks, a card
+that stays, Details on one screen), made for the help page and the first-visit pass. On that page
+one run reads 50 of 50 (`evidence/page_check-20261113-1051-1879e461.json`); the run before it,
+48 of 50 (`-1046-`), found a card covering its neighbour, which the change fixed.
 
 In each of the three runs the logger shows the apple held where it was last seen through the
 tutorial's turn, the camera's heading moving at most 0.12 rad between moments; and the apple

@@ -49,6 +49,24 @@ travels" in the guide the cards took. The guide of 824c9ae9 has nine (it adds "S
 away"), and the cards take its steps word for word, so the check reads the guide's number of
 steps (``GUIDE_STEPS``). Every other condition of that check stands as it was.
 
+Amendment of 13 November 2026, made on the owner's report, after the release runs and before
+any run on the changed page: a part's card popped up and vanished at once, and nothing showed
+that a part explains itself. The page changed: a card opens when the pointer rests on a region
+140 ms (keyboard focus at once), stays while the pointer is on the region or on the card, and
+closes 450 ms after the pointer has left both; a tract's card opens on a click; every region's
+name carries a question mark; Details opens over the page; the card lets the pointer through to
+the parts under it until a click keeps it, so no card blocks another part. The card check changed with it:
+a region is read 300 ms after the pointer comes to it (90 ms before), a tract after a click
+(a hover before), and "no card shows" 700 ms after the pointer leaves (90 ms before). Three
+conditions were added: every region's name carries its question mark; a card the pointer moves
+onto stays open; with Details open the page stays one screen. In the first run on the changed page
+(evidence page_check-20261113-1046-1879e461.json, 48 of 50) a card took the pointer and covered
+the region beside it; the card was given back its pass-through before the next run. A region
+under an open card opens nothing while the pointer is inside the card (a visitor reads it there),
+so the check reads each region from an empty spot of the brain's pane, 600 ms after the last card
+closed. The frame
+time failed in that run at a load average near 30 from other processes. Every other condition stands.
+
 The earlier models (a plain composed brain, and the place module of a program beside the brain)
 are not hosts of this page; their checks left with them. Their readings are in the
 repository's history (evidence/page_check.json at a8b35eb). Each run's evidence goes to a file of
@@ -418,17 +436,36 @@ def cards(page, c: Check) -> None:
     box = page.locator("#brain-stage").bounding_box()
     opened = []
     for part in parts:
-        page.mouse.move(box["x"] + part["x"], box["y"] + part["y"])
-        page.wait_for_timeout(90)
+        if part["kind"] == "tract":
+            page.evaluate("(id) => window.outOfSight.brainView.onPart(id, 'tap', null)", part["id"])
+            page.wait_for_timeout(120)
+        else:
+            page.mouse.move(box["x"] + 4, box["y"] + box["height"] / 2)
+            page.wait_for_timeout(600)
+            page.mouse.move(box["x"] + part["x"], box["y"] + part["y"])
+            page.wait_for_timeout(300)
         text = page.evaluate("document.getElementById('card').hidden ? '' : document.getElementById('card').innerText")
         opened.append({"id": part["id"], "ok": "at this moment" in text.lower() and ("plays the role of" in text or "fibre tract" in text.lower()),
                        "clear": page.evaluate(CLEAR, [part["id"]]), "head": text.split("\n")[0][:60]})
+    page.keyboard.press("Escape")
     page.mouse.move(box["x"] + 4, box["y"] + box["height"] / 2)
-    page.wait_for_timeout(90)
-    c.add("every part of the brain explains itself on hover, with what it does at this moment", bool(opened) and all(o["ok"] for o in opened),
+    page.wait_for_timeout(700)
+    c.add("every region of the brain explains itself on hover and every tract on a click, with what it does at this moment", bool(opened) and all(o["ok"] for o in opened),
           parts=len(opened), missing=[o["id"] for o in opened if not o["ok"]], heads=[o["head"] for o in opened])
     c.add("a card stands beside its part, never over it", all(o["clear"] for o in opened), over=[o["id"] for o in opened if not o["clear"]])
     c.add("no card shows until the visitor points at something", page.evaluate("document.getElementById('card').hidden"))
+    marks = page.evaluate("({ marks: document.querySelectorAll('.part.ask').length, labels: window.outOfSight.brainView.labels.length })")
+    c.add("every region's name carries a question mark", marks["labels"] > 0 and marks["marks"] == marks["labels"], **marks)
+    mp = page.evaluate("(() => { const p = window.outOfSight.brainView.part('map'); return [p.x + p.w / 2, p.y + p.h / 2]; })()")
+    page.mouse.move(box["x"] + mp[0], box["y"] + mp[1])
+    page.wait_for_timeout(300)
+    at = page.evaluate("(() => { const r = document.getElementById('card').getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; })()")
+    page.mouse.move(at[0], at[1], steps=8)
+    page.wait_for_timeout(800)
+    stays = page.evaluate("({ open: !document.getElementById('card').hidden, part: window.outOfSight.card.id })")
+    c.add("a card the pointer moves onto stays open", stays["open"] and stays["part"] == "map", **stays)
+    page.mouse.move(box["x"] + 4, box["y"] + box["height"] / 2)
+    page.wait_for_timeout(700)
     page.focus(".part")
     page.keyboard.press("Tab")
     page.wait_for_timeout(90)
@@ -500,6 +537,8 @@ def manners(page, c: Check, scene_file: Path | None) -> None:
     page.wait_for_timeout(400)
     shown = page.evaluate("({ hidden: document.getElementById('details-panel').hidden, chart: document.getElementById('chart').getBoundingClientRect().height })")
     c.add("the comparison with last seen and the Kalman filter stays behind one switch, off until asked for", hidden and not shown["hidden"] and shown["chart"] > 50, **shown)
+    fits = page.evaluate("({ w: document.documentElement.scrollWidth <= innerWidth, h: document.documentElement.scrollHeight <= innerHeight + 1 })")
+    c.add("with Details open the page stays one screen", fits["w"] and fits["h"], **fits)
     if scene_file and scene_file.exists():
         data = json.loads(scene_file.read_text())
         run = page.evaluate("(d) => window.outOfSight.loadScene(d)", data)

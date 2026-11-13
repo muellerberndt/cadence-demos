@@ -143,6 +143,16 @@ function withArea(e) {
   return { ...e, area: sheetArea({ nx, ny, plane: d.plane, rate: 1 }, share) };
 }
 
+// What the map holds, one line under the room: each thing by its kind, and how the map holds it.
+const ON_MAP = { hand: ['hand', '#ff9f4a'], own: ['robot’s hand', '#ff9f4a'], apple: ['apple', '#ff6874'], bread: ['bread', '#ecbe7c'], cup: ['cup', '#7fd4ff'] };
+function showOnMap(entries) {
+  const ago = (e) => `${Math.max(0, Math.round((e.since || 0) * DT))} s`;
+  const word = (e) => (e.state === 'held' || e.state === 'near' ? `${e.state} · ${ago(e)}` : e.state);
+  const items = entries.map((e) => { const [name, color] = ON_MAP[e.name] || [e.name, '#c7d0ea']; return `<span><i style="background:${color}"></i>${name} <em>${word(e)}</em></span>`; });
+  const html = `<span class="lead">On the brain’s map</span>${items.length ? items.join('') : '<span><em>nothing</em></span>'}`;
+  if (html !== state.onMap) { state.onMap = html; $('onmap').innerHTML = html; }
+}
+
 function answered(record, estimates, reply, arrays) {
   const truth = record.truth[0], seen = record.in_view[0];
   state.moments = reply.moment;
@@ -155,6 +165,7 @@ function answered(record, estimates, reply, arrays) {
   const things = {};
   for (const e of state.inventory) if (!things[e.name] || (e.since ?? 1e9) < (things[e.name].since ?? 1e9)) things[e.name] = e;
   state.things = things;
+  showOnMap(state.inventory);
   const hand = things[handName()] || null;
   if (hand?.place) state.handPlace = hand.place;
   const place = hand?.place || null;
@@ -288,18 +299,50 @@ function spots() {
   brainView.spot = ids;
 }
 
-brainView.onPart = (id, type) => {
+brainView.onPart = (id, type, event) => {
   if (card.mode === 'stage') {
     if (type !== 'tap') return;
     const k = id ? stagesFor().findIndex((s) => s.parts.includes(id)) : -1;
     if (k >= 0) openStage(k); else if (!id) closeCard();
     return;
   }
-  if (type === 'enter') { if (!card.pinned) openPart(id, false); }
-  else if (type === 'leave') { if (!card.pinned && card.id === id) closeCard(); }
-  else if (!id || (card.pinned && card.id === id)) closeCard();
-  else openPart(id, true);
+  if (type === 'tap') {
+    hoverStop();
+    if (!id || (card.pinned && card.id === id)) closeCard(); else openPart(id, true);
+    return;
+  }
+  // a tract opens on a tap alone; so does every part on a narrow screen, where the card is a sheet
+  // that moves the brain away from the pointer
+  if (String(id).startsWith('tract:') || narrow.matches) return;
+  if (type === 'enter') hoverOpen(id, event); else if (!inCard(event)) hoverClose();
 };
+// A part's card opens when the pointer rests on the part a moment, and stays while the pointer is
+// on the part or inside the card; it closes a moment after the pointer has left both. A part the
+// pointer only crosses opens nothing. Keyboard focus opens a card at once. The card lets the
+// pointer through to the parts under it until a click keeps it.
+const hover = { open: null, close: null };
+function hoverStop() { clearTimeout(hover.open); clearTimeout(hover.close); hover.open = hover.close = null; }
+function inCard(event) {
+  if (!event || card.el.hidden) return false;
+  const r = card.el.getBoundingClientRect();
+  return event.clientX >= r.left - 6 && event.clientX <= r.right + 6 && event.clientY >= r.top - 6 && event.clientY <= r.bottom + 6;
+}
+function hoverOpen(id, event = null) {
+  if (card.pinned || (card.mode === 'part' && card.id === id) || inCard(event)) return;
+  clearTimeout(hover.close); hover.close = null;
+  clearTimeout(hover.open);
+  hover.open = setTimeout(() => { hover.open = null; if (!card.pinned) openPart(id, false); }, event ? 140 : 0);
+}
+function hoverClose() {
+  clearTimeout(hover.open); hover.open = null;
+  if (card.pinned || card.mode !== 'part' || hover.close) return;
+  hover.close = setTimeout(() => { hover.close = null; if (!card.pinned && card.mode === 'part') closeCard(); }, 450);
+}
+$('brain-stage').addEventListener('pointermove', (event) => {
+  if (event.pointerType !== 'mouse' || card.pinned || card.mode !== 'part') return;
+  if (inCard(event)) { clearTimeout(hover.close); hover.close = null; }
+  else if (!event.target.closest?.('.part')) hoverClose();
+});
 card.el.addEventListener('click', (event) => {
   const go = event.target.closest('[data-go]');
   if (!go) return;
@@ -307,6 +350,7 @@ card.el.addEventListener('click', (event) => {
 });
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape' && card.mode) { closeCard(); return; }
+  if (event.key === 'Escape' && state.more) { setMore(false); return; }
   if (card.mode === 'stage' && (event.key === 'ArrowRight' || event.key === 'ArrowLeft') && document.activeElement !== $('scene')) {
     openStage(card.stage + (event.key === 'ArrowRight' ? 1 : -1)); event.preventDefault();
   }
@@ -358,7 +402,7 @@ async function askWhat(point) {
 
 // -- the tutorial: four steps the visitor performs
 
-const HOME_HINT = 'Drag the hand, a thing or the pillar. Drag the floor to turn the camera. Tap a thing to ask where the map holds it, or the floor to ask what is there. Point at a part of the brain and it explains itself.';
+const HOME_HINT = '<b>Drag</b> a thing to move it · <b>drag the floor</b> to turn the robot · <b>click</b> a thing to ask the brain where it is · <b>?</b> explains a part of the brain · <a href="help.html" target="_blank" rel="noopener">Help</a>';
 function coach(text, kind = '', step = -1, steps = 0) {
   $('coach-text').innerHTML = text;
   $('coach').className = `coach ${kind}`;
@@ -427,25 +471,25 @@ const TOUR = {
   promise: PROMISE,
   steps: [
     { id: 'hide', brain: 'map',
-      text: '<b>Drag the hand behind the pillar</b>, into its shadow. The camera loses it. The map holds it where it can be: out of sight, near where it vanished.',
-      aside: 'The ringed part is the map in the brain. The hand is a patch of its activity.',
+      text: '<b>Drag the hand behind the pillar</b>, into its shadow. The camera loses sight of it, and the brain keeps it on its map: the teal glow shows where.',
+      aside: 'On the right, the ringed part of the brain is that map. The hand is a patch of activity in it.',
       guide: () => ({ ring: stage.world.things[0], target: state.unseen ? null : shadowPoint(0.32) }),
       done: () => state.unseen >= 40 },
     { id: 'return', brain: 'map',
-      text: '<b>Bring it back</b> into the light. The camera reports it, and the map writes it where it is seen.',
-      aside: 'A cell the camera sees holds no thing it does not report.',
+      text: '<b>Bring the hand back</b> into the light. The camera sees it again, and the map puts it where it is seen.',
+      aside: 'The map changes only when the robot senses something.',
       guide: () => ({ ring: stage.world.things[0], target: state.unseen ? stage.home.things[0] : null }),
       done: (t) => t.seenRun >= 15 },
     { id: 'turn', brain: 'clock',
-      text: '<b>Turn away from the apple</b>: drag the floor around the body. The apple stays on the map, behind you. The bread enters the map when the camera first sees it.',
-      aside: 'Nothing is handed to the brain beforehand: a thing enters the map when a sense first reports it.',
+      text: '<b>Turn the robot away from the apple</b>: drag the floor around it. The apple leaves the view and stays on the map, behind the robot. The bread joins the map the moment the camera first sees it.',
+      aside: 'Nobody tells the brain what is in the room. It finds out by looking.',
       guide: () => ({ ring: stage.geometry.camera.position, radius: 0.09, turn: { from: stage.geometry.camera.heading, to: awayHeading('apple') } }),
       done: (t, row) => { t.behind = row.pins.apple && !row.pins.apple.seen && Math.abs(aroundBody(stage.where('apple')).bearing) >= 1.95 ? (t.behind || 0) + 1 : 0; return t.behind >= 12; },
       after: () => askWhere('apple') },
     { id: 'own', brain: 'map',
       enter: () => { setCase('own'); tour.target = unseenReach(); },
-      text: '<b>The arm’s own hand.</b> Tap the ring on the floor: the arm reaches there, where the camera cannot see it. Its joint readings place the hand on the map at every moment.',
-      aside: 'The place the arm’s joint readings name is the arm’s forward kinematics, which the program computes as a robot knows its own arm; the map takes it as a report of the body’s own sense.',
+      text: '<b>The robot’s own hand.</b> Click the ring on the floor: the arm reaches into the shadow. The robot feels its joints, so it knows where its hand is without seeing it.',
+      aside: 'The way you know where your hand is with your eyes closed.',
       guide: () => ({ ring: tour.target || stage.world.things[0], radius: 0.07, target: tour.target }),
       done: (t) => stage.own && state.unseen >= 30 && t.reached },
   ],
@@ -487,7 +531,7 @@ const tour = {
   next() {
     if (!this.active) return;
     if (this.step + 1 < this.steps.length) { this.step += 1; this.enter(); return; }
-    this.finish('That is all of it. ' + HOME_HINT);
+    this.finish('That is the tour. ' + HOME_HINT);
   },
   finish(text = HOME_HINT) {
     this.active = false;
@@ -514,6 +558,7 @@ function frame(now) {
     selected: focused && focusByKey ? state.selected : null, controls: state.estimates,
     guide: tour.active && !tour.doneAt && state.ready ? tour.current().guide() : null,
     asked: state.said && now - state.said.at < 2200 ? state.said : null,
+    hint: press || tour.active ? null : state.hover,
   }, now);
   if (state.more) chartView.draw(state.history, { compare: true, dt: DT });
   brainView.frame(now, interval);
@@ -623,12 +668,18 @@ function setMore(on) {
   document.body.classList.toggle('more', on);
   $('details').setAttribute('aria-pressed', String(on));
   $('details-panel').hidden = !on;
-  if (on) requestAnimationFrame(() => $('details-panel').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' }));
 }
 
 // -- direct manipulation: drag to move, tap to ask or to switch the camera
 
 let press = null, focusByKey = false;
+// What a drag and a click do on the part of the room under the mouse, in a few words beside it.
+function hintFor(name) {
+  if (name === 'camera') return `click: camera ${stage.cameraOn ? 'off' : 'on'}`;
+  if (name === 'pillar') return 'drag to move · it casts a shadow';
+  if (name === 'floor') return stage.own ? 'click: the arm reaches here · drag: turn the robot' : 'drag: turn the robot · click: what is here?';
+  return `drag to move · click: where is the ${name === 'hand' ? 'hand' : name}?`;
+}
 function planePoint(event) {
   const box = $('scene').getBoundingClientRect();
   return { x: event.clientX - box.left, y: event.clientY - box.top, p: sceneView.toPlane(event.clientX - box.left, event.clientY - box.top) };
@@ -705,6 +756,7 @@ function bindScene() {
       return;
     }
     const hit = sceneView.hit(x, y, sceneState()) || 'floor';
+    state.hover = null;
     press = { name: hit, x, y, p, at: performance.now(), moved: false };
     if (hit !== 'camera' && hit !== 'floor') state.selected = hit;
   });
@@ -719,6 +771,7 @@ function bindScene() {
     }
     if (!press) {
       const hit = sceneView.hit(x, y, sceneState());
+      state.hover = event.pointerType === 'mouse' ? { text: hintFor(hit || 'floor'), x, y } : null;
       canvas.classList.toggle('grab', !!hit && hit !== 'camera');
       canvas.classList.toggle('tap', hit === 'camera');
       return;
@@ -753,6 +806,7 @@ function bindScene() {
     if (tapped) tap(name, p);
   };
   canvas.addEventListener('pointerup', end);
+  canvas.addEventListener('pointerleave', () => { state.hover = null; });
   canvas.addEventListener('pointercancel', end);
   canvas.addEventListener('keyup', (event) => { if (event.key === 'Tab') { focusByKey = true; canvas.classList.add('keys'); } });
   canvas.addEventListener('keydown', (event) => {
@@ -783,6 +837,7 @@ function bindControls() {
   $('undo').addEventListener('click', undo);
   $('reset').addEventListener('click', reset);
   $('details').addEventListener('click', () => setMore(!state.more));
+  $('details-close').addEventListener('click', () => setMore(false));
   $('welcome-go').addEventListener('click', () => tour.start());
   $('welcome-skip').addEventListener('click', () => { $('welcome').hidden = true; tour.finish(); });
   $('coach-skip').addEventListener('click', () => tour.finish());
@@ -804,16 +859,6 @@ function adopt(describe, arrays) {
   brainView.setBrain(describe, arrays);
   document.querySelectorAll('[data-promise]').forEach((el) => { el.textContent = TOUR.promise; });
   if (describe.manifest) state.manifest = describe.manifest;
-  const m = state.manifest?.map || {};
-  $('brain-note').textContent = m.note || '';
-  $('card-wheel').textContent = `cadence-net ${describe.cadence} (${state.manifest?.wheel_source || 'the pack’s wheel'})`;
-  const [nx, ny] = describe.cells, s = describe.settings || {};
-  const facts = [['The map', `${nx} by ${ny} cells of ${Math.round(describe.cell[0] * 100)} cm, ${describe.units} code units a cell`],
-    ['Neurons', describe.neurons.toLocaleString('en')], ['Synapses', `${describe.synapses.toLocaleString('en')}, every one drawn, none taught`],
-    ['A place seen empty', s.empty === 'near' ? `out of sight, within ${Math.round(2 * s.reach * 100)} cm of where it was` : String(s.empty)],
-    ['A moment', `${(DT * 1000).toFixed(0)} ms of the scene`],
-    ['Runs in', `Pyodide ${state.manifest?.pyodide || ''}, ${brainView.mode === 'webgl2' ? 'WebGL2' : 'Canvas2D'}`]];
-  $('card-facts').innerHTML = facts.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
 }
 
 async function start() {

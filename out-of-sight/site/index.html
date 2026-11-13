@@ -20,31 +20,35 @@
       <button id="tour" type="button" title="Play the tutorial">Tutorial</button>
       <button id="undo" type="button" title="Take the last move back" disabled>Undo</button>
       <button id="reset" type="button" title="Put everything back where it stood">Reset</button>
-      <button id="details" type="button" aria-pressed="false" aria-controls="details-panel" title="The comparison, the chart, the settings and the scene files">Details</button>
+      <button id="details" type="button" aria-pressed="false" aria-controls="details-panel" title="The chart against two controls, the numbers and scene files">Details</button>
+      <a class="help" href="help.html" target="_blank" rel="noopener" title="What the page shows, in full">Help</a>
     </nav>
   </header>
 
   <main class="app">
     <section class="pane world" aria-label="The scene">
       <h1 class="promise" data-promise>Hide the hand, and the brain knows where it is.</h1>
+      <p class="problem">This robot sees only part of the room. Its brain keeps a map of where everything is, even what its camera cannot see.</p>
       <div class="scene-wrap" id="scene-wrap">
         <canvas id="scene" tabindex="0" role="application" aria-describedby="keys"
-          aria-label="A room seen from above: a robot arm, a hand, an apple and a slice of bread. A body in the room carries a camera, which lights the part of the room it sees; a pillar and the arm cast shadows. Drag the hand, a thing or the pillar; drag the floor to turn the camera; tap a thing to ask where the brain's map holds it, or the floor to ask what is there; tap the body to switch the camera."></canvas>
+          aria-label="A room seen from above: a robot with a camera and an arm, a hand, an apple and a slice of bread. The camera lights the part of the room it sees; a pillar and the arm cast shadows. Drag the hand, a thing or the pillar; drag the floor to turn the camera; tap a thing to ask where the brain's map holds it, or the floor to ask what is there; tap the robot to switch its camera."></canvas>
         <div class="chips" aria-hidden="true">
           <span class="chip" id="chip-view" hidden>out of view</span>
         </div>
         <div class="segmented case" role="group" aria-label="Whose hand the brain follows">
-          <button type="button" data-case="other" aria-pressed="true" title="A person's hand, which moves by itself">A person’s hand</button>
-          <button type="button" data-case="own" aria-pressed="false" title="The arm's own hand: its joint readings name its place">The arm’s own hand</button>
+          <button type="button" data-case="other" aria-pressed="true" title="A person's hand moves by itself: the brain knows it from the camera">A person’s hand</button>
+          <button type="button" data-case="own" aria-pressed="false" title="The robot's own hand: its joint readings place it, seen or not. Tap the floor and the arm reaches there">The robot’s own hand</button>
         </div>
         <div class="welcome" id="welcome" hidden>
           <h2>Out of sight</h2>
           <p data-promise>Hide the hand, and the brain knows where it is.</p>
-          <p class="small">The body in the room carries a camera, which lights what it sees. The brain holds a map of what is where. The teal glow is where the map holds the hand.</p>
-          <div class="row"><button class="primary" id="welcome-go" type="button">Show me</button><button id="welcome-skip" type="button">Skip</button></div>
+          <p class="small">The robot sees only part of the room. Its brain keeps a map of where everything is, even what its camera cannot see. Four short steps show it.</p>
+          <div class="row"><button class="primary" id="welcome-go" type="button">Show me</button><button id="welcome-skip" type="button">Explore on my own</button></div>
+          <p class="small link"><a href="help.html" target="_blank" rel="noopener">What am I looking at?</a></p>
         </div>
       </div>
       <div class="below">
+        <p class="onmap" id="onmap" aria-live="off"></p>
         <p class="said" id="said" role="status" aria-live="polite"></p>
         <div class="coach" id="coach" role="status" aria-live="polite">
           <span class="dots" id="coach-dots" aria-hidden="true"></span>
@@ -59,6 +63,7 @@
         <canvas id="brain" aria-hidden="true"></canvas>
         <canvas id="brain-overlay" aria-hidden="true"></canvas>
         <div class="parts" id="parts" role="group" aria-label="The parts of the brain. Each one explains itself."></div>
+        <p class="brain-title">The robot’s brain, live <span>Point at a <i>?</i> to see what a part does</span></p>
         <div class="readout" id="readout" aria-live="off"></div>
         <button class="follow" id="follow" type="button" title="Step through how a position travels through the map, one part at a time">Follow the position ›</button>
         <div class="card" id="card" role="dialog" aria-label="A part of the brain, explained" hidden></div>
@@ -67,6 +72,7 @@
   </main>
 
   <section class="details" id="details-panel" aria-label="Details" hidden>
+    <button class="close" id="details-close" type="button" aria-label="Close the details" title="Close">×</button>
     <div class="panels">
       <figure class="panel wide">
         <figcaption><b>Distance from the true hand</b>
@@ -84,28 +90,6 @@
       <div class="knobs">
         <button id="load" type="button" title="Replay a scene file of the tracking chamber (cadence-tracking-scene/1)">Load a scene</button>
         <input id="file" type="file" accept=".json,application/json" hidden>
-      </div>
-      <p class="keys" id="keys">Keys, with the scene in focus: <kbd>1</kbd> hand, <kbd>2</kbd> apple, <kbd>3</kbd> bread, <kbd>4</kbd> pillar; arrows move it; <kbd>W</kbd> asks the map where it is; <kbd>Q</kbd> and <kbd>E</kbd> turn the camera; <kbd>C</kbd> switches it; <kbd>H</kbd> shows what is hidden; <kbd>Z</kbd> undo; <kbd>R</kbd> reset. In the brain, <kbd>Tab</kbd> moves from part to part and <kbd>Esc</kbd> closes a card.</p>
-    </div>
-    <div class="card-body">
-      <div>
-        <h3>The scene</h3>
-        <p>A room seen from above. A body in the room carries a camera, which lights what it sees. The pillar and the arm cast shadows, and whatever stands in shadow, or beside or behind the body, is out of view: the camera reports nothing of it. In view, the camera reports a position about a centimetre off.</p>
-        <p>The brain holds a map of what is where. A thing enters the map when the camera first sees it. The teal glow is where the map holds the hand, and the light under it the cells that hold it.</p>
-      </div>
-      <div>
-        <h3>The comparison</h3>
-        <p>Two controls are given the same camera reports: the last seen place, and a constant-velocity Kalman filter that carries the hand on along its seen movement. The chart shows each one’s distance from the true hand beside the map’s. The map moves nothing it does not sense. The second stage, learned physics on the map, follows in a later release.</p>
-      </div>
-      <div>
-        <h3>The brain</h3>
-        <p>Cadence is a library for brains that answer by settling: the neurons drive each other until their activity rests, and the answer is read from the resting state. The right half of the page draws every neuron and every synapse of the map’s graph, laid out as a brain seen from the side. Each region sits where the part whose role it plays would sit. Point at a part and it explains itself.</p>
-        <p id="brain-note"></p>
-      </div>
-      <div>
-        <h3>This page</h3>
-        <dl id="card-facts"></dl>
-        <p>The brain runs in your browser, in Python through Pyodide, with <code id="card-wheel">cadence-net</code>. Nothing is sent to a server. <a href="https://github.com/muellerberndt/cadence" target="_blank" rel="noopener">Cadence on GitHub</a></p>
       </div>
     </div>
   </section>

@@ -1,0 +1,878 @@
+{
+ "schema": "cadence-out-of-sight-page-check/2",
+ "checked": "2026-11-13 10:49",
+ "cadence": "0.99.0",
+ "map": {
+  "module": "place",
+  "label": "The what-where map",
+  "note": "The map of things: a sheet of 32 by 26 cells of about 6 cm, 16 code units a cell, whose settled activity is carried from moment to moment. Its graph has no taught synapse.",
+  "source": "the library's built-in map, cadence.modules.load(\"place\")",
+  "kinds": {
+   "hand": 0,
+   "own": 1,
+   "apple": 2,
+   "bread": 3
+  }
+ },
+ "bounds": {
+  "in_view_m": 0.03,
+  "hidden": "at or under last seen on the same rows",
+  "cover": 0.85,
+  "return_m": 0.03,
+  "own_m": 0.015,
+  "keep_moments": 300,
+  "keep": "one cell",
+  "found_m": 0.03,
+  "frame_median_ms": 20.0,
+  "frame_p95_ms": 34.0
+ },
+ "page": {
+  "cadence": "0.99.0",
+  "brain": {
+   "kind": "map",
+   "trained": false,
+   "label": "The what-where map",
+   "note": "The map of things: a sheet of 32 by 26 cells of about 6 cm, 16 code units a cell, whose settled activity is carried from moment to moment. Its graph has no taught synapse."
+  },
+  "view": {
+   "mode": "webgl2",
+   "hdr": true,
+   "fallback": null,
+   "frames": 4,
+   "lit": 820,
+   "wave": false,
+   "synapses": 39936
+  },
+  "neurons": 29168,
+  "synapses": 39936,
+  "cell": [
+   0.0625,
+   0.061538461538461535
+  ],
+  "seconds_to_ready": 4.8
+ },
+ "promise": {
+  "default": {
+   "scene": "default",
+   "file": "promise-scene.json",
+   "moments": 323,
+   "hidden_moments": 91,
+   "in_view_m": 0.012280454258676248,
+   "hidden_m": 0.10654287815152173,
+   "last_seen_hidden_m": 0.15544640197644222,
+   "kalman_hidden_m": 0.2781558861607071,
+   "hidden_last_m": 0.09412854040562957,
+   "cells_hold": 1.0,
+   "cells_mean": 39.0,
+   "states_hidden": {
+    "near": 91
+   },
+   "return_m": 0.009552051803362355,
+   "think_ms": 16.4
+  },
+  "merged": {
+   "scene": "merged",
+   "file": "promise-merged-shadows-scene.json",
+   "moments": 323,
+   "hidden_moments": 91,
+   "in_view_m": 0.012280454258676248,
+   "hidden_m": 0.10654287815152173,
+   "last_seen_hidden_m": 0.15544640197644222,
+   "kalman_hidden_m": 0.2781558861607071,
+   "hidden_last_m": 0.09412854040562957,
+   "cells_hold": 1.0,
+   "cells_mean": 39.0,
+   "states_hidden": {
+    "near": 91
+   },
+   "return_m": 0.009552051803362355,
+   "think_ms": 14.5
+  }
+ },
+ "tutorial": {
+  "first_sight": {
+   "on_the_map_at_start": [
+    "hand",
+    "own",
+    "apple"
+   ]
+  },
+  "hide": {
+   "hidden_moments": 78,
+   "brain_m": 0.09682854805004396,
+   "last_seen_m": 0.15399482315185692,
+   "cells_hold": 0.9743589743589743,
+   "states": [
+    "near"
+   ]
+  },
+  "return": {
+   "brain_m": 0.010994755720311226,
+   "state": "seen"
+  },
+  "turn": {
+   "apple_when_seen": [
+    -0.06147,
+    1.11815
+   ],
+   "apple": {
+    "name": "apple",
+    "kind": 2,
+    "place": [
+     -0.02272,
+     1.10762
+    ],
+    "cells": [
+     410,
+     411,
+     436,
+     437
+    ],
+    "shares": [
+     0.3354,
+     1,
+     0.053,
+     0.1581
+    ],
+    "since": 101,
+    "state": "held"
+   },
+   "around": {
+    "distance": 0.7698482076357651,
+    "bearing": -2.747382719667142
+   },
+   "said": "The apple is 0.8 m away, behind you, to the right. The camera last saw it there 2 s ago.",
+   "on_the_map": [
+    "hand",
+    "own",
+    "apple",
+    "bread"
+   ]
+  },
+  "own": {
+   "goal": [
+    0.3418854825488655,
+    0.43082980029511586
+   ],
+   "hidden_moments": 55,
+   "brain_m": 0.0005331907449450269,
+   "worst_m": 0.0012012487992358808,
+   "last_seen_m": 1.0123565718562015,
+   "states": [
+    "felt"
+   ]
+  }
+ },
+ "frames": {
+  "desktop_webgl": {
+   "frames": 1500,
+   "median_ms": 16.69999999999709,
+   "p95_ms": 16.799999999999272,
+   "worst_ms": 83.30000000000291
+  },
+  "think_ms": 15.6,
+  "round_trip_ms": 19.09999990463257,
+  "moments": 1168,
+  "phone_viewport": {
+   "frames": 300,
+   "median_ms": 16.699999999999818,
+   "p95_ms": 33.29999999999927,
+   "worst_ms": 233.29999999999927
+  },
+  "desktop_canvas2d": {
+   "frames": 240,
+   "median_ms": 16.700000000000273,
+   "p95_ms": 50,
+   "worst_ms": 66.60000000000036
+  }
+ },
+ "questions": {
+  "where": "The apple is 0.8 m away, behind you, to the right. The camera last saw it there 7 s ago.",
+  "nothing": "0.7 m away, behind you, to the left: nothing, as the map holds it."
+ },
+ "kept_and_moved": {
+  "kept": {
+   "before": {
+    "name": "apple",
+    "kind": 2,
+    "place": [
+     -0.02272,
+     1.10762
+    ],
+    "cells": [
+     410,
+     411,
+     436,
+     437
+    ],
+    "shares": [
+     0.3354,
+     1,
+     0.053,
+     0.1581
+    ],
+    "since": 219,
+    "state": "held"
+   },
+   "after": {
+    "name": "apple",
+    "kind": 2,
+    "place": [
+     -0.02272,
+     1.10762
+    ],
+    "cells": [
+     410,
+     411,
+     436,
+     437
+    ],
+    "shares": [
+     0.3354,
+     1,
+     0.053,
+     0.1581
+    ],
+    "since": 520,
+    "state": "held"
+   },
+   "moments": 300,
+   "seen_between": false
+  },
+  "what": "0.8 m away, behind you, to the right: the apple, as the map holds it.",
+  "looked": {
+   "entry": {
+    "name": "apple",
+    "kind": 2,
+    "place": null,
+    "cells": [],
+    "shares": [],
+    "since": null,
+    "state": "not known where"
+   },
+   "camera_sees_old_place": true,
+   "apple_out_of_view": true
+  },
+  "found": {
+   "entry": {
+    "name": "apple",
+    "kind": 2,
+    "place": [
+     -0.02681,
+     1.11308
+    ],
+    "cells": [
+     410,
+     411,
+     436,
+     437
+    ],
+    "shares": [
+     0.194,
+     1,
+     0.0148,
+     0.0765
+    ],
+    "since": 0,
+    "state": "seen"
+   },
+   "true": [
+    -0.022719980504390967,
+    1.1076200031364052
+   ],
+   "apple_entries": 1
+  }
+ },
+ "readings": [
+  {
+   "name": "1 hide: the hand's place on the map while hidden (a drag's timing differs from run to run)",
+   "within_bound": true,
+   "hidden_moments": 78,
+   "brain_m": 0.09682854805004396,
+   "last_seen_m": 0.15399482315185692,
+   "cells_hold": 0.9743589743589743,
+   "states": [
+    "near"
+   ]
+  }
+ ],
+ "checks": [
+  {
+   "name": "the map loads in Pyodide with the pack's wheel and map file",
+   "passed": true,
+   "seconds": 4.8,
+   "cadence": "0.99.0",
+   "wheel": "PyPI (cadence-net 0.99.0)",
+   "brain": "The what-where map",
+   "view": "webgl2",
+   "neurons": 29168,
+   "synapses": 39936,
+   "cell_m": [
+    0.0625,
+    0.061538461538461535
+   ]
+  },
+  {
+   "name": "one screen: the scene and the brain, nothing to scroll, the tutorial offered",
+   "passed": true,
+   "w": true,
+   "h": true,
+   "welcome": true
+  },
+  {
+   "name": "THE PROMISE (the arm folded): in view the map has the hand within 3 cm",
+   "passed": true,
+   "bound_m": 0.03,
+   "in_view_m": 0.012280454258676248
+  },
+  {
+   "name": "THE PROMISE (the arm folded): hidden, the hand's place on the map at or under last seen's distance",
+   "passed": true,
+   "hidden_m": 0.10654287815152173,
+   "last_seen_m": 0.15544640197644222,
+   "kalman_m": 0.2781558861607071,
+   "states": {
+    "near": 91
+   }
+  },
+  {
+   "name": "THE PROMISE (the arm folded): hidden, the hand's cells hold the true hand",
+   "passed": true,
+   "bound": 0.85,
+   "cells_hold": 1.0,
+   "cells_mean": 39.0
+  },
+  {
+   "name": "THE PROMISE (the arm folded): back in view the map has the hand within 3 cm",
+   "passed": true,
+   "bound_m": 0.03,
+   "return_m": 0.009552051803362355
+  },
+  {
+   "name": "THE PROMISE (the arm's shadow joined to the pillar's): in view the map has the hand within 3 cm",
+   "passed": true,
+   "bound_m": 0.03,
+   "in_view_m": 0.012280454258676248
+  },
+  {
+   "name": "THE PROMISE (the arm's shadow joined to the pillar's): hidden, the hand's place on the map at or under last seen's distance",
+   "passed": true,
+   "hidden_m": 0.10654287815152173,
+   "last_seen_m": 0.15544640197644222,
+   "kalman_m": 0.2781558861607071,
+   "states": {
+    "near": 91
+   }
+  },
+  {
+   "name": "THE PROMISE (the arm's shadow joined to the pillar's): hidden, the hand's cells hold the true hand",
+   "passed": true,
+   "bound": 0.85,
+   "cells_hold": 1.0,
+   "cells_mean": 39.0
+  },
+  {
+   "name": "THE PROMISE (the arm's shadow joined to the pillar's): back in view the map has the hand within 3 cm",
+   "passed": true,
+   "bound_m": 0.03,
+   "return_m": 0.009552051803362355
+  },
+  {
+   "name": "the tutorial starts at its first step",
+   "passed": true,
+   "step": "hide"
+  },
+  {
+   "name": "1 hide: the visitor's drag completes the step",
+   "passed": true,
+   "step": "return"
+  },
+  {
+   "name": "1 hide: the map's card, opened while the hand is hidden, says where the map holds it and plays the role of a part",
+   "passed": true,
+   "text": "The map\n\nplays the role of the parietal map of where things are\n\nThe sheet: a unit at a cell is active where a thing whose kind\u2019s code holds the unit is at the cell. At each moment its drive is its own potentials of the moment before. 13,312 neurons.\n\nAT THIS MOMENT\nThe hand: near where it vanished 2 s ago, out of sight at (-0.59, 0.76) m, on 37 cells. 45 of 13,312 neurons are above rest.\n\nUnder y"
+  },
+  {
+   "name": "2 return: the visitor's drag completes the step",
+   "passed": true,
+   "step": "turn"
+  },
+  {
+   "name": "2 return: back in view the map has the hand within 3 cm, as seen",
+   "passed": true,
+   "bound_m": 0.03,
+   "brain_m": 0.010994755720311226,
+   "state": "seen"
+  },
+  {
+   "name": "3 turn: the visitor's drag of the floor completes the step",
+   "passed": true,
+   "step": "own"
+  },
+  {
+   "name": "3 turn: the apple, out of view behind the body, keeps its place on the map",
+   "passed": true,
+   "bound_m": 0.0625,
+   "apple": {
+    "name": "apple",
+    "kind": 2,
+    "place": [
+     -0.02272,
+     1.10762
+    ],
+    "cells": [
+     410,
+     411,
+     436,
+     437
+    ],
+    "shares": [
+     0.3354,
+     1,
+     0.053,
+     0.1581
+    ],
+    "since": 101,
+    "state": "held"
+   },
+   "when_seen": [
+    -0.06147,
+    1.11815
+   ],
+   "bearing_degrees": -157.4
+  },
+  {
+   "name": "3 turn: the page says the apple is behind the body, in one sentence",
+   "passed": true,
+   "said": "The apple is 0.8 m away, behind you, to the right. The camera last saw it there 2 s ago."
+  },
+  {
+   "name": "nothing is announced: the bread is absent from the map until the camera first sees it, and present after",
+   "passed": true,
+   "at_start": [
+    "hand",
+    "own",
+    "apple"
+   ],
+   "after_turn": [
+    "hand",
+    "own",
+    "apple",
+    "bread"
+   ]
+  },
+  {
+   "name": "4 own: the tap completes the tutorial, which leaves the visitor in free play",
+   "passed": true,
+   "step": "free"
+  },
+  {
+   "name": "4 own: out of view the arm's own hand is placed by its joint readings within 1.5 cm",
+   "passed": true,
+   "bound_m": 0.015,
+   "goal": [
+    0.3418854825488655,
+    0.43082980029511586
+   ],
+   "hidden_moments": 55,
+   "brain_m": 0.0005331907449450269,
+   "worst_m": 0.0012012487992358808,
+   "last_seen_m": 1.0123565718562015,
+   "states": [
+    "felt"
+   ]
+  },
+  {
+   "name": "frame time with the brain view on, over the tutorial",
+   "passed": true,
+   "bound_median_ms": 20.0,
+   "bound_p95_ms": 34.0,
+   "frames": 1500,
+   "median_ms": 16.69999999999709,
+   "p95_ms": 16.799999999999272,
+   "worst_ms": 83.30000000000291,
+   "think_ms": 15.6,
+   "round_trip_ms": 19.09999990463257,
+   "moments": 1168
+  },
+  {
+   "name": "a tap on a thing asks the map where it is, and the page answers in one sentence",
+   "passed": true,
+   "said": "The apple is 0.8 m away, behind you, to the right. The camera last saw it there 7 s ago."
+  },
+  {
+   "name": "a tap on the floor where the map holds nothing: the map says nothing is there",
+   "passed": true,
+   "said": "0.7 m away, behind you, to the left: nothing, as the map holds it.",
+   "point": [
+    0.6,
+    1.2
+   ]
+  },
+  {
+   "name": "a thing unseen keeps its place on the map within one cell for 300 moments",
+   "passed": true,
+   "bound_m": 0.0625,
+   "moved_m": 0.0,
+   "since": 520
+  },
+  {
+   "name": "a thing moved while the camera looks away keeps its old place on the map",
+   "passed": true,
+   "bound_m": 0.0625,
+   "entry": {
+    "name": "apple",
+    "kind": 2,
+    "place": [
+     -0.02272,
+     1.10762
+    ],
+    "cells": [
+     410,
+     411,
+     436,
+     437
+    ],
+    "shares": [
+     0.3354,
+     1,
+     0.053,
+     0.1581
+    ],
+    "since": 615,
+    "state": "held"
+   },
+   "old": [
+    -0.02272,
+    1.10762
+   ],
+   "true": [
+    -0.495014668485544,
+    0.6744642227061474
+   ]
+  },
+  {
+   "name": "a tap on the floor asks the map what is there: the apple at its old place, where it was moved from unseen",
+   "passed": true,
+   "said": "0.8 m away, behind you, to the right: the apple, as the map holds it.",
+   "point": [
+    -0.02272,
+    1.10762
+   ]
+  },
+  {
+   "name": "its old place seen empty, it is near there out of sight, or not known where",
+   "passed": true,
+   "entry": {
+    "name": "apple",
+    "kind": 2,
+    "place": null,
+    "cells": [],
+    "shares": [],
+    "since": null,
+    "state": "not known where"
+   },
+   "camera_sees_old_place": true,
+   "apple_out_of_view": true
+  },
+  {
+   "name": "seen again, it is found within 3 cm, one thing on the map",
+   "passed": true,
+   "bound_m": 0.03,
+   "off_m": 0.006822010350690473,
+   "entry": {
+    "name": "apple",
+    "kind": 2,
+    "place": [
+     -0.02681,
+     1.11308
+    ],
+    "cells": [
+     410,
+     411,
+     436,
+     437
+    ],
+    "shares": [
+     0.194,
+     1,
+     0.0148,
+     0.0765
+    ],
+    "since": 0,
+    "state": "seen"
+   },
+   "true": [
+    -0.022719980504390967,
+    1.1076200031364052
+   ],
+   "apple_entries": 1
+  },
+  {
+   "name": "every region of the brain explains itself on hover and every tract on a click, with what it does at this moment",
+   "passed": true,
+   "parts": 11,
+   "missing": [],
+   "heads": [
+    "A question\u2019s kind",
+    "The map replayed for a question",
+    "The map",
+    "Where",
+    "What",
+    "The clock",
+    "A kind with no place",
+    "Doubt",
+    "From the replay to the map",
+    "From the map to where",
+    "From the map to what"
+   ]
+  },
+  {
+   "name": "a card stands beside its part, never over it",
+   "passed": true,
+   "over": []
+  },
+  {
+   "name": "no card shows until the visitor points at something",
+   "passed": true
+  },
+  {
+   "name": "every region's name carries a question mark",
+   "passed": true,
+   "marks": 8,
+   "labels": 8
+  },
+  {
+   "name": "a card the pointer moves onto stays open",
+   "passed": true,
+   "open": true,
+   "part": "map"
+  },
+  {
+   "name": "a part's card opens on keyboard focus and Escape closes it",
+   "passed": true,
+   "head": "The map replayed for a question"
+  },
+  {
+   "name": "follow the position: 9 stages in order, each with live numbers and its part ringed beside it",
+   "passed": true,
+   "stages": [
+    {
+     "title": "A sense reports a thing",
+     "ringed": [
+      "map"
+     ],
+     "beside_its_parts": true
+    },
+    {
+     "title": "The report enters the map",
+     "ringed": [
+      "map"
+     ],
+     "beside_its_parts": true
+    },
+    {
+     "title": "The map carries itself",
+     "ringed": [
+      "map",
+      "clock"
+     ],
+     "beside_its_parts": true
+    },
+    {
+     "title": "Sight again",
+     "ringed": [
+      "map"
+     ],
+     "beside_its_parts": true
+    },
+    {
+     "title": "A place seen empty",
+     "ringed": [
+      "map",
+      "doubt"
+     ],
+     "beside_its_parts": true
+    },
+    {
+     "title": "Sight only takes away",
+     "ringed": [
+      "map",
+      "doubt"
+     ],
+     "beside_its_parts": true
+    },
+    {
+     "title": "It is found",
+     "ringed": [
+      "map",
+      "doubt"
+     ],
+     "beside_its_parts": true
+    },
+    {
+     "title": "Questions",
+     "ringed": [
+      "reference",
+      "held",
+      "where",
+      "what"
+     ],
+     "beside_its_parts": true
+    },
+    {
+     "title": "The inventory",
+     "ringed": [
+      "map",
+      "clock"
+     ],
+     "beside_its_parts": true
+    }
+   ]
+  },
+  {
+   "name": "the stages say what the program does and what the brain does, and that the map's graph has no taught synapse",
+   "passed": true
+  },
+  {
+   "name": "with the camera off nothing on the map changes: every place stays to the bit",
+   "passed": true,
+   "things": 4,
+   "before": [
+    [
+     "hand",
+     "held"
+    ],
+    [
+     "own",
+     "held"
+    ],
+    [
+     "apple",
+     "held"
+    ],
+    [
+     "bread",
+     "held"
+    ]
+   ],
+   "after": [
+    [
+     "hand",
+     "held"
+    ],
+    [
+     "own",
+     "held"
+    ],
+    [
+     "apple",
+     "held"
+    ],
+    [
+     "bread",
+     "held"
+    ]
+   ]
+  },
+  {
+   "name": "reset puts everything back in one tap, and the emptied map reports no thing",
+   "passed": true,
+   "camera_on": true,
+   "inventory_after_reset": []
+  },
+  {
+   "name": "undo takes the last move back in one tap",
+   "passed": true,
+   "before": [
+    -0.05,
+    1.1
+   ],
+   "moved": [
+    0.10000000445512089,
+    1.0000000178204835
+   ],
+   "undone": [
+    -0.05,
+    1.1
+   ]
+  },
+  {
+   "name": "a drag of the floor turns the camera, and undo takes the turn back",
+   "passed": true,
+   "facing": 2.9670597283903604,
+   "turned": 2.067059701099997,
+   "undone": 2.9670597283903604
+  },
+  {
+   "name": "the comparison with last seen and the Kalman filter stays behind one switch, off until asked for",
+   "passed": true,
+   "hidden": false,
+   "chart": 170
+  },
+  {
+   "name": "with Details open the page stays one screen",
+   "passed": true,
+   "w": true,
+   "h": true
+  },
+  {
+   "name": "a scene file of the tracking chamber loads and replays",
+   "passed": true,
+   "file": "example.json",
+   "moments": 60
+  },
+  {
+   "name": "a phone shows the scene and the brain on one screen",
+   "passed": true,
+   "w": true,
+   "scene": 279.6875,
+   "brain": 377.3125
+  },
+  {
+   "name": "on a phone two fingers twist the camera",
+   "passed": true,
+   "turned_degrees": 60.0
+  },
+  {
+   "name": "on a phone the card is a sheet from the bottom and the brain stays visible above it",
+   "passed": true,
+   "brain_bottom": 590.6544811320755,
+   "sheet_top": 616.734375,
+   "brain_height": 204.71698113207546,
+   "sheet": true
+  },
+  {
+   "name": "on a phone a tap on a part opens its card and a tap elsewhere closes it",
+   "passed": true,
+   "card": "The map",
+   "closed": true
+  },
+  {
+   "name": "the Canvas2D view draws the brain where WebGL2 is missing",
+   "passed": true,
+   "view": {
+    "mode": "canvas2d",
+    "hdr": false,
+    "fallback": "requested",
+    "frames": 108,
+    "lit": 820,
+    "wave": true,
+    "synapses": 24
+   },
+   "frame_times": {
+    "frames": 240,
+    "median_ms": 16.700000000000273,
+    "p95_ms": 50,
+    "worst_ms": 66.60000000000036
+   }
+  },
+  {
+   "name": "no console errors, page errors or failed requests",
+   "passed": true,
+   "errors": []
+  }
+ ],
+ "passed": true,
+ "failed": []
+}
