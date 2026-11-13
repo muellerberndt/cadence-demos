@@ -1,0 +1,270 @@
+{
+ "schema": "cadence-arm-promise/1",
+ "checked": "2026-11-13 11:34",
+ "commit": "68ed42d",
+ "cadence": "0.95.2",
+ "brain_sha256": "fb2337350fa662467190779f6300a7e61354319b0815cbc8c9918c872e32ec61",
+ "load_average": [
+  249.3,
+  239.9,
+  188.4
+ ],
+ "speed": 1,
+ "viewport": [
+  1280,
+  800
+ ],
+ "scenarios": [
+  {
+   "kind": "move",
+   "when": "lifted",
+   "target": "A",
+   "carrying_at_decision": 30,
+   "hand_at_change": [
+    0.435,
+    0.098,
+    0.099
+   ],
+   "coach_while_carrying": "carry",
+   "grabbed": true,
+   "from": [
+    0.62,
+    -0.22
+   ],
+   "to": [
+    0.7,
+    -0.06
+   ],
+   "asked": [
+    0.7,
+    -0.06
+   ],
+   "moved_during_decisions": [
+    32,
+    38
+   ],
+   "result": "Placed in bin A in 49 decisions (9.8 s of arm time)",
+   "decisions": 49,
+   "bin": [
+    0.7,
+    -0.06
+   ],
+   "block": [
+    0.669,
+    -0.056,
+    0.025
+   ],
+   "block_in_bin": true,
+   "think_ms_median": 113.6,
+   "arm_time_shown_share": 0.796,
+   "passed": true
+  },
+  {
+   "kind": "move",
+   "when": "lifted",
+   "target": "B",
+   "carrying_at_decision": 30,
+   "hand_at_change": [
+    0.435,
+    0.098,
+    0.099
+   ],
+   "coach_while_carrying": "carry",
+   "grabbed": true,
+   "from": [
+    0.62,
+    0.22
+   ],
+   "to": [
+    0.62,
+    0.08
+   ],
+   "asked": [
+    0.62,
+    0.08
+   ],
+   "moved_during_decisions": [
+    33,
+    38
+   ],
+   "result": "Placed in bin B in 46 decisions (9.2 s of arm time)",
+   "decisions": 46,
+   "bin": [
+    0.62,
+    0.08
+   ],
+   "block": [
+    0.62,
+    0.075,
+    0.025
+   ],
+   "block_in_bin": true,
+   "think_ms_median": 98,
+   "arm_time_shown_share": 0.879,
+   "passed": true
+  },
+  {
+   "kind": "move",
+   "when": "halfway",
+   "target": "A",
+   "carrying_at_decision": 39,
+   "hand_at_change": [
+    0.578,
+    -0.076,
+    0.147
+   ],
+   "coach_while_carrying": "carry",
+   "grabbed": true,
+   "from": [
+    0.62,
+    -0.22
+   ],
+   "to": [
+    0.62,
+    -0.33
+   ],
+   "asked": [
+    0.62,
+    -0.33
+   ],
+   "moved_during_decisions": [
+    41,
+    44
+   ],
+   "result": "Placed in bin A in 58 decisions (11.6 s of arm time)",
+   "decisions": 58,
+   "bin": [
+    0.62,
+    -0.33
+   ],
+   "block": [
+    0.618,
+    -0.323,
+    0.025
+   ],
+   "block_in_bin": true,
+   "think_ms_median": 91.7,
+   "arm_time_shown_share": 0.967,
+   "passed": true
+  },
+  {
+   "kind": "move",
+   "when": "halfway",
+   "target": "A",
+   "carrying_at_decision": 39,
+   "hand_at_change": [
+    0.578,
+    -0.076,
+    0.148
+   ],
+   "coach_while_carrying": "carry",
+   "grabbed": true,
+   "from": [
+    0.62,
+    -0.22
+   ],
+   "to": [
+    0.7,
+    -0.06
+   ],
+   "asked": [
+    0.7,
+    -0.06
+   ],
+   "moved_during_decisions": [
+    41,
+    45
+   ],
+   "result": "Placed in bin A in 52 decisions (10.4 s of arm time)",
+   "decisions": 52,
+   "bin": [
+    0.7,
+    -0.06
+   ],
+   "block": [
+    0.682,
+    -0.06,
+    0.025
+   ],
+   "block_in_bin": true,
+   "think_ms_median": 82.5,
+   "arm_time_shown_share": 0.981,
+   "passed": true
+  },
+  {
+   "kind": "move",
+   "when": "lifted",
+   "target": "A",
+   "carrying_at_decision": 30,
+   "hand_at_change": [
+    0.435,
+    0.098,
+    0.099
+   ],
+   "coach_while_carrying": "carry",
+   "grabbed": true,
+   "from": [
+    0.62,
+    -0.22
+   ],
+   "to": [
+    0.72,
+    -0.22
+   ],
+   "asked": [
+    0.72,
+    -0.22
+   ],
+   "moved_during_decisions": [
+    34,
+    39
+   ],
+   "result": "Placed in bin A in 52 decisions (10.4 s of arm time)",
+   "decisions": 52,
+   "bin": [
+    0.72,
+    -0.22
+   ],
+   "block": [
+    0.69,
+    -0.211,
+    0.029
+   ],
+   "block_in_bin": true,
+   "think_ms_median": 90.3,
+   "arm_time_shown_share": 0.915,
+   "passed": true
+  },
+  {
+   "kind": "switch",
+   "when": "lifted",
+   "target": "A",
+   "carrying_at_decision": 30,
+   "hand_at_change": [
+    0.435,
+    0.098,
+    0.099
+   ],
+   "coach_while_carrying": "carry",
+   "switched_to": "B",
+   "result": "Placed in bin B in 47 decisions (9.4 s of arm time)",
+   "decisions": 47,
+   "bin": [
+    0.62,
+    0.22
+   ],
+   "block": [
+    0.616,
+    0.21,
+    0.029
+   ],
+   "block_in_bin": true,
+   "think_ms_median": 84.8,
+   "arm_time_shown_share": 0.982,
+   "passed": true
+  }
+ ],
+ "brain_ready_s": 11.8,
+ "console_errors": [],
+ "passed": true
+}

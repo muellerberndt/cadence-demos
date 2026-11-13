@@ -8,13 +8,25 @@ const KIND = { // synapse pair -> drawing class
   'module_1>module_0': 'td', 'association>module_1': 'td', 'motor>association': 'td', 'prefrontal>association': 'mem',
 };
 const COLORS = { ff: [79, 195, 247], td: [180, 140, 255], mem: [79, 209, 181] };
+// What each part does, in plain words: the question marks over the panel (CadenceExplain spots).
 const DESCRIPTIONS = {
-  sensory: 'What the brain senses, 262 values: where its hand is; where the block and the target bin are relative to the hand; its seven joint angles and speeds; the gripper; its own last move; which lamp is lit.',
-  module_0: 'Layer 1 of three deep layers. It settles together with the others: bottom-up input from the senses, top-down (apical) input from Layer 2.',
-  module_1: 'Layer 2. Bottom-up from Layer 1, top-down (apical) from Layer 3.',
-  association: 'Layer 3, the top layer. It drives the motor choices and receives the working memory.',
-  prefrontal: 'Working memory: the brain’s short-term memory. A trace of recent moments enters Layer 3 here, so what just happened shapes the next move.',
-  motor: 'The choice of each decision: move the hand −2 to +2 cm along x, y and z, and open or close the gripper. The tallest bar wins.',
+  motor: ['Motor: the next move', 'The brain\u2019s choice at each decision: move the hand \u22122 to +2 cm along x, y and z, and open or close the gripper. The bars show how strongly the brain favours each choice; the outlined one is chosen.'],
+  association: ['Layer 3', 'The top of the brain\u2019s three deep layers. It drives the motor choices, reads the working memory, and sends its signal back down to Layer 2. All the layers settle together into one answer.'],
+  prefrontal: ['Working memory', 'The brain\u2019s state from moment to moment: a trace of the last moments that enters Layer 3 at every decision, so what just happened shapes the next move. It starts empty at each Run.'],
+  history: ['Memory over time', 'The working memory at each of the last 48 decisions, oldest on the left, one row per unit. Watch it change as the arm reaches, grasps, carries and lets go.'],
+  module_1: ['Layer 2', 'The middle layer. It takes signals up from Layer 1 and down from Layer 3 (the top-down, apical signal) and settles together with both.'],
+  module_0: ['Layer 1', 'The first deep layer, fed by the senses. It settles together with Layer 2 above it, which sends its signal back down.'],
+};
+const SENSE_TEXT = {
+  hand: 'Where the hand is: across the table, along it, and how high. Each number is coded by a few neurons.',
+  block_minus_hand: 'Where the block is, seen from the hand.',
+  release_minus_hand: 'Where the target bin is, seen from the hand (a point above the bin, where the hand lets go). Move the bin and these neurons change at the next decision: that is how the brain follows a moved bin.',
+  joints: 'The angles of the arm\u2019s seven joints.',
+  velocity: 'How fast each of the seven joints turns.',
+  opening: 'How far the gripper\u2019s fingers are open.',
+  flags: 'Two neurons: the gripper is closed, and the gripper holds the block.',
+  efference: 'The brain\u2019s own last move, fed back in as a sense.',
+  lamp: 'Which lamp is lit: none, bin A\u2019s or bin B\u2019s. This tells the brain which bin is the target.',
 };
 const SENSE_GROUPS = [
   ['hand', 'Hand position', 3, 15], ['block_minus_hand', 'Block − hand', 3, 15], ['release_minus_hand', 'Target bin − hand', 3, 15],
@@ -33,14 +45,12 @@ function heat(t, base) { // t in 0..1 -> rgb string along dark -> hue -> white
 }
 
 export class BrainView {
-  constructor(canvas, tip) {
+  constructor(canvas) {
     this.canvas = canvas;
-    this.tip = tip;
     this.ctx = canvas.getContext('2d');
     this.ready = false;
     this.history = [];
-    canvas.addEventListener('pointermove', (e) => this.hover(e));
-    canvas.addEventListener('pointerleave', () => { this.tip.hidden = true; });
+    this.spotsW = 0;
     new ResizeObserver(() => this.resize()).observe(canvas.parentElement);
   }
 
@@ -58,6 +68,8 @@ export class BrainView {
     this.answer = null;
     this.ready = true;
     this.resize();
+    // the labels' widths place the question marks: measure again once the page's fonts are in
+    document.fonts?.ready.then(() => { this.spotsW = 0; this.resize(); });
   }
 
   popOf(index) {
@@ -132,7 +144,10 @@ export class BrainView {
     const wmX = l3 ? l3.w + 30 : 0;
     const wm = this.pop.prefrontal ? cellIn('prefrontal', 8, 8, wmX, y, s3) : null;
     if (wm) boxes.push({ name: 'prefrontal', label: 'Working memory', ...wm });
-    this.historyBox = wm ? { x: wm.x + wm.w + 12, y, w: W - (wm.x + wm.w + 12), h: wm.h } : null;
+    // the history strip starts after the working memory's label and its question mark
+    this.ctx.font = '500 10.5px "IBM Plex Mono", monospace';
+    const wmRight = wm ? wm.x + Math.max(wm.w, this.ctx.measureText('WORKING MEMORY').width + 24) : 0;
+    this.historyBox = wm ? { x: wmRight + 12, y, w: W - (wmRight + 12), h: wm.h } : null;
     y += (l3 ? l3.h : 0) + 34;
     // Layer 2: 16 x 8
     const s2 = Math.floor(Math.min(12, (W - 15) / 16 - 1));
@@ -151,7 +166,7 @@ export class BrainView {
     const groupBox = (key, label, rows, cols, gx, gy) => {
       const [a] = layout[key] || [0];
       const b = cellIn('sensory', cols, rows, gx, gy, ss, 1, null, a, rows * cols);
-      this.senseBoxes.push({ label, ...b });
+      this.senseBoxes.push({ key, label, ...b });
       return b;
     };
     if (this.pop.sensory) {
@@ -187,6 +202,37 @@ export class BrainView {
     this.canvas.width = Math.round(W * dpr); this.canvas.height = Math.round(this.H * dpr);
     this.canvas.style.height = `${this.H}px`;
     this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    this.placeSpots();
+  }
+
+  // A question mark and an explanation over every part of the panel, laid out again with it. Each
+  // question mark stands right after its part's label.
+  placeSpots() {
+    const ex = window.CadenceExplain, wrap = this.canvas.parentElement;
+    if (!ex || this.spotsW === this.W) return;
+    this.spotsW = this.W;
+    ex.clearSpots(wrap);
+    const g = this.ctx;
+    const put = (box, label, font, text, title, id) => {
+      g.font = font;
+      const lw = g.measureText(label).width;
+      const el = ex.spot(wrap, { ...box, w: Math.max(box.w, lw + 24) }, text, { title, id });
+      const q = el.querySelector('.cx-q');
+      if (q) Object.assign(q.style, { left: `${Math.round(lw + 7)}px`, top: '1px', right: 'auto' });
+    };
+    const head = '500 10.5px "IBM Plex Mono", monospace';
+    for (const b of this.boxes) {
+      if (b.name === 'sensory') continue;
+      const [title, text] = DESCRIPTIONS[b.name];
+      put({ x: b.x - 3, y: b.y - 19, w: b.w + 6, h: b.h + 22 }, b.label.toUpperCase(), head, text, title, b.name);
+    }
+    if (this.historyBox && this.historyBox.w >= 30) {
+      const h = this.historyBox, [title, text] = DESCRIPTIONS.history;
+      put({ x: h.x - 3, y: h.y - 19, w: h.w + 3, h: h.h + 34 }, 'MEMORY OVER TIME', head, text, title, 'history');
+    }
+    for (const b of this.senseBoxes || []) {
+      put({ x: b.x - 3, y: b.y - 16, w: b.w + 6, h: b.h + 19 }, b.label, '400 10px "IBM Plex Mono", monospace', SENSE_TEXT[b.key], `Sense: ${b.label}`, `sense-${b.key}`);
+    }
   }
 
   // --- drawing --------------------------------------------------------------------------------
@@ -303,30 +349,6 @@ export class BrainView {
       }
     });
     g.fillStyle = '#6c7583'; g.font = '400 9.5px "IBM Plex Mono", monospace';
-    g.textAlign = 'end'; g.fillText('now →', b.x + b.w, b.y + b.h + 12); g.textAlign = 'start';
-  }
-
-  hover(e) {
-    if (!this.ready) return;
-    const r = this.canvas.getBoundingClientRect();
-    const x = e.clientX - r.left, y = e.clientY - r.top;
-    const hit = this.boxes.find((b) => x >= b.x - 4 && x <= b.x + b.w + 4 && y >= b.y - 14 && y <= b.y + b.h + 4);
-    const inHistory = this.historyBox && x >= this.historyBox.x && y >= this.historyBox.y && y <= this.historyBox.y + this.historyBox.h;
-    if (!hit && !inHistory) { this.tip.hidden = true; return; }
-    let html;
-    if (inHistory && (!hit || hit.name !== 'prefrontal')) {
-      html = '<b>Memory over time</b><br>The working trace at each of the last decisions, oldest on the left. Each row is one of its 64 units.';
-    } else {
-      const p = this.pop[hit.name];
-      let mean = 0;
-      for (let i = 0; i < p.size; i++) mean += this.shown[p.start + i];
-      mean /= p.size;
-      html = `<b>${hit.label}</b> · ${p.size} neurons · mean activity ${mean.toFixed(2)}<br>${DESCRIPTIONS[hit.name]}`;
-    }
-    this.tip.innerHTML = html;
-    this.tip.hidden = false;
-    const tw = this.tip.offsetWidth;
-    this.tip.style.left = `${Math.max(0, Math.min(x + 12, this.W - tw))}px`;
-    this.tip.style.top = `${y + 14}px`;
+    g.textAlign = 'end'; g.fillText('latest →', b.x + b.w, b.y + b.h + 12); g.textAlign = 'start';
   }
 }
