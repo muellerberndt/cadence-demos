@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Patch World · Help</title>
+  <meta name="description" content="What the Patch World demo shows: creatures whose Cadence brains learn while they live, and leave the berries when winter makes them poisonous.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="cadence-help.css">
+  <script src="cadence-explain.js" defer></script>
+  <style>
+    .svg-label { font: 500 11px ui-monospace, "IBM Plex Mono", Menlo, monospace; fill: #cfe0e3; }
+    .svg-quiet { font: 500 10px ui-monospace, "IBM Plex Mono", Menlo, monospace; fill: #8ea4aa; }
+  </style>
+</head>
+<body>
+  <header class="help-bar"><span class="crumb">cadence / <b>patch world</b> / help</span><span class="spacer"></span><a href="./">Back to the demo</a></header>
+  <main class="help">
+    <h1>Patch World</h1>
+    <p class="lede">A small world of creatures that forage, drink, flee a predator, bear young and die. Berries nourish them in summer and make them sick in winter, and nothing a creature senses says which season it is.</p>
+    <p class="shows"><b>What it shows about Cadence</b>A Cadence brain learns while it lives. Each creature’s brain has real memory and a real state that carry on from moment to moment, and it runs in real time in your browser, like the brain of a living animal. When winter turns the berries poisonous, the learners find out by eating one and learn to leave them. Their frozen twins, the same brains without learning, keep eating.</p>
+    <nav class="toc" aria-label="On this page"><a href="#see">What you see</a><a href="#why">Why it matters</a><a href="#do">What you can do</a><a href="#how">How it works</a><a href="#numbers">The numbers</a><a href="#limits">Limits</a></nav>
+
+    <h2 id="see">What you see</h2>
+    <p>On the left, the world seen from above; under it, the controls. On the right, panels that count what happens. Click a creature and its brain opens below, live.</p>
+    <figure>
+      <svg viewBox="0 0 560 150" role="img" aria-label="The creatures and things of the world: a learner, a learner while it learns (glowing gold), a frozen twin with an ice rim, a random walker with a question mark, a predator, a berry, a root, a leaf and a hidden cache.">
+        <rect x="0.5" y="0.5" width="559" height="149" rx="10" fill="#141c18" stroke="#2a3a33"/>
+        <!-- learner -->
+        <circle cx="50" cy="62" r="13" fill="none" stroke="#ffffff" stroke-opacity="0.75" stroke-width="2.5" stroke-dasharray="58 30" transform="rotate(-90 50 62)"/>
+        <circle cx="50" cy="62" r="10" fill="#3fe0cf"/>
+        <circle cx="54" cy="58" r="2.4" fill="#f4f7ff"/><circle cx="54" cy="66" r="2.4" fill="#f4f7ff"/>
+        <text class="svg-label" x="50" y="102" text-anchor="middle">learner</text>
+        <text class="svg-quiet" x="50" y="116" text-anchor="middle">ring: energy</text>
+        <!-- learning learner -->
+        <circle cx="135" cy="62" r="22" fill="#ffce66" fill-opacity="0.22"/>
+        <circle cx="135" cy="62" r="10" fill="#3fe0cf"/>
+        <circle cx="139" cy="58" r="2.4" fill="#f4f7ff"/><circle cx="139" cy="66" r="2.4" fill="#f4f7ff"/>
+        <text class="svg-label" x="135" y="102" text-anchor="middle">learning</text>
+        <text class="svg-quiet" x="135" y="116" text-anchor="middle">gold glow</text>
+        <!-- frozen twin -->
+        <circle cx="220" cy="62" r="10" fill="#9fb4ff"/>
+        <circle cx="220" cy="62" r="9.2" fill="none" stroke="#e6f0ff" stroke-width="1.4" stroke-dasharray="2 2"/>
+        <circle cx="224" cy="58" r="2.4" fill="#f4f7ff"/><circle cx="224" cy="66" r="2.4" fill="#f4f7ff"/>
+        <text class="svg-label" x="220" y="102" text-anchor="middle">frozen twin</text>
+        <text class="svg-quiet" x="220" y="116" text-anchor="middle">never learns</text>
+        <!-- random walker -->
+        <circle cx="305" cy="62" r="10" fill="#ff9f4a"/>
+        <text x="305" y="46" text-anchor="middle" fill="#ffd9b0" style="font: 700 10px system-ui">?</text>
+        <text class="svg-label" x="305" y="102" text-anchor="middle">random walker</text>
+        <text class="svg-quiet" x="305" y="116" text-anchor="middle">no brain</text>
+        <!-- predator -->
+        <polygon points="380,51 389,69 371,69" fill="#ff5a4f"/>
+        <text class="svg-label" x="380" y="102" text-anchor="middle">predator</text>
+        <!-- foods -->
+        <circle cx="440" cy="58" r="3.2" fill="#ff4d6d"/><circle cx="447" cy="60" r="3.2" fill="#ff4d6d"/><circle cx="443" cy="66" r="3.2" fill="#ff4d6d"/>
+        <text class="svg-label" x="443" y="102" text-anchor="middle">berry</text>
+        <rect x="481" y="57" width="10" height="6" fill="#d2a36a"/><rect x="485" y="63" width="2" height="5" fill="#8a6438"/>
+        <text class="svg-label" x="486" y="102" text-anchor="middle">root</text>
+        <circle cx="528" cy="62" r="9" fill="none" stroke="#ffce66" stroke-dasharray="3 3"/>
+        <text class="svg-label" x="528" y="102" text-anchor="middle">cache</text>
+        <text class="svg-quiet" x="528" y="116" text-anchor="middle">hidden nuts</text>
+      </svg>
+      <figcaption>The creatures and things of the world. A creature turns green while it is sick from a winter berry.</figcaption>
+    </figure>
+    <ul>
+      <li><b>Learners</b> (teal): each is one Cadence brain that learns from what its own actions bring, for its whole life. A learner glows gold while it is learning and flashes gold or blue with the dopamine of a lesson. A gold spot at the back of its head marks a recall memory.</li>
+      <li><b>Frozen twins</b> (blue, dashed ice rim): a founder’s brain that acts and never learns. They show what the same brains do without learning during life.</li>
+      <li><b>Random walkers</b> (orange, with a question mark): no brain; each moment one of the six actions at random. The baseline.</li>
+      <li><b>The world</b>: ground with roots, meadows with leaves, berry thickets, ponds, four caches of hidden nuts (marked for you, invisible to the creatures until they stand on one), day and night, and a predator. In winter the ground turns grey and snow falls; the creatures do not see that.</li>
+      <li><b>The top of the world</b>: the season and how far it has run, the moment, day or night and the air.</li>
+      <li><b>Who eats well</b>: for each kind, how many are alive, intake (the food and water its own actions brought, per moment of life), poisonings per 1,000 moments, lives ended and the mean age at death, since the page opened.</li>
+      <li><b>Berries eaten when standing on one</b>: the chart of the claim. Of the berries a creature stood on, the share it ate, per 50 moments, learners in teal and frozen twins in blue; winter shaded; a dashed gold line where you flipped the season.</li>
+      <li><b>The population evolving</b> and <b>What happened</b>: the learners’ mean genes over time, and births, deaths and poisonings as they happen.</li>
+      <li><b>The brain</b>, when you click a creature: its brain drawn from the side, lit by its real state at this moment. Every region has a name with a small question mark.</li>
+    </ul>
+
+    <h2 id="why">Why it matters</h2>
+    <p>Most neural networks learn once, from a fixed collection of examples, and are then frozen and deployed. In this world such a brain is the frozen twin: it keeps the habits of the summer it was frozen in, and in winter it eats the poisonous berries, again and again.</p>
+    <p>A learner has the same brain at the start, and it keeps learning for its whole life, from what its own actions bring. Its brain is one continuing state: what it made of the last moment carries into this one, and it remembers what its actions brought in which situations. Nobody tells it that the season turned. It eats a berry, falls sick, and the surprise wakes its learning. Within a few hundred moments it leaves most berries it stands on. When summer returns it tries them again, slowly.</p>
+    <p><b>Learning on surprise.</b> A calm learner answers from its settled state, learns nothing and pays for no learning. A surprise (a berry that poisons where berries used to nourish) or a want (too little food) arouses it; then it tries alternatives and learns from the outcome. A robot or a game character in a world that changes under it needs the same.</p>
+    <p><b>Evolution on top.</b> A well-fed learner bears a child that inherits a copy of its brain as it is and mutated genes; everything a brain and a body have costs energy every moment. The page’s eight founders are the best survivors of two rounds of such evolution.</p>
+
+    <h2 id="do">What you can do</h2>
+    <ul>
+      <li><b>Flip the season.</b> Into winter, every berry makes a creature sick. Watch the chart: within a few hundred moments the learners’ teal line falls, while the frozen twins’ blue line stays up. Flip again for summer: the learners come back to the berries slowly.</li>
+      <li><b>Speed</b>: Slow and Normal show 3 and 10 moments a second; Fast runs as fast as the brains settle in your browser. <b>Pause</b> stops the world.</li>
+      <li><b>Click a creature</b> on the map, or a name under What happened, to watch its brain. Rest the pointer on a part of the brain, or on a <b>?</b>, for what it does. The × closes the brain.</li>
+      <li><b>Drop berries</b> or <b>Drop roots</b>, then click the map: food appears on a 3 by 3 patch. <b>Add predator</b>, then click the map: a predator appears there (up to four). <b>Remove predator</b> takes the newest away.</li>
+      <li>The <b>hints</b> under the controls walk through the main steps on a first visit; the × hides them.</li>
+    </ul>
+
+    <h2 id="how">How it works</h2>
+    <h3>A moment</h3>
+    <p>Every moment each creature senses, its brain settles on an action, and it acts. The senses are 38 numbers: for each of four directions the nearest berry, root, leaf, water, predator and other creature within its sense range; what lies underfoot; its energy, thirst, daylight, nausea while a poisoning lasts and the cold of the air; and where it is. The air follows the season slowly, so for a while after a turn it feels like the season before. The actions are north, east, south, west, eat and drink. With every moment the brain also receives what its last action brought: food, water, poison, a bite, or a small cost for eating where there is nothing.</p>
+    <h3>The brain</h3>
+    <p>Each learner is one Cadence brain built with <code>Brain.compose</code>, living through <code>brain.live</code>. Its regions are named for the role they play:</p>
+    <dl class="words">
+      <dt>senses</dt><dd>The visual cortex, the insula (the body), taste and touch, and place. They enter through the thalamus.</dd>
+      <dt>association cortex</dt><dd>Where the senses, the memory and the motor strip meet and settle together into one agreed state.</dd>
+      <dt>prefrontal cortex</dt><dd>The working trace: what the brain made of the last moment, carried into this one.</dd>
+      <dt>motor strip</dt><dd>Six neurons, one per action; the brightest after the settle is the action.</dd>
+      <dt>striatum</dt><dd>The critic, which judges how good the situation is, and the actor, which picks the action.</dd>
+      <dt>dopamine nucleus</dt><dd>After a lesson, gold when the outcome was better than expected, blue when worse. It tells the synapses which way to change.</dd>
+      <dt>locus coeruleus</dt><dd>Arousal: surprise and want. Above the creature’s threshold the brain learns.</dd>
+      <dt>hippocampus</dt><dd>Memory: what an action brought in a situation, and, with the recall gene, recent moments in slots that light when read.</dd>
+    </dl>
+    <p>The brain view replays the settle the action came from, sweep by sweep: neurons light with their activity, fibre tracts glow with the signal their synapses carry (warm excites, cool inhibits) and shimmer white where this moment’s lesson changed synapses.</p>
+    <h3>Learning, memory and costs</h3>
+    <p>Aroused, the brain samples its policy, learns from the outcome through eligibility traces (credit reaches back over its recent actions) and writes the outcome to its associative store. Every part of a creature costs energy every moment: its neurons, a recall memory, its sense range, its speed, its size, and every learning sweep. A creature that stores enough energy bears a child that takes half the energy, a copy of the parent’s brain and mutated genes. Up to 12 learners live at once. Frozen twins and random walkers bear no young; a dead one is replaced.</p>
+    <p>The founders were bred offline with the same Python code that runs in the page: a nursery world where nobody dies, then two rounds of evolution in the mortal world. The frozen twins carry the founders’ brains as they were at the end of a summer.</p>
+
+    <h2 id="numbers">The numbers</h2>
+    <p>The season flip, measured in 32 worlds where nobody dies (the eight founders as learners beside their frozen twins, 1,000 moments of summer, then 1,500 of winter). The share of berries eaten when standing on one:</p>
+    <figure>
+      <svg viewBox="0 0 520 200" role="img" aria-label="Chart: learners ate about 96 to 99 percent of the berries they stood on through summer; after the flip into winter their share fell to 45 percent in the first 100 moments and to 5 percent at the end. The frozen twins stayed between 91 and 100 percent throughout.">
+        <rect x="230.4" y="12" width="279.6" height="158" fill="#bfe3ff" fill-opacity="0.08"/>
+        <line x1="44" y1="12" x2="510" y2="12" stroke="#22323a"/><line x1="44" y1="91" x2="510" y2="91" stroke="#22323a"/><line x1="44" y1="170" x2="510" y2="170" stroke="#22323a"/>
+        <text class="svg-quiet" x="38" y="16" text-anchor="end">100%</text><text class="svg-quiet" x="38" y="95" text-anchor="end">50%</text><text class="svg-quiet" x="38" y="174" text-anchor="end">0%</text>
+        <line x1="230.4" y1="12" x2="230.4" y2="170" stroke="#ffce66" stroke-dasharray="3 3"/>
+        <polyline fill="none" stroke="#9fb4ff" stroke-width="2" points="53.3,22.8 72.0,22.1 90.6,21.4 109.2,24.8 127.9,17.3 146.5,13.6 165.2,26.0 183.8,18.6 202.4,16.8 221.1,17.4 239.7,15.2 258.4,12.0 277.0,12.0 295.6,14.9 314.3,16.5 332.9,12.0 351.6,12.0 370.2,12.0 388.8,15.2 407.5,16.8 426.1,12.0 444.8,12.0 463.4,12.0 482.0,12.0 500.7,18.3"/>
+        <polyline fill="none" stroke="#3fe0cf" stroke-width="2.4" points="53.3,18.4 72.0,16.8 90.6,20.7 109.2,19.3 127.9,14.1 146.5,14.4 165.2,15.4 183.8,13.5 202.4,18.0 221.1,13.3 239.7,99.4 258.4,118.0 277.0,133.1 295.6,134.0 314.3,141.0 332.9,146.9 351.6,152.5 370.2,152.1 388.8,150.2 407.5,157.5 426.1,158.8 444.8,163.9 463.4,160.6 482.0,163.1 500.7,162.7"/>
+        <text class="svg-quiet" x="137" y="188" text-anchor="middle">summer, 1,000 moments</text>
+        <text class="svg-quiet" x="370" y="188" text-anchor="middle">winter, 1,500 moments</text>
+        <text class="svg-label" x="300" y="60" fill="#9fb4ff" style="fill:#9fb4ff">frozen twins</text>
+        <text class="svg-label" x="330" y="132" style="fill:#3fe0cf">learners</text>
+        <text class="svg-quiet" x="236" y="186" style="fill:#ffce66">flip</text>
+      </svg>
+      <figcaption>Each point is 100 moments, averaged over 256 learners and 256 twins (<code>evidence/flip.json</code>).</figcaption>
+    </figure>
+    <table>
+      <thead><tr><th>Reading</th><th>Learners</th><th>Frozen twins</th></tr></thead>
+      <tbody>
+        <tr><td>Berries eaten when standing on one, last 100 moments of summer</td><td class="n">99%</td><td class="n">97%</td></tr>
+        <tr><td>… first 100 moments of winter</td><td class="n">45%</td><td class="n">98%</td></tr>
+        <tr><td>… moments 400 to 500 of winter</td><td class="n">18%</td><td class="n">97%</td></tr>
+        <tr><td>… last 100 moments of winter</td><td class="n">5%</td><td class="n">96%</td></tr>
+        <tr><td>Berries eaten per 100 moments, first 300 moments of the first winter, then of the second</td><td class="n">0.60, 0.32</td><td class="n">0.15, 0.15</td></tr>
+        <tr><td>Mean age at death in a mortal world without births (95% interval)</td><td class="n">3,933 (3,554 to 4,290)</td><td class="n">284 (248 to 324)</td></tr>
+        <tr><td>Intake per moment, same worlds (random walkers: 0.037)</td><td class="n">0.209</td><td class="n">0.069</td></tr>
+        <tr><td>Learners that outlived their own twin</td><td class="n">253 of 256</td><td class="n"></td></tr>
+      </tbody>
+    </table>
+    <p class="note">Where the numbers come from, in the demo’s folder of the repository: the season flip, <code>evidence/flip.json</code>; the two winters, <code>evidence/seasons.json</code>; the lifespans and intake, <code>evidence/controls.json</code>. All on fresh world seeds the breeding never used.</p>
+    <p>On this page the same flip, run by a script on the real page with its own button (<code>tools/promise_flip.py</code>, <code>evidence/promise-flip-20261113.json</code>): in the 300 moments of summer before the flip the learners ate 68 of the 70 berries they stood on (97%); in the 850 moments of winter after it, 27 of 114 (24%; 21% in its first 150 moments and 21% from its 500th moment on); the two frozen twins ate all 15 they stood on in that winter. The page’s world is harder than the measured worlds: learners die and are born through the winter (12 alive at the flip, 3 to 5 in its second half), so the share falls less far than the 5% above.</p>
+    <p>The page itself (<code>evidence/page-check.json</code>, headless Chromium on an Apple M4): it ran 43.7 moments a second with 12 learners, 2 frozen twins and 2 random walkers in four brain workers, and drew the brain view in 2.5 ms a frame.</p>
+
+    <h2 id="limits">Limits</h2>
+    <ul>
+      <li>The learners are far from perfect foragers: in the mortal world they eat or drink where there is nothing 131 moments in 1,000, and walk past food they sense. They learned from reward alone, without a teacher, and are measured against the frozen twins and random walkers.</li>
+      <li>The frozen twins die young mostly through a stuck habit (eating where there is nothing), before the first winter. The winter readings come from worlds where nobody dies; on this page twins that die are replaced, and two twins stand on few berries.</li>
+      <li>After a winter the learners come back to the berries slowly (27% eaten in the second summer against 98% in the first): what a poisoning taught outlasts the season that taught it.</li>
+      <li>A recall memory gave no measurable help in finding the hidden caches.</li>
+      <li>Evolution here selects genes over brains inherited as copies; the readings compare groups of founders, not single genes. Energy and costs are a declared simulation economy.</li>
+      <li>The brain view records the inspected creature’s settle sweep by sweep, which makes that creature’s worker slower.</li>
+    </ul>
+
+    <footer>The world and every brain run in your browser, in Python through Pyodide, with cadence-net 0.95.2. Nothing is sent to a server, and a reload starts a new world. <a href="https://github.com/muellerberndt/cadence-demos/tree/main/patch-world" target="_blank" rel="noopener">The demo on GitHub</a> · <a href="https://github.com/muellerberndt/cadence" target="_blank" rel="noopener">Cadence on GitHub</a></footer>
+  </main>
+</body>
+</html>

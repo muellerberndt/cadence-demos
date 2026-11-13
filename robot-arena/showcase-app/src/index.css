@@ -11,3 +11,11 @@ body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", 
 .btn-primary { @apply bg-aroused text-[#1a1208] border-aroused hover:bg-[#ffc266]; }
 .btn-active { @apply border-aroused text-aroused; }
 .kicker { @apply text-[11px] font-semibold tracking-[0.14em] uppercase text-muted; }
+
+/* the demo standard: the ring's label over the canvas, the help link in the toolbar */
+.ring-label { position: absolute; left: 12px; top: 10px; z-index: 2; padding: 3px 9px; border-radius: 999px; background: rgba(11, 14, 20, 0.78); border: 1px solid #273040; color: #8f98a9; font-size: 12px; cursor: help; }
+a.help-link { text-decoration: none; color: #8f98a9; }
+a.help-link:hover { color: #e8ebf2; }
+/* the ring keeps its toolbar on the screen: as wide as its column, no taller than the window allows */
+.arena-canvas { width: auto; height: auto; max-width: 100%; max-height: max(320px, calc(100vh - 210px)); margin: 0 auto; }
+html.embedded .arena-canvas { max-height: max(300px, calc(100vh - 175px)); }

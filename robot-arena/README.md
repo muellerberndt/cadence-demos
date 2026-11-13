@@ -1,5 +1,16 @@
 # Cadence Showcase League
 
+**What it shows.** A Cadence brain lives one continuing life. Each robot's brain has real memory
+and a real state that carry on from moment to moment and from fight to fight, and it runs live in
+your browser. In routine it settles calmly and learns nothing; a surprise, or less pay than usual,
+wakes it (amber): it samples its commands, learns from what they bring and settles back. After every
+fight the browser saves the six brains and a reload restores them. On a fight played by
+`tools/promise_arena.py` on the real page, 82% of the 2,481 robot-moments were calm (four of the
+six robots were calm throughout), every synapse change of the inspected brain was the lesson of a
+command chosen while aroused, and the six saved brains, each changed by the fight, came back on
+reload (`evidence/promise-arena-20261113.json`). The
+[help page](showcase-app/public/help.html) explains everything on the screen.
+
 Robots assembled from parts, each with one continuing Cadence brain wired to every motor.
 A robot is nursed alone until it can drive, aim and stay inside a ring. Then it fights
 six-robot royales for the rest of its life and keeps learning from every fight. Nothing is
@@ -15,7 +26,10 @@ cd showcase-app && npm install && npm run build && npx vite preview --port 4173
 ```
 
 Open http://localhost:4173/. `public/pack/` holds the six brains, the arena's Python and the
-cadence-net wheel; Pyodide runs them in a worker. What to watch:
+cadence-net wheel; Pyodide runs them in a worker. `public/` also holds the help page and the
+demos' shared explanation files (`cadence-explain.*`, `cadence-help.css`, copies of `shared/`).
+The build (`showcase-app/dist/`, not committed) is the folder a site serves; it uses relative
+paths and works from any folder. What to watch:
 
 - the ladder's last column, the driving test each brain arrived with (eight marks: approach,
   escape, the closing ring, engagement, chase, facing, no spinning, no stalling);
@@ -123,4 +137,5 @@ life and learns from every fight.
 `arena/` the parts catalogue, physics, senses, brain wrapper, nursery, royale, licence,
 league, evolution and dashboard; `viewer/` the isometric replay page and the league page;
 `showcase-app/` the page and its packer; `league-live/` the roster the page ships with;
-`tests/` the checks; `docs/` the brain settings and screenshots.
+`tests/` the checks; `tools/promise_arena.py` the page's promise, played on the real page;
+`evidence/` its readings; `docs/` the brain settings and screenshots.

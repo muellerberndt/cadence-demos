@@ -10,7 +10,7 @@ export function FightSummary({ results, eloDelta, onNext, colors, countdown, aut
         <div className="kicker mb-1">Fight over</div>
         <h3 className="text-xl font-bold mb-3">{results[0].name} takes the ring</h3>
         <table className="w-full text-sm tnum">
-          <thead><tr className="text-muted text-xs"><th className="text-left font-medium py-1">place</th><th className="text-left font-medium">robot</th><th className="text-right font-medium">dealt</th><th className="text-right font-medium">taken</th><th className="text-right font-medium">learning</th><th className="text-right font-medium">elo</th></tr></thead>
+          <thead><tr className="text-muted text-xs"><th className="text-left font-medium py-1">place</th><th className="text-left font-medium">robot</th><th className="text-right font-medium">dealt</th><th className="text-right font-medium">taken</th><th className="text-right font-medium"><span data-explain="The share of this fight each brain spent aroused and learning, and its learning sweeps in thousands." data-explain-mark="none" className="cursor-help">learning</span></th><th className="text-right font-medium"><span data-explain="How the robot's rating in this browser changed with its place in this fight." data-explain-mark="none" className="cursor-help">elo</span></th></tr></thead>
           <tbody>
             {results.map((r) => (
               <tr key={r.name} className="border-t border-line">
@@ -26,8 +26,8 @@ export function FightSummary({ results, eloDelta, onNext, colors, countdown, aut
         </table>
         <p className="text-xs text-muted mt-3">Every brain learned from this fight and was saved in this browser. The next fight starts with what they just learned.</p>
         <div className="mt-4 flex flex-wrap items-center gap-2">
-          <button className="btn btn-primary" onClick={onNext}>{countdown !== null ? `Next fight in ${countdown} s` : "Next fight"}</button>
-          <button className={`btn ${autoContinue ? "btn-active" : ""}`} onClick={onToggleAuto}>{autoContinue ? "Continuous rounds: on" : "Continuous rounds: off"}</button>
+          <button className="btn btn-primary" data-explain="Starts the next fight with the same brains, as this fight left them." data-explain-mark="none" onClick={onNext}><span>{countdown !== null ? `Next fight in ${countdown} s` : "Next fight"}</span></button>
+          <button className={`btn ${autoContinue ? "btn-active" : ""}`} data-explain="On: the next fight starts by itself after a few seconds. Off: the ring waits for Next fight." data-explain-mark="none" onClick={onToggleAuto}><span>{autoContinue ? "Continuous rounds: on" : "Continuous rounds: off"}</span></button>
         </div>
       </div>
     </div>

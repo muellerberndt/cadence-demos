@@ -30,6 +30,16 @@ export type Inspect = {
 };
 
 type Region = { key: string; title: string; role: string; cx: number; cy: number; rx: number; ry: number; hue: string };
+// a part of the drawing a visitor can point at: a box in the canvas's own pixels, its explanation
+export type Part = { x: number; y: number; w: number; h: number; text: string; title: string; mark: "none" | "top-right" | "top-left" };
+// what each region does, for a visitor (the cards of the shared explanations)
+const EXPLAIN: Record<string, string> = {
+  sensory: "Every sense of the robot enters here each moment: where the nearest rival and the ring's edge are, how fast the rival closes in, its own speed and turning, hit points, pain, damage dealt, whether it stands outside the ring, each leg's stride and each arm's angle.",
+  association: "The region the motor cortex and the working trace read. Every region settles together with it into one agreed state each moment.",
+  prefrontal: "The working trace: the last settled state feeds back here, so the brain carries what it made of the last moment into this one. A short-term memory.",
+  motor: "One group of neurons for each motor: a wheel, a leg, an arm, a spinner. The strongest neuron of a group is that motor's command (back, hold or forward; on or off), written above it.",
+  recall: "The recall memory: it stores moments of the robot's life. The dots below are the newest, lit when this moment reads them; a thread runs to the moment it reads most, drawn as the ring was then.",
+};
 const ROLE: Record<string, [string, string, string]> = {
   // population -> [title, the role it plays, colour]
   sensory: ["sensory cortex", "plays the role of the sensory cortex: every sense of the body enters here, as through the thalamus", "#5ec8ff"],
@@ -85,13 +95,47 @@ export class BrainView {
   frameMs = 0;
   frames = 0;
 
-  constructor(private canvas: HTMLCanvasElement) {
+  // `pointer` is the element that receives the pointer over the canvas (the canvas, or its wrapper
+  // when explanation spots lie over it): resting on a neuron shows its sense and activation
+  constructor(private canvas: HTMLCanvasElement, pointer: HTMLElement = canvas) {
     this.c = canvas.getContext("2d")!;
-    canvas.addEventListener("mousemove", (e) => {
+    pointer.addEventListener("mousemove", (e) => {
       const r = canvas.getBoundingClientRect();
       this.hover = { x: ((e.clientX - r.left) / r.width) * W, y: ((e.clientY - r.top) / r.height) * H - OY };
     });
-    canvas.addEventListener("mouseleave", () => (this.hover = null));
+    pointer.addEventListener("mouseleave", () => (this.hover = null));
+  }
+
+  // the parts a visitor can point at, in the canvas's own pixels (W x H): every region and its
+  // name, the actor's choice, the dopamine nucleus, the remembered moment and the status band
+  parts(): Part[] {
+    if (!this.an) return [];
+    const out: Part[] = [];
+    const regions = [...this.regions.values()].filter((r) => r.key !== "next");
+    for (const r of regions) {
+      const text = EXPLAIN[r.key] || (r.key.startsWith("module_") ? "An intermediate region of the cortex, between the senses and the association cortex. It settles together with the rest of the brain." : r.role);
+      out.push({ x: r.cx - r.rx * 0.92, y: OY + r.cy - r.ry * 0.9, w: r.rx * 1.84, h: r.ry * 1.8, text, title: r.title, mark: "none" });
+    }
+    this.c.save(); this.c.setTransform(1, 0, 0, 1, 0, 0); this.c.font = "600 12px Inter, system-ui, sans-serif";
+    for (const r of regions) {
+      const text = out.find((o) => o.title === r.title)!.text;
+      const tw = this.c.measureText(r.title.toUpperCase()).width, ly = OY + (r.key === "motor" ? r.cy - r.ry - 30 : r.cy - r.ry - 8);
+      out.push({ x: r.cx - tw / 2 - 4, y: ly - 13, w: tw + 22, h: 18, text, title: r.title, mark: "top-right" });
+    }
+    this.c.restore();
+    out.push({ x: 410, y: OY + 340, w: 120, h: 72, title: "basal ganglia: the actor's choice", mark: "top-right",
+      text: "How the brain picks its commands. GREEDY while calm: it takes its settled answer. SAMPLING while aroused: it tries alternatives, so it can learn which do better." });
+    out.push({ x: 430, y: OY + 448, w: 230, h: 64, title: "dopamine: the critic's prediction error", mark: "top-right",
+      text: "After each outcome, the difference between what the brain expected and what came. Gold when better, blue when worse; the wash spreads over the brain and tells its synapses which way to change." });
+    if (this.regions.has("recall")) out.push({ x: 1030, y: OY + 412, w: 112, h: 130, title: "the moment it reads", mark: "top-right",
+      text: "The ring at the moment the recall memory reads most: this robot in white, the others in grey, the closing ring dashed." });
+    out.push({ x: 8, y: 4, w: 336, h: 78, title: "calm or learning", mark: "top-left",
+      text: "CALM: the brain answers from one settled state and learns nothing. AROUSED: a surprise, or a want (pay below what its life usually brings), has switched learning on. Below: the arousal level and the want, and how many settles this moment took and how many of them learned." });
+    out.push({ x: 352, y: 6, w: 470, h: 70, title: "the settle", mark: "top-right",
+      text: "Each sweep every neuron moves toward agreement with the neurons it reads. The line is the largest move per sweep, falling until the brain agrees. Every eighth moment the settle replays sweep by sweep on the brain below." });
+    out.push({ x: 950, y: 4, w: 282, h: 78, title: "learning, counted", mark: "top-right",
+      text: "The synapses this moment's learning changed (they flash gold on the brain), and all the changes since you opened this robot. Calm moments learn nothing: every change is the lesson of a command chosen while aroused, which lands with its outcome one moment later." });
+    return out;
   }
 
   setHistory(fn: (t: number) => Frame | undefined, robotIndex: number) { this.history = fn; this.robotIndex = robotIndex; }
@@ -394,9 +438,7 @@ export class BrainView {
       const pop = this.popNames[this.popOf[best]]; const r = this.regions.get(pop);
       const si = an.sensory.indexOf(best), mi = an.motor.indexOf(best);
       const what = si >= 0 && this.spec ? `sense: ${this.spec.inputs[si]}` : mi >= 0 ? "a motor neuron" : pop;
-      text = `${what} · activation ${act[best].toFixed(2)} · ${r ? r.role : pop}`;
-    } else {
-      for (const r of this.regions.values()) if (((h.x - r.cx) / r.rx) ** 2 + ((h.y - r.cy) / r.ry) ** 2 < 1) text = `${r.title} (${r.key}): ${r.role}`;
+      text = `${what} · activation ${act[best].toFixed(2)}${r ? ` · ${r.title}` : ""}`;
     }
     if (!text) return;
     c.font = "12px Inter, system-ui, sans-serif";

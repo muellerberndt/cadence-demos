@@ -1,0 +1,109 @@
+{
+ "schema": "robot-arena-promise/1",
+ "url": "http://127.0.0.1:64419/",
+ "checked_utc": "2026-11-13T05:01:23.337251+00:00",
+ "checks": [
+  {
+   "check": "routine is calm: most robot-moments of the fight are calm",
+   "ok": true,
+   "calm_share": 0.815,
+   "robot_moments": 2481,
+   "per_robot": {
+    "Tumbler-44.41": {
+     "moments": 677,
+     "calm": 1.0
+    },
+    "Mantis-25.44": {
+     "moments": 678,
+     "calm": 0.603
+    },
+    "Cart-28.4": {
+     "moments": 254,
+     "calm": 1.0
+    },
+    "Roller-32.4": {
+     "moments": 348,
+     "calm": 0.454
+    },
+    "Crab-25.33": {
+     "moments": 171,
+     "calm": 1.0
+    },
+    "Dozer-31.27": {
+     "moments": 353,
+     "calm": 1.0
+    }
+   }
+  },
+  {
+   "check": "the inspected brain wakes and settles back; a surprise or a want comes with every onset",
+   "ok": true,
+   "moments": 277,
+   "aroused": 155,
+   "onsets": 8,
+   "with_surprise_or_want": 8,
+   "with_surprise": 5,
+   "with_want": 6
+  },
+  {
+   "check": "learning only when aroused: synapses change in aroused moments and in the moment after, never in other calm moments",
+   "ok": true,
+   "moments_with_changes": 155,
+   "landing_after_aroused": 8,
+   "calm_moments": 122,
+   "calm_changes_elsewhere": []
+  },
+  {
+   "check": "one continuing life: the six brains saved in this browser, each changed by its fight, restored on reload",
+   "ok": true,
+   "saved": 6,
+   "changed_from_shipped": 6,
+   "fights_after_reload": "1"
+  },
+  {
+   "check": "no console errors, page errors or failed requests",
+   "ok": true,
+   "errors": []
+  }
+ ],
+ "errors": [],
+ "boot_seconds": 6.3,
+ "fight_moments": 678,
+ "names": [
+  "Tumbler-44.41",
+  "Mantis-25.44",
+  "Cart-28.4",
+  "Roller-32.4",
+  "Crab-25.33",
+  "Dozer-31.27"
+ ],
+ "inspected": "Roller-32.4",
+ "calm_share": 0.815,
+ "per_robot": {
+  "Tumbler-44.41": {
+   "moments": 677,
+   "calm": 1.0
+  },
+  "Mantis-25.44": {
+   "moments": 678,
+   "calm": 0.603
+  },
+  "Cart-28.4": {
+   "moments": 254,
+   "calm": 1.0
+  },
+  "Roller-32.4": {
+   "moments": 348,
+   "calm": 0.454
+  },
+  "Crab-25.33": {
+   "moments": 171,
+   "calm": 1.0
+  },
+  "Dozer-31.27": {
+   "moments": 353,
+   "calm": 1.0
+  }
+ },
+ "passed": true
+}
