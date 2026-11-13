@@ -9,6 +9,8 @@ import { Eyes, EYE } from './eyes.js';
 import { BrainView } from './brainview.js';
 import { Brain3D } from './brain3d.js';
 import { ParrotAudio } from './audio.js';
+import { MemoryView } from './memview.js';
+import { Pistachio } from './pistachio.js';
 import { lookList, makeParrot } from './looks.js';
 
 const $ = (id) => document.getElementById(id);
@@ -19,11 +21,11 @@ const ui = {
   sub: $('brain-sub'), moment: $('s-moment'), think: $('s-think'), fps: $('s-fps'), tags: $('tags'),
   eyeL: $('eye-l'), eyeR: $('eye-r'), fields: $('fields'), palette: $('palette'), looks: $('looks'), mode: $('mode'),
   test: $('test'), clear: $('clear'), pistachio: $('pistachio'), pistachios: $('pistachios'), silence: $('silence'), drawer: $('drawer'),
-  mic: $('mic'), earLevel: $('ear-level'), earBands: $('ear-bands'), voiceLevel: $('voice-level'), voiceNote: $('voice-note'),
+  mic: $('mic'), driveLevel: $('drive-level'), turns: $('turns'), turnNote: $('turn-note'), sounds: $('sounds'), forget: $('forget'), earLevel: $('ear-level'), earBands: $('ear-bands'), voiceLevel: $('voice-level'), voiceNote: $('voice-note'),
 };
 const state = { phase: 'loading', mode: 'brain', look: null, moment: 0, brainReady: false, pending: false, lastStep: 0, reward: 0, pistachios: 0,
   silenced: false, subject: null, dragging: null, script: null, thinkMs: [], frameTimes: [], fps: 0, coach: null };
-let rig, parrot, eyes, view, brain, desc, brain3d;
+let rig, parrot, eyes, view, brain, desc, brain3d, memview;
 const audio = new ParrotAudio();
 
 function setStatus(text, kind = 'busy') { ui.statusText.textContent = text; ui.status.className = `status ${kind}`; }
@@ -41,7 +43,7 @@ const COACH = {
   dragging: ['Watch', 'Move it nearer or further: the <b>distance</b> neurons (right) answer.'],
   behind: ['Watch', 'Behind the parrot is its blind spot: neither eye sees there.'],
   script: ['Test', 'A test runs: things are placed round the parrot, one after another.'],
-  manual: ['Your turn', 'You move the parrot: use the sliders. Its brain still sees, and its moves wait.'],
+  manual: ['Your turn', 'You move the parrot: use the sliders. Its brain keeps seeing, and its moves wait.'],
 };
 function coachKey() {
   if (!state.brainReady && state.phase === 'loading') return 'loading';
@@ -264,7 +266,8 @@ async function moment(now) {
   const voiceOk = !!audio.ctx && audio.ctx.state === 'running';
   let reply;
   try {
-    reply = await brain.call('step', { meta: { t: state.moment, reward, voice_ok: voiceOk, cue }, arrays: { left, right, proprio: pro, mel: sound.mel, audio: sound.audio } },
+    const focusKind = state.focus ? room.things.get(state.focus.id)?.kind || null : null;
+    reply = await brain.call('step', { meta: { t: state.moment, reward, voice_ok: voiceOk, cue, things: room.things.size, focus_kind: focusKind }, arrays: { left, right, proprio: pro, mel: sound.mel, audio: sound.audio } },
       [left.buffer, right.buffer, pro.buffer, sound.mel.buffer, sound.audio.buffer]);
   } catch (error) { state.pending = false; setStatus(`The brain stopped: ${error.message}`, 'error'); state.brainReady = false; return; }
   state.pending = false;
@@ -276,8 +279,14 @@ async function moment(now) {
   brain3d?.update(reply.arrays.activity);
   if (reply.arrays.voice?.length) { // the voice motor's frames: the parrot says them
     const spoken = audio.speak(reply.arrays.voice);
-    if (spoken) ui.voiceNote.textContent = `a babble, ${(spoken.env.length / 100).toFixed(1)} s`;
+    const what = reply.said ? (reply.said.source === 'you' ? 'a sound learned from you' : reply.said.source === 'recording' ? `a ${reply.said.tag}` : 'a babble') : 'a sound';
+    if (spoken) { ui.voiceNote.textContent = `${what}, ${(spoken.env.length / 100).toFixed(1)} s`; state.saying = reply.said?.id; markChip(reply.said?.id); }
   }
+  if (reply.drive !== undefined) ui.driveLevel.style.width = `${Math.round(reply.drive * 100)}%`;
+  if (reply.memory) memview?.update(reply.memory);
+  if (reply.repertoire) syncChips(reply.repertoire);
+  if (reply.heard_sound) saveMemory();
+  if (reply.paid) for (const [id] of Object.entries(reply.paid)) ui.sounds.querySelector(`[data-sound="${id}"]`)?.classList.add('paid');
   // the focus the brain reports: the thing nearest the direction it turned to
   const key = reply.focus ? `${reply.focus.az},${reply.focus.el}` : null;
   if (key !== state.focusKey) { state.focusKey = key; state.focus = reply.focus ? focusFrom(reply.focus) : null; }
@@ -335,6 +344,89 @@ function placeFocus() {
   focusTag.style.transform = `translate(${Math.round((v.x + 1) / 2 * canvas.clientWidth)}px, ${Math.round((1 - v.y) / 2 * canvas.clientHeight)}px) translate(-50%, 0)`;
 }
 
+// --- its sounds: the repertoire's chips, what it learned from you (kept in this browser), the turns
+// The library's stores, kept in this browser between visits (the records' values and depths, and
+// the consolidated synapses), so the parrot remembers the visitor.
+const learnedStore = {
+  get() { try { return JSON.parse(localStorage.getItem('parrot.memory') || 'null'); } catch (e) { return null; } },
+  set(saved) { try { localStorage.setItem('parrot.memory', JSON.stringify(saved)); } catch (e) { /* storage blocked: it forgets on leaving */ } },
+  clear() { try { localStorage.removeItem('parrot.memory'); } catch (e) { /* storage blocked */ } },
+};
+let saving = false;
+async function saveMemory() {
+  if (saving || !state.brainReady) return;
+  saving = true;
+  try { const out = await brain.call('memory'); learnedStore.set(out.saved); } finally { saving = false; }
+}
+function syncChips(list) {
+  const ids = new Set(list.map((r) => r.id));
+  for (const c of ui.sounds.querySelectorAll('.chip-s.you')) if (!ids.has(c.dataset.sound)) c.remove();
+  for (const r of list) {
+    addChip(r);
+    const c = ui.sounds.querySelector(`[data-sound="${r.id}"]`);
+    if (c && r.deep !== undefined) { c.querySelector('.deep i').style.width = `${Math.round(Math.min(1, r.deep / 10) * 100)}%`; c.title = `learned from you: depth ${r.deep.toFixed(1)}`; if (r.frames) soundFrames.set(r.id, Float32Array.from(r.frames)); }
+  }
+  ui.forget.hidden = !ui.sounds.querySelector('.chip-s.you');
+}
+function spectro(frames, canvas) {
+  const n = frames.length / 40, g = canvas.getContext('2d'); canvas.width = Math.max(1, Math.min(48, n)); canvas.height = 20;
+  const img = g.createImageData(canvas.width, 20);
+  for (let x = 0; x < canvas.width; x++) for (let y = 0; y < 20; y++) {
+    const f = Math.floor((x / canvas.width) * n), m = 39 - y * 2, v = Math.max(0, Math.min(1, (frames[f * 40 + m] + 9) / 13));
+    const k = 4 * (y * canvas.width + x); img.data[k] = 30 + 200 * v; img.data[k + 1] = 34 + 170 * v; img.data[k + 2] = 44 + 120 * v; img.data[k + 3] = 255;
+  }
+  g.putImageData(img, 0, 0);
+}
+const soundFrames = new Map();
+function addChip(r) {
+  if (ui.sounds.querySelector(`[data-sound="${r.id}"]`)) return;
+  const b = document.createElement('button'); b.className = `chip-s ${r.source === 'you' ? 'you' : ''} ${r.paid ? 'paid' : ''}`; b.dataset.sound = r.id;
+  b.title = r.source === 'recording' ? `${r.tag}: an African Grey call from a recording` : r.source === 'you' ? 'learned from you' : 'its own babble';
+  if (r.frames) { const c = document.createElement('canvas'); spectro(r.frames, c); b.append(c); soundFrames.set(r.id, Float32Array.from(r.frames)); }
+  b.append(document.createTextNode(r.source === 'you' ? 'from you' : r.tag));
+  if (r.source === 'you') { const d = document.createElement('span'); d.className = 'deep'; d.append(document.createElement('i')); b.append(d); }
+  b.addEventListener('click', async () => { await audio.unlock(); const f = soundFrames.get(r.id); if (f) { audio.speak(f); markChip(r.id); ui.voiceNote.textContent = `${b.title} (you played it)`; } });
+  ui.sounds.append(b);
+  if (r.source === 'you') ui.forget.hidden = false;
+}
+function markChip(id) {
+  for (const c of ui.sounds.querySelectorAll('.chip-s')) c.classList.toggle('playing', c.dataset.sound === id);
+  setTimeout(() => ui.sounds.querySelector(`[data-sound="${id}"]`)?.classList.remove('playing'), 1500);
+}
+ui.forget.addEventListener('click', async () => {
+  learnedStore.clear();
+  for (const c of ui.sounds.querySelectorAll('.chip-s.you')) c.remove();
+  ui.forget.hidden = true;
+  if (state.brainReady) { const out = await brain.call('forget'); memview?.update(out.memory); }
+  toast('It forgot the sounds it learned from you', '', 2000);
+});
+// whose turn: the last eight seconds of your sound and its sound, and how the last turn went
+const turnLog = [];
+function drawTurns(now) {
+  const you = audio.mic && audio.level > 0.12, it = audio.loudness(now) > 0.06;
+  turnLog.push({ t: now, you, it }); while (turnLog.length && turnLog[0].t < now - 8000) turnLog.shift();
+  const c = ui.turns, W = c.clientWidth, H = c.clientHeight, dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+  if (c.width !== Math.round(W * dpr)) { c.width = Math.round(W * dpr); c.height = Math.round(H * dpr); }
+  const g = c.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+  g.fillStyle = '#1f242b'; g.fillRect(34, 3, W - 34, 8); g.fillRect(34, 15, W - 34, 8);
+  g.fillStyle = '#6c7583'; g.font = '500 9px "IBM Plex Mono", monospace'; g.fillText('you', 0, 10); g.fillText('parrot', 0, 22);
+  for (const e of turnLog) {
+    const x = 34 + ((e.t - (now - 8000)) / 8000) * (W - 34);
+    if (e.you) { g.fillStyle = '#4fc3f7'; g.fillRect(x, 3, 2, 8); }
+    if (e.it) { g.fillStyle = '#d23a3a'; g.fillRect(x, 15, 2, 8); }
+  }
+  // the last turn: your sound's end, and the parrot's sound in the 1.5 s after it, during it, or none
+  let end = null, start = null;
+  for (let i = turnLog.length - 1; i > 0; i--) { if (!turnLog[i].you && turnLog[i - 1].you) { end = turnLog[i].t; break; } }
+  if (end !== null) {
+    for (let i = turnLog.length - 1; i >= 0 && turnLog[i].t >= end - 3000; i--) if (turnLog[i].you) { start = turnLog[i].t; }
+    const during = turnLog.some((e) => e.it && e.you);
+    const after = turnLog.some((e) => e.it && e.t > end && e.t <= end + 1500);
+    const note = during ? 'it spoke over you' : after ? 'it answered in the gap after you' : now - end > 1500 ? 'it stayed quiet after you' : '';
+    if (note && ui.turnNote.textContent !== note) ui.turnNote.textContent = note;
+  }
+}
+
 // --- the fields of view, seen from above ----------------------------------------------------------------
 function drawFields() {
   const c = ui.fields, g = c.getContext('2d');
@@ -373,11 +465,14 @@ function frame(now) {
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
   if (parrot) {
     const loud = audio.loudness(now);
-    if (loud > 0 || state.wasSpeaking) { parrot.joints.set('beak_open', 30 * loud); state.wasSpeaking = loud > 0; }
+    const eating = nut ? nut.update(dt) : null;
+    if (eating !== null) { parrot.joints.set('beak_open', eating); state.wasEating = true; }
+    else if (loud > 0 || state.wasSpeaking || state.wasEating) { parrot.joints.set('beak_open', 30 * loud); state.wasSpeaking = loud > 0; state.wasEating = false; }
     ui.voiceLevel.style.width = `${Math.round(loud * 100)}%`;
     ui.earLevel.style.width = `${Math.round(audio.level * 100)}%`;
     $('mic-level').style.width = `${Math.round(audio.level * 100)}%`;
     drawBands();
+    drawTurns(now);
     parrot.update(dt);
     placeFocus();
     if (now - state.lastMomentAt >= MOMENT_MS || !state.lastMomentAt) { state.lastMomentAt = now; moment(now); }
@@ -389,7 +484,7 @@ function frame(now) {
   renderer.shadowMap.needsUpdate = true;
   renderer.render(room.scene, camera);
   view?.frame(dt);
-  brain3d?.frame(dt);
+  if (state.tab === 'tab-memory') memview?.frame(); else brain3d?.frame(dt);
   // the frame rate, and a lighter picture when the laptop cannot keep up
   state.frameTimes.push(now); while (state.frameTimes.length && state.frameTimes[0] < now - 1000) state.frameTimes.shift();
   state.fps = state.frameTimes.length;
@@ -450,10 +545,21 @@ function buildPalette() {
 
 ui.test.addEventListener('click', () => { if (state.script) { state.script = null; ui.test.textContent = 'Test run'; ui.test.setAttribute('aria-pressed', 'false'); } else runScript(TEST); });
 ui.clear.addEventListener('click', () => { state.script = null; room.clear(); state.subject = null; view?.clearTuning(); });
+// The pistachio: thrown from the visitor's side, caught in the beak, nibbled and eaten. The reward
+// reaches the brain when the nut is in the beak, not on the click.
+let nut = null;
 ui.pistachio.addEventListener('click', () => {
-  state.reward = 1; state.pistachios += 1; ui.pistachios.textContent = String(state.pistachios);
-  brain3d?.reward();
-  toast('A pistachio: its reward reaches the brain at the next moment', 'good', 1800);
+  if (!parrot) return;
+  nut ||= new Pistachio(room.scene);
+  const from = camera.position.clone().lerp(new THREE.Vector3(0, BAR_Y + 0.2, 0), 0.35); from.y -= 0.1;
+  const thrown = nut.throw(from, parrot, () => {
+    state.reward = 1; state.pistachios += 1; ui.pistachios.textContent = String(state.pistachios);
+    brain3d?.reward();
+    $('dopamine').hidden = false;
+    $('dopamine-note').textContent = desc?.placeholder ? 'This placeholder brain learns nothing from it: the composed brain does the strengthening.' : '';
+    clearTimeout(state.dopTimer); state.dopTimer = setTimeout(() => { $('dopamine').hidden = true; }, 4200);
+  }, () => {});
+  if (!thrown) toast('It is eating the last one', '', 1400);
 });
 ui.silence.addEventListener('click', async () => {
   if (!state.brainReady) return;
@@ -531,6 +637,14 @@ async function start() {
     throw error;
   }
   brain3d = new Brain3D($('brain3d'), $('b3-labels'));
+  memview = new MemoryView($('memory'));
+  for (const [tab, panel] of [['tab-brain', 'view-brain'], ['tab-memory', 'view-memory']]) {
+    $(tab).addEventListener('click', () => {
+      for (const [t, v] of [['tab-brain', 'view-brain'], ['tab-memory', 'view-memory']]) { $(t).setAttribute('aria-selected', String(t === tab)); $(v).hidden = t !== tab; }
+      state.tab = tab; if (tab === 'tab-memory') memview.layout(); else brain3d.resize();
+      void panel;
+    });
+  }
   view = new BrainView({ canvas: $('brain'), units: $('dist-units'), tuning: $('dist-tuning'), readout: $('dist-readout'), silence: ui.silence, joints: $('joints') });
   window.parrotPage = { room, state, eyes, audio, get parrot() { return parrot; }, place, addThing, move: (id, x, z) => room.move(id, x, z), remove: (id) => room.remove(id),
     describe: () => room.describe(), load: (d) => room.load(d), script: runScript, TEST, setLook, setMode, distanceOf, camera, THREE,
@@ -542,6 +656,9 @@ async function start() {
     const out = await brain.call('init', { pack: PACK, config: { eye: { w: EYE.w, h: EYE.h, field: EYE.field, vfield: EYE.vfield, fovea: EYE.fovea, axis: EYE.axis } } });
     desc = out;
     view.setup(desc, rig.joints);
+    for (const r of desc.repertoire || []) addChip(r);
+    const kept = learnedStore.get();
+    if (kept?.records?.length) { const out = await brain.call('remember', { saved: kept }); syncChips(out.repertoire || []); memview?.update(out.memory); }
     brain3d.setup(desc);
     ui.sub.textContent = desc.placeholder ? `${desc.title} · ${desc.neurons} units` : `${desc.title || desc.name} · ${desc.neurons.toLocaleString('en')} neurons`;
     const g = (desc.groups || []).find((x) => x.variable === 'distance');

@@ -13,9 +13,19 @@ the eye's rear edge), `proprio` (the joints' angles then speeds on [-1, 1]), and
 `meta` holds `t`, `reward`, `voice_ok` (the page may play sound) and `cue` (the head-frame azimuth
 and elevation of a thing the visitor clicked, which draws the focus there).
 
-The placeholder is a newborn: it has learned nothing. It hears (its ear populations follow the
-sound's bands) and now and then it babbles: a short run of frames in the ear's format, either a
-random contour of a few moving peaks or a replay of a snippet it heard, shifted and blurred.
+The placeholder is a newborn, and a hand-written stand-in for what the composed brain learns: it
+hears (its ear populations follow the sound's bands); a drive to call rises with quiet time (a call
+every two to six seconds or so), faster when a new thing appears or the visitor has just spoken,
+and when it is high the parrot calls, never over its own sound, picking from its repertoire
+(African Grey calls from a licensed recording, `calls.json`, and its own babble: a random contour
+or a replay of a heard snippet), favouring calls a pistachio followed. It cuts what it hears into
+sounds (onset to offset) and keeps only voice-like ones (not a fan's steady hiss, not a click, not a
+long steady hum), with the background's spectrum taken out. What it hears is told to the library's own memories
+(`sounds.py`): each sound is a record in `cadence.LongTermMemory` (told again, a record is
+rewritten and deepened; deep records fade far more slowly), and a `cadence.SynapticMemory` links the
+sound to the thing in focus. A record deep enough is a sound the parrot can say back ("learned from
+you"), the deeper the more often and the more faithfully. The drive and the choice of call are the
+placeholder's hand-written stand-in; the composed brain learns them from the pistachio.
 
 The placeholder looks at what stands out: in each eye, the pixels whose colour differs most from
 the eye's own mean colour. It looks as a parrot does: its head still, then a quick turn toward the
@@ -25,10 +35,13 @@ curve, its question mark and its silence switch run end to end; the composed bra
 """
 from __future__ import annotations
 
+import json
 import math
 from typing import Any
 
 import numpy as np
+
+from .sounds import SoundMemory
 
 JOINTS = ["head_yaw", "head_pitch", "head_roll", "neck_pitch", "beak_open", "wing_l", "wing_r",
           "grip_l", "grip_r", "leg_l", "leg_r"]
@@ -77,7 +90,10 @@ class Host:
         self.neurons = start
         self.pop = {p["name"]: p for p in self.populations}
         self.preferred = np.geomspace(0.012, 0.25, DISTANCE_UNITS)  # apparent sizes (fractions of a field) each unit prefers
+        self.revise = float(config.get("revise", 0.85))
+        self.focus_kind = None
         self.reset()
+        self.load_calls(config.get("files"))
 
     def reset(self) -> dict[str, Any]:
         self.t = 0
@@ -88,9 +104,121 @@ class Host:
         self.focus = None  # where the last turn went: {"az", "el"} in the head's frame at that moment
         self.heard = np.full((0, 40), math.log(1e-6), np.float32)  # the last 8 s of heard frames
         self.held = np.zeros(40, np.float32)
-        self.next_babble = 40
         self.saying = 0
+        self.drive = 0.6
+        self.things = None
+        self.sound = []          # frames of the sound being heard
+        self.quiet = 0           # quiet frames since it ended
+        self.floor = math.log(1e-6)
+        self.levels = np.zeros(300)  # the last three seconds' frame energies
+        self.level_at = 0
+        self.mem = SoundMemory(revise=self.revise)
+        self.heard_event = None
+        self.noise = np.full(40, math.log(1e-6) + 4.0, np.float64)  # the background's spectrum, per band (log)
+        self.last_said = None    # (id, moment)
         return {"ok": True}
+
+    # --- the repertoire ------------------------------------------------------------------------
+    def load_calls(self, files: str | None) -> None:
+        self.repertoire = []
+        self.paid = {}
+        self.credit = None
+        try:
+            with open(f"{files}/calls.json") as fh:
+                data = json.load(fh)
+            for c in data["calls"]:
+                self.repertoire.append({"id": c["id"], "tag": c["tag"], "source": "recording", "frames": np.asarray(c["frames"], np.float32)})
+            self.credit = data.get("source")
+        except (OSError, KeyError, ValueError, TypeError):
+            pass
+        self.repertoire.append({"id": "babble", "tag": "babble", "source": "newborn", "frames": None})
+
+    def voice_like(self, frames: np.ndarray) -> tuple[bool, str]:
+        """Whether a heard sound is voice-like: not too short (a click, under 120 ms), not a
+        steady broadband hiss (a fan: a flat spectrum), not a steady tone (a hum: its bands barely
+        change from frame to frame)."""
+        n = len(frames)
+        if n < 12:
+            return False, "click"
+        if n > 200:
+            return False, "too long"
+        p = np.exp(frames[:, 2:38].astype(np.float64))
+        mean = p.mean(axis=0)
+        flatness = float(np.exp(np.log(mean + 1e-12).mean()) / (mean.mean() + 1e-12))
+        flux = float(np.abs(np.diff(frames, axis=0)).mean()) if n > 1 else 0.0
+        if flatness > 0.55:
+            return False, "hiss"
+        if flux < 0.35:
+            return False, "hum"
+        return True, "voice"
+
+    def clean(self, frames: np.ndarray) -> np.ndarray:
+        """The background's spectrum taken out of a sound's frames (power subtraction, kept above a
+        twentieth of the frame's own power)."""
+        p = np.exp(frames.astype(np.float64))
+        q = np.maximum(p - 1.5 * np.exp(self.noise)[None, :], 0.05 * p)
+        return np.log(q + 1e-6).astype(np.float32)
+
+    def hear_sound(self, frames: np.ndarray) -> dict | None:
+        """A voice-like sound the visitor made, cleaned of the background, told to the memories."""
+        ok, _ = self.voice_like(frames)
+        if not ok:
+            return None
+        cleaned = self.clean(frames)
+        # what stands above the background once its spectrum is out (a sound the background has
+        # taken in, such as a hum going on, stands at or below it)
+        excess = float(np.mean(np.log(np.exp(cleaned.astype(np.float64)).sum(axis=1))) - np.log(np.exp(self.noise).sum()))
+        if excess < 2.0:
+            return None
+        self.heard_event = self.mem.hear(cleaned, self.focus_kind)
+        slot = self.heard_event["write"]["slot"]
+        return {"id": f"you-{slot}", "slot": slot, "deep": round(float(self.mem.records.deep[slot]), 2)}
+
+    def you_sounds(self) -> list:
+        """Records deep enough to say back: the repertoire's sounds learned from the visitor."""
+        out = []
+        for slot in self.mem.sayable():
+            out.append({"id": f"you-{slot}", "tag": "learned from you", "source": "you", "slot": slot,
+                        "frames": self.mem.frames_of(slot), "deep": float(self.mem.records.deep[slot])})
+        return out
+
+    def remember(self, saved: dict) -> dict[str, Any]:
+        self.mem.load(saved or {})
+        return {"repertoire": self.repertoire_list(), "memory": self.mem.view()}
+
+    def forget(self) -> dict[str, Any]:
+        self.mem.clear()
+        return {"repertoire": self.repertoire_list(), "memory": self.mem.view()}
+
+    def choose(self) -> dict:
+        options = self.repertoire + self.you_sounds()
+        def weight(r):
+            w = (1.0 + 2.0 * self.paid.get(r["id"], 0.0)) * (0.5 if r["id"] == "babble" else 1.0)
+            return w * (1.0 + 0.5 * r["deep"]) if "deep" in r else w
+        w = np.array([weight(r) for r in options])
+        return options[int(self.rng.choice(len(w), p=w / w.sum()))]
+
+    def say(self, pick: dict) -> np.ndarray:
+        """The frames it says: a sound it learned comes out the more faithfully the stronger it is."""
+        if pick["frames"] is None:
+            return self.babble()
+        f = pick["frames"].copy()
+        if "deep" in pick:
+            blur = 1.0 / (1.0 + pick["deep"])
+            soft = 0.5 * f + 0.25 * (np.roll(f, 1, axis=1) + np.roll(f, -1, axis=1))
+            soft = 0.5 * soft + 0.25 * (np.roll(soft, 1, axis=0) + np.roll(soft, -1, axis=0))
+            f = (1 - blur) * f + blur * soft
+        return f.astype(np.float32)
+
+    def repertoire_list(self) -> list:
+        out = []
+        for r in self.repertoire + self.you_sounds():
+            row = {"id": r["id"], "tag": r["tag"], "source": r["source"], "paid": round(self.paid.get(r["id"], 0.0), 2),
+                   "frames": None if r["frames"] is None else r["frames"].ravel().round(2).tolist()}
+            if "deep" in r:
+                row.update(deep=round(r["deep"], 2), slot=r["slot"])
+            out.append(row)
+        return out
 
     def describe(self) -> dict[str, Any]:
         return {
@@ -98,6 +226,7 @@ class Host:
             "title": "Placeholder brain: a newborn, a hand-written controller",
             "joints": JOINTS, "eye": {"w": self.w, "h": self.h}, "rate_hz": 10,
             "populations": self.populations, "neurons": self.neurons, "synapses": 0,
+            "repertoire": self.repertoire_list(), "calls_credit": self.credit,
             "groups": [{
                 "name": "distance", "title": "Distance units (placeholder)",
                 "explain": ("Stand-ins for the units the parrot's brain learns for distance. Here each unit is "
@@ -231,12 +360,49 @@ class Host:
         ear = np.clip((last - floor) / 18.0, 0, 1)
         change = np.clip(np.abs(frames[-1] - frames[0]) / 6.0, 0, 1)
         self.held = (0.85 * self.held + 0.15 * ear).astype(np.float32)
-        # the voice: now and then, once the page may play sound
-        voice = None
-        if meta.get("voice_ok") and self.t >= self.next_babble and self.saying <= 0:
-            voice = self.babble()
+        # sounds the visitor makes: onset to offset, from the frames' total energy (not while it calls)
+        learned, ended = None, False
+        for f in frames:
+            e = float(np.log(np.exp(f.astype(np.float64)).sum()))
+            # the background's level: a low percentile of the last three seconds' frames
+            self.levels[self.level_at % len(self.levels)] = e; self.level_at += 1
+            seen = self.levels[: min(self.level_at, len(self.levels))]
+            self.floor = float(np.percentile(seen, 10)) if len(seen) >= 20 else max(self.floor, e)
+            if e < self.floor + 2.0:
+                self.noise = np.logaddexp(self.noise + math.log(0.97), f.astype(np.float64) + math.log(0.03))
+            if e > self.floor + 4.0 and self.saying <= 0:
+                self.sound.append(f); self.quiet = 0
+                if len(self.sound) > 250:  # a sound that never ends is the background
+                    self.sound = []
+                    self.noise = f.astype(np.float64).copy()
+            elif self.sound:
+                self.quiet += 1
+                if self.quiet >= 8:
+                    heard = np.asarray(self.sound, np.float32)
+                    if self.voice_like(heard)[0]:
+                        learned = self.hear_sound(heard) or learned
+                        ended = True
+                    self.sound = []; self.quiet = 0
+        self.mem.moment()
+        self.focus_kind = meta.get("focus_kind")
+        # the drive to call: quiet time (about a call every two to six seconds), more when a new
+        # thing appears or the visitor has just spoken; a call spends it; never over its own sound
+        count = meta.get("things")
+        if count is not None and self.things is not None and count > self.things:
+            self.drive += 0.45
+        self.things = count if count is not None else self.things
+        self.drive += float(self.rng.uniform(0.012, 0.04)) + (0.4 if ended else 0.0)
+        reward = float(meta.get("reward") or 0.0)
+        if reward > 0 and self.last_said and self.t - self.last_said[1] < 60:
+            self.paid[self.last_said[0]] = self.paid.get(self.last_said[0], 0.0) + reward
+        voice, call = None, None
+        if meta.get("voice_ok") and self.drive >= 1.0 and self.saying <= 0 and not self.sound:
+            pick = self.choose()
+            voice = self.say(pick)
+            call = {"id": pick["id"], "tag": pick["tag"], "source": pick["source"]}
+            self.last_said = (pick["id"], self.t)
             self.saying = int(math.ceil(len(voice) / 10)) + 2
-            self.next_babble = self.t + int(self.rng.integers(50, 130))
+            self.drive = 0.1
         said = np.zeros(40, np.float32)
         if self.saying > 0:
             self.saying -= 1
@@ -252,7 +418,11 @@ class Host:
             names.append("voice")
         return {"buffers": names, "group_activity": {"distance": dist_units.tolist()}, "readout": readout,
                 "looked": {"eye": eye, "row": row, "col": col, "strength": round(strength, 3)},
-                "focus": self.focus, "heard": bool(ear.max() > 0.35), "newborn": True}
+                "focus": self.focus, "heard": bool(ear.max() > 0.35), "newborn": True,
+                "drive": round(min(1.0, self.drive), 3), "said": call, "heard_sound": learned,
+                "memory": self.mem.view() if (learned is not None or self.t % 10 == 0) else None,
+                "repertoire": self.repertoire_list() if learned is not None else None,
+                "paid": {k: round(v, 2) for k, v in self.paid.items() if v}}
 
     def handle(self, message: dict[str, Any]) -> dict[str, Any]:
         cmd = message.get("command")
@@ -262,4 +432,12 @@ class Host:
             return self.reset()
         if cmd == "silence":
             return self.silence(str(message.get("group")), bool(message.get("on")))
+        if cmd == "remember":
+            return self.remember(message.get("saved") or {})
+        if cmd == "memory":
+            return {"memory": self.mem.view(), "saved": self.mem.save()}
+        if cmd == "forget":
+            return self.forget()
+        if cmd == "repertoire":
+            return {"repertoire": self.repertoire_list()}
         raise ValueError(f"unknown command {cmd!r}")

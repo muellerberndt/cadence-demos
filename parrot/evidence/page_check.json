@@ -1,19 +1,19 @@
 {
- "checked": "2026-11-13T14:56:57Z",
+ "checked": "2026-11-13T15:18:41Z",
  "looks": {
   "realistic": {
    "look": "realistic",
-   "frames_per_s": 60.2,
-   "moments_per_s": 9.6,
-   "think": "4 ms",
-   "eyes_ms": 13.6,
+   "frames_per_s": 60.3,
+   "moments_per_s": 9.8,
+   "think": "9 ms",
+   "eyes_ms": 13.3,
    "status": "Ready",
    "distance_units": {
-    "near": 3.000076808983619,
-    "far": 3.00313558795885,
+    "near": 2.235361480918205,
+    "far": 2.215572135995412,
     "silenced": 0,
-    "reading_near": 0.077,
-    "reading_far": 0.077,
+    "reading_near": 0.07,
+    "reading_far": 0.07,
     "reading_silenced": null
    },
    "skin": {
@@ -172,17 +172,17 @@
   },
   "anime": {
    "look": "anime",
-   "frames_per_s": 60.2,
-   "moments_per_s": 9.8,
-   "think": "4 ms",
-   "eyes_ms": 22.2,
+   "frames_per_s": 60.5,
+   "moments_per_s": 9.7,
+   "think": "8 ms",
+   "eyes_ms": 17.3,
    "status": "Ready",
    "distance_units": {
-    "near": 2.7671347966948363,
-    "far": 2.7769036965586062,
+    "near": 2.0220087344749915,
+    "far": 2.048844055440611,
     "silenced": 0,
-    "reading_near": 0.073,
-    "reading_far": 0.073,
+    "reading_near": 0.069,
+    "reading_far": 0.069,
     "reading_silenced": null
    },
    "skin": {
@@ -351,17 +351,17 @@
    "name": "realistic: the brain lives near 10 moments a second",
    "detail": {
     "look": "realistic",
-    "frames_per_s": 60.2,
-    "moments_per_s": 9.6,
-    "think": "4 ms",
-    "eyes_ms": 13.6,
+    "frames_per_s": 60.3,
+    "moments_per_s": 9.8,
+    "think": "9 ms",
+    "eyes_ms": 13.3,
     "status": "Ready",
     "distance_units": {
-     "near": 3.000076808983619,
-     "far": 3.00313558795885,
+     "near": 2.235361480918205,
+     "far": 2.215572135995412,
      "silenced": 0,
-     "reading_near": 0.077,
-     "reading_far": 0.077,
+     "reading_near": 0.07,
+     "reading_far": 0.07,
      "reading_silenced": null
     },
     "skin": {
@@ -523,11 +523,11 @@
    "ok": true,
    "name": "realistic: silencing the distance units silences them in the host",
    "detail": {
-    "near": 3.000076808983619,
-    "far": 3.00313558795885,
+    "near": 2.235361480918205,
+    "far": 2.215572135995412,
     "silenced": 0,
-    "reading_near": 0.077,
-    "reading_far": 0.077,
+    "reading_near": 0.07,
+    "reading_far": 0.07,
     "reading_silenced": null
    }
   },
@@ -573,17 +573,17 @@
    "name": "anime: the brain lives near 10 moments a second",
    "detail": {
     "look": "anime",
-    "frames_per_s": 60.2,
-    "moments_per_s": 9.8,
-    "think": "4 ms",
-    "eyes_ms": 22.2,
+    "frames_per_s": 60.5,
+    "moments_per_s": 9.7,
+    "think": "8 ms",
+    "eyes_ms": 17.3,
     "status": "Ready",
     "distance_units": {
-     "near": 2.7671347966948363,
-     "far": 2.7769036965586062,
+     "near": 2.0220087344749915,
+     "far": 2.048844055440611,
      "silenced": 0,
-     "reading_near": 0.073,
-     "reading_far": 0.073,
+     "reading_near": 0.069,
+     "reading_far": 0.069,
      "reading_silenced": null
     },
     "skin": {
@@ -745,11 +745,11 @@
    "ok": true,
    "name": "anime: silencing the distance units silences them in the host",
    "detail": {
-    "near": 2.7671347966948363,
-    "far": 2.7769036965586062,
+    "near": 2.0220087344749915,
+    "far": 2.048844055440611,
     "silenced": 0,
-    "reading_near": 0.073,
-    "reading_far": 0.073,
+    "reading_near": 0.069,
+    "reading_far": 0.069,
     "reading_silenced": null
    }
   },
@@ -786,7 +786,7 @@
    "detail": []
   }
  ],
- "commit": "11bf117",
- "load_average": "s: 141.40 120.32 94.72",
+ "commit": "f5f64f8",
+ "load_average": "s: 100.28 90.37 96.92",
  "passed": false
 }

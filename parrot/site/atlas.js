@@ -14,7 +14,7 @@ export const R = [
   { id: 'wulst', name: 'Visual Wulst', bird: 'the thalamofugal pathway: two views of one thing', sys: 'vision', st: 'wip', n: 48, at: [0.6, 1.35, 0.95], r: [0.4, 0.18, 0.5], bi: true, issue: 332,
     role: 'Compares two views of the focused thing: the two eyes in the overlap, and one eye before and after the head moves. The distance at which the views agree is how far it is. Learned, never told.' },
   { id: 'flow', name: 'Optic-flow nuclei', bird: 'nBOR and LM: how the whole view moves', sys: 'vision', st: 'wip', n: 8, at: [0.85, -0.95, -0.15], r: [0.15, 0.12, 0.15], bi: true, issue: 332,
-    role: 'The mean motion of each eye’s whole view: tells the brain its own head moved, so a thing standing still is not taken as moving.' },
+    role: 'The mean motion of each eye’s whole view: tells the brain its own head moved, so a thing at rest is not taken as moving.' },
   // map and memory
   { id: 'place', name: 'Gaze to place', bird: 'dorsolateral pallium, entorhinal-like', sys: 'map', st: 'wip', n: 32, at: [0.45, 1.05, -0.25], r: [0.2, 0.15, 0.2], bi: false, issue: 332,
     role: 'Turns where the eye looks and how far the thing is into a place on the table, written to the map.' },
@@ -27,7 +27,7 @@ export const R = [
   { id: 'ncl', name: 'NCL: the association hub', bird: 'the caudolateral nidopallium, the bird’s prefrontal cortex', sys: 'map', st: 'built', n: 256, at: [1.25, 0.55, -0.95], r: [0.4, 0.4, 0.35], bi: true, issue: 331,
     role: 'Where sight, place, sound, body and reward meet in one settled state: the present moment. Holds a working trace of the moments just past.' },
   { id: 'trace', name: 'Working trace', bird: 'NCL delay cells', sys: 'map', st: 'built', n: 256, at: [1.45, 0.95, -1.15], r: [0.2, 0.2, 0.2], bi: true, issue: 331,
-    role: 'Keeps what just happened active for a few moments, so a word heard a moment ago still meets the thing in focus.' },
+    role: 'Keeps what just happened active for a few moments, so a word heard a moment ago meets the thing in focus.' },
   // words
   { id: 'words', name: 'Words', bird: 'learned links between forms and things', sys: 'words', st: 'wip', n: 60, at: [-1.35, 0.45, -0.45], r: [0.25, 0.22, 0.25], bi: false, issue: 326,
     role: 'Links between a word’s forms (its sound, its written form) and the things and concepts they name. Tentative when heard with the focus on a thing; lasting when a pistachio follows a right answer.' },

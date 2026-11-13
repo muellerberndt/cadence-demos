@@ -9,13 +9,17 @@
  "brain": "placeholder: a hand-written controller, nothing learned",
  "sources": [
   "__init__.py",
-  "host.py"
+  "host.py",
+  "sounds.py"
  ],
  "sources_sha256": {
   "__init__.py": "aad6e4970d412d3fc56376e9321f46760a285a32d2086c5fc76d1740b02c082f",
-  "host.py": "36e348d2a2ec9a7f5119eb20f7fb8ddf1828289dc12a4780f9e939ba4dfe8abc"
+  "host.py": "b7bf5a34b1f3299fb107f7080f60222ace7b884b14d46656bd81ced873b7242d",
+  "sounds.py": "9377ad79d260e1565a8a01c7bb86cdff7316c1ac8b58376c6579d367fedf339d"
  },
- "files": {},
+ "files": {
+  "calls.json": "f2f6a662b6a604fc580b227e0c255496f954450dd0430f98c86674738c065b82"
+ },
  "config": {
   "eye": {
    "w": 64,
@@ -25,5 +29,8 @@
    "fovea": 0.4,
    "axis": 75
   }
- }
+ },
+ "wheel": "cadence_net-0.99.0-py3-none-any.whl",
+ "wheel_sha256": "1879e46117499cb63050b3b6ea0c02528a67037550b75efe2840c70945c4bd16",
+ "cadence": "0.99.0"
 }

@@ -169,7 +169,12 @@ export class Brain3D {
     }
   }
 
-  reward() { this.washAt = performance.now(); }
+  /** The pistachio's dopamine: VTA flashes, a wave runs along its projections, and the tracts that
+   *  were just active glow as they strengthen (in the composed brain; this view shows where). */
+  reward() {
+    this.washAt = performance.now();
+    for (const t of this.tracts) t.paid = t.line.material.opacity > 0.12 || t.from.id === 'vta';
+  }
 
   resize() {
     const w = this.canvas.parentElement.clientWidth, h = this.canvas.parentElement.clientHeight;
@@ -190,7 +195,16 @@ export class Brain3D {
       }
     }
     this.colours.needsUpdate = true;
+    const vtaGlow = since < 1.2 ? 1 - since / 1.2 : 0;
+    const vta = this.byId.vta;
+    for (let i = 0; i < vta.count; i++) { const k = 3 * (vta.start + i); arr[k] = Math.max(arr[k], rew.r * vtaGlow); arr[k + 1] = Math.max(arr[k + 1], rew.g * vtaGlow); arr[k + 2] = Math.max(arr[k + 2], rew.b * vtaGlow); }
     for (const t of this.tracts) {
+      if (since < 2.6 && t.paid) { // the wave and the strengthening glow
+        const glow = t.from.id === 'vta' ? Math.max(0, Math.sin(Math.min(1, since / 1.4) * Math.PI)) : Math.max(0, Math.sin(Math.min(1, (since - 0.5) / 2.0) * Math.PI));
+        t.line.material.color.copy(t.from.base).lerp(rew, 0.6 * glow);
+        t.line.material.opacity = Math.max(t.line.material.opacity, 0.15 + 0.75 * glow);
+        continue;
+      } else if (t.paid) { t.paid = false; t.line.material.color.copy(t.from.base); }
       let m = 0, n = 0; const L = t.from.level;
       for (let i = 0; i < L.length; i += 3) { if (t.from.side[i] === t.side || t.side === 0) { m += L[i]; n++; } }
       m = n ? m / n : 0;

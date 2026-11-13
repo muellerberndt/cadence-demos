@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Parrot · Help</title>
+  <meta name="description" content="What the Parrot demo shows: an African Grey on a perch with two eyes, an ear and a voice, its brain drawn in 3D beside it, and the memories it keeps of what it hears.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="cadence-help.css">
+  <script src="cadence-explain.js" defer></script>
+</head>
+<body>
+  <header class="help-bar"><span class="crumb">cadence / <b>parrot</b> / help</span><span class="spacer"></span><a href="./">Back to the demo</a></header>
+  <main class="help">
+    <h1>Parrot</h1>
+    <p class="lede">An African Grey parrot sits on a low perch on a table. You put things round it, talk to it, and throw it pistachios. Beside it, its brain is drawn in 3D, and a panel shows what each of its eyes sees.</p>
+    <p class="shows"><b>What it shows about Cadence</b>A body for a brain that learns during its life: two eyes on the sides of the head with wide fields, an ear, a voice, a head and joints it moves, and a reward it learns from. The brain has a real state and memory and runs in real time in your browser, ten moments a second. This parrot is a newborn: its brain is a placeholder (a hand-written controller) until the composed parrot brain arrives, and the page says so wherever it matters. Its memory of what it hears is the Cadence library's own.</p>
+    <nav class="toc" aria-label="On this page"><a href="#see">What you see</a><a href="#why">Why it matters</a><a href="#do">What you can do</a><a href="#how">How it works</a><a href="#numbers">The numbers</a><a href="#limits">Limits</a><a href="#credits">Credits</a></nav>
+
+    <h2 id="see">What you see</h2>
+    <p><b>Left, the room.</b> The parrot on a T-perch on a wooden table, lit by a photographed room. Round it lie real objects at their real sizes: an apple, a ball, a cup, a block, and more you can add. A soft yellow ring at a thing's base marks the parrot's focus: the one thing it attends to. Each thing's label gives its distance from the parrot's eyes, the page's own measure.</p>
+    <p><b>Middle, the brain, live.</b> The parrot's brain drawn as a bird's brain: each region where it sits in a bird's head (the retinas, the optic tectum, the Wulst, the hippocampus, the auditory regions, the arcopallium, the dopamine cells and more). Every dot is a neuron and glows with its activity at each moment; the lines are the tracts between regions. Bright regions are in the running brain; faint ones are planned. The <b>Memory</b> tab shows what the parrot remembers of what it heard. Under the brain: the <b>ear</b> (the loudness and the 40 frequency bands it hears), the <b>voice</b>, its <b>drive</b> to call, a two-row line of <b>whose turn</b> it was (you and the parrot), and its <b>sounds</b>.</p>
+    <p><b>Right, the detail.</b> What each eye sees, the fields of view from above, every population of the brain as squares, the distance units with their tuning curves, and the joints.</p>
+
+    <h2 id="why">Why it matters</h2>
+    <p><b>A body made for learning.</b> A brain that learns where things are and how far they are needs eyes, a head that turns, and things to look at. The parrot's two eyes sit on the sides of its head, as an African Grey's do: each sees 175 degrees, the two fields overlap 25 degrees in front of the beak, and behind the head lies a blind spot of 35 degrees. To judge distance with two eyes it must look at a thing with the narrow overlap in front, or turn its head and compare. Nothing tells the brain what a thing is, where it is or how far: the brain receives the two images and must learn the rest.</p>
+    <p><b>A memory that grows with use.</b> Every sound the parrot hears is a record in the library's long-term memory. A sound heard again is the same record told again: it is rewritten and grows deeper. Deep records fade far more slowly; a sound heard once fades. Every time you say a word, the parrot's memory of it grows stronger. Words you say once fade. It ignores noise such as a fan, clicks or hum. A second memory, a synaptic one, links each sound to the thing the parrot was looking at, more strongly each time they come together.</p>
+    <p><b>A reward it learns from.</b> A pistachio is the reward: it reaches the brain the moment the nut is in the beak, as dopamine from the midbrain. In a Cadence brain such a reward strengthens the connections that just fired. The placeholder brain learns nothing from it, and the page says so; the composed brain does the strengthening.</p>
+
+    <h2 id="do">What you can do</h2>
+    <ul>
+      <li><b>Talk to it.</b> Press <b>Let it hear me</b> on the first card (or the Microphone button) and allow your microphone. Its ear meter and the ear regions in the brain light up as you speak. Nothing is recorded or sent anywhere. The microphone works on this computer (localhost) or over https.</li>
+      <li><b>Teach it a sound.</b> Say a short word several times, a second or two apart, while it looks at a thing. The word's record grows deeper each time (the Memory tab); once it is deep enough a chip "from you" joins its sounds, and it may say the sound back in its own voice. The longer you keep at it, the more often and the more faithfully it says it.</li>
+      <li><b>Throw it a pistachio.</b> Press Pistachio: the nut flies to the parrot, it catches it in its beak and eats it, and the dopamine rush shows in the brain. Give one after a sound you liked: it chooses that sound more often (a star on its chip).</li>
+      <li><b>Move things.</b> Drag a thing across the table, nearer to the parrot or further, even behind it into its blind spot. Watch the two eye images and the distance units. Click a thing without dragging to point the parrot at it: its focus goes there.</li>
+      <li><b>Add and clear.</b> The buttons under the room add a thing of each kind; Clear takes them all away. Test run places things one after another, as the experiment's tests do.</li>
+      <li><b>Silence the distance units.</b> The switch under the tuning curves clamps them inside the brain; its sense of distance goes.</li>
+      <li><b>Move it yourself.</b> Switch from Brain to You and move each joint with a slider.</li>
+      <li><b>Change its look.</b> Realistic or Anime: the same parrot, the same joints and eyes.</li>
+      <li><b>Hear its sounds.</b> Click a chip under the brain to hear that sound in the parrot's voice. Forget my sounds clears what it learned from you.</li>
+      <li><b>Turn the views.</b> Drag empty space in the room or in the brain to turn it; scroll to zoom. Point at any <b>?</b> to see what a part does.</li>
+    </ul>
+
+    <h2 id="how">How it works</h2>
+    <p><b>The eyes.</b> Each eye renders the room around it into the six faces of a small cube and reads its image off the cube: one column per azimuth, one row per elevation, sharper where the eye looks. The brain receives both images every moment.</p>
+    <p><b>The ear.</b> The microphone's sound, at 16,000 samples a second, becomes 40 frequency bands every 10 ms in the page's own code, the same arithmetic as the Cadence library's speech front end. Each moment the brain receives the last 0.1 s of sound and its ten frames of bands.</p>
+    <p><b>The voice.</b> The brain's voice sends frames of the same 40 bands. The page turns them into sound with a simple voice of its own: each frame's bands shape a mix of a high, parrot-like buzz and breath, played through your speakers, and the beak opens with the sound's loudness. There is no speech synthesis: the parrot can only make sounds of the kind it hears.</p>
+    <p><b>Its sounds.</b> The newborn knows seven African Grey calls (whistles, squawks and a chatter) cut from a recording, and its own babble. A drive to call rises while all is quiet, and faster when something new appears or you have just spoken; when it is full the parrot calls and the drive drops. In this placeholder the drive and the choice of call are hand-written stand-ins; the composed brain learns them from the pistachio. Nothing in the brain follows a rule about turns.</p>
+    <p><b>What the parrot remembers: its record memory and its synapses.</b> The page keeps out what is not voice-like (a fan's steady hiss, clicks shorter than 120 ms, a steady hum) and takes the background's spectrum out of each sound. Each sound is written to a <code>LongTermMemory</code> of the Cadence library: its key is the sound's shape, its value the sound itself. A write whose key matches a record (cosine 0.85 or more) is that record told again: the library rewrites it and deepens it. Depth grows with every hearing and fades slowly; a record deep enough is a sound the parrot can say back. A <code>SynapticMemory</code> links each sound to the kind of thing in focus; repetition builds its lasting (consolidated) part, and a quick part fades within moments. Both are kept in your browser, so the parrot remembers you on your next visit.</p>
+    <p><b>The joints.</b> Eleven joints: the head's turn, tilt and cock, the neck, the beak, both wings, both feet's grip and both legs. Each moves to the brain's target smoothly, as a damped spring within its own speed. The head's turn is shared by the neck and the head, within natural limits (turn up to 75 degrees each way, beak down 25 and up 35 degrees, cock 20 degrees, less tilt at a full turn).</p>
+    <p><b>The brain.</b> It runs in your browser in Python (Pyodide) with the Cadence library's release 0.99.0, in a background worker, ten moments a second. The placeholder controller looks as a parrot does: its head at rest, then a quick turn to what stands out or to what you point at, a hold of one to three seconds, at times a slow cock of the head. Its distance units are tuned by hand to how large a thing looks; the composed brain learns its own.</p>
+
+    <h2 id="numbers">The numbers</h2>
+    <table><thead><tr><th>Reading</th><th>Value</th></tr></thead><tbody>
+      <tr><td>Frames drawn a second (headless Chromium on a shared laptop)</td><td class="n">60</td></tr>
+      <tr><td>Brain moments a second</td><td class="n">9.6 to 9.8</td></tr>
+      <tr><td>Brain time per moment (median, placeholder)</td><td class="n">4 ms</td></tr>
+      <tr><td>Both eyes' images per moment</td><td class="n">14 to 22 ms</td></tr>
+      <tr><td>The page's ear against the library's front end, 20 clips: largest difference</td><td class="n">0.0007</td></tr>
+      <tr><td>The voice's round trip (bands to sound to bands): mean error</td><td class="n">0.64 nat</td></tr>
+      <tr><td>One word said ten times over noise: records written, depth</td><td class="n">1, 19</td></tr>
+      <tr><td>Its link to the apple in focus, against any other thing</td><td class="n">0.39 against 0</td></tr>
+      <tr><td>Noise alone for 30 s (hiss, clicks, hum): records written</td><td class="n">0</td></tr>
+    </tbody></table>
+    <p class="note">From <code>parrot/evidence/page_check.json</code>, <code>dsp_parity.json</code>, <code>voice_roundtrip.json</code> and <code>sound_memory.json</code> in the demo's folder of the repository.</p>
+
+    <h2 id="limits">Limits</h2>
+    <ul>
+      <li>The brain is a placeholder: a hand-written controller with a newborn's drive to call. It learns nothing from the pistachio, and its distance units are tuned by hand. The composed parrot brain, which learns all of this, takes its place in the page's brain pack.</li>
+      <li>The parrot's bodies were made for this page from generated images; the wings are part of the body's skin and stay folded, and the feet stay on the perch. The catch is animated by the page: the nut is caught in the beak.</li>
+      <li>At the head's limits the skin of the neck stretches more than the page's strictest test allows (worst edge 5.7 times its rest length on the realistic body); in normal turns it holds.</li>
+      <li>A revision takes the newest hearing of a sound in place of the older ones, and a record's depth does not weigh what is read: both are the library's present behaviour.</li>
+      <li>The page does not show how well a learned brain judges distance: that is the experiment's reading, on its own issue.</li>
+    </ul>
+
+    <h2 id="credits">Credits</h2>
+    <ul>
+      <li>The realistic and the anime parrot: made for this page with Meshy (an image, then a 3D model), prepared for the rig by the page's tools. The anime parrot is an original design.</li>
+      <li>The African Grey calls: cut from <a href="https://commons.wikimedia.org/wiki/File:Psittacus_erithacus_making_some_noise.ogg" target="_blank" rel="noopener">"Psittacus erithacus making some noise"</a> by Amada44, Wikimedia Commons, <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC BY 3.0</a>; changed: cut into calls and turned into the ear's bands.</li>
+      <li>The objects (apple, baseball, tea cup, bananas, rubber duck, lemon, pear), the wood, bark, plywood and wall textures and the room's light: <a href="https://polyhaven.com" target="_blank" rel="noopener">Poly Haven</a>, CC0. Each asset, its authors and its checksum are listed in <code>assets/CREDITS.json</code>.</li>
+      <li>three.js (MIT), Pyodide (MPL 2.0), and the Cadence library (GPL 3.0).</li>
+    </ul>
+
+    <footer>The brain runs in your browser with cadence-net 0.99.0. <a href="https://github.com/muellerberndt/cadence-demos/tree/main/parrot" target="_blank" rel="noopener">The demo on GitHub</a> · <a href="https://github.com/muellerberndt/cadence" target="_blank" rel="noopener">Cadence on GitHub</a></footer>
+  </main>
+</body>
+</html>

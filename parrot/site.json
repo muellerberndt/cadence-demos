@@ -2,14 +2,17 @@
   "slug": "parrot",
   "title": "Parrot",
   "page_dir": "site",
-  "card": "An African Grey on a low perch sees through two eyes on the sides of its head. Place things round it and watch what it sees.",
-  "tagline": "Two eyes, a wide view, and things you place round the perch",
-  "kicker": "A BODY AND TWO EYES FOR A BRAIN",
-  "feature": "A parrot with two eyes on the sides of its head: each sees 175 degrees, they overlap a little in front, and behind is a blind spot. Its brain receives both images ten times a second and moves its head, beak, wings and feet.",
-  "howTo": "Drag a thing nearer or further and watch the distance neurons answer, or silence them. Add things, move one behind the parrot, run the test, or move the joints yourself. Point at a ? to see what a part does.",
+  "card": "A newborn African Grey with two side eyes, an ear and a voice. Talk to it, teach it a sound, throw it a pistachio, and watch its brain.",
+  "tagline": "Two eyes, an ear, a voice, and a brain you watch in 3D",
+  "kicker": "A MEMORY THAT GROWS EACH TIME IT HEARS",
+  "feature": "Each sound the parrot hears is a record in Cadence's long-term memory: heard again, the record grows deeper and fades more slowly, and once deep the parrot can say it back. Its brain runs in your browser, ten moments a second.",
+  "howTo": "Let it hear you, then say a short word a few times while it looks at a thing; watch the Memory tab. Throw it a pistachio after a sound you like. Drag things nearer or behind it. Point at a ? to see what a part does.",
   "help": "help.html",
   "evidence": [
-    "parrot/evidence/page_check.json"
+    "parrot/evidence/page_check.json",
+    "parrot/evidence/dsp_parity.json",
+    "parrot/evidence/voice_roundtrip.json",
+    "parrot/evidence/sound_memory.json"
   ],
-  "promise_test": "python parrot/site/tools/check_page.py --shots <dir>"
+  "promise_test": "python parrot/site/tests/test_sound_memory.py && node parrot/site/tests/dsp_parity.mjs && node parrot/site/tests/voice_roundtrip.mjs && python parrot/site/tools/check_page.py --shots <dir>"
 }
