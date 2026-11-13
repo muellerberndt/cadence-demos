@@ -8,6 +8,13 @@
   "feature": "The arm's brain runs in real time, like a living brain: it senses and settles about five times a second. Move the bin while the arm carries the block, and its next moves head for the new place, which it never saw in training.",
   "howTo": "Drag the block or a bin, pick Bin A or Bin B (its lamp lights) and press Run. Once the arm holds the block, drag the lit bin to a new place and watch the arm follow it. Point at a ? to see what a part does.",
   "help": "help.html",
-  "evidence": ["robot-arm/evidence/promise_moved_bin-20261113-1134.json", "robot-arm/evidence/page_check.json", "robot-arm/evidence/moved_bins.jsonl", "robot-arm/evidence/stage2b_final.json", "robot-arm/evidence/stage2_final.json"],
+  "evidence": [
+    "robot-arm/evidence/promise_moved_bin-20261113-1134.json",
+    "robot-arm/evidence/promise_moved_bin-20261113-1206.json",
+    "robot-arm/evidence/page_check.json",
+    "robot-arm/evidence/moved_bins.jsonl",
+    "robot-arm/evidence/stage2b_final.json",
+    "robot-arm/evidence/stage2_final.json"
+  ],
   "promise_test": "python robot-arm/tools/promise_moved_bin.py --shots <dir>"
 }
