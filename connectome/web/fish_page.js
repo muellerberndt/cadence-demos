@@ -7,7 +7,7 @@
 // view is lit by the left half, the measured side, and flashed gold by the repair each neuron
 // made in its last step, so a saccade shows as a wave through the integrator; the right half
 // is its mirror copy. window.__app carries the parts for tools/scenario_fish.py.
-import { mountShell, app, el, $, describePayload, sourcesList, fetchJSON, tooltips, SKELETONS_URL, SKELETONS_FALLBACK, BRAIN_URL } from "./site.js";
+import { mountShell, app, el, $, fetchJSON, tooltips, explainScan, SKELETONS_URL, SKELETONS_FALLBACK, BRAIN_URL } from "./site.js";
 import { BrainView, loadPayload, HOT } from "./brain_view.js";
 import { TANK, WATER, SNOUT, DEG, wrap } from "./body.js";
 import { Aquarium } from "./aquarium.js";
@@ -32,9 +32,10 @@ const LABEL = "compiled graph: gaze and vestibular response · learned synapses 
 const WORLD_SHORT = { still: "hold gaze", back: "let gaze return", against: "amplified correction experiment" };
 const WORLD_LABEL = { still: "lessons favor retaining the gaze activity", back: "lessons favor a return toward rest", against: "experimental amplified feedback: may destabilize the response; recovery is not guaranteed" };
 
-const shell = mountShell("fish", { status: LABEL });
-$("tank-title").textContent = shell.page.title;
-const S = { paused: false, speed: 1, practiceEnd: null, practiceStart: 0, practiceSpeedBefore: null, viewSide: "left", seed: Number(params.get("seed") || 1), frames: 0, totalFrames: 0, fps: 0, fpsClock: 0, lastHud: -Infinity, lastLit: -Infinity, lastProbeAt: -Infinity, captures: 0, brainMs: 0, brainSteps: 0, repairFloor: REPAIR_FLOOR, repairGain: REPAIR_GAIN };
+const shell = mountShell("fish", { brief: true, status: LABEL });
+$("status-text").setAttribute("data-explain", "What the fish is doing: the lesson chosen, how its last fixation went (how much of the gaze activity it kept or lost), and whether its connections are learning.");
+$("status-text").setAttribute("data-explain-mark", "none");
+const S = { taught: [], paused: false, speed: 1, practiceEnd: null, practiceStart: 0, practiceSpeedBefore: null, viewSide: "left", seed: Number(params.get("seed") || 1), frames: 0, totalFrames: 0, fps: 0, fpsClock: 0, lastHud: -Infinity, lastLit: -Infinity, lastProbeAt: -Infinity, captures: 0, brainMs: 0, brainSteps: 0, repairFloor: REPAIR_FLOOR, repairGain: REPAIR_GAIN };
 
 /** Observe applied synaptic changes for the display; the lesson itself stays in TwinBrain. */
 class TimedTwin extends TwinBrain {
@@ -136,13 +137,25 @@ function setLearning(on) { if (!on) endPractice(); life.setLearning(on); $("lear
 function setWorld(name) {
   endPractice();
   life.setWorld(name);
-  $("lesson-guide").textContent = name === "still" ? "Teach it to keep looking to the side after a glance. Gold flashes mark connections changing as it learns." : "Teach its gaze to drift back after a glance. This same brain keeps what it learned and adapts again.";
+  guide();
   for (const b of $("world").querySelectorAll("button")) { b.classList.toggle("on", b.dataset.world === name); b.setAttribute("aria-pressed", String(b.dataset.world === name)); }
   toast(WORLD_LABEL[name]);
   status();
   return name;
 }
-function resetSynapses() { endPractice(); life.resetLearning(); app.lastProbe = null; $("learning-toggle").textContent = "Pause learning"; $("response-bars").hidden = true; $("probe-result").textContent = "Learning reset. Teach a lesson or test its gaze."; twin.learningFlash.left.fill(0); twin.learningFlash.right.fill(0); twin.lastVisualLesson = null; toast("learning reset: starting weights and activity restored"); status(); return true; }
+/** The walk-through line: hold, return, hold again, one step at a time. */
+function guide() {
+  const world = life.learning.world, done = S.taught, last = done[done.length - 1];
+  const sequence = done.join(" ").includes("still back still");
+  let html;
+  if (S.practiceEnd !== null) html = world === "still" ? "Teaching: <b>hold your gaze</b>. The bars climb as the connections learn to keep the activity a glance leaves behind." : "Teaching: <b>let it return</b>. The bars fall as the same connections learn to let the activity fade.";
+  else if (sequence) html = "Done: it held its gaze, let it return and held again, on one brain whose connections learned each time. <b>Test its gaze</b> compares it with the untaught fish; <b>Reset learning</b> under More controls starts over.";
+  else if (last === "back" && done.includes("still")) html = world === "still" ? "<b>3 · </b>Press <b>Teach this lesson</b> once more: the same brain learns to hold again." : "<b>3 · </b>Its gaze drifts back. Choose <b>Hold your gaze</b> and teach once more: the same brain learns to hold again.";
+  else if (last === "still") html = world === "back" ? "<b>2 · </b>Press <b>Teach this lesson</b>: the same connections learn to let the gaze return." : "<b>2 · </b>It holds its gaze. Next, choose <b>Let it return</b> and teach again: the same connections learn to let go.";
+  else html = world === "still" ? "<b>1 · </b>Press <b>Teach this lesson</b>: the fish practises holding its gaze after each glance. Gold flashes in the brain mark connections changing." : "<b>1 · </b>Press <b>Teach this lesson</b>: the fish practises letting its gaze drift back after each glance.";
+  if ($("lesson-guide").innerHTML !== html) $("lesson-guide").innerHTML = html;
+}
+function resetSynapses() { S.taught = []; endPractice(); life.resetLearning(); app.lastProbe = null; $("learning-toggle").textContent = "Pause learning"; $("response-bars").hidden = true; $("probe-result").textContent = "Learning reset. Teach a lesson or test its gaze."; twin.learningFlash.left.fill(0); twin.learningFlash.right.fill(0); twin.lastVisualLesson = null; toast("learning reset: starting weights and activity restored"); status(); return true; }
 /** The status strip: the label, and the learning's count and last lesson. */
 let shownLessons = 0;
 function status() {
@@ -191,9 +204,12 @@ function practiceLesson() {
   S.practiceEnd = life.time + (life.learning.world === "still" ? 600 : life.learning.world === "back" ? 150 : 120);
   measureLearning();
   status();
+  guide();
 }
 function finishPractice() {
+  S.taught.push(life.learning.world);
   setLearning(false);
+  guide();
   measureLearning(); status(); toast("practice complete · learning paused · acquired weights retained");
 }
 function restoreCompiled() { endPractice(); life.brain.restoreCompiled(); life.learning.on = false; life._clearFixations(); $("learning-toggle").textContent = "resume learning"; status(); }
@@ -228,20 +244,12 @@ addEventListener("resize", () => { if (brainView) brainView.resize(); });
 // Disclosure and result changes resize the canvases without changing the window.
 const viewSizes = new ResizeObserver(() => { aquarium.resize(); brainView?.resize(); });
 viewSizes.observe($("tank-host")); viewSizes.observe($("view-host"));
-tooltips($("tank")); tooltips($("brain")); tooltips($("lesson-panel"));  // the hover explanations of the buttons, drawn inside their pane
+tooltips($("tank")); tooltips($("brain")); tooltips($("lesson-panel"));  // the hover explanations of the buttons (the shared explanation cards)
+explainScan(document);
 setStripes({}); moveLight({ on: false, x: TANK[0] / 2, y: TANK[1] / 2, z: TANK[2] + 4 });
 setFollow(true);  // the camera follows the fish by default
 // Start without random prey so the default lesson follows the seeded life checked in Node.
 // Feeding and lighting are optional disturbances, with their fixed pilot declared.
-
-// ---- the card ---------------------------------------------------------------------------------
-shell.card([
-  "<b>A brain that keeps learning.</b> The fish's gaze circuit uses wiring compiled from a measured zebrafish connectome. Lessons change connection strengths on that same graph.",
-  "<b>What you teach.</b> Hold your gaze targets a nearly retained activity pattern; let it return asks for a smaller one. These are declared teaching signals, not learning from camera pixels. Swimming and hunting use a fixed pilot.",
-  "<b>What the colours mean.</b> Green shows neural activity. Gold marks cells whose incoming connections actually changed in a lesson. The view follows the half that just learned; brightness reflects the size of its changes.",
-  "<b>What stays.</b> Pausing learning or choosing another lesson keeps the learned connections. Reset learning forgets them. Test its gaze compares starting and current weights without changing the live fish.",
-  sourcesList(),
-]);
 
 // a paramecium within reach of the snout and ahead is eaten; another appears elsewhere
 function captures(state) {
@@ -265,9 +273,26 @@ function lit() {
 // ---- the brain view, when the skeletons arrive ------------------------------------------------
 skeletonLoad.then((payload) => {
   if (!payload) { $("view-host").append(el("div", { id: "noscan" }, "brain view skipped (noscan)")); return; }
-  brainView = new BrainView($("view-host"), payload, { spin: true, controls: false, scale: "auto", gamma: 0.5, floor: 0.05, rest: [0.005, 0.045, 0.012], lit: [0.08, 0.55, 0.16], flash: [3, 1.1, 0.05] });
+  brainView = new BrainView($("view-host"), payload, { spin: true, controls: "legend", scale: "auto", gamma: 0.5, floor: 0.05, rest: [0.005, 0.045, 0.012], lit: [0.08, 0.55, 0.16], flash: [3, 1.1, 0.05] });
   app.brainView = brainView;
+  explainParts(brainView);
 }).catch((e) => { app.errors.push(String(e.message || e)); shell.status(`brain view unavailable: ${e.message || e}`); });
+
+// What each group of the measured hindbrain does in this model, on the brain view's colour key.
+const PARTS = {
+  _Int_: "The gaze integrator: neurons whose lasting activity holds the eyes where a glance put them, a memory kept in activity. The connections into them are the ones that learn.",
+  _Axl_: "Neurons the reconstruction groups as axial, named for movements of the body's axis. The model weakens what they send.",
+  _DOs_: "Neurons of the descending octaval nucleus, part of the balance system: they carry the body's turns into the circuit.",
+  ABD_m: "Abducens motor neurons: they drive the muscle that turns the eye outward. The eye's position is read from them.",
+  ABD_i: "Abducens internuclear neurons: they carry the command across to the other eye, so both eyes turn together.",
+  vSPNs: "Spinal projection neurons: they send commands down toward the spinal cord.",
+  periphery: "Other traced neurons of the volume, outside the named groups.",
+};
+function explainParts(view) {
+  const rows = view.overlay.querySelectorAll(".bv-legend label");
+  view.classes.forEach((name, k) => { const row = rows[k]; if (row && PARTS[name]) { row.setAttribute("data-explain", PARTS[name]); row.style.cursor = "help"; } });
+  explainScan(view.overlay);
+}
 
 // ---- the loop ---------------------------------------------------------------------------------
 let last = performance.now(), accumulated = 0;
@@ -291,7 +316,7 @@ function frame(now) {
   }
   S.frames++; S.totalFrames++; S.fpsClock += dtWall;
   if (S.fpsClock >= 1) { S.fps = S.frames / S.fpsClock; S.frames = 0; S.fpsClock = 0; }
-  if (now - S.lastHud >= 500) { status(); S.lastHud = now; }
+  if (now - S.lastHud >= 500) { status(); guide(); S.lastHud = now; }
   if (!app.ready && S.totalFrames >= 3) app.ready = true;
 }
 $("loading").classList.add("gone");

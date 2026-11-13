@@ -1,0 +1,19 @@
+{
+  "slug": "connectome",
+  "title": "Connectome",
+  "page_dir": "web",
+  "card": "A brain built from wiring measured cell by cell in real animals. Teach a fish's gaze circuit; watch a larva's whole body react.",
+  "tagline": "Measured animal wiring, running as a Cadence brain you can teach",
+  "kicker": "A BRAIN ON REAL ANIMAL WIRING THAT LEARNS",
+  "feature": "Cadence runs wiring measured cell by cell in real animals as a live brain. A fish's gaze circuit holds a glance in its own activity: teach it to hold, let go and hold again, and its measured connections learn and keep what they learned.",
+  "howTo": "Larva: press tap left or move light, and its wiring steers it. The fish tab: open Teach this fish, press Teach this lesson, then choose Let it return and teach again, then hold again. The bars show how much gaze it holds.",
+  "help": "help.html",
+  "evidence": [
+    "connectome/web/data/learning_reteach.json",
+    "connectome/web/data/learning_release.json",
+    "connectome/receipts/learning_ui-20261113.json",
+    "connectome/receipts/scenario_larva-20261113.json",
+    "connectome/MODEL_CARD.md"
+  ],
+  "promise_test": "python tools/check_learning_ui.py --hardware --out runs/learning_ui.json && python tools/scenario_larva.py --no-screenshot --receipt runs/scenario_larva.json"
+}

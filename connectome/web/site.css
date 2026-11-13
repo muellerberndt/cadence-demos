@@ -110,3 +110,10 @@ body.card-open #card{display:block}
 .evidence-links{font-size:12px;line-height:1.8}
 .comparison-scope{color:var(--ink);font-size:12px;max-width:1000px;margin:0 0 14px}
 @media(max-width:760px){.paper-cards{grid-template-columns:1fr}.compile-flow{grid-template-columns:1fr 1fr}#mast .papers{font-size:11px}.equation{font-size:11px}}
+
+/* Inside the demos site the site's theme (cadence-theme.css, body[data-demo="connectome"]) lets the
+   page flow; the demo pages keep to one screen of the frame, the tank's buttons in view. */
+@media(min-width:761px){
+  html body[data-demo="connectome"] #page{min-height:0;height:calc(100vh - 32px);display:flex;flex-direction:column}
+  html body[data-demo="connectome"] #main.two{height:auto;flex:1;min-height:320px}
+}
