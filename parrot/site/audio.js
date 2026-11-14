@@ -8,11 +8,92 @@ import { synthesise, HOP, RATE, MELS } from './dsp.js';
 
 const SILENT = Math.log(1e-6);
 
+// --- the parrot's voice ------------------------------------------------------------------------------
+// A parrot has no vocal folds: it imitates speech with its syrinx, a tonal source whose frequency it moves
+// to trace our formants, so its words sound whistly, bright, nasal and a little buzzy. The page's parrot
+// voice: the remembered word pitched up about four semitones, a sine-wave layer whose three tones follow
+// the word's first formants, a high-pass at 300 Hz (a small body), a presence peak near 2.6 kHz and a
+// touch of waveshaping (the syrinx's buzz).
+export const PARROT = { pitch: 1.26, highpass: 300, peak: 2600, peakGain: 6, drive: 2.2, dry: 0.8, tones: [0.24, 0.17, 0.09] };
+const RANGES = [[250, 900], [900, 2300], [2300, 3500]];
+const formantCache = new WeakMap();
+/** Each 10 ms of a word: the strongest frequency and its level in each formant range (its own spectrum). */
+export function formantTracks(x, rate) {
+  if (formantCache.has(x)) return formantCache.get(x);
+  const n = 256, hop = Math.round(rate / 100), half = n / 2, win = new Float32Array(n), re = new Float32Array(half + 1), im = new Float32Array(half + 1);
+  for (let i = 0; i < n; i++) win[i] = 0.5 - 0.5 * Math.cos((2 * Math.PI * i) / (n - 1));
+  const cos = new Float32Array(n * (half + 1)), sin = new Float32Array(n * (half + 1));
+  for (let k = 0; k <= half; k++) for (let i = 0; i < n; i++) { cos[k * n + i] = Math.cos((2 * Math.PI * k * i) / n); sin[k * n + i] = Math.sin((2 * Math.PI * k * i) / n); }
+  const frames = [];
+  for (let s0 = 0; s0 + n <= x.length; s0 += hop) {
+    for (let k = 0; k <= half; k++) { let a = 0, b = 0; for (let i = 0; i < n; i++) { const v = x[s0 + i] * win[i]; a += v * cos[k * n + i]; b += v * sin[k * n + i]; } re[k] = a; im[k] = b; }
+    const row = [];
+    for (const [lo, hi] of RANGES) {
+      let best = 0, at = lo; for (let k = Math.ceil(lo * n / rate); k <= Math.min(half, Math.floor(hi * n / rate)); k++) { const m = Math.hypot(re[k], im[k]); if (m > best) { best = m; at = k * rate / n; } }
+      row.push([at, best]);
+    }
+    frames.push(row);
+  }
+  const tops = RANGES.map((_, j) => Math.max(1e-9, ...frames.map((r) => r[j][1])));
+  const out = { hop: hop / rate, frames: frames.map((r) => r.map(([f, m], j) => [f, m / tops[j]])) };
+  formantCache.set(x, out);
+  return out;
+}
+function buzzCurve(drive) {
+  const c = new Float32Array(1024);
+  for (let i = 0; i < 1024; i++) { const x = (i / 1023) * 2 - 1; c[i] = Math.tanh(drive * x) / Math.tanh(drive); }
+  return c;
+}
+/** The parrot voice's graph for one remembered word, in any audio context (live or offline). */
+export function parrotVoice(ctx, buffer, dest, pitch = PARROT.pitch, when = 0) {
+  const t0 = when || ctx.currentTime, src = ctx.createBufferSource(); src.buffer = buffer; src.playbackRate.value = pitch;
+  const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = PARROT.highpass; hp.Q.value = 0.7;
+  const pk = ctx.createBiquadFilter(); pk.type = 'peaking'; pk.frequency.value = PARROT.peak; pk.gain.value = PARROT.peakGain; pk.Q.value = 1.1;
+  const ws = ctx.createWaveShaper(); ws.curve = buzzCurve(PARROT.drive); ws.oversample = '2x';
+  const dry = ctx.createGain(); dry.gain.value = PARROT.dry;
+  src.connect(hp); hp.connect(pk); pk.connect(ws); ws.connect(dry); dry.connect(dest);
+  const x = buffer.getChannelData(0), tr = formantTracks(x, buffer.sampleRate), dur = x.length / buffer.sampleRate / pitch;
+  const tones = PARROT.tones.map((level, j) => {
+    const osc = ctx.createOscillator(), g = ctx.createGain(); osc.type = 'sine'; g.gain.value = 0;
+    tr.frames.forEach((row, k) => { const t = t0 + (k * tr.hop) / pitch; osc.frequency.setValueAtTime(Math.min(3900, row[j][0] * pitch), t); g.gain.setTargetAtTime(level * row[j][1] ** 1.5, t, 0.006); });
+    g.gain.setTargetAtTime(0, t0 + dur, 0.01);
+    osc.connect(g); g.connect(hp); osc.start(t0); osc.stop(t0 + dur + 0.1);
+    return osc;
+  });
+  src.start(t0);
+  return { src, tones, duration: dur };
+}
+
 export class ParrotAudio {
   constructor() {
     this.ctx = null; this.mic = false; this.level = 0;
     this.frames = []; this.queue = []; this.pcmQueue = []; this.samples = new Float32Array(1600); this.heardLoud = false;
     this.speaking = null;
+  }
+
+  /** The page's whole sound output as a stream (for a recording of the page itself). */
+  tap() {
+    if (!this.ctx) return null;
+    this.tapNode ||= this.ctx.createMediaStreamDestination();
+    this.gain.connect(this.tapNode);
+    return this.tapNode.stream;
+  }
+  /** A human voice clip (the questions' voiceover): played as recorded, through the page's output, unfiltered. */
+  async playClip(url) {
+    await this.unlock();
+    this.clips ||= new Map();
+    if (!this.clips.has(url)) this.clips.set(url, fetch(url).then((r) => r.arrayBuffer()).then((b) => this.ctx.decodeAudioData(b)));
+    const buf = await this.clips.get(url), node = this.ctx.createBufferSource(); node.buffer = buf; node.connect(this.gain); node.start();
+    return buf.duration;
+  }
+  /** A remembered word rendered offline through the parrot voice (for checks). */
+  async renderParrot(pcm8k, rate = 8000) {
+    const pitch = PARROT.pitch, len = Math.ceil((pcm8k.length / rate / pitch + 0.2) * 16000);
+    const off = new OfflineAudioContext(1, len, 16000), buf = off.createBuffer(1, pcm8k.length, rate);
+    let peak = 0; for (const v of pcm8k) peak = Math.max(peak, Math.abs(v));
+    const ch = buf.getChannelData(0), g = peak > 0 ? Math.min(0.9 / peak, 30) : 1; for (let i = 0; i < pcm8k.length; i++) ch[i] = pcm8k[i] * g;
+    parrotVoice(off, buf, off.destination, pitch);
+    return (await off.startRendering()).getChannelData(0);
   }
 
   /** Audio may start only from a visitor's gesture; the first click calls this. */
@@ -98,14 +179,23 @@ export class ParrotAudio {
     const g = peak > 0 ? Math.min(0.9 / peak, 30) : 1;
     const buf = this.ctx.createBuffer(1, pcm8k.length, rate);
     const ch = buf.getChannelData(0); for (let i = 0; i < pcm8k.length; i++) ch[i] = pcm8k[i] * g;
-    const node = this.ctx.createBufferSource(); node.buffer = buf;
-    node.playbackRate.value = 1 + (Math.random() - 0.5) * 0.08; // recalled, never replayed exactly: a little higher or lower, faster or slower each time
-    node.connect(this.gain); node.start();
+    const vary = 1 + (Math.random() - 0.5) * 0.08; // recalled, never replayed exactly: a little higher or lower, faster or slower each time
+    const v = parrotVoice(this.ctx, buf, this.gain, PARROT.pitch * vary), node = v.src, speed = PARROT.pitch * vary; // every word it says, in its parrot voice
     const env = [];
-    const step = Math.round(rate / 100); // the loudness every 10 ms
+    const step = Math.max(1, Math.round((rate / 100) * speed)); // the loudness every 10 ms of the word as played
     for (let i = 0; i < ch.length; i += step) { let e = 0; for (let k = i; k < Math.min(ch.length, i + step); k++) e += ch[k] * ch[k]; env.push(Math.sqrt(e / step)); }
     const top = Math.max(1e-6, ...env);
     this.speaking = { start: performance.now(), env: env.map((v) => v / top), node };
+    return this.speaking;
+  }
+
+  /** A word said without a sound (the page has none for it): the beak opens and closes once a syllable,
+   *  about 180 ms each, with no sound played. */
+  mouth(word) {
+    const syl = Math.max(1, (String(word).toLowerCase().match(/[aeiouy]+/g) || []).length);
+    const env = [];
+    for (let s = 0; s < syl; s++) for (let i = 0; i < 18; i++) env.push(Math.sin(Math.PI * i / 18) ** 0.8 * 0.8);
+    this.speaking = { start: performance.now(), env, node: null };
     return this.speaking;
   }
 

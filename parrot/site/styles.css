@@ -352,13 +352,16 @@ body.demo .ask-log li { font: 400 13px/1.45 var(--body); color: #dfe3ea; }
 body.demo .ask-log .who { min-width: 50px; font: 400 10px var(--mono); letter-spacing: 0.08em; color: rgb(232 235 240 / 0.45); }
 body.demo .ask-log li.a b { color: #ffe3b0; font-weight: 500; font-size: 13px; }
 body.demo .ask-row select, body.demo .ask-row input { height: 30px; background: rgb(255 255 255 / 0.04); border: 1px solid rgb(255 255 255 / 0.12); color: var(--ink); border-radius: 8px; font: 400 12.5px var(--body); }
-body.demo .ask-row select { max-width: 46%; padding: 0 4px; }
+body.demo .ask-row select { flex: 1; max-width: none; padding: 0 6px; }
 body.demo .ask-row button { height: 30px; border-radius: 8px; border: 1px solid rgb(255 214 150 / 0.5); background: rgb(255 190 110 / 0.12); color: #ffe8c4; font-weight: 500; }
 .ask-actions { display: none; gap: 8px; margin-top: 8px; }
 body.demo .ask-actions { display: flex; }
 .ask-actions button { flex: 1; height: 28px; border-radius: 8px; border: 1px solid rgb(255 255 255 / 0.12); background: transparent; color: rgb(232 235 240 / 0.8); font: 400 12px var(--body); cursor: pointer; }
 .ask-actions .nut-mini { border-color: rgb(255 200 90 / 0.45); color: #ffd98a; }
 .ask-actions .mic-mini[aria-pressed="true"] { border-color: #6fc6ff; color: #bfe6ff; }
+.forget-mini { display: none; }
+body.demo .forget-mini { display: block; width: 100%; margin-top: 6px; height: 24px; border-radius: 7px; border: 1px solid rgb(255 255 255 / 0.08); background: transparent; color: rgb(232 235 240 / 0.5); font: 400 11px var(--body); cursor: pointer; }
+.ask-actions .voice-mini[aria-pressed="true"] { border-color: rgb(255 214 150 / 0.4); color: #ffe3b0; }
 body.demo .say-bubble { font: 400 18px/1.2 var(--display); background: rgb(255 232 196 / 0.95); color: #1a1006; }
 body.demo .say-bubble.you { background: rgb(232 235 240 / 0.9); }
 @media (max-width: 900px) { body.demo .app { grid-template-columns: 1fr !important; } body.demo .ask { width: calc(100% - 36px); } }

@@ -17,6 +17,7 @@ const $ = (id) => document.getElementById(id);
 const query = new URLSearchParams(location.search);
 // the page's layout: the room and the brain side by side, the brain as a scan, a small chat (?layout=classic: the panels)
 const DEMO = query.get('layout') !== 'classic';
+const START_KEY = 'parrot.start.v3'; // the version of a start (older saves are cleared at every start)
 if (DEMO) document.body.classList.add('demo');
 const MOMENT_MS = 100; // the brain's moment: ten a second
 const VIZ_EVERY = 3; // the body's settles go to the brain view every third moment (their trace costs time in the browser); the trained brain's with each of its moments
@@ -707,8 +708,13 @@ function placeBubble() {
 /** Say a word it chose: with the sound the visitor taught for that thing where its hearing links one. */
 function sayWord(word) {
   brain3d?.scan?.say(word);
-  const own = trained.wordSounds[word];
-  const link = own ? { id: own } : (state.lastReply?.knows || []).find((k) => k.kind === word);
+  const knows = state.lastReply?.knows || [];
+  // the visitor's own sound for this thing (heard while it was in focus, a few times) comes first; then
+  // the word's own sound (shipped, or the one you made after a silent answer); then any sound linked to it
+  const yours = KINDS[word] ? knows.filter((k) => k.kind === word && !trained.bundleIds?.has(k.id) && k.link > 0.1).sort((a, b) => b.link - a.link)[0] : null;
+  const own = !yours && trained.wordSounds[word];
+  const link = yours || (own ? { id: own } : knows.find((k) => k.kind === word));
+  trained.lastVoice = link ? { word, id: link.id, from: yours ? 'yours' : own ? 'word' : 'link' } : { word, id: null };
   const kept = link ? soundPcm.get(link.id) : null;
   if (kept?.pcm?.length && audio.ctx?.state === 'running') {
     const spoken = audio.speakPcm(kept.pcm, kept.rate);
@@ -720,6 +726,7 @@ function sayWord(word) {
     }
   }
   ui.voiceNote.textContent = `${word}: shown as text (no sound of yours links to it)`;
+  audio.mouth(word); // the beak opens and closes with the word though it has no sound
   trained.awaitWord = { word, until: performance.now() + 20000 }; // the next sound you make becomes this word's sound
   return KINDS[word] ? `as text only: no sound of yours links to the ${word}` : 'as text only: it has no sound of yours for this word';
 }
@@ -728,7 +735,12 @@ function sayWord(word) {
  *  sound (the parrot keeps it and says it back at once), and the word is said with it from then on. */
 async function heardForWord(heard) {
   const w = trained.awaitWord;
-  if (!w || performance.now() > w.until || !heard?.id) return;
+  if (!heard?.id) return;
+  if (!w || performance.now() > w.until) { // a sound it knows as a word: the trained brain hears that word and says it back
+    const known = Object.entries(trained.wordSounds).find(([, id]) => id === heard.id);
+    if (known && !trained.busy) imitate(known[0]);
+    return;
+  }
   trained.awaitWord = null;
   trained.wordSounds[w.word] = heard.id;
   try { localStorage.setItem('parrot.words', JSON.stringify(trained.wordSounds)); } catch (e) { /* storage blocked */ }
@@ -738,6 +750,28 @@ async function heardForWord(heard) {
   }
   const kept = soundPcm.get(heard.id);
   if (kept?.pcm?.length) { audio.speakPcm(kept.pcm, kept.rate); bubble(w.word, 'it'); brain3d?.scan?.say(w.word); logLine(`<span class="who">parrot</span> <b>${esc(w.word)}</b> <span class="dim">(it says back the sound you made for the word)</span>`, 'a'); }
+}
+
+/** The visitor said a word whose sound the parrot keeps: the trained brain hears that word (its code, as
+ *  in its training's imitation: one word, then its turn) and says what it says back. */
+async function imitate(word) {
+  if (!state.trained || trained.busy) return;
+  trained.busy = true; trained.open = null;
+  logLine(`<span class="who">you</span> ${esc(word)} <span class="dim">(heard: the sound it keeps for the word)</span>`, 'q');
+  const said = [];
+  try {
+    await trainedOp({ op: 'begin' });
+    await trainedOp({ op: 'moment', hear: word, more: true, focus: trained.focus });
+    for (let k = 0; k < trained.turn; k++) {
+      const r = await trainedOp({ op: 'moment', hear: null, more: false, focus: trained.focus });
+      if (!r.said && said.length) break;
+      if (r.said && said[said.length - 1] !== r.said) { said.push(r.said); bubble(said.join(', '), 'it'); sayWord(r.said); }
+    }
+    logLine(said.length ? `<span class="who">parrot</span> <b>${esc(said.join(', '))}</b>` : '<span class="who">parrot</span> <span class="dim">said nothing</span>', 'a');
+    trained.last = { question: word, said: [...said], imitation: true, right: said.length === 1 && said[0] === word };
+    trained.open = said.length ? { id: ++trained.serial, said, at: performance.now() } : null;
+    if (!said.length) await trainedOp({ op: 'over' });
+  } finally { trained.busy = false; trained.quietUntil = performance.now() + 2500; }
 }
 
 // --- In its mind: the facets of the thing in focus read from its state by the meaning lane's probes
@@ -797,7 +831,7 @@ function showMind(mind, focusId) {
 
 async function askIt(text) {
   if (!state.trained || trained.busy) return;
-  const words = text.toLowerCase().replace(/[^a-z<>\s]/g, ' ').split(/\s+/).filter(Boolean);
+  const words = text.toLowerCase().replace(/\bcolor\b/g, 'colour').replace(/[^a-z<>\s]/g, ' ').split(/\s+/).filter(Boolean);
   const heard = words.filter((w) => trained.vocab.has(w)), unheard = words.filter((w) => !trained.vocab.has(w));
   if (!heard.length) { logLine(`It knows none of these words. Its words are listed under <b>Its words</b>.`, 'warn'); return; }
   const scan = isScan(heard);
@@ -896,8 +930,7 @@ const normQ = (t) => t.toLowerCase().replace(/[^a-z ]/g, ' ').replace(/\s+/g, ' 
 async function speakQuestion(q) {
   const clips = await questionClips, file = clips[normQ(q)];
   if (!file) return 0;
-  const a = new Audio(`voice/${file}`); a.play().catch(() => {});
-  return new Promise((res) => { a.addEventListener('loadedmetadata', () => res(a.duration * 1000), { once: true }); setTimeout(() => res(0), 1500); });
+  try { return 1000 * (await audio.playClip(`voice/${file}`)); } catch (e) { return 0; }
 }
 askEl.form?.addEventListener('submit', async (e) => {
   e.preventDefault(); const q = askEl.q.value.trim();
@@ -908,8 +941,15 @@ askEl.form?.addEventListener('submit', async (e) => {
   if (ms > 0) await new Promise((r) => setTimeout(r, Math.max(0, ms - 600))); // the brain hears the typed words as the voice ends
   askIt(q);
 });
-$('ask-preset')?.addEventListener('change', (e) => { if (e.target.value) { askEl.q.value = e.target.value; e.target.value = ''; } });
+$('ask-preset')?.addEventListener('change', (e) => { askEl.q.value = e.target.value; });
+if (DEMO) askEl.q.value = $('ask-preset')?.value || ''; // the demo asks the preset picked (no typed questions)
 $('ask-nut')?.addEventListener('click', () => ui.pistachio.click());
+$('ask-forget')?.addEventListener('click', async () => { // every sound it learned, its links and its paid calls: gone, and a fresh start
+  try { for (const k of Object.keys(localStorage)) if (/^parrot\.(memory|words)/.test(k)) localStorage.removeItem(k); } catch (e) { /* storage blocked */ }
+  trained.wordSounds = {};
+  try { if (state.brainReady) await brain.call('forget'); } catch (e) { /* the reload starts it clean anyway */ }
+  location.reload();
+});
 $('ask-mic')?.addEventListener('click', async () => { ui.mic.click(); setTimeout(() => $('ask-mic').setAttribute('aria-pressed', String(!!audio.mic)), 400); });
 askEl.fix?.addEventListener('submit', (e) => { e.preventDefault(); const w = askEl.word.value.trim(); if (w) correctIt(w); });
 for (const b of document.querySelectorAll('[data-ask]')) b.addEventListener('click', () => { askEl.q.value = b.dataset.ask; askEl.q.focus(); });
@@ -1163,8 +1203,19 @@ async function start() {
     if (state.trained) setupTrained(desc.trained);
     view.setup(desc, rig.joints);
     for (const r of desc.repertoire || []) addChip(r);
-    const kept = learnedStore.get();
-    if (kept?.records?.length) { const out = await brain.call('remember', { saved: kept }); syncChips(out.repertoire || []); memview?.update(out.memory); }
+    // every start begins from the shipped words: the sounds, links and paid calls of a visit are not kept
+    // past it (Forget my sounds clears them within one)
+    try { for (const k of Object.keys(localStorage)) if (/^parrot\.(memory|words)/.test(k)) localStorage.removeItem(k); localStorage.setItem(START_KEY, String(Date.now())); } catch (e) { /* storage blocked */ }
+    trained.wordSounds = {};
+    if (state.trained || desc.name === 'trained') { // a first visit: the words taught in a recorded voice (voice/words.json), its starting words
+      try {
+        const bundle = await (await fetch('voice/words.json')).json();
+        if (bundle?.memory?.records?.length) {
+          const out = await brain.call('remember', { saved: bundle.memory }); syncChips(out.repertoire || []); memview?.update(out.memory);
+          trained.wordSounds = { ...bundle.words }; trained.bundleIds = new Set(Object.values(bundle.words));
+        }
+      } catch (e) { /* no bundle: it starts with no words of its own */ }
+    }
     brain3d.setup(desc);
     ui.sub.textContent = desc.placeholder ? `${desc.title} · ${desc.neurons} units` : state.trained ? `${desc.title} · ${desc.neurons.toLocaleString('en')} neurons, the trained brain's ${desc.trained.neurons.toLocaleString('en')} among them`
       : `${desc.title || desc.name} · ${desc.neurons.toLocaleString('en')} neurons${desc.newborn ? ' · a newborn' : ''}`;
