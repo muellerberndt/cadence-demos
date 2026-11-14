@@ -147,7 +147,7 @@ class Host(Composed):
         m = self.meaning
         d.update(name="trained", populations=d["populations"] + [p for p, _, _ in self.t_pops], neurons=self.neurons,
                  title="The parrot's brain: the composed body, and the brain trained tonight for the words",
-                 trained={"words": [w for w in m.voice if not w.startswith("<")], "moment_ms": int(m.spec.get("moment_ms", 300)),
+                 trained={"words": sorted(w for w in m.codes if not w.startswith("<")), "says": [w for w in m.voice if not w.startswith("<")],  # the words it hears (its codes) and the words its voice has "moment_ms": int(m.spec.get("moment_ms", 300)),
                           "turn_moments": int(m.spec.get("turn_moments", 3)), "kinds": sorted(m.spec["kinds"]),
                           "colours": sorted(m.spec["colours"]), "materials": sorted(m.spec["materials"]),
                           "neurons": int(m.brain.connectome.n), "synapses": int(m.brain.connectome.synapses),

@@ -45,15 +45,15 @@ function buzzCurve(drive) {
   return c;
 }
 /** The parrot voice's graph for one remembered word, in any audio context (live or offline). */
-export function parrotVoice(ctx, buffer, dest, pitch = PARROT.pitch, when = 0) {
+export function parrotVoice(ctx, buffer, dest, pitch = PARROT.pitch, when = 0, P = PARROT) {
   const t0 = when || ctx.currentTime, src = ctx.createBufferSource(); src.buffer = buffer; src.playbackRate.value = pitch;
-  const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = PARROT.highpass; hp.Q.value = 0.7;
-  const pk = ctx.createBiquadFilter(); pk.type = 'peaking'; pk.frequency.value = PARROT.peak; pk.gain.value = PARROT.peakGain; pk.Q.value = 1.1;
-  const ws = ctx.createWaveShaper(); ws.curve = buzzCurve(PARROT.drive); ws.oversample = '2x';
-  const dry = ctx.createGain(); dry.gain.value = PARROT.dry;
+  const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = P.highpass; hp.Q.value = 0.7;
+  const pk = ctx.createBiquadFilter(); pk.type = 'peaking'; pk.frequency.value = P.peak; pk.gain.value = P.peakGain; pk.Q.value = 1.1;
+  const ws = ctx.createWaveShaper(); ws.curve = buzzCurve(P.drive); ws.oversample = '2x';
+  const dry = ctx.createGain(); dry.gain.value = P.dry;
   src.connect(hp); hp.connect(pk); pk.connect(ws); ws.connect(dry); dry.connect(dest);
   const x = buffer.getChannelData(0), tr = formantTracks(x, buffer.sampleRate), dur = x.length / buffer.sampleRate / pitch;
-  const tones = PARROT.tones.map((level, j) => {
+  const tones = P.tones.map((level, j) => {
     const osc = ctx.createOscillator(), g = ctx.createGain(); osc.type = 'sine'; g.gain.value = 0;
     tr.frames.forEach((row, k) => { const t = t0 + (k * tr.hop) / pitch; osc.frequency.setValueAtTime(Math.min(3900, row[j][0] * pitch), t); g.gain.setTargetAtTime(level * row[j][1] ** 1.5, t, 0.006); });
     g.gain.setTargetAtTime(0, t0 + dur, 0.01);
@@ -87,12 +87,12 @@ export class ParrotAudio {
     return buf.duration;
   }
   /** A remembered word rendered offline through the parrot voice (for checks). */
-  async renderParrot(pcm8k, rate = 8000) {
-    const pitch = PARROT.pitch, len = Math.ceil((pcm8k.length / rate / pitch + 0.2) * 16000);
+  async renderParrot(pcm8k, rate = 8000, P = PARROT) {
+    const pitch = P.pitch, len = Math.ceil((pcm8k.length / rate / pitch + 0.2) * 16000);
     const off = new OfflineAudioContext(1, len, 16000), buf = off.createBuffer(1, pcm8k.length, rate);
     let peak = 0; for (const v of pcm8k) peak = Math.max(peak, Math.abs(v));
     const ch = buf.getChannelData(0), g = peak > 0 ? Math.min(0.9 / peak, 30) : 1; for (let i = 0; i < pcm8k.length; i++) ch[i] = pcm8k[i] * g;
-    parrotVoice(off, buf, off.destination, pitch);
+    parrotVoice(off, buf, off.destination, pitch, 0, P);
     return (await off.startRendering()).getChannelData(0);
   }
 
@@ -108,7 +108,14 @@ export class ParrotAudio {
   }
 
   async startMic() {
-    await this.unlock();
+    // the context starts here; a browser lets it run only after a click or a key, so a page that opens
+    // with the microphone on hears from the first click or key on
+    if (!this.ctx) { const AC = window.AudioContext || window.webkitAudioContext; this.ctx = new AC({ sampleRate: RATE }); this.gain = this.ctx.createGain(); this.gain.gain.value = 0.9; this.gain.connect(this.ctx.destination); }
+    if (this.ctx.state !== 'running') {
+      this.ctx.resume().catch(() => {});
+      const go = () => { this.ctx.resume().catch(() => {}); if (this.ctx.state === 'running') for (const ev of ['pointerdown', 'keydown']) window.removeEventListener(ev, go, true); };
+      for (const ev of ['pointerdown', 'keydown']) window.addEventListener(ev, go, true);
+    }
     if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) throw new Error('The microphone works only on localhost or https.');
     if (!this.workletReady) { await this.ctx.audioWorklet.addModule(new URL('./ear-worklet.js', import.meta.url)); this.workletReady = true; }
     this.stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: false, autoGainControl: true } });

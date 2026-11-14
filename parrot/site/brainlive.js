@@ -208,13 +208,13 @@ export class Live {
     if (reply.startle) { this.flashes.push({ region: 'ear', t0: vt, level: 1 }); this.flashes.push({ region: 'tectum', t0: vt + 0.08, level: 0.7 }); this.note('ear', 'a sudden sound', vt, 1.8); }
     const f = reply.focus;
     const why = f?.why;
-    if (!this.status.surprise && (why === 'appeared' || why === 'moved')) this.setStatus('surprise', 'live: what appears or moves');
+    if (!this.status.surprise && (why === 'appeared' || why === 'moved') && !this.b.scanMode) this.setStatus('surprise', 'live: what appears or moves');
     // a surprise is shown once its reason has held for two moments (a one-moment flicker of the focus's
     // reason is not shown)
     const surprising = f && (why === 'appeared' || why === 'moved');
     this.surpriseRun = surprising && this.surpriseWhy === why ? (this.surpriseRun || 0) + 1 : surprising ? 1 : 0;
     this.surpriseWhy = surprising ? why : null;
-    if (surprising && this.surpriseRun === 2) {
+    if (surprising && this.surpriseRun === 2 && !this.b.scanMode) { // (the scan shows no surprise: on the page the body's focus reports a still thing as moved)
       this.flashes.push({ region: 'tectum', t0: vt, level: 0.9 }); this.note('tectum', why === 'appeared' ? 'surprise: it appeared' : 'surprise: it moved', vt, 1.6);
     }
     for (const [unit, level] of viz.surprise?.units || []) this.flashes.push({ unit, t0: vt, level: Math.min(1, (level - 1) / 2) });

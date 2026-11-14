@@ -714,6 +714,20 @@ function bubble(text, who) {
   const b = askEl.bubble; b.hidden = !text; b.textContent = text || ''; b.className = `say-bubble ${who || ''}`;
   clearTimeout(bubble.timer); if (text) bubble.timer = setTimeout(() => { b.hidden = true; }, who === 'it' ? 3200 : 1200);
 }
+/** The visitor's question as a subtitle at the foot of the room (the parrot's answer alone goes by the parrot). */
+const sub = { el: $('subtitle'), words: [], at: 0, timer: 0 };
+function subtitle(text) {
+  clearTimeout(sub.timer); sub.el.classList.remove('fading');
+  sub.el.textContent = ''; sub.words = []; sub.at = 0; sub.el.hidden = !text;
+  for (const w of (text || '').split(/\s+/).filter(Boolean)) {
+    const span = document.createElement('span'); span.textContent = w + ' '; sub.el.append(span);
+    sub.words.push({ span, key: w.toLowerCase().replace(/[^a-z]/g, '').replace(/^color$/, 'colour') });
+  }
+}
+function subtitleHeard(word) { // the word the brain hears this moment lights
+  for (let i = sub.at; i < sub.words.length; i++) if (sub.words[i].key === word) { for (let k = 0; k <= i; k++) sub.words[k].span.classList.add('on'); sub.at = i + 1; return; }
+}
+function subtitleDone(ms = 1500) { clearTimeout(sub.timer); sub.timer = setTimeout(() => { sub.el.classList.add('fading'); sub.timer = setTimeout(() => { sub.el.hidden = true; }, 300); }, ms); }
 function placeBubble() {
   const b = askEl.bubble;
   if (!b || b.hidden || !parrot) return;
@@ -868,8 +882,10 @@ async function askIt(text) {
   let li = null, recalled = null;
   try {
     await trainedOp({ op: 'begin' });
-    for (const w of heard) { bubble(w, 'you'); await trainedOp({ op: 'moment', hear: w, more: true, focus: focusId }); }
-    bubble('');
+    if (sub.el.hidden || !sub.words.length) subtitle(text);
+    for (const w of heard) { subtitleHeard(w); await trainedOp({ op: 'moment', hear: w, more: true, focus: focusId }); }
+    for (const x of sub.words) x.span.classList.add('on');
+    subtitleDone(1600);
     const say = (w) => { if (w && said[said.length - 1] !== w) { said.push(w); bubble(said.join(', '), 'it'); const how = sayWord(w); li ||= logLine('', 'a'); li.innerHTML = `<span class="who">parrot</span> <b>${esc(said.join(', '))}</b> <span class="dim">(${esc(how)})</span>`; } };
     if (scan) {
       const order = trainedThings(focusId, null).things.filter((t) => !t.focus).map((t) => t.id).sort(() => Math.random() - 0.5);
@@ -920,7 +936,7 @@ async function correctIt(word) {
   trained.open = null; askEl.fix.hidden = true; ui.pistachio.classList.remove('ask');
   trained.busy = true;
   try {
-    bubble(word, 'you');
+    subtitle(word); subtitleHeard(word); subtitleDone(1600);
     const r = await trainedOp({ op: 'correct', word, focus: trained.focus });
     trained.lastCorrection = { word, wrote: !!r.wrote, records: r.records };
     logLine(`<span class="who">you</span> ${esc(word)} <span class="dim">· ${r.wrote ? `kept as a word record under the pattern of the question's end (${r.records.toLocaleString('en')} records); it hears the word` : 'heard, and no record kept'}</span>`, 'c');
@@ -960,7 +976,7 @@ askEl.form?.addEventListener('submit', async (e) => {
   e.preventDefault(); const q = askEl.q.value.trim();
   if (!q || trained.busy) return;
   audio.unlock().catch(() => {});
-  brain3d?.scan?.question(q);
+  brain3d?.scan?.question(q); subtitle(q);
   const ms = await speakQuestion(q);
   if (ms > 0) await new Promise((r) => setTimeout(r, Math.max(0, ms - 600))); // the brain hears the typed words as the voice ends
   askIt(q);
@@ -974,7 +990,7 @@ $('ask-forget')?.addEventListener('click', async () => { // every sound it learn
   try { if (state.brainReady) await brain.call('forget'); } catch (e) { /* the reload starts it clean anyway */ }
   location.reload();
 });
-$('ask-mic')?.addEventListener('click', async () => { ui.mic.click(); setTimeout(() => $('ask-mic').setAttribute('aria-pressed', String(!!audio.mic)), 400); });
+$('ask-mic')?.addEventListener('click', (e) => { e.preventDefault(); toggleMic(); });
 askEl.fix?.addEventListener('submit', (e) => { e.preventDefault(); const w = askEl.word.value.trim(); if (w) correctIt(w); });
 for (const b of document.querySelectorAll('[data-ask]')) b.addEventListener('click', () => { askEl.q.value = b.dataset.ask; askEl.q.focus(); });
 
@@ -1097,47 +1113,48 @@ ui.silence.addEventListener('click', async () => {
 for (const b of ui.mode.querySelectorAll('.seg')) b.addEventListener('click', () => setMode(b.dataset.mode));
 // sound may start only after the visitor's first click (browsers hold it back until then)
 window.addEventListener('pointerdown', () => { audio.unlock().catch(() => {}); }, { once: true, capture: true });
-// The microphone: the first-visit card asks; the toolbar's button turns it on and off. The choice
-// is remembered in this browser.
-const remember = { get() { try { return localStorage.getItem('parrot.mic'); } catch (e) { return null; } },
-  set(v) { try { localStorage.setItem('parrot.mic', v); } catch (e) { /* storage blocked: the card asks again */ } } };
+// The microphone: on from the start (the browser asks the first time); both mic buttons turn it on and
+// off. A click sets what you want at once (the buttons light with it) and the page brings the microphone
+// to that state, one start or stop at a time, so no click is lost while a start is under way.
 function micError(error) {
   const name = error?.name || '';
   if (!window.isSecureContext) return 'The microphone needs a secure page. Open it at http://localhost:8842/ (on this computer) or over https.';
-  if (name === 'NotAllowedError' || name === 'SecurityError') return 'The microphone is blocked for this page. Allow it in the address bar (the site settings by the address), then press Let it hear me again.';
-  if (name === 'NotFoundError' || name === 'OverconstrainedError') return 'No microphone was found. Plug one in or choose one in your computer\u2019s sound settings, then try again.';
+  if (name === 'NotAllowedError' || name === 'SecurityError') return 'The microphone is blocked for this page. Allow it in the address bar (the site settings by the address), then press Mic again.';
+  if (name === 'NotFoundError' || name === 'OverconstrainedError') return 'No microphone was found. Plug one in or choose one in your computer’s sound settings, then try again.';
   if (name === 'NotReadableError') return 'The microphone is busy in another app. Close it there, then try again.';
   return `The microphone did not start: ${error?.message || name || 'unknown error'}.`;
 }
-async function startMic() {
-  await audio.startMic();
-  ui.mic.setAttribute('aria-pressed', 'true');
-  document.body.dataset.mic = 'on';
-}
-ui.mic.addEventListener('click', async () => {
-  if (audio.mic) { audio.stopMic(); ui.mic.setAttribute('aria-pressed', 'false'); document.body.dataset.mic = 'off'; return; }
-  try { await startMic(); remember.set('yes'); toast('The parrot hears you: speak, and watch its ear light up', 'good', 2400); }
-  catch (error) { toast(micError(error), 'bad', 6000); }
-});
-$('talk-yes').addEventListener('click', async () => {
-  $('talk-error').hidden = true;
-  try { await audio.unlock(); await startMic(); remember.set('yes'); $('talk').hidden = true; toast('It hears you: speak, and watch its ear light up', 'good', 2600); }
-  catch (error) { $('talk-error').textContent = micError(error); $('talk-error').hidden = false; }
-});
-$('talk-no').addEventListener('click', () => { remember.set('no'); $('talk').hidden = true; audio.unlock().catch(() => {}); });
-function offerMic() {
-  const choice = remember.get();
-  if (choice === 'no') return;
-  if (choice === 'yes') { // asked before: the first click anywhere turns it on (a browser lets sound start only from a click)
-    window.addEventListener('pointerdown', () => { startMic().catch(() => { $('talk').hidden = false; }); }, { once: true });
-    return;
+const mic = { want: false, run: null, toggles: 0 };
+function micUi() {
+  for (const b of [ui.mic, $('ask-mic')]) {
+    if (!b) continue;
+    b.setAttribute('aria-pressed', String(mic.want)); b.classList.toggle('starting', mic.want && !audio.mic);
   }
-  $('talk').hidden = false;
+  const mini = $('ask-mic'); if (mini) mini.textContent = mic.want ? 'Mic on' : 'Mic off';
+  document.body.dataset.mic = mic.want ? 'on' : 'off';
 }
+function settleMic() { // bring the microphone to what was asked, one change at a time
+  if (mic.run) return mic.run;
+  mic.run = (async () => {
+    while (mic.want !== audio.mic) {
+      if (mic.want) { try { await audio.startMic(); } catch (error) { mic.want = false; toast(micError(error), 'bad', 6000); } }
+      else audio.stopMic();
+    }
+  })().finally(() => { mic.run = null; micUi(); });
+  micUi();
+  return mic.run;
+}
+function setMic(on) { mic.want = !!on; micUi(); return settleMic(); }
+function toggleMic() { mic.toggles += 1; return setMic(!mic.want); }
+ui.mic.addEventListener('click', (e) => { e.preventDefault(); toggleMic(); });
+$('talk-yes').addEventListener('click', () => { $('talk').hidden = true; setMic(true); });
+$('talk-no').addEventListener('click', () => { $('talk').hidden = true; setMic(false); audio.unlock().catch(() => {}); });
+function offerMic() { if (query.get('mic') !== 'off') setMic(true); } // on by default (?mic=off leaves it off)
 $('home').addEventListener('click', () => { camera.position.copy(HOME.pos); controls.target.copy(HOME.at); controls.update(); });
 
 // --- start --------------------------------------------------------------------------------------------------------
 async function start() {
+  offerMic(); // the microphone from the start: the browser asks the first time
   try {
     setStatus('Building the room');
     await room.build();
@@ -1253,7 +1270,6 @@ async function start() {
     setStatus('Ready', 'ready');
     ui.status.title = `Brain loaded in ${(desc.startup_ms / 1000).toFixed(1)} s`;
     document.body.dataset.ready = '1';
-    offerMic();
     if (query.get('test')) runScript(TEST);
   } catch (error) {
     setStatus(`The brain failed to load: ${error.message}`, 'error');
