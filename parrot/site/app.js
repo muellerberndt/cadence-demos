@@ -16,6 +16,7 @@ import { lookList, makeParrot } from './looks.js';
 const $ = (id) => document.getElementById(id);
 const query = new URLSearchParams(location.search);
 const MOMENT_MS = 100; // the brain's moment: ten a second
+const VIZ_EVERY = 3; // the body's settles go to the brain view every third moment (their trace costs time in the browser); the trained brain's with each of its moments
 const ui = {
   status: $('status'), statusText: $('status-text'), coach: $('coach'), coachStep: $('coach-step'), coachText: $('coach-text'), toast: $('toast'),
   sub: $('brain-sub'), moment: $('s-moment'), think: $('s-think'), fps: $('s-fps'), tags: $('tags'),
@@ -275,7 +276,7 @@ async function moment(now) {
     if (scene) state.sentVersion = room.version;
     // while the trained brain hears a question and answers, the hearing layer's calls wait
     const calls = voiceOk && !(state.trained && (trained.busy || now < trained.quietUntil));
-    reply = await brain.call('step', { meta: { t: state.moment, reward, voice_ok: calls, cue, things: room.things.size, focus_kind: focusKind, scene, learn: true, ...(op ? { meaning: op.meta } : {}) }, arrays: { left, right, proprio: pro, mel: sound.mel, audio: sound.audio, pcm: sound.pcm } },
+    reply = await brain.call('step', { meta: { t: state.moment, reward, voice_ok: calls, cue, things: room.things.size, focus_kind: focusKind, scene, learn: true, viz: !!state.composed && state.moment % VIZ_EVERY === 0, ...(op ? { meaning: op.meta } : {}) }, arrays: { left, right, proprio: pro, mel: sound.mel, audio: sound.audio, pcm: sound.pcm } },
       [left.buffer, right.buffer, pro.buffer, sound.mel.buffer, sound.audio.buffer, sound.pcm.buffer]);
   } catch (error) { state.pending = false; op?.reject(error); setStatus(`The brain stopped: ${error.message}`, 'error'); state.brainReady = false; return; }
   state.pending = false;

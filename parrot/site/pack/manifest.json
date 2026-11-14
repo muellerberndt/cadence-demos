@@ -19,7 +19,7 @@
   "host.py": "664a6c704e5f4ef449843b3457ba4241a3c677be096b881d466aac41a2df3d72",
   "page.py": "8cd65798b051166f4dd4a6a4dbfe878a36a33150eeea2783c7209320d5110039",
   "sounds.py": "7152ec84d1542bbdd357add699d834cf32c36776a7ef75d8f644e97a162688b8",
-  "trained.py": "97b21a72babbf674bca96ddf0df921ce47f931d6a0db7ca0204270286c05a7ee"
+  "trained.py": "d3fa2f31c35da0b9d935c7241df2ddf946e76082b6b350f56161ffcc87053454"
  },
  "files": {
   "calls.json": "645453a2f0c7c4874addbf143bac95861505484018dac7f64bb5fe39fde0dbf7"
@@ -134,8 +134,8 @@
   "good": "colour of a named thing .83, names .67",
   "lost": "names fell from .98 to .67 in its colour step; which thing has a colour .00"
  },
- "wheel": "cadence_net-0.99.0-lane-parrot-meaning-e00c860a.whl",
- "wheel_sha256": "b06fd192700c660b78016a04f10768c77d31091fb8489786fa4084386d1926d0",
- "cadence": "0.99.0 with cadence.parrot (lane-0100-parrot 16b8b642) and cadence.meaning (lane-0100-meaning c723b75a)",
- "wheel_source": "built from muellerberndt/cadence: lane-0100-meaning at c723b75a merged with lane-0100-parrot at 16b8b642 (merge e00c860a; CHANGELOG.md and tests/test_documentation.py kept both sides)"
+ "wheel": "cadence_net-0.99.0-lane-parrot-meaning-79e6be29.whl",
+ "wheel_sha256": "52b51f624144633cd5676321cf9f4686e4b28488f39e0e2c7680ebe4ca60e1ab",
+ "cadence": "0.99.0 with cadence.parrot (lane-0100-parrot 16c3e983) and cadence.meaning (lane-0100-meaning fe835489)",
+ "wheel_source": "built from muellerberndt/cadence: lane-0100-meaning at fe835489 merged with lane-0100-parrot at 16c3e983 (merge 79e6be29 on the page's merge branch; earlier merge e00c860a kept CHANGELOG.md and tests/test_documentation.py both sides)"
 }

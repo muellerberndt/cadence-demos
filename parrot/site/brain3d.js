@@ -41,6 +41,10 @@ export function regionOf(p) {
 }
 /** The regions whose drawing is the live layer's own (the record slots, the thing units). */
 const OWN = new Set(['records', 'words']);
+/** OrbitControls' turn speed for one turn a minute (2 is a turn in 30 s at 60 frames a second). */
+const TURN = 1.0;
+/** The radius the view fits to the pane: the brain fills it (the whole atlas fits in 3.3). */
+const FIT = 2.45;
 
 function rnd(seed) { let s = seed >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
 function dotTexture() {
@@ -62,8 +66,12 @@ export class Brain3D {
     this.camera.position.copy(this.home).multiplyScalar(12);
     this.controls = new OrbitControls(this.camera, canvas);
     this.controls.target.set(0, 0.5, -0.5); this.controls.enableDamping = true; this.controls.enablePan = false;
-    this.controls.minDistance = 4; this.controls.maxDistance = 18; this.controls.autoRotate = true; this.controls.autoRotateSpeed = 0.35;
-    canvas.addEventListener('pointerdown', () => { this.controls.autoRotate = false; });
+    this.controls.minDistance = 3; this.controls.maxDistance = 18; this.controls.autoRotate = true; this.controls.autoRotateSpeed = TURN;
+    // a slow turn, about one a minute: it pauses while the visitor turns the brain and takes up again
+    // a few seconds after, unless its switch is off
+    this.turning = true;
+    this.controls.addEventListener('start', () => { this.controls.autoRotate = false; clearTimeout(this.resumeTimer); });
+    this.controls.addEventListener('end', () => { clearTimeout(this.resumeTimer); this.resumeTimer = setTimeout(() => { this.controls.autoRotate = this.turning; }, 4000); });
     this.clock = { vt: 0, speed: 1, paused: false, slow: false };
     this.hover = null; this.hoverFrom = null; this.path = null; this.pathPinned = null;
     this.washAt = -1e9;
@@ -285,6 +293,9 @@ export class Brain3D {
     const pause = el('button', 'b3-btn', 'Pause'); pause.type = 'button'; pause.setAttribute('aria-pressed', 'false');
     pause.setAttribute('data-explain', 'Holds the picture: the brain runs on, and the view takes up the latest moment when you press again.'); pause.setAttribute('data-explain-mark', 'none');
     pause.addEventListener('click', () => { this.clock.paused = !this.clock.paused; pause.setAttribute('aria-pressed', String(this.clock.paused)); pause.textContent = this.clock.paused ? 'Play' : 'Pause'; this.clockChanged(); });
+    const turn = el('button', 'b3-btn', 'Turning'); turn.type = 'button'; turn.setAttribute('aria-pressed', 'true');
+    turn.setAttribute('data-explain', 'The brain turns slowly, about once a minute. Drag it to turn it yourself; it takes up its turn a few seconds after. Press to stop or start the turn.'); turn.setAttribute('data-explain-mark', 'none');
+    turn.addEventListener('click', () => { this.turning = !this.turning; this.controls.autoRotate = this.turning; turn.setAttribute('aria-pressed', String(this.turning)); turn.textContent = this.turning ? 'Turning' : 'Still'; });
     const slow = el('button', 'b3-btn', 'Slow ×10'); slow.type = 'button'; slow.setAttribute('aria-pressed', 'false');
     slow.setAttribute('data-explain', 'Runs the view ten times slower, so a word flying to its record or a wash of dopamine can be followed. The brain runs on at its own pace.'); slow.setAttribute('data-explain-mark', 'none');
     slow.addEventListener('click', () => { this.clock.slow = !this.clock.slow; slow.setAttribute('aria-pressed', String(this.clock.slow)); this.clockChanged(); });
@@ -299,7 +310,7 @@ export class Brain3D {
       row.setAttribute('data-explain-title', P.name); row.setAttribute('data-explain', P.explain); row.setAttribute('data-explain-mark', 'corner');
       list.append(row); this.partRows[P.id] = row;
     }
-    bar.append(pause, slow, partsBtn);
+    bar.append(pause, slow, turn, partsBtn);
     this.host.append(list, bar);
     this.clockEl = el('span', 'b3-clock'); bar.append(this.clockEl);
   }
@@ -322,7 +333,7 @@ export class Brain3D {
     this.renderer.setSize(w, h, false); this.camera.aspect = w / h; this.camera.updateProjectionMatrix();
     // fit the brain to the panel: its bounding sphere within the narrower field of view
     const room = Math.max(0.5, (h - 110) / h), vf = 2 * Math.atan(Math.tan(this.camera.fov * Math.PI / 360) * room), hf = 2 * Math.atan(Math.tan(this.camera.fov * Math.PI / 360) * this.camera.aspect);
-    const fit = 3.3 / Math.sin(Math.min(vf, hf) / 2);
+    const fit = FIT / Math.sin(Math.min(vf, hf) / 2);
     if (!this.fitted || Math.abs(fit - this.fitted) > 0.5) {
       const dir = this.camera.position.clone().sub(this.controls.target).normalize();
       this.camera.position.copy(this.controls.target).addScaledVector(dir, fit);
@@ -378,7 +389,7 @@ export class Brain3D {
       }
     }
     this.tractColours.needsUpdate = true;
-    if (this.controls.autoRotate) this.controls.autoRotateSpeed = c.paused ? 0 : 0.35;
+    if (this.controls.autoRotate) this.controls.autoRotateSpeed = c.paused ? 0 : TURN;
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
     this.placeLabels(onPath);

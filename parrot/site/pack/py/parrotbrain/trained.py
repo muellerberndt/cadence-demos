@@ -37,6 +37,7 @@ from typing import Any
 import numpy as np
 
 from cadence.meaning.host import MeaningParrot
+from cadence.recording import record_settlements
 
 from .page import Host as Composed
 
@@ -117,6 +118,25 @@ class Host(Composed):
         for k, (_, units, _) in enumerate(self.t_pops):
             owner[units] = k
         self.pre_pop, self.post_pop = owner[np.asarray(c.pre)], owner[np.asarray(c.post)]
+        # the brain view's repairs: each atlas region's neurons, and each tract's synapses (from one
+        # region to another), for the settle the library records as it happens
+        areas = sorted({p["region"] for p, _, _ in self.t_pops})
+        area_of = np.full(c.n, -1, np.int64)
+        self.area_units: dict[str, np.ndarray] = {}
+        for k, a in enumerate(areas):
+            units = np.concatenate([u for p, u, _ in self.t_pops if p["region"] == a])
+            self.area_units[a] = units
+            area_of[units] = k
+        pre_a, post_a = area_of[np.asarray(c.pre)], area_of[np.asarray(c.post)]
+        self.pre_index = np.asarray(c.pre, np.int64)
+        self.tract_synapses: dict[tuple[str, str], np.ndarray] = {}
+        for i, a in enumerate(areas):
+            for j, b in enumerate(areas):
+                if i != j:
+                    found = np.flatnonzero((pre_a == i) & (post_a == j))
+                    if len(found):
+                        self.tract_synapses[(a, b)] = found
+        self.settle: dict[str, Any] | None = None
         self.moments = 0
         self.lessons = 0
         self.records_written = 0
@@ -179,6 +199,29 @@ class Host(Composed):
                         "silence": round(float(voice[len(m.voice)]), 3) if len(voice) > len(m.voice) else None}
         return out
 
+    def _settle_viz(self, records: list[Any], frames: int = 16) -> dict[str, Any] | None:
+        """The moment's settle as the library recorded it (cadence.recording.record_settlements:
+        the activations after every sweep): each region's residual (the mean distance of its
+        neurons from the settled state) and each tract's message (its synapses' weights times the
+        sending neurons' activations, summed) at up to ``frames`` sweeps (VIZ_EVENTS.md)."""
+        if not records:
+            return None
+        rec = max(records, key=lambda r: int(r.steps))
+        rows = np.asarray(rec.activation, dtype=np.float64)[:, 0, :]
+        if len(rows) < 2:
+            return None
+        pick = np.linspace(0, len(rows) - 1, min(frames, len(rows))).round().astype(int)
+        at, final = rows[pick], rows[-1]
+        regions = {a: np.abs(at[:, u] - final[u]).mean(axis=1).round(5).tolist() for a, u in self.area_units.items()}
+        w = np.asarray(rec.weights, dtype=np.float64)
+        n = rows.shape[1]
+        tracts = []
+        for (a, b), syn in self.tract_synapses.items():
+            out_w = np.bincount(self.pre_index[syn], weights=w[syn], minlength=n)  # each neuron's summed weight into the tract
+            tracts.append({"from": a, "to": b, "carried": (at @ out_w).round(5).tolist()})
+        return {"frames": int(len(pick)), "sweeps": int(len(rows) - 1), "kind": "residual", "regions": regions, "tracts": tracts,
+                "source": "trained", "settlements": len(records)}
+
     def _recalled(self) -> str | None:
         r = np.asarray(self.meaning.recalled, dtype=np.float64)
         if not np.any(r):
@@ -226,7 +269,10 @@ class Host(Composed):
             word = op.get("hear")
             m.hear(word if word in m.codes else None)
             in_turn = m.in_turn
-            out["said"] = m.moment(more=bool(op.get("more")))
+            got: list[Any] = []
+            with record_settlements(got.append, label="trained moment"):
+                out["said"] = m.moment(more=bool(op.get("more")))
+            self.settle = self._settle_viz(got)
             if m.in_turn and not in_turn:
                 out["recalled"] = self._recalled()
             self.moments += 1
@@ -234,7 +280,10 @@ class Host(Composed):
             g = op.get("glimpse")
             m.see(things, glimpse=things[g] if isinstance(g, int) and 0 <= g < len(things) else None)
             m.hear(None)
-            m.moment(more=True)
+            got = []
+            with record_settlements(got.append, label="trained look"):
+                m.moment(more=True)
+            self.settle = self._settle_viz(got)
             self.moments += 1
         elif kind == "pistachio":
             before = np.asarray(m.brain.brain.efficacy, dtype=np.float64).copy()
@@ -267,6 +316,7 @@ class Host(Composed):
         op = meta.get("meaning")
         paid = isinstance(op, dict) and op.get("op") == "pistachio"
         out = super().step({**meta, "reward": 0.0} if paid else meta, arrays)
+        self.settle = None
         if isinstance(op, dict):
             got = self.meaning_op(op)
             out["meaning"] = got
@@ -275,4 +325,13 @@ class Host(Composed):
                            paid=got.get("paid", []))
         self.buffers["activity"][self.t_start:] = self.t_activity
         out["trained_moments"] = self.moments
+        if self.settle is not None:  # the trained brain's settle joins the body's (each of its moments)
+            viz = dict(out.get("viz") or {"v": 1})
+            body = viz.get("settle") or {}
+            regions = dict(body.get("regions") or {})
+            for a, v in self.settle["regions"].items():
+                regions[a] = [max(x, y) for x, y in zip(regions[a], v)] if a in regions and len(regions[a]) == len(v) else v
+            viz["settle"] = {**self.settle, "regions": regions, "tracts": list(body.get("tracts") or []) + self.settle["tracts"],
+                             "sweeps": max(int(body.get("sweeps") or 0), self.settle["sweeps"])}
+            out["viz"] = viz
         return out

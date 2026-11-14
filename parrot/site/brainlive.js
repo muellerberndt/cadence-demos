@@ -231,7 +231,9 @@ export class Live {
       this.washes.push({ name, level: Math.max(-1, Math.min(1, m.level)), targets: m.targets || MOD[name].to, from: MOD[name].from, t0: vt, paid });
     }
     // the settle: each region's residual through the moment's sweeps
-    if (viz.settle?.regions) { this.settle = { ...viz.settle, t0: vt }; this.setStatus('repairs', 'live'); this.scaleSettle(); }
+    // a settle plays out over 0.1 s of the view's clock; one arriving while another plays waits its turn
+    // (at ten times slower the view shows about one moment's settle in ten, each whole)
+    if (viz.settle?.regions && (!this.settle || vt - this.settle.t0 >= 0.1)) { this.settle = { ...viz.settle, t0: vt }; this.setStatus('repairs', 'live'); this.scaleSettle(); }
   }
 
   focusPlaceChanged(f) { const a = this.focus?.place, b = f.place; return !a || !b || Math.hypot(a[0] - b[0], a[1] - b[1]) > 0.05; }
