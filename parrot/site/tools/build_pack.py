@@ -61,7 +61,7 @@ def main() -> int:
         manifest["host_files"], manifest["trained_versions"], manifest["trained_sources"] = {}, {}, {}
         for k, folder in enumerate(args.trained):
             names = [f"{folder}/{n}" for n in ("brain.npz", "brain.records.npz", "spec.json", "version.json", "probes.json")
-                     if n != "probes.json" or (PACK / folder / n).exists()]  # the probes where the lane exports them
+                     if n in ("brain.npz", "spec.json", "version.json") or (PACK / folder / n).exists()]  # records and probes where exported
             manifest["hosts"][folder] = f"{args.package}.trained"
             manifest["host_files"][folder] = {n: sha(PACK / n) for n in names}
             manifest["trained_versions"][folder] = json.loads((PACK / folder / "version.json").read_text())

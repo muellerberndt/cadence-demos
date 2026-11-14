@@ -837,8 +837,8 @@ async function askIt(text) {
 async function payAnswer(open) {
   if (trained.open !== open) return;
   trained.open = null; askEl.fix.hidden = true; ui.pistachio.classList.remove('ask');
-  const r = await trainedOp({ op: 'pistachio', amount: 1 });
-  logLine(`<span class="nut">a pistachio</span> for “${esc(open.said.join(', '))}” <span class="dim">· ${r.lessons} lesson${r.lessons === 1 ? '' : 's'} on the moments it spoke, its own words the labels</span>`, 'p');
+  const r = await trainedOp({ op: 'pistachio' });
+  logLine(`<span class="nut">a pistachio</span> for “${esc(open.said.join(', '))}” <span class="dim">· ${r.lessons} small lesson${r.lessons === 1 ? '' : 's'}, one a word it said, its own words the labels</span>`, 'p');
 }
 async function correctIt(word) {
   const open = trained.open;
@@ -973,7 +973,7 @@ ui.pistachio.addEventListener('click', () => {
     state.pistachios += 1; ui.pistachios.textContent = String(state.pistachios);
     brain3d?.reward();
     $('dopamine').hidden = false;
-    $('dopamine-note').textContent = forAnswer ? ` It pays the trained brain\u2019s reply \u201c${forAnswer.said.join(', ')}\u201d: one lesson on each moment it spoke, its own words the labels; the tracts the lesson changed glow.`
+    $('dopamine-note').textContent = forAnswer ? ` It pays the trained brain\u2019s reply \u201c${forAnswer.said.join(', ')}\u201d: one small lesson for each word it said (a word once), its own words the labels; the tracts the lesson changed glow.`
       : typeof state.lastReply?.vta === 'number' ? 'Its dopamine runs out from the VTA (the gold wash), and the tracts it strengthens glow.' : 'This brain has no dopamine signal: the view marks the pistachio arriving, and no synapse changes.';
     clearTimeout(state.dopTimer); state.dopTimer = setTimeout(() => { $('dopamine').hidden = true; }, 4200);
   }, () => {});

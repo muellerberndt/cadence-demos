@@ -19,7 +19,7 @@
   "host.py": "664a6c704e5f4ef449843b3457ba4241a3c677be096b881d466aac41a2df3d72",
   "page.py": "8cd65798b051166f4dd4a6a4dbfe878a36a33150eeea2783c7209320d5110039",
   "sounds.py": "7152ec84d1542bbdd357add699d834cf32c36776a7ef75d8f644e97a162688b8",
-  "trained.py": "d3fa2f31c35da0b9d935c7241df2ddf946e76082b6b350f56161ffcc87053454"
+  "trained.py": "4fcb9ae1630893617792259af7da2f7f352f954a3b9e4f963efdd43491233fe8"
  },
  "files": {
   "calls.json": "645453a2f0c7c4874addbf143bac95861505484018dac7f64bb5fe39fde0dbf7"
@@ -42,7 +42,8 @@
   "composed": "parrotbrain.page",
   "placeholder": "parrotbrain.host",
   "trained": "parrotbrain.trained",
-  "trained-names": "parrotbrain.trained"
+  "trained-names": "parrotbrain.trained",
+  "trained-shallow": "parrotbrain.trained"
  },
  "host_files": {
   "trained": {
@@ -58,6 +59,12 @@
    "trained-names/spec.json": "260d7cb1ddfe9c880eb1ffea64d80554b0881d9ecc1b9e1f6448d3fe04d69cbc",
    "trained-names/version.json": "d42ef2a7eb16b044354c0b3265e515679e1e4c33283e0803c97c705257b0852d",
    "trained-names/probes.json": "e6b043979eed67e426e505df924110090b7e604e0ecd9877f3418d5b2f043634"
+  },
+  "trained-shallow": {
+   "trained-shallow/brain.npz": "e58e73f6ee4e8b63bcd37e20d0e7f6c9ac60521f00bedd034c7925b0a40b009e",
+   "trained-shallow/spec.json": "8ea4966587efaaf67e3b3d88231671d72438bcb27844a493d372a6218a366cb6",
+   "trained-shallow/version.json": "36065de7a3ca4e182dc8b20717ea1e7f7337826941bc8ed988f861f99bbc6669",
+   "trained-shallow/probes.json": "05882e2e345c2056ec1ead1dd2e578b9f3b391fea176851888eebdd03696edd9"
   }
  },
  "trained_versions": {
@@ -103,11 +110,30 @@
    "learned": "the name of the thing in focus when asked what is this (.98) and to say back a word it hears (1.00)",
    "not_learned": "colour, places and relations; asked those, it names a thing",
    "probes": "probes.json beside the brain (kind 1.00, round .99, material .84, edible .99 held out; colour .14 against .35 by chance)"
+  },
+  "trained-shallow": {
+   "stage": "N2",
+   "step": "colour, after names",
+   "label": "N2 names and colour (shallow 102)",
+   "good": "names .95 with colour .77, saying back a word 1.00",
+   "lost": "it misnames the apple in this room (it says ball); word records off",
+   "founder": 33400102,
+   "exported": "2026-11-14 02:06 UTC",
+   "source": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/shallow_33400102_N2/",
+   "lane": "muellerberndt/cadence lane-0100-meaning, a shallow composition (2 processing regions), the night's ear-to-voice and eyes-into-association routes, sleep, the mirror label",
+   "readings": {
+    "N0 imitation": "1.00",
+    "N1 naming of the thing in focus": ".95",
+    "N2 colour of a named thing, kind-colour pairs it never saw": ".77"
+   },
+   "learned": "names of the things in focus (.95), the colour of a thing asked about by name (.77) and to say back a word it hears (1.00)",
+   "not_learned": "places and relations; in this room it calls the apple a ball"
   }
  },
  "trained_sources": {
   "trained": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/deep_33400110_N2/ (exported 2026-11-14 00:07 UTC, probes 00:44 UTC)",
-  "trained-names": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/deep_33400111_N1/ (exported 2026-11-14 00:44 UTC)"
+  "trained-names": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/deep_33400111_N1/ (exported 2026-11-14 00:44 UTC)",
+  "trained-shallow": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/shallow_33400102_N2/ (exported 2026-11-14 02:06 UTC)"
  },
  "trained_version": {
   "stage": "N2",
@@ -134,8 +160,8 @@
   "good": "colour of a named thing .83, names .67",
   "lost": "names fell from .98 to .67 in its colour step; which thing has a colour .00"
  },
- "wheel": "cadence_net-0.99.0-lane-parrot-meaning-79e6be29.whl",
- "wheel_sha256": "52b51f624144633cd5676321cf9f4686e4b28488f39e0e2c7680ebe4ca60e1ab",
- "cadence": "0.99.0 with cadence.parrot (lane-0100-parrot 16c3e983) and cadence.meaning (lane-0100-meaning fe835489)",
- "wheel_source": "built from muellerberndt/cadence: lane-0100-meaning at fe835489 merged with lane-0100-parrot at 16c3e983 (merge 79e6be29 on the page's merge branch; earlier merge e00c860a kept CHANGELOG.md and tests/test_documentation.py both sides)"
+ "wheel": "cadence_net-0.99.0-lane-parrot-meaning-d29b8122.whl",
+ "wheel_sha256": "d223bf37be4c327d1b47862740be55b1fe1a88d928cc6737ff4b7ebf67044d49",
+ "cadence": "0.99.0 with cadence.parrot (lane-0100-parrot 16c3e983) and cadence.meaning (lane-0100-meaning 16eb9114)",
+ "wheel_source": "built from muellerberndt/cadence: lane-0100-meaning at 16eb9114 merged with lane-0100-parrot at 16c3e983 (the page's merge branch at d29b8122; CHANGELOG.md and tests/test_documentation.py kept both sides)"
 }

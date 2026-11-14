@@ -45,6 +45,7 @@ from .page import Host as Composed
 # page's name, the title, the atlas region, and the scale its activity is drawn at
 # (its processing regions, `module_0` up, are found in the connectome: two in the N1 brain, four in
 # the deep one)
+PISTACHIO = 0.05  # the lesson's amount for a pistachio (the meaning lane's page setting)
 ORDINAL = ("first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth")
 POPULATIONS = [
     ("sensory/eyes", "t_eyes", "Trained brain: what its eyes report (the thing in focus, then each thing)", "rotundus", 1.0),
@@ -287,7 +288,9 @@ class Host(Composed):
             self.moments += 1
         elif kind == "pistachio":
             before = np.asarray(m.brain.brain.efficacy, dtype=np.float64).copy()
-            taken = m.pistachio(float(op.get("amount", 1.0)))
+            # the meaning lane's page setting: each word of the reply taught once, at a small amount
+            # (with it a paid name leaves the colour answer standing: page_test.py, COORD 02:06)
+            taken = m.pistachio(float(op.get("amount", PISTACHIO)), first=True)
             out.update(lessons=taken, paid=self._paid(before) if taken else [])
             self.lessons += taken
             m.turn_over()
