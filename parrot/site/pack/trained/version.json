@@ -1,0 +1,16 @@
+{
+ "stage": "N1",
+ "step": "names",
+ "label": "N1 names",
+ "founder": 33400106,
+ "exported": "2026-11-13 23:12 UTC",
+ "source": "s3://cadence-0100-meaning-20261113/meaning334/night/s5/page_N1/",
+ "lane": "muellerberndt/cadence lane-0100-meaning, benchmarks/meaning/export_page.py",
+ "readings": {
+  "N0 imitation": "1.00",
+  "N1 naming of the thing in focus": ".95 to .98"
+ },
+ "not_learned": "colour, places and relations; asked those, it names a thing",
+ "arm": "exam (brains_exam/brain_33400106_N1.npz)",
+ "learned": "to say back a word it hears (1.00 of its exam's trials), and the name of the thing in focus when asked what is this (.95 to .98)"
+}

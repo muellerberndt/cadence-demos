@@ -44,12 +44,15 @@ const COACH = {
   behind: ['Watch', 'Behind the parrot is its blind spot: neither eye sees there.'],
   script: ['Test', 'A test runs: things are placed round the parrot, one after another.'],
   manual: ['Your turn', 'You move the parrot: use the sliders. Its brain keeps seeing, and its moves wait.'],
+  ask: ['Ask it', 'Click a <b>thing</b>, then type <b>what is this?</b> in <b>Ask it</b> under the brain.'],
+  asking: ['Listen', 'It hears your question one word a moment, then answers in the gap after it.'],
 };
 function coachKey() {
   if (!state.brainReady && state.phase === 'loading') return 'loading';
   if (state.script) return 'script';
   if (state.mode === 'you') return 'manual';
   if (state.dragging) return state.behind ? 'behind' : 'dragging';
+  if (state.trained) return trained.busy ? 'asking' : 'ask';
   return 'idle';
 }
 function updateCoach() {
@@ -153,6 +156,7 @@ function distanceOf(id) {
 async function place(kind, x, z, yaw = 0, id = null) {
   const made = await room.place(kind, x, z, yaw, id);
   tagFor(made, kind);
+  askNote();
   return made;
 }
 async function addThing(kind) {
@@ -214,7 +218,7 @@ function cueFor(id) {
 }
 function endDrag(e) {
   if (!state.dragging) return;
-  if (!state.dragging.moved) { state.cue = cueFor(state.dragging.id); state.focus = { id: state.dragging.id, why: 'you pointed at it' }; state.pointed = { id: state.dragging.id, until: performance.now() + 6000 }; }
+  if (!state.dragging.moved) { state.cue = cueFor(state.dragging.id); state.focus = { id: state.dragging.id, why: 'you pointed at it' }; state.pointed = { id: state.dragging.id, until: performance.now() + 6000 }; trained.focus = state.dragging.id; askNote(); }
   state.dragging = null; state.behind = false;
   controls.enabled = true; canvas.classList.remove('dragging');
   if (e?.pointerId !== undefined && canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId);
@@ -263,17 +267,21 @@ async function moment(now) {
   const sound = audio.moment();
   const cue = state.cue; state.cue = null;
   const voiceOk = !!audio.ctx && audio.ctx.state === 'running';
+  const op = state.trained ? nextOp(now) : null;
   let reply;
   try {
     const focusKind = state.focus ? room.things.get(state.focus.id)?.kind || null : null;
     const scene = state.composed && room.version !== state.sentVersion ? room.describe() : null;
     if (scene) state.sentVersion = room.version;
-    reply = await brain.call('step', { meta: { t: state.moment, reward, voice_ok: voiceOk, cue, things: room.things.size, focus_kind: focusKind, scene, learn: true }, arrays: { left, right, proprio: pro, mel: sound.mel, audio: sound.audio, pcm: sound.pcm } },
+    // while the trained brain hears a question and answers, the hearing layer's calls wait
+    const calls = voiceOk && !(state.trained && (trained.busy || now < trained.quietUntil));
+    reply = await brain.call('step', { meta: { t: state.moment, reward, voice_ok: calls, cue, things: room.things.size, focus_kind: focusKind, scene, learn: true, ...(op ? { meaning: op.meta } : {}) }, arrays: { left, right, proprio: pro, mel: sound.mel, audio: sound.audio, pcm: sound.pcm } },
       [left.buffer, right.buffer, pro.buffer, sound.mel.buffer, sound.audio.buffer, sound.pcm.buffer]);
-  } catch (error) { state.pending = false; setStatus(`The brain stopped: ${error.message}`, 'error'); state.brainReady = false; return; }
+  } catch (error) { state.pending = false; op?.reject(error); setStatus(`The brain stopped: ${error.message}`, 'error'); state.brainReady = false; return; }
   state.pending = false;
   state.moment += 1;
   state.lastReply = reply;
+  if (op) { op.resolve(reply.meaning || {}); if (reply.meaning?.mind) showMind(reply.meaning.mind, op.meta.focus); }
   if (state.mode === 'brain' && reply.arrays.angles && state.composed) { // the composed brain's body: its angles, smoothed by the page
     reply.arrays.angles.forEach((v, i) => { if (i < parrot.joints.n && parrot.joints.spec[i].name !== 'beak_open') parrot.joints.target[i] = v; });
   } else if (state.mode === 'brain' && reply.arrays.targets) parrot.joints.setUnitTargets(reply.arrays.targets);
@@ -304,7 +312,8 @@ async function moment(now) {
   if (reply.memory) memview?.update(reply.memory);
   // the badge says what it has learned so far
   const words = reply.words || 0, lessons = reply.lessons || 0;
-  const badge = words || lessons ? `learning: ${words} word${words === 1 ? '' : 's'}${state.composed ? `, distance taught by ${lessons} head turn${lessons === 1 ? '' : 's'}` : ''}` : 'a newborn: it has learned nothing yet';
+  const badge = state.trained ? `trained tonight: names of things${words ? `; ${words} sound${words === 1 ? '' : 's'} from you` : ''}`
+    : words || lessons ? `learning: ${words} word${words === 1 ? '' : 's'}${state.composed ? `, distance taught by ${lessons} head turn${lessons === 1 ? '' : 's'}` : ''}` : 'a newborn: it has learned nothing yet';
   const el = document.querySelector('.newborn');
   if (el && el.firstChild.textContent !== badge) el.firstChild.textContent = badge;
   if (reply.repertoire) syncChips(reply.repertoire);
@@ -567,6 +576,270 @@ function drawFields() {
   }
 }
 
+// --- the brain trained tonight: ask it ------------------------------------------------------------------
+// The trained brain (cadence#334, the meaning lane's night) lives one of its own moments at a time
+// (300 ms), each riding with a moment of the body: the question heard one word a moment with its
+// voice held, then its turn in the gap after the last word (three moments; for a question about the
+// whole room, one moment a thing, its glimpse on that thing). What it sees of a thing is what its
+// training world reports: the kind's shape and size, the colour, the material, the direction from
+// its head and the distance. The page's things in that world, each as its world names it:
+const WORLD = {
+  apple: { kind: 'apple', colour: 'red', material: 'fruit' },
+  ball: { kind: 'ball', colour: 'white', material: 'cloth', note: 'the baseball is a white ball of cloth there (its world has no leather)' },
+  cup: { kind: 'cup', colour: 'white', material: 'glass', note: 'the china cup is a white cup of glass there (its world has no china)' },
+  banana: { kind: 'banana', colour: 'yellow', material: 'fruit' },
+  block: { kind: 'block', colour: 'blue', material: 'wood' },
+  lemon: { kind: 'lemon', colour: 'yellow', material: 'fruit', note: 'the lemon is the kind it never saw in training, and it has no word for it' },
+  duck: null, pear: null,
+};
+const ROUND = new Set(['apple', 'ball', 'cup', 'lemon']); // the round kinds of its world (night.py ROUND)
+const trained = { busy: false, queue: [], lastAt: 0, momentMs: 300, turn: 3, vocab: new Set(), colours: [], materials: [], focus: null, open: null, quietUntil: 0, serial: 0, log: [] };
+
+/** The things it sees: the room's things in its world, the nearest five, the thing in focus among them. */
+function trainedThings(focusId, glimpseId) {
+  const yaw = parrot.joints.get('head_yaw') * Math.PI / 180;
+  const rows = [];
+  for (const t of room.things.values()) {
+    const w = WORLD[t.kind];
+    if (!w) continue;
+    const a = Math.atan2(t.obj.position.x, t.obj.position.z) - yaw;
+    rows.push({ id: t.id, kind: w.kind, colour: w.colour, material: w.material, direction: +Math.atan2(Math.sin(a), Math.cos(a)).toFixed(4), distance: +distanceOf(t.id).toFixed(3), focus: t.id === focusId });
+  }
+  rows.sort((p, q) => (q.focus - p.focus) || (q.id === glimpseId) - (p.id === glimpseId) || p.distance - q.distance);
+  const things = rows.slice(0, 5);
+  const glimpse = glimpseId ? things.findIndex((t) => t.id === glimpseId) : -1;
+  return { things, glimpse: glimpse >= 0 ? glimpse : null };
+}
+/** One of its moments, sent with the next step of the body once 300 ms have passed since the last. */
+function trainedOp(meta) { return new Promise((resolve, reject) => trained.queue.push({ meta, resolve, reject })); }
+function lookFocus() { // the thing its mind holds between questions: the one clicked, else the body's focus
+  for (const id of [trained.focus, state.focus?.id]) { const t = id && room.things.get(id); if (t && WORLD[t.kind]) return id; }
+  return null;
+}
+function nextOp(now) {
+  if (now - trained.lastAt < trained.momentMs - 8) return null;
+  if (!trained.queue.length) { // between questions it keeps looking, its voice held, so its mind holds the thing in focus
+    const f = !trained.busy && lookFocus();
+    if (!f) return null;
+    trained.queue.push({ meta: { op: 'look', focus: f }, resolve() {}, reject() {} });
+  }
+  trained.lastAt = now;
+  const op = trained.queue.shift();
+  if (op.meta.op === 'moment' || op.meta.op === 'correct' || op.meta.op === 'look') {
+    const seen = trainedThings(op.meta.focus, op.meta.glimpseId);
+    op.meta = { ...op.meta, things: seen.things, glimpse: seen.glimpse };
+  }
+  return op;
+}
+
+const askEl = { card: $('ask'), form: $('ask-form'), q: $('ask-q'), log: $('ask-log'), fix: $('ask-fix'), word: $('ask-word'), note: $('ask-note'), words: $('ask-words'), bubble: $('say-bubble') };
+function setupTrained(t) {
+  trained.vocab = new Set(t.words); trained.colours = t.colours; trained.materials = t.materials;
+  trained.momentMs = t.moment_ms || 300; trained.turn = t.turn_moments || 3;
+  askEl.card.hidden = false;
+  setupMind(t);
+  askEl.words.textContent = [...t.words].sort().join(' · ');
+  const v = t.version || {};
+  $('ask-version').textContent = `Version: step ${v.stage || '?'} (${v.step || ''}) · founder ${v.founder ?? '?'} · exported ${v.exported || '?'}`;
+  if (v.learned) $('ask-learned').textContent = `Learned tonight: ${v.learned}. Not learned: ${v.not_learned || 'see the help'}.`;
+  $('ask-version').title = `${t.neurons.toLocaleString('en')} neurons, ${t.synapses.toLocaleString('en')} synapses, ${t.records.toLocaleString('en')} word records; from ${v.source || 'the meaning lane'}`;
+  askNote();
+  const foot = document.querySelector('.mind-foot'); if (foot) foot.scrollTop = foot.scrollHeight;
+}
+/** The line under the box: what it sees of the room, and the thing a question is about. */
+function askNote() {
+  if (!state.trained) return;
+  const kinds = [...room.things.values()].map((t) => t.kind);
+  const missing = [...new Set(kinds.filter((k) => !WORLD[k]))];
+  const notes = [...new Set(kinds.filter((k) => WORLD[k]?.note))].map((k) => WORLD[k].note);
+  const inWorld = kinds.filter((k) => WORLD[k]).length;
+  const f = trained.focus && room.things.get(trained.focus);
+  const parts = [f ? (WORLD[f.kind] ? `In focus: the ${f.kind}.` : `The ${f.kind} is in focus, and the trained brain does not see it.`) : 'Click a thing to put it in focus.'];
+  if (missing.length) parts.push(`It does not see the ${missing.join(' or the ')}: its training world had no such kind.`);
+  if (inWorld > 5) parts.push('It sees the five things nearest it.');
+  parts.push(...notes.map((n) => n.replace(/^./, (c) => c.toUpperCase()) + '.'));
+  askEl.note.textContent = parts.join(' ');
+}
+/** The page's own check of a reply, for the forms its training taught (night.py FORMS); null where the page does not judge. */
+function expected(words, focusKind, scene) {
+  const w = words.join(' ');
+  const kinds = scene.map((t) => t.kind);
+  if (w === 'what is this' && focusKind) return [focusKind];
+  if (words[0] === 'what' && words[1] === 'colour' && focusKind) return [WORLD_COLOUR(focusKind)];
+  if (w === 'what objects are round') return [...new Set(kinds.filter((k) => ROUND.has(k)))].sort();
+  if (w === 'what can you eat') return [...new Set(scene.filter((t) => t.material === 'fruit').map((t) => t.kind))].sort();
+  if (words[0] === 'can' && words[1] === 'you' && words[2] === 'eat' && focusKind) return [WORLD[focusKind].material === 'fruit' ? 'yes' : 'no'];
+  return null;
+}
+const WORLD_COLOUR = (k) => Object.values(WORLD).find((w) => w && w.kind === k)?.colour;
+function isScan(w) { // a question about the whole room: the focus visits each thing in turn (night.py FORMS)
+  if (w[0] !== 'what') return false;
+  if (w[1] === 'objects' || (w[1] === 'can' && w[2] === 'you' && w[3] === 'eat')) return true;
+  return w[1] === 'is' && (['left', 'right', 'next', 'opposite', 'made'].includes(w[2]) || trained.colours.includes(w[2]));
+}
+function logLine(html, kind = '') {
+  const li = document.createElement('li'); li.className = kind; li.innerHTML = html;
+  askEl.log.append(li);
+  while (askEl.log.children.length > 7) askEl.log.firstChild.remove();
+  askEl.log.scrollTop = askEl.log.scrollHeight;
+  const foot = askEl.card.parentElement; // the card's last line stays in view
+  if (foot && foot.scrollHeight > foot.clientHeight) foot.scrollTop = foot.scrollHeight;
+  return li;
+}
+const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+/** The bubble over the parrot's head: what it hears (the visitor's word) or says. */
+function bubble(text, who) {
+  const b = askEl.bubble; b.hidden = !text; b.textContent = text || ''; b.className = `say-bubble ${who || ''}`;
+  clearTimeout(bubble.timer); if (text) bubble.timer = setTimeout(() => { b.hidden = true; }, who === 'it' ? 3200 : 1200);
+}
+function placeBubble() {
+  const b = askEl.bubble;
+  if (!b || b.hidden || !parrot) return;
+  const p = new THREE.Vector3(); parrot.bones.head.getWorldPosition(p); p.y += 0.07;
+  p.project(camera);
+  b.style.transform = `translate(${Math.round((p.x + 1) / 2 * canvas.clientWidth)}px, ${Math.round((1 - p.y) / 2 * canvas.clientHeight)}px) translate(-50%, -100%)`;
+}
+/** Say a word it chose: with the sound the visitor taught for that thing where its hearing links one. */
+function sayWord(word) {
+  const link = (state.lastReply?.knows || []).find((k) => k.kind === word);
+  const kept = link ? soundPcm.get(link.id) : null;
+  if (kept?.pcm?.length && audio.ctx?.state === 'running') {
+    const spoken = audio.speakPcm(kept.pcm, kept.rate);
+    if (spoken) {
+      markChip(link.id); ui.voiceNote.textContent = `${word}: in the sound you taught it for the ${word}`;
+      const slot = Number(link.id.slice(4)), live = brain3d?.live;
+      if (live?.slots?.has(slot)) live.packets.push({ path: [`slot:${slot}`, 'vocal', 'voice'], t0: brain3d.clock.vt, dur: 1.4, colour: live.cSay, slot });
+      return 'in the sound you taught it';
+    }
+  }
+  ui.voiceNote.textContent = `${word}: shown as text (no sound of yours links to it)`;
+  return KINDS[word] ? `as text only: no sound of yours links to the ${word}` : 'as text only: it has no sound of yours for this word';
+}
+
+// --- In its mind: the facets of the thing in focus read from its state by the meaning lane's probes
+const FACETS = ['kind', 'colour', 'shape', 'material', 'edible', 'direction', 'distance'];
+const mindEl = { card: $('in-mind'), thing: $('im-thing'), facets: $('im-facets'), voice: $('im-voice'), outside: $('im-outside') };
+function setupMind(t) {
+  mindEl.card.hidden = false;
+  const p = t.probes;
+  mindEl.facets.textContent = '';
+  if (!p) { const e = document.createElement('span'); e.className = 'none'; e.textContent = 'The meaning lane has not exported probes for this brain, so no facet is read from its state.'; mindEl.facets.append(e); }
+  else for (const f of FACETS) {
+    const a = document.createElement('span'); a.className = 'f'; a.textContent = f;
+    const v = document.createElement('span'); v.className = 'v'; v.dataset.facet = f; v.textContent = p.facets[f] ? '…' : 'no probe';
+    const c = document.createElement('span'); c.className = 'c'; c.title = p.facets[f] ? `the probe is right on ${Math.round(100 * (p.facets[f].accuracy ?? 0))} % of scenes it never saw` : '';
+    c.textContent = p.facets[f]?.accuracy != null ? `${Math.round(100 * p.facets[f].accuracy)}%` : '';
+    mindEl.facets.append(a, v, c);
+  }
+  mindEl.thing.textContent = 'click a thing';
+}
+function showMind(mind, focusId) {
+  if (!state.trained || !mindEl.card) return;
+  const t = focusId && room.things.get(focusId);
+  mindEl.thing.textContent = t ? `the ${t.kind} in focus` : 'nothing in focus';
+  for (const [f, got] of Object.entries(mind.facets || {})) {
+    const v = mindEl.facets.querySelector(`[data-facet="${f}"]`);
+    if (!v) continue;
+    v.textContent = `${got.value} ${got.p.toFixed(2)}`;
+    const bar = document.createElement('i'); bar.style.width = `${Math.round(got.p * 100)}%`; v.append(bar);
+  }
+  const w = mind.voice?.word;
+  const link = w ? (state.lastReply?.knows || []).find((k) => k.kind === w) : null;
+  mindEl.voice.textContent = '';
+  if (w) {
+    mindEl.voice.append('Its voice is ready to say ');
+    const b = document.createElement('b'); b.textContent = w; mindEl.voice.append(b, ` (${mind.voice.level.toFixed(2)})`);
+    if (link && soundPcm.get(link.id)) {
+      const btn = document.createElement('button'); btn.type = 'button'; btn.textContent = 'hear it';
+      btn.addEventListener('click', async () => { await audio.unlock(); const k = soundPcm.get(link.id); if (k) audio.speakPcm(k.pcm, k.rate); });
+      mindEl.voice.append(btn);
+    }
+  }
+  const kind = t ? t.kind : 'thing';
+  mindEl.outside.textContent = `Outside its state: the written word (it never sees letters); the sound of the word, which the page keeps in its own sound memory${link ? `, linked to the ${kind}` : ''}.`;
+}
+
+async function askIt(text) {
+  if (!state.trained || trained.busy) return;
+  const words = text.toLowerCase().replace(/[^a-z<>\s]/g, ' ').split(/\s+/).filter(Boolean);
+  const heard = words.filter((w) => trained.vocab.has(w)), unheard = words.filter((w) => !trained.vocab.has(w));
+  if (!heard.length) { logLine(`It knows none of these words. Its words are listed under <b>Its words</b>.`, 'warn'); return; }
+  const scan = isScan(heard);
+  // the thing a question is about: one it names (the trainers attend to it), else the thing clicked
+  const named = heard.find((w) => KINDS[w] && WORLD[w]);
+  let focusId = null;
+  if (named) focusId = [...room.things.values()].filter((t) => t.kind === named).sort((a, b) => distanceOf(a.id) - distanceOf(b.id))[0]?.id || null;
+  else if (!scan) focusId = trained.focus;
+  if (named && !focusId) { logLine(`There is no ${esc(named)} on the table.`, 'warn'); return; }
+  if (!scan && !focusId) { logLine('Click a thing first: a question like this is about the thing in focus.', 'warn'); return; }
+  const fk = focusId ? room.things.get(focusId)?.kind : null;
+  if (focusId && !WORLD[fk]) { logLine(`The ${esc(fk)} is in focus, and the trained brain does not see it: its training world had no ${esc(fk)}.`, 'warn'); return; }
+  trained.busy = true; trained.open = null; askEl.fix.hidden = true; ui.pistachio.classList.remove('ask');
+  const id = ++trained.serial;
+  logLine(`<span class="who">you</span> ${esc(heard.join(' '))}?${fk ? ` <span class="dim">(the ${esc(fk)} in focus)</span>` : ''}${unheard.length ? ` <span class="dim">· words it never heard, left out: ${esc(unheard.join(', '))}</span>` : ''}`, 'q');
+  if (focusId) { state.cue = cueFor(focusId); state.pointed = { id: focusId, until: performance.now() + 9000 }; }
+  const said = [];
+  let li = null, recalled = null;
+  try {
+    await trainedOp({ op: 'begin' });
+    for (const w of heard) { bubble(w, 'you'); await trainedOp({ op: 'moment', hear: w, more: true, focus: focusId }); }
+    bubble('');
+    const say = (w) => { if (w && said[said.length - 1] !== w) { said.push(w); bubble(said.join(', '), 'it'); const how = sayWord(w); li ||= logLine('', 'a'); li.innerHTML = `<span class="who">it</span> <b>${esc(said.join(', '))}</b> <span class="dim">(${esc(how)})</span>`; } };
+    if (scan) {
+      const order = trainedThings(focusId, null).things.filter((t) => !t.focus).map((t) => t.id).sort(() => Math.random() - 0.5);
+      for (const g of order) {
+        state.cue = cueFor(g); state.pointed = { id: g, until: performance.now() + 900 };
+        const r = await trainedOp({ op: 'moment', hear: null, more: false, focus: focusId, glimpseId: g });
+        recalled ||= r.recalled; say(r.said);
+      }
+    } else {
+      for (let k = 0; k < trained.turn; k++) {
+        const r = await trainedOp({ op: 'moment', hear: null, more: false, focus: focusId });
+        recalled ||= r.recalled;
+        if (!r.said && said.length) break;
+        say(r.said);
+      }
+    }
+    if (!said.length) logLine('<span class="who">it</span> <span class="dim">said nothing in its turn</span>', 'a');
+    if (recalled) logLine(`<span class="dim">its word records brought back “${esc(recalled)}” to its ear at its turn</span>`);
+    const want = expected(heard, fk && WORLD[fk].kind, trainedThings(focusId, null).things);
+    if (want) {
+      const right = want.length === said.length && want.every((w) => said.includes(w));
+      logLine(right ? `<span class="ok">right</span> <span class="dim">· a pistachio pays it</span>` : `<span class="no">wrong</span> <span class="dim">· the answer: ${esc(want.join(', ') || 'none')}${want.some((w) => !trained.vocab.has(w)) ? ' (a word it never heard)' : ''} · type the right word below</span>`, right ? 'judge ok' : 'judge no');
+      if (!right) askEl.word.value = want.find((w) => trained.vocab.has(w)) || '';
+    } else if (said.length) logLine('<span class="dim">The page does not judge this question: give a pistachio if it is right, or type the right word.</span>');
+    trained.last = { id, question: heard.join(' '), unheard, focus: fk, said: [...said], expected: want, right: want ? want.length === said.length && want.every((w) => said.includes(w)) : null, recalled };
+    trained.open = said.length ? { id, said, at: performance.now() } : null;
+    askEl.fix.hidden = !said.length;
+    ui.pistachio.classList.toggle('ask', !!said.length);
+    if (!said.length) await trainedOp({ op: 'over' });
+  } catch (error) { logLine(`The trained brain stopped: ${esc(error.message)}`, 'warn'); }
+  finally { trained.busy = false; trained.quietUntil = performance.now() + 2500; }
+}
+async function payAnswer(open) {
+  if (trained.open !== open) return;
+  trained.open = null; askEl.fix.hidden = true; ui.pistachio.classList.remove('ask');
+  const r = await trainedOp({ op: 'pistachio', amount: 1 });
+  logLine(`<span class="nut">a pistachio</span> for “${esc(open.said.join(', '))}” <span class="dim">· ${r.lessons} lesson${r.lessons === 1 ? '' : 's'} on the moments it spoke, its own words the labels</span>`, 'p');
+}
+async function correctIt(word) {
+  const open = trained.open;
+  if (!open || trained.busy) return;
+  word = word.toLowerCase().trim();
+  if (!trained.vocab.has(word)) { logLine(`It never heard “${esc(word)}”: its training gave it no such word, so it cannot keep it.`, 'warn'); return; }
+  trained.open = null; askEl.fix.hidden = true; ui.pistachio.classList.remove('ask');
+  trained.busy = true;
+  try {
+    bubble(word, 'you');
+    const r = await trainedOp({ op: 'correct', word, focus: trained.focus });
+    trained.lastCorrection = { word, wrote: !!r.wrote, records: r.records };
+    logLine(`<span class="who">you</span> ${esc(word)} <span class="dim">· ${r.wrote ? `kept as a word record under the pattern of the question's end (${r.records.toLocaleString('en')} records); it hears the word` : 'heard, and no record kept'}</span>`, 'c');
+  } finally { trained.busy = false; trained.quietUntil = performance.now() + 1500; }
+}
+askEl.form?.addEventListener('submit', (e) => { e.preventDefault(); const q = askEl.q.value.trim(); if (q) { audio.unlock().catch(() => {}); askIt(q); } });
+askEl.fix?.addEventListener('submit', (e) => { e.preventDefault(); const w = askEl.word.value.trim(); if (w) correctIt(w); });
+for (const b of document.querySelectorAll('[data-ask]')) b.addEventListener('click', () => { askEl.q.value = b.dataset.ask; askEl.q.focus(); });
+
 // --- the frame loop ----------------------------------------------------------------------------------------
 let last = performance.now(), slowSince = 0;
 function frame(now) {
@@ -588,7 +861,7 @@ function frame(now) {
     placeFocus();
     if (now - state.lastMomentAt >= MOMENT_MS || !state.lastMomentAt) { state.lastMomentAt = now; moment(now); }
     view?.setJoints(parrot.joints.pos, parrot.joints.target);
-    syncTags(); drawFields();
+    syncTags(); drawFields(); placeBubble();
   }
   updateCoach();
   controls.update();
@@ -655,7 +928,7 @@ function buildPalette() {
 }
 
 ui.test.addEventListener('click', () => { if (state.script) { state.script = null; ui.test.textContent = 'Test run'; ui.test.setAttribute('aria-pressed', 'false'); } else runScript(TEST); });
-ui.clear.addEventListener('click', () => { state.script = null; room.clear(); state.subject = null; view?.clearTuning(); });
+ui.clear.addEventListener('click', () => { state.script = null; room.clear(); state.subject = null; view?.clearTuning(); askNote(); });
 // The pistachio: thrown from the visitor's side, caught in the beak, nibbled and eaten. The reward
 // reaches the brain when the nut is in the beak, not on the click.
 let nut = null;
@@ -663,11 +936,14 @@ ui.pistachio.addEventListener('click', () => {
   if (!parrot) return;
   nut ||= new Pistachio(room.scene);
   const from = camera.position.clone().lerp(new THREE.Vector3(0, BAR_Y + 0.2, 0), 0.35); from.y -= 0.1;
+  const forAnswer = state.trained && trained.open && !trained.busy ? trained.open : null;
   const thrown = nut.throw(from, parrot, () => {
-    state.reward = 1; state.pistachios += 1; ui.pistachios.textContent = String(state.pistachios);
+    if (forAnswer) payAnswer(forAnswer); else state.reward = 1;
+    state.pistachios += 1; ui.pistachios.textContent = String(state.pistachios);
     brain3d?.reward();
     $('dopamine').hidden = false;
-    $('dopamine-note').textContent = typeof state.lastReply?.vta === 'number' ? 'Its dopamine runs out from the VTA (the gold wash), and the tracts it strengthens glow.' : 'This brain has no dopamine signal: the view marks the pistachio arriving, and no synapse changes.';
+    $('dopamine-note').textContent = forAnswer ? ` It pays the trained brain\u2019s reply \u201c${forAnswer.said.join(', ')}\u201d: one lesson on each moment it spoke, its own words the labels; the tracts the lesson changed glow.`
+      : typeof state.lastReply?.vta === 'number' ? 'Its dopamine runs out from the VTA (the gold wash), and the tracts it strengthens glow.' : 'This brain has no dopamine signal: the view marks the pistachio arriving, and no synapse changes.';
     clearTimeout(state.dopTimer); state.dopTimer = setTimeout(() => { $('dopamine').hidden = true; }, 4200);
   }, () => {});
   if (!thrown) toast('It is eating the last one', '', 1400);
@@ -757,37 +1033,51 @@ async function start() {
     });
   }
   view = new BrainView({ regions: $('brain'), units: $('dist-units'), tuning: $('dist-tuning'), readout: $('dist-readout'), silence: ui.silence, joints: $('joints') });
-  window.parrotPage = { room, state, eyes, audio, get brainView() { return view; }, get brain3d() { return brain3d; }, get parrot() { return parrot; }, place, addThing, move: (id, x, z) => room.move(id, x, z), remove: (id) => room.remove(id),
+  window.parrotPage = { room, state, eyes, audio, trained, get brainView() { return view; }, get brain3d() { return brain3d; }, get parrot() { return parrot; }, place, addThing, move: (id, x, z) => room.move(id, x, z), remove: (id) => room.remove(id),
     describe: () => room.describe(), load: (d) => room.load(d), script: runScript, TEST, setLook, setMode, distanceOf, camera, THREE,
     view(name) { const v = VIEWS[name]; if (!v) return; camera.position.set(...v[0]); controls.target.set(...v[1]); controls.update(); },
     screenOf(x, y, z) { const v = new THREE.Vector3(x, y, z).project(camera); const r = canvas.getBoundingClientRect(); return [r.left + (v.x + 1) / 2 * r.width, r.top + (1 - v.y) / 2 * r.height]; } };
   if (query.get('brain') === 'off') { setStatus('Ready (no brain)', 'ready'); document.body.dataset.ready = '1'; return; }
   // the composed brain (the parrot-brain lane's), or the placeholder; the placeholder also when the
   // composed brain does not start
-  let wanted = query.get('brain') || (() => { try { return localStorage.getItem('parrot.brain'); } catch (e) { return null; } })() || 'composed';
+  fetch(new URL('manifest.json', PACK)).then((r) => r.json()).then((m) => { // the trained option names its version
+    const o = $('brain-kind').querySelector('option[value="trained"]');
+    if (!m.hosts?.trained) o?.remove(); else if (o && m.trained_version?.label) o.textContent = `trained tonight (${m.trained_version.label})`;
+  }).catch(() => {});
+  let wanted = query.get('brain') || (() => { try { return localStorage.getItem('parrot.brain'); } catch (e) { return null; } })() || 'trained';
   const config = { eye: { w: EYE.w, h: EYE.h, field: EYE.field, vfield: EYE.vfield, fovea: EYE.fovea, axis: EYE.axis } };
   try {
     let out;
     try {
       brain = new BrainWorker();
       out = await brain.call('init', { pack: PACK, brain: wanted, config });
-    } catch (error) {
+    } catch (error) { // the trained brain falls back to the composed one, and that to the placeholder
       if (wanted === 'placeholder') throw error;
-      console.warn(`The composed brain did not start (${error.message}); the placeholder runs.`);
-      brain.worker.terminate(); wanted = 'placeholder';
+      const next = wanted === 'trained' ? 'composed' : 'placeholder';
+      console.warn(`The ${wanted} brain did not start (${error.message}); the ${next} brain runs.`);
+      toast(`The ${wanted} brain did not start (${error.message}); the ${next} brain runs.`, 'bad', 6000);
+      brain.worker.terminate(); wanted = next;
       brain = new BrainWorker();
-      out = await brain.call('init', { pack: PACK, brain: wanted, config });
+      try { out = await brain.call('init', { pack: PACK, brain: wanted, config }); } catch (again) {
+        if (wanted === 'placeholder') throw again;
+        brain.worker.terminate(); wanted = 'placeholder';
+        brain = new BrainWorker();
+        out = await brain.call('init', { pack: PACK, brain: wanted, config });
+      }
     }
     desc = out;
     state.composed = !desc.placeholder;
-    document.body.dataset.brain = state.composed ? 'composed' : 'placeholder';
-    $('brain-kind').value = state.composed ? 'composed' : 'placeholder';
+    state.trained = desc.name === 'trained';
+    document.body.dataset.brain = state.trained ? 'trained' : state.composed ? 'composed' : 'placeholder';
+    $('brain-kind').value = document.body.dataset.brain;
+    if (state.trained) setupTrained(desc.trained);
     view.setup(desc, rig.joints);
     for (const r of desc.repertoire || []) addChip(r);
     const kept = learnedStore.get();
     if (kept?.records?.length) { const out = await brain.call('remember', { saved: kept }); syncChips(out.repertoire || []); memview?.update(out.memory); }
     brain3d.setup(desc);
-    ui.sub.textContent = desc.placeholder ? `${desc.title} · ${desc.neurons} units` : `${desc.title || desc.name} · ${desc.neurons.toLocaleString('en')} neurons${desc.newborn ? ' · a newborn' : ''}`;
+    ui.sub.textContent = desc.placeholder ? `${desc.title} · ${desc.neurons} units` : state.trained ? `${desc.title} · ${desc.neurons.toLocaleString('en')} neurons, the trained brain's ${desc.trained.neurons.toLocaleString('en')} among them`
+      : `${desc.title || desc.name} · ${desc.neurons.toLocaleString('en')} neurons${desc.newborn ? ' · a newborn' : ''}`;
     const g = (desc.groups || []).find((x) => x.variable === 'distance');
     void g; // the brain panel names the distance card (the arcopallium's distance neurons)
     state.brainReady = true;

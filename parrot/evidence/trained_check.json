@@ -1,0 +1,133 @@
+{
+ "brain": {
+  "stage": "N1",
+  "step": "names",
+  "label": "N1 names",
+  "founder": 33400106,
+  "exported": "2026-11-13 23:12 UTC",
+  "source": "s3://cadence-0100-meaning-20261113/meaning334/night/s5/page_N1/",
+  "lane": "muellerberndt/cadence lane-0100-meaning, benchmarks/meaning/export_page.py",
+  "readings": {
+   "N0 imitation": "1.00",
+   "N1 naming of the thing in focus": ".95 to .98"
+  },
+  "not_learned": "colour, places and relations; asked those, it names a thing",
+  "arm": "exam (brains_exam/brain_33400106_N1.npz)",
+  "learned": "to say back a word it hears (1.00 of its exam's trials), and the name of the thing in focus when asked what is this (.95 to .98)"
+ },
+ "wheel": {
+  "file": "cadence_net-0.99.0-lane-parrot-meaning-e00c860a.whl",
+  "sha256": "b06fd192700c660b78016a04f10768c77d31091fb8489786fa4084386d1926d0",
+  "source": "muellerberndt/cadence lane-0100-meaning c723b75a merged with lane-0100-parrot 16b8b642 (local merge e00c860a; CHANGELOG.md and tests/test_documentation.py kept both sides); pip wheel of its git archive"
+ },
+ "pyodide_check": {
+  "pyodide": "314.0.7",
+  "python": "3.14.2",
+  "numpy": "2.4.6",
+  "import_both_s": 1.11,
+  "trained_brain_load_s": 1.31,
+  "moments_ms": [
+   213,
+   76,
+   77,
+   62,
+   43,
+   43
+  ],
+  "said_for_the_apple_in_focus": [
+   "apple",
+   "apple",
+   "apple"
+  ],
+  "records": 2048,
+  "how": "headless Chromium, a page that loads Pyodide, the wheel and the three brain files, imports cadence.parrot.host and cadence.meaning.host, builds the composed host and asks what is this with the apple in focus"
+ },
+ "page_room_native": {
+  "how": "MeaningParrot natively, the page's room (apple red fruit, ball white cloth, cup white glass, block blue wood), the export protocol",
+  "what is this": {
+   "apple": "apple",
+   "ball": "ball",
+   "cup": "cup",
+   "block": "block"
+  },
+  "what objects are round (page room, things in room order)": [
+   "apple",
+   "cup"
+  ],
+  "what can you eat": [
+   "apple",
+   "cup"
+  ],
+  "lemon: what is this / can you eat this": [
+   "apple",
+   "apple"
+  ],
+  "what colour has the apple, corrected red twice": "apple each time (the records' three nearest did not agree)"
+ },
+ "page_run": {
+  "browser": "headless Chromium, 1512x860, a loaded laptop",
+  "think_ms_median": "144 ms",
+  "frames_per_s": "61",
+  "taught": [
+   {
+    "kind": "apple",
+    "id": "you-0",
+    "link": 0.998
+   }
+  ],
+  "exchanges": [
+   {
+    "question": "what is this",
+    "focus": "apple",
+    "said": [
+     "apple"
+    ],
+    "expected": [
+     "apple"
+    ],
+    "right": true
+   },
+   {
+    "question": "what is this",
+    "focus": "cup",
+    "said": [
+     "cup"
+    ],
+    "expected": [
+     "cup"
+    ],
+    "right": true
+   },
+   {
+    "question": "what colour is the apple",
+    "focus": "apple",
+    "said": [
+     "apple"
+    ],
+    "expected": [
+     "red"
+    ],
+    "right": false
+   },
+   {
+    "question": "what objects are round",
+    "focus": null,
+    "said": [
+     "cup"
+    ],
+    "expected": [
+     "apple",
+     "ball",
+     "cup"
+    ],
+    "right": false
+   }
+  ],
+  "correction": {
+   "word": "red",
+   "wrote": true,
+   "records": 2048
+  },
+  "video": "~/Desktop/parrot-demos/parrot-page-20261114T0042Z-N1-names-33400106.mp4 (71.9 s, the waits between steps cut)"
+ }
+}

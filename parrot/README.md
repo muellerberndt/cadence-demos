@@ -6,8 +6,18 @@ parrot experiment (cadence#332, a step of cadence#331): can the parrot track and
 sees through its two eyes, and learn a sense of distance from them. Its brain is drawn in 3D beside
 it. Everything runs in the browser; there is no server.
 
-The brain in this pack is a **placeholder**: a hand-written controller (a newborn that looks, hears
-and calls), with the interface the composed parrot brain's host keeps. What it hears is kept in the
+The pack holds three brains, picked in the page's brain switch (`?brain=trained|composed|placeholder`):
+
+- **trained tonight**: the composed body and hearing, with the brain the meaning lane trained overnight
+  (cadence#334, `cadence.meaning.host.MeaningParrot`, its files in `site/pack/trained/` with
+  `version.json` naming its step, founder and export). It hears typed questions (Ask it, under the
+  brain) one word a moment and answers in its turn; a pistachio pays its last answer, a typed word
+  corrects it. In its mind shows the facets of the thing in focus that the meaning lane's probes read
+  from its state, where the lane exports `probes.json` beside the brain.
+- **composed**: the parrot-brain lane's `cadence.parrot` (eyes, distance, focus, map) with the page's
+  hearing layer.
+- **placeholder**: a hand-written controller (a newborn that looks, hears and calls), with the
+  interface the composed parrot brain's host keeps. What it hears is kept in the
 Cadence library's own memories (`LongTermMemory` records and a `SynapticMemory`), from the shipped
 `cadence-net` 0.99.0 wheel.
 
@@ -18,7 +28,7 @@ python3 -m http.server 8842 --directory parrot/site   # then open http://localho
 ```
 
 `localhost` is a secure page, so the microphone works. `?look=anime` picks the anime parrot,
-`?brain=off` skips the brain, `?view=front|side|head|feet` frames the parrot, `?test=1` runs the
+`?brain=trained|composed|placeholder` picks the brain, `?brain=off` skips the brain, `?view=front|side|head|feet` frames the parrot, `?test=1` runs the
 scripted placements.
 
 ## What is where
@@ -37,7 +47,7 @@ scripted placements.
 | `site/brain3d.js`, `site/atlas.js` | the brain in 3D: the planned parrot brain's regions and tracts, filled with the running brain |
 | `site/memview.js` | the memory view: records, reads, synapses |
 | `site/brainview.js` | the detail panel: populations, distance units with tuning curves and their silence switch, joints |
-| `site/worker.js`, `site/pack/` | the brain in Pyodide: the manifest (SHA-256 of every file), the host (`py/parrotbrain/`), the calls, the wheel |
+| `site/worker.js`, `site/pack/` | the brain in Pyodide: the manifest (SHA-256 of every file), the hosts (`py/parrotbrain/`: `host.py` the placeholder and hearing, `page.py` the composed, `trained.py` the trained brain beside the composed), the calls, the wheel (`cadence.parrot` and `cadence.meaning`), the trained brain's files (`trained/`, loaded only when that brain is picked) |
 | `site/tools/` | `fetch_assets.py` (Poly Haven assets and their credits), `prepare_look.py` (a body onto the rig), `make_calls.py` (the calls from the recording), `build_pack.py`, `check_page.py` (the page check), `shoot_looks.py` with `look.html` (a body in the page's light) |
 | `site/tests/` | `dsp_parity.mjs` (the ear against the library), `voice_roundtrip.mjs`, `test_sound_memory.py`, fixtures |
 | `evidence/` | the readings the help page's numbers come from |

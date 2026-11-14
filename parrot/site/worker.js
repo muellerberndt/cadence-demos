@@ -1,5 +1,6 @@
 // The parrot's brain runs here, off the page's thread, in Python through Pyodide (INTERFACES P6).
-// The pack's manifest names the host's sources, any brain files and any wheel; each is checked
+// The pack's manifest names the host's sources, any brain files (`host_files`: a brain's own, loaded
+// only for it) and any wheel; each is checked
 // against its SHA-256 before anything runs. Messages: {rid, command, payload} in; {rid, result,
 // arrays} or {rid, error} out; {status} while loading. A step carries `meta` (JSON) and named typed
 // arrays (the eyes' images, proprioception, the moment's sound); a reply's `arrays` holds the typed
@@ -49,10 +50,17 @@ async function initialize(payload) {
     status(`Loading ${name}`);
     python.FS.writeFile(`/home/pyodide/brain/${name}`, await checked(new URL(name, base), sha));
   }
-  status('Waking the brain');
-  python.globals.set('_parrot_config', JSON.stringify({ ...(manifest.config || {}), ...(payload?.config || {}), files: '/home/pyodide/brain' }));
   const hosts = manifest.hosts || { placeholder: `${pkg}.host` };
   const chosen = hosts[payload?.brain] ? payload.brain : (hosts.composed ? 'composed' : 'placeholder');
+  // a brain's own files (the trained brain's weights, records and spec), loaded only for that brain
+  const own = manifest.host_files?.[chosen] || {};
+  if (Object.keys(own).length) python.FS.mkdirTree(`/home/pyodide/${chosen}`);
+  for (const [name, sha] of Object.entries(own)) {
+    status(`Loading ${name.split('/').pop()}`);
+    python.FS.writeFile(`/home/pyodide/${chosen}/${name.split('/').pop()}`, await checked(new URL(name, base), sha));
+  }
+  status('Waking the brain');
+  python.globals.set('_parrot_config', JSON.stringify({ ...(manifest.config || {}), ...(payload?.config || {}), files: '/home/pyodide/brain', host_files: `/home/pyodide/${chosen}` }));
   python.globals.set('_parrot_module', hosts[chosen]);
   python.runPython(`
 import sys, json, warnings

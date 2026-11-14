@@ -231,3 +231,58 @@ html.embedded .toast { top: 100px; }
 .know .bar { width: 36px; height: 4px; background: rgba(255,255,255,.12); border-radius: 2px; overflow: hidden; }
 .know .bar i { display: block; height: 100%; background: #f5c542; }
 #pistachio.ask { box-shadow: 0 0 0 2px #f5c542; }
+
+/* Ask it: the brain trained tonight, text in and text out */
+.ask { margin-top: 6px; padding: 8px 10px; border: 1px solid rgba(123, 237, 159, .35); border-radius: 8px; background: rgba(123, 237, 159, .05); font-size: 12px; position: relative; }
+.ask[hidden] { display: none; }
+.ask-title { font-weight: 600; margin-bottom: 2px; }
+.ask-brain { font: 500 10px/1 var(--mono); color: #7bed9f; margin-left: 6px; text-transform: uppercase; letter-spacing: .05em; }
+.ask-learned { margin: 0 0 6px; color: var(--ink-2); line-height: 1.35; }
+.ask-row { display: flex; gap: 6px; }
+.ask-row input { flex: 1; min-width: 0; height: 28px; padding: 0 8px; border-radius: 7px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); font: 400 12.5px var(--body); }
+.ask-row button { height: 28px; padding: 0 12px; border-radius: 7px; border: 1px solid #7bed9f; background: rgba(123, 237, 159, .14); color: var(--ink); cursor: pointer; font-weight: 600; font-size: 12px; }
+.ask-row.fix { margin-top: 4px; }
+.ask-row.fix button { border-color: var(--bad); background: rgba(242, 134, 123, .12); }
+.ask-try { display: flex; flex-wrap: wrap; gap: 4px; margin: 5px 0 2px; align-items: center; color: var(--ink-3); font-size: 11px; }
+.ask-try button { padding: 1px 7px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--ink-2); cursor: pointer; font-size: 11px; }
+.ask-note { margin: 4px 0 0; color: var(--ink-3); font-size: 11px; line-height: 1.35; }
+.ask-log { list-style: none; margin: 4px 0 0; padding: 0; max-height: 120px; overflow-y: auto; }
+.ask-log li { margin: 1px 0; line-height: 1.35; }
+.ask-log .who { display: inline-block; min-width: 22px; font: 500 10px var(--mono); color: var(--ink-3); text-transform: uppercase; }
+.ask-log li.a b { color: #7bed9f; font-size: 13px; }
+.ask-log .ok { color: var(--good); font-weight: 600; }
+.ask-log .no { color: var(--bad); font-weight: 600; }
+.ask-log .nut { color: var(--accent); font-weight: 600; }
+.ask-log li.warn { color: var(--bad); }
+.ask .dim, .ask-log .dim { color: var(--ink-3); }
+.ask-words summary { cursor: pointer; color: var(--ink-3); font-size: 11px; margin-top: 4px; }
+.ask-words p { margin: 2px 0; font: 400 11px/1.4 var(--mono); color: var(--ink-2); }
+.say-bubble { position: absolute; left: 0; top: 0; z-index: 4; pointer-events: none; padding: 5px 12px; border-radius: 14px; white-space: nowrap;
+  font: 600 16px/1.2 var(--display); color: #08130c; background: #7bed9f; box-shadow: 0 6px 20px rgb(0 0 0 / .45); }
+.say-bubble.you { background: #e8ebf0; color: #12151a; font-weight: 500; font-size: 14px; }
+.say-bubble[hidden] { display: none; }
+@media (min-width: 901px) {
+  body[data-brain="trained"] .mind { height: 100dvh; min-height: 0; overflow: hidden; }
+  body[data-brain="trained"] .mind-view { min-height: min(400px, 46dvh); }
+  body[data-brain="trained"] .mind-foot { overflow-y: auto; min-height: 0; flex: 0 1 auto; scrollbar-width: thin; }
+}
+.ask-version { font: 400 10px/1.3 var(--mono); color: var(--ink-3); margin: 0 0 4px; }
+.ask-row[hidden] { display: none; }
+
+/* In its mind: the trained brain's state, read by the meaning lane's probes */
+.in-mind { position: absolute; right: 16px; top: 66px; z-index: 3; width: 268px; padding: 9px 11px 8px; border-radius: 10px; font-size: 11.5px;
+  background: color-mix(in srgb, var(--panel) 90%, transparent); border: 1px solid rgba(123, 237, 159, .35); backdrop-filter: blur(6px); }
+.in-mind[hidden] { display: none; }
+.in-mind h3 { margin: 0 0 5px; font: 600 13px/1.2 var(--display); }
+.in-mind h3 span { font: 400 11px var(--body); color: var(--ink-3); margin-left: 4px; }
+.im-facets { display: grid; grid-template-columns: 62px 1fr 44px; gap: 2px 6px; align-items: center; }
+.im-facets .f { color: var(--ink-3); font: 500 10px var(--mono); text-transform: uppercase; letter-spacing: .03em; }
+.im-facets .v { color: var(--ink); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.im-facets .v i { display: block; height: 3px; margin-top: 1px; border-radius: 2px; background: #7bed9f; }
+.im-facets .c { color: var(--ink-3); font: 400 10px var(--mono); text-align: right; }
+.im-facets .none { grid-column: 1 / -1; color: var(--ink-3); }
+.im-voice { margin: 6px 0 0; color: var(--ink-2); }
+.im-voice b { color: #7bed9f; }
+.im-voice button { margin-left: 6px; padding: 0 7px; height: 20px; border-radius: 6px; border: 1px solid var(--line); background: var(--raised); color: var(--ink); cursor: pointer; font-size: 11px; }
+.im-outside { margin: 5px 0 0; color: var(--ink-3); line-height: 1.35; }
+@media (max-width: 900px) { .in-mind { top: auto; bottom: 120px; right: 10px; width: 230px; } }

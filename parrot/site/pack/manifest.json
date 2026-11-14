@@ -6,18 +6,20 @@
   "numpy"
  ],
  "package": "parrotbrain",
- "brain": "composed: cadence.parrot (the parrot-brain lane), with the page's hearing layer; placeholder: a hand-written controller",
+ "brain": "composed: cadence.parrot (the parrot-brain lane), with the page's hearing layer; trained: the composed body and hearing with cadence.meaning's MeaningParrot, the brain the meaning lane trained tonight (#334); placeholder: a hand-written controller",
  "sources": [
   "__init__.py",
   "host.py",
   "page.py",
-  "sounds.py"
+  "sounds.py",
+  "trained.py"
  ],
  "sources_sha256": {
   "__init__.py": "aad6e4970d412d3fc56376e9321f46760a285a32d2086c5fc76d1740b02c082f",
   "host.py": "664a6c704e5f4ef449843b3457ba4241a3c677be096b881d466aac41a2df3d72",
   "page.py": "8cd65798b051166f4dd4a6a4dbfe878a36a33150eeea2783c7209320d5110039",
-  "sounds.py": "7152ec84d1542bbdd357add699d834cf32c36776a7ef75d8f644e97a162688b8"
+  "sounds.py": "7152ec84d1542bbdd357add699d834cf32c36776a7ef75d8f644e97a162688b8",
+  "trained.py": "74807a7fd444149677a3e70040b4236384b33b71b84ce2dbdf2bf97fab13dc9a"
  },
  "files": {
   "calls.json": "645453a2f0c7c4874addbf143bac95861505484018dac7f64bb5fe39fde0dbf7"
@@ -38,10 +40,36 @@
  },
  "hosts": {
   "composed": "parrotbrain.page",
-  "placeholder": "parrotbrain.host"
+  "placeholder": "parrotbrain.host",
+  "trained": "parrotbrain.trained"
  },
- "wheel": "cadence_net-0.99.0-lane-parrot-16b8b642.whl",
- "wheel_sha256": "7714ed8d681570dcd973e675cb8b060e2e9d250903a2988a3aa08b42c235237b",
- "cadence": "0.99.0 with cadence.parrot (lane-0100-parrot 16b8b642)",
- "wheel_source": "built from muellerberndt/cadence lane-0100-parrot at 16b8b642"
+ "host_files": {
+  "trained": {
+   "trained/brain.npz": "9f6aec55f80dd6df80b62be8a92c8dc621ea5ad7c701dc4d43e5765a88953978",
+   "trained/brain.records.npz": "e38405757e9591c9808df34058be25b4b4beb9e4969d8e55d6f4115d40e4e34b",
+   "trained/spec.json": "6e616497ec7aef0e84db18781998507274bd8aeaa6f15f776f0443e1bcf2928f",
+   "trained/version.json": "224a3d2dd0786555f38085e0b5306337af2c75287d320b606dcf311ca059f5eb"
+  }
+ },
+ "trained_source": "s3://cadence-0100-meaning-20261113/meaning334/night/s5/page_N1/ (exported 2026-11-13 23:12 UTC; lane-0100-meaning benchmarks/meaning/export_page.py)",
+ "trained_version": {
+  "stage": "N1",
+  "step": "names",
+  "label": "N1 names",
+  "founder": 33400106,
+  "exported": "2026-11-13 23:12 UTC",
+  "source": "s3://cadence-0100-meaning-20261113/meaning334/night/s5/page_N1/",
+  "lane": "muellerberndt/cadence lane-0100-meaning, benchmarks/meaning/export_page.py",
+  "readings": {
+   "N0 imitation": "1.00",
+   "N1 naming of the thing in focus": ".95 to .98"
+  },
+  "not_learned": "colour, places and relations; asked those, it names a thing",
+  "arm": "exam (brains_exam/brain_33400106_N1.npz)",
+  "learned": "to say back a word it hears (1.00 of its exam's trials), and the name of the thing in focus when asked what is this (.95 to .98)"
+ },
+ "wheel": "cadence_net-0.99.0-lane-parrot-meaning-e00c860a.whl",
+ "wheel_sha256": "b06fd192700c660b78016a04f10768c77d31091fb8489786fa4084386d1926d0",
+ "cadence": "0.99.0 with cadence.parrot (lane-0100-parrot 16b8b642) and cadence.meaning (lane-0100-meaning c723b75a)",
+ "wheel_source": "built from muellerberndt/cadence: lane-0100-meaning at c723b75a merged with lane-0100-parrot at 16b8b642 (merge e00c860a; CHANGELOG.md and tests/test_documentation.py kept both sides)"
 }
