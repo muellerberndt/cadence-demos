@@ -1,8 +1,10 @@
 {
  "questions": {
   "what is this": "questions/what_is_this.wav",
-  "can you eat this": "questions/can_you_eat_this.wav",
+  "what colour is this": "questions/what_colour_is_this.wav",
+  "is this white": "questions/is_this_white.wav",
   "where is the cup": "questions/where_is_the_cup.wav",
+  "can you eat this": "questions/can_you_eat_this.wav",
   "what colour has the apple": "questions/what_colour_has_the_apple.wav",
   "where is the ball": "questions/where_is_the_ball.wav",
   "what shape has the apple": "questions/what_shape_has_the_apple.wav",

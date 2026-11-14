@@ -646,7 +646,7 @@ function nextOp(now) {
   return op;
 }
 
-const askEl = { card: $('ask'), form: $('ask-form'), q: $('ask-q'), log: $('ask-log'), fix: $('ask-fix'), word: $('ask-word'), note: $('ask-note'), words: $('ask-words'), bubble: $('say-bubble') };
+const askEl = { card: $('ask'), form: $('ask-form'), q: $('ask-q'), log: $('ask-log'), note: $('ask-note'), words: $('ask-words'), bubble: $('say-bubble') };
 function setupTrained(t) {
   trained.vocab = new Set(t.words); trained.colours = t.colours; trained.materials = t.materials;
   trained.momentMs = t.moment_ms || 300; trained.turn = t.turn_moments || 3;
@@ -679,7 +679,7 @@ function expected(words, focusKind, scene) {
   const w = words.join(' ');
   const kinds = scene.map((t) => t.kind);
   if (w === 'what is this' && focusKind) return [focusKind];
-  if (words[0] === 'what' && words[1] === 'colour' && focusKind) return [WORLD_COLOUR(focusKind)];
+  if (words[0] === 'what' && words[1] === 'colour' && focusKind) { const t = scene.find((x) => x.focus); return [t ? t.colour : WORLD_COLOUR(focusKind)]; }
   if (w === 'what objects are round') return [...new Set(kinds.filter((k) => ROUND.has(k)))].sort();
   if (w === 'what can you eat') return [...new Set(scene.filter((t) => t.material === 'fruit').map((t) => t.kind))].sort();
   if (words[0] === 'can' && words[1] === 'you' && words[2] === 'eat' && focusKind) return [Object.values(WORLD).find((x) => x && x.kind === focusKind)?.material === 'fruit' ? 'yes' : 'no'];
@@ -887,7 +887,7 @@ async function askIt(text, { clip = null } = {}) {
   if (!scan && !focusId) { logLine('Click a thing first: a question like this is about the thing in focus.', 'warn'); return; }
   const fk = focusId ? room.things.get(focusId)?.kind : null;
   if (focusId && !WORLD[fk]) { logLine(`The ${esc(fk)} is in focus, and the trained brain does not see it: its training world had no ${esc(fk)}.`, 'warn'); return; }
-  trained.busy = true; trained.open = null; askEl.fix.hidden = true; ui.pistachio.classList.remove('ask');
+  trained.busy = true; trained.open = null; ui.pistachio.classList.remove('ask');
   const id = ++trained.serial;
   logLine(`<span class="who">you</span> ${esc(heard.join(' '))}?${fk ? ` <span class="dim">(the ${esc(fk)} in focus)</span>` : ''}${unheard.length ? ` <span class="dim">· words it never heard, left out: ${esc(unheard.join(', '))}</span>` : ''}`, 'q');
   if (focusId) { state.cue = cueFor(focusId); state.pointed = { id: focusId, until: performance.now() + 9000 }; if (named) { trained.focus = focusId; askNote(); } }
@@ -921,12 +921,10 @@ async function askIt(text, { clip = null } = {}) {
     const want = expected(heard, fk && WORLD[fk].kind, trainedThings(focusId, null).things);
     if (want) {
       const right = want.length === said.length && want.every((w) => said.includes(w));
-      logLine(right ? `<span class="ok">right</span> <span class="dim">· a pistachio pays it</span>` : `<span class="no">wrong</span> <span class="dim">· the answer: ${esc(want.join(', ') || 'none')}${want.some((w) => !trained.vocab.has(w)) ? ' (a word it never heard)' : ''} · type the right word below</span>`, right ? 'judge ok' : 'judge no');
-      if (!right) askEl.word.value = want.find((w) => trained.vocab.has(w)) || '';
-    } else if (said.length) logLine('<span class="dim">The page does not judge this question: give a pistachio if it is right, or type the right word.</span>');
+      logLine(right ? `<span class="ok">right</span> <span class="dim">· a pistachio pays it</span>` : `<span class="no">wrong</span> <span class="dim">· the answer: ${esc(want.join(', ') || 'none')}${want.some((w) => !trained.vocab.has(w)) ? ' (a word it never heard)' : ''}</span>`, right ? 'judge ok' : 'judge no');
+    } else if (said.length) logLine('<span class="dim">The page does not judge this question: give a pistachio if it is right.</span>');
     trained.last = { id, question: heard.join(' '), unheard, focus: fk, said: [...said], expected: want, right: want ? want.length === said.length && want.every((w) => said.includes(w)) : null, recalled };
     trained.open = said.length ? { id, said, at: performance.now() } : null;
-    askEl.fix.hidden = !said.length;
     ui.pistachio.classList.toggle('ask', !!said.length);
     if (!said.length) await trainedOp({ op: 'over' });
   } catch (error) { logLine(`The trained brain stopped: ${esc(error.message)}`, 'warn'); }
@@ -938,23 +936,9 @@ async function askIt(text, { clip = null } = {}) {
 }
 async function payAnswer(open) {
   if (trained.open !== open) return;
-  trained.open = null; askEl.fix.hidden = true; ui.pistachio.classList.remove('ask');
+  trained.open = null; ui.pistachio.classList.remove('ask');
   const r = await trainedOp({ op: 'pistachio' });
   logLine(`<span class="nut">a pistachio</span> for “${esc(open.said.join(', '))}” <span class="dim">· ${r.lessons} small lesson${r.lessons === 1 ? '' : 's'}, one a word it said, its own words the labels</span>`, 'p');
-}
-async function correctIt(word) {
-  const open = trained.open;
-  if (!open || trained.busy) return;
-  word = word.toLowerCase().trim();
-  if (!trained.vocab.has(word)) { logLine(`It never heard “${esc(word)}”: its training gave it no such word, so it cannot keep it.`, 'warn'); return; }
-  trained.open = null; askEl.fix.hidden = true; ui.pistachio.classList.remove('ask');
-  trained.busy = true;
-  try {
-    subtitle(word); subtitleHeard(word); subtitleDone(1600);
-    const r = await trainedOp({ op: 'correct', word, focus: trained.focus });
-    trained.lastCorrection = { word, wrote: !!r.wrote, records: r.records };
-    logLine(`<span class="who">you</span> ${esc(word)} <span class="dim">· ${r.wrote ? `kept as a word record under the pattern of the question's end (${r.records.toLocaleString('en')} records); it hears the word` : 'heard, and no record kept'}</span>`, 'c');
-  } finally { trained.busy = false; trained.quietUntil = performance.now() + 1500; }
 }
 // How this brain works: the explainer in a drawer (or a tab); the "how?" links open it at their part
 function explainer(anchor = '') {
@@ -996,7 +980,6 @@ $('ask-forget')?.addEventListener('click', async () => { // every sound it learn
   location.reload();
 });
 $('ask-mic')?.addEventListener('click', (e) => { e.preventDefault(); toggleMic(); });
-askEl.fix?.addEventListener('submit', (e) => { e.preventDefault(); const w = askEl.word.value.trim(); if (w) correctIt(w); });
 for (const b of document.querySelectorAll('[data-ask]')) b.addEventListener('click', () => { askEl.q.value = b.dataset.ask; askEl.q.focus(); });
 
 // --- the frame loop ----------------------------------------------------------------------------------------

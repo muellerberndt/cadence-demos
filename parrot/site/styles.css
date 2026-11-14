@@ -241,8 +241,6 @@ html.embedded .toast { top: 100px; }
 .ask-row { display: flex; gap: 6px; }
 .ask-row input { flex: 1; min-width: 0; height: 28px; padding: 0 8px; border-radius: 7px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); font: 400 12.5px var(--body); }
 .ask-row button { height: 28px; padding: 0 12px; border-radius: 7px; border: 1px solid #7bed9f; background: rgba(123, 237, 159, .14); color: var(--ink); cursor: pointer; font-weight: 600; font-size: 12px; }
-.ask-row.fix { margin-top: 4px; }
-.ask-row.fix button { border-color: var(--bad); background: rgba(242, 134, 123, .12); }
 .ask-try { display: flex; flex-wrap: wrap; gap: 4px; margin: 5px 0 2px; align-items: center; color: var(--ink-3); font-size: 11px; }
 .ask-try button { padding: 1px 7px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--ink-2); cursor: pointer; font-size: 11px; }
 .ask-note { margin: 4px 0 0; color: var(--ink-3); font-size: 11px; line-height: 1.35; }
@@ -345,8 +343,7 @@ body.demo .b3-label .cx-q { display: none; }
 /* the chat: small, at the bottom right of the brain */
 body.demo .ask { position: absolute; right: 18px; bottom: 18px; width: min(360px, 44%); z-index: 7; margin: 0; padding: 10px 12px; border-radius: 12px;
   border: 1px solid rgb(255 255 255 / 0.1); background: rgb(8 9 13 / 0.82); backdrop-filter: blur(8px); font-size: 12.5px; }
-body.demo .ask-title, body.demo .ask-learned, body.demo .ask-version, body.demo .ask-note, body.demo .ask-words, body.demo .ask-log li.judge, body.demo .ask-log .dim,
-body.demo .ask-row.fix { display: none !important; }
+body.demo .ask-title, body.demo .ask-learned, body.demo .ask-version, body.demo .ask-note, body.demo .ask-words, body.demo .ask-log li.judge, body.demo .ask-log .dim { display: none !important; }
 body.demo .ask-log { max-height: 150px; margin: 0 0 8px; }
 body.demo .ask-log li { font: 400 13px/1.45 var(--body); color: #dfe3ea; }
 body.demo .ask-log .who { min-width: 50px; font: 400 10px var(--mono); letter-spacing: 0.08em; color: rgb(232 235 240 / 0.45); }

@@ -71,6 +71,10 @@ class Host(Composed):
         self.spec_path = spec
         seed = int(json.loads(spec.read_text()).get("records", {}).get("settings", {}).get("seed", 0))
         self.meaning = MeaningParrot(folder / "brain.npz", spec, seed=seed)
+        # the word records are off at the turn: the brain answers from its own state. Their key is
+        # the glimpse and the last word heard, so a recall at the turn returned the thing's old answer
+        # whatever was asked (on fresh rooms with unseen kind-colour pairs: .69 with them, .77 without)
+        self.meaning.records = None
         self.load_s = time.perf_counter() - began
         found = folder / "version.json"
         self.version = json.loads(found.read_text()) if found.exists() else {}

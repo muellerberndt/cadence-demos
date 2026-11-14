@@ -19,7 +19,7 @@
   "host.py": "4e8ae5c53f34f86447e4b326f2d2a5f61427c7220c0ccdc1f8cf76c4d3fe4314",
   "page.py": "6c5704fcd189e50a4305df94d7d05be3ffe3bf6303f64021592092105eb901f2",
   "sounds.py": "69d1a03623deed5daef06d4cfb3e04a386a9d2e02564dae0cb98949fb0f14fe4",
-  "trained.py": "e766d6718efc24469494fae224cea19f57d10a5013fb523150e244a369a4f00b"
+  "trained.py": "61e45a4fcd0f7c5e4e0f1fd8899132a8f97e5895f3a9e99bc183835cc0caf066"
  },
  "files": {
   "calls.json": "645453a2f0c7c4874addbf143bac95861505484018dac7f64bb5fe39fde0dbf7"
@@ -55,7 +55,7 @@
    "trained/brain.npz": "27d5b01df520de5b007284e0506b462c8e06ac7bd2128c56fe8a945b2b484c5f",
    "trained/brain.records.npz": "b4a0230e305869aeaa65be82181fa94a7e48e6824c0ca73f0bb40e1221bb85eb",
    "trained/spec.json": "95ff41dadb5d57969d353a6a438436fd59ecb27ac87f385f7b2bb8a17ed56076",
-   "trained/version.json": "bb19675115f91f617e9239add4b1d9999228314954d1a1fe7620552596f8e44d"
+   "trained/version.json": "ecaaaae573b7a5acecc86772a20f5a346467ce0fde50c14cedf35e889f0db598"
   },
   "trained-dir15": {
    "trained-dir15/brain.npz": "53642068ea8e94770fc645b1f682c6fa6e9d7e5ad4ab4aba2d0b54f8d36f33a3",
@@ -111,18 +111,20 @@
    "stage": "pretrain",
    "step": "the owner's pretraining stage: every focus question interleaved (what is this, its colour, is this <colour>, its shape, is this round, can you eat this, where is it, what material), from the demo brain",
    "label": "the pretrained brain",
-   "good": "in the demo room: can you eat this (all five things), where each thing is, the shape of each thing, is this round, the colour of a thing asked by name, what is this (cup, key, block); held out: name .91, colour of a named thing .91, shape 1.00, is this round 1.00, can you eat this 1.00, direction .88",
-   "lost": "what colour is this, is this <colour> on some things (is this white of the cup), what material is this on some things, what is this of the apple and the ball",
+   "good": "in the demo room, answered from its own state (the word records off at the turn): what is this (apple, cup, key, block), what colour is this (apple, cup, green ball), can you eat this (all five things), where each thing is, the shape of each thing, is this round, the colour of a thing asked by name (four of five), is this white of the key; held out: name .91, colour of a named thing .91, shape 1.00, is this round 1.00, can you eat this 1.00, direction .88",
+   "lost": "what colour is this of the block, is this <colour> on some things (is this white of the cup, is this blue of the green ball), what material is this on some things, what is this of the green ball",
    "founder": 33400121,
    "exported": "2026-11-14 16:20 UTC (pretraining block 400)",
    "source": "the meaning lane's pretraining stage (benchmarks/meaning/pretrain_stage.py) from code_33400121_demo_dir15, block 400",
    "lane": "muellerberndt/cadence lane-0100-meaning (pretrain_stage.py at 4759916d; host 568a0ad8)",
    "readings": {
     "held out at block 400 (32 a form)": "name .91, colour_of .91, colour_this .66, is_colour .59, shape_of 1.00, shape_not 1.00, is_round 1.00, can_eat 1.00, direction .88, material .56, imitate 1.00",
-    "the demo room's 50 questions through the page host, three passes": "32 right every time; the page's presets are taken from these"
+    "the demo room's 50 questions through the page host, three passes": "32 right every time; the page's presets are taken from these",
+    "the demo room's 50 questions through the page host, three passes, word records off at the turn": "37 right every time; the page's presets are taken from these"
    },
    "learned": "the name of the thing in focus, the colour of a thing asked about by name, its shape (round, or no), whether it is round, whether you can eat it, where a thing is (front, right, behind, left)",
-   "not_learned": "the colour of the thing in focus asked as what colour is this; distance"
+   "not_learned": "the colour of the thing in focus asked as what colour is this; distance",
+   "host": "the word records are off at the turn: on fresh rooms through the host, .89 seen and .77 held-out pairs without them, .74 and .69 with them as trained"
   },
   "trained-dir15": {
    "stage": "demo",
@@ -287,18 +289,20 @@
   "stage": "pretrain",
   "step": "the owner's pretraining stage: every focus question interleaved (what is this, its colour, is this <colour>, its shape, is this round, can you eat this, where is it, what material), from the demo brain",
   "label": "the pretrained brain",
-  "good": "in the demo room: can you eat this (all five things), where each thing is, the shape of each thing, is this round, the colour of a thing asked by name, what is this (cup, key, block); held out: name .91, colour of a named thing .91, shape 1.00, is this round 1.00, can you eat this 1.00, direction .88",
-  "lost": "what colour is this, is this <colour> on some things (is this white of the cup), what material is this on some things, what is this of the apple and the ball",
+  "good": "in the demo room, answered from its own state (the word records off at the turn): what is this (apple, cup, key, block), what colour is this (apple, cup, green ball), can you eat this (all five things), where each thing is, the shape of each thing, is this round, the colour of a thing asked by name (four of five), is this white of the key; held out: name .91, colour of a named thing .91, shape 1.00, is this round 1.00, can you eat this 1.00, direction .88",
+  "lost": "what colour is this of the block, is this <colour> on some things (is this white of the cup, is this blue of the green ball), what material is this on some things, what is this of the green ball",
   "founder": 33400121,
   "exported": "2026-11-14 16:20 UTC (pretraining block 400)",
   "source": "the meaning lane's pretraining stage (benchmarks/meaning/pretrain_stage.py) from code_33400121_demo_dir15, block 400",
   "lane": "muellerberndt/cadence lane-0100-meaning (pretrain_stage.py at 4759916d; host 568a0ad8)",
   "readings": {
    "held out at block 400 (32 a form)": "name .91, colour_of .91, colour_this .66, is_colour .59, shape_of 1.00, shape_not 1.00, is_round 1.00, can_eat 1.00, direction .88, material .56, imitate 1.00",
-   "the demo room's 50 questions through the page host, three passes": "32 right every time; the page's presets are taken from these"
+   "the demo room's 50 questions through the page host, three passes": "32 right every time; the page's presets are taken from these",
+   "the demo room's 50 questions through the page host, three passes, word records off at the turn": "37 right every time; the page's presets are taken from these"
   },
   "learned": "the name of the thing in focus, the colour of a thing asked about by name, its shape (round, or no), whether it is round, whether you can eat it, where a thing is (front, right, behind, left)",
-  "not_learned": "the colour of the thing in focus asked as what colour is this; distance"
+  "not_learned": "the colour of the thing in focus asked as what colour is this; distance",
+  "host": "the word records are off at the turn: on fresh rooms through the host, .89 seen and .77 held-out pairs without them, .74 and .69 with them as trained"
  },
  "wheel": "cadence_net-0.99.0-lane-meaning-568a0ad8-parrot-5fccf8cb.whl",
  "wheel_sha256": "ab47bd3167872fe46f9e4f4bc7437b69bc12bee288fb3e7e606aa20b082ab174",

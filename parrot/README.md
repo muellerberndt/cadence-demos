@@ -10,9 +10,9 @@ The pack holds three brains, picked in the page's brain switch (`?brain=trained|
 
 - **trained tonight**: the composed body and hearing, with the brain the meaning lane trained overnight
   (cadence#334, `cadence.meaning.host.MeaningParrot`, its files in `site/pack/trained/` with
-  `version.json` naming its step, founder and export). It hears typed questions (Ask it, under the
-  brain) one word a moment and answers in its turn; a pistachio pays its last answer, a typed word
-  corrects it. In its mind shows the facets of the thing in focus that the meaning lane's probes read
+  `version.json` naming its step, founder and export). It hears the preset questions (Ask it, under
+  the brain) as sound through its ear, one word a moment, and answers in its turn from its own state
+  (its word records are off at the turn); a pistachio pays its last answer. In its mind shows the facets of the thing in focus that the meaning lane's probes read
   from its state, where the lane exports `probes.json` beside the brain.
 - **composed**: the parrot-brain lane's `cadence.parrot` (eyes, distance, focus, map) with the page's
   hearing layer.
