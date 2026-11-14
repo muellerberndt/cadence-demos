@@ -2,15 +2,16 @@
 any wheel, each with its SHA-256, which the page's worker checks before it runs anything.
 
     python tools/build_pack.py [--package parrotbrain] [--wheel FILE] [--cadence VERSION] [--file NAME ...] [--brain TEXT]
-                               [--trained DIR --trained-source TEXT]
+                               [--trained DIR --trained-source TEXT ...]
 
 The pack ships the placeholder host by default (pack/py/parrotbrain, NumPy only). The composed
 brain's host replaces it: its package under pack/py/<package>/, its files (weights, settings) in
 pack/, its wheel in pack/, then this tool again.
 
-`--trained DIR` (a folder in pack/ holding `brain.npz`, `brain.records.npz`, `spec.json` and `version.json`) adds the
-brain trained tonight (`parrotbrain.trained`): its files are `host_files.trained`, which the worker
-loads only when that brain is chosen.
+`--trained DIR` (a folder in pack/ holding `brain.npz`, `brain.records.npz`, `spec.json`, `version.json`
+and, where the meaning lane exports it, `probes.json`) adds a brain trained tonight
+(`parrotbrain.trained`) under the key DIR: its files are `host_files[DIR]`, which the worker loads
+only when that brain is chosen. Repeat it for several; the first is the page's `trained` entry.
 """
 from __future__ import annotations
 
@@ -37,8 +38,8 @@ def main() -> int:
     ap.add_argument("--file", action="append", default=[], help="a brain file in pack/ the host reads")
     ap.add_argument("--brain", default="composed: cadence.parrot (the parrot-brain lane), with the page's hearing layer; placeholder: a hand-written controller")
     ap.add_argument("--wheel-source", default="")
-    ap.add_argument("--trained", help="a folder in pack/ with the trained brain's brain.npz, brain.records.npz and spec.json")
-    ap.add_argument("--trained-source", default="", help="where the trained brain's files come from")
+    ap.add_argument("--trained", action="append", default=[], help="a folder in pack/ with a trained brain's files (repeatable)")
+    ap.add_argument("--trained-source", action="append", default=[], help="where each trained brain's files come from, in order")
     args = ap.parse_args()
     src = PACK / "py" / args.package
     sources = sorted(p.name for p in src.glob("*.py"))
@@ -57,12 +58,15 @@ def main() -> int:
         "hosts": {"composed": "parrotbrain.page", "placeholder": "parrotbrain.host"},
     }
     if args.trained:
-        names = [f"{args.trained}/{n}" for n in ("brain.npz", "brain.records.npz", "spec.json", "version.json", "probes.json")
-                 if n != "probes.json" or (PACK / args.trained / n).exists()]  # the probes where the lane exports them
-        manifest["hosts"]["trained"] = f"{args.package}.trained"
-        manifest["host_files"] = {"trained": {n: sha(PACK / n) for n in names}}
-        manifest["trained_source"] = args.trained_source
-        manifest["trained_version"] = json.loads((PACK / args.trained / "version.json").read_text())
+        manifest["host_files"], manifest["trained_versions"], manifest["trained_sources"] = {}, {}, {}
+        for k, folder in enumerate(args.trained):
+            names = [f"{folder}/{n}" for n in ("brain.npz", "brain.records.npz", "spec.json", "version.json", "probes.json")
+                     if n != "probes.json" or (PACK / folder / n).exists()]  # the probes where the lane exports them
+            manifest["hosts"][folder] = f"{args.package}.trained"
+            manifest["host_files"][folder] = {n: sha(PACK / n) for n in names}
+            manifest["trained_versions"][folder] = json.loads((PACK / folder / "version.json").read_text())
+            manifest["trained_sources"][folder] = args.trained_source[k] if k < len(args.trained_source) else ""
+        manifest["trained_version"] = manifest["trained_versions"][args.trained[0]]
     if args.wheel:
         manifest.update({"wheel": args.wheel, "wheel_sha256": sha(PACK / args.wheel), "cadence": args.cadence, "wheel_source": args.wheel_source})
     (PACK / "manifest.json").write_text(json.dumps(manifest, indent=1) + "\n")

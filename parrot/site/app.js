@@ -640,7 +640,7 @@ function setupTrained(t) {
   setupMind(t);
   askEl.words.textContent = [...t.words].sort().join(' · ');
   const v = t.version || {};
-  $('ask-version').textContent = `Version: step ${v.stage || '?'} (${v.step || ''}) · founder ${v.founder ?? '?'} · exported ${v.exported || '?'}`;
+  $('ask-version').textContent = `Version: step ${v.stage || '?'} (${v.step || ''}) · founder ${v.founder ?? '?'} · exported ${v.exported || '?'}${v.good ? ` · does well: ${v.good}` : ''}${v.lost ? ` · lacks: ${v.lost}` : ''}`;
   if (v.learned) $('ask-learned').textContent = `Learned tonight: ${v.learned}. Not learned: ${v.not_learned || 'see the help'}.`;
   $('ask-version').title = `${t.neurons.toLocaleString('en')} neurons, ${t.synapses.toLocaleString('en')} synapses, ${t.records.toLocaleString('en')} word records; from ${v.source || 'the meaning lane'}`;
   askNote();
@@ -739,6 +739,7 @@ function setupMind(t) {
     mindEl.facets.append(a, v, c);
   }
   mindEl.thing.textContent = 'click a thing';
+  $('im-note').hidden = !p;
 }
 function showMind(mind, focusId) {
   if (!state.trained || !mindEl.card) return;
@@ -851,6 +852,8 @@ async function correctIt(word) {
     logLine(`<span class="who">you</span> ${esc(word)} <span class="dim">· ${r.wrote ? `kept as a word record under the pattern of the question's end (${r.records.toLocaleString('en')} records); it hears the word` : 'heard, and no record kept'}</span>`, 'c');
   } finally { trained.busy = false; trained.quietUntil = performance.now() + 1500; }
 }
+// "how?" links to the brain explainer, shown where the page has it
+fetch('brain-explainer.html', { method: 'HEAD' }).then((r) => { if (r.ok) for (const a of document.querySelectorAll('a.how')) a.hidden = false; }).catch(() => {});
 askEl.form?.addEventListener('submit', (e) => { e.preventDefault(); const q = askEl.q.value.trim(); if (q) { audio.unlock().catch(() => {}); askIt(q); } });
 askEl.fix?.addEventListener('submit', (e) => { e.preventDefault(); const w = askEl.word.value.trim(); if (w) correctIt(w); });
 for (const b of document.querySelectorAll('[data-ask]')) b.addEventListener('click', () => { askEl.q.value = b.dataset.ask; askEl.q.focus(); });
@@ -1055,9 +1058,19 @@ async function start() {
   if (query.get('brain') === 'off') { setStatus('Ready (no brain)', 'ready'); document.body.dataset.ready = '1'; return; }
   // the composed brain (the parrot-brain lane's), or the placeholder; the placeholder also when the
   // composed brain does not start
-  fetch(new URL('manifest.json', PACK)).then((r) => r.json()).then((m) => { // the trained option names its version
-    const o = $('brain-kind').querySelector('option[value="trained"]');
-    if (!m.hosts?.trained) o?.remove(); else if (o && m.trained_version?.label) o.textContent = `trained tonight (${m.trained_version.label})`;
+  // the switch's trained entries, each named by its version: what it does well, and what it lacks
+  const options = fetch(new URL('manifest.json', PACK)).then((r) => r.json()).then((m) => {
+    const sel = $('brain-kind'), first = sel.querySelector('option[value="trained"]');
+    const versions = m.trained_versions || (m.trained_version ? { trained: m.trained_version } : {});
+    if (!m.hosts?.trained) first?.remove();
+    let after = first;
+    for (const [key, v] of Object.entries(versions)) {
+      let o = sel.querySelector(`option[value="${key}"]`);
+      if (!o) { o = document.createElement('option'); o.value = key; after.after(o); }
+      o.textContent = `trained: ${v.label}${v.good ? ` · ${v.good}` : ''}`;
+      o.title = [v.good && `Does well: ${v.good}.`, v.lost && `Lacks: ${v.lost}.`].filter(Boolean).join(' ');
+      after = o;
+    }
   }).catch(() => {});
   let wanted = query.get('brain') || (() => { try { return localStorage.getItem('parrot.brain'); } catch (e) { return null; } })() || 'trained';
   const config = { eye: { w: EYE.w, h: EYE.h, field: EYE.field, vfield: EYE.vfield, fovea: EYE.fovea, axis: EYE.axis } };
@@ -1084,7 +1097,8 @@ async function start() {
     state.composed = !desc.placeholder;
     state.trained = desc.name === 'trained';
     document.body.dataset.brain = state.trained ? 'trained' : state.composed ? 'composed' : 'placeholder';
-    $('brain-kind').value = document.body.dataset.brain;
+    await options;
+    $('brain-kind').value = state.trained ? out.brain_kind || 'trained' : document.body.dataset.brain;
     if (state.trained) setupTrained(desc.trained);
     view.setup(desc, rig.joints);
     for (const r of desc.repertoire || []) addChip(r);

@@ -1,0 +1,15 @@
+{
+ "stage": "N1",
+ "step": "names",
+ "label": "N1 names (deep 111)",
+ "good": "names .98, saying back a word 1.00",
+ "lost": "colour: it has not learned it, and its probe reads colour below chance",
+ "founder": 33400111,
+ "exported": "2026-11-14 00:44 UTC",
+ "source": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/deep_33400111_N1/",
+ "lane": "muellerberndt/cadence lane-0100-meaning, the night's deep composition (4 processing regions and the association, apical .5)",
+ "readings": {"N0 imitation": "1.00", "N1 naming of the thing in focus": ".98"},
+ "learned": "the name of the thing in focus when asked what is this (.98) and to say back a word it hears (1.00)",
+ "not_learned": "colour, places and relations; asked those, it names a thing",
+ "probes": "probes.json beside the brain (kind 1.00, round .99, material .84, edible .99 held out; colour .14 against .35 by chance)"
+}
