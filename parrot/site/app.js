@@ -874,6 +874,7 @@ async function listen(url, expected, focusId) {
 
 async function askIt(text, { clip = null } = {}) {
   if (!state.trained || trained.busy) return;
+  bubble(null);
   const words = text.toLowerCase().replace(/\bcolor\b/g, 'colour').replace(/[^a-z<>\s]/g, ' ').split(/\s+/).filter(Boolean);
   const heard = words.filter((w) => trained.vocab.has(w)), unheard = words.filter((w) => !trained.vocab.has(w));
   if (!heard.length) { logLine(`It knows none of these words. Its words are listed under <b>Its words</b>.`, 'warn'); return; }
@@ -966,6 +967,7 @@ askEl.form?.addEventListener('submit', async (e) => {
     const id = [...room.things.values()].find((t) => t.kind === opt.dataset.focus)?.id;
     if (id) { trained.focus = id; state.cue = cueFor(id); state.pointed = { id, until: performance.now() + 1e9 }; askNote(); }
   }
+  bubble(null); // a new question: the last answer's bubble goes at once
   brain3d?.scan?.question(q); subtitle(q);
   const clip = (await voiceLines).questions?.[normQ(q)];
   if (!clip) console.warn(`[ear] no sound for "${q}": the typed words stand in`);
