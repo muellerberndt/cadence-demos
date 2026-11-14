@@ -26,7 +26,7 @@ class Host:
     def __init__(self, config: dict[str, Any]):
         self.brain = Composed({"files": config.get("files"), "whole": config.get("whole", False), "learn": bool(config.get("learn", False)),
                                **({"genes": config["genes"]} if config.get("genes") else {})})
-        self.hearing = Hearing({"eye": {"w": 16, "h": 8}, "files": config.get("files"), "revise": config.get("revise", 0.7)})
+        self.hearing = Hearing({"eye": {"w": 16, "h": 8}, "files": config.get("files"), "revise": config.get("revise", 0.7), "words": config.get("words")})
         self.blank = np.zeros(16 * 8 * 3, np.uint8)
         d = self.brain.describe()
         self.base = int(d["neurons"])
@@ -67,8 +67,8 @@ class Host:
                 self.buffers["voice_pcm"] = self.hearing.buffers["voice_pcm"]
                 names.append("voice_pcm")
         lessons = int(getattr(getattr(self.brain.parrot, "distance", None), "lessons", 0) or 0)
-        out.update(voice_rate=heard.get("voice_rate", 8000), knows=heard.get("knows", []), recalled=heard.get("recalled"), buffers=names, lessons=lessons, words=len(self.hearing.mem.sayable()), drive=heard["drive"], said_sound=heard["said"], heard_sound=heard["heard_sound"],
-                   memory=heard["memory"], repertoire=heard["repertoire"], heard=heard["heard"], paid_sounds=heard["paid"])
+        out.update(voice_rate=heard.get("voice_rate", 8000), knows=heard.get("knows", []), recalled=heard.get("recalled"), buffers=names, lessons=lessons, words=len(self.hearing.mem.sayable()), drive=heard["drive"], said_sound=heard["said"], heard_sound=heard["heard_sound"], saying=heard.get("saying", False), heard_sounds=heard.get("heard_sounds", []),
+                   memory=heard["memory"], repertoire=heard["repertoire"], heard=heard["heard"], paid_sounds=heard["paid"], linked=heard.get("linked"))
         return out
 
     def handle(self, message: dict[str, Any]) -> dict[str, Any]:

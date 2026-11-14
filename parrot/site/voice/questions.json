@@ -1,1 +1,14 @@
-{}
+{
+ "questions": {
+  "what is this": "questions/what_is_this.wav",
+  "can you eat this": "questions/can_you_eat_this.wav",
+  "where is the cup": "questions/where_is_the_cup.wav",
+  "what colour has the apple": "questions/what_colour_has_the_apple.wav",
+  "where is the ball": "questions/where_is_the_ball.wav",
+  "what shape has the apple": "questions/what_shape_has_the_apple.wav",
+  "is this red": "questions/is_this_red.wav",
+  "what colour has the cup": "questions/what_colour_has_the_cup.wav",
+  "what shape has the block": "questions/what_shape_has_the_block.wav"
+ },
+ "voice": "a man's voice (Chatterbox, Resemble AI, MIT), each word its own take, joined with short pauses"
+}

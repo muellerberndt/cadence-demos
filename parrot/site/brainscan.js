@@ -105,7 +105,13 @@ export class Scan {
   /** The question being asked, for the property it asks about. */
   question(text) { this.asked = null; for (const [f, re] of ASKED) if (re.test(text || '')) { this.asked = f; break; } }
   /** The word the voice says (the box shows it while it plays). */
-  say(word) { this.voiceWord.textContent = word; this.said = 2.4; }
+  say(word) {
+    this.voiceWord.textContent = word; this.said = 2.4;
+    // the word it says: its concept lights (marked said), with a pulse from the association region to the voice
+    const L = this.b.live, vt = this.b.clock.vt;
+    L?.packets?.push({ path: ['ncl', 'vocal'], t0: vt, dur: 0.9, colour: L.cSay });
+    this.heardTag = { text: `${window.parrotPage?.label?.(word) || word} · said`, k: 1, until: performance.now() + 2600 };
+  }
   reward() { this.dop = 1; }
   /** A heard sound: the ear and Field L light; a sound it knows (its record told again) lights NCM and its
    *  record; a known sound linked to a thing (the hearing memory's sound-to-thing synapses) lights that
@@ -118,7 +124,8 @@ export class Scan {
     const s = L.slots?.get(slot); if (s) s.flash = vt + 0.3;
     if (!kind) return;
     L.packets.push({ path: ['ncm', 'ncl'], t0: vt + 0.3, dur: 1.0, colour: L.cHear });
-    this.heardTag = { text: window.parrotPage?.label?.(kind) || kind, k: Math.max(0.35, Math.min(1, strength)), until: performance.now() + 3800 };
+    this.heardTag = { text: `${window.parrotPage?.label?.(kind) || kind} · heard`, k: Math.max(0.35, Math.min(1, strength)), until: performance.now() + 3800 };
+    this.lastHeardTag = { word: kind, at: performance.now() };
   }
   clearConcept() { this.concept = null; }
 
@@ -187,7 +194,7 @@ export class Scan {
     // the concept tags: the thing the state holds over the association region, its properties around it
     const c = this.concept, wants = [];
     const heard = this.heardTag && performance.now() < this.heardTag.until ? this.heardTag : null;
-    if (heard) wants.push([`${heard.text} · heard`, heard.k, true]); // a word heard: its thing alone (the probes' facets read the state, not the word)
+    if (heard) wants.push([heard.text, heard.k, true]); // a word heard: its thing alone (the probes' facets read the state, not the word)
     else if (c?.kind) wants.push([c.kind.value, this.conf(c.kind), true]);
     for (const name of ['colour', 'round', 'material', 'edible', 'direction']) {
       const f2 = !heard && c?.[name]; if (!f2) continue;

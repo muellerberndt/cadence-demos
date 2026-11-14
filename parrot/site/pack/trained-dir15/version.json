@@ -1,0 +1,15 @@
+{
+ "stage": "demo",
+ "step": "the owner's demo stage: the shape of a thing and where it is, with names, colour and saying back revisited",
+ "label": "the demo brain",
+ "good": "in its room it answers the five demo questions: what is this (apple), the apple's colour (red), its shape (round), where the ball is (right) and the block's shape (no); held out: shape 1.00, direction .91, name .94, colour .75",
+ "lost": "what is left of a thing and what objects are round (it says round); distance",
+ "founder": 33400121,
+ "exported": "2026-11-14 05:53 UTC",
+ "source": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/code_33400121_demo_dir15/",
+ "lane": "muellerberndt/cadence lane-0100-meaning, the code composition's demo stage (demo_stage.py: interleaved blocks, balanced fields, decay .9, word records keyed on the input; host 81474696)",
+ "readings": {"held out, shape of a thing (round)": "1.00", "held out, a thing that is not round (no)": "1.00", "held out, where is the thing (direction)": ".91", "held out, names": ".94", "held out, colour of a named thing": ".75", "held out, saying back a word": ".91", "the demo room's five": "right at blocks 5, 10 and 15", "page test at pistachio(0.05, first)": "red and apple hold through 10 paid namings"},
+ "learned": "the name of the thing in focus, the colour of a thing asked about by name, its shape (round, or no), where a thing is (front, right, behind, left) and saying back a word",
+ "not_learned": "what is left of a thing; what objects are round; distance",
+ "probes": "probes.json beside the brain (kind .89, colour .89, round .98, material .85, edible .97, direction .91 held out; distance .62 against .51 by chance)"
+}

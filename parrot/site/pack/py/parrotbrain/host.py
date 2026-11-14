@@ -91,6 +91,7 @@ class Host:
         self.pop = {p["name"]: p for p in self.populations}
         self.preferred = np.geomspace(0.012, 0.25, DISTANCE_UNITS)  # apparent sizes (fractions of a field) each unit prefers
         self.revise = float(config.get("revise", 0.7))
+        self.words = list(config.get("words") or KINDS)  # the words its sounds can stand for (the trained brain's vocabulary)
         self.focus_kind = None
         self.reset()
         self.load_calls(config.get("files"))
@@ -124,7 +125,8 @@ class Host:
         self.floor = math.log(1e-6)
         self.levels = np.zeros(300)  # the last three seconds' frame energies
         self.level_at = 0
-        self.mem = SoundMemory(revise=self.revise)
+        self.mem = SoundMemory(revise=self.revise, words=self.words)
+        self.pending = None      # a sound heard with a thing in focus: a pistachio soon after links it to that thing (slot, word, moment)
         self.heard_event = None
         self.noise = np.full(40, math.log(1e-6) + 4.0, np.float64)  # the background's spectrum, per band (log)
         self.last_said = None    # (id, moment)
@@ -174,7 +176,9 @@ class Host:
         return np.log(q + 1e-6).astype(np.float32)
 
     def hear_sound(self, frames: np.ndarray, pcm: np.ndarray | None = None) -> dict | None:
-        """A voice-like sound the visitor made, cleaned of the background, told to the memories."""
+        """A voice-like sound the visitor made, cleaned of the background, told to the memories; the
+        word it stands for is its record's link. Heard with a thing in focus, it waits for a pistachio
+        that links it to that thing."""
         ok, _ = self.voice_like(frames)
         if not ok:
             return None
@@ -184,11 +188,14 @@ class Host:
         excess = float(np.percentile(np.log(np.exp(cleaned.astype(np.float64)).sum(axis=1)), 75) - np.log(np.exp(self.noise).sum()))  # its louder part (its soft start and end are kept too)
         if excess < 2.0:
             return None
-        self.heard_event = self.mem.hear(cleaned, self.focus_kind, pcm)
+        self.heard_event = self.mem.hear(cleaned, pcm)
         slot = self.heard_event["write"]["slot"]
         if slot in self.mem.sayable():  # a word it knows, heard again: it rehearses it inwardly once
             self.mem.practice(slot)
-        return {"id": f"you-{slot}", "slot": slot, "deep": round(float(self.mem.records.deep[slot]), 2)}
+        word, link = self.mem.word_of(slot)
+        self.pending = (slot, self.focus_kind, self.t) if self.focus_kind in self.words and word != self.focus_kind else None
+        return {"id": f"you-{slot}", "slot": slot, "deep": round(float(self.mem.records.deep[slot]), 2), "known": bool(self.heard_event["write"]["revised"]),
+                "word": word, "link": link}
 
     def you_sounds(self) -> list:
         """Records deep enough to say back: the repertoire's sounds learned from the visitor."""
@@ -203,6 +210,7 @@ class Host:
 
     def remember(self, saved: dict) -> dict[str, Any]:
         self.mem.load(saved or {})
+        self._sayable_sig = tuple(self.mem.sayable())
         return {"repertoire": self.repertoire_list(), "memory": self.mem.view()}
 
     def forget(self) -> dict[str, Any]:
@@ -212,10 +220,11 @@ class Host:
     def knows(self) -> list:
         """What it knows: each kind of thing and the word it recalls for it (the link's strength)."""
         out = []
-        for kind in KINDS:
-            slot, link = self.mem.recall(kind)
-            if slot is not None and link > 0.05:
-                out.append({"kind": kind, "id": f"you-{slot}", "link": round(link, 3)})
+        r = self.mem.reads()
+        for word in self.words:
+            slot, link = self.mem.recall(word, r)
+            if slot is not None:
+                out.append({"kind": word, "id": f"you-{slot}", "slot": int(slot), "link": round(link, 3)})
         return out
 
     def mem_recalled(self) -> dict | None:
@@ -269,6 +278,16 @@ class Host:
                            program=r["program"].ravel().round(2).tolist(), pcm=np.round(self.mem.pcm_of(r["slot"]), 4).tolist())
             out.append(row)
         return out
+
+    def _repertoire_changed(self, learned: dict | None, call: dict | None) -> bool:
+        """Whether the page needs the repertoire again (its sounds' audio is large): when the sounds it can say
+        changed (a sound heard or a call said can change them)."""
+        if learned is None and call is None:
+            return False
+        sig = tuple(self.mem.sayable())
+        changed = sig != getattr(self, "_sayable_sig", None)
+        self._sayable_sig = sig
+        return changed
 
     def describe(self) -> dict[str, Any]:
         return {
@@ -414,6 +433,7 @@ class Host:
         self.held = (0.85 * self.held + 0.15 * ear).astype(np.float32)
         # sounds the visitor makes: onset to offset, from the frames' total energy (not while it calls)
         learned, ended, startle = None, False, False
+        heard_list = []  # every sound heard this moment, in order (a long moment can end several)
         for f, chunk in zip(frames, chunks):
             e = float(np.log(np.exp(f.astype(np.float64)).sum()))
             # a sudden sound: a loud onset after quiet that the ear's running level did not predict
@@ -455,6 +475,8 @@ class Host:
                     if ok and not self.spoiled:  # a fragment heard over its own voice is not learned
                         got = self.hear_sound(heard, heard_pcm)
                         learned = got or learned
+                        if got:
+                            heard_list.append(got)
                         ended = True
                     e_h = np.log(np.exp(heard.astype(np.float64)).sum(axis=1))
                     self.events = (self.events + [{"t": self.t, "frames": len(heard), "loud": int(np.sum(e_h > self.floor + 4.0)), "kind": why,
@@ -473,7 +495,12 @@ class Host:
         self.things = count if count is not None else self.things
         self.drive += float(self.rng.uniform(0.012, 0.04)) + (0.4 if ended else 0.0)
         reward = float(meta.get("reward") or 0.0)
-        if reward > 0 and self.last_said and self.t - self.last_said[1] < 60:
+        linked = None
+        if reward > 0 and self.pending and self.t - self.pending[2] < 80:  # a pistachio soon after a sound heard with a thing in focus: the sound becomes its word
+            self.mem.link(self.pending[0], self.pending[1], reward)
+            linked = {"slot": int(self.pending[0]), "word": self.pending[1], "link": self.mem.word_of(self.pending[0])[1]}
+            self.pending = None
+        elif reward > 0 and self.last_said and self.t - self.last_said[1] < 60:
             self.paid[self.last_said[0]] = self.paid.get(self.last_said[0], 0.0) + reward
             if self.last_said[0].startswith("you-"):  # the thing it looked at and the word it said: their link grows
                 self.mem.reward_link(int(self.last_said[0][4:]), self.last_said[2], reward)
@@ -510,11 +537,11 @@ class Host:
         return {"buffers": names, "group_activity": {"distance": dist_units.tolist()}, "readout": readout,
                 "looked": {"eye": eye, "row": row, "col": col, "strength": round(strength, 3)},
                 "focus": self.focus, "heard": bool(ear.max() > 0.35), "newborn": True,
-                "drive": round(min(1.0, self.drive), 3), "said": call, "heard_sound": learned, "startle": startle, "recalled": self.mem_recalled(), "voice_rate": getattr(self, "voice_rate", 8000), "knows": self.knows(),
+                "drive": round(min(1.0, self.drive), 3), "said": call, "saying": self.saying > 0, "heard_sound": learned, "heard_sounds": heard_list, "startle": startle, "recalled": self.mem_recalled(), "voice_rate": getattr(self, "voice_rate", 8000), "knows": self.knows(),
                 "words": len(self.mem.sayable()),
                 "memory": self.mem.view() if (learned is not None or self.t % 10 == 0) else None,
-                "repertoire": self.repertoire_list() if (learned is not None or call is not None) else None,
-                "paid": {k: round(v, 2) for k, v in self.paid.items() if v}}
+                "repertoire": self.repertoire_list() if self._repertoire_changed(learned, call) else None,
+                "paid": {k: round(v, 2) for k, v in self.paid.items() if v}, "linked": linked}
 
     def handle(self, message: dict[str, Any]) -> dict[str, Any]:
         cmd = message.get("command")

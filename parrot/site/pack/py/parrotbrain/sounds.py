@@ -10,10 +10,13 @@ and takes the background's spectrum out) is told to two stores of the Cadence li
   replaced last; a record told once and never again fades. The record's depth is the sound's
   strength: a sound whose record is deep enough is one the parrot can say back. No count of its own
   is kept here: depth and fading are the library's.
-- **Synapses** (`cadence.SynapticMemory`): the sound's code as the key and the thing the parrot is
-  focused on as the value (one unit per kind of thing). Repetition accumulates in the slow,
-  consolidated matrix (the library's rule), so "Apfel" said while it looks at the apple links the
-  sound to the apple.
+- **Synapses** (`cadence.SynapticMemory`): the sound's code as the key and a word as the value (one
+  unit per word the parrot's brain knows: things, colours, shapes, directions, yes and no, the
+  question words). This is the sound-to-word link: a heard sound reads its record, the record's key
+  reads the synapses, and the strongest unit is the word the sound stands for. Read backwards (from
+  a word to the records), it gives the sound to say for a word. A link is taught with a lesson
+  (`link`): a pistachio after the visitor says a word with a thing in focus, or the starting words'
+  teaching. Repetition accumulates in the slow, consolidated matrix (the library's rule).
 
 A word told again must get cleaner with every hearing: the new take is first lined up with the
 record frame by frame (the best path between them in time), then the record moves to the running mean
@@ -42,7 +45,8 @@ PCM_RATE = 8000                  # the heard audio itself, kept at 8 kHz (a tele
 PCM_MAX = VALUE_FRAMES * 80      # 1.6 s of it
 FRAMES_WIDTH = VALUE_FRAMES * 40 + 1
 BANDS = 40
-KINDS = ["apple", "ball", "cup", "banana", "block", "duck", "lemon", "pear"]
+KINDS = ["apple", "ball", "cup", "banana", "block", "duck", "lemon", "pear"]  # the words of a brain that knows only things
+LINKED = 0.3  # a record whose strongest link reaches this stands for that word
 
 
 def resample(frames: np.ndarray, n: int) -> np.ndarray:
@@ -239,13 +243,14 @@ def code(frames: np.ndarray) -> np.ndarray:
 class SoundMemory:
     LEVEL = 2.5  # a record this deep is a sound the parrot can say back
 
-    def __init__(self, revise: float = 0.85, capacity: int = 48):
+    def __init__(self, revise: float = 0.85, capacity: int = 128, words: list[str] | None = None):
+        self.words = list(words or KINDS)
         # a write is the record "told again" only with that record's own key: the parrot decides that a
         # take is a word it knows by lining it up against the words it has (`same_word`)
         self.records = LongTermMemory(width=CODE_FRAMES * BANDS, value_width=FRAMES_WIDTH + PCM_MAX + 1, capacity=capacity,
                                       cosine=True, revise=0.9999, temperature=0.08, candidates=0,
                                       hold=36000.0, idle=40.0, depth=2.0)
-        self.synapses = SynapticMemory(pre=np.arange(CODE_FRAMES * BANDS), post=np.arange(len(KINDS)), rule="delta",
+        self.synapses = SynapticMemory(pre=np.arange(CODE_FRAMES * BANDS), post=np.arange(len(self.words)), rule="delta",
                                        decay=0.9, consolidation=0.05)
         self.synapses.reset(1)
         self.last_read: dict[str, Any] | None = None
@@ -256,9 +261,10 @@ class SoundMemory:
         self.typical = np.full(capacity, -1.0)  # how typical the kept take of each record is (its code's cosine with the record's key)
         self.rng = np.random.default_rng(31)
 
-    def hear(self, frames: np.ndarray, focus_kind: str | None, pcm: np.ndarray | None = None) -> dict[str, Any]:
+    def hear(self, frames: np.ndarray, pcm: np.ndarray | None = None) -> dict[str, Any]:
         """Tell the stores a heard sound: read with its code (the attention over the records), then
-        write it (a new record, or one told again), and link it to the focused thing."""
+        write it (a new record, or one told again). The word it stands for is its record's link
+        (`word_of`)."""
         key = code(frames)
         read = self.records.read(key)
         self.last_read = {"slots": read.slots.tolist(), "weights": np.round(read.weights[0], 4).tolist(),
@@ -282,9 +288,6 @@ class SoundMemory:
         self._mix_audio(slot, take, revised, before.get(int(slot)))
         self.last_write = {"slot": int(slot), "revised": bool(revised), "best_cosine": None if cos is None else round(cos, 3), "distance": self.last_distance,
                            "heard": int(self.heard[slot])}
-        if focus_kind in KINDS:
-            onehot = np.zeros(len(KINDS)); onehot[KINDS.index(focus_kind)] = 1.0
-            self.synapses.observe(key[None, :], onehot[None, :])
         return {"read": self.last_read, "write": self.last_write}
 
     def _blend_running_mean(self, slot: int, frames: np.ndarray, revised: bool, previous: np.ndarray | None) -> None:
@@ -341,31 +344,45 @@ class SoundMemory:
                 best, bd = int(s), d
         return (best if bd < SAME_WORD else None), round(float(bd), 3)
 
-    def recall(self, kind: str | None) -> tuple[int | None, float]:
-        """The concept recalls its word: the record whose sound the synapses link most strongly to
-        the focused kind of thing (the link read backwards, from the thing to the sound)."""
-        if kind not in KINDS:
-            return None, 0.0
-        j, best, top = KINDS.index(kind), None, 0.0
-        w = self.synapses.strength[0]
-        for s in self.sayable():
-            k = self.records.keys[s].astype(np.float64)
-            v = float((k / max(float(np.linalg.norm(k)), 1e-12)) @ w[:, j])
-            if v > top:
-                best, top = s, v
-        return best, top
+    def reads(self) -> np.ndarray:
+        """Every record's key read through the synapses (the links read forwards): records x words."""
+        n = self.records.count
+        if not n:
+            return np.zeros((0, len(self.words)))
+        k = self.records.keys[:n].astype(np.float64)
+        return (k / np.maximum(np.linalg.norm(k, axis=1, keepdims=True), 1e-12)) @ self.synapses.strength[0]
 
-    def reward_link(self, slot: int, kind: str | None, amount: float) -> None:
-        """A pistachio after the parrot said this word while focused on this thing: the link between
-        the thing and the word's sound grows (one more association lesson, weighted by the reward)."""
-        if kind not in KINDS or slot >= self.records.count:
+    def word_of(self, slot: int, reads: np.ndarray | None = None) -> tuple[str | None, float]:
+        """The word a record stands for: the strongest word unit its key reads, if it reaches LINKED."""
+        if not 0 <= slot < self.records.count:
+            return None, 0.0
+        v = (self.reads() if reads is None else reads)[slot]
+        j = int(np.argmax(v))
+        return (self.words[j] if v[j] >= LINKED else None), round(float(v[j]), 3)
+
+    def recall(self, word: str | None, reads: np.ndarray | None = None) -> tuple[int | None, float]:
+        """The word recalls its sound (the link read backwards, from the word to the records): of the
+        records it can say whose sound stands for this word, the one heard most (the deepest)."""
+        if word not in self.words:
+            return None, 0.0
+        r = self.reads() if reads is None else reads
+        best, top = None, (-1.0, 0.0)
+        for s in self.sayable():
+            w, link = self.word_of(s, r)
+            if w == word and (float(self.records.deep[s]), link) > top:
+                best, top = s, (float(self.records.deep[s]), link)
+        return best, top[1]
+
+    def link(self, slot: int, word: str | None, amount: float = 1.0) -> None:
+        """A lesson: the record's sound and the word linked (one delta step of the synapses from the
+        sound's code to the word's unit, as large as the lesson's amount)."""
+        if word not in self.words or not 0 <= slot < self.records.count:
             return
         k = self.records.keys[slot].astype(np.float64)
-        onehot = np.zeros(len(KINDS)); onehot[KINDS.index(kind)] = 1.0
-        try:
-            self.synapses.observe((k / max(float(np.linalg.norm(k)), 1e-12))[None, :], onehot[None, :], salience=np.array([min(1.0, amount)]))
-        except TypeError:
-            self.synapses.observe((k / max(float(np.linalg.norm(k)), 1e-12))[None, :], onehot[None, :])
+        onehot = np.zeros(len(self.words)); onehot[self.words.index(word)] = 1.0
+        self.synapses.observe((k / max(float(np.linalg.norm(k)), 1e-12))[None, :], onehot[None, :], salience=np.array([max(0.0, amount)]))
+
+    reward_link = link
 
     def pcm_of(self, slot: int) -> np.ndarray:
         """The word's audio as the record keeps it (8 kHz): what the parrot says back."""
@@ -451,7 +468,7 @@ class SoundMemory:
                          "match": None if not prog or not prog["matches"] else round(prog["matches"][-1], 3),
                          "recent": round(float(r.recent[s]), 4), "thumb": self.thumb(r.keys[s]), "frames": int(round(r.values[s][-1])),
                          "slow": slow, "fast": fast})
-        return {"records": rows, "things": KINDS, "level": self.LEVEL, "revise": r.revise,
+        return {"records": rows, "things": self.words, "level": self.LEVEL, "revise": r.revise,
                 "read": self.last_read, "write": self.last_write}
 
     def save(self) -> dict[str, Any]:
@@ -459,7 +476,7 @@ class SoundMemory:
         return {"records": [{"value": np.round(r.values[s], 4).tolist(), "deep": float(r.deep[s]), "heard": int(self.heard[s]), "typical": float(self.typical[s]),
                              "program": None if s not in self.programs else np.round(self.programs[s]["P"], 3).tolist(),
                              "matches": [] if s not in self.programs else [round(m, 3) for m in self.programs[s]["matches"][-20:]]} for s in range(r.count)],
-                "consolidated": np.round(self.synapses.consolidated, 5).tolist()}
+                "words": self.words, "consolidated": np.round(self.synapses.consolidated, 5).tolist()}
 
     def load(self, saved: dict[str, Any]) -> None:
         for rec in saved.get("records", []):
@@ -475,7 +492,7 @@ class SoundMemory:
                 self.programs[slot] = {"P": np.asarray(rec["program"], np.float64).reshape(-1, BANDS),
                                        "matches": list(rec.get("matches", [])), "attempts": len(rec.get("matches", []))}
         c = saved.get("consolidated")
-        if c is not None and np.asarray(c).shape == self.synapses.consolidated.shape:
+        if c is not None and saved.get("words", KINDS) == self.words and np.asarray(c).shape == self.synapses.consolidated.shape:
             self.synapses.consolidated = np.asarray(c, np.float64)
             self.synapses.reset(1)
 
@@ -484,4 +501,4 @@ class SoundMemory:
         return unpack(v)
 
     def clear(self) -> None:
-        self.__init__(self.records.revise, self.records.capacity)
+        self.__init__(self.records.revise, self.records.capacity, self.words)

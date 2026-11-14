@@ -11,10 +11,11 @@ const SILENT = Math.log(1e-6);
 // --- the parrot's voice ------------------------------------------------------------------------------
 // A parrot has no vocal folds: it imitates speech with its syrinx, a tonal source whose frequency it moves
 // to trace our formants, so its words sound whistly, bright, nasal and a little buzzy. The page's parrot
-// voice: the remembered word pitched up about four semitones, a sine-wave layer whose three tones follow
-// the word's first formants, a high-pass at 300 Hz (a small body), a presence peak near 2.6 kHz and a
-// touch of waveshaping (the syrinx's buzz).
-export const PARROT = { pitch: 1.26, highpass: 300, peak: 2600, peakGain: 6, drive: 2.2, dry: 0.8, tones: [0.24, 0.17, 0.09] };
+// voice: the remembered word pitched up a little under two semitones, a faint sine-wave layer whose three
+// tones follow the word's first formants, a high-pass at 220 Hz (a small body), a presence peak near
+// 2.5 kHz and a touch of waveshaping (the syrinx's buzz). The lightest of the settings tried that keeps
+// every word Whisper reads unfiltered readable through the filter (a stronger one made "cup" into "up").
+export const PARROT = { pitch: 1.10, highpass: 220, peak: 2500, peakGain: 3, drive: 1.2, dry: 1.0, tones: [0.05, 0.03, 0.02] };
 const RANGES = [[250, 900], [900, 2300], [2300, 3500]];
 const formantCache = new WeakMap();
 /** Each 10 ms of a word: the strongest frequency and its level in each formant range (its own spectrum). */
@@ -78,13 +79,27 @@ export class ParrotAudio {
     this.gain.connect(this.tapNode);
     return this.tapNode.stream;
   }
-  /** A human voice clip (the questions' voiceover): played as recorded, through the page's output, unfiltered. */
-  async playClip(url) {
+  /** A human voice clip: played as recorded, through the page's output, unfiltered. With `ear`, its
+   *  samples also reach the parrot's ear (the worklet the microphone feeds), so the parrot hears it as
+   *  it hears the visitor. Resolves with the clip's length (s) and `ended`, a promise of its end. */
+  async playClip(url, { ear = false } = {}) {
     await this.unlock();
     this.clips ||= new Map();
     if (!this.clips.has(url)) this.clips.set(url, fetch(url).then((r) => r.arrayBuffer()).then((b) => this.ctx.decodeAudioData(b)));
-    const buf = await this.clips.get(url), node = this.ctx.createBufferSource(); node.buffer = buf; node.connect(this.gain); node.start();
-    return buf.duration;
+    const buf = await this.clips.get(url), node = this.ctx.createBufferSource(); node.buffer = buf; node.connect(this.gain);
+    if (ear) { await this.openEar(); node.connect(this.node); }
+    const ended = new Promise((resolve) => { node.onended = resolve; });
+    node.start();
+    return { duration: buf.duration, ended };
+  }
+  /** The ear's worklet, with or without the microphone: what reaches it is heard. */
+  async openEar() {
+    if (this.node) return;
+    if (!this.workletReady) { await this.ctx.audioWorklet.addModule(new URL('./ear-worklet.js', import.meta.url)); this.workletReady = true; }
+    if (this.node) return;
+    this.node = new AudioWorkletNode(this.ctx, 'parrot-ear');
+    this.node.port.onmessage = ({ data }) => this.heard(data);
+    this.listening = true;
   }
   /** A remembered word rendered offline through the parrot voice (for checks). */
   async renderParrot(pcm8k, rate = 8000, P = PARROT) {
@@ -117,18 +132,16 @@ export class ParrotAudio {
       for (const ev of ['pointerdown', 'keydown']) window.addEventListener(ev, go, true);
     }
     if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) throw new Error('The microphone works only on localhost or https.');
-    if (!this.workletReady) { await this.ctx.audioWorklet.addModule(new URL('./ear-worklet.js', import.meta.url)); this.workletReady = true; }
     this.stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: false, autoGainControl: true } });
     this.source = this.ctx.createMediaStreamSource(this.stream);
-    this.node = new AudioWorkletNode(this.ctx, 'parrot-ear');
-    this.node.port.onmessage = ({ data }) => this.heard(data);
+    await this.openEar();
     this.source.connect(this.node);
     this.mic = true;
   }
 
   stopMic() {
     this.stream?.getTracks().forEach((t) => t.stop());
-    this.source?.disconnect(); this.node?.disconnect();
+    this.source?.disconnect(); this.source = null;
     this.mic = false; this.level = 0;
   }
 
@@ -136,8 +149,8 @@ export class ParrotAudio {
     this.samples.copyWithin(0, HOP); this.samples.set(samples, 1600 - HOP);
     if (frame) {
       this.frames.push(frame); if (this.frames.length > 10) this.frames.shift(); // the ear's display
-      this.queue.push(frame); if (this.queue.length > 300) this.queue.shift(); // every frame since the last moment, for the brain
-      this.pcmQueue.push(samples); if (this.pcmQueue.length > 300) this.pcmQueue.shift(); // and its 160 samples of audio
+      this.queue.push(frame); if (this.queue.length > 1000) this.queue.shift(); // every frame since the last moment, for the brain (up to 10 s, when a moment runs long)
+      this.pcmQueue.push(samples); if (this.pcmQueue.length > 1000) this.pcmQueue.shift(); // and its 160 samples of audio
     }
     this.level += (Math.min(1, rms * 6) - this.level) * 0.3;
     if (rms > 0.02) this.heardLoud = true;
@@ -147,7 +160,7 @@ export class ParrotAudio {
    *  last moment (frame-major), so no sound is lost when a moment takes longer than 100 ms. */
   moment() {
     let mel, pcm = new Float32Array(0);
-    if (this.mic && this.queue.length) {
+    if ((this.mic || this.listening) && this.queue.length) {
       mel = new Float32Array(this.queue.length * MELS);
       this.queue.forEach((f, i) => mel.set(f, i * MELS));
       if (this.pcmQueue.length === this.queue.length) {

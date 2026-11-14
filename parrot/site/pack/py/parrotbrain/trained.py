@@ -23,9 +23,11 @@ its voice neurons are ready to say.
 
 The page sends one of these in `meta["meaning"]` with a moment of the body; the reply carries
 `meaning` (what it said, the lessons taken, the record written) and the trained brain's neurons
-after the body's in `activity`. Its words are the training chamber's word codes, one code a
-word (stand-ins for heard sounds); the page shows each said word as text, and says it with the
-visitor's own sound for a thing where its hearing layer links one.
+after the body's in `activity`. Its ear takes the training chamber's word codes, one code a
+word. The hearing layer links sounds to these words (one link unit a word of its vocabulary): a
+heard sound whose record links to a word sends that word's code to the trained brain's ear, and a
+word its voice says recalls the record linked to it (`sound` in the reply), whose audio the page
+plays in the parrot's voice.
 """
 from __future__ import annotations
 
@@ -60,8 +62,10 @@ POPULATIONS = [
 
 class Host(Composed):
     def __init__(self, config: dict[str, Any]):
-        super().__init__(config)
         folder = Path(str(config.get("host_files") or "/home/pyodide/trained"))
+        # the hearing layer's sounds stand for the trained brain's words: one link unit a word it hears
+        vocab = sorted(w for w in json.loads((folder / "spec.json").read_text())["codes"] if not w.startswith("<"))
+        super().__init__({**config, "words": vocab})
         began = time.perf_counter()
         spec = folder / "spec.json"
         self.spec_path = spec
@@ -274,6 +278,9 @@ class Host(Composed):
             got: list[Any] = []
             with record_settlements(got.append, label="trained moment"):
                 out["said"] = m.moment(more=bool(op.get("more")))
+            if out["said"]:  # the word said recalls its sound: the record its link reads back from the word
+                slot, link = self.hearing.mem.recall(out["said"])
+                out["sound"] = None if slot is None else {"id": f"you-{slot}", "slot": int(slot), "link": link}
             self.settle = self._settle_viz(got)
             if m.in_turn and not in_turn:
                 out["recalled"] = self._recalled()

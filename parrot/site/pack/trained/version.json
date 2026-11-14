@@ -1,15 +1,17 @@
 {
- "stage": "demo",
- "step": "the owner's demo stage: the shape of a thing and where it is, with names, colour and saying back revisited",
- "label": "the demo brain",
- "good": "in its room it answers the five demo questions: what is this (apple), the apple's colour (red), its shape (round), where the ball is (right) and the block's shape (no); held out: shape 1.00, direction .91, name .94, colour .75",
- "lost": "what is left of a thing and what objects are round (it says round); distance",
+ "stage": "pretrain",
+ "step": "the owner's pretraining stage: every focus question interleaved (what is this, its colour, is this <colour>, its shape, is this round, can you eat this, where is it, what material), from the demo brain",
+ "label": "the pretrained brain",
+ "good": "in the demo room: can you eat this (all five things), where each thing is, the shape of each thing, is this round, the colour of a thing asked by name, what is this (cup, key, block); held out: name .91, colour of a named thing .91, shape 1.00, is this round 1.00, can you eat this 1.00, direction .88",
+ "lost": "what colour is this, is this <colour> on some things (is this white of the cup), what material is this on some things, what is this of the apple and the ball",
  "founder": 33400121,
- "exported": "2026-11-14 05:53 UTC",
- "source": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/code_33400121_demo_dir15/",
- "lane": "muellerberndt/cadence lane-0100-meaning, the code composition's demo stage (demo_stage.py: interleaved blocks, balanced fields, decay .9, word records keyed on the input; host 81474696)",
- "readings": {"held out, shape of a thing (round)": "1.00", "held out, a thing that is not round (no)": "1.00", "held out, where is the thing (direction)": ".91", "held out, names": ".94", "held out, colour of a named thing": ".75", "held out, saying back a word": ".91", "the demo room's five": "right at blocks 5, 10 and 15", "page test at pistachio(0.05, first)": "red and apple hold through 10 paid namings"},
- "learned": "the name of the thing in focus, the colour of a thing asked about by name, its shape (round, or no), where a thing is (front, right, behind, left) and saying back a word",
- "not_learned": "what is left of a thing; what objects are round; distance",
- "probes": "probes.json beside the brain (kind .89, colour .89, round .98, material .85, edible .97, direction .91 held out; distance .62 against .51 by chance)"
+ "exported": "2026-11-14 16:20 UTC (pretraining block 400)",
+ "source": "the meaning lane's pretraining stage (benchmarks/meaning/pretrain_stage.py) from code_33400121_demo_dir15, block 400",
+ "lane": "muellerberndt/cadence lane-0100-meaning (pretrain_stage.py at 4759916d; host 568a0ad8)",
+ "readings": {
+  "held out at block 400 (32 a form)": "name .91, colour_of .91, colour_this .66, is_colour .59, shape_of 1.00, shape_not 1.00, is_round 1.00, can_eat 1.00, direction .88, material .56, imitate 1.00",
+  "the demo room's 50 questions through the page host, three passes": "32 right every time; the page's presets are taken from these"
+ },
+ "learned": "the name of the thing in focus, the colour of a thing asked about by name, its shape (round, or no), whether it is round, whether you can eat it, where a thing is (front, right, behind, left)",
+ "not_learned": "the colour of the thing in focus asked as what colour is this; distance"
 }

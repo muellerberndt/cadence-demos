@@ -100,14 +100,14 @@ The ring at the back holds the sounds it kept, the card in the hippocampus is it
         <div class="ask-title">Ask it <span class="ask-brain">the brain trained tonight</span><a class="how" href="brain-explainer.html#ask-it" target="_blank" rel="noopener" hidden>how?</a></div>
         <p class="ask-version" id="ask-version"></p>
         <p class="ask-learned" id="ask-learned">Learned tonight: to say back a word it hears, and the name of the thing in focus when asked <i>what is this</i>. Not learned: colour, places and relations.</p>
-        <form class="ask-row" id="ask-form" autocomplete="off"><select id="ask-preset" aria-label="A question to ask"><option>What is this?</option><option>What color has the apple?</option><option>What shape has the apple?</option><option>Where is the ball?</option><option>Where is the cup?</option><option>Where is the apple?</option><option>What shape has the block?</option><option>What color has the cup?</option><option>Can you eat this?</option><option>What objects are round?</option></select><input id="ask-q" type="hidden"><button type="submit">Ask</button></form>
+        <form class="ask-row" id="ask-form" autocomplete="off"><select id="ask-preset" aria-label="A question to ask"><option data-focus="key">What is this?</option><option data-focus="apple">Can you eat this?</option><option>Where is the cup?</option><option>What color has the apple?</option><option>Where is the ball?</option><option>What shape has the apple?</option><option data-focus="apple">Is this red?</option><option>What color has the cup?</option><option>What shape has the block?</option></select><input id="ask-q" type="hidden"><button type="submit">Ask</button></form>
         <div class="ask-actions"><button type="button" id="ask-nut" class="nut-mini" aria-label="Throw a pistachio">Pistachio</button><button type="button" id="ask-mic" class="mic-mini" aria-pressed="false" aria-label="Let it hear you">Mic</button></div>
         <button type="button" id="ask-forget" class="forget-mini">Forget all sounds</button>
         <datalist id="ask-list"><option value="what is this?"><option value="what objects are round?"><option value="what colour is the apple?"><option value="can you eat this?"><option value="what can you eat?"><option value="where is the cup?"></datalist>
         <p class="ask-note" id="ask-note"></p>
         <ol class="ask-log" id="ask-log" aria-live="polite"></ol>
         <form class="ask-row fix" id="ask-fix" hidden autocomplete="off"><input id="ask-word" type="text" placeholder="the right word" aria-label="The right word"><button type="submit">Correct it</button></form>
-        <details class="ask-words"><summary>Its words</summary><p id="ask-words"></p><p class="dim">Each is a code its training drew for the word, a stand-in for the word&#8217;s sound.</p></details>
+        <details class="ask-words"><summary>Its words</summary><p id="ask-words"></p><p class="dim">Its trained brain hears each word as a code its training drew for the word. The parrot&#8217;s ear links each sound it keeps to one of these words: a sound it hears sends that word to the brain, and a word it says plays the sound linked to it.</p></details>
       </div>
     </footer>
   </section>

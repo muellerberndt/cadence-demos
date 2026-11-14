@@ -411,14 +411,14 @@ export class Live {
       this.seg(P, Q, rc, rc);
     }
 
-    // the thing units in Words: one a kind of thing, the one in focus lit
+    // the word units in Words: one a word its sounds can stand for, the one in focus lit
     const wc = b.centre('words', 0, this._w ||= new THREE.Vector3());
     const focusKind = this.focusKind();
     const thingPos = this._tp ||= [];
     const T = this.things.length || 8;
     for (let k = 0; k < T; k++) {
       const p = thingPos[k] ||= new THREE.Vector3();
-      p.copy(wc).addScaledVector(right, (k - (T - 1) / 2) * 0.17).addScaledVector(up, -0.02 * ((k % 2) * 2 - 1));
+      p.copy(wc).addScaledVector(right, (k - (T - 1) / 2) * Math.min(0.17, 1.4 / T)).addScaledVector(up, -0.02 * ((k % 2) * 2 - 1)); // one unit a word, the row no wider than eight kinds' row
       const lit = this.things[k] && this.things[k] === focusKind;
       const has = this.things.length > 0;
       this.put(p, lit ? this.cFocus : this.cThing, lit ? 0.28 : 0.15, (has ? (lit ? 1 : 0.45) : 0.12) * (words || !pathOn ? 1 : dimAll), lit ? 2 : 0);
