@@ -1,0 +1,25 @@
+{
+ "stage": "N2",
+ "step": "colour, after names",
+ "label": "N2 colour (deep 110)",
+ "founder": 33400110,
+ "exported": "2026-11-14 00:07 UTC",
+ "source": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/deep_33400110_N2/",
+ "lane": "muellerberndt/cadence lane-0100-meaning, the night's deep composition (4 processing regions and the association, apical .5)",
+ "readings": {
+  "N0 imitation": ".94",
+  "N1 naming of the thing in focus": ".67",
+  "N2 colour of a named thing, kind-colour pairs it never saw": ".83",
+  "N2 which thing has a colour (what is red?)": ".00"
+ },
+ "learned": "the colour of a thing it is asked about by name, what colour has the apple (.83 on kind-colour pairs it never saw), the name of the thing in focus (.67) and to say back a word it hears (.94)",
+ "not_learned": "which thing has a colour (what is red?: .00), places and relations; its N2 step did not pass its mastery mark",
+ "not_learned_list": [
+  "which thing has a colour (N2, by colour)",
+  "places (N3)",
+  "relations (N4)"
+ ],
+ "probes": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/deep_33400110_N2/probes.json (exported 2026-11-14 00:44 UTC)",
+ "good": "colour of a named thing .83, names .67",
+ "lost": "names fell from .98 to .67 in its colour step; which thing has a colour .00; its colour answer can turn to a name after several paid namings"
+}
