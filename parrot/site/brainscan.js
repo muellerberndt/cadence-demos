@@ -107,6 +107,19 @@ export class Scan {
   /** The word the voice says (the box shows it while it plays). */
   say(word) { this.voiceWord.textContent = word; this.said = 2.4; }
   reward() { this.dop = 1; }
+  /** A heard sound: the ear and Field L light; a sound it knows (its record told again) lights NCM and its
+   *  record; a known sound linked to a thing (the hearing memory's sound-to-thing synapses) lights that
+   *  thing's concept tag, marked heard, with a pulse from NCM to the association region. */
+  heardSound({ recognized, kind, strength, slot }) {
+    const L = this.b.live, vt = this.b.clock.vt;
+    L.flashes.push({ region: 'ear', t0: vt, level: 0.9 }); L.flashes.push({ region: 'fieldl', t0: vt + 0.08, level: 0.8 });
+    if (!recognized) return;
+    L.flashes.push({ region: 'ncm', t0: vt + 0.2, level: 0.9 });
+    const s = L.slots?.get(slot); if (s) s.flash = vt + 0.3;
+    if (!kind) return;
+    L.packets.push({ path: ['ncm', 'ncl'], t0: vt + 0.3, dur: 1.0, colour: L.cHear });
+    this.heardTag = { text: kind, k: Math.max(0.35, Math.min(1, strength)), until: performance.now() + 3800 };
+  }
   clearConcept() { this.concept = null; }
 
   /** The boxes' places in the view (read once in a while, never in the middle of a frame's writes). */
@@ -169,7 +182,9 @@ export class Scan {
     this.dopBar.style.transform = `scaleX(${Math.max(0.02, this.dop).toFixed(3)})`; this.boxes.dopamine.box.classList.toggle('on', this.dop > 0.1);
     // the concept tags: the thing the state holds over the association region, its properties around it
     const c = this.concept, wants = [];
-    if (c?.kind) wants.push([c.kind.value, this.conf(c.kind), true]);
+    const heard = this.heardTag && performance.now() < this.heardTag.until ? this.heardTag : null;
+    if (heard) wants.push([`${heard.text} · heard`, heard.k, true]);
+    else if (c?.kind) wants.push([c.kind.value, this.conf(c.kind), true]);
     for (const name of ['colour', 'round', 'material', 'edible', 'direction']) {
       const f2 = c?.[name]; if (!f2) continue;
       if (name === 'direction' && this.asked !== 'direction') continue; // its place is tagged when a question asks where

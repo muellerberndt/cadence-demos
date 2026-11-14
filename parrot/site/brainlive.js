@@ -179,7 +179,9 @@ export class Live {
     if (viz.memory?.slots) this.vizSlots(viz.memory, vt);
     // a word stored: from the ear to its slot
     const stored = viz.words?.stored || (reply.heard_sound ? { slot: reply.heard_sound.slot, revised: !!mem?.write?.revised } : null);
-    if (stored && stored.slot != null) {
+    if (stored && stored.slot != null && this.b.scanMode && !stored.revised) { // the scan: a sound it does not know lights the ear and Field L only
+      this.flashes.push({ region: 'ear', t0: vt, level: 0.8 }); this.flashes.push({ region: 'fieldl', t0: vt + 0.08, level: 0.7 });
+    } else if (stored && stored.slot != null) {
       this.packets.push({ path: ['fieldl', 'ncm', `slot:${stored.slot}`], t0: vt, dur: 1.6, colour: this.cHear, slot: stored.slot });
       this.note(`slot:${stored.slot}`, stored.revised ? 'told again' : 'a new record', vt + 1.3, 2.2);
       const s = this.slots.get(stored.slot); if (s) s.arrive = vt + 1.45;
@@ -207,7 +209,12 @@ export class Live {
     const f = reply.focus;
     const why = f?.why;
     if (!this.status.surprise && (why === 'appeared' || why === 'moved')) this.setStatus('surprise', 'live: what appears or moves');
-    if (f && (why === 'appeared' || why === 'moved') && (!this.focus || why !== this.focus.why || this.focusPlaceChanged(f))) {
+    // a surprise is shown once its reason has held for two moments (a one-moment flicker of the focus's
+    // reason is not shown)
+    const surprising = f && (why === 'appeared' || why === 'moved');
+    this.surpriseRun = surprising && this.surpriseWhy === why ? (this.surpriseRun || 0) + 1 : surprising ? 1 : 0;
+    this.surpriseWhy = surprising ? why : null;
+    if (surprising && this.surpriseRun === 2) {
       this.flashes.push({ region: 'tectum', t0: vt, level: 0.9 }); this.note('tectum', why === 'appeared' ? 'surprise: it appeared' : 'surprise: it moved', vt, 1.6);
     }
     for (const [unit, level] of viz.surprise?.units || []) this.flashes.push({ unit, t0: vt, level: Math.min(1, (level - 1) / 2) });

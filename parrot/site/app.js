@@ -322,7 +322,17 @@ async function moment(now) {
   const el = document.querySelector('.newborn');
   if (el && el.firstChild.textContent !== badge) el.firstChild.textContent = badge;
   if (reply.repertoire) syncChips(reply.repertoire);
-  if (reply.heard_sound) { saveMemory(); if (state.trained) heardForWord(reply.heard_sound); }
+  if (reply.heard_sound) {
+    saveMemory();
+    if (state.trained) heardForWord(reply.heard_sound);
+    if (brain3d?.scan) { // what the hearing memory made of the sound: known (its record told again), and the thing its record links to
+      const mem = reply.memory, rec = mem?.records?.find((r) => r.slot === reply.heard_sound.slot), things = mem?.things || [];
+      let best = null;
+      (rec?.slow || []).forEach((v, k) => { const s = v + (rec.fast?.[k] || 0); if (!best || s > best.s) best = { kind: things[k], s }; });
+      const recognized = !!mem?.write?.revised;
+      brain3d.scan.heardSound({ recognized, kind: recognized && best && best.s > 0.1 ? best.kind : null, strength: best?.s || 0, slot: reply.heard_sound.slot });
+    }
+  }
   if (reply.paid) for (const [id] of Object.entries(reply.paid)) ui.sounds.querySelector(`[data-sound="${id}"]`)?.classList.add('paid');
   // the focus the brain reports: the thing nearest the direction it turned to
   if (state.composed) { // the composed brain's focus is a place on the map: the thing nearest it
