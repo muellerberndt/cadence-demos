@@ -114,6 +114,7 @@ The ring at the back holds the sounds it kept, the card in the hippocampus is it
         <h2 data-explain-title="The parrot's brain, in detail" data-explain="What the brain receives and what it does, ten moments a second: the two eyes' images, then one card a region of the brain, each the neurons of that region lit by their activity, in the order a memory travels: seeing, the map of things, hearing, the sounds kept and the links that make them words. Each card has its region&#8217;s colour in the 3D view; point at one to light its region there. Below: the distance neurons and the joints.">The brain</h2>
         <p id="brain-sub">Loading&hellip;</p>
         <label class="brain-kind" data-explain-title="Which brain" data-explain="Composed: the parrot brain the experiment builds (its eyes, the distance it learns from head turns, its focus and its map), with the page&#8217;s hearing beside it. Trained tonight: the composed body and hearing, with the brain the meaning lane trained tonight beside them; it names the thing in focus when you ask it (Ask it, under the brain). Placeholder: a hand-written newborn the page falls back to if a brain does not start.">brain <select id="brain-kind"><option value="composed">composed</option><option value="trained">trained tonight (names)</option><option value="placeholder">placeholder</option></select></label>
+        <button id="how-brain" class="ghost small how-brain" type="button" data-explain="Opens the explainer of how the brain works: its regions and routes, how a concept lives in its state, how it settles, remembers, recalls a word and learns from a pistachio, and what it cannot do." data-explain-mark="none">How this brain works</button>
       </div>
       <dl class="stats">
         <div><dt data-explain="How many moments the brain has lived on this page. Each moment it receives both eyes' images and its joints' readings, and sends its joints' targets back. Ten moments a second.">Moment</dt><dd id="s-moment">&ndash;</dd></div>
@@ -139,6 +140,10 @@ The ring at the back holds the sounds it kept, the card in the hippocampus is it
     <footer class="foot"><span id="credit"></span> &middot; Objects, textures and light: Poly Haven (CC0) &middot; <a href="https://github.com/muellerberndt/cadence" target="_blank" rel="noopener">Cadence on GitHub</a></footer>
   </aside>
 </div>
+<aside class="explain-drawer" id="explain-drawer" hidden aria-label="How this brain works">
+  <div class="ed-bar"><b>How this brain works</b><a id="ed-tab" href="brain-explainer.html" target="_blank" rel="noopener">open in a tab</a><button id="ed-close" type="button" aria-label="Close">&#215;</button></div>
+  <iframe id="ed-frame" title="How this brain works"></iframe>
+</aside>
 <script type="module" src="app.js"></script>
 </body>
 </html>

@@ -552,6 +552,7 @@ function drawFields() {
   if (c.width !== Math.round(W * dpr)) { c.width = Math.round(W * dpr); c.height = Math.round(H * dpr); }
   g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
   const cx = W / 2, cy = H / 2 + 6, R = Math.min(W, H) / 2 - 8, scale = R / 0.75;
+  if (R <= 0) return; // the panel is hidden: nothing to draw (an arc of negative radius throws)
   const yaw = (parrot.joints.get('head_yaw')) * Math.PI / 180;
   // screen: the parrot faces down the canvas (toward the visitor); its left (+x) is to the screen's right
   const toScreen = (x, z) => [cx + x * scale, cy + z * scale];
@@ -853,8 +854,19 @@ async function correctIt(word) {
     logLine(`<span class="who">you</span> ${esc(word)} <span class="dim">· ${r.wrote ? `kept as a word record under the pattern of the question's end (${r.records.toLocaleString('en')} records); it hears the word` : 'heard, and no record kept'}</span>`, 'c');
   } finally { trained.busy = false; trained.quietUntil = performance.now() + 1500; }
 }
-// "how?" links to the brain explainer, shown where the page has it
-fetch('brain-explainer.html', { method: 'HEAD' }).then((r) => { if (r.ok) for (const a of document.querySelectorAll('a.how')) a.hidden = false; }).catch(() => {});
+// How this brain works: the explainer in a drawer (or a tab); the "how?" links open it at their part
+function explainer(anchor = '') {
+  const frame = $('ed-frame'), url = `brain-explainer.html${anchor}`;
+  if (frame.getAttribute('src') !== url) frame.setAttribute('src', url);
+  $('ed-tab').href = url; $('explain-drawer').hidden = false;
+}
+$('how-brain').addEventListener('click', () => explainer());
+$('ed-close').addEventListener('click', () => { $('explain-drawer').hidden = true; });
+window.addEventListener('keydown', (e) => { if (e.key === 'Escape') $('explain-drawer').hidden = true; });
+for (const a of document.querySelectorAll('a.how')) {
+  a.hidden = false;
+  a.addEventListener('click', (e) => { if (e.metaKey || e.ctrlKey || e.shiftKey) return; e.preventDefault(); explainer(new URL(a.href).hash); });
+}
 askEl.form?.addEventListener('submit', (e) => { e.preventDefault(); const q = askEl.q.value.trim(); if (q) { audio.unlock().catch(() => {}); askIt(q); } });
 askEl.fix?.addEventListener('submit', (e) => { e.preventDefault(); const w = askEl.word.value.trim(); if (w) correctIt(w); });
 for (const b of document.querySelectorAll('[data-ask]')) b.addEventListener('click', () => { askEl.q.value = b.dataset.ask; askEl.q.focus(); });
@@ -1052,7 +1064,7 @@ async function start() {
     });
   }
   view = new BrainView({ regions: $('brain'), units: $('dist-units'), tuning: $('dist-tuning'), readout: $('dist-readout'), silence: ui.silence, joints: $('joints') });
-  window.parrotPage = { room, state, eyes, audio, trained, get brainView() { return view; }, get brain3d() { return brain3d; }, get parrot() { return parrot; }, place, addThing, move: (id, x, z) => room.move(id, x, z), remove: (id) => room.remove(id),
+  window.parrotPage = { room, state, eyes, audio, trained, controls, get brainView() { return view; }, get brain3d() { return brain3d; }, get parrot() { return parrot; }, place, addThing, move: (id, x, z) => room.move(id, x, z), remove: (id) => room.remove(id),
     describe: () => room.describe(), load: (d) => room.load(d), script: runScript, TEST, setLook, setMode, distanceOf, camera, THREE,
     view(name) { const v = VIEWS[name]; if (!v) return; camera.position.set(...v[0]); controls.target.set(...v[1]); controls.update(); },
     screenOf(x, y, z) { const v = new THREE.Vector3(x, y, z).project(camera); const r = canvas.getBoundingClientRect(); return [r.left + (v.x + 1) / 2 * r.width, r.top + (1 - v.y) / 2 * r.height]; } };
