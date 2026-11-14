@@ -75,6 +75,8 @@ class Host(Composed):
         # the glimpse and the last word heard, so a recall at the turn returned the thing's old answer
         # whatever was asked (on fresh rooms with unseen kind-colour pairs: .69 with them, .77 without)
         self.meaning.records = None
+        if (self.meaning.spec.get("mixed") or {}).get("fields"):
+            self.meaning.observation = self._fields_observation  # the code its brain was trained with
         self.load_s = time.perf_counter() - began
         found = folder / "version.json"
         self.version = json.loads(found.read_text()) if found.exists() else {}
@@ -165,6 +167,29 @@ class Host(Composed):
                                                                       "facets": {k: {"classes": f["classes"], "accuracy": f["accuracy"], "base_rate": f["base_rate"], "held_out": f["held_out"]}
                                                                                  for k, f in self.probes["facets"].items()}}})
         return d
+
+    def _fields_observation(self) -> np.ndarray:
+        """`MeaningParrot.observation` for a brain whose sparse mixed code takes every sense field of
+        the glimpse (hue, lightness, shape, size, direction, distance, salience, surface) at unit
+        length, so each sense moves the code alike (spec `mixed.fields`); then the glimpse and the
+        heard trace each at unit length, as `mixed.balance` does."""
+        m = self.meaning
+        order = m.rng.permutation(len(m.things))
+        scene = m.eyes.scene([m.things[int(i)] for i in order])
+        focus = m.glimpsed if m.glimpsed is not None else next((t for t in m.things if t.salient), None)
+        glimpse = m.eyes.slot(focus)
+        ear = m.code(m.heard) + m.code(m.own) + m.recalled
+        g = np.array(glimpse, dtype=np.float64, copy=True)
+        edges = np.cumsum([0] + list(m.eyes.parts.values()))
+        for a, b in zip(edges[:-1], edges[1:]):
+            n = float(np.linalg.norm(g[a:b]))
+            g[a:b] = g[a:b] / n if n > 0 else 0.0
+        g = g / max(float(np.linalg.norm(g)), 1e-9)
+        t = m.trace / max(float(np.linalg.norm(m.trace)), 1e-9)
+        drive = np.concatenate([g, t]) @ m.mixed_w
+        code = np.zeros(m.mixed_w.shape[1])
+        code[np.argpartition(drive, -m.mixed_on)[-m.mixed_on:]] = 1.0
+        return np.concatenate([glimpse, scene, code, ear])[None]
 
     # --- the trained brain's moments ---------------------------------------------------------------
     def _activation(self) -> None:

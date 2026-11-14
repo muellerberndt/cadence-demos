@@ -1,0 +1,19 @@
+{
+ "stage": "pretrain",
+ "step": "the owner's pretraining stage: every focus question interleaved (what is this, its colour, is this <colour>, its shape, is this round, can you eat this, where is it, what material), from the demo brain",
+ "label": "the pretrained brain",
+ "good": "in the demo room, answered from its own state (the word records off at the turn): what is this (apple, cup, key, block), what colour is this (apple, cup, green ball), can you eat this (all five things), where each thing is, the shape of each thing, is this round, the colour of a thing asked by name (four of five), is this white of the key; held out: name .91, colour of a named thing .91, shape 1.00, is this round 1.00, can you eat this 1.00, direction .88",
+ "lost": "what colour is this of the block, is this <colour> on some things (is this white of the cup, is this blue of the green ball), what material is this on some things, what is this of the green ball",
+ "founder": 33400121,
+ "exported": "2026-11-14 16:20 UTC (pretraining block 400)",
+ "source": "the meaning lane's pretraining stage (benchmarks/meaning/pretrain_stage.py) from code_33400121_demo_dir15, block 400",
+ "lane": "muellerberndt/cadence lane-0100-meaning (pretrain_stage.py at 4759916d; host 568a0ad8)",
+ "readings": {
+  "held out at block 400 (32 a form)": "name .91, colour_of .91, colour_this .66, is_colour .59, shape_of 1.00, shape_not 1.00, is_round 1.00, can_eat 1.00, direction .88, material .56, imitate 1.00",
+  "the demo room's 50 questions through the page host, three passes": "32 right every time; the page's presets are taken from these",
+  "the demo room's 50 questions through the page host, three passes, word records off at the turn": "37 right every time; the page's presets are taken from these"
+ },
+ "learned": "the name of the thing in focus, the colour of a thing asked about by name, its shape (round, or no), whether it is round, whether you can eat it, where a thing is (front, right, behind, left)",
+ "not_learned": "the colour of the thing in focus asked as what colour is this; distance",
+ "host": "the word records are off at the turn: on fresh rooms through the host, .89 seen and .77 held-out pairs without them, .74 and .69 with them as trained"
+}
