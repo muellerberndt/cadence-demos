@@ -208,13 +208,13 @@ export class Live {
     if (reply.startle) { this.flashes.push({ region: 'ear', t0: vt, level: 1 }); this.flashes.push({ region: 'tectum', t0: vt + 0.08, level: 0.7 }); this.note('ear', 'a sudden sound', vt, 1.8); }
     const f = reply.focus;
     const why = f?.why;
-    if (!this.status.surprise && (why === 'appeared' || why === 'moved')) this.setStatus('surprise', 'live: what appears or moves');
+    if (!this.status.surprise && (why === 'appeared' || why === 'moved') && !this.b.scanMode) this.setStatus('surprise', 'live: what appears or moves');
     // a surprise is shown once its reason has held for two moments (a one-moment flicker of the focus's
     // reason is not shown)
     const surprising = f && (why === 'appeared' || why === 'moved');
     this.surpriseRun = surprising && this.surpriseWhy === why ? (this.surpriseRun || 0) + 1 : surprising ? 1 : 0;
     this.surpriseWhy = surprising ? why : null;
-    if (surprising && this.surpriseRun === 2) {
+    if (surprising && this.surpriseRun === 2 && !this.b.scanMode) { // (the scan shows no surprise until the body's focus reports it reliably)
       this.flashes.push({ region: 'tectum', t0: vt, level: 0.9 }); this.note('tectum', why === 'appeared' ? 'surprise: it appeared' : 'surprise: it moved', vt, 1.6);
     }
     for (const [unit, level] of viz.surprise?.units || []) this.flashes.push({ unit, t0: vt, level: Math.min(1, (level - 1) / 2) });
@@ -376,6 +376,7 @@ export class Live {
 
     // the record slots: a ring facing the viewer, at the records
     const ring = b.centre('records', 0, this._ring ||= new THREE.Vector3());
+    if (b.scanMode) { ring.copy(b.controls.target).project(cam); ring.x = -0.17; ring.y = -0.42; ring.unproject(cam); } // the scan: the records as a small grid low in the view, clear of the concept tags and the chat
     const list = this._list ||= []; list.length = 0;
     for (const s of this.slots.values()) list.push(s);
     list.sort((a, c) => a.slot - c.slot);
@@ -385,9 +386,10 @@ export class Live {
       if (i >= 48) return;
       const ang = -2.4 + i * step; // the first record low on the ring, clear of the region's name
       s.pos ||= new THREE.Vector3();
-      s.pos.copy(ring).addScaledVector(right, Math.cos(ang) * radius).addScaledVector(up, Math.sin(ang) * radius);
+      if (b.scanMode) s.pos.copy(ring).addScaledVector(right, ((i % 12) - 5.5) * 0.085).addScaledVector(up, -Math.floor(i / 12) * 0.085);
+      else s.pos.copy(ring).addScaledVector(right, Math.cos(ang) * radius).addScaledVector(up, Math.sin(ang) * radius);
       const grow = Math.min(1, Math.log1p(s.deep || 0) / Math.log1p(this.level * 4));
-      let size = 0.16 + 0.22 * grow;
+      let size = b.scanMode ? 0.05 + 0.028 * grow : 0.16 + 0.22 * grow;
       const born = vt - s.born; if (born < 0.5) size *= ease(born / 0.35) * (1 + 0.4 * Math.max(0, 1 - born / 0.5));
       const fl = env(vt - s.flash, 0.05, 0.6), arrive = s.arrive != null ? env(vt - s.arrive, 0.05, 0.7) : 0;
       size *= 1 + 0.35 * Math.max(fl, arrive);
@@ -402,7 +404,7 @@ export class Live {
     for (const name of ['position', 'acol', 'size', 'alpha', 'cell', 'rim', 'hot']) this.slotPoints.geometry.attributes[name].needsUpdate = true;
     // the ring's own faint circle, so an empty memory reads as a place
     const rc = C1.copy(this.cHear).multiplyScalar(count ? 0.16 : 0.08);
-    for (let k = 0; k < 40; k++) {
+    for (let k = 0; k < (b.scanMode ? 0 : 40); k++) { // (the scan's grid has no circle)
       const a0 = (k / 40) * 2 * Math.PI, a1 = ((k + 1) / 40) * 2 * Math.PI;
       P.copy(ring).addScaledVector(right, Math.cos(a0) * radius).addScaledVector(up, Math.sin(a0) * radius);
       Q.copy(ring).addScaledVector(right, Math.cos(a1) * radius).addScaledVector(up, Math.sin(a1) * radius);

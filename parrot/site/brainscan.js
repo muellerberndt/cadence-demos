@@ -168,12 +168,16 @@ export class Scan {
     }
     // the ears' spectrogram: one column a frame from the page's latest ear frame
     const f = window.parrotPage?.audio?.frames?.at(-1), mic = window.parrotPage?.audio?.mic;
+    this.earTick = (this.earTick || 0) + 1;
+    if (this.earTick % 2) { // a column every second frame: about three seconds of sound in the box
     this.earG.drawImage(this.ear, -1, 0);
     for (let m = 0; m < 40; m++) {
-      const v = f && mic ? Math.max(0, Math.min(1, (f[m] + 9) / 12)) : 0, k = Math.round(v * 255) * 3, j = 4 * (39 - m);
+      // from silence (the front end's floor, -13.8) up
+      const v = f && mic ? Math.max(0, Math.min(1, (f[m] + 13.8) / 9)) : 0, k = Math.round(v * 255) * 3, j = 4 * (39 - m);
       this.earImg.data[j] = 255 * LUT[k]; this.earImg.data[j + 1] = 255 * LUT[k + 1]; this.earImg.data[j + 2] = 255 * LUT[k + 2]; this.earImg.data[j + 3] = 255;
     }
     this.earG.putImageData(this.earImg, this.ear.width - 1, 0);
+    }
     // the voice and the dopamine
     const loud = window.parrotPage?.audio?.loudness(performance.now()) || 0;
     this.voiceBar.style.transform = `scaleX(${Math.max(0.02, loud).toFixed(3)})`;
@@ -183,10 +187,10 @@ export class Scan {
     // the concept tags: the thing the state holds over the association region, its properties around it
     const c = this.concept, wants = [];
     const heard = this.heardTag && performance.now() < this.heardTag.until ? this.heardTag : null;
-    if (heard) wants.push([`${heard.text} · heard`, heard.k, true]);
+    if (heard) wants.push([`${heard.text} · heard`, heard.k, true]); // a word heard: its thing alone (the probes' facets read the state, not the word)
     else if (c?.kind) wants.push([c.kind.value, this.conf(c.kind), true]);
     for (const name of ['colour', 'round', 'material', 'edible', 'direction']) {
-      const f2 = c?.[name]; if (!f2) continue;
+      const f2 = !heard && c?.[name]; if (!f2) continue;
       if (name === 'direction' && this.asked !== 'direction') continue; // its place is tagged when a question asks where
       const text = FACET_TAG[name](f2.value); if (!text) continue;
       let k = this.conf(f2); if (this.asked === name) k = Math.min(1, k * 1.6 + 0.15);

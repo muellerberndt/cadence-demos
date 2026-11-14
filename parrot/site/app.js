@@ -628,8 +628,10 @@ function trainedThings(focusId, glimpseId) {
 }
 /** One of its moments, sent with the next step of the body once 300 ms have passed since the last. */
 function trainedOp(meta) { return new Promise((resolve, reject) => trained.queue.push({ meta, resolve, reject })); }
-function lookFocus() { // the thing its mind holds between questions: the one clicked, else the body's focus
-  for (const id of [trained.focus, state.focus?.id]) { const t = id && room.things.get(id); if (t && WORLD[t.kind]) return id; }
+function lookFocus() { // the thing its mind holds between questions: the one you clicked (none: it holds no thing)
+  const t = trained.focus && room.things.get(trained.focus);
+  if (t && WORLD[t.kind]) return trained.focus;
+  if (brain3d?.scan?.concept) brain3d.scan.clearConcept();
   return null;
 }
 function nextOp(now) {
@@ -933,14 +935,22 @@ for (const a of document.querySelectorAll('a.how')) {
   a.hidden = false;
   a.addEventListener('click', (e) => { if (e.metaKey || e.ctrlKey || e.shiftKey) return; e.preventDefault(); explainer(new URL(a.href).hash); });
 }
-// the preset questions are spoken in the visitor's voice (voice/questions.json names a clip for each); a typed
-// question with no clip is shown and not spoken. The voice is a voiceover: the brain takes the typed words.
-const questionClips = fetch('voice/questions.json').then((r) => (r.ok ? r.json() : {})).catch(() => ({}));
+// the preset questions are spoken in the visitor's voice (voice/questions.json names its clips, played in turn:
+// the first ask of a question has a lead-in); a pistachio for an answer brings a word of praise. The voice is a
+// voiceover: the brain takes the typed words.
+const voiceLines = fetch('voice/questions.json').then((r) => (r.ok ? r.json() : {})).catch(() => ({}));
 const normQ = (t) => t.toLowerCase().replace(/[^a-z ]/g, ' ').replace(/\s+/g, ' ').trim();
+const askedTimes = new Map(); let praised = 0;
 async function speakQuestion(q) {
-  const clips = await questionClips, file = clips[normQ(q)];
-  if (!file) return 0;
-  try { return 1000 * (await audio.playClip(`voice/${file}`)); } catch (e) { return 0; }
+  const key = normQ(q), list = (await voiceLines).questions?.[key];
+  if (!list?.length) return 0;
+  const n = askedTimes.get(key) || 0; askedTimes.set(key, n + 1);
+  try { return 1000 * (await audio.playClip(`voice/${list[Math.min(n, list.length - 1)]}`)); } catch (e) { return 0; }
+}
+async function speakPraise() {
+  const list = Object.values((await voiceLines).reactions || {});
+  if (!list.length) return 0;
+  try { return 1000 * (await audio.playClip(`voice/${list[praised++ % list.length]}`)); } catch (e) { return 0; }
 }
 askEl.form?.addEventListener('submit', async (e) => {
   e.preventDefault(); const q = askEl.q.value.trim();
@@ -1070,6 +1080,7 @@ ui.pistachio.addEventListener('click', () => {
     clearTimeout(state.dopTimer); state.dopTimer = setTimeout(() => { $('dopamine').hidden = true; }, 4200);
   }, () => {});
   if (!thrown) toast('It is eating the last one', '', 1400);
+  else if (forAnswer) speakPraise();
 });
 ui.silence.addEventListener('click', async () => {
   if (!state.brainReady) return;
