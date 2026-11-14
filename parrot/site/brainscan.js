@@ -118,7 +118,7 @@ export class Scan {
     const s = L.slots?.get(slot); if (s) s.flash = vt + 0.3;
     if (!kind) return;
     L.packets.push({ path: ['ncm', 'ncl'], t0: vt + 0.3, dur: 1.0, colour: L.cHear });
-    this.heardTag = { text: kind, k: Math.max(0.35, Math.min(1, strength)), until: performance.now() + 3800 };
+    this.heardTag = { text: window.parrotPage?.label?.(kind) || kind, k: Math.max(0.35, Math.min(1, strength)), until: performance.now() + 3800 };
   }
   clearConcept() { this.concept = null; }
 

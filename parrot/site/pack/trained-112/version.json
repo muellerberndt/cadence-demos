@@ -1,0 +1,15 @@
+{
+ "stage": "N2",
+ "step": "colour, after names",
+ "label": "N2 colour, holds under rewards (deep 112)",
+ "good": "names .82, colour .49; its colour answer holds through paid namings",
+ "lost": "colour .49 held out, lower than deep 110's .83; places and relations",
+ "founder": 33400112,
+ "exported": "2026-11-14 03:12 UTC",
+ "source": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/deep_33400112_N2/",
+ "lane": "muellerberndt/cadence lane-0100-meaning, the night's deep composition (4 processing regions and the association, apical .5); word records keyed on the input (host 518e727a)",
+ "readings": {"N1 naming of the thing in focus, held out": ".82", "N2 colour of a named thing, held out": ".49", "page test at pistachio(0.05, first)": "colour red, cup white and names hold through 10 paid namings"},
+ "learned": "the name of the thing in focus (.82) and the colour of a thing asked about by name (.49), each holding when a name is paid with pistachios",
+ "not_learned": "places and relations; what objects are round",
+ "probes": "probes.json beside the brain (kind 1.00, colour .77, round 1.00, material .72, edible .98 held out; direction .48, distance at chance)"
+}

@@ -1,0 +1,15 @@
+{
+ "stage": "N2",
+ "step": "colour, after names",
+ "label": "names and colour (code 120)",
+ "good": "names .98 and colour .84 held out, saying back a word 1.00; its answers hold through 10 paid namings even at a full pistachio",
+ "lost": "shape and places: asked where a thing is, it says its colour; what objects are round",
+ "founder": 33400120,
+ "exported": "2026-11-14 05:46 UTC",
+ "source": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/code_33400120_N2/",
+ "lane": "muellerberndt/cadence lane-0100-meaning, the code composition (word records keyed on the input; host 81474696)",
+ "readings": {"held out, names": ".98", "held out, colour of a named thing": ".84", "held out, saying back a word": "1.00", "page test at pistachio(0.05, first) and at 1.0": "red, apple and the cup's white hold through 10 paid namings"},
+ "learned": "the name of the thing in focus and the colour of a thing asked about by name, each holding when its answers are paid",
+ "not_learned": "shape, places and relations; what objects are round",
+ "probes": "probes.json beside the brain (kind .74, colour .98, round .99, material .89, edible .92 held out; direction .61 against .30 by chance, distance at chance)"
+}

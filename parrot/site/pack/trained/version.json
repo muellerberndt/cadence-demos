@@ -1,15 +1,15 @@
 {
- "stage": "N2",
- "step": "colour, after names",
- "label": "N2 colour, holds under rewards (deep 112)",
- "good": "names .82, colour .49; its colour answer holds through paid namings",
- "lost": "colour .49 held out, lower than deep 110's .83; places and relations",
- "founder": 33400112,
- "exported": "2026-11-14 03:12 UTC",
- "source": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/deep_33400112_N2/",
- "lane": "muellerberndt/cadence lane-0100-meaning, the night's deep composition (4 processing regions and the association, apical .5); word records keyed on the input (host 518e727a)",
- "readings": {"N1 naming of the thing in focus, held out": ".82", "N2 colour of a named thing, held out": ".49", "page test at pistachio(0.05, first)": "colour red, cup white and names hold through 10 paid namings"},
- "learned": "the name of the thing in focus (.82) and the colour of a thing asked about by name (.49), each holding when a name is paid with pistachios",
- "not_learned": "places and relations; what objects are round",
- "probes": "probes.json beside the brain (kind 1.00, colour .77, round 1.00, material .72, edible .98 held out; direction .48, distance at chance)"
+ "stage": "demo",
+ "step": "the owner's demo stage: the shape of a thing and where it is, with names, colour and saying back revisited",
+ "label": "the demo brain",
+ "good": "in its room it answers the five demo questions: what is this (apple), the apple's colour (red), its shape (round), where the ball is (right) and the block's shape (no); held out: shape 1.00, direction .91, name .94, colour .75",
+ "lost": "what is left of a thing and what objects are round (it says round); distance",
+ "founder": 33400121,
+ "exported": "2026-11-14 05:53 UTC",
+ "source": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/code_33400121_demo_dir15/",
+ "lane": "muellerberndt/cadence lane-0100-meaning, the code composition's demo stage (demo_stage.py: interleaved blocks, balanced fields, decay .9, word records keyed on the input; host 81474696)",
+ "readings": {"held out, shape of a thing (round)": "1.00", "held out, a thing that is not round (no)": "1.00", "held out, where is the thing (direction)": ".91", "held out, names": ".94", "held out, colour of a named thing": ".75", "held out, saying back a word": ".91", "the demo room's five": "right at blocks 5, 10 and 15", "page test at pistachio(0.05, first)": "red and apple hold through 10 paid namings"},
+ "learned": "the name of the thing in focus, the colour of a thing asked about by name, its shape (round, or no), where a thing is (front, right, behind, left) and saying back a word",
+ "not_learned": "what is left of a thing; what objects are round; distance",
+ "probes": "probes.json beside the brain (kind .89, colour .89, round .98, material .85, edible .97, direction .91 held out; distance .62 against .51 by chance)"
 }

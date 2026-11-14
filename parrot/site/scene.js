@@ -18,10 +18,15 @@ export const KINDS = {
   cup: { file: 'cup', node: 'tea_set_01_cup_small_01', size: 0.10, label: 'cup' },
   banana: { file: 'banana', node: 'bananas_a', size: 0.19, label: 'banana' },
   block: { file: null, size: 0.05, label: 'block' },
+  key: { file: null, size: 0.07, label: 'key' },
+  greenball: { file: null, size: 0.07, label: 'green ball' },
   duck: { file: 'duck', size: 0.09, label: 'duck' },
   lemon: { file: 'lemon', size: 0.07, label: 'lemon' },
   pear: { file: 'pear', node: 'food_pears_asian_01_b', size: 0.085, label: 'pear' },
 };
+
+// The composed body's stand-in for a kind its table (cadence.parrot kinds.json) does not hold: [its kind, scale]
+const STAND_IN = { greenball: ['ball', 1], key: ['block', 0.4] };
 
 const texLoader = new THREE.TextureLoader();
 function pbr(name, repeat, opts = {}) {
@@ -138,6 +143,20 @@ export class Room {
     if (!this.models.has(kind)) {
       this.models.set(kind, (async () => {
         let obj;
+        if (kind === 'key') { // a brass key lying flat: its bow, its shaft and two teeth (drawn here, no model file)
+          const mat = new THREE.MeshStandardMaterial({ color: '#d9a93a', metalness: 0.9, roughness: 0.32 });
+          const g = new THREE.Group(), t = 0.004;
+          const bow = new THREE.Mesh(new THREE.TorusGeometry(0.011, 0.0035, 12, 32), mat); bow.rotation.x = Math.PI / 2; bow.position.set(-0.024, t, 0);
+          const shaft = new THREE.Mesh(new THREE.BoxGeometry(0.046, 2 * t, 0.006), mat); shaft.position.set(0.01, t, 0);
+          for (const [x, d] of [[0.022, 0.009], [0.03, 0.006]]) { const tooth = new THREE.Mesh(new THREE.BoxGeometry(0.005, 2 * t, d), mat); tooth.position.set(x, t, -0.003 - d / 2); g.add(tooth); }
+          g.add(bow, shaft);
+          const wrap = new THREE.Group(); wrap.add(g); return wrap;
+        }
+        if (kind === 'greenball') { // a green plastic ball (drawn here, no model file)
+          const mat = new THREE.MeshPhysicalMaterial({ color: '#3e9b47', roughness: 0.38, clearcoat: 0.6, clearcoatRoughness: 0.25 });
+          const ball = new THREE.Mesh(new THREE.SphereGeometry(spec.size / 2, 48, 32), mat); ball.position.y = spec.size / 2;
+          const wrap = new THREE.Group(); wrap.add(ball); return wrap;
+        }
         if (!spec.file) { // a wooden toy block, painted blue
           const mat = pbr('block', [0.25, 0.25]);
           mat.color = new THREE.Color('#3f6fd1');
@@ -216,11 +235,11 @@ export class Room {
   /** The scene as the chamber shares it (INTERFACES P4). */
   describe() {
     return { schema: 'parrot-scene/1', perch: { bar_y: BAR_Y, length: BAR_LEN, radius: 0.011 },
-      things: [...this.things.values()].map((t) => ({ id: t.id, kind: t.kind, pos: t.obj.position.toArray().map((v) => +v.toFixed(4)), yaw: +(t.obj.rotation.y * 180 / Math.PI).toFixed(1), size: KINDS[t.kind].size })) };
+      things: [...this.things.values()].map((t) => ({ id: t.id, kind: STAND_IN[t.kind]?.[0] || t.kind, page_kind: t.kind, scale: STAND_IN[t.kind]?.[1] ?? 1, pos: t.obj.position.toArray().map((v) => +v.toFixed(4)), yaw: +(t.obj.rotation.y * 180 / Math.PI).toFixed(1), size: KINDS[t.kind].size })) };
   }
 
   async load(desc) {
     this.clear();
-    for (const t of desc.things || []) await this.place(t.kind, t.pos[0], t.pos[2], t.yaw || 0, t.id);
+    for (const t of desc.things || []) await this.place(t.page_kind || t.kind, t.pos[0], t.pos[2], t.yaw || 0, t.id);
   }
 }

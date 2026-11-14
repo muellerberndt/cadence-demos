@@ -1,0 +1,15 @@
+{
+ "stage": "demo",
+ "step": "the owner's demo stage, a longer run (block 200)",
+ "label": "demo brain, stronger on new scenes (calls the white cup blue)",
+ "good": "held out: direction .94, colour .88, names .94, shape 1.00, saying back a word .97; in its room the five demo questions right at block 200",
+ "lost": "it calls the white cup blue; its five right came after swings between room checks; what is left of a thing; what objects are round; where is the apple (it says round)",
+ "founder": 33400121,
+ "exported": "2026-11-14 05:59 UTC",
+ "source": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/code_33400121_demo/",
+ "lane": "muellerberndt/cadence lane-0100-meaning, the code composition's demo stage (demo_stage.py; host 81474696)",
+ "readings": {"held out, shape of a thing (round)": "1.00", "held out, a thing that is not round (no)": "1.00", "held out, where is the thing (direction)": ".94", "held out, names": ".94", "held out, colour of a named thing": ".88", "held out, saying back a word": ".97", "the demo room's five": "right at block 200", "page test at pistachio(0.05, first)": "red and apple hold through 10 paid namings; the cup is blue throughout"},
+ "learned": "the name of the thing in focus, the colour of a thing asked about by name, its shape (round, or no), where a thing is and saying back a word",
+ "not_learned": "the white cup's colour (it says blue); what is left of a thing; what objects are round; distance",
+ "probes": "probes.json beside the brain (kind .91, colour .84, round .99, material .82, edible .96, direction .93 held out; distance .62 against .51 by chance)"
+}

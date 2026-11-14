@@ -598,27 +598,29 @@ function drawFields() {
 // voice held, then its turn in the gap after the last word (three moments; for a question about the
 // whole room, one moment a thing, its glimpse on that thing). What it sees of a thing is what its
 // training world reports: the kind's shape and size, the colour, the material, the direction from
-// its head and the distance. The page's things in that world, each as its world names it:
+// where the parrot faces on its perch (positive to its left) and the distance. The page's things in that world, each as its world names it:
 const WORLD = {
   apple: { kind: 'apple', colour: 'red', material: 'fruit' },
   ball: { kind: 'ball', colour: 'white', material: 'cloth', note: 'the baseball is a white ball of cloth there (its world has no leather)' },
   cup: { kind: 'cup', colour: 'white', material: 'glass', note: 'the china cup is a white cup of glass there (its world has no china)' },
   banana: { kind: 'banana', colour: 'yellow', material: 'fruit' },
   block: { kind: 'block', colour: 'blue', material: 'wood' },
+  key: { kind: 'key', colour: 'yellow', material: 'metal' },
+  greenball: { kind: 'ball', colour: 'green', material: 'plastic' },
   lemon: { kind: 'lemon', colour: 'yellow', material: 'fruit', note: 'the lemon is the kind it never saw in training, and it has no word for it' },
   duck: null, pear: null,
 };
 const ROUND = new Set(['apple', 'ball', 'cup', 'lemon']); // the round kinds of its world (night.py ROUND)
+const DIRECTIONS = ['front', 'right', 'behind', 'left']; // a quarter each, front within 45 degrees (night.py direction_of)
 const trained = { wordSounds: (() => { try { return JSON.parse(localStorage.getItem('parrot.words') || '{}'); } catch (e) { return {}; } })(), awaitWord: null, busy: false, queue: [], lastAt: 0, momentMs: 300, turn: 3, vocab: new Set(), colours: [], materials: [], focus: null, open: null, quietUntil: 0, serial: 0, log: [] };
 
 /** The things it sees: the room's things in its world, the nearest five, the thing in focus among them. */
 function trainedThings(focusId, glimpseId) {
-  const yaw = parrot.joints.get('head_yaw') * Math.PI / 180;
   const rows = [];
   for (const t of room.things.values()) {
     const w = WORLD[t.kind];
     if (!w) continue;
-    const a = Math.atan2(t.obj.position.x, t.obj.position.z) - yaw;
+    const a = Math.atan2(t.obj.position.x, t.obj.position.z); // from where it faces on the perch (+z), positive to its left
     rows.push({ id: t.id, kind: w.kind, colour: w.colour, material: w.material, direction: +Math.atan2(Math.sin(a), Math.cos(a)).toFixed(4), distance: +distanceOf(t.id).toFixed(3), focus: t.id === focusId });
   }
   rows.sort((p, q) => (q.focus - p.focus) || (q.id === glimpseId) - (p.id === glimpseId) || p.distance - q.distance);
@@ -686,7 +688,9 @@ function expected(words, focusKind, scene) {
   if (words[0] === 'what' && words[1] === 'colour' && focusKind) return [WORLD_COLOUR(focusKind)];
   if (w === 'what objects are round') return [...new Set(kinds.filter((k) => ROUND.has(k)))].sort();
   if (w === 'what can you eat') return [...new Set(scene.filter((t) => t.material === 'fruit').map((t) => t.kind))].sort();
-  if (words[0] === 'can' && words[1] === 'you' && words[2] === 'eat' && focusKind) return [WORLD[focusKind].material === 'fruit' ? 'yes' : 'no'];
+  if (words[0] === 'can' && words[1] === 'you' && words[2] === 'eat' && focusKind) return [Object.values(WORLD).find((x) => x && x.kind === focusKind)?.material === 'fruit' ? 'yes' : 'no'];
+  if (words[0] === 'what' && words[1] === 'shape' && focusKind) return [ROUND.has(focusKind) ? 'round' : 'no']; // its voice has no word for another shape
+  if (words[0] === 'where' && focusKind) { const t = scene.find((x) => x.focus); return t ? [DIRECTIONS[Math.floor((((-t.direction + Math.PI / 4) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI) / (Math.PI / 2))]] : null; }
   return null;
 }
 const WORLD_COLOUR = (k) => Object.values(WORLD).find((w) => w && w.kind === k)?.colour;
@@ -848,9 +852,9 @@ async function askIt(text) {
   if (!heard.length) { logLine(`It knows none of these words. Its words are listed under <b>Its words</b>.`, 'warn'); return; }
   const scan = isScan(heard);
   // the thing a question is about: one it names (the trainers attend to it), else the thing clicked
-  const named = heard.find((w) => KINDS[w] && WORLD[w]);
+  const named = heard.find((w) => Object.values(WORLD).some((x) => x && x.kind === w));
   let focusId = null;
-  if (named) focusId = [...room.things.values()].filter((t) => t.kind === named).sort((a, b) => distanceOf(a.id) - distanceOf(b.id))[0]?.id || null;
+  if (named) focusId = [...room.things.values()].filter((t) => WORLD[t.kind]?.kind === named).sort((a, b) => distanceOf(a.id) - distanceOf(b.id))[0]?.id || null;
   else if (!scan) focusId = trained.focus;
   if (named && !focusId) { logLine(`There is no ${esc(named)} on the table.`, 'warn'); return; }
   if (!scan && !focusId) { logLine('Click a thing first: a question like this is about the thing in focus.', 'warn'); return; }
@@ -1148,7 +1152,10 @@ async function start() {
     setStatus('Bringing the parrot');
     await setLook(query.get('look') || looks[0]?.id);
     buildPalette(); buildSliders();
-    for (const [kind, x, z, yaw] of [['apple', 0.16, 0.26, 30], ['ball', -0.3, 0.16, 0], ['cup', 0.34, -0.12, 200], ['block', -0.1, 0.42, 25]]) await place(kind, x, z, yaw);
+    // the meaning lane's demo room (demo_stage.py): a red apple left and far, a blue block, a white cup
+    // behind, a yellow key in front and a green ball to the parrot's right (its directions; 0.4 m a unit)
+    const at = (deg, r) => [r * Math.sin(deg * Math.PI / 180), r * Math.cos(deg * Math.PI / 180)];
+    for (const [kind, deg, r, yaw] of [['apple', 70, 0.6, 30], ['block', 120, 0.4, 25], ['cup', 180, 0.36, 200], ['key', -20, 0.4, 60], ['greenball', -80, 0.4, 0]]) await place(kind, ...at(deg, r), yaw);
     state.subject = [...room.things.keys()][0];
     resize();
     state.phase = 'idle';
@@ -1174,7 +1181,7 @@ async function start() {
   }
   view = new BrainView({ regions: $('brain'), units: $('dist-units'), tuning: $('dist-tuning'), readout: $('dist-readout'), silence: ui.silence, joints: $('joints') });
   window.parrotPage = { room, state, eyes, audio, trained, controls, get brainView() { return view; }, get brain3d() { return brain3d; }, get parrot() { return parrot; }, place, addThing, move: (id, x, z) => room.move(id, x, z), remove: (id) => room.remove(id),
-    describe: () => room.describe(), load: (d) => room.load(d), script: runScript, TEST, setLook, setMode, distanceOf, camera, THREE,
+    label: (k) => KINDS[k]?.label || k, describe: () => room.describe(), load: (d) => room.load(d), script: runScript, TEST, setLook, setMode, distanceOf, camera, THREE,
     view(name) { const v = VIEWS[name]; if (!v) return; camera.position.set(...v[0]); controls.target.set(...v[1]); controls.update(); },
     screenOf(x, y, z) { const v = new THREE.Vector3(x, y, z).project(camera); const r = canvas.getBoundingClientRect(); return [r.left + (v.x + 1) / 2 * r.width, r.top + (1 - v.y) / 2 * r.height]; } };
   if (query.get('brain') === 'off') { setStatus('Ready (no brain)', 'ready'); document.body.dataset.ready = '1'; return; }
