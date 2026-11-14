@@ -1,20 +1,4 @@
 {
- "brain": {
-  "stage": "N1",
-  "step": "names",
-  "label": "N1 names",
-  "founder": 33400106,
-  "exported": "2026-11-13 23:12 UTC",
-  "source": "s3://cadence-0100-meaning-20261113/meaning334/night/s5/page_N1/",
-  "lane": "muellerberndt/cadence lane-0100-meaning, benchmarks/meaning/export_page.py",
-  "readings": {
-   "N0 imitation": "1.00",
-   "N1 naming of the thing in focus": ".95 to .98"
-  },
-  "not_learned": "colour, places and relations; asked those, it names a thing",
-  "arm": "exam (brains_exam/brain_33400106_N1.npz)",
-  "learned": "to say back a word it hears (1.00 of its exam's trials), and the name of the thing in focus when asked what is this (.95 to .98)"
- },
  "wheel": {
   "file": "cadence_net-0.99.0-lane-parrot-meaning-e00c860a.whl",
   "sha256": "b06fd192700c660b78016a04f10768c77d31091fb8489786fa4084386d1926d0",
@@ -42,92 +26,246 @@
   "records": 2048,
   "how": "headless Chromium, a page that loads Pyodide, the wheel and the three brain files, imports cadence.parrot.host and cadence.meaning.host, builds the composed host and asks what is this with the apple in focus"
  },
- "page_room_native": {
-  "how": "MeaningParrot natively, the page's room (apple red fruit, ball white cloth, cup white glass, block blue wood), the export protocol",
-  "what is this": {
-   "apple": "apple",
-   "ball": "ball",
-   "cup": "cup",
-   "block": "block"
+ "runs": [
+  {
+   "brain": {
+    "stage": "N1",
+    "step": "names",
+    "label": "N1 names",
+    "founder": 33400106,
+    "exported": "2026-11-13 23:12 UTC",
+    "source": "s3://cadence-0100-meaning-20261113/meaning334/night/s5/page_N1/",
+    "lane": "muellerberndt/cadence lane-0100-meaning, benchmarks/meaning/export_page.py",
+    "readings": {
+     "N0 imitation": "1.00",
+     "N1 naming of the thing in focus": ".95 to .98"
+    },
+    "not_learned": "colour, places and relations; asked those, it names a thing",
+    "arm": "exam (brains_exam/brain_33400106_N1.npz)",
+    "learned": "to say back a word it hears (1.00 of its exam's trials), and the name of the thing in focus when asked what is this (.95 to .98)"
+   },
+   "page_room_native": {
+    "how": "MeaningParrot natively, the page's room (apple red fruit, ball white cloth, cup white glass, block blue wood), the export protocol",
+    "what is this": {
+     "apple": "apple",
+     "ball": "ball",
+     "cup": "cup",
+     "block": "block"
+    },
+    "what objects are round (page room, things in room order)": [
+     "apple",
+     "cup"
+    ],
+    "what can you eat": [
+     "apple",
+     "cup"
+    ],
+    "lemon: what is this / can you eat this": [
+     "apple",
+     "apple"
+    ],
+    "what colour has the apple, corrected red twice": "apple each time (the records' three nearest did not agree)"
+   },
+   "page_run": {
+    "browser": "headless Chromium, 1512x860, a loaded laptop",
+    "think_ms_median": "144 ms",
+    "frames_per_s": "61",
+    "taught": [
+     {
+      "kind": "apple",
+      "id": "you-0",
+      "link": 0.998
+     }
+    ],
+    "exchanges": [
+     {
+      "question": "what is this",
+      "focus": "apple",
+      "said": [
+       "apple"
+      ],
+      "expected": [
+       "apple"
+      ],
+      "right": true
+     },
+     {
+      "question": "what is this",
+      "focus": "cup",
+      "said": [
+       "cup"
+      ],
+      "expected": [
+       "cup"
+      ],
+      "right": true
+     },
+     {
+      "question": "what colour is the apple",
+      "focus": "apple",
+      "said": [
+       "apple"
+      ],
+      "expected": [
+       "red"
+      ],
+      "right": false
+     },
+     {
+      "question": "what objects are round",
+      "focus": null,
+      "said": [
+       "cup"
+      ],
+      "expected": [
+       "apple",
+       "ball",
+       "cup"
+      ],
+      "right": false
+     }
+    ],
+    "correction": {
+     "word": "red",
+     "wrote": true,
+     "records": 2048
+    },
+    "video": "~/Desktop/parrot-demos/parrot-page-20261114T0042Z-N1-names-33400106.mp4 (71.9 s, the waits between steps cut)"
+   },
+   "brain_label": "N1 names, founder 33400106"
   },
-  "what objects are round (page room, things in room order)": [
-   "apple",
-   "cup"
-  ],
-  "what can you eat": [
-   "apple",
-   "cup"
-  ],
-  "lemon: what is this / can you eat this": [
-   "apple",
-   "apple"
-  ],
-  "what colour has the apple, corrected red twice": "apple each time (the records' three nearest did not agree)"
- },
- "page_run": {
-  "browser": "headless Chromium, 1512x860, a loaded laptop",
-  "think_ms_median": "144 ms",
-  "frames_per_s": "61",
-  "taught": [
-   {
-    "kind": "apple",
-    "id": "you-0",
-    "link": 0.998
-   }
-  ],
-  "exchanges": [
-   {
-    "question": "what is this",
-    "focus": "apple",
-    "said": [
-     "apple"
+  {
+   "brain": {
+    "stage": "N2",
+    "step": "colour, after names",
+    "label": "N2 colour, deep",
+    "founder": 33400110,
+    "exported": "2026-11-14 00:07 UTC",
+    "source": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/deep_33400110_N2/",
+    "lane": "muellerberndt/cadence lane-0100-meaning, the night's deep composition (4 processing regions and the association, apical .5)",
+    "readings": {
+     "N0 imitation": ".94",
+     "N1 naming of the thing in focus": ".67",
+     "N2 colour of a named thing, kind-colour pairs it never saw": ".83",
+     "N2 which thing has a colour (what is red?)": ".00"
+    },
+    "learned": "the colour of a thing it is asked about by name, what colour has the apple (.83 on kind-colour pairs it never saw), the name of the thing in focus (.67) and to say back a word it hears (.94)",
+    "not_learned": "which thing has a colour (what is red?: .00), places and relations; its N2 step did not pass its mastery mark",
+    "not_learned_list": [
+     "which thing has a colour (N2, by colour)",
+     "places (N3)",
+     "relations (N4)"
     ],
-    "expected": [
-     "apple"
-    ],
-    "right": true
+    "probes": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/deep_33400110_N2/probes.json (exported 2026-11-14 00:44 UTC)"
    },
-   {
-    "question": "what is this",
-    "focus": "cup",
-    "said": [
-     "cup"
-    ],
-    "expected": [
-     "cup"
-    ],
-    "right": true
-   },
-   {
-    "question": "what colour is the apple",
-    "focus": "apple",
-    "said": [
-     "apple"
-    ],
-    "expected": [
-     "red"
-    ],
-    "right": false
-   },
-   {
-    "question": "what objects are round",
-    "focus": null,
-    "said": [
-     "cup"
-    ],
-    "expected": [
+   "brain_label": "N2 colour, deep, founder 33400110",
+   "page_room_native": {
+    "how": "MeaningParrot natively, the page's room, the export protocol",
+    "what is this": {
+     "apple": "apple",
+     "ball": "ball",
+     "cup": "cup",
+     "block": "blue"
+    },
+    "what colour is the apple": "red",
+    "what objects are round": [
      "apple",
      "ball",
-     "cup"
+     "cup",
+     "block"
     ],
-    "right": false
+    "what can you eat": [
+     "apple",
+     "ball",
+     "cup",
+     "block"
+    ],
+    "a pistachio for its answer to what is this (apple), then what colour is the apple": {
+     "no pistachio": "red",
+     "after the pistachio (3 lessons)": "apple"
+    }
+   },
+   "probes_on_looking": {
+    "how": "probes.json of the lane, read on looking moments (a thing in focus, nothing heard), the page's room",
+    "apple": "kind apple, colour red, round, fruit, edible, direction left, distance far (at chance)",
+    "cup": "kind cup, colour white, round, material metal (wrong: glass), not edible",
+    "block": "kind block, colour blue, not round, wood, not edible"
+   },
+   "page_run": {
+    "think_ms_median": "179 ms",
+    "taught": [
+     {
+      "kind": "apple",
+      "id": "you-0",
+      "link": 1.008
+     }
+    ],
+    "mind_apple": [
+     "kind: apple 0.16",
+     "colour: red 0.26",
+     "round: round 0.74",
+     "material: fruit 0.20",
+     "edible: yes 0.59",
+     "direction: left 0.30",
+     "distance: far 0.55"
+    ],
+    "exchanges": [
+     {
+      "question": "what is this",
+      "focus": "apple",
+      "said": [
+       "apple"
+      ],
+      "expected": [
+       "apple"
+      ],
+      "right": true
+     },
+     {
+      "question": "what is this",
+      "focus": "cup",
+      "said": [
+       "cup"
+      ],
+      "expected": [
+       "cup"
+      ],
+      "right": true
+     },
+     {
+      "question": "what colour is the apple",
+      "focus": "apple",
+      "said": [
+       "apple"
+      ],
+      "expected": [
+       "red"
+      ],
+      "right": false
+     },
+     {
+      "question": "what objects are round",
+      "focus": null,
+      "said": [
+       "block",
+       "apple",
+       "cup"
+      ],
+      "expected": [
+       "apple",
+       "ball",
+       "cup"
+      ],
+      "right": false
+     }
+    ],
+    "correction": {
+     "word": "red",
+     "wrote": true,
+     "records": 2048
+    },
+    "video": "~/Desktop/parrot-demos/parrot-page-20261114T0057Z-N2-colour-deep-33400110.mp4 (72.0 s)"
    }
-  ],
-  "correction": {
-   "word": "red",
-   "wrote": true,
-   "records": 2048
-  },
-  "video": "~/Desktop/parrot-demos/parrot-page-20261114T0042Z-N1-names-33400106.mp4 (71.9 s, the waits between steps cut)"
- }
+  }
+ ]
 }

@@ -19,7 +19,7 @@
   "host.py": "664a6c704e5f4ef449843b3457ba4241a3c677be096b881d466aac41a2df3d72",
   "page.py": "8cd65798b051166f4dd4a6a4dbfe878a36a33150eeea2783c7209320d5110039",
   "sounds.py": "7152ec84d1542bbdd357add699d834cf32c36776a7ef75d8f644e97a162688b8",
-  "trained.py": "74807a7fd444149677a3e70040b4236384b33b71b84ce2dbdf2bf97fab13dc9a"
+  "trained.py": "97b21a72babbf674bca96ddf0df921ce47f931d6a0db7ca0204270286c05a7ee"
  },
  "files": {
   "calls.json": "645453a2f0c7c4874addbf143bac95861505484018dac7f64bb5fe39fde0dbf7"
@@ -45,28 +45,36 @@
  },
  "host_files": {
   "trained": {
-   "trained/brain.npz": "9f6aec55f80dd6df80b62be8a92c8dc621ea5ad7c701dc4d43e5765a88953978",
-   "trained/brain.records.npz": "e38405757e9591c9808df34058be25b4b4beb9e4969d8e55d6f4115d40e4e34b",
-   "trained/spec.json": "6e616497ec7aef0e84db18781998507274bd8aeaa6f15f776f0443e1bcf2928f",
-   "trained/version.json": "224a3d2dd0786555f38085e0b5306337af2c75287d320b606dcf311ca059f5eb"
+   "trained/brain.npz": "320048e24922efae25776648cf20c4b36d804fc6d8bbda7caea630e88fa56c0f",
+   "trained/brain.records.npz": "08df00f4bd85eebc5fdd268d849f045f11fb94165086d771d1df2f31dcbd0e97",
+   "trained/spec.json": "6f9cf6f85fb940d583cf97771a4f0851311b557ea9817cb3248fda4d42782001",
+   "trained/version.json": "82d960062d5d2778a9b112767077c6e7c1c979cbc0841c661d64bf42484d88eb",
+   "trained/probes.json": "18d32f6ffc464ef7625b4b6c0155cafbd65717b675e8fe6227669b09e97ddd0f"
   }
  },
- "trained_source": "s3://cadence-0100-meaning-20261113/meaning334/night/s5/page_N1/ (exported 2026-11-13 23:12 UTC; lane-0100-meaning benchmarks/meaning/export_page.py)",
+ "trained_source": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/deep_33400110_N2/ (exported 2026-11-14 00:07 UTC, probes 00:44 UTC; lane-0100-meaning, the night's deep composition)",
  "trained_version": {
-  "stage": "N1",
-  "step": "names",
-  "label": "N1 names",
-  "founder": 33400106,
-  "exported": "2026-11-13 23:12 UTC",
-  "source": "s3://cadence-0100-meaning-20261113/meaning334/night/s5/page_N1/",
-  "lane": "muellerberndt/cadence lane-0100-meaning, benchmarks/meaning/export_page.py",
+  "stage": "N2",
+  "step": "colour, after names",
+  "label": "N2 colour, deep",
+  "founder": 33400110,
+  "exported": "2026-11-14 00:07 UTC",
+  "source": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/deep_33400110_N2/",
+  "lane": "muellerberndt/cadence lane-0100-meaning, the night's deep composition (4 processing regions and the association, apical .5)",
   "readings": {
-   "N0 imitation": "1.00",
-   "N1 naming of the thing in focus": ".95 to .98"
+   "N0 imitation": ".94",
+   "N1 naming of the thing in focus": ".67",
+   "N2 colour of a named thing, kind-colour pairs it never saw": ".83",
+   "N2 which thing has a colour (what is red?)": ".00"
   },
-  "not_learned": "colour, places and relations; asked those, it names a thing",
-  "arm": "exam (brains_exam/brain_33400106_N1.npz)",
-  "learned": "to say back a word it hears (1.00 of its exam's trials), and the name of the thing in focus when asked what is this (.95 to .98)"
+  "learned": "the colour of a thing it is asked about by name, what colour has the apple (.83 on kind-colour pairs it never saw), the name of the thing in focus (.67) and to say back a word it hears (.94)",
+  "not_learned": "which thing has a colour (what is red?: .00), places and relations; its N2 step did not pass its mastery mark",
+  "not_learned_list": [
+   "which thing has a colour (N2, by colour)",
+   "places (N3)",
+   "relations (N4)"
+  ],
+  "probes": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/deep_33400110_N2/probes.json (exported 2026-11-14 00:44 UTC)"
  },
  "wheel": "cadence_net-0.99.0-lane-parrot-meaning-e00c860a.whl",
  "wheel_sha256": "b06fd192700c660b78016a04f10768c77d31091fb8489786fa4084386d1926d0",

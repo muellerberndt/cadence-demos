@@ -218,7 +218,7 @@ function cueFor(id) {
 }
 function endDrag(e) {
   if (!state.dragging) return;
-  if (!state.dragging.moved) { state.cue = cueFor(state.dragging.id); state.focus = { id: state.dragging.id, why: 'you pointed at it' }; state.pointed = { id: state.dragging.id, until: performance.now() + 6000 }; trained.focus = state.dragging.id; askNote(); }
+  if (!state.dragging.moved) { state.cue = cueFor(state.dragging.id); state.focus = { id: state.dragging.id, why: 'you pointed at it' }; state.pointed = { id: state.dragging.id, until: performance.now() + (state.trained ? 1e9 : 6000) }; trained.focus = state.dragging.id; askNote(); }
   state.dragging = null; state.behind = false;
   controls.enabled = true; canvas.classList.remove('dragging');
   if (e?.pointerId !== undefined && canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId);
@@ -281,7 +281,7 @@ async function moment(now) {
   state.pending = false;
   state.moment += 1;
   state.lastReply = reply;
-  if (op) { op.resolve(reply.meaning || {}); if (reply.meaning?.mind) showMind(reply.meaning.mind, op.meta.focus); }
+  if (op) { op.resolve(reply.meaning || {}); if (reply.meaning?.mind) showMind(reply.meaning.mind, op.meta.glimpseId || op.meta.focus); }
   if (state.mode === 'brain' && reply.arrays.angles && state.composed) { // the composed brain's body: its angles, smoothed by the page
     reply.arrays.angles.forEach((v, i) => { if (i < parrot.joints.n && parrot.joints.spec[i].name !== 'beak_open') parrot.joints.target[i] = v; });
   } else if (state.mode === 'brain' && reply.arrays.targets) parrot.joints.setUnitTargets(reply.arrays.targets);
@@ -717,18 +717,25 @@ function sayWord(word) {
 }
 
 // --- In its mind: the facets of the thing in focus read from its state by the meaning lane's probes
-const FACETS = ['kind', 'colour', 'shape', 'material', 'edible', 'direction', 'distance'];
+const FACETS = [['kind', 'kind'], ['colour', 'colour'], ['round', 'shape'], ['material', 'material'], ['edible', 'edible'], ['direction', 'direction'], ['distance', 'distance']];
+const FACET_VALUE = { round: { True: 'round', False: 'not round' }, edible: { True: 'yes', False: 'no' } };
+const atChance = (f) => f && f.accuracy != null && f.base_rate != null && f.accuracy <= f.base_rate + 0.05;
 const mindEl = { card: $('in-mind'), thing: $('im-thing'), facets: $('im-facets'), voice: $('im-voice'), outside: $('im-outside') };
 function setupMind(t) {
   mindEl.card.hidden = false;
   const p = t.probes;
+  trained.probes = p;
   mindEl.facets.textContent = '';
   if (!p) { const e = document.createElement('span'); e.className = 'none'; e.textContent = 'The meaning lane has not exported probes for this brain, so no facet is read from its state.'; mindEl.facets.append(e); }
-  else for (const f of FACETS) {
-    const a = document.createElement('span'); a.className = 'f'; a.textContent = f;
-    const v = document.createElement('span'); v.className = 'v'; v.dataset.facet = f; v.textContent = p.facets[f] ? '…' : 'no probe';
-    const c = document.createElement('span'); c.className = 'c'; c.title = p.facets[f] ? `the probe is right on ${Math.round(100 * (p.facets[f].accuracy ?? 0))} % of scenes it never saw` : '';
-    c.textContent = p.facets[f]?.accuracy != null ? `${Math.round(100 * p.facets[f].accuracy)}%` : '';
+  else for (const [f, label] of FACETS) {
+    const pf = p.facets[f];
+    const a = document.createElement('span'); a.className = 'f'; a.textContent = label;
+    const v = document.createElement('span'); v.className = `v${atChance(pf) ? ' chance' : ''}`; v.dataset.facet = f; v.textContent = pf ? '…' : 'no probe';
+    const c = document.createElement('span'); c.className = `c${atChance(pf) ? ' chance' : ''}`;
+    if (pf?.accuracy != null) {
+      c.textContent = atChance(pf) ? 'at chance' : `${Math.round(100 * pf.accuracy)}%`;
+      c.title = `Its probe reads this facet right on ${Math.round(100 * pf.accuracy)} % of scenes it never saw; the commonest answer alone gets ${Math.round(100 * (pf.base_rate ?? 0))} %.`;
+    }
     mindEl.facets.append(a, v, c);
   }
   mindEl.thing.textContent = 'click a thing';
@@ -740,8 +747,12 @@ function showMind(mind, focusId) {
   for (const [f, got] of Object.entries(mind.facets || {})) {
     const v = mindEl.facets.querySelector(`[data-facet="${f}"]`);
     if (!v) continue;
-    v.textContent = `${got.value} ${got.p.toFixed(2)}`;
-    const bar = document.createElement('i'); bar.style.width = `${Math.round(got.p * 100)}%`; v.append(bar);
+    const k = trained.probes?.facets?.[f]?.classes?.length || 2;
+    v.textContent = `${FACET_VALUE[f]?.[got.value] ?? got.value} ${got.p.toFixed(2)}`;
+    v.title = `Its probe's share for this answer at this moment, ${got.p.toFixed(2)}, among ${k} answers (one in ${k} by chance: the mark on the bar).`;
+    const bar = document.createElement('i'); bar.style.width = `${Math.round(got.p * 100)}%`;
+    const tick = document.createElement('b'); tick.className = 'tick'; tick.style.left = `${Math.round(100 / k)}%`;
+    const track = document.createElement('span'); track.className = 'track'; track.append(bar, tick); v.append(track);
   }
   const w = mind.voice?.word;
   const link = w ? (state.lastReply?.knows || []).find((k) => k.kind === w) : null;
@@ -777,7 +788,7 @@ async function askIt(text) {
   trained.busy = true; trained.open = null; askEl.fix.hidden = true; ui.pistachio.classList.remove('ask');
   const id = ++trained.serial;
   logLine(`<span class="who">you</span> ${esc(heard.join(' '))}?${fk ? ` <span class="dim">(the ${esc(fk)} in focus)</span>` : ''}${unheard.length ? ` <span class="dim">· words it never heard, left out: ${esc(unheard.join(', '))}</span>` : ''}`, 'q');
-  if (focusId) { state.cue = cueFor(focusId); state.pointed = { id: focusId, until: performance.now() + 9000 }; }
+  if (focusId) { state.cue = cueFor(focusId); state.pointed = { id: focusId, until: performance.now() + 9000 }; if (named) { trained.focus = focusId; askNote(); } }
   const said = [];
   let li = null, recalled = null;
   try {
@@ -814,7 +825,11 @@ async function askIt(text) {
     ui.pistachio.classList.toggle('ask', !!said.length);
     if (!said.length) await trainedOp({ op: 'over' });
   } catch (error) { logLine(`The trained brain stopped: ${esc(error.message)}`, 'warn'); }
-  finally { trained.busy = false; trained.quietUntil = performance.now() + 2500; }
+  finally {
+    trained.busy = false; trained.quietUntil = performance.now() + 2500;
+    // the thing in focus stays the one clicked (a scan's glimpses visited the others)
+    if (trained.focus && room.things.has(trained.focus)) state.pointed = { id: trained.focus, until: performance.now() + 1e9 };
+  }
 }
 async function payAnswer(open) {
   if (trained.open !== open) return;
@@ -928,7 +943,7 @@ function buildPalette() {
 }
 
 ui.test.addEventListener('click', () => { if (state.script) { state.script = null; ui.test.textContent = 'Test run'; ui.test.setAttribute('aria-pressed', 'false'); } else runScript(TEST); });
-ui.clear.addEventListener('click', () => { state.script = null; room.clear(); state.subject = null; view?.clearTuning(); askNote(); });
+ui.clear.addEventListener('click', () => { state.script = null; room.clear(); state.subject = null; view?.clearTuning(); state.pointed = null; trained.focus = null; askNote(); });
 // The pistachio: thrown from the visitor's side, caught in the beak, nibbled and eaten. The reward
 // reaches the brain when the nut is in the beak, not on the click.
 let nut = null;

@@ -75,14 +75,26 @@ class Host(Composed):
         if found.exists():
             raw = json.loads(found.read_text())
             pops = self.meaning.brain.connectome.populations
-            regions = [r for r in raw.get("code", {}).get("regions", ["association"]) if r in pops]
-            self.probes = {"regions": regions, "units": np.concatenate([np.asarray(list(pops[r]), np.int64) for r in regions]),
-                           "read_at": raw.get("code", {}).get("read_at", ""), "facets": {}}
+            if "neurons" in raw:  # the lane's format: one population's neurons, a weight matrix (dims x classes) a facet
+                units = np.asarray(raw["neurons"], np.int64)
+                regions = [str(raw.get("population", "association"))]
+            else:
+                regions = [r for r in raw.get("code", {}).get("regions", ["association"]) if r in pops]
+                units = np.concatenate([np.asarray(list(pops[r]), np.int64) for r in regions])
+            self.probes = {"regions": regions, "units": units, "facets": {},
+                           "read_at": raw.get("read_at") or raw.get("code", {}).get("read_at") or "a moment of looking: a thing in focus, nothing heard"}
             for name, f in raw.get("facets", {}).items():
-                W = np.atleast_2d(np.asarray(f["W"], np.float64))
-                self.probes["facets"][name] = {"classes": list(f["classes"]), "W": W, "b": np.atleast_1d(np.asarray(f["b"], np.float64)),
-                                               "mu": np.asarray(f["mu"], np.float64), "sd": np.asarray(f["sd"], np.float64),
-                                               "accuracy": f.get("accuracy"), "held_out": f.get("held_out")}
+                if "weights" in f:
+                    W = np.asarray(f["weights"], np.float64).T  # classes x dims
+                    b = np.zeros(W.shape[0])
+                    mu, sd = f["mean"], f["sd"]
+                else:
+                    W = np.atleast_2d(np.asarray(f["W"], np.float64))
+                    b = np.atleast_1d(np.asarray(f.get("b", 0.0), np.float64))
+                    mu, sd = f["mu"], f["sd"]
+                self.probes["facets"][name] = {"classes": [str(c) for c in f["classes"]], "W": W, "b": b,
+                                               "mu": np.asarray(mu, np.float64), "sd": np.asarray(sd, np.float64),
+                                               "accuracy": f.get("accuracy"), "base_rate": f.get("base_rate"), "held_out": f.get("held_out")}
         c = self.meaning.brain.connectome
         self.t_pops: list[tuple[dict[str, Any], np.ndarray, float]] = []
         start = self.neurons
@@ -121,7 +133,7 @@ class Host(Composed):
                           "records": 0 if m.records is None else int(m.records.count), "load_s": round(self.load_s, 2),
                           "version": self.version,
                           "probes": None if self.probes is None else {"regions": self.probes["regions"], "read_at": self.probes["read_at"],
-                                                                      "facets": {k: {"classes": f["classes"], "accuracy": f["accuracy"], "held_out": f["held_out"]}
+                                                                      "facets": {k: {"classes": f["classes"], "accuracy": f["accuracy"], "base_rate": f["base_rate"], "held_out": f["held_out"]}
                                                                                  for k, f in self.probes["facets"].items()}}})
         return d
 

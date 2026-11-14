@@ -278,7 +278,9 @@ html.embedded .toast { top: 100px; }
 .im-facets { display: grid; grid-template-columns: 62px 1fr 44px; gap: 2px 6px; align-items: center; }
 .im-facets .f { color: var(--ink-3); font: 500 10px var(--mono); text-transform: uppercase; letter-spacing: .03em; }
 .im-facets .v { color: var(--ink); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.im-facets .v i { display: block; height: 3px; margin-top: 1px; border-radius: 2px; background: #7bed9f; }
+.im-facets .v .track { position: relative; display: block; height: 3px; margin-top: 1px; border-radius: 2px; background: rgb(255 255 255 / 0.08); }
+.im-facets .v .track i { display: block; height: 100%; border-radius: 2px; background: #7bed9f; }
+.im-facets .v .track .tick { position: absolute; top: -2px; width: 1px; height: 7px; background: var(--ink-2); }
 .im-facets .c { color: var(--ink-3); font: 400 10px var(--mono); text-align: right; }
 .im-facets .none { grid-column: 1 / -1; color: var(--ink-3); }
 .im-voice { margin: 6px 0 0; color: var(--ink-2); }
@@ -286,3 +288,5 @@ html.embedded .toast { top: 100px; }
 .im-voice button { margin-left: 6px; padding: 0 7px; height: 20px; border-radius: 6px; border: 1px solid var(--line); background: var(--raised); color: var(--ink); cursor: pointer; font-size: 11px; }
 .im-outside { margin: 5px 0 0; color: var(--ink-3); line-height: 1.35; }
 @media (max-width: 900px) { .in-mind { top: auto; bottom: 120px; right: 10px; width: 230px; } }
+.im-facets .chance { color: var(--ink-3); font-weight: 400; }
+.im-facets .v.chance .track i { background: var(--ink-3); }
