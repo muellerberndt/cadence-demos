@@ -73,7 +73,7 @@ class Host:
 
     def handle(self, message: dict[str, Any]) -> dict[str, Any]:
         cmd = message.get("command")
-        if cmd in ("remember", "forget", "memory", "repertoire", "debug"):
+        if cmd in ("remember", "forget", "memory", "repertoire", "debug", "sound"):
             return self.hearing.handle(message)
         if cmd == "describe":
             return self.describe()

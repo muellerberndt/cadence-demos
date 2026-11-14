@@ -536,4 +536,9 @@ class Host:
                     "frames": self.mem.frames_of(s).round(2).tolist(), "audio": self.mem.pcm_of(s).round(4).tolist()} for s in range(r.count)]}
         if cmd == "repertoire":
             return {"repertoire": self.repertoire_list()}
+        if cmd == "sound":  # one kept sound's audio (8 kHz), for a word the page links to it
+            slot = int(message.get("slot", -1))
+            if not 0 <= slot < self.mem.records.count:
+                return {"pcm": [], "rate": 8000}
+            return {"pcm": np.round(self.mem.pcm_of(slot), 4).tolist(), "rate": 8000}
         raise ValueError(f"unknown command {cmd!r}")

@@ -227,6 +227,7 @@ export class Live {
     for (const [name, m] of [['dopamine', dop], ['noradrenaline', viz.modulators?.noradrenaline], ['acetylcholine', viz.modulators?.acetylcholine]]) {
       if (viz.modulators?.[name]) this.setStatus(name, 'live');
       if (!m || !(Math.abs(m.level) > 0.05)) continue;
+      if (this.b.scanMode && name !== 'dopamine') continue; // the scan keeps one colour family: only dopamine washes it
       const paid = (m.paid || []).map((p) => [PAID_AREAS[p.from] || p.from, PAID_AREAS[p.to] || p.to, p.change]).filter((p) => this.b.byId[p[0]] && this.b.byId[p[1]]);
       this.washes.push({ name, level: Math.max(-1, Math.min(1, m.level)), targets: m.targets || MOD[name].to, from: MOD[name].from, t0: vt, paid });
     }
@@ -433,7 +434,7 @@ export class Live {
     // the map card's tether to the hippocampus
     const hc = b.centre('map', 0, this._hc ||= new THREE.Vector3());
     C1.copy(b.byId.map.base).multiplyScalar(this.mapPop ? 0.5 : 0.15); C2.copy(C1).multiplyScalar(0.4);
-    P.copy(this.mapSprite.position).addScaledVector(up, -this.mapSprite.scale.y / 2); this.seg(hc, P, C1, C2);
+    if (this.mapSprite.visible) { P.copy(this.mapSprite.position).addScaledVector(up, -this.mapSprite.scale.y / 2); this.seg(hc, P, C1, C2); }
     // a lit path: light flowing from step to step, each step named
     const lit = pathOn ? PATHS.find((x) => x.id === pathOn) : null;
     if (lit) {
@@ -443,7 +444,7 @@ export class Live {
       for (let i = lit.via.length; i < 4; i++) this.stepAt[i] = null;
     } else this.stepAt.fill(null);
     // the focus: a line from the tectum (the side that sees it) to the thing on the map
-    if (this.focus?.place && this.mapPop) {
+    if (this.focus?.place && this.mapPop && this.mapSprite.visible) { // (the scan view has no map card: no tether to it)
       const [x, z] = this.focus.place;
       this.mapPoint(x, z, right, up, P);
       const side = Math.atan2(x, z) - (this.heading * Math.PI) / 180 > 0 ? -1 : 1; // a thing to the left is seen by the left eye, which feeds the right tectum

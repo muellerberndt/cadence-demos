@@ -18,6 +18,7 @@ import * as THREE from 'three';
 import { OrbitControls } from './vendor/three/jsm/controls/OrbitControls.js';
 import { R, T, STN, SHORT, hueOf, PATHS } from './atlas.js';
 import { Live, PARTS } from './brainlive.js';
+import { Scan, LUT } from './brainscan.js';
 
 // Which atlas region a population of the running brain belongs to, by its region, then its name,
 // then its title (the first region whose rule matches).
@@ -56,7 +57,7 @@ function dotTexture() {
 }
 
 export class Brain3D {
-  constructor(canvas, labels) {
+  constructor(canvas, labels, options = {}) {
     this.canvas = canvas; this.labels = labels; this.host = canvas.parentElement;
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
@@ -77,6 +78,9 @@ export class Brain3D {
     this.washAt = -1e9;
     this.build();
     this.live = new Live(this);
+    this.scanMode = !!options.scan;
+    this.traceCol = new THREE.Color('#8a6fb0'); // the scan's fine traces: one cool tone; the pulses carry the warmth
+    if (this.scanMode) { this.scan = new Scan(this, this.host); this.live.mapSprite.visible = false; this.shellMat.uniforms.colour.value.set('#5d6f8f'); }
     this.ui();
     new ResizeObserver(() => this.resize()).observe(this.host);
     this.resize();
@@ -90,7 +94,7 @@ export class Brain3D {
   }
 
   build() {
-    const shellMat = new THREE.ShaderMaterial({ transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+    const shellMat = this.shellMat = new THREE.ShaderMaterial({ transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
       uniforms: { colour: { value: new THREE.Color('#6f8797') } },
       vertexShader: 'varying vec3 vN; varying vec3 vV; void main(){ vec4 mv = modelViewMatrix * vec4(position,1.0); vN = normalize(normalMatrix*normal); vV = normalize(-mv.xyz); gl_Position = projectionMatrix*mv; }',
       fragmentShader: 'uniform vec3 colour; varying vec3 vN; varying vec3 vV; void main(){ float f = pow(1.0 - abs(dot(vN, vV)), 2.4); gl_FragColor = vec4(colour * (0.03 + 0.45 * f), 1.0); }' });
@@ -239,11 +243,11 @@ export class Brain3D {
         r.mean = r.count ? sum / r.count : 0;
       }
     }
-    if (reply) this.live.moment(reply, activity);
+    if (reply) { this.live.moment(reply, activity); this.scan?.moment(reply); }
   }
 
   /** The pistachio reaches the beak: the reward arrives at the VTA. */
-  reward() { this.live.reward(); }
+  reward() { this.live.reward(); this.scan?.reward(); }
 
   // --- hover: a region named in the 3D view lights its card on the right, and back ----------------
   setHover(id, from) {
@@ -331,9 +335,10 @@ export class Brain3D {
     const w = this.host.clientWidth, h = this.host.clientHeight;
     if (!w || !h) return;
     this.renderer.setSize(w, h, false); this.camera.aspect = w / h; this.camera.updateProjectionMatrix();
+    this._rect = { width: w, height: h }; if (this.scan) this.scan.rects = false;
     // fit the brain to the panel: its bounding sphere within the narrower field of view
     const room = Math.max(0.5, (h - 110) / h), vf = 2 * Math.atan(Math.tan(this.camera.fov * Math.PI / 360) * room), hf = 2 * Math.atan(Math.tan(this.camera.fov * Math.PI / 360) * this.camera.aspect);
-    const fit = FIT / Math.sin(Math.min(vf, hf) / 2);
+    const fit = (this.scanMode ? 2.05 : FIT) / Math.sin(Math.min(vf, hf) / 2);
     if (!this.fitted || Math.abs(fit - this.fitted) > 0.5) {
       const dir = this.camera.position.clone().sub(this.controls.target).normalize();
       this.camera.position.copy(this.controls.target).addScaledVector(dir, fit);
@@ -357,9 +362,15 @@ export class Brain3D {
       if (hov === r.id) { dim = Math.max(dim, 0.45); gain = 1; }
       const tr = tint[k4], tg = tint[k4 + 1], tb = tint[k4 + 2], ta = tint[k4 + 3];
       const br = r.base.r, bg = r.base.g, bb = r.base.b;
+      const scan = this.scanMode;
       for (let i = 0; i < r.count; i++) {
         const j = r.start + i, k = 3 * j, t = dim + gain * r.level[i], f = flash[j];
-        const wr = br * t + tr * ta + f, wg = bg * t + tg * ta + f * 0.62, wb = bb * t + tb * ta + f * 0.3;
+        let wr, wg, wb;
+        if (scan) { // the scan's dark-to-warm scale: the neuron's activity, the settle's flash brightening it
+          const q = Math.min(255, Math.round(Math.min(1, (live ? r.level[i] : 0) * 1.3 + f * 0.6) * 255)) * 3, lift = live ? 0.25 + 0.95 * Math.min(1, r.level[i] * 1.4 + f) : 0.06;
+          wr = LUT[q] * lift + tr * ta + f * 0.4; wg = LUT[q + 1] * lift + tg * ta + f * 0.3; wb = LUT[q + 2] * lift + tb * ta + f * 0.2;
+          if (onPath && !onPath.has(r.id)) { wr *= 0.35; wg *= 0.35; wb *= 0.35; }
+        } else { wr = br * t + tr * ta + f; wg = bg * t + tg * ta + f * 0.62; wb = bb * t + tb * ta + f * 0.3; }
         arr[k] += (wr - arr[k]) * a; arr[k + 1] += (wg - arr[k + 1]) * a; arr[k + 2] += (wb - arr[k + 2]) * a;
         if (f > 0) { arr[k] = Math.max(arr[k], wr); arr[k + 1] = Math.max(arr[k + 1], wg); arr[k + 2] = Math.max(arr[k + 2], wb); }
       }
@@ -374,7 +385,7 @@ export class Brain3D {
       if (src.live && t.to.live) want += 0.03;
       want += this.live.tractBoost(t);
       t.level += (want - t.level) * a;
-      let col = src.base, lvl = t.level, flow = 0.55;
+      let col = this.scanMode ? this.traceCol : src.base, lvl = this.scanMode ? 0.12 + 0.6 * t.level : t.level, flow = this.scanMode ? 0.25 : 0.55;
       if (onPath) {
         if (path && t.paths.includes(path.id)) { col = this.pathColour[path.id]; lvl = Math.max(lvl, 0.75); flow = 0.85; }
         else lvl *= 0.25;
@@ -390,7 +401,8 @@ export class Brain3D {
     }
     this.tractColours.needsUpdate = true;
     if (this.controls.autoRotate) this.controls.autoRotateSpeed = c.paused ? 0 : TURN;
-    this.controls.update();
+    this.controls.update(dt); // the turn by the frame's own time: about one a minute, never per brain moment
+    if (this.scan) this.scan.frame(dt, c.vt, this._rect || (this._rect = { width: this.host.clientWidth, height: this.host.clientHeight }));
     this.renderer.render(this.scene, this.camera);
     this.placeLabels(onPath);
   }

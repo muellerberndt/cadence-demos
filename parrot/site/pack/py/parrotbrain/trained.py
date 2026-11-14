@@ -191,8 +191,9 @@ class Host(Composed):
                 else:
                     e = np.exp(z - z.max())
                     p = e / e.sum()
-                k = int(np.argmax(p))
-                out["facets"][name] = {"value": f["classes"][k], "p": round(float(p[k]), 3)}
+                order = np.argsort(p)[::-1]
+                k = int(order[0])
+                out["facets"][name] = {"value": f["classes"][k], "p": round(float(p[k]), 3), "p2": round(float(p[order[1]]), 3) if len(p) > 1 else 0.0}
         voice = a[np.asarray(list(m.brain.connectome.populations["motor"]), np.int64)]
         words = voice[: len(m.voice)]
         k = int(np.argmax(words))

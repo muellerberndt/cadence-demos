@@ -15,6 +15,9 @@ import { lookList, makeParrot } from './looks.js';
 
 const $ = (id) => document.getElementById(id);
 const query = new URLSearchParams(location.search);
+// the page's layout: the room and the brain side by side, the brain as a scan, a small chat (?layout=classic: the panels)
+const DEMO = query.get('layout') !== 'classic';
+if (DEMO) document.body.classList.add('demo');
 const MOMENT_MS = 100; // the brain's moment: ten a second
 const VIZ_EVERY = 3; // the body's settles go to the brain view every third moment (their trace costs time in the browser); the trained brain's with each of its moments
 const ui = {
@@ -288,7 +291,7 @@ async function moment(now) {
   } else if (state.mode === 'brain' && reply.arrays.targets) parrot.joints.setUnitTargets(reply.arrays.targets);
   if (reply.arrays.left && desc?.eye) { drawHostEye(ui.eyeL, reply.arrays.left, desc.eye.w, desc.eye.h, false); drawHostEye(ui.eyeR, reply.arrays.right, desc.eye.w, desc.eye.h, true); }
   const subject = state.subject ? distanceOf(state.subject) : null;
-  view.update(reply, reply.arrays, subject);
+  if (!DEMO) view.update(reply, reply.arrays, subject); // the detail panel's cards (hidden in the demo layout: nothing drawn for them)
   brain3d?.update(reply.arrays.activity, reply);
   if (reply.arrays.voice?.length) { // the voice motor's frames: the parrot says them
     const spoken = reply.arrays.voice_pcm?.length ? audio.speakPcm(reply.arrays.voice_pcm, reply.voice_rate || 8000) : audio.speak(reply.arrays.voice); // a remembered sound: its own audio
@@ -318,7 +321,7 @@ async function moment(now) {
   const el = document.querySelector('.newborn');
   if (el && el.firstChild.textContent !== badge) el.firstChild.textContent = badge;
   if (reply.repertoire) syncChips(reply.repertoire);
-  if (reply.heard_sound) saveMemory();
+  if (reply.heard_sound) { saveMemory(); if (state.trained) heardForWord(reply.heard_sound); }
   if (reply.paid) for (const [id] of Object.entries(reply.paid)) ui.sounds.querySelector(`[data-sound="${id}"]`)?.classList.add('paid');
   // the focus the brain reports: the thing nearest the direction it turned to
   if (state.composed) { // the composed brain's focus is a place on the map: the thing nearest it
@@ -595,7 +598,7 @@ const WORLD = {
   duck: null, pear: null,
 };
 const ROUND = new Set(['apple', 'ball', 'cup', 'lemon']); // the round kinds of its world (night.py ROUND)
-const trained = { busy: false, queue: [], lastAt: 0, momentMs: 300, turn: 3, vocab: new Set(), colours: [], materials: [], focus: null, open: null, quietUntil: 0, serial: 0, log: [] };
+const trained = { wordSounds: (() => { try { return JSON.parse(localStorage.getItem('parrot.words') || '{}'); } catch (e) { return {}; } })(), awaitWord: null, busy: false, queue: [], lastAt: 0, momentMs: 300, turn: 3, vocab: new Set(), colours: [], materials: [], focus: null, open: null, quietUntil: 0, serial: 0, log: [] };
 
 /** The things it sees: the room's things in its world, the nearest five, the thing in focus among them. */
 function trainedThings(focusId, glimpseId) {
@@ -703,7 +706,9 @@ function placeBubble() {
 }
 /** Say a word it chose: with the sound the visitor taught for that thing where its hearing links one. */
 function sayWord(word) {
-  const link = (state.lastReply?.knows || []).find((k) => k.kind === word);
+  brain3d?.scan?.say(word);
+  const own = trained.wordSounds[word];
+  const link = own ? { id: own } : (state.lastReply?.knows || []).find((k) => k.kind === word);
   const kept = link ? soundPcm.get(link.id) : null;
   if (kept?.pcm?.length && audio.ctx?.state === 'running') {
     const spoken = audio.speakPcm(kept.pcm, kept.rate);
@@ -715,7 +720,24 @@ function sayWord(word) {
     }
   }
   ui.voiceNote.textContent = `${word}: shown as text (no sound of yours links to it)`;
+  trained.awaitWord = { word, until: performance.now() + 20000 }; // the next sound you make becomes this word's sound
   return KINDS[word] ? `as text only: no sound of yours links to the ${word}` : 'as text only: it has no sound of yours for this word';
+}
+
+/** A sound the visitor made just after the parrot gave a word only as text: it becomes that word's
+ *  sound (the parrot keeps it and says it back at once), and the word is said with it from then on. */
+async function heardForWord(heard) {
+  const w = trained.awaitWord;
+  if (!w || performance.now() > w.until || !heard?.id) return;
+  trained.awaitWord = null;
+  trained.wordSounds[w.word] = heard.id;
+  try { localStorage.setItem('parrot.words', JSON.stringify(trained.wordSounds)); } catch (e) { /* storage blocked */ }
+  if (!soundPcm.has(heard.id)) {
+    const r = await brain.call('sound', { slot: heard.slot });
+    if (r.pcm?.length) soundPcm.set(heard.id, { pcm: Float32Array.from(r.pcm), rate: r.rate || 8000 });
+  }
+  const kept = soundPcm.get(heard.id);
+  if (kept?.pcm?.length) { audio.speakPcm(kept.pcm, kept.rate); bubble(w.word, 'it'); brain3d?.scan?.say(w.word); logLine(`<span class="who">parrot</span> <b>${esc(w.word)}</b> <span class="dim">(it says back the sound you made for the word)</span>`, 'a'); }
 }
 
 // --- In its mind: the facets of the thing in focus read from its state by the meaning lane's probes
@@ -798,7 +820,7 @@ async function askIt(text) {
     await trainedOp({ op: 'begin' });
     for (const w of heard) { bubble(w, 'you'); await trainedOp({ op: 'moment', hear: w, more: true, focus: focusId }); }
     bubble('');
-    const say = (w) => { if (w && said[said.length - 1] !== w) { said.push(w); bubble(said.join(', '), 'it'); const how = sayWord(w); li ||= logLine('', 'a'); li.innerHTML = `<span class="who">it</span> <b>${esc(said.join(', '))}</b> <span class="dim">(${esc(how)})</span>`; } };
+    const say = (w) => { if (w && said[said.length - 1] !== w) { said.push(w); bubble(said.join(', '), 'it'); const how = sayWord(w); li ||= logLine('', 'a'); li.innerHTML = `<span class="who">parrot</span> <b>${esc(said.join(', '))}</b> <span class="dim">(${esc(how)})</span>`; } };
     if (scan) {
       const order = trainedThings(focusId, null).things.filter((t) => !t.focus).map((t) => t.id).sort(() => Math.random() - 0.5);
       for (const g of order) {
@@ -867,7 +889,28 @@ for (const a of document.querySelectorAll('a.how')) {
   a.hidden = false;
   a.addEventListener('click', (e) => { if (e.metaKey || e.ctrlKey || e.shiftKey) return; e.preventDefault(); explainer(new URL(a.href).hash); });
 }
-askEl.form?.addEventListener('submit', (e) => { e.preventDefault(); const q = askEl.q.value.trim(); if (q) { audio.unlock().catch(() => {}); askIt(q); } });
+// the preset questions are spoken in the visitor's voice (voice/questions.json names a clip for each); a typed
+// question with no clip is shown and not spoken. The voice is a voiceover: the brain takes the typed words.
+const questionClips = fetch('voice/questions.json').then((r) => (r.ok ? r.json() : {})).catch(() => ({}));
+const normQ = (t) => t.toLowerCase().replace(/[^a-z ]/g, ' ').replace(/\s+/g, ' ').trim();
+async function speakQuestion(q) {
+  const clips = await questionClips, file = clips[normQ(q)];
+  if (!file) return 0;
+  const a = new Audio(`voice/${file}`); a.play().catch(() => {});
+  return new Promise((res) => { a.addEventListener('loadedmetadata', () => res(a.duration * 1000), { once: true }); setTimeout(() => res(0), 1500); });
+}
+askEl.form?.addEventListener('submit', async (e) => {
+  e.preventDefault(); const q = askEl.q.value.trim();
+  if (!q || trained.busy) return;
+  audio.unlock().catch(() => {});
+  brain3d?.scan?.question(q);
+  const ms = await speakQuestion(q);
+  if (ms > 0) await new Promise((r) => setTimeout(r, Math.max(0, ms - 600))); // the brain hears the typed words as the voice ends
+  askIt(q);
+});
+$('ask-preset')?.addEventListener('change', (e) => { if (e.target.value) { askEl.q.value = e.target.value; e.target.value = ''; } });
+$('ask-nut')?.addEventListener('click', () => ui.pistachio.click());
+$('ask-mic')?.addEventListener('click', async () => { ui.mic.click(); setTimeout(() => $('ask-mic').setAttribute('aria-pressed', String(!!audio.mic)), 400); });
 askEl.fix?.addEventListener('submit', (e) => { e.preventDefault(); const w = askEl.word.value.trim(); if (w) correctIt(w); });
 for (const b of document.querySelectorAll('[data-ask]')) b.addEventListener('click', () => { askEl.q.value = b.dataset.ask; askEl.q.focus(); });
 
@@ -886,19 +929,18 @@ function frame(now) {
     ui.voiceLevel.style.width = `${Math.round(loud * 100)}%`;
     ui.earLevel.style.width = `${Math.round(audio.level * 100)}%`;
     $('mic-level').style.width = `${Math.round(audio.level * 100)}%`;
-    drawBands();
-    drawTurns(now);
+    if (!DEMO) { drawBands(); drawTurns(now); }
     parrot.update(dt);
     placeFocus();
     if (now - state.lastMomentAt >= MOMENT_MS || !state.lastMomentAt) { state.lastMomentAt = now; moment(now); }
-    view?.setJoints(parrot.joints.pos, parrot.joints.target);
-    syncTags(); drawFields(); placeBubble();
+    if (!DEMO) view?.setJoints(parrot.joints.pos, parrot.joints.target);
+    syncTags(); if (!DEMO) drawFields(); placeBubble();
   }
   updateCoach();
   controls.update();
   renderer.shadowMap.needsUpdate = true;
   renderer.render(room.scene, camera);
-  view?.frame(dt);
+  if (!DEMO) view?.frame(dt);
   if (state.tab === 'tab-memory') memview?.frame(); else brain3d?.frame(dt);
   // the frame rate, and a lighter picture when the laptop cannot keep up
   state.frameTimes.push(now); while (state.frameTimes.length && state.frameTimes[0] < now - 1000) state.frameTimes.shift();
@@ -1054,7 +1096,13 @@ async function start() {
     setStatus(`The room failed to load: ${error.message}`, 'error');
     throw error;
   }
-  brain3d = new Brain3D($('brain3d'), $('b3-labels'));
+  brain3d = new Brain3D($('brain3d'), $('b3-labels'), { scan: DEMO });
+  if (DEMO) { // the demo layout: the eyes in the scan's boxes, the chat over the brain, the switch in its corner
+    brain3d.scan.eyes(ui.eyeL, ui.eyeR);
+    const corner = document.createElement('div'); corner.className = 'scan-corner';
+    corner.append($('brain-kind'), $('how-brain'));
+    $('view-brain').append(corner, $('ask'));
+  }
   memview = new MemoryView($('memory'));
   for (const [tab, panel] of [['tab-brain', 'view-brain'], ['tab-memory', 'view-memory']]) {
     $(tab).addEventListener('click', () => {

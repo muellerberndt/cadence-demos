@@ -304,3 +304,61 @@ button.how-brain { margin-top: 6px; }
 .im-note[hidden] { display: none; }
 a.how { margin-left: 8px; font: 500 10.5px var(--mono); color: #7bed9f; text-decoration: none; border-bottom: 1px dotted currentColor; }
 a.how[hidden] { display: none; }
+
+/* ---- the demo layout: the room and the brain side by side, the brain as a scan, a small chat --------- */
+body.demo { background: #05060a; }
+body.demo .app { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr) !important; height: 100dvh; }
+body.demo .brain { position: absolute !important; left: -4000px !important; top: 0; width: 360px !important; height: 900px !important; visibility: hidden; }
+body.demo .mind { border-left: 1px solid #12151c; background: radial-gradient(ellipse at 50% 45%, #0d1018 0%, #05060a 75%); }
+body.demo .mind-head, body.demo .mind-foot, body.demo .in-mind, body.demo .coach, body.demo .title p, body.demo .controls,
+body.demo .b3-how, body.demo .b3-bar, body.demo .b3-parts, body.demo .tags .tag .cx-q, body.demo #dopamine, body.demo .focus-tag .cx-q { display: none !important; }
+body.demo #view-brain { height: 100dvh; flex: 1 1 auto; }
+body.demo .topbar { padding: 14px 18px; }
+body.demo .title h1 { font: 300 20px/1.2 var(--display); letter-spacing: 0.02em; }
+body.demo .b3-label { background: transparent !important; border: 0 !important; font: 400 10px/1.2 var(--mono) !important; color: rgb(232 235 240 / 0.38) !important; }
+body.demo .b3-label.hot { color: rgb(255 226 180 / 0.9) !important; }
+body.demo .b3-label.planned { display: none !important; }
+body.demo .b3-label .cx-q { display: none; }
+/* the corner of the brain pane: the brain switch and How this brain works, quiet */
+.scan-corner { position: absolute; top: 14px; right: 16px; z-index: 6; display: flex; gap: 10px; align-items: center; font: 400 11px var(--mono); color: rgb(232 235 240 / 0.5); }
+.scan-corner select { background: transparent; color: rgb(232 235 240 / 0.6); border: 1px solid rgb(255 255 255 / 0.1); border-radius: 6px; font: 400 11px var(--mono); padding: 2px 4px; max-width: 220px; }
+.scan-corner .how-brain { margin: 0; height: 24px; padding: 0 10px; font-size: 11px; color: rgb(232 235 240 / 0.7); background: transparent; border: 1px solid rgb(255 255 255 / 0.12); border-radius: 999px; }
+/* the scan's overlay: concept tags, the I/O boxes and their leader lines */
+.scan-overlay { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.scan-lines { position: absolute; inset: 0; width: 100%; height: 100%; }
+.scan-lines line { stroke: rgb(255 214 150 / 0.28); stroke-width: 1; }
+.scan-lines circle { fill: rgb(255 214 150 / 0.7); }
+.scan-box { position: absolute; padding: 6px 8px 8px; border: 1px solid rgb(255 255 255 / 0.12); border-radius: 8px; background: rgb(6 7 11 / 0.72); backdrop-filter: blur(4px); transition: border-color 0.3s, box-shadow 0.3s; }
+.scan-box.on { border-color: rgb(255 190 110 / 0.6); box-shadow: 0 0 22px rgb(255 160 80 / 0.25); }
+.scan-box .sb-title { display: block; font: 400 9.5px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: rgb(232 235 240 / 0.5); margin-bottom: 5px; }
+.scan-box canvas { display: block; width: 116px; height: 58px; image-rendering: pixelated; border-radius: 3px; }
+.scan-box.retinaL { left: 18px; top: 64px; } .scan-box.retinaR { left: 160px; top: 64px; }
+.scan-box.ears { left: 18px; bottom: 26px; } .scan-box.ears canvas { width: 116px; height: 48px; }
+.scan-box.voice { right: 18px; top: 64px; min-width: 116px; } .scan-box.dopamine { left: 160px; bottom: 26px; width: 112px; }
+.sb-word { display: block; font: 500 15px/1.2 var(--display); color: #ffe3b0; min-height: 18px; }
+.sb-bar { display: block; height: 3px; margin-top: 5px; border-radius: 2px; background: linear-gradient(90deg, #f07a3a, #ffd98a); transform-origin: left; transform: scaleX(0.02); }
+.sb-bar.dop { background: linear-gradient(90deg, #ffb32e, #fff1b3); width: 96px; }
+.scan-tag { position: absolute; left: 0; top: 0; white-space: nowrap; opacity: 0; font: 300 13px/1 var(--display); letter-spacing: 0.04em; color: #ffe8c4;
+  padding: 3px 9px; border-radius: 999px; border: 1px solid rgb(255 214 150 / 0.35); background: rgb(20 10 4 / 0.45); text-shadow: 0 0 12px rgb(255 170 90 / 0.8); }
+.scan-tag.main { font: 400 22px/1 var(--display); padding: 5px 14px; border-color: rgb(255 214 150 / 0.6); }
+.scan-tag.asked { border-color: #ffd27a; color: #fff6e0; box-shadow: 0 0 18px rgb(255 190 100 / 0.45); }
+/* the chat: small, at the bottom right of the brain */
+body.demo .ask { position: absolute; right: 18px; bottom: 18px; width: min(360px, 44%); z-index: 7; margin: 0; padding: 10px 12px; border-radius: 12px;
+  border: 1px solid rgb(255 255 255 / 0.1); background: rgb(8 9 13 / 0.82); backdrop-filter: blur(8px); font-size: 12.5px; }
+body.demo .ask-title, body.demo .ask-learned, body.demo .ask-version, body.demo .ask-note, body.demo .ask-words, body.demo .ask-log li.judge, body.demo .ask-log .dim,
+body.demo .ask-row.fix { display: none !important; }
+body.demo .ask-log { max-height: 150px; margin: 0 0 8px; }
+body.demo .ask-log li { font: 400 13px/1.45 var(--body); color: #dfe3ea; }
+body.demo .ask-log .who { min-width: 50px; font: 400 10px var(--mono); letter-spacing: 0.08em; color: rgb(232 235 240 / 0.45); }
+body.demo .ask-log li.a b { color: #ffe3b0; font-weight: 500; font-size: 13px; }
+body.demo .ask-row select, body.demo .ask-row input { height: 30px; background: rgb(255 255 255 / 0.04); border: 1px solid rgb(255 255 255 / 0.12); color: var(--ink); border-radius: 8px; font: 400 12.5px var(--body); }
+body.demo .ask-row select { max-width: 46%; padding: 0 4px; }
+body.demo .ask-row button { height: 30px; border-radius: 8px; border: 1px solid rgb(255 214 150 / 0.5); background: rgb(255 190 110 / 0.12); color: #ffe8c4; font-weight: 500; }
+.ask-actions { display: none; gap: 8px; margin-top: 8px; }
+body.demo .ask-actions { display: flex; }
+.ask-actions button { flex: 1; height: 28px; border-radius: 8px; border: 1px solid rgb(255 255 255 / 0.12); background: transparent; color: rgb(232 235 240 / 0.8); font: 400 12px var(--body); cursor: pointer; }
+.ask-actions .nut-mini { border-color: rgb(255 200 90 / 0.45); color: #ffd98a; }
+.ask-actions .mic-mini[aria-pressed="true"] { border-color: #6fc6ff; color: #bfe6ff; }
+body.demo .say-bubble { font: 400 18px/1.2 var(--display); background: rgb(255 232 196 / 0.95); color: #1a1006; }
+body.demo .say-bubble.you { background: rgb(232 235 240 / 0.9); }
+@media (max-width: 900px) { body.demo .app { grid-template-columns: 1fr !important; } body.demo .ask { width: calc(100% - 36px); } }
