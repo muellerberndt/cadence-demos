@@ -4,9 +4,9 @@ LongTermMemory and SynapticMemory, pack/py/parrotbrain/sounds.py), on synthesise
     python parrot/site/tests/test_sound_memory.py
 
 1. A word (a voiced, Apfel-like sound with a bright noise burst) said ten times over a steady
-   background noise, while the parrot's focus is on the apple, gives exactly one record, deep
-   enough to say back, whose code matches the clean word's (cosine above 0.8), and a synapse from
-   that record's sound to the apple brighter than to any other thing.
+   background noise gives exactly one record, deep enough to say back, whose code matches the
+   clean word's (cosine above 0.8). The parrot then says it by itself with the apple in focus,
+   and a pistachio links that record's sound to the apple, more than to any other thing.
 2. Noise alone for 30 s, a fan-like hiss with clicks and a long steady hum, writes no record.
 3. A word heard once is a shallow record that fades: after three minutes of quiet it is not deep
    enough to say and its fading has grown.
@@ -115,6 +115,17 @@ def main() -> int:
         parts.append(np.concatenate([w + background(len(w), rng), background(int(RATE * 1.5), rng)]))
     feed(host, np.concatenate(parts), focus="apple")
     r = host.mem.records
+    # it says the word by itself with the apple in focus; a pistachio then links the sound to the apple
+    eye, still = np.zeros(host.w * host.h * 3, np.uint8), np.full(400, np.log(1e-6), np.float32)
+    moment = lambda reward=0.0: host.step({"voice_ok": True, "focus_kind": "apple", "mode": "curious", "reward": reward},  # noqa: E731
+                                          {"left": eye, "right": eye, "proprio": np.zeros(22, np.float32), "mel": still})
+    paid = 0
+    for _ in range(3000):
+        said = moment().get("said")
+        if said and said["id"] == "you-0":
+            moment(1.0); paid += 1
+            if paid == 2:
+                break
     view = host.mem.view()
     ok1 = r.count == 1
     detail = {"records": r.count, "writes": r.writes}
@@ -122,9 +133,9 @@ def main() -> int:
         s0 = 0
         cos = float(r.keys[s0] @ clean / np.linalg.norm(r.keys[s0]))
         slow = view["records"][s0]["slow"]
-        detail.update(deep=round(float(r.deep[s0]), 2), sayable=s0 in host.mem.sayable(), code_cosine=round(cos, 3),
-                      apple_synapse=round(slow[0], 3), other_synapses_max=round(max(slow[1:]), 3))
-        ok1 = ok1 and s0 in host.mem.sayable() and cos > 0.8 and slow[0] > max(slow[1:]) and slow[0] > 0.2
+        detail.update(deep=round(float(r.deep[s0]), 2), sayable=s0 in host.mem.sayable(), code_cosine=round(cos, 3), pistachios=paid,
+                      apple_synapse=round(slow[0], 3), other_synapses_max=round(max(slow[1:]), 3), apple_link=host.mem.word_of(s0)[1])
+        ok1 = ok1 and s0 in host.mem.sayable() and cos > 0.8 and slow[0] > max(slow[1:]) and slow[0] > 0.2 and host.mem.word_of(s0)[0] == "apple"
     results["word_ten_times"] = {**detail, "ok": bool(ok1)}
     # 2. noise alone: hiss, clicks, a long steady hum
     host = Host({"eye": {"w": 16, "h": 8}})

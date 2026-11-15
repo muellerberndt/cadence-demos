@@ -16,10 +16,10 @@
  ],
  "sources_sha256": {
   "__init__.py": "aad6e4970d412d3fc56376e9321f46760a285a32d2086c5fc76d1740b02c082f",
-  "host.py": "4e8ae5c53f34f86447e4b326f2d2a5f61427c7220c0ccdc1f8cf76c4d3fe4314",
-  "page.py": "6c5704fcd189e50a4305df94d7d05be3ffe3bf6303f64021592092105eb901f2",
-  "sounds.py": "69d1a03623deed5daef06d4cfb3e04a386a9d2e02564dae0cb98949fb0f14fe4",
-  "trained.py": "2ab149f7000956bda06c30872d2516e37ea899992cb5f2f94c0b71ce22ccbfbc"
+  "host.py": "2fa6182db15e299eb4e5390ea53027d76e9b4bda1d332ac1a9105fb2bc7cba2b",
+  "page.py": "686ebbe9e742c91265f2b95016458c682d82cc60558218125e928d0df0c8ab6d",
+  "sounds.py": "f1b723b6902bf09bf47c4280fde9e7c9baab90c4a519712bc10e072e06fd04db",
+  "trained.py": "b3d3ce9affbc57a0afa56a43f3d8e4bc0ab944f907106c55a7216d52e585f673"
  },
  "files": {
   "calls.json": "645453a2f0c7c4874addbf143bac95861505484018dac7f64bb5fe39fde0dbf7"
@@ -55,8 +55,8 @@
   "trained": {
    "trained/brain.npz": "c450b3f9e26c2b0d9f2e4cf1413915fabf666c97c7901e5ef7ec67a601055bd7",
    "trained/spec.json": "a0475091077293af4b6f26a62ef2e60f34d2c126526d9a4fece0a0e0a94b2a0b",
-   "trained/version.json": "1bfe40d82d011f4ca863f25697afcd02f11a3c84189d88ba972d8a605fe6e9c0",
-   "trained/probes.json": "2d15643fe10f56b1cac076423881d66b0c7de94fb0fbfa5958284ff37d1be586"
+   "trained/version.json": "507f5c238d8d181ede2bd1bc221579ba2311bb9b0cca7972f1df7bd96f096dcf",
+   "trained/probes.json": "196d2941136f677198430ef0cf0f88e6e8956a6f2697a8c364aa2ea9b9f76552"
   },
   "trained-pretrain400": {
    "trained-pretrain400/brain.npz": "27d5b01df520de5b007284e0506b462c8e06ac7bd2128c56fe8a945b2b484c5f",
@@ -131,7 +131,7 @@
    },
    "learned": "the name of the thing in focus, its colour asked as what colour is this or by name, whether it is white, its shape, whether it is round, whether you can eat it, where a thing is (front, right, behind, left)",
    "not_learned": "is this <colour> on unseen kind-colour pairs (near chance); the material of some things; distance",
-   "probes": "probes.json beside the brain: the association's linear read of the thing in focus, nothing heard, fitted with the brain's own mixed code (held out: kind .77 against .14 by chance, colour .95 against .59, round 1.00 against .71, material .84 against .36, edible .96 against .64, direction .92 against .27, distance .86 against .51)"
+   "probes": "probes.json beside the brain: the association's linear read of the thing in focus with nothing heard, at any look from a cleared state (fitted over looks 1 to 4 after a clearing on 960 random rooms, checked on 240 rooms held out: kind 0.99 against 0.13 by chance, colour 0.99 against 0.20 by chance, round 1.00 against 0.70 by chance, material 0.93 against 0.33 by chance, edible 0.99 against 0.67 by chance, direction 0.96 against 0.27 by chance; at the first look kind 1.00 and colour 1.00, where the probes exported with the brain read 0.40 and 0.29); distance as exported by the meaning lane (.86 against .51)"
   },
   "trained-pretrain400": {
    "stage": "pretrain",
@@ -329,7 +329,7 @@
   },
   "learned": "the name of the thing in focus, its colour asked as what colour is this or by name, whether it is white, its shape, whether it is round, whether you can eat it, where a thing is (front, right, behind, left)",
   "not_learned": "is this <colour> on unseen kind-colour pairs (near chance); the material of some things; distance",
-  "probes": "probes.json beside the brain: the association's linear read of the thing in focus, nothing heard, fitted with the brain's own mixed code (held out: kind .77 against .14 by chance, colour .95 against .59, round 1.00 against .71, material .84 against .36, edible .96 against .64, direction .92 against .27, distance .86 against .51)"
+  "probes": "probes.json beside the brain: the association's linear read of the thing in focus with nothing heard, at any look from a cleared state (fitted over looks 1 to 4 after a clearing on 960 random rooms, checked on 240 rooms held out: kind 0.99 against 0.13 by chance, colour 0.99 against 0.20 by chance, round 1.00 against 0.70 by chance, material 0.93 against 0.33 by chance, edible 0.99 against 0.67 by chance, direction 0.96 against 0.27 by chance; at the first look kind 1.00 and colour 1.00, where the probes exported with the brain read 0.40 and 0.29); distance as exported by the meaning lane (.86 against .51)"
  },
  "wheel": "cadence_net-0.99.0-lane-meaning-568a0ad8-parrot-5fccf8cb.whl",
  "wheel_sha256": "ab47bd3167872fe46f9e4f4bc7437b69bc12bee288fb3e7e606aa20b082ab174",

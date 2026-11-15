@@ -15,7 +15,8 @@ export protocol says (benchmarks/meaning/export_page.py, COORD 2026-11-13 19:05 
 - `pistachio`: the last reply's moments taught with its own words (the three-factor rule);
 - `correct`: the trainer's right word kept as a record under the question's pattern, then heard;
 - `over`: the exchange ends with no pistachio;
-- `look`: between questions, it sees the room with its focus on a thing, its voice held.
+- `look`: between questions, it sees the room with its focus on a thing, its voice held;
+- `clear`: between questions, its state cleared (as `begin` clears it), before it looks at another thing.
 
 With each moment the reply carries `mind`: the facets of the thing in focus read from its settled
 state by the meaning lane's probes (`probes.json` beside the brain, where exported), and the word
@@ -24,10 +25,17 @@ its voice neurons are ready to say.
 The page sends one of these in `meta["meaning"]` with a moment of the body; the reply carries
 `meaning` (what it said, the lessons taken, the record written) and the trained brain's neurons
 after the body's in `activity`. Its ear takes the training chamber's word codes, one code a
-word. The hearing layer links sounds to these words (one link unit a word of its vocabulary): a
-heard sound whose record links to a word sends that word's code to the trained brain's ear, and a
-word its voice says recalls the record linked to it (`sound` in the reply), whose audio the page
-plays in the parrot's voice.
+word. The hearing layer links sounds to meanings (one link unit a word of its vocabulary, and one a
+question it was taught: `question_forms`): a heard utterance whose record links to a word or a
+question sends that word's code, or the question's words one after another, to the trained brain's
+ear, and a word its voice says recalls the record linked to it (`sound` in the reply), whose audio
+the page plays in the parrot's voice.
+
+An exchange that answers a heard sound names it (`heard` with `begin` or with a moment: the record,
+the meaning it was taken for, and whether that was a guess); a pistachio then also pays the hearing layer's
+links (the sound to that meaning, each word said to the sound it was said with), and an exchange
+that ends without one lets them go a little (`parrotbrain.host`: `reward_exchange`,
+`close_exchange`). That is how a sound's meaning is learned by reward.
 """
 from __future__ import annotations
 
@@ -60,12 +68,27 @@ POPULATIONS = [
 ]
 
 
+def question_forms(spec: dict[str, Any]) -> tuple[list[str], list[str]]:
+    """The questions its brain was taught (the meaning lane's forms about one thing), each a sequence of its
+    words; `<this>` stands for the name of the thing in focus. Returns every question a sound can stand
+    for, and those on offer when a sound's meaning is guessed (the questions about the thing in focus)."""
+    words = spec["codes"]
+    colours = sorted(c for c in spec["colours"] if c in words)
+    kinds = sorted(k for k in spec["kinds"] if k in words)
+    focus = ["what is this", "what colour is this", "what material is this", "is this round", "can you eat this"] + [f"is this {c}" for c in colours]
+    named = ["what colour has the {}", "what shape has the {}", "where is the {}"]
+    offer = focus + [f.format("<this>") for f in named]
+    return offer + [f.format(k) for f in named for k in kinds], offer
+
+
 class Host(Composed):
     def __init__(self, config: dict[str, Any]):
         folder = Path(str(config.get("host_files") or "/home/pyodide/trained"))
         # the hearing layer's sounds stand for the trained brain's words: one link unit a word it hears
-        vocab = sorted(w for w in json.loads((folder / "spec.json").read_text())["codes"] if not w.startswith("<"))
-        super().__init__({**config, "words": vocab})
+        spec_words = json.loads((folder / "spec.json").read_text())
+        vocab = sorted(w for w in spec_words["codes"] if not w.startswith("<"))
+        self.forms, self.offer = question_forms(spec_words)
+        super().__init__({**config, "words": vocab + self.forms, "offer": self.offer})
         began = time.perf_counter()
         spec = folder / "spec.json"
         self.spec_path = spec
@@ -98,7 +121,7 @@ class Host(Composed):
             for name, f in raw.get("facets", {}).items():
                 if "weights" in f:
                     W = np.asarray(f["weights"], np.float64).T  # classes x dims
-                    b = np.zeros(W.shape[0])
+                    b = np.asarray(f["bias"], np.float64) if "bias" in f else np.zeros(W.shape[0])
                     mu, sd = f["mean"], f["sd"]
                 else:
                     W = np.atleast_2d(np.asarray(f["W"], np.float64))
@@ -174,7 +197,7 @@ class Host(Composed):
                           "colours": sorted(m.spec["colours"]), "materials": sorted(m.spec["materials"]),
                           "neurons": int(m.brain.connectome.n), "synapses": int(m.brain.connectome.synapses),
                           "records": 0 if m.records is None else int(m.records.count), "load_s": round(self.load_s, 2),
-                          "version": self.version,
+                          "version": self.version, "questions": self.forms, "offer": self.offer,
                           "probes": None if self.probes is None else {"regions": self.probes["regions"], "read_at": self.probes["read_at"],
                                                                       "facets": {k: {"classes": f["classes"], "accuracy": f["accuracy"], "base_rate": f["base_rate"], "held_out": f["held_out"]}
                                                                                  for k, f in self.probes["facets"].items()}}})
@@ -306,6 +329,11 @@ class Host(Composed):
         began = time.perf_counter()
         out: dict[str, Any] = {"op": kind, "id": op.get("id")}
         things = [t for t in (op.get("things") or []) if t.get("kind") in m.spec["kinds"]]
+        heard = op.get("heard")  # the sound this exchange answers: its record, the meaning it was taken for
+        if kind == "begin":
+            self.hearing.close_exchange()  # the exchange before it ended with no pistachio
+        if kind in ("begin", "moment") and isinstance(heard, dict) and heard.get("meaning"):
+            self.hearing.open_exchange(int(heard.get("slot", -1)), str(heard["meaning"]), bool(heard.get("guessed")))
         if kind == "begin":
             m.brain.reset()
             m.own = None
@@ -319,13 +347,16 @@ class Host(Composed):
             got: list[Any] = []
             with record_settlements(got.append, label="trained moment"):
                 out["said"] = m.moment(more=bool(op.get("more")))
-            if out["said"]:  # the word said recalls its sound: the record its link reads back from the word
-                slot, link = self.hearing.mem.recall(out["said"])
-                out["sound"] = None if slot is None else {"id": f"you-{slot}", "slot": int(slot), "link": link}
+            if out["said"]:  # the word said recalls its sound: the record its link reads back from the word (none: a sound guessed)
+                out["sound"] = self.hearing.sound_for(out["said"])
             self.settle = self._settle_viz(got)
             if m.in_turn and not in_turn:
                 out["recalled"] = self._recalled()
             self.moments += 1
+        elif kind == "clear":  # between questions: its state cleared before it looks at a thing (the probes read a cleared state's second look)
+            m.brain.reset()
+            m.own = None
+            m.turn_over()
         elif kind == "look":  # between questions: it sees the room, its focus on a thing, its voice held
             g = op.get("glimpse")
             m.see(things, glimpse=things[g] if isinstance(g, int) and 0 <= g < len(things) else None)
@@ -340,7 +371,7 @@ class Host(Composed):
             # the meaning lane's page setting: each word of the reply taught once, at a small amount
             # (with it a paid name leaves the colour answer standing: page_test.py, COORD 02:06)
             taken = m.pistachio(float(op.get("amount", PISTACHIO)), first=True)
-            out.update(lessons=taken, paid=self._paid(before) if taken else [])
+            out.update(lessons=taken, paid=self._paid(before) if taken else [], linked=self.hearing.reward_exchange())
             self.lessons += taken
             m.turn_over()
         elif kind == "correct":
@@ -354,6 +385,7 @@ class Host(Composed):
                 m.moment(more=True)
             m.turn_over()
         elif kind == "over":
+            self.hearing.close_exchange()
             m.turn_over()
         else:
             raise ValueError(f"unknown trained-brain step {kind!r}")

@@ -70,6 +70,31 @@ export class ParrotAudio {
     this.ctx = null; this.mic = false; this.level = 0;
     this.frames = []; this.queue = []; this.pcmQueue = []; this.samples = new Float32Array(1600); this.heardLoud = false;
     this.speaking = null;
+    this.voiceUntil = 0; // the parrot's own voice plays until then (the page's clock)
+  }
+
+  /** The parrot's own voice is sounding (or just was: the room and the microphone's delay carry it a little longer).
+   *  The brain's ear is told, so it does not take its own voice for the visitor's. */
+  ownVoice(now = performance.now()) { return now < this.voiceUntil + 250; }
+  said(spoken, seconds) { if (spoken) this.voiceUntil = Math.max(this.voiceUntil, performance.now() + 1000 * seconds); return spoken; }
+  /** For the page's checks: samples given to the ear along the microphone's own path (not played aloud), as a
+   *  visitor's voice reaches it. Resolves with the moment (the page's clock) the sound began and its length. */
+  async hearPcm(pcm, rate = RATE, { loop = false } = {}) {
+    await this.unlock(); await this.openEar();
+    const buf = this.ctx.createBuffer(1, pcm.length, rate); buf.copyToChannel(Float32Array.from(pcm), 0);
+    const node = this.ctx.createBufferSource(); node.buffer = buf; node.loop = loop; // (a loop: a room's background, all the time)
+    if (!this.testIn) { this.testIn = this.ctx.createGain(); this.testIn.connect(this.node); }
+    node.connect(this.testIn);
+    const ended = new Promise((resolve) => { node.onended = resolve; });
+    const startedAt = performance.now(); node.start();
+    return { startedAt, duration: buf.duration, ended };
+  }
+  /** For the page's checks: the page's sound output also reaches its ear, later and softer, as a loudspeaker
+   *  reaches a laptop's microphone. */
+  async loopback(gain = 0.5, delay = 0.06) {
+    await this.unlock(); await this.openEar();
+    const d = this.ctx.createDelay(1); d.delayTime.value = delay; const g = this.ctx.createGain(); g.gain.value = gain;
+    this.gain.connect(d); d.connect(g); g.connect(this.node); this.echo = { d, g };
   }
 
   /** The page's whole sound output as a stream (for a recording of the page itself). */
@@ -87,7 +112,12 @@ export class ParrotAudio {
     this.clips ||= new Map();
     if (!this.clips.has(url)) this.clips.set(url, fetch(url).then((r) => r.arrayBuffer()).then((b) => this.ctx.decodeAudioData(b)));
     const buf = await this.clips.get(url), node = this.ctx.createBufferSource(); node.buffer = buf; node.connect(this.gain);
-    if (ear) { await this.openEar(); node.connect(this.node); }
+    if (ear) {
+      await this.openEar(); node.connect(this.node);
+      if (this.micGain) { // the clip reaches the ear directly: the microphone waits until it has ended
+        const t = this.ctx.currentTime; this.micGain.gain.cancelScheduledValues(t); this.micGain.gain.setValueAtTime(0, t); this.micGain.gain.setValueAtTime(1, t + buf.duration + 0.3);
+      }
+    }
     const ended = new Promise((resolve) => { node.onended = resolve; });
     node.start();
     return { duration: buf.duration, ended };
@@ -135,13 +165,15 @@ export class ParrotAudio {
     this.stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: false, autoGainControl: true } });
     this.source = this.ctx.createMediaStreamSource(this.stream);
     await this.openEar();
-    this.source.connect(this.node);
+    this.micGain = this.ctx.createGain();
+    this.source.connect(this.micGain); this.micGain.connect(this.node);
     this.mic = true;
   }
 
   stopMic() {
     this.stream?.getTracks().forEach((t) => t.stop());
     this.source?.disconnect(); this.source = null;
+    this.micGain?.disconnect(); this.micGain = null;
     this.mic = false; this.level = 0;
   }
 
@@ -189,7 +221,7 @@ export class ParrotAudio {
     for (let i = 0; i < samples.length; i += HOP) { let e = 0; for (let k = i; k < Math.min(samples.length, i + HOP); k++) e += samples[k] * samples[k]; env.push(Math.sqrt(e / HOP)); }
     const top = Math.max(1e-6, ...env);
     this.speaking = { start: performance.now(), env: env.map((v) => v / top), node };
-    return this.speaking;
+    return this.said(this.speaking, samples.length / RATE);
   }
 
   /** Say a remembered sound in the parrot's own rendering of it (voice/parrot/: what its voice makes of the
@@ -202,7 +234,7 @@ export class ParrotAudio {
     for (let i = 0; i < pcm.length; i += step) { let e = 0; for (let k = i; k < Math.min(pcm.length, i + step); k++) e += pcm[k] * pcm[k]; env.push(Math.sqrt(e / step)); }
     const top = Math.max(1e-6, ...env);
     this.speaking = { start: performance.now(), env: env.map((v) => v / top), node };
-    return this.speaking;
+    return this.said(this.speaking, pcm.length / rate / node.playbackRate.value);
   }
 
   /** Say a remembered sound as it was heard: its audio (8 kHz), played back as it is. */
@@ -219,7 +251,7 @@ export class ParrotAudio {
     for (let i = 0; i < ch.length; i += step) { let e = 0; for (let k = i; k < Math.min(ch.length, i + step); k++) e += ch[k] * ch[k]; env.push(Math.sqrt(e / step)); }
     const top = Math.max(1e-6, ...env);
     this.speaking = { start: performance.now(), env: env.map((v) => v / top), node };
-    return this.speaking;
+    return this.said(this.speaking, ch.length / rate / speed);
   }
 
   /** A word said without a sound (the page has none for it): the beak opens and closes once a syllable,

@@ -41,12 +41,158 @@ from typing import Any
 
 import numpy as np
 
-from .sounds import KINDS, SoundMemory
+from .sounds import BANDS, KINDS, PISTACHIO, RANGE as BAND_RANGE, VALUE_FRAMES, SoundMemory, warp_row
+from .sounds import _COSINES as COSINES
 
 JOINTS = ["head_yaw", "head_pitch", "head_roll", "neck_pitch", "beak_open", "wing_l", "wing_r",
           "grip_l", "grip_r", "leg_l", "leg_r"]
 RANGE = {"head_yaw": (-75.0, 75.0), "head_pitch": (-25.0, 35.0), "head_roll": (-20.0, 20.0)}
 DISTANCE_UNITS = 12
+END_QUIET = 30   # frames of quiet that end an utterance (0.3 s: the pauses inside a spoken phrase are shorter)
+OWN_TAIL = 3     # moments after its own voice in which a sound counts as its own (the room's echo of it)
+VOICED = 0.15    # the least share of an utterance's loud frames that repeat at a voice's pitch (speech reads 0.19 to 1, also in a noisy room; a cough, a breath, typing, a fan read 0)
+
+
+def voiced(pcm: np.ndarray, rate: int = 16000, n: int = 512, hop: int = 160) -> float:
+    """The share of a sound's loud frames that are voiced: frames (32 ms, one every 10 ms) whose samples repeat
+    at a pitch period between 80 and 400 Hz (the peak of the frame's autocorrelation there, against its
+    value at no lag, above 0.45). A voice is voiced through its vowels; a cough, a breath, a hiss, a tap is not."""
+    x = np.asarray(pcm, np.float64)
+    if len(x) < n:
+        return 0.0
+    k = 1 + (len(x) - n) // hop
+    w = np.hanning(n)
+    X = x[np.arange(n)[None, :] + hop * np.arange(k)[:, None]] * w
+    ac = np.fft.irfft(np.abs(np.fft.rfft(X, 2 * n, axis=1)) ** 2, axis=1)[:, :n]
+    wac = np.fft.irfft(np.abs(np.fft.rfft(w, 2 * n)) ** 2)[:n]
+    a, b = int(rate / 400.0), int(rate / 80.0)
+    peak = (ac[:, a:b] / wac[a:b]).max(axis=1) / (ac[:, 0] / wac[0] + 1e-12)
+    loud = ac[:, 0] > 0.03 * ac[:, 0].max()
+    return float(np.mean(peak[loud] > 0.45)) if loud.any() else 0.0
+
+
+FOLLOW = "terms-mean"  # what the follower compares: "bands", "terms", or "terms-mean" (the terms less their mean so far)
+
+
+def follow_feature(frames: np.ndarray) -> np.ndarray:
+    """The frames of a sound as the follower compares them, each made from the sound up to that frame alone (it
+    works as the sound comes in): each band within the code's range of the frame's loudest; of those the smooth
+    shape across the bands (the first cosine terms, as the matcher's `shape`); less each term's mean over the
+    frames so far (the voice's and the room's colour out, as far as it is known by then)."""
+    f = np.atleast_2d(np.asarray(frames, np.float64))
+    f = np.maximum(f, f.max(axis=1, keepdims=True) - BAND_RANGE)
+    if FOLLOW == "bands":
+        f = f - f.mean(axis=1, keepdims=True)
+        g = np.pad(f, ((0, 0), (1, 1)), mode="edge")
+        return (g[:, :-2] + g[:, 1:-1] + g[:, 2:]) / 3.0
+    c = f @ COSINES.T
+    if FOLLOW == "terms-mean":
+        c = c - np.cumsum(c, axis=0) / np.arange(1, len(c) + 1)[:, None]
+    return c
+
+
+class Follower:
+    """Follows an utterance as it is said. The records that keep their words' marks (those heard often enough
+    to say back) are lined up with the
+    sound coming in, one frame at a time (time warping, every record side by side, the end left open): each
+    record's cheapest place so far says how far along it the sound is. The records that fit about as well as
+    the best are asked which words the sound has passed (a word counts once most of it is behind: words that
+    begin alike part ways by then); where they all name the same words so far, those words are known, each
+    as it is spoken. Nothing is decided here about the utterance's meaning: that is its record's
+    link, read when the utterance ends."""
+    MARGIN = 1.25   # records whose cost is within this factor of the best are asked
+    INTO = 3        # frames past a word's mark, at least, before the word counts as heard
+    SHARE = 0.6     # and this share of the first word's own length (words that begin alike part ways by then)
+    NEXT = 0.3      # the share of a later word's length (the sound's place in the record is settled by then)
+
+    def __init__(self, mem: SoundMemory):
+        self.mem = mem
+        self.sig: tuple | None = None
+        self.slots: list[int] = []
+        self.row = None
+        self.said: list[str] = []
+        self.at: list[int] = []
+
+    def _templates(self) -> None:
+        deep = self.mem.records.deep  # it follows along the sounds it knows well (heard often enough to say back)
+        slots = sorted(s for s in self.mem.marks if s < self.mem.records.count and self.mem.marks[s] and deep[s] >= self.mem.LEVEL)
+        sig = (tuple(slots), tuple(int(self.mem.heard[s]) for s in slots))
+        if sig == self.sig:
+            return
+        self.sig, self.slots = sig, slots
+        if not slots:
+            return
+        feats = [follow_feature(self.mem.template(s)) for s in slots]
+        self.lens = np.array([len(f) for f in feats])
+        m = int(self.lens.max())
+        self.T = np.zeros((len(slots), m, feats[0].shape[1]), np.float32)
+        for i, f in enumerate(feats):
+            self.T[i, : len(f)] = f
+        self.TT = (self.T ** 2).sum(axis=2)
+        self.past = np.arange(m)[None, :] >= self.lens[:, None]  # columns past each record's end
+        self.steps = np.arange(1, m + 1)[None, :]
+        self.words = [[w for _, w in self.mem.marks[s]] for s in slots]
+        self.starts = [np.array([f for f, _ in self.mem.marks[s]]) for s in slots]
+        # the place in each record from which each of its words counts as heard
+        self.known = [st + np.maximum(self.INTO, np.where(np.arange(len(st)) == 0, self.SHARE, self.NEXT) * (np.append(st[1:], n) - st)) for st, n in zip(self.starts, self.lens)]
+
+    def start(self) -> None:
+        self._templates()
+        self.said, self.at, self.i = [], [], 0
+        self.row = None
+        self.sum = None  # the sum of the utterance's terms so far (for their mean so far)
+        if self.slots:
+            self.row = np.full((len(self.slots), self.T.shape[1] + 1), np.inf, np.float32)
+            self.row[:, 0] = 0.0
+
+    def _feature(self, f: np.ndarray) -> np.ndarray:
+        """One frame of the utterance coming in, as `follow_feature` makes a record's frames."""
+        f = np.asarray(f, np.float64)
+        f = np.maximum(f, f.max() - BAND_RANGE)
+        if FOLLOW == "bands":
+            f = f - f.mean()
+            g = np.pad(f, 1, mode="edge")
+            return (g[:-2] + g[1:-1] + g[2:]) / 3.0
+        c = COSINES @ f
+        if FOLLOW == "terms-mean":
+            self.sum = c.copy() if self.sum is None else self.sum + c
+            c = c - self.sum / (self.i + 1)
+        return c
+
+    def frame(self, f: np.ndarray) -> list[dict]:
+        """One more frame of the utterance; the words that became known with it."""
+        if self.row is None:
+            return []
+        x = self._feature(f).astype(np.float32)
+        d = np.sqrt(np.maximum(self.TT + float(x @ x) - 2.0 * (self.T @ x), 0.0) / len(x))
+        d[self.past] = 1e6
+        self.row = warp_row(self.row, d)
+        self.i += 1
+        if self.i < 12:  # the first tenth of a second says little
+            return []
+        score = self.row[:, 1:] / (self.i + self.steps)
+        score[self.past] = np.inf
+        col = np.argmin(score, axis=1)
+        best = score[np.arange(len(col)), col]
+        top = float(best.min())
+        if not np.isfinite(top):
+            return []
+        runs = []
+        for k in np.flatnonzero(best <= top * self.MARGIN):
+            n = int(np.sum(self.known[k] <= col[k]))  # the words heard so far in this record
+            runs.append(self.words[k][:n])
+        agreed = runs[0][: min(len(r) for r in runs)]
+        for r in runs[1:]:
+            for j, w in enumerate(agreed):
+                if r[j] != w:
+                    agreed = agreed[:j]
+                    break
+        new = []
+        if len(agreed) > len(self.said) and agreed[: len(self.said)] == self.said:
+            for w in agreed[len(self.said):]:
+                new.append({"word": w, "index": len(self.said), "frame": self.i})
+                self.said.append(w); self.at.append(self.i)
+        return new
 
 
 def _unit(name: str, value: float) -> float:
@@ -91,7 +237,9 @@ class Host:
         self.pop = {p["name"]: p for p in self.populations}
         self.preferred = np.geomspace(0.012, 0.25, DISTANCE_UNITS)  # apparent sizes (fractions of a field) each unit prefers
         self.revise = float(config.get("revise", 0.7))
-        self.words = list(config.get("words") or KINDS)  # the words its sounds can stand for (the trained brain's vocabulary)
+        self.words = list(config.get("words") or KINDS)  # what its sounds can stand for (the trained brain's vocabulary, and its questions)
+        self.offer = list(config.get("offer") or [])  # the questions about the thing in focus, on offer when a sound's meaning is guessed
+        self.mode = None  # "listen": it attends to the visitor and says back what it hears; "curious": it looks about, listens for questions and says words
         self.focus_kind = None
         self.reset()
         self.load_calls(config.get("files"))
@@ -126,8 +274,13 @@ class Host:
         self.levels = np.zeros(300)  # the last three seconds' frame energies
         self.level_at = 0
         self.mem = SoundMemory(revise=self.revise, words=self.words)
-        self.pending = None      # a sound heard with a thing in focus: a pistachio soon after links it to that thing (slot, word, moment)
+        self.follower = Follower(self.mem)
+        self.spotted: list = []  # the words known in the utterance being heard, each as it was spoken
+        self.echo = None         # in "listen": the sound just heard, to say back (slot, moment)
+        self.exchange = None     # a sound heard and answered: what a pistachio pays (the sound, its meaning, the sounds said)
+        self.unpaid = None       # a word said by itself for the thing in focus, while no pistachio has come (slot, word, moment)
         self.heard_event = None
+        self.gap = 0
         self.noise = np.full(40, math.log(1e-6) + 4.0, np.float64)  # the background's spectrum, per band (log)
         self.last_said = None    # (id, moment)
         return {"ok": True}
@@ -148,24 +301,35 @@ class Host:
             pass
         self.repertoire.append({"id": "babble", "tag": "babble", "source": "newborn", "frames": None})
 
-    def voice_like(self, frames: np.ndarray) -> tuple[bool, str]:
-        """Whether a heard sound is voice-like: not too short (a click, under 120 ms), not a
-        steady broadband hiss (a fan: a flat spectrum), not a steady tone (a hum: its bands barely
-        change from frame to frame)."""
+    def voice_like(self, frames: np.ndarray, pcm: np.ndarray | None = None) -> tuple[bool, str]:
+        """Whether a heard sound is voice-like: not too short (a click, under 120 ms), not a steady tone (a
+        hum: its bands barely change from frame to frame), with power where a voice's first resonance lies (not
+        a high tone alone, not a thump under 150 Hz alone), and voiced in part (`voiced`: a cough, a breath,
+        a hiss or typing has no pitch); without the audio itself, not a steady broadband hiss (a flat
+        spectrum)."""
         n = len(frames)
         e = np.log(np.exp(frames.astype(np.float64)).sum(axis=1))
         if n < 12 or int(np.sum(e > self.floor + 4.0)) < 12:  # under 120 ms of loud sound: a pop or a click, not a word
             return False, "click"
-        if n > 200:
+        if n > VALUE_FRAMES + 30:
             return False, "too long"
         p = np.exp(frames[:, 2:38].astype(np.float64))
         mean = p.mean(axis=0)
         flatness = float(np.exp(np.log(mean + 1e-12).mean()) / (mean.mean() + 1e-12))
         flux = float(np.abs(np.diff(frames, axis=0)).mean()) if n > 1 else 0.0
-        if flatness > 0.55:
-            return False, "hiss"
         if flux < 0.35:
             return False, "hum"
+        loud = p[e > e.max() - 3.5] if n else p
+        if loud[:, 1:12].sum() < 0.08 * loud.sum():  # nothing between 200 Hz and 1 kHz, where a voice's first resonance lies (speech holds .17 to .9 of its power there; a phone's ring .005)
+            return False, "tone"
+        full = np.exp(frames[e > e.max() - 3.5].astype(np.float64))
+        if full[:, :3].sum() > 0.7 * full.sum():  # nearly all of it under 150 Hz (speech: .6 at most; a door's thump .9)
+            return False, "thump"
+        if pcm is not None and len(pcm) >= 512:
+            if voiced(pcm) < VOICED:
+                return False, "noise"
+        elif flatness > 0.55:
+            return False, "hiss"
         return True, "voice"
 
     def clean(self, frames: np.ndarray) -> np.ndarray:
@@ -179,7 +343,7 @@ class Host:
         """A voice-like sound the visitor made, cleaned of the background, told to the memories; the
         word it stands for is its record's link. Heard with a thing in focus, it waits for a pistachio
         that links it to that thing."""
-        ok, _ = self.voice_like(frames)
+        ok, _ = self.voice_like(frames, pcm)
         if not ok:
             return None
         cleaned = self.clean(frames)
@@ -192,10 +356,63 @@ class Host:
         slot = self.heard_event["write"]["slot"]
         if slot in self.mem.sayable():  # a word it knows, heard again: it rehearses it inwardly once
             self.mem.practice(slot)
-        word, link = self.mem.word_of(slot)
-        self.pending = (slot, self.focus_kind, self.t) if self.focus_kind in self.words and word != self.focus_kind else None
-        return {"id": f"you-{slot}", "slot": slot, "deep": round(float(self.mem.records.deep[slot]), 2), "known": bool(self.heard_event["write"]["revised"]),
-                "word": word, "link": link}
+        word, link = self.mem.meaning(slot)  # its own link, or what the records it sounds like agree on
+        out = {"id": f"you-{slot}", "slot": slot, "deep": round(float(self.mem.records.deep[slot]), 2), "known": bool(self.heard_event["write"]["revised"]),
+               "word": word, "link": link, "frames": int(len(frames)), "spotted": [w for w in self.follower.said if w != "<this>" or self.focus_kind in self.words]}
+        focus = self.focus_kind if self.focus_kind in self.words else None
+        if word is None and self.mode == "curious" and focus and self.offer:
+            # no meaning it knows: it guesses one of the questions about the thing in focus
+            out["guess"], out["chance"] = self.mem.guess(slot, self.offer, self.mem.near)
+        meaning = word or out.get("guess")
+        if meaning and ("<this>" not in meaning or focus):
+            out["words"] = meaning.replace("<this>", focus or "").split()
+        return out
+
+    def _named(self, words: list) -> list:
+        """The follower's words with "<this>" as the name of the thing in focus (none in focus: left out)."""
+        focus = self.focus_kind if self.focus_kind in self.words else None
+        return [{**w, "word": focus if w["word"] == "<this>" else w["word"]} for w in words if w["word"] != "<this>" or focus]
+
+    # --- an exchange: a sound heard, its meaning, the sounds said in answer; a pistachio pays all of it ----------
+    def open_exchange(self, slot: int, meaning: str | None, guessed: bool) -> None:
+        self.close_exchange()
+        if meaning in self.words and 0 <= slot < self.mem.records.count:
+            self.exchange = {"slot": int(slot), "meaning": meaning, "guessed": bool(guessed), "answers": [], "t": self.t}
+
+    def sound_for(self, word: str) -> dict | None:
+        """The sound to say for a word: the record the word recalls; without one, a sound it can say, guessed."""
+        slot, link = self.mem.recall(word)
+        guessed = False
+        if slot is None:
+            slot, link = self.mem.guess_sound(word)
+            guessed = slot is not None
+        if slot is None:
+            return None
+        if self.exchange is not None:
+            self.exchange["answers"].append({"word": word, "slot": int(slot), "guessed": guessed})
+        return {"id": f"you-{slot}", "slot": int(slot), "link": link, "guessed": guessed}
+
+    def reward_exchange(self, amount: float = PISTACHIO) -> dict | None:
+        """A pistachio for the answer: the sound heard is linked to the meaning it was taken for, and each
+        word said to the sound it was said with."""
+        x, self.exchange = self.exchange, None
+        if x is None:
+            return None
+        self.mem.reward(x["slot"], x["meaning"], amount)
+        for a in x["answers"]:
+            self.mem.reward(a["slot"], a["word"], amount)
+        return {"slot": x["slot"], "meaning": x["meaning"], "guessed": x["guessed"], "link": self.mem.word_of(x["slot"])[1],
+                "answers": [{**a, "link": self.mem.word_of(a["slot"])[1]} for a in x["answers"]]}
+
+    def close_exchange(self) -> None:
+        """The exchange ends with no pistachio: a guess is doubted for a while, a link used fades a little
+        toward what repetition has consolidated."""
+        x, self.exchange = self.exchange, None
+        if x is None:
+            return
+        (self.mem.doubt if x["guessed"] else self.mem.fade)(x["slot"], x["meaning"])
+        for a in x["answers"]:
+            (self.mem.doubt if a["guessed"] else self.mem.fade)(a["slot"], a["word"])
 
     def you_sounds(self) -> list:
         """Records deep enough to say back: the repertoire's sounds learned from the visitor."""
@@ -219,20 +436,20 @@ class Host:
 
     def knows(self) -> list:
         """What it knows: each kind of thing and the word it recalls for it (the link's strength)."""
-        out = []
-        r = self.mem.reads()
-        for word in self.words:
-            slot, link = self.mem.recall(word, r)
-            if slot is not None:
-                out.append({"kind": word, "id": f"you-{slot}", "slot": int(slot), "link": round(link, 3)})
-        return out
+        m, deep, best = self.mem.meanings(), self.mem.records.deep, {}
+        for s in self.mem.sayable():  # of the sounds it can say that stand for a word, the deepest
+            w, link = m[s]
+            if w and " " not in w and (float(deep[s]), link) > best.get(w, (-1.0, 0.0, 0))[:2]:  # (a question is something it hears, no word to say)
+                best[w] = (float(deep[s]), link, s)
+        return [{"kind": w, "id": f"you-{best[w][2]}", "slot": int(best[w][2]), "link": round(best[w][1], 3)} for w in self.words if w in best]
 
     def mem_recalled(self) -> dict | None:
         slot, link = self.mem.recall(self.focus_kind)
         return None if slot is None else {"kind": self.focus_kind, "id": f"you-{slot}", "slot": int(slot), "link": round(link, 3)}
 
     def choose(self) -> dict:
-        words = self.you_sounds()
+        m = self.mem.meanings()
+        words = [w for w in self.you_sounds() if " " not in (m[w["slot"]][0] or "")]  # its words; a question it keeps for hearing
         options = self.repertoire + words
         slot, link = self.mem.recall(self.focus_kind)  # the focused thing recalls its word
         self.recalled = None if slot is None else {"kind": self.focus_kind, "slot": int(slot), "id": f"you-{slot}", "link": round(link, 3)}
@@ -343,6 +560,9 @@ class Host:
 
     def step(self, meta: dict[str, Any], arrays: dict[str, np.ndarray]) -> dict[str, Any]:
         self.t += 1
+        self.mode = meta.get("mode")
+        if meta.get("own_voice"):  # the page is playing its voice (an answer said with a kept sound): what the ear hears at that moment is its own
+            self.saying = max(self.saying, OWN_TAIL)
         left, right = arrays["left"], arrays["right"]
         proprio = arrays.get("proprio", np.zeros(22, np.float32))
         L = left.reshape(self.h, self.w, 3)
@@ -434,6 +654,7 @@ class Host:
         # sounds the visitor makes: onset to offset, from the frames' total energy (not while it calls)
         learned, ended, startle = None, False, False
         heard_list = []  # every sound heard this moment, in order (a long moment can end several)
+        spotted = []     # the words that became known this moment, in the utterance being heard
         for f, chunk in zip(frames, chunks):
             e = float(np.log(np.exp(f.astype(np.float64)).sum()))
             # a sudden sound: a loud onset after quiet that the ear's running level did not predict
@@ -457,29 +678,39 @@ class Host:
                 if not self.sound:
                     self.sound = list(self.pre)  # the word's soft start, heard just before its onset
                     self.sound_pcm = list(self.pre_pcm)
+                    self.follower.start()
+                    self.gap = 0
+                    for g in self.sound:
+                        self.follower.frame(self.clean(g[None, :])[0])
+                self.gap = max(self.gap, self.quiet)  # the longest quiet inside the utterance so far
                 self.sound.append(f); self.sound_pcm.append(chunk); self.quiet = 0
-                if len(self.sound) > 250:  # a sound that never ends is the background
+                spotted += self._named(self.follower.frame(self.clean(f[None, :])[0]))
+                if len(self.sound) > VALUE_FRAMES + 100:  # a sound that never ends is the background
                     self.sound = []; self.sound_pcm = []
                     self.noise = f.astype(np.float64).copy()
             elif self.sound:
                 # the quiet inside a word (the closure of a p, a t) belongs to it; the word ends after
                 # a quarter second of quiet, keeping its last 60 ms (its soft end)
                 self.sound.append(f); self.sound_pcm.append(chunk); self.quiet += 1
-                if self.quiet >= 25:
+                if self.quiet <= 8:
+                    spotted += self._named(self.follower.frame(self.clean(f[None, :])[0]))
+                if self.quiet >= END_QUIET:
                     keep = len(self.sound) - self.quiet + 6
                     heard = np.asarray(self.sound[:keep], np.float32)
                     parts = self.sound_pcm[:keep]
                     heard_pcm = np.concatenate(parts) if parts and all(c is not None for c in parts) else None
-                    ok, why = self.voice_like(heard)
+                    ok, why = self.voice_like(heard, heard_pcm)
                     got = None
                     if ok and not self.spoiled:  # a fragment heard over its own voice is not learned
                         got = self.hear_sound(heard, heard_pcm)
                         learned = got or learned
                         if got:
                             heard_list.append(got)
+                            if self.mode == "listen":  # it says back what it heard
+                                self.echo = (got["slot"], self.t + 2)
                         ended = True
                     e_h = np.log(np.exp(heard.astype(np.float64)).sum(axis=1))
-                    self.events = (self.events + [{"t": self.t, "frames": len(heard), "loud": int(np.sum(e_h > self.floor + 4.0)), "kind": why,
+                    self.events = (self.events + [{"t": self.t, "frames": len(heard), "loud": int(np.sum(e_h > self.floor + 4.0)), "kind": why, "gap": int(self.gap), "start": int(self.level_at - len(self.sound)),
                                                    "spoiled": bool(self.spoiled), "audio": 0 if heard_pcm is None else int(len(heard_pcm)),
                                                    "kept": got is not None, "write": None if got is None else self.heard_event["write"]}])[-40:]
                     self.sound = []; self.sound_pcm = []; self.quiet = 0; self.spoiled = False
@@ -493,23 +724,48 @@ class Host:
         if count is not None and self.things is not None and count > self.things:
             self.drive += 0.45
         self.things = count if count is not None else self.things
-        self.drive += float(self.rng.uniform(0.012, 0.04)) + (0.4 if ended else 0.0)
+        # (in "curious" it listens for questions: the drive rises at half the pace, a word by itself every eight seconds or so)
+        self.drive += (0.5 if self.mode == "curious" else 1.0) * float(self.rng.uniform(0.012, 0.04)) + (0.4 if ended and self.mode != "curious" else 0.0)
         reward = float(meta.get("reward") or 0.0)
         linked = None
-        if reward > 0 and self.pending and self.t - self.pending[2] < 80:  # a pistachio soon after a sound heard with a thing in focus: the sound becomes its word
-            self.mem.link(self.pending[0], self.pending[1], reward)
-            linked = {"slot": int(self.pending[0]), "word": self.pending[1], "link": self.mem.word_of(self.pending[0])[1]}
-            self.pending = None
-        elif reward > 0 and self.last_said and self.t - self.last_said[1] < 60:
+        if reward > 0 and self.exchange is not None:  # a pistachio for its answer
+            linked = self.reward_exchange(PISTACHIO * reward)
+        elif reward > 0 and self.last_said and self.t - self.last_said[1] < 80:
             self.paid[self.last_said[0]] = self.paid.get(self.last_said[0], 0.0) + reward
-            if self.last_said[0].startswith("you-"):  # the thing it looked at and the word it said: their link grows
-                self.mem.reward_link(int(self.last_said[0][4:]), self.last_said[2], reward)
+            # a word it said by itself with a thing in focus: the sound and the thing's word are linked
+            if self.last_said[0].startswith("you-") and self.last_said[2] in self.words and not self.last_said[3]:
+                slot = int(self.last_said[0][4:])
+                self.mem.reward(slot, self.last_said[2], PISTACHIO * reward)
+                linked = {"slot": slot, "meaning": self.last_said[2], "guessed": False, "link": self.mem.word_of(slot)[1], "answers": []}
+            self.unpaid = None
+            self.last_said = None
+        if self.unpaid and self.t - self.unpaid[2] >= 80:  # the word the thing recalled, said, and no pistachio came
+            self.mem.fade(self.unpaid[0], self.unpaid[1])
+            self.unpaid = None
+        if self.exchange is not None and self.t - self.exchange["t"] >= 150:  # an answer no pistachio followed
+            self.close_exchange()
         voice, call = None, None
-        if meta.get("voice_ok") and self.drive >= 1.0 and self.saying <= 0 and not self.sound:
+        free = meta.get("voice_ok") and self.saying <= 0 and not self.sound
+        if self.echo and (self.mode != "listen" or self.t - self.echo[1] > 30):
+            self.echo = None
+        if free and self.echo and self.t >= self.echo[1] and self.echo[0] < self.mem.records.count:
+            slot, self.echo = self.echo[0], None
+            pick = {"id": f"you-{slot}", "tag": "said back", "source": "you", "slot": slot, "frames": self.mem.frames_of(slot)}
+            voice = self.say(pick)
+            call = {"id": pick["id"], "tag": pick["tag"], "source": "you", "echo": True, "word": self.mem.word_of(slot)[0]}
+            self.last_said = (pick["id"], self.t, self.focus_kind, True)
+            self.saying = int(math.ceil(len(voice) / 10)) + 2
+            call["match"] = round(self.last_match or 0.0, 3)
+            self.last_match = None
+        elif free and self.mode != "listen" and self.drive >= 1.0 and not meta.get("hold"):
             pick = self.choose()
             voice = self.say(pick)
             call = {"id": pick["id"], "tag": pick["tag"], "source": pick["source"]}
-            self.last_said = (pick["id"], self.t, self.focus_kind)
+            if pick.get("source") == "you":
+                call["word"] = self.mem.word_of(pick["slot"])[0]
+                if self.recalled and self.recalled["slot"] == pick["slot"]:
+                    self.unpaid = (pick["slot"], self.recalled["kind"], self.t)
+            self.last_said = (pick["id"], self.t, self.focus_kind, False)
             self.saying = int(math.ceil(len(voice) / 10)) + 2
             # saying relaxes its boredom, a word said well the most
             relief = 0.4 + 0.5 * (self.last_match or 0.0) if pick.get("source") == "you" else 0.6
@@ -537,9 +793,10 @@ class Host:
         return {"buffers": names, "group_activity": {"distance": dist_units.tolist()}, "readout": readout,
                 "looked": {"eye": eye, "row": row, "col": col, "strength": round(strength, 3)},
                 "focus": self.focus, "heard": bool(ear.max() > 0.35), "newborn": True,
-                "drive": round(min(1.0, self.drive), 3), "said": call, "saying": self.saying > 0, "heard_sound": learned, "heard_sounds": heard_list, "startle": startle, "recalled": self.mem_recalled(), "voice_rate": getattr(self, "voice_rate", 8000), "knows": self.knows(),
+                "drive": round(min(1.0, self.drive), 3), "said": call, "saying": self.saying > 0, "heard_sound": learned, "heard_sounds": heard_list, "startle": startle,
+                "spotted": spotted, "hearing": bool(self.sound) and not self.spoiled, "recalled": self.mem_recalled(), "voice_rate": getattr(self, "voice_rate", 8000), "knows": self.knows(),
                 "words": len(self.mem.sayable()),
-                "memory": self.mem.view() if (learned is not None or self.t % 10 == 0) else None,
+                "memory": self.mem.view() if (learned is not None or linked is not None or self.t % 50 == 0) else None,  # (a large reply: when something changed, and every five seconds for the fading)
                 "repertoire": self.repertoire_list() if self._repertoire_changed(learned, call) else None,
                 "paid": {k: round(v, 2) for k, v in self.paid.items() if v}, "linked": linked}
 

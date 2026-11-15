@@ -10,9 +10,15 @@ The pack holds three brains, picked in the page's brain switch (`?brain=trained|
 
 - **trained tonight**: the composed body and hearing, with the brain the meaning lane trained overnight
   (cadence#334, `cadence.meaning.host.MeaningParrot`, its files in `site/pack/trained/` with
-  `version.json` naming its step, founder and export). It hears the preset questions (Ask it, under
-  the brain) as sound through its ear, one word a moment, and answers in its turn from its own state
-  (its word records are off at the turn); a pistachio pays its last answer. In its mind shows the facets of the thing in focus that the meaning lane's probes read
+  `version.json` naming its step, founder and export). The ear's unit is the utterance: a word or a
+  whole spoken phrase, linked to its meaning (a word, or a question its brain was taught). Two ways
+  it attends, on one switch: **Listen to me** (it looks at you, keeps what it hears and says it back)
+  and **Curious** (its attention moves over the things; it answers a question about the thing in
+  focus, heard through its ear from the question list's clips or from the microphone, each word lit
+  as it is said; at times it says a word it knows). It answers in its turn from its own state (its
+  word records are off at the turn); a pistachio pays its last answer and the links of the sounds
+  used. A sound with no meaning it knows is guessed and answered by the guess; a pistachio links it.
+  `?brain=trained-nowords` is the same brain with an empty memory of sounds. In its mind shows the facets of the thing in focus that the meaning lane's probes read
   from its state, where the lane exports `probes.json` beside the brain.
 - **composed**: the parrot-brain lane's `cadence.parrot` (eyes, distance, focus, map) with the page's
   hearing layer.
@@ -49,7 +55,7 @@ scripted placements.
 | `site/brainview.js` | the detail panel: populations, distance units with tuning curves and their silence switch, joints |
 | `site/worker.js`, `site/pack/` | the brain in Pyodide: the manifest (SHA-256 of every file), the hosts (`py/parrotbrain/`: `host.py` the placeholder and hearing, `page.py` the composed, `trained.py` the trained brain beside the composed), the calls, the wheel (`cadence.parrot` and `cadence.meaning`), the trained brain's files (`trained/`, loaded only when that brain is picked) |
 | `site/tools/` | `fetch_assets.py` (Poly Haven assets and their credits), `prepare_look.py` (a body onto the rig), `make_calls.py` (the calls from the recording), `build_pack.py`, `check_page.py` (the page check), `shoot_looks.py` with `look.html` (a body in the page's light) |
-| `site/tests/` | `dsp_parity.mjs` (the ear against the library), `voice_roundtrip.mjs`, `test_sound_memory.py`, fixtures |
+| `site/tests/` | `dsp_parity.mjs` (the ear against the library), `voice_roundtrip.mjs`, `test_sound_memory.py`, `test_words.py`, `test_sound_symbols.py` with `flow_checks.py` and `room.py` (the page end to end, headless: the question clips, the microphone, a first visit, visitors' voices through a laptop microphone's simulation, false triggers, robustness, the parrot with no words yet), fixtures |
 | `evidence/` | the readings the help page's numbers come from |
 
 ## Checks
@@ -57,7 +63,8 @@ scripted placements.
 ```sh
 node parrot/site/tests/dsp_parity.mjs            # largest difference 0.0007 (limit 0.001)
 node parrot/site/tests/voice_roundtrip.mjs       # mean offset 0.00 nat, mean error 0.64 nat (limits 0.5, 1.3)
-python parrot/site/tests/test_sound_memory.py    # one deep record for a word said ten times; noise writes none; once fades
+python parrot/site/tests/test_sound_memory.py    # one deep record for a word said ten times, linked by pistachio; noise writes none; once fades
+python parrot/site/tests/test_sound_symbols.py --url http://localhost:8842/ --out <dir> --voices <dir> --only presets,mic,first,false,robust   # the page's flow, headless
 python parrot/site/tools/check_page.py --shots <dir>   # end to end, the skin's stretch sweep, the head's rigidity, the distance units
 python tools/check_explain.py parrot --shots <dir>     # the demos' shared gate
 ```

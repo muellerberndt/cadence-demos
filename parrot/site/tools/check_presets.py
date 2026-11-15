@@ -1,12 +1,15 @@
-"""Every candidate question about the demo room's things, asked through the page's own trained-brain host
-(parrotbrain.trained.Host.meaning_op, the ops app.js sends: a look at the thing in focus, begin, the words one
-a moment with the voice held, the turn), for each candidate brain; several passes in shuffled order. A
-question goes on the page as a preset only if a brain answers it right on every pass.
+"""Every question phrase of the parrot's starting memory, asked of the demo room's things through the page's own
+trained-brain host (parrotbrain.trained.Host.meaning_op, the ops app.js sends: a look at the thing in focus,
+begin, the words of the phrase's meaning one a moment with the voice held, the turn), several passes in
+shuffled order. A phrase's meaning is the question its brain was taught ("What colour?" and "What colour is
+this?" both mean "what colour is this"; "Where is it?" means "where is the <thing in focus>"). A phrase goes on
+the page as a preset, with its thing in focus, only if the brain answers it right on every pass.
 
-    python tools/check_presets.py WHEEL_DIR ROOM_THINGS.json OUT.json BRAIN_DIR [BRAIN_DIR ...]
+    python tools/check_presets.py WHEEL_DIR ROOM_THINGS.json PHRASES.json OUT.json [--passes N] [--presets] [BRAIN_DIR ...]
 
 WHEEL_DIR: the page's wheel unpacked. ROOM_THINGS.json: the page's things as its trained brain sees them
-({id, kind, direction, distance}, read from the page).
+({id, kind, direction, distance}, read from the page). PHRASES.json: {"phrases": {key: {text, meaning}},
+"presets": [{key, focus}]}. --presets: the presets alone (each with its thing in focus).
 """
 import json
 import math
@@ -17,18 +20,20 @@ from pathlib import Path
 import numpy as np
 
 SITE = Path(__file__).resolve().parents[1]
-sys.path.insert(0, sys.argv[1]); sys.path.insert(0, str(SITE / "pack" / "py"))
+argv = [a for a in sys.argv[1:] if not a.startswith("--")]
+PASSES = int(sys.argv[sys.argv.index("--passes") + 1]) if "--passes" in sys.argv else 3
+if "--passes" in sys.argv:
+    argv.remove(str(PASSES))
+sys.path.insert(0, argv[0]); sys.path.insert(0, str(SITE / "pack" / "py"))
 from parrotbrain.trained import Host  # noqa: E402
 
-ROOM, OUT = json.loads(Path(sys.argv[2]).read_text()), Path(sys.argv[3])
-BRAINS = [Path(b) for b in sys.argv[4:]]
-PASSES = 3
+ROOM, SPEC, OUT = json.loads(Path(argv[1]).read_text()), json.loads(Path(argv[2]).read_text()), Path(argv[3])
+BRAINS = [Path(b) for b in argv[4:]] or [SITE / "pack" / "trained"]
 WORLD = {"apple": ("apple", "red", "fruit"), "ball": ("ball", "white", "cloth"), "cup": ("cup", "white", "glass"),
          "banana": ("banana", "yellow", "fruit"), "block": ("block", "blue", "wood"), "key": ("key", "yellow", "metal"),
          "greenball": ("ball", "green", "plastic"), "lemon": ("lemon", "yellow", "fruit")}
 ROUND = {"apple", "ball", "cup", "lemon"}
 DIRS = ["front", "right", "behind", "left"]
-COLOURS = ["red", "green", "blue", "yellow", "white", "black"]
 
 
 def direction_word(d):  # app.js expected(): a quarter each, front within 45 degrees, positive to its left
@@ -44,22 +49,35 @@ def things(focus_id):  # app.js trainedThings(): the focus first, then the neare
     return rows[:5]
 
 
+def expected(words, t):
+    kind, colour, material = WORLD[t["kind"]]
+    if words[:3] == ["what", "is", "this"]: return kind
+    if words[:2] == ["what", "colour"]: return colour
+    if words[:2] == ["what", "shape"]: return "round" if kind in ROUND else "no"  # its voice has no word for another shape
+    if words[0] == "where": return direction_word(t["direction"])
+    if words[:3] == ["can", "you", "eat"]: return "yes" if material == "fruit" else "no"
+    if words[:2] == ["is", "this"]: return "yes" if (words[2] == "round" and kind in ROUND) or words[2] == colour else "no"
+    if words[:2] == ["what", "material"]: return material
+    return None
+
+
 def questions():
     out = []
-    for t in ROOM:
-        kind, colour, material = WORLD[t["kind"]]
-        other = COLOURS[(COLOURS.index(colour) + 1) % len(COLOURS)]
-        rnd = kind in ROUND
-        out += [("what is this", [kind], t["id"], "name"),
-                (f"what colour has the {kind}", [colour], t["id"], "colour_of"),
-                ("what colour is this", [colour], t["id"], "colour_this"),
-                (f"is this {colour}", ["yes"], t["id"], "is_colour"),
-                (f"is this {other}", ["no"], t["id"], "is_colour"),
-                (f"what shape has the {kind}", ["round" if rnd else "no"], t["id"], "shape_of"),
-                ("is this round", ["yes" if rnd else "no"], t["id"], "is_round"),
-                ("can you eat this", ["yes" if material == "fruit" else "no"], t["id"], "can_eat"),
-                (f"where is the {kind}", [direction_word(t["direction"])], t["id"], "direction"),
-                ("what material is this", [material], t["id"], "material")]
+    if "--presets" in sys.argv:
+        pairs = [(p["key"], p.get("focus")) for p in SPEC["presets"]]
+    else:
+        pairs = [(k, None) for k in SPEC["phrases"]]
+    for key, focus in pairs:
+        meaning = SPEC["phrases"][key]["meaning"]
+        for t in ROOM:
+            kind = WORLD[t["kind"]][0]
+            words = meaning.replace("<this>", kind).split()
+            named = [w for w in words[3:] if w in {v[0] for v in WORLD.values()}]  # a question that names its thing
+            if (named and named[0] != kind) or (focus and t["kind"] != focus):
+                continue
+            want = expected(words, t)
+            if want is not None:
+                out.append((key, " ".join(words), want, t["id"]))
     return out
 
 
@@ -78,7 +96,7 @@ def ask(h, q, focus):
             said.append(r["said"])
     if not said:
         op(op="over")
-    return said
+    return " ".join(said)
 
 
 report = {}
@@ -88,15 +106,15 @@ for folder in BRAINS:
     qs, rows, rng = questions(), {}, np.random.default_rng(5)
     for _ in range(PASSES):
         for i in rng.permutation(len(qs)):
-            q, want, focus, form = qs[i]
-            r = rows.setdefault(f"{q} | {focus}", {"q": q, "focus": focus, "form": form, "want": want, "said": []})
+            key, q, want, focus = qs[i]
+            r = rows.setdefault(f"{key} | {focus}", {"phrase": key, "text": SPEC["phrases"][key]["text"], "meaning": q, "focus": focus, "want": want, "said": []})
             r["said"].append(ask(h, q, focus))
     for r in rows.values():
         r["right"] = sum(s == r["want"] for s in r["said"])
-    by_form = {}
-    for r in rows.values():
-        f = by_form.setdefault(r["form"], [0, 0]); f[0] += r["right"] == PASSES; f[1] += 1
     score = float(np.mean([r["right"] == PASSES for r in rows.values()]))
-    report[folder.name] = {"all_right": round(score, 3), "by_form": by_form, "rows": list(rows.values()), "s": round(time.time() - began)}
-    print(folder.name, round(score, 3), json.dumps(by_form), flush=True)
+    report[folder.name] = {"passes": PASSES, "all_right": round(score, 3), "rows": list(rows.values()), "s": round(time.time() - began)}
+    print(folder.name, "right on every pass:", sum(r["right"] == PASSES for r in rows.values()), "of", len(rows), flush=True)
+    for r in rows.values():
+        if r["right"] < PASSES:
+            print("  ", r["text"], "|", r["focus"], "| want", r["want"], "| said", r["said"], flush=True)
     OUT.write_text(json.dumps(report, indent=1))
