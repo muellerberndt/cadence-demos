@@ -1,7 +1,7 @@
 {
  "stage": "pretrain",
  "step": "the owner's pretraining stage on a brain whose sparse mixed code takes every sense field of the glimpse at unit length: the night's N1 (names), N2 (colour) and N3 (where) from the N0 checkpoint, then every focus question interleaved for 400 blocks",
- "label": "the pretrained brain, every sense at equal weight",
+ "label": "the equal-senses brain",
  "good": "in the demo room, right on every one of 10 passes: what is this (key, apple, cup), what colour is this (block, cup, key, apple), is this white (cup: yes; key: no), where is the cup, can you eat this (apple), the colour of the apple and the cup asked by name, the shape of the apple and the block, is this red (apple), where the ball is; held out on fresh rooms through the page host: .787 (pretrain400 .773), the demo room's 50 questions all right on 3 of 3 passes: .80 (pretrain400 .74)",
  "lost": "what material is this (cup, green ball), is this <colour> on some things (is this yellow of the key, is this blue of the block, is this green of the apple), what colour is this of the green ball, is this round of the green ball",
  "founder": 33400121,
