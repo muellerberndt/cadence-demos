@@ -14,7 +14,11 @@ mic       The microphone itself (the browser's fake device plays a file in a loo
           said back within 1.5 s and the middle one within 1.2 s, with the machine as found and again with
           every core kept busy (--busy N processes).
 first     A first visit with what is on screen alone: Listen to me, a word, said back; the switch to Curious; a
-          question asked; a pistachio; the signs on screen at each step (the ear, the turn, the answer).
+          question asked; a pistachio; the signs on screen at each step (the ear, the turn, the answer). Then,
+          in the visitor's own voice (a voice in no record): a question, answered right when understood, and
+          when guessed the hint by the Pistachio button (a pistachio if right, else say it again), a right
+          guess paid and the question understood when asked again; and a sound it cannot make out (the
+          visitor's question played backwards): a ? by the parrot and the hint to say it again.
 visitors  The usability matrix: voices the parrot never heard, through a laptop microphone's simulation
           (tests/room.py: 100 Hz to 7 kHz, a mild room, noise at 20 and 10 dB below the speech, the level moved
           6 dB either way). Per voice: (a) Listen to me: each utterance kept whole and said back, the parrot's

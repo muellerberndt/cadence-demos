@@ -138,6 +138,40 @@ def first_visit(pw, a, T) -> dict:
         page.wait_for_timeout(50)
     paid = page.evaluate("(t) => (window.parrotPage.flow.linked || []).filter((l) => l.at > t).length", t)
     steps.append({"step": "a pistachio: the dopamine box lights, the lesson is taken", "dopamine_sign": dop, "links_paid": paid, "pistachios": page.evaluate("document.getElementById('pistachios').textContent"), "ok": dop and paid >= 1})
+    # the visitor's own question, in a voice in no record: answered right, or a guess with the hint by the Pistachio button
+    hint_now = "(() => { const e = document.getElementById('ask-hint'); return e && !e.hidden ? e.textContent : ''; })()"
+    T.quiet_for(page); page.wait_for_timeout(2500); T.focus_on(page, "cup"); page.wait_for_timeout(600)
+    serial = page.evaluate("window.parrotPage.trained.serial")
+    T.hear(page, pad(T.read16(takes["what_colour"][1])))
+    last = T.answer_after(page, serial, 30)
+    page.wait_for_timeout(300)
+    shown = page.evaluate(hint_now)
+    guessed = bool(last and last.get("guessed"))
+    steps.append({"step": "the visitor's own question: answered right when understood; a guess shows the hint to give a pistachio if right, else to say it again",
+                  "said": last["said"] if last else None, "right": bool(last and last["right"]), "guessed": guessed, "hint": shown,
+                  "ok": bool(last) and ((not guessed and bool(last["right"]) and not shown) or (guessed and "Pistachio" in shown and "say it again" in shown))})
+    if guessed and last["right"]:  # a right guess paid: asked again, it is understood
+        page.click("#ask-nut"); page.wait_for_timeout(2500); T.quiet_for(page); page.wait_for_timeout(1500)
+        serial = page.evaluate("window.parrotPage.trained.serial")
+        T.hear(page, pad(T.read16(takes["what_colour"][1])))
+        again = T.answer_after(page, serial, 30)
+        steps[-1].update(after_a_pistachio={"said": again["said"] if again else None, "guessed": bool(again and again.get("guessed")), "right": bool(again and again["right"])})
+        steps[-1]["ok"] = steps[-1]["ok"] and bool(again and again["right"] and not again.get("guessed"))
+    # a sound it cannot make out (the visitor's question played backwards): "?" by the parrot and the hint
+    T.quiet_for(page); page.wait_for_timeout(2500)
+    serial = page.evaluate("window.parrotPage.trained.serial"); t = T.now(page)
+    T.hear(page, pad(T.read16(takes["what_is_this"][0])[::-1].copy()))
+    got = T.heard_after(page, t, 15)
+    shown, mark = "", False
+    for _ in range(60):
+        shown = shown or page.evaluate(hint_now)
+        mark = mark or page.evaluate("(t) => { const b = window.parrotPage.flow.bubble; return !!b && b.at > t && b.text === '?'; }", t)
+        if shown and mark:
+            break
+        page.wait_for_timeout(100)
+    kind = page.evaluate("window.parrotPage.flow.hint && window.parrotPage.flow.hint.kind")
+    steps.append({"step": "a sound it cannot make out: a ? by the parrot and, by the Pistachio button, what to do", "heard": len(got), "taken_for": got[0].get("word") if got else None,
+                  "question_mark": mark, "hint_kind": kind, "hint": shown, "ok": len(got) == 1 and not got[0].get("word") and mark and "say it again" in shown})
     ctx.close(); browser.close()
     return {"voice": voice.name, "steps": steps, "ok": all(s["ok"] for s in steps), "log": logs[-40:]}
 

@@ -1,6 +1,6 @@
 {
  "schema": "cadence-parrot-pack/1",
- "packed": "2026-11-15",
+ "packed": "2026-11-16",
  "pyodide": "314.0.7",
  "packages": [
   "numpy"
@@ -16,9 +16,9 @@
  ],
  "sources_sha256": {
   "__init__.py": "aad6e4970d412d3fc56376e9321f46760a285a32d2086c5fc76d1740b02c082f",
-  "host.py": "41f1711b925db51fc495485687ad0c6ad2e2a65eb84172918b659758205553c9",
-  "page.py": "4017785de7748d954398f07f35b79fa88599d9495a1e33b634664534f7f670d7",
-  "sounds.py": "40703a6aba08c0abf112153720e5e4712a167daa8581ee87204e8868919740be",
+  "host.py": "6a1674a12a1b75bea1b50f2c676c7ec7f2a21ae0fe5f3e81f73c954bb4dd7b1e",
+  "page.py": "b776613fce591a2d6227a30c26b37f9be37c33a91c2348c04cf63ce33cb8d531",
+  "sounds.py": "c82dc7d5c583a7f2c6b98c3aaf27fe68c957fe24ff112f847604175308348d57",
   "trained.py": "3d4d6d5beacb0a0de394a6b5d48bb9f851438e1b485c48997e76183e671c51b3"
  },
  "files": {

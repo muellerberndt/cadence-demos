@@ -283,7 +283,7 @@ async function moment(now) {
     const calls = voiceOk && !(state.trained && (trained.busy || now < trained.quietUntil));
     // how it attends (flow.mode), and the page's knowledge of its own voice sounding (so its ear does not take its voice for yours)
     const attend = state.trained ? { mode: flow.mode, own_voice: audio.ownVoice(now), hold: flow.asking } : {}; // (hold: a question is about to sound, so it says nothing by itself)
-    reply = await brain.call('step', { meta: { t: state.moment, reward, voice_ok: calls, cue, things: room.things.size, focus_kind: focusKind, scene, learn: true, viz: !!state.composed && state.moment % VIZ_EVERY === 0, ...attend, ...(op ? { meaning: op.meta } : {}) }, arrays: { left, right, proprio: pro, mel: sound.mel, audio: sound.audio, pcm: sound.pcm } },
+    reply = await brain.call('step', { meta: { t: state.moment, reward, voice_ok: calls, cue, things: room.things.size, focus_kind: focusKind, scene, learn: true, viz: !!state.composed && state.moment % VIZ_EVERY === 0, memory_shown: state.tab === 'tab-memory', ...attend, ...(op ? { meaning: op.meta } : {}) }, arrays: { left, right, proprio: pro, mel: sound.mel, audio: sound.audio, pcm: sound.pcm } },
       [left.buffer, right.buffer, pro.buffer, sound.mel.buffer, sound.audio.buffer, sound.pcm.buffer]);
   } catch (error) { state.pending = false; op?.reject(error); setStatus(`The brain stopped: ${error.message}`, 'error'); state.brainReady = false; return; }
   state.pending = false;
@@ -699,7 +699,19 @@ function nextOp(now) {
   return op;
 }
 
-const askEl = { card: $('ask'), form: $('ask-form'), q: $('ask-q'), log: $('ask-log'), note: $('ask-note'), words: $('ask-words'), bubble: $('say-bubble') };
+const askEl = { card: $('ask'), form: $('ask-form'), q: $('ask-q'), log: $('ask-log'), note: $('ask-note'), words: $('ask-words'), bubble: $('say-bubble'), hint: $('ask-hint') };
+/** What to do next, by the Pistachio button: after a sound it made nothing of, or an answer it guessed. */
+const HINTS = {
+  unknown: 'It did not understand that. <b>Say it again</b>, or pick a question from the list.',
+  guess: 'It was not sure what you asked, and guessed. If the answer is right, give it a <b>Pistachio</b>: it learns what your words mean. If not, <b>say it again</b>.',
+};
+function hint(kind) {
+  const el = askEl.hint; if (!el) return;
+  clearTimeout(hint.timer);
+  flow.hint = kind ? { kind, at: performance.now() } : null;
+  el.hidden = !kind; el.innerHTML = kind ? `<span class="q">?</span>${HINTS[kind]}` : '';
+  if (kind) hint.timer = setTimeout(() => hint(null), kind === 'guess' ? OPEN_MS : 7000);
+}
 function setupTrained(t) {
   trained.vocab = new Set(t.words); trained.colours = t.colours; trained.materials = t.materials;
   trained.momentMs = t.moment_ms || 300; trained.turn = t.turn_moments || 3;
@@ -839,7 +851,7 @@ function setFlow(mode) {
   for (const b of document.querySelectorAll('#flow-mode .seg')) b.setAttribute('aria-pressed', String(b.dataset.flow === mode));
   document.body.dataset.flow = mode;
   if (flow.live) dropLive(); // a question half heard is let go
-  subtitle(null); bubble(null);
+  subtitle(null); bubble(null); hint(null);
   if (mode === 'listen') { state.pointed = null; trained.focus = null; brain3d?.scan?.clearConcept(); }
   askNote();
 }
@@ -924,11 +936,12 @@ function heardUtterance(h) {
 function notKnown(h, why = 'unknown') {
   flow.tiltUntil = performance.now() + 1500; bubble('?', 'unsure');
   flow.unknown = { slot: h?.slot ?? null, why, at: performance.now() };
+  if (flow.mode === 'curious') hint('unknown');
   console.log(`[ear] a sound it makes nothing of (${why})`);
 }
 /** A word it knows, said alone in Curious: a thing's word draws its attention to the thing (the sound stands for it). */
 function heardWordAlone(word, h) {
-  const t = thingOfWord(word), now = performance.now();
+  const t = thingOfWord(word), now = performance.now(); hint(null);
   if (t) { trained.focus = t.id; state.cue = cueFor(t.id); state.pointed = { id: t.id, until: now + POINT_MS, why: 'it heard its name', cued: now }; askNote(); }
   flow.lastWord = { word, slot: h.slot, thing: t ? t.id : null, at: now };
   console.log(`[ear] "${word}" heard alone${t ? ': its attention goes to the ' + t.kind : ''}`);
@@ -996,6 +1009,7 @@ async function answerHeard(h) {
       followed: live ? [...live.words] : [], stood: stands, ms: { heard_to_answer: firstAt === null ? null : Math.round(firstAt - heardAt) }, at: performance.now() };
     trained.open = said.length ? { id, said, at: performance.now() } : null;
     ui.pistachio.classList.toggle('ask', !!said.length);
+    hint(h.word ? null : said.length ? 'guess' : 'unknown'); // understood: no hint; a guess: a pistachio if right, else say it again
     if (!said.length) await trainedOp({ op: 'over' });
   } finally {
     trained.busy = false; trained.quietUntil = performance.now() + 2000; flow.answers += 1;
@@ -1246,6 +1260,7 @@ ui.pistachio.addEventListener('click', () => {
   const forAnswer = state.trained && trained.open && !trained.busy ? trained.open : null;
   const thrown = nut.throw(from, parrot, () => {
     if (forAnswer) payAnswer(forAnswer); else state.reward = 1;
+    hint(null);
     state.pistachios += 1; ui.pistachios.textContent = String(state.pistachios);
     brain3d?.reward();
     $('dopamine').hidden = false;
@@ -1414,7 +1429,7 @@ async function start() {
       try {
         const bundle = await (await fetch('voice/words.json')).json();
         if (bundle?.memory?.records?.length) {
-          const out = await brain.call('remember', { saved: bundle.memory }); syncChips(out.repertoire || []); memview?.update(out.memory);
+          const out = await brain.call('remember', { saved: bundle.memory, view: state.tab === 'tab-memory' }); syncChips(out.repertoire || []); memview?.update(out.memory);
           if (bundle.parrot?.renderings) await loadOwnTakes(bundle.parrot.renderings);
           console.log(`[ear] starting memory: ${bundle.memory.records.length} sounds, linked to ${new Set(Object.values(bundle.links || {}).filter(Boolean)).size} meanings`);
         }

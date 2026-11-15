@@ -82,6 +82,11 @@ the sounds used.
 
 **Listen to me.** A word said to it is kept as one utterance and said back.
 
+**Not understood.** A sound it makes nothing of brings a **?** by the parrot, and a line by the
+Pistachio button says what to do: say it again, or pick a question from the list. An answer it
+guessed brings the same **?** first, and the line says to give it a pistachio if the answer is
+right and to say it again if not.
+
 `site/tests/test_sound_symbols.py` checks these on the real page in a headless Chromium. Its
 sections:
 
@@ -94,7 +99,10 @@ sections:
   each said back within 1.5 s of the utterance's end, with the machine as found and with every
   core kept busy.
 - `first`: a first visit with what is on screen alone, from Listen to me to a question and a
-  pistachio.
+  pistachio; then a question in the visitor's own voice (a voice in no record), answered right
+  when understood, and when guessed the hint by the Pistachio button, a right guess paid and the
+  question understood when asked again; and a sound it cannot make out (the visitor's question
+  played backwards), with the **?** and the hint to say it again.
 - `false`: sounds that are no speech (a cough, a breath, typing, a click, a door, a fan and others)
   and the parrot's own voice from the loudspeaker; none may be kept as an utterance, said back or
   answered.
@@ -132,12 +140,22 @@ the question's words under the machine's load. `evidence/sound_flow.json` holds 
   nearest it, names the meaning: a word, or one of the questions the brain was taught. The wordings it knows are the ones the starting memory
   holds. Where each word begins inside a question's record was marked when the starting memory was
   built, from Whisper's word times.
-- **Any voice at once.** A voice it has never heard is understood far less often than the starting
-  voice, until it has been heard and paid with a pistachio. The starting memory holds one woman's
-  questions and answer words and four other voices heard once each. In Curious, a sound with no
-  meaning the parrot knows is a guess among the questions about the thing in focus; a pistachio
-  after a right answer links the sound to that meaning. `evidence/sound_flow.json` holds the
-  development readings on voices in no record.
+- **Any voice at once.** A voice it has never heard is understood less often than the starting
+  voice. The starting memory holds one woman's questions and answer words and thirty-six other
+  voices (men and women, young to old, American, British, Australian and Indian), each heard once
+  saying every question and answer word: 1,606 records, their audio not shipped. A visitor's
+  utterance is taken for what the records nearest it agree on. On four voices in no record (a
+  British man, an Australian man, an Indian woman, an American woman), 288 takes of the listed
+  questions and ten answer words, heard for the first time: 241 taken for the right meaning, 8 for
+  a wrong one and 39 for none with clean takes (the questions 153 of 156 right, none wrong; the
+  words 88 of 132 right, 8 wrong); 213 right and 10 wrong through a laptop's microphone with the
+  room's noise 20 dB below the voice; 129 right and 9 wrong at 10 dB. After one paid hearing of an
+  utterance, that visitor's other takes of it: 175 of 200 right and 3 wrong (clean; the questions
+  103 of 108, none wrong). The starting
+  memory with four other voices read 170 right and 7 wrong of the same 288. In Curious, a sound
+  with no meaning the parrot knows is a guess among the questions about the thing in focus; a
+  pistachio after a right answer links the sound to that meaning. `evidence/sound_flow.json`
+  holds these readings and the routes measured on the way.
 - **Every question type.** Some question types are answered wrong and are left out of the list: a
   listed question is one the brain answered right on every pass of `site/tools/check_presets.py`.
   The brain's version file (`site/pack/trained/version.json`) records what it gets wrong, among
