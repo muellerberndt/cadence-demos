@@ -146,8 +146,10 @@ wrong. Run again by themselves, the three sections passed.
 - **Learning its words in the browser from nothing.** The trained brain was trained ahead of time,
   outside the browser, and the starting sounds with their links ship with the page; every start
   begins from them. In the page a pistachio after an answer is one small lesson for the brain and
-  for the links of the sounds used. About one answer in a hundred flips after a paid answer: a
-  pistachio's lesson can unsettle a neighbouring answer (`evidence/sound_flow.json`). The brain
+  for the links of the sounds used. A pistachio's lesson can unsettle a neighbouring answer: in
+  development about one answer in a hundred flipped after a paid answer. In this build the brain
+  takes its own lesson only where it would not give the paid answer by itself, and in the reading
+  taken with that rule the probe answers stood (`evidence/sound_flow.json`). The brain
   switch also holds an entry that starts the same brain with an empty memory of sounds
   (`?brain=trained-nowords`). That entry is an experiment, and this README claims nothing for it.
 
