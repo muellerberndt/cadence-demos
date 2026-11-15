@@ -192,6 +192,19 @@ export class ParrotAudio {
     return this.speaking;
   }
 
+  /** Say a remembered sound in the parrot's own rendering of it (voice/parrot/: what its voice makes of the
+   *  sound it heard), played as it is, a little faster or slower each time. */
+  speakOwn(pcm, rate = 16000) {
+    if (!this.ctx || this.ctx.state !== 'running' || !pcm?.length) return null;
+    const buf = this.ctx.createBuffer(1, pcm.length, rate); buf.copyToChannel(pcm, 0);
+    const node = this.ctx.createBufferSource(); node.buffer = buf; node.playbackRate.value = 1 + (Math.random() - 0.5) * 0.06; node.connect(this.gain); node.start();
+    const env = [], step = Math.max(1, Math.round(rate / 100));
+    for (let i = 0; i < pcm.length; i += step) { let e = 0; for (let k = i; k < Math.min(pcm.length, i + step); k++) e += pcm[k] * pcm[k]; env.push(Math.sqrt(e / step)); }
+    const top = Math.max(1e-6, ...env);
+    this.speaking = { start: performance.now(), env: env.map((v) => v / top), node };
+    return this.speaking;
+  }
+
   /** Say a remembered sound as it was heard: its audio (8 kHz), played back as it is. */
   speakPcm(pcm8k, rate = 8000) {
     if (!this.ctx || this.ctx.state !== 'running' || !pcm8k?.length) return null;

@@ -12,5 +12,5 @@
   "what colour has the cup": "questions/what_colour_has_the_cup.wav",
   "what shape has the block": "questions/what_shape_has_the_block.wav"
  },
- "voice": "a man's voice (Chatterbox, Resemble AI, MIT), each word its own take, joined with short pauses"
+ "voice": "a man's voice (ElevenLabs eleven_multilingual_v2, voice Mark - Natural Conversations (made under the owner's ElevenLabs plan)), each word its own take, joined with short pauses"
 }

@@ -41,6 +41,7 @@ PRESETS, OUT = json.loads(Path(sys.argv[4]).read_text()), Path(sys.argv[5])
 OUT.mkdir(parents=True, exist_ok=True); (OUT / "questions").mkdir(exist_ok=True)
 VOCAB = sorted(w for w in json.loads((SITE / "pack" / "trained" / "spec.json").read_text())["codes"] if not w.startswith("<"))
 SAME = {"wood": {"would"}, "no": {"know"}, "right": {"write", "rite"}, "red": {"read"}, "blue": {"blew"}, "colour": {"color"}}
+MODEL = {k: json.loads((d / "meta.json").read_text()).get("model", "") for k, d in (("woman", WOMAN), ("man", MAN))}
 GAP, LINK_MIN, RUNS, LESSON = 0.45, 0.8, 5, 19.0
 blank = np.zeros(16 * 8 * 3, np.uint8)
 
@@ -147,7 +148,7 @@ report["records"] = [{"slot": s, "speaker": speaker_of.get(str(s)), "word": link
 report["says"] = {w: speaker_of.get(str(h.mem.recall(w, reads)[0])) for w in VOCAB if h.mem.recall(w, reads)[0] is not None}
 print("lessons", epoch, "min link", report["link_min"], "says", report["says"], flush=True)
 (OUT / "words.json").write_text(json.dumps({
-    "voice": "the starting words, taught by hearing: a woman's voice says each answer word, a man's voice each question word (Chatterbox, Resemble AI, MIT; the man's voice cloned from an Orpheus voice; only takes Whisper reads as the word); each word's takes heard by the page's hearing layer, then each record linked to its word",
+    "voice": f"the starting words, taught by hearing: a woman's voice says each answer word ({MODEL['woman']}), a man's voice each question word ({MODEL['man']}); only takes Whisper reads as the word; each word's takes heard by the page's hearing layer, then each record linked to its word",
     "memory": saved, "links": links, "speakers": speaker_of}))
 
 # 3. the question clips, heard through a copy of the memory. For each word the man's take the memory
@@ -186,6 +187,6 @@ for _ in range(RUNS):
         feed(h2, np.zeros(8000, np.float32), t2)
 report["recognition"] = {q: {"runs": v, "right": sum(r == q.split() for r in v)} for q, v in recog.items()}
 report["recognition_rate"] = round(float(np.mean([r == q.split() for q, v in recog.items() for r in v])), 3)
-(OUT / "questions.json").write_text(json.dumps({"questions": qmap, "voice": "a man's voice (Chatterbox, Resemble AI, MIT), each word its own take, joined with short pauses"}, indent=1))
+(OUT / "questions.json").write_text(json.dumps({"questions": qmap, "voice": f"a man's voice ({MODEL['man']}), each word its own take, joined with short pauses"}, indent=1))
 (OUT / "build_report.json").write_text(json.dumps(report, indent=1))
 print("recognition", report["recognition_rate"], {q: v["right"] for q, v in report["recognition"].items()}, flush=True)

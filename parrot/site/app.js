@@ -450,6 +450,32 @@ function spectro(frames, canvas) {
   g.putImageData(img, 0, 0);
 }
 const soundFrames = new Map(), programFrames = new Map(), soundPcm = new Map();
+// the parrot's own rendering of each starting sound (voice/parrot/<slot>.wav), used while the record holds the
+// sound it was made from (its length and summed level match); a sound told again, or learned from you, is said
+// through the page's parrot voice instead
+const ownTakes = new Map();
+const pcmPrint = (pcm) => { let a = 0; for (const v of pcm) a += Math.abs(v); return { n: pcm.length, abs: a }; };
+function ownTake(id) {
+  const own = ownTakes.get(id), kept = soundPcm.get(id);
+  if (!own || !kept?.pcm?.length) return null;
+  const p = pcmPrint(kept.pcm);
+  return p.n === own.n && Math.abs(p.abs - own.abs) <= 0.01 * own.abs + 0.5 ? own : null;
+}
+async function loadOwnTakes(renderings) {
+  for (const [slot, r] of Object.entries(renderings || {})) {
+    try {
+      const b = new DataView(await (await fetch(`voice/${r.file}`)).arrayBuffer());
+      let off = 12, rate = 16000, data = null;
+      while (off + 8 <= b.byteLength) { // a 16-bit mono wav
+        const id = String.fromCharCode(b.getUint8(off), b.getUint8(off + 1), b.getUint8(off + 2), b.getUint8(off + 3)), size = b.getUint32(off + 4, true);
+        if (id === 'fmt ') rate = b.getUint32(off + 12, true);
+        if (id === 'data') { data = new Float32Array(size / 2); for (let i = 0; i < data.length; i++) data[i] = b.getInt16(off + 8 + 2 * i, true) / 32768; break; }
+        off += 8 + size + (size % 2);
+      }
+      if (data) ownTakes.set(`you-${slot}`, { pcm: data, rate, n: r.n, abs: r.abs, word: r.word });
+    } catch (e) { /* that sound is said through the parrot voice */ }
+  }
+}
 function sparkline(c, values) {
   const g = c.getContext('2d'), W = c.width, H = c.height; g.clearRect(0, 0, W, H);
   if (values.length < 2) return;
@@ -740,13 +766,14 @@ function sayWord(word, sound) {
   const kept = sound ? soundPcm.get(sound.id) : null;
   trained.lastVoice = { word, id: sound?.id || null };
   if (kept?.pcm?.length && audio.ctx?.state === 'running') {
-    const spoken = audio.speakPcm(kept.pcm, kept.rate);
+    const own = ownTake(sound.id);
+    const spoken = own ? audio.speakOwn(own.pcm, own.rate) : audio.speakPcm(kept.pcm, kept.rate);
     if (spoken) {
-      markChip(sound.id); ui.voiceNote.textContent = `${word}: the sound its memory links to the word`;
+      markChip(sound.id); ui.voiceNote.textContent = `${word}: the sound its memory links to the word${own ? ', in its own voice' : ''}`;
       const live = brain3d?.live;
       if (live?.slots?.has(sound.slot)) live.packets.push({ path: [`slot:${sound.slot}`, 'vocal', 'voice'], t0: brain3d.clock.vt, dur: 1.4, colour: live.cSay, slot: sound.slot });
       trained.spoken = (trained.spoken || []).concat([{ word, id: sound.id, at: performance.now() }]).slice(-40);
-      return 'its sound for the word';
+      return own ? 'its own voice: the sound it heard, as its voice makes it' : 'its sound for the word';
     }
   }
   console.log(`[voice] "${word}": no sound linked to the word, shown as text`);
@@ -1186,7 +1213,7 @@ async function start() {
     });
   }
   view = new BrainView({ regions: $('brain'), units: $('dist-units'), tuning: $('dist-tuning'), readout: $('dist-readout'), silence: ui.silence, joints: $('joints') });
-  window.parrotPage = { room, state, eyes, audio, trained, controls, soundPcm, ear: () => brain.call('debug', {}), get brainView() { return view; }, get brain3d() { return brain3d; }, get parrot() { return parrot; }, place, addThing, move: (id, x, z) => room.move(id, x, z), remove: (id) => room.remove(id),
+  window.parrotPage = { room, state, eyes, audio, trained, controls, soundPcm, ownTake, ear: () => brain.call('debug', {}), get brainView() { return view; }, get brain3d() { return brain3d; }, get parrot() { return parrot; }, place, addThing, move: (id, x, z) => room.move(id, x, z), remove: (id) => room.remove(id),
     label: (k) => KINDS[k]?.label || k, describe: () => room.describe(), load: (d) => room.load(d), script: runScript, TEST, setLook, setMode, distanceOf, camera, THREE,
     view(name) { const v = VIEWS[name]; if (!v) return; camera.position.set(...v[0]); controls.target.set(...v[1]); controls.update(); },
     screenOf(x, y, z) { const v = new THREE.Vector3(x, y, z).project(camera); const r = canvas.getBoundingClientRect(); return [r.left + (v.x + 1) / 2 * r.width, r.top + (1 - v.y) / 2 * r.height]; } };
@@ -1245,6 +1272,7 @@ async function start() {
         const bundle = await (await fetch('voice/words.json')).json();
         if (bundle?.memory?.records?.length) {
           const out = await brain.call('remember', { saved: bundle.memory }); syncChips(out.repertoire || []); memview?.update(out.memory);
+          if (bundle.parrot?.renderings) await loadOwnTakes(bundle.parrot.renderings);
           console.log(`[ear] starting memory: ${bundle.memory.records.length} sounds, linked to ${new Set(Object.values(bundle.links || {}).filter(Boolean)).size} words`);
         }
       } catch (e) { console.warn(`[ear] no starting memory of sounds: ${e.message}`); }

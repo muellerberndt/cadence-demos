@@ -98,7 +98,7 @@ def ask_presets(page, out: Path, speakers: dict, rounds: int) -> list[dict]:
             clips = []
             for k, s in enumerate([s for s in got["spoken"] if s["at"] > t_ask]):
                 b64 = page.evaluate("""async (id) => { const P = window.parrotPage, kept = P.soundPcm.get(id); if (!kept) return null;
-                    const y = await P.audio.renderParrot(kept.pcm, kept.rate); let b = ''; const u = new Uint8Array(new Float32Array(y).buffer);
+                    const own = P.ownTake(id); const y = own ? own.pcm : await P.audio.renderParrot(kept.pcm, kept.rate); let b = ''; const u = new Uint8Array(new Float32Array(y).buffer);
                     for (let i = 0; i < u.length; i += 8192) b += String.fromCharCode.apply(null, u.subarray(i, i + 8192)); return btoa(b); }""", s["id"])
                 if b64 is None:
                     continue
