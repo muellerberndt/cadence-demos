@@ -126,12 +126,13 @@ build sends the changed sounds alone, and the memory's picture goes to the page 
 seconds after a change, outside the moment a sound is answered in. The `mic` section times six
 first hearings of a voice in no record from each utterance's end and passes where each say-back
 starts within 1.5 s and the middle one within 1.2 s, once with the machine as found and once with
-one busy process a core. Readings on a ten-core machine shared with other jobs: 0.74 to 0.93 s
-as found (median 0.78 s, load average 12) and 0.76 to 1.02 s with ten busy processes (median
-0.89 s, load average 18); over four voices in no record, 0.7 to 1.1 s (median 0.93 s, 24
-utterances). The answer to a visitor's own question in Curious starts 1.1 to 2.6 s after the
-question's end on that machine (median 1.8 s, 36 questions), most of it the brain's moments for
-the question's words under the machine's load. `evidence/sound_flow.json` holds these readings.
+one busy process a core. Readings from a fresh clone on a ten-core machine shared with other
+jobs: 0.57 to 0.67 s as found (median 0.63 s, load average 12) and 0.56 to 0.80 s with ten busy
+processes (median 0.68 s, load average 17); over four voices in no record, clean and through a
+laptop's microphone, 47 utterances said back a median 0.64 s after their end (at most 0.77 s).
+The answer to a visitor's own question in Curious starts a median 1.07 s after the question's end
+(73 of 76 within 1.5 s). `evidence/sound_flow.json` and `evidence/fresh_clone_parrot_voices.json`
+hold these readings.
 
 ## What it does not do
 

@@ -1,0 +1,1912 @@
+{
+ "what": "tests/test_sound_symbols.py run from a fresh clone of the branch at 6eb7a5e (git clone --depth 1), the page served by python3 -m http.server, headless Chromium, on a ten-core machine shared with other jobs (load average 8 to 17). Sections: presets, mic, first, false, robust, and the visitors' matrix in two conditions (clean takes, and a laptop's microphone in a room with noise 20 dB below the voice).",
+ "command": "python parrot/site/tests/test_sound_symbols.py --url http://127.0.0.1:8846/ --out <dir> --voices <dir> --only presets,mic,first,false,robust,visitors --conditions clean,lap20 --rounds 2 --whisper <python with mlx-whisper>",
+ "load_s": 14.7,
+ "passed": {
+  "presets": true,
+  "mic": true,
+  "first": true,
+  "false": true,
+  "robust": true,
+  "visitors_all_reached": false,
+  "visitors_all_one_utterance": false
+ },
+ "presets": {
+  "asked": 24,
+  "answered": 24,
+  "understood": 24,
+  "right": 24,
+  "said_with_sound": 24,
+  "answer_sounds": 24,
+  "own_voice": 24,
+  "whisper_ok": 24,
+  "followed_ok": 24,
+  "words_followed": 92,
+  "word_delay_ms": {
+   "median": 526,
+   "p90": 840,
+   "max": 1096,
+   "within_150": 0,
+   "within_250": 1
+  },
+  "answer_ms": {
+   "median": 1327,
+   "p90": 2450,
+   "max": 2944,
+   "under_1500": 16,
+   "of": 24
+  },
+  "paid_links": 24
+ },
+ "mic": {
+  "said_back_ms_after_the_utterance_was_kept": 149,
+  "as_found": {
+   "busy_processes": 0,
+   "load_1min": 12.3,
+   "rows": [
+    {
+     "key": "apple",
+     "heard": 1,
+     "first_heard": false,
+     "said_back": true,
+     "said_back_ms": 616,
+     "ok": true
+    },
+    {
+     "key": "cup",
+     "heard": 1,
+     "first_heard": true,
+     "said_back": true,
+     "said_back_ms": 642,
+     "ok": true
+    },
+    {
+     "key": "white",
+     "heard": 1,
+     "first_heard": false,
+     "said_back": true,
+     "said_back_ms": 622,
+     "ok": true
+    },
+    {
+     "key": "what_colour",
+     "heard": 1,
+     "first_heard": true,
+     "said_back": true,
+     "said_back_ms": 668,
+     "ok": true
+    },
+    {
+     "key": "what_is_this",
+     "heard": 1,
+     "first_heard": false,
+     "said_back": true,
+     "said_back_ms": 642,
+     "ok": true
+    },
+    {
+     "key": "where_is_it",
+     "heard": 1,
+     "first_heard": false,
+     "said_back": true,
+     "said_back_ms": 572,
+     "ok": true
+    }
+   ],
+   "said_back_ms": {
+    "min": 572,
+    "median": 632,
+    "max": 668
+   },
+   "ok": true
+  },
+  "busy": {
+   "busy_processes": 10,
+   "load_1min": 17.3,
+   "rows": [
+    {
+     "key": "apple",
+     "heard": 1,
+     "first_heard": false,
+     "said_back": true,
+     "said_back_ms": 800,
+     "ok": true
+    },
+    {
+     "key": "cup",
+     "heard": 1,
+     "first_heard": true,
+     "said_back": true,
+     "said_back_ms": 555,
+     "ok": true
+    },
+    {
+     "key": "white",
+     "heard": 1,
+     "first_heard": false,
+     "said_back": true,
+     "said_back_ms": 711,
+     "ok": true
+    },
+    {
+     "key": "what_colour",
+     "heard": 1,
+     "first_heard": true,
+     "said_back": true,
+     "said_back_ms": 655,
+     "ok": true
+    },
+    {
+     "key": "what_is_this",
+     "heard": 1,
+     "first_heard": false,
+     "said_back": true,
+     "said_back_ms": 732,
+     "ok": true
+    },
+    {
+     "key": "where_is_it",
+     "heard": 1,
+     "first_heard": false,
+     "said_back": true,
+     "said_back_ms": 601,
+     "ok": true
+    }
+   ],
+   "said_back_ms": {
+    "min": 555,
+    "median": 683,
+    "max": 800
+   },
+   "ok": true
+  },
+  "ok": true
+ },
+ "first": [
+  {
+   "step": "the switch, the question list, Ask, Pistachio and the microphone button are on screen",
+   "ok": true,
+   "mic": "on"
+  },
+  {
+   "step": "Listen to me pressed: the question list goes, the parrot looks at you",
+   "ok": true
+  },
+  {
+   "step": "a word said: the ear's sign lights while it is said; it is kept as one utterance and said back",
+   "ear_sign": true,
+   "heard": 1,
+   "taken_for": "apple",
+   "said_back": true,
+   "ok": true
+  },
+  {
+   "step": "Curious pressed: the question list is back",
+   "ok": true
+  },
+  {
+   "step": "a question asked: its words as a subtitle, the parrot's turn shown, the answer by the parrot",
+   "subtitle": "What is this?",
+   "turn_sign": true,
+   "answer": [
+    "key"
+   ],
+   "bubble": "key",
+   "ok": true
+  },
+  {
+   "step": "a pistachio: the dopamine box lights, the lesson is taken",
+   "dopamine_sign": true,
+   "links_paid": 1,
+   "pistachios": "1",
+   "ok": true
+  },
+  {
+   "step": "the visitor's own question: answered right when understood; a guess shows the hint to give a pistachio if right, else to say it again",
+   "said": [
+    "white"
+   ],
+   "right": true,
+   "guessed": false,
+   "hint": "",
+   "ok": true
+  },
+  {
+   "step": "a sound it cannot make out: a ? by the parrot and, by the Pistachio button, what to do",
+   "heard": 1,
+   "taken_for": null,
+   "question_mark": true,
+   "hint_kind": "guess",
+   "hint": "?It was not sure what you asked, and guessed. If the answer is right, give it a Pistachio: it learns what your words mean. If not, say it again.",
+   "ok": true
+  }
+ ],
+ "false": {
+  "kept": 0,
+  "said_back": 0,
+  "answered": 0,
+  "of": 40,
+  "own_voice": [
+   {
+    "question": 0,
+    "right": true,
+    "utterances_kept": 1,
+    "exchanges": 1
+   },
+   {
+    "question": 1,
+    "right": true,
+    "utterances_kept": 1,
+    "exchanges": 1
+   },
+   {
+    "question": 2,
+    "right": true,
+    "utterances_kept": 1,
+    "exchanges": 1
+   },
+   {
+    "question": 3,
+    "right": true,
+    "utterances_kept": 1,
+    "exchanges": 1
+   }
+  ]
+ },
+ "robust": {
+  "mic_refused": {
+   "mic": "off",
+   "told": "The microphone did not start: Not supported.",
+   "answered_right": true,
+   "ok": true
+  },
+  "reload": {
+   "answered_right": true,
+   "ok": true
+  },
+  "sound_while_speaking": {
+   "kept": 0,
+   "busy_after": false,
+   "next_right": true,
+   "ok": true
+  },
+  "switch": {
+   "presses": 12,
+   "busy_after": false,
+   "next_right": true,
+   "ok": true
+  }
+ },
+ "visitors": {
+  "table": [
+   {
+    "voice": "archer",
+    "cond": "clean",
+    "one_utterance": 6,
+    "said_back": 6,
+    "said_back_read_alike": 5,
+    "of": 6,
+    "said_back_ms_median": 625,
+    "said_back_ms_max": 665,
+    "what_colour": "0 pistachios, 0 trials",
+    "what_is_this": "0 pistachios, 0 trials",
+    "where_is_it": "0 pistachios, 0 trials",
+    "answer_ms_median": 1107,
+    "answer_ms_max": 1302
+   },
+   {
+    "voice": "archer",
+    "cond": "lap20",
+    "one_utterance": 6,
+    "said_back": 6,
+    "said_back_read_alike": 6,
+    "of": 6,
+    "said_back_ms_median": 627,
+    "said_back_ms_max": 707,
+    "what_colour": "0 pistachios, 1 trials",
+    "what_is_this": "0 pistachios, 0 trials",
+    "where_is_it": "0 pistachios, 0 trials",
+    "answer_ms_median": 1180,
+    "answer_ms_max": 1449
+   },
+   {
+    "voice": "dakota",
+    "cond": "clean",
+    "one_utterance": 6,
+    "said_back": 6,
+    "said_back_read_alike": 6,
+    "of": 6,
+    "said_back_ms_median": 715,
+    "said_back_ms_max": 772,
+    "what_colour": "0 pistachios, 0 trials",
+    "what_is_this": "0 pistachios, 0 trials",
+    "where_is_it": "0 pistachios, 0 trials",
+    "answer_ms_median": 1172,
+    "answer_ms_max": 1407
+   },
+   {
+    "voice": "dakota",
+    "cond": "lap20",
+    "one_utterance": 5,
+    "said_back": 5,
+    "said_back_read_alike": 5,
+    "of": 6,
+    "said_back_ms_median": 596,
+    "said_back_ms_max": 648,
+    "what_colour": "0 pistachios, 0 trials",
+    "what_is_this": "0 pistachios, 0 trials",
+    "where_is_it": "0 pistachios, 0 trials",
+    "answer_ms_median": 1042,
+    "answer_ms_max": 1660
+   },
+   {
+    "voice": "steve",
+    "cond": "clean",
+    "one_utterance": 6,
+    "said_back": 6,
+    "said_back_read_alike": 6,
+    "of": 6,
+    "said_back_ms_median": 683,
+    "said_back_ms_max": 751,
+    "what_colour": "0 pistachios, 1 trials",
+    "what_is_this": "0 pistachios, 0 trials",
+    "where_is_it": "0 pistachios, 0 trials",
+    "answer_ms_median": 901,
+    "answer_ms_max": 1149
+   },
+   {
+    "voice": "steve",
+    "cond": "lap20",
+    "one_utterance": 6,
+    "said_back": 6,
+    "said_back_read_alike": 5,
+    "of": 6,
+    "said_back_ms_median": 596,
+    "said_back_ms_max": 760,
+    "what_colour": "0 pistachios, 1 trials",
+    "what_is_this": "0 pistachios, 0 trials",
+    "where_is_it": "0 pistachios, 1 trials",
+    "answer_ms_median": 1024,
+    "answer_ms_max": 1184
+   },
+   {
+    "voice": "zara",
+    "cond": "clean",
+    "one_utterance": 6,
+    "said_back": 6,
+    "said_back_read_alike": 6,
+    "of": 6,
+    "said_back_ms_median": 658,
+    "said_back_ms_max": 713,
+    "what_colour": "0 pistachios, 0 trials",
+    "what_is_this": "0 pistachios, 0 trials",
+    "where_is_it": "2 pistachios, 3 trials",
+    "answer_ms_median": 1086,
+    "answer_ms_max": 1249
+   },
+   {
+    "voice": "zara",
+    "cond": "lap20",
+    "one_utterance": 6,
+    "said_back": 6,
+    "said_back_read_alike": 5,
+    "of": 6,
+    "said_back_ms_median": 568,
+    "said_back_ms_max": 614,
+    "what_colour": "0 pistachios, 1 trials",
+    "what_is_this": "0 pistachios, 0 trials",
+    "where_is_it": "not in 10 trials",
+    "answer_ms_median": 1145,
+    "answer_ms_max": 1683
+   }
+  ],
+  "all_reached": false,
+  "all_one_utterance": false,
+  "said_back_ms": {
+   "median": 638,
+   "max": 772,
+   "within_1500": 47,
+   "of": 47
+  },
+  "answer_ms": {
+   "median": 1071,
+   "max": 1683,
+   "within_1500": 73,
+   "of": 76
+  }
+ },
+ "visitors_rows": [
+  {
+   "voice": "archer",
+   "cond": "clean",
+   "listen": [
+    {
+     "key": "apple",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 638,
+     "read_alike": true
+    },
+    {
+     "key": "cup",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 570,
+     "read_alike": true
+    },
+    {
+     "key": "white",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 582,
+     "read_alike": false
+    },
+    {
+     "key": "what_colour",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 665,
+     "read_alike": true
+    },
+    {
+     "key": "what_is_this",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 612,
+     "read_alike": true
+    },
+    {
+     "key": "where_is_it",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 659,
+     "read_alike": true
+    }
+   ],
+   "curious": {
+    "what_colour": [
+     {
+      "trial": 0,
+      "focus": "block",
+      "taken_for": "what colour is this",
+      "guessed": false,
+      "said": [
+       "blue"
+      ],
+      "want": "blue",
+      "right": true,
+      "answer_ms": 1257
+     },
+     {
+      "trial": 1,
+      "focus": "cup",
+      "taken_for": "what colour is this",
+      "guessed": false,
+      "said": [
+       "white"
+      ],
+      "want": "white",
+      "right": true,
+      "answer_ms": 1227
+     },
+     {
+      "trial": 2,
+      "focus": "key",
+      "taken_for": "what colour is this",
+      "guessed": false,
+      "said": [
+       "yellow"
+      ],
+      "want": "yellow",
+      "right": true,
+      "answer_ms": 1107
+     }
+    ],
+    "what_is_this": [
+     {
+      "trial": 0,
+      "focus": "key",
+      "taken_for": "what is this",
+      "guessed": false,
+      "said": [
+       "key"
+      ],
+      "want": "key",
+      "right": true,
+      "answer_ms": 997
+     },
+     {
+      "trial": 1,
+      "focus": "apple",
+      "taken_for": "what is this",
+      "guessed": false,
+      "said": [
+       "apple"
+      ],
+      "want": "apple",
+      "right": true,
+      "answer_ms": 869
+     },
+     {
+      "trial": 2,
+      "focus": "cup",
+      "taken_for": "what is this",
+      "guessed": false,
+      "said": [
+       "cup"
+      ],
+      "want": "cup",
+      "right": true,
+      "answer_ms": 763
+     }
+    ],
+    "where_is_it": [
+     {
+      "trial": 0,
+      "focus": "cup",
+      "taken_for": "where is the <this>",
+      "guessed": false,
+      "said": [
+       "behind"
+      ],
+      "want": "behind",
+      "right": true,
+      "answer_ms": 1175
+     },
+     {
+      "trial": 1,
+      "focus": "greenball",
+      "taken_for": "where is the <this>",
+      "guessed": false,
+      "said": [
+       "right"
+      ],
+      "want": "right",
+      "right": true,
+      "answer_ms": 1038
+     },
+     {
+      "trial": 2,
+      "focus": "apple",
+      "taken_for": "where is the <this>",
+      "guessed": false,
+      "said": [
+       "left"
+      ],
+      "want": "left",
+      "right": true,
+      "answer_ms": 1302
+     }
+    ]
+   }
+  },
+  {
+   "voice": "archer",
+   "cond": "lap20",
+   "listen": [
+    {
+     "key": "apple",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 630,
+     "read_alike": true
+    },
+    {
+     "key": "cup",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 596,
+     "read_alike": true
+    },
+    {
+     "key": "white",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 577,
+     "read_alike": true
+    },
+    {
+     "key": "what_colour",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 707,
+     "read_alike": true
+    },
+    {
+     "key": "what_is_this",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 624,
+     "read_alike": true
+    },
+    {
+     "key": "where_is_it",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 669,
+     "read_alike": true
+    }
+   ],
+   "curious": {
+    "what_colour": [
+     {
+      "trial": 0,
+      "focus": "block",
+      "taken_for": "is this red",
+      "guessed": true,
+      "said": [
+       "no"
+      ],
+      "want": "blue",
+      "right": false,
+      "answer_ms": 1033
+     },
+     {
+      "trial": 1,
+      "focus": "cup",
+      "taken_for": "what colour is this",
+      "guessed": true,
+      "said": [
+       "white"
+      ],
+      "want": "white",
+      "right": true,
+      "answer_ms": 1325
+     },
+     {
+      "trial": 2,
+      "focus": "key",
+      "taken_for": "what colour is this",
+      "guessed": false,
+      "said": [
+       "yellow"
+      ],
+      "want": "yellow",
+      "right": true,
+      "answer_ms": 1354
+     },
+     {
+      "trial": 3,
+      "focus": "apple",
+      "taken_for": "what colour is this",
+      "guessed": false,
+      "said": [
+       "red"
+      ],
+      "want": "red",
+      "right": true,
+      "answer_ms": 1240
+     }
+    ],
+    "what_is_this": [
+     {
+      "trial": 0,
+      "focus": "key",
+      "taken_for": "what is this",
+      "guessed": false,
+      "said": [
+       "key"
+      ],
+      "want": "key",
+      "right": true,
+      "answer_ms": 1026
+     },
+     {
+      "trial": 1,
+      "focus": "apple",
+      "taken_for": "what is this",
+      "guessed": false,
+      "said": [
+       "apple"
+      ],
+      "want": "apple",
+      "right": true,
+      "answer_ms": 881
+     },
+     {
+      "trial": 2,
+      "focus": "cup",
+      "taken_for": "what is this",
+      "guessed": false,
+      "said": [
+       "cup"
+      ],
+      "want": "cup",
+      "right": true,
+      "answer_ms": 701
+     }
+    ],
+    "where_is_it": [
+     {
+      "trial": 0,
+      "focus": "cup",
+      "taken_for": "where is the <this>",
+      "guessed": false,
+      "said": [
+       "behind"
+      ],
+      "want": "behind",
+      "right": true,
+      "answer_ms": 1449
+     },
+     {
+      "trial": 1,
+      "focus": "greenball",
+      "taken_for": "where is the <this>",
+      "guessed": false,
+      "said": [
+       "right"
+      ],
+      "want": "right",
+      "right": true,
+      "answer_ms": 1180
+     },
+     {
+      "trial": 2,
+      "focus": "apple",
+      "taken_for": "where is the <this>",
+      "guessed": false,
+      "said": [
+       "left"
+      ],
+      "want": "left",
+      "right": true,
+      "answer_ms": 907
+     }
+    ]
+   }
+  },
+  {
+   "voice": "dakota",
+   "cond": "clean",
+   "listen": [
+    {
+     "key": "apple",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 749,
+     "read_alike": true
+    },
+    {
+     "key": "cup",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 692,
+     "read_alike": true
+    },
+    {
+     "key": "white",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 641,
+     "read_alike": true
+    },
+    {
+     "key": "what_colour",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 673,
+     "read_alike": true
+    },
+    {
+     "key": "what_is_this",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 738,
+     "read_alike": true
+    },
+    {
+     "key": "where_is_it",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 772,
+     "read_alike": true
+    }
+   ],
+   "curious": {
+    "what_colour": [
+     {
+      "trial": 0,
+      "focus": "block",
+      "taken_for": "what colour is this",
+      "guessed": false,
+      "said": [
+       "blue"
+      ],
+      "want": "blue",
+      "right": true,
+      "answer_ms": 1407
+     },
+     {
+      "trial": 1,
+      "focus": "cup",
+      "taken_for": "what colour is this",
+      "guessed": false,
+      "said": [
+       "white"
+      ],
+      "want": "white",
+      "right": true,
+      "answer_ms": 1025
+     },
+     {
+      "trial": 2,
+      "focus": "key",
+      "taken_for": "what colour is this",
+      "guessed": false,
+      "said": [
+       "yellow"
+      ],
+      "want": "yellow",
+      "right": true,
+      "answer_ms": 1255
+     }
+    ],
+    "what_is_this": [
+     {
+      "trial": 0,
+      "focus": "key",
+      "taken_for": "what is this",
+      "guessed": false,
+      "said": [
+       "key"
+      ],
+      "want": "key",
+      "right": true,
+      "answer_ms": 899
+     },
+     {
+      "trial": 1,
+      "focus": "apple",
+      "taken_for": "what is this",
+      "guessed": false,
+      "said": [
+       "apple"
+      ],
+      "want": "apple",
+      "right": true,
+      "answer_ms": 1172
+     },
+     {
+      "trial": 2,
+      "focus": "cup",
+      "taken_for": "what is this",
+      "guessed": false,
+      "said": [
+       "cup"
+      ],
+      "want": "cup",
+      "right": true,
+      "answer_ms": 959
+     }
+    ],
+    "where_is_it": [
+     {
+      "trial": 0,
+      "focus": "cup",
+      "taken_for": "where is the <this>",
+      "guessed": false,
+      "said": [
+       "behind"
+      ],
+      "want": "behind",
+      "right": true,
+      "answer_ms": 1266
+     },
+     {
+      "trial": 1,
+      "focus": "greenball",
+      "taken_for": "where is the <this>",
+      "guessed": false,
+      "said": [
+       "right"
+      ],
+      "want": "right",
+      "right": true,
+      "answer_ms": 1163
+     },
+     {
+      "trial": 2,
+      "focus": "apple",
+      "taken_for": "where is the <this>",
+      "guessed": false,
+      "said": [
+       "left"
+      ],
+      "want": "left",
+      "right": true,
+      "answer_ms": 1350
+     }
+    ]
+   }
+  },
+  {
+   "voice": "dakota",
+   "cond": "lap20",
+   "listen": [
+    {
+     "key": "apple",
+     "heard": 0,
+     "said_back": false,
+     "said_back_ms": null,
+     "read_alike": null
+    },
+    {
+     "key": "cup",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 648,
+     "read_alike": true
+    },
+    {
+     "key": "white",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 596,
+     "read_alike": true
+    },
+    {
+     "key": "what_colour",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 645,
+     "read_alike": true
+    },
+    {
+     "key": "what_is_this",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 572,
+     "read_alike": true
+    },
+    {
+     "key": "where_is_it",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 575,
+     "read_alike": true
+    }
+   ],
+   "curious": {
+    "what_colour": [
+     {
+      "trial": 0,
+      "focus": "block",
+      "taken_for": "what colour is this",
+      "guessed": false,
+      "said": [
+       "blue"
+      ],
+      "want": "blue",
+      "right": true,
+      "answer_ms": 1133
+     },
+     {
+      "trial": 1,
+      "focus": "cup",
+      "taken_for": "what colour is this",
+      "guessed": false,
+      "said": [
+       "white"
+      ],
+      "want": "white",
+      "right": true,
+      "answer_ms": 1282
+     },
+     {
+      "trial": 2,
+      "focus": "key",
+      "taken_for": "what colour is this",
+      "guessed": false,
+      "said": [
+       "yellow"
+      ],
+      "want": "yellow",
+      "right": true,
+      "answer_ms": 1042
+     }
+    ],
+    "what_is_this": [
+     {
+      "trial": 0,
+      "focus": "key",
+      "taken_for": "what is this",
+      "guessed": false,
+      "said": [
+       "key"
+      ],
+      "want": "key",
+      "right": true,
+      "answer_ms": 896
+     },
+     {
+      "trial": 1,
+      "focus": "apple",
+      "taken_for": "what is this",
+      "guessed": false,
+      "said": [
+       "apple"
+      ],
+      "want": "apple",
+      "right": true,
+      "answer_ms": 898
+     },
+     {
+      "trial": 2,
+      "focus": "cup",
+      "taken_for": "what is this",
+      "guessed": false,
+      "said": [
+       "cup"
+      ],
+      "want": "cup",
+      "right": true,
+      "answer_ms": 1660
+     }
+    ],
+    "where_is_it": [
+     {
+      "trial": 0,
+      "focus": "cup",
+      "taken_for": "where is the <this>",
+      "guessed": false,
+      "said": [
+       "behind"
+      ],
+      "want": "behind",
+      "right": true,
+      "answer_ms": 1007
+     },
+     {
+      "trial": 1,
+      "focus": "greenball",
+      "taken_for": "where is the <this>",
+      "guessed": false,
+      "said": [
+       "right"
+      ],
+      "want": "right",
+      "right": true,
+      "answer_ms": 848
+     },
+     {
+      "trial": 2,
+      "focus": "apple",
+      "taken_for": "where is the <this>",
+      "guessed": false,
+      "said": [
+       "left"
+      ],
+      "want": "left",
+      "right": true,
+      "answer_ms": 1503
+     }
+    ]
+   }
+  },
+  {
+   "voice": "steve",
+   "cond": "clean",
+   "listen": [
+    {
+     "key": "apple",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 734,
+     "read_alike": true
+    },
+    {
+     "key": "cup",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 727,
+     "read_alike": true
+    },
+    {
+     "key": "white",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 751,
+     "read_alike": true
+    },
+    {
+     "key": "what_colour",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 639,
+     "read_alike": true
+    },
+    {
+     "key": "what_is_this",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 574,
+     "read_alike": true
+    },
+    {
+     "key": "where_is_it",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 606,
+     "read_alike": true
+    }
+   ],
+   "curious": {
+    "what_colour": [
+     {
+      "trial": 0,
+      "focus": "block",
+      "taken_for": "is this yellow",
+      "guessed": true,
+      "said": [
+       "no"
+      ],
+      "want": "blue",
+      "right": false,
+      "answer_ms": 1100
+     },
+     {
+      "trial": 1,
+      "focus": "cup",
+      "taken_for": "what colour is this",
+      "guessed": true,
+      "said": [
+       "white"
+      ],
+      "want": "white",
+      "right": true,
+      "answer_ms": 1106
+     },
+     {
+      "trial": 2,
+      "focus": "key",
+      "taken_for": "what colour is this",
+      "guessed": false,
+      "said": [
+       "yellow"
+      ],
+      "want": "yellow",
+      "right": true,
+      "answer_ms": 929
+     },
+     {
+      "trial": 3,
+      "focus": "apple",
+      "taken_for": "what colour is this",
+      "guessed": false,
+      "said": [
+       "red"
+      ],
+      "want": "red",
+      "right": true,
+      "answer_ms": 1060
+     }
+    ],
+    "what_is_this": [
+     {
+      "trial": 0,
+      "focus": "key",
+      "taken_for": "what is this",
+      "guessed": false,
+      "said": [
+       "key"
+      ],
+      "want": "key",
+      "right": true,
+      "answer_ms": 901
+     },
+     {
+      "trial": 1,
+      "focus": "apple",
+      "taken_for": "what is this",
+      "guessed": false,
+      "said": [
+       "apple"
+      ],
+      "want": "apple",
+      "right": true,
+      "answer_ms": 706
+     },
+     {
+      "trial": 2,
+      "focus": "cup",
+      "taken_for": "what is this",
+      "guessed": false,
+      "said": [
+       "cup"
+      ],
+      "want": "cup",
+      "right": true,
+      "answer_ms": 764
+     }
+    ],
+    "where_is_it": [
+     {
+      "trial": 0,
+      "focus": "cup",
+      "taken_for": "where is the <this>",
+      "guessed": false,
+      "said": [
+       "behind"
+      ],
+      "want": "behind",
+      "right": true,
+      "answer_ms": 1149
+     },
+     {
+      "trial": 1,
+      "focus": "greenball",
+      "taken_for": "where is the <this>",
+      "guessed": false,
+      "said": [
+       "right"
+      ],
+      "want": "right",
+      "right": true,
+      "answer_ms": 869
+     },
+     {
+      "trial": 2,
+      "focus": "apple",
+      "taken_for": "where is the <this>",
+      "guessed": false,
+      "said": [
+       "left"
+      ],
+      "want": "left",
+      "right": true,
+      "answer_ms": 856
+     }
+    ]
+   }
+  },
+  {
+   "voice": "steve",
+   "cond": "lap20",
+   "listen": [
+    {
+     "key": "apple",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 531,
+     "read_alike": true
+    },
+    {
+     "key": "cup",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 301,
+     "read_alike": false
+    },
+    {
+     "key": "white",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 542,
+     "read_alike": true
+    },
+    {
+     "key": "what_colour",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 760,
+     "read_alike": true
+    },
+    {
+     "key": "what_is_this",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 651,
+     "read_alike": true
+    },
+    {
+     "key": "where_is_it",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 736,
+     "read_alike": true
+    }
+   ],
+   "curious": {
+    "what_colour": [
+     {
+      "trial": 0,
+      "focus": "block",
+      "taken_for": "is this white",
+      "guessed": true,
+      "said": [
+       "no"
+      ],
+      "want": "blue",
+      "right": false,
+      "answer_ms": 988
+     },
+     {
+      "trial": 1,
+      "focus": "cup",
+      "taken_for": "what colour is this",
+      "guessed": true,
+      "said": [
+       "white"
+      ],
+      "want": "white",
+      "right": true,
+      "answer_ms": 1082
+     },
+     {
+      "trial": 2,
+      "focus": "key",
+      "taken_for": "what colour is this",
+      "guessed": false,
+      "said": [
+       "yellow"
+      ],
+      "want": "yellow",
+      "right": true,
+      "answer_ms": 1024
+     },
+     {
+      "trial": 3,
+      "focus": "apple",
+      "taken_for": "what colour is this",
+      "guessed": true,
+      "said": [
+       "red"
+      ],
+      "want": "red",
+      "right": true,
+      "answer_ms": 1032
+     }
+    ],
+    "what_is_this": [
+     {
+      "trial": 0,
+      "focus": "key",
+      "taken_for": "what is this",
+      "guessed": false,
+      "said": [
+       "key"
+      ],
+      "want": "key",
+      "right": true,
+      "answer_ms": 876
+     },
+     {
+      "trial": 1,
+      "focus": "apple",
+      "taken_for": "what is this",
+      "guessed": false,
+      "said": [
+       "apple"
+      ],
+      "want": "apple",
+      "right": true,
+      "answer_ms": 915
+     },
+     {
+      "trial": 2,
+      "focus": "cup",
+      "taken_for": "what is this",
+      "guessed": false,
+      "said": [
+       "cup"
+      ],
+      "want": "cup",
+      "right": true,
+      "answer_ms": 1114
+     }
+    ],
+    "where_is_it": [
+     {
+      "trial": 0,
+      "focus": "cup",
+      "taken_for": "what colour is this",
+      "guessed": false,
+      "said": [
+       "white"
+      ],
+      "want": "behind",
+      "right": false,
+      "answer_ms": 1008
+     },
+     {
+      "trial": 1,
+      "focus": "greenball",
+      "taken_for": "where is the <this>",
+      "guessed": false,
+      "said": [
+       "right"
+      ],
+      "want": "right",
+      "right": true,
+      "answer_ms": 1184
+     },
+     {
+      "trial": 2,
+      "focus": "apple",
+      "taken_for": "where is the <this>",
+      "guessed": true,
+      "said": [
+       "left"
+      ],
+      "want": "left",
+      "right": true,
+      "answer_ms": 916
+     },
+     {
+      "trial": 3,
+      "focus": "block",
+      "taken_for": "where is the <this>",
+      "guessed": true,
+      "said": [
+       "left"
+      ],
+      "want": "left",
+      "right": true,
+      "answer_ms": 977
+     }
+    ]
+   }
+  },
+  {
+   "voice": "zara",
+   "cond": "clean",
+   "listen": [
+    {
+     "key": "apple",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 698,
+     "read_alike": true
+    },
+    {
+     "key": "cup",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 713,
+     "read_alike": true
+    },
+    {
+     "key": "white",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 644,
+     "read_alike": true
+    },
+    {
+     "key": "what_colour",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 578,
+     "read_alike": true
+    },
+    {
+     "key": "what_is_this",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 635,
+     "read_alike": true
+    },
+    {
+     "key": "where_is_it",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 673,
+     "read_alike": true
+    }
+   ],
+   "curious": {
+    "what_colour": [
+     {
+      "trial": 0,
+      "focus": "block",
+      "taken_for": "what colour is this",
+      "guessed": false,
+      "said": [
+       "blue"
+      ],
+      "want": "blue",
+      "right": true,
+      "answer_ms": 1088
+     },
+     {
+      "trial": 1,
+      "focus": "cup",
+      "taken_for": "what colour is this",
+      "guessed": false,
+      "said": [
+       "white"
+      ],
+      "want": "white",
+      "right": true,
+      "answer_ms": 1124
+     },
+     {
+      "trial": 2,
+      "focus": "key",
+      "taken_for": "what colour is this",
+      "guessed": false,
+      "said": [
+       "yellow"
+      ],
+      "want": "yellow",
+      "right": true,
+      "answer_ms": 1240
+     }
+    ],
+    "what_is_this": [
+     {
+      "trial": 0,
+      "focus": "key",
+      "taken_for": "what is this",
+      "guessed": true,
+      "said": [
+       "key"
+      ],
+      "want": "key",
+      "right": true,
+      "answer_ms": 968
+     },
+     {
+      "trial": 1,
+      "focus": "apple",
+      "taken_for": "what is this",
+      "guessed": false,
+      "said": [
+       "apple"
+      ],
+      "want": "apple",
+      "right": true,
+      "answer_ms": 1004
+     },
+     {
+      "trial": 2,
+      "focus": "cup",
+      "taken_for": "what is this",
+      "guessed": false,
+      "said": [
+       "cup"
+      ],
+      "want": "cup",
+      "right": true,
+      "answer_ms": 1047
+     }
+    ],
+    "where_is_it": [
+     {
+      "trial": 0,
+      "focus": "cup",
+      "taken_for": "where is the <this>",
+      "guessed": false,
+      "said": [
+       "behind"
+      ],
+      "want": "behind",
+      "right": true,
+      "answer_ms": 1046
+     },
+     {
+      "trial": 1,
+      "focus": "greenball",
+      "taken_for": "where is the <this>",
+      "guessed": false,
+      "said": [
+       "right"
+      ],
+      "want": "right",
+      "right": true,
+      "answer_ms": 1183
+     },
+     {
+      "trial": 2,
+      "focus": "apple",
+      "taken_for": "what colour has the <this>",
+      "guessed": true,
+      "said": [
+       "red"
+      ],
+      "want": "left",
+      "right": false,
+      "answer_ms": 1396
+     },
+     {
+      "trial": 3,
+      "focus": "block",
+      "taken_for": "where is the <this>",
+      "guessed": true,
+      "said": [
+       "left"
+      ],
+      "want": "left",
+      "right": true,
+      "answer_ms": 1249
+     },
+     {
+      "trial": 4,
+      "focus": "key",
+      "taken_for": "where is the <this>",
+      "guessed": false,
+      "said": [
+       "front"
+      ],
+      "want": "front",
+      "right": true,
+      "answer_ms": 1086
+     },
+     {
+      "trial": 5,
+      "focus": "cup",
+      "taken_for": "where is the <this>",
+      "guessed": false,
+      "said": [
+       "behind"
+      ],
+      "want": "behind",
+      "right": true,
+      "answer_ms": 1053
+     }
+    ]
+   }
+  },
+  {
+   "voice": "zara",
+   "cond": "lap20",
+   "listen": [
+    {
+     "key": "apple",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 614,
+     "read_alike": true
+    },
+    {
+     "key": "cup",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 550,
+     "read_alike": true
+    },
+    {
+     "key": "white",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 486,
+     "read_alike": true
+    },
+    {
+     "key": "what_colour",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 586,
+     "read_alike": false
+    },
+    {
+     "key": "what_is_this",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 456,
+     "read_alike": true
+    },
+    {
+     "key": "where_is_it",
+     "heard": 1,
+     "said_back": true,
+     "said_back_ms": 609,
+     "read_alike": true
+    }
+   ],
+   "curious": {
+    "what_colour": [
+     {
+      "trial": 0,
+      "focus": "block",
+      "taken_for": "is this black",
+      "guessed": true,
+      "said": [
+       "no"
+      ],
+      "want": "blue",
+      "right": false,
+      "answer_ms": 984
+     },
+     {
+      "trial": 1,
+      "focus": "cup",
+      "taken_for": "what colour is this",
+      "guessed": false,
+      "said": [
+       "white"
+      ],
+      "want": "white",
+      "right": true,
+      "answer_ms": 946
+     },
+     {
+      "trial": 2,
+      "focus": "key",
+      "taken_for": "what colour is this",
+      "guessed": false,
+      "said": [
+       "yellow"
+      ],
+      "want": "yellow",
+      "right": true,
+      "answer_ms": 1137
+     },
+     {
+      "trial": 3,
+      "focus": "apple",
+      "taken_for": "what colour is this",
+      "guessed": false,
+      "said": [
+       "red"
+      ],
+      "want": "red",
+      "right": true,
+      "answer_ms": 1145
+     }
+    ],
+    "what_is_this": [
+     {
+      "trial": 0,
+      "focus": "key",
+      "taken_for": "what is this",
+      "guessed": true,
+      "said": [
+       "key"
+      ],
+      "want": "key",
+      "right": true,
+      "answer_ms": 706
+     },
+     {
+      "trial": 1,
+      "focus": "apple",
+      "taken_for": "what is this",
+      "guessed": false,
+      "said": [
+       "apple"
+      ],
+      "want": "apple",
+      "right": true,
+      "answer_ms": 652
+     },
+     {
+      "trial": 2,
+      "focus": "cup",
+      "taken_for": "what is this",
+      "guessed": false,
+      "said": [
+       "cup"
+      ],
+      "want": "cup",
+      "right": true,
+      "answer_ms": 776
+     }
+    ],
+    "where_is_it": [
+     {
+      "trial": 0,
+      "focus": "cup",
+      "taken_for": "what is this",
+      "guessed": true,
+      "said": [
+       "cup"
+      ],
+      "want": "behind",
+      "right": false,
+      "answer_ms": 940
+     },
+     {
+      "trial": 1,
+      "focus": "greenball",
+      "taken_for": "is this yellow",
+      "guessed": true,
+      "said": [
+       "no"
+      ],
+      "want": "right",
+      "right": false,
+      "answer_ms": 1089
+     },
+     {
+      "trial": 2,
+      "focus": "apple",
+      "taken_for": "where is the <this>",
+      "guessed": true,
+      "said": [
+       "left"
+      ],
+      "want": "left",
+      "right": true,
+      "answer_ms": 1222
+     },
+     {
+      "trial": 3,
+      "focus": "block",
+      "taken_for": "where is the <this>",
+      "guessed": false,
+      "said": [
+       "left"
+      ],
+      "want": "left",
+      "right": true,
+      "answer_ms": 1151
+     },
+     {
+      "trial": 4,
+      "focus": "key",
+      "taken_for": "what colour is this",
+      "guessed": true,
+      "said": [
+       "yellow"
+      ],
+      "want": "front",
+      "right": false,
+      "answer_ms": 1013
+     },
+     {
+      "trial": 5,
+      "focus": "cup",
+      "taken_for": "what colour is this",
+      "guessed": true,
+      "said": [
+       "white"
+      ],
+      "want": "behind",
+      "right": false,
+      "answer_ms": 1186
+     },
+     {
+      "trial": 6,
+      "focus": "greenball",
+      "taken_for": "where is the <this>",
+      "guessed": false,
+      "said": [
+       "right"
+      ],
+      "want": "right",
+      "right": true,
+      "answer_ms": 1333
+     },
+     {
+      "trial": 7,
+      "focus": "apple",
+      "taken_for": "where is the <this>",
+      "guessed": false,
+      "said": [
+       "left"
+      ],
+      "want": "left",
+      "right": true,
+      "answer_ms": 1683
+     },
+     {
+      "trial": 8,
+      "focus": "block",
+      "taken_for": "can you eat this",
+      "guessed": true,
+      "said": [
+       "no"
+      ],
+      "want": "left",
+      "right": false,
+      "answer_ms": 1028
+     },
+     {
+      "trial": 9,
+      "focus": "key",
+      "taken_for": "where is the <this>",
+      "guessed": true,
+      "said": [
+       "front"
+      ],
+      "want": "front",
+      "right": true,
+      "answer_ms": 1183
+     }
+    ]
+   }
+  }
+ ]
+}
