@@ -122,12 +122,24 @@ class Host(Composed):
             units = np.asarray(list(c.populations[name]), dtype=np.int64)
             self.t_pops.append(({"name": page_name, "title": title, "region": area, "start": start, "size": int(len(units))}, units, scale))
             start += len(units)
+        # where the thing in focus lies: the direction field of what its eyes report of it (the glimpse's
+        # direction units, the first inputs of its eyes), drawn in the optic tectum, the bird's map of the
+        # visual field; the same neurons as in its eyes' population, shown again where they belong
+        if "sensory/eyes" in c.populations and self.meaning.spec.get("glimpse"):
+            eyes = np.asarray(list(c.populations["sensory/eyes"]), dtype=np.int64)
+            edges = np.cumsum([0] + list(self.meaning.eyes.parts.values()))
+            k = list(self.meaning.eyes.parts).index("direction")
+            units = eyes[int(edges[k]): int(edges[k + 1])]
+            self.t_pops.append(({"name": "t_direction", "title": "Trained brain: where the thing in focus lies (the direction field of what its eyes report)",
+                                 "region": "tectum", "start": start, "size": int(len(units))}, units, 1.0))
+            start += len(units)
         self.t_start, self.neurons = self.neurons, start
         self.t_activity = np.zeros(start - self.t_start, np.float32)
         # each neuron's population, for the pistachio's change per tract
         owner = np.full(c.n, -1, np.int64)
-        for k, (_, units, _) in enumerate(self.t_pops):
-            owner[units] = k
+        for k, (p, units, _) in enumerate(self.t_pops):
+            if p["name"] != "t_direction":  # (its neurons are its eyes' own)
+                owner[units] = k
         self.pre_pop, self.post_pop = owner[np.asarray(c.pre)], owner[np.asarray(c.post)]
         # the brain view's repairs: each atlas region's neurons, and each tract's synapses (from one
         # region to another), for the settle the library records as it happens

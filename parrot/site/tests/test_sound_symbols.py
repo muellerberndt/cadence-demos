@@ -97,6 +97,7 @@ def ask_presets(page, out: Path, speakers: dict, rounds: int) -> list[dict]:
             began = time.time()
             page.select_option("#ask-preset", index=i)
             page.click("#ask-form button[type=submit]")
+            page.mouse.move(4, 896)  # the pointer out of the picture (no hover card over the question box)
             got = wait_idle(page, serial)
             last = got["last"]
             clips = []

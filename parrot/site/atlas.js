@@ -87,10 +87,10 @@ export const HUE = { vision: '#6cb6ff', map: '#3fd6c2', hearing: '#b49cff', word
 export const hueOf = (r) => r.hue || HUE[r.sys];
 
 // Short names (the 3D labels) and what each region does, in a few words (the right panel's cards)
-export const SHORT = { tectum: 'Tectum', rotundus: 'Rotundus', wulst: 'Wulst', flow: 'Flow nuclei', place: 'Gaze to place', map: 'Hippocampus',
-  records: 'Records', heads: 'Memory heads', ncl: 'NCL', trace: 'Trace', words: 'Words', ear: 'Ears', brainstem_aud: 'Cochlear nuclei',
-  mld: 'MLd', fieldl: 'Field L', ncm: 'NCM, CM', vocal: 'Vocal core', voice: 'Voice', arco: 'Arcopallium', body: 'Body sense',
-  joints: 'Joints', cerebellum: 'Cerebellum', striatum: 'Striatum', vta: 'VTA: dopamine', retina: 'Retina', lc: 'Locus coeruleus', bf: 'Basal forebrain' };
+export const SHORT = { tectum: 'Optic tectum', rotundus: 'Rotundus, entopallium', wulst: 'Visual Wulst', flow: 'nBOR, LM', place: 'Gaze to place', map: 'Hippocampal formation',
+  records: 'Recall records', heads: 'Memory heads', ncl: 'NCL', trace: 'NCL, delay cells', words: 'Sound-thing links', ear: 'Cochlea', brainstem_aud: 'Cochlear nuclei',
+  mld: 'MLd, ovoidalis', fieldl: 'Field L', ncm: 'NCM, CM', vocal: 'Vocal nuclei (core, shell)', voice: 'Syrinx', arco: 'Arcopallium', body: 'Body sense',
+  joints: 'Joints', cerebellum: 'Cerebellum', striatum: 'Striatum', vta: 'VTA', retina: 'Retina', lc: 'Locus coeruleus', bf: 'Basal forebrain' };
 export const DOES = { retina: 'what each eye sees', tectum: 'what stands out, the focus', rotundus: 'what a thing looks like, its kind', wulst: 'two views compared',
   arco: 'how far, the moves', map: 'the map of things', ear: 'the sound’s bands', fieldl: 'sound features', ncm: 'heard sound, held', voice: 'the bands it says',
   records: 'sounds kept', words: 'links from sounds to things', vocal: 'the word chosen to say', place: 'where it is', ncl: 'the present moment' };

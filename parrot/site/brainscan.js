@@ -5,11 +5,12 @@
 // into their regions. Everything is drawn from the running brain's reply of each moment and eased
 // between moments by the frame's own time, so it breathes at the display's rate.
 //
-// The concept tags read the meaning lane's probes (the reply's `meaning.mind`, probes.json beside the
-// trained brain): a tag for the thing the state holds and smaller tags for its properties the probes
-// read (its colour, round, its material, "can eat"). A tag's brightness is the probe's answer against
-// its next answer (1 - second / first), so a tag fades where the probe hesitates; nothing is tagged
-// that the probes do not read, and nothing at all without them.
+// The concept tag reads the meaning lane's probes (the reply's `meaning.mind`, probes.json beside the
+// trained brain): the thing the state holds while the parrot looks at it with nothing heard, where two
+// looks running read the same thing. Its brightness is the probe's answer against its next answer
+// (1 - second / first), so it fades where the probe hesitates; nothing is tagged that the probes do not
+// read, and nothing at all without them. During a question the tags are the word heard (its record's
+// link to a thing) and the word said.
 import * as THREE from 'three';
 
 // a dark-to-warm scale (deep indigo, plum, ember, amber, pale gold)
@@ -34,12 +35,9 @@ function glowTexture() {
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
 }
 
-const FACET_TAG = { // a property tag for each facet's answer (only answers that name a property of the thing)
-  colour: (v) => v, round: (v) => (v === 'True' ? 'round' : null), material: (v) => v, edible: (v) => (v === 'True' ? 'can eat' : null),
-  direction: (v) => v,
-};
 const ASKED = [['colour', /\b(colou?r)\b/], ['round', /\b(shape|round)\b/], ['direction', /\b(where|left|right)\b/], ['edible', /\beat\b/], ['material', /\bmade\b/]];
 const PULSES = 900;
+const THINGS = new Set(['apple', 'ball', 'banana', 'block', 'cup', 'key', 'book', 'bottle', 'lemon']); // the kinds its sounds can stand for
 
 export class Scan {
   constructor(b, host) {
@@ -91,6 +89,13 @@ export class Scan {
     this.tags = [];
     for (let i = 0; i < 6; i++) { const t = document.createElement('span'); t.className = `scan-tag${i === 0 ? ' main' : ''}`; this.overlay.append(t); this.tags.push({ el: t, text: '', alpha: 0, want: 0, x: 0, y: 0 }); }
     this.concept = null; this.asked = null; this.dop = 0; this.said = 0;
+    // one short caption at a time, tied to what just happened
+    this.cap = document.createElement('div'); this.cap.className = 'scan-caption'; this.overlay.append(this.cap);
+  }
+  /** One line under the brain for a few seconds (the newest replaces the last). */
+  caption(text, ms = 3200) {
+    this.cap.textContent = text; this.cap.classList.add('on');
+    clearTimeout(this.capTimer); this.capTimer = setTimeout(() => this.cap.classList.remove('on'), ms);
   }
 
   /** The page's eye canvases (the brain's two eye images) shown in the retina boxes. */
@@ -99,11 +104,18 @@ export class Scan {
   /** One moment's reply: the concept the state holds (the probes' facets), the dopamine. */
   moment(reply) {
     const mind = reply?.meaning?.mind;
-    if (mind?.facets) this.concept = mind.facets;
+    // the probes are fitted on a moment of looking (a thing in focus, nothing heard), so the tag is read at its
+    // looks alone, and where two looks running read the same thing (the first moment after its state is cleared
+    // reads no thing yet); during a question the tags are the word heard and the word said
+    if (mind?.facets && reply.meaning.op === 'look') {
+      const k = mind.facets.kind?.value || null;
+      if (k && k === this.lastLook) this.concept = mind.facets;
+      this.lastLook = k;
+    }
     if (typeof reply?.vta === 'number' && reply.vta > 0.05) this.dop = Math.max(this.dop, Math.min(1, reply.vta));
   }
   /** The question being asked, for the property it asks about. */
-  question(text) { this.asked = null; for (const [f, re] of ASKED) if (re.test(text || '')) { this.asked = f; break; } }
+  question(text) { this.asked = null; this.askedText = text || ''; this.concept = null; this.lastLook = null; for (const [f, re] of ASKED) if (re.test((text || '').toLowerCase())) { this.asked = f; break; } }
   /** The word the voice says (the box shows it while it plays). */
   say(word) {
     this.voiceWord.textContent = word; this.said = 2.4;
@@ -111,6 +123,9 @@ export class Scan {
     const L = this.b.live, vt = this.b.clock.vt;
     L?.packets?.push({ path: ['ncl', 'vocal'], t0: vt, dur: 0.9, colour: L.cSay });
     this.heardTag = { text: `${window.parrotPage?.label?.(word) || word} · said`, k: 1, until: performance.now() + 2600 };
+    // (a question about where: the regions that light and the waves between them are the brain's own; the
+    // direction field of what its eyes report of the thing in focus is drawn in the optic tectum)
+    this.caption(this.asked === 'direction' ? `Where: the direction it sees the thing at, said as “${word}”` : `“${word}”: said with the sound it keeps for the word`);
   }
   reward() { this.dop = 1; }
   /** A heard sound: the ear and Field L light; a sound it knows (its record told again) lights NCM and its
@@ -122,8 +137,13 @@ export class Scan {
     if (!recognized) return;
     L.flashes.push({ region: 'ncm', t0: vt + 0.2, level: 0.9 });
     const s = L.slots?.get(slot); if (s) s.flash = vt + 0.3;
+    if (s) L.packets.push({ path: ['ncm', `slot:${slot}`], t0: vt + 0.2, dur: 0.8, colour: L.cHear, slot });
     if (!kind) return;
-    L.packets.push({ path: ['ncm', 'ncl'], t0: vt + 0.3, dur: 1.0, colour: L.cHear });
+    // a sound linked to a thing: the record's link to the thing lights, and the thing's concept
+    L.packets.push({ path: s ? [`slot:${slot}`, 'words', 'ncl'] : ['ncm', 'ncl'], t0: vt + 0.9, dur: 1.2, colour: L.cLink });
+    if (THINGS.has(kind)) this.caption(`“${kind}”: the sound finds its record, the record its thing: the ${kind}`);
+    else if (kind === 'where') this.caption('“where”: a question about where a thing lies');
+    if (!THINGS.has(kind)) return; // a question word: no concept of its own to tag
     this.heardTag = { text: `${window.parrotPage?.label?.(kind) || kind} · heard`, k: Math.max(0.35, Math.min(1, strength)), until: performance.now() + 3800 };
     this.lastHeardTag = { word: kind, at: performance.now() };
   }
@@ -191,18 +211,11 @@ export class Scan {
     this.said = Math.max(0, this.said - dt); this.boxes.voice.box.classList.toggle('on', this.said > 0 || loud > 0.05);
     this.dop = Math.max(0, this.dop - dt * 0.45);
     this.dopBar.style.transform = `scaleX(${Math.max(0.02, this.dop).toFixed(3)})`; this.boxes.dopamine.box.classList.toggle('on', this.dop > 0.1);
-    // the concept tags: the thing the state holds over the association region, its properties around it
+    // the concept tag: the thing the state holds, over the association region
     const c = this.concept, wants = [];
     const heard = this.heardTag && performance.now() < this.heardTag.until ? this.heardTag : null;
     if (heard) wants.push([heard.text, heard.k, true]); // a word heard: its thing alone (the probes' facets read the state, not the word)
     else if (c?.kind) wants.push([c.kind.value, this.conf(c.kind), true]);
-    for (const name of ['colour', 'round', 'material', 'edible', 'direction']) {
-      const f2 = !heard && c?.[name]; if (!f2) continue;
-      if (name === 'direction' && this.asked !== 'direction') continue; // its place is tagged when a question asks where
-      const text = FACET_TAG[name](f2.value); if (!text) continue;
-      let k = this.conf(f2); if (this.asked === name) k = Math.min(1, k * 1.6 + 0.15);
-      wants.push([text, k, false, this.asked === name]);
-    }
     b.centre('ncl', 1, this.tmp).project(b.camera);
     const cx = (this.tmp.x + 1) / 2 * W, cy = (1 - this.tmp.y) / 2 * H;
     this.tags.forEach((t, i) => {

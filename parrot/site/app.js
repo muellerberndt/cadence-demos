@@ -331,6 +331,10 @@ async function moment(now) {
     if (state.trained) heardForWord(h);
     // what the hearing memory made of the sound: known (its record told again), and the word its record links to
     brain3d?.scan?.heardSound({ recognized: !!h.known || !!h.word, kind: h.word || null, strength: h.link || 0, slot: h.slot });
+    if (h.word) for (const [id, el] of tags) { // the thing on the table the heard sound stands for (its record's link)
+      const t = room.things.get(id);
+      if (t && WORLD[t.kind]?.kind === h.word) { el.classList.add('heard'); clearTimeout(el.heardTimer); el.heardTimer = setTimeout(() => el.classList.remove('heard'), 2600); }
+    }
   }
   if (reply.linked) window.parrotPage.lastLinked = reply.linked;
   if (reply.linked) { // a pistachio after a sound heard with a thing in focus: that sound is linked to the thing's word
@@ -1229,7 +1233,7 @@ async function start() {
     for (const [key, v] of Object.entries(versions)) {
       let o = sel.querySelector(`option[value="${key}"]`);
       if (!o) { o = document.createElement('option'); o.value = key; after.after(o); }
-      o.textContent = `trained: ${v.label}${v.good ? ` · ${v.good}` : ''}`;
+      o.textContent = DEMO ? `trained: ${v.label}` : `trained: ${v.label}${v.good ? ` · ${v.good}` : ''}`; // the demo layout: the name alone (what it does well and lacks is the option's title)
       o.title = [v.good && `Does well: ${v.good}.`, v.lost && `Lacks: ${v.lost}.`].filter(Boolean).join(' ');
       after = o;
     }

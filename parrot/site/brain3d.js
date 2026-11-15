@@ -80,7 +80,13 @@ export class Brain3D {
     this.live = new Live(this);
     this.scanMode = !!options.scan;
     this.traceCol = new THREE.Color('#8a6fb0'); // the scan's fine traces: one cool tone; the pulses carry the warmth
-    if (this.scanMode) { this.scan = new Scan(this, this.host); this.live.mapSprite.visible = false; this.shellMat.uniforms.colour.value.set('#5d6f8f'); }
+    if (this.scanMode) {
+      this.scan = new Scan(this, this.host); this.live.mapSprite.visible = false; this.shellMat.uniforms.colour.value.set('#5d6f8f');
+      // the scan: a side (sagittal) view of the bird's left hemisphere, the beak to the left, at rest unless turned
+      this.home.set(1, 0.18, -0.02).normalize(); this.camera.position.copy(this.home).multiplyScalar(10.5);
+      this.turning = false; this.controls.autoRotate = false;
+      const m = this.byId.map; m.top.set(m.at[0], m.at[1] + m.r[1] + 0.12, m.at[2]); // (no map card in the scan: its name sits on the region)
+    }
     this.ui();
     new ResizeObserver(() => this.resize()).observe(this.host);
     this.resize();
@@ -381,7 +387,7 @@ export class Brain3D {
     const tc = this.tractColours.array, U = this.tractU, phase = c.vt * 1.1;
     for (const t of this.tracts) {
       const src = t.from;
-      let want = src.live ? 0.05 + 0.75 * src.mean * t.w : 0.018;
+      let want = src.live ? 0.05 + 0.75 * src.mean * t.w : this.scanMode ? 0 : 0.018; // the scan draws only what the running brain has
       if (src.live && t.to.live) want += 0.03;
       want += this.live.tractBoost(t);
       t.level += (want - t.level) * a;
@@ -420,14 +426,21 @@ export class Brain3D {
       const x = Math.round((v.x + 1) / 2 * w), y = Math.round((1 - v.y) / 2 * h);
       if (!this.labelW[i]) this.labelW[i] = el.offsetWidth || 60;
       const half = this.labelW[i] / 2 + 3;
-      let free = v.z < 1 && x > half - 20 && x < w - half + 20 && y > 54 && y < h - 40;
-      if (free) for (const p of placed) if (Math.abs(p[0] - x) < p[2] + half && Math.abs(p[1] - y) < 15) { free = false; break; }
+      let y0 = y, free = false;
+      // a name that would cover another moves up or down a line or two in the side view (its regions lie close)
+      for (const dy of (this.scanMode && r.live ? [0, -15, 15, -30, 30] : [0])) {
+        y0 = y + dy;
+        free = v.z < 1 && x > half - 20 && x < w - half + 20 && y0 > 54 && y0 < h - 40;
+        if (free) for (const p of placed) if (Math.abs(p[0] - x) < p[2] + half && Math.abs(p[1] - y0) < 15) { free = false; break; }
+        if (free) break;
+      }
       if (free && !r.live && this.hover !== r.id && !(onPath && onPath.has(r.id)) && placed.length > 14) free = false;
+      if (this.scanMode && !r.live) free = false; // the scan names only the regions the running brain has
       el.classList.toggle('off', !free);
       el.classList.toggle('hot', this.hover === r.id || !!(onPath && onPath.has(r.id)));
       if (!free) continue;
-      placed.push([x, y, half]);
-      if (this.labelX[i] !== x || this.labelY[i] !== y) { el.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`; this.labelX[i] = x; this.labelY[i] = y; }
+      placed.push([x, y0, half]);
+      if (this.labelX[i] !== x || this.labelY[i] !== y0) { el.style.transform = `translate(${x}px, ${y0}px) translate(-50%, -50%)`; this.labelX[i] = x; this.labelY[i] = y0; }
     }
   }
   prio(r, onPath) { return (this.hover === r.id ? 100 : 0) + (onPath && onPath.has(r.id) ? 50 : 0) + (r.live ? 10 : 0) + Math.min(5, r.n / 2000); }

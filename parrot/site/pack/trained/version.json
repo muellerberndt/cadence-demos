@@ -14,5 +14,6 @@
   "the same reads, the same night from N0 with the glimpse whole at unit length (control)": "room .74, seen .870, held-out .693; is_colour .55 (held-out .63)"
  },
  "learned": "the name of the thing in focus, its colour asked as what colour is this or by name, whether it is white, its shape, whether it is round, whether you can eat it, where a thing is (front, right, behind, left)",
- "not_learned": "is this <colour> on unseen kind-colour pairs (near chance); the material of some things; distance"
+ "not_learned": "is this <colour> on unseen kind-colour pairs (near chance); the material of some things; distance",
+ "probes": "probes.json beside the brain: the association's linear read of the thing in focus, nothing heard, fitted with the brain's own mixed code (held out: kind .77 against .14 by chance, colour .95 against .59, round 1.00 against .71, material .84 against .36, edible .96 against .64, direction .92 against .27, distance .86 against .51)"
 }

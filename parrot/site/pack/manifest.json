@@ -19,7 +19,7 @@
   "host.py": "4e8ae5c53f34f86447e4b326f2d2a5f61427c7220c0ccdc1f8cf76c4d3fe4314",
   "page.py": "6c5704fcd189e50a4305df94d7d05be3ffe3bf6303f64021592092105eb901f2",
   "sounds.py": "69d1a03623deed5daef06d4cfb3e04a386a9d2e02564dae0cb98949fb0f14fe4",
-  "trained.py": "a3b3b4734e28c64215c330952cf77d765d95ede400262d57bef22f590dceb4a9"
+  "trained.py": "2ab149f7000956bda06c30872d2516e37ea899992cb5f2f94c0b71ce22ccbfbc"
  },
  "files": {
   "calls.json": "645453a2f0c7c4874addbf143bac95861505484018dac7f64bb5fe39fde0dbf7"
@@ -55,7 +55,8 @@
   "trained": {
    "trained/brain.npz": "c450b3f9e26c2b0d9f2e4cf1413915fabf666c97c7901e5ef7ec67a601055bd7",
    "trained/spec.json": "a0475091077293af4b6f26a62ef2e60f34d2c126526d9a4fece0a0e0a94b2a0b",
-   "trained/version.json": "9cd75d292aefd20c791d31541d1097b1a7045c42c5d0204703a722d68261c832"
+   "trained/version.json": "1bfe40d82d011f4ca863f25697afcd02f11a3c84189d88ba972d8a605fe6e9c0",
+   "trained/probes.json": "2d15643fe10f56b1cac076423881d66b0c7de94fb0fbfa5958284ff37d1be586"
   },
   "trained-pretrain400": {
    "trained-pretrain400/brain.npz": "27d5b01df520de5b007284e0506b462c8e06ac7bd2128c56fe8a945b2b484c5f",
@@ -129,7 +130,8 @@
     "the same reads, the same night from N0 with the glimpse whole at unit length (control)": "room .74, seen .870, held-out .693; is_colour .55 (held-out .63)"
    },
    "learned": "the name of the thing in focus, its colour asked as what colour is this or by name, whether it is white, its shape, whether it is round, whether you can eat it, where a thing is (front, right, behind, left)",
-   "not_learned": "is this <colour> on unseen kind-colour pairs (near chance); the material of some things; distance"
+   "not_learned": "is this <colour> on unseen kind-colour pairs (near chance); the material of some things; distance",
+   "probes": "probes.json beside the brain: the association's linear read of the thing in focus, nothing heard, fitted with the brain's own mixed code (held out: kind .77 against .14 by chance, colour .95 against .59, round 1.00 against .71, material .84 against .36, edible .96 against .64, direction .92 against .27, distance .86 against .51)"
   },
   "trained-pretrain400": {
    "stage": "pretrain",
@@ -326,7 +328,8 @@
    "the same reads, the same night from N0 with the glimpse whole at unit length (control)": "room .74, seen .870, held-out .693; is_colour .55 (held-out .63)"
   },
   "learned": "the name of the thing in focus, its colour asked as what colour is this or by name, whether it is white, its shape, whether it is round, whether you can eat it, where a thing is (front, right, behind, left)",
-  "not_learned": "is this <colour> on unseen kind-colour pairs (near chance); the material of some things; distance"
+  "not_learned": "is this <colour> on unseen kind-colour pairs (near chance); the material of some things; distance",
+  "probes": "probes.json beside the brain: the association's linear read of the thing in focus, nothing heard, fitted with the brain's own mixed code (held out: kind .77 against .14 by chance, colour .95 against .59, round 1.00 against .71, material .84 against .36, edible .96 against .64, direction .92 against .27, distance .86 against .51)"
  },
  "wheel": "cadence_net-0.99.0-lane-meaning-568a0ad8-parrot-5fccf8cb.whl",
  "wheel_sha256": "ab47bd3167872fe46f9e4f4bc7437b69bc12bee288fb3e7e606aa20b082ab174",
