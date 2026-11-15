@@ -115,7 +115,8 @@ export class Scan {
     if (typeof reply?.vta === 'number' && reply.vta > 0.05) this.dop = Math.max(this.dop, Math.min(1, reply.vta));
   }
   /** The question being asked, for the property it asks about. */
-  question(text) { this.asked = null; this.askedText = text || ''; this.concept = null; this.lastLook = null; for (const [f, re] of ASKED) if (re.test((text || '').toLowerCase())) { this.asked = f; break; } }
+  question(text) { this.asked = null; this.askedText = text || ''; this.concept = null; this.lastLook = null; this.voiceWord.textContent = '·'; // (the voice box holds no word of the last answer)
+    for (const [f, re] of ASKED) if (re.test((text || '').toLowerCase())) { this.asked = f; break; } }
   /** The word the voice says (the box shows it while it plays). */
   say(word) {
     this.voiceWord.textContent = word; this.said = 2.4;

@@ -349,7 +349,7 @@ body.demo .ask { position: absolute; right: 18px; bottom: 18px; width: min(360px
   border: 1px solid rgb(255 255 255 / 0.1); background: rgb(8 9 13 / 0.82); backdrop-filter: blur(8px); font-size: 12.5px; }
 body.demo .ask-title, body.demo .ask-learned, body.demo .ask-version, body.demo .ask-note, body.demo .ask-words, body.demo .ask-log li.judge, body.demo .ask-log .dim { display: none !important; }
 body.demo .ask-log { max-height: 150px; margin: 0 0 8px; }
-body.demo .ask-log li:nth-last-child(n+3) { display: none; } /* the last exchange alone */
+body.demo .ask-log li:nth-last-child(n+4) { display: none; } /* the last exchange alone: the question, the answer and its hidden judging line */
 body.demo .ask-log li { font: 400 13px/1.45 var(--body); color: #dfe3ea; }
 body.demo .ask-log .who { min-width: 50px; font: 400 10px var(--mono); letter-spacing: 0.08em; color: rgb(232 235 240 / 0.45); }
 body.demo .ask-log li.a b { color: #ffe3b0; font-weight: 500; font-size: 13px; }
