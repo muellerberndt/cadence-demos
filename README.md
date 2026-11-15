@@ -329,3 +329,9 @@ python3 -m http.server 8800 --directory connectome/web   # open http://localhost
 ```
 
 See the [Connectome README](connectome/README.md) to run, teach and check the demo.
+
+## Licence
+
+The code in this repository is GPL-3.0, as Cadence ([`LICENSE`](LICENSE)). Third-party assets keep
+their own licences, named in each demo's model card or attribution file (for the parrot,
+[`parrot/ATTRIBUTION.md`](parrot/ATTRIBUTION.md)).
