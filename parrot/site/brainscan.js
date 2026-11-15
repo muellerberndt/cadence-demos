@@ -1,16 +1,14 @@
 // The brain as a scan: a translucent brain with its activity glowing where regions are active (a
 // smooth dark-to-warm scale with a soft bloom), fine traces along its tracts with pulses travelling
-// on them as the sending region fires, the concepts its state holds as tags over the association
+// on them as the sending region fires, the word heard and the word said as tags over the association
 // region, and its inputs and outputs as framed boxes at the edge of the view with thin leader lines
 // into their regions. Everything is drawn from the running brain's reply of each moment and eased
 // between moments by the frame's own time, so it breathes at the display's rate.
 //
-// The concept tag reads the meaning lane's probes (the reply's `meaning.mind`, probes.json beside the
-// trained brain): the thing the state holds while the parrot looks at it with nothing heard, where two
-// looks running read the same thing. Its brightness is the probe's answer against its next answer
-// (1 - second / first), so it fades where the probe hesitates; nothing is tagged that the probes do not
-// read, and nothing at all without them. During a question the tags are the word heard (its record's
-// link to a thing) and the word said.
+// The tag over the association region is the word the parrot hears (where the sound's record is linked
+// to a thing) and the word it says. No tag is read from the state itself: the meaning lane's probes
+// (probes.json) read the thing in focus from a cleared state after two moments of looking, and a state that
+// carries an exchange they misread.
 import * as THREE from 'three';
 
 // a dark-to-warm scale (deep indigo, plum, ember, amber, pale gold)
@@ -66,7 +64,7 @@ export class Scan {
     const per = Math.max(1, Math.floor(PULSES / Math.max(1, b.tracts.length)));
     b.tracts.forEach((t, i) => { for (let k = 0; k < per && this.pulseOf.length < PULSES; k++) this.pulseOf.push([i, (k + Math.random()) / per, 0.35 + 0.3 * Math.random()]); });
     this.tmp = new THREE.Vector3(); this.tmp2 = new THREE.Vector3();
-    // the overlay: concept tags, the I/O boxes and their leader lines
+    // the overlay: the tags, the I/O boxes and their leader lines
     this.overlay = document.createElement('div'); this.overlay.className = 'scan-overlay'; host.append(this.overlay);
     this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); this.svg.setAttribute('class', 'scan-lines'); this.overlay.append(this.svg);
     this.boxes = {};
@@ -101,21 +99,15 @@ export class Scan {
   /** The page's eye canvases (the brain's two eye images) shown in the retina boxes. */
   eyes(left, right) { this.boxes.retinaL.body.append(left); this.boxes.retinaR.body.append(right); }
 
-  /** One moment's reply: the concept the state holds (the probes' facets), the dopamine. */
+  /** One moment's reply: the dopamine. */
   moment(reply) {
-    const mind = reply?.meaning?.mind;
-    // the probes are fitted on a moment of looking (a thing in focus, nothing heard), so the tag is read at its
-    // looks alone, and where two looks running read the same thing (the first moment after its state is cleared
-    // reads no thing yet); during a question the tags are the word heard and the word said
-    if (mind?.facets && reply.meaning.op === 'look') {
-      const k = mind.facets.kind?.value || null;
-      if (k && k === this.lastLook) this.concept = mind.facets;
-      this.lastLook = k;
-    }
+    // (no tag is read from the state here: the probes read the thing in focus from a cleared state after two
+    // moments of looking, and a state that carries an exchange they misread; the tags are the word heard and
+    // the word said)
     if (typeof reply?.vta === 'number' && reply.vta > 0.05) this.dop = Math.max(this.dop, Math.min(1, reply.vta));
   }
   /** The question being asked, for the property it asks about. */
-  question(text) { this.asked = null; this.askedText = text || ''; this.concept = null; this.lastLook = null; this.voiceWord.textContent = '·'; // (the voice box holds no word of the last answer)
+  question(text) { this.asked = null; this.askedText = text || ''; this.voiceWord.textContent = '·'; // (the voice box holds no word of the last answer)
     for (const [f, re] of ASKED) if (re.test((text || '').toLowerCase())) { this.asked = f; break; } }
   /** The word the voice says (the box shows it while it plays). */
   say(word) {
@@ -155,11 +147,6 @@ export class Scan {
     const h = this.host.getBoundingClientRect();
     for (const box of Object.values(this.boxes)) { const r = box.box.getBoundingClientRect(); box.rect = [r.left - h.left, r.top - h.top, r.right - h.left, r.bottom - h.top]; }
     this.rects = true; this.rectsAt = 0;
-  }
-
-  conf(f) { // the probe's answer against its next answer, 0 to 1
-    const p = f?.p ?? 0, q = f?.p2 ?? 0;
-    return p > 0 ? Math.max(0, Math.min(1, 1 - q / p)) : 0;
   }
 
   frame(dt, vt, rect) {
@@ -212,11 +199,10 @@ export class Scan {
     this.said = Math.max(0, this.said - dt); this.boxes.voice.box.classList.toggle('on', this.said > 0 || loud > 0.05);
     this.dop = Math.max(0, this.dop - dt * 0.45);
     this.dopBar.style.transform = `scaleX(${Math.max(0.02, this.dop).toFixed(3)})`; this.boxes.dopamine.box.classList.toggle('on', this.dop > 0.1);
-    // the concept tag: the thing the state holds, over the association region
-    const c = this.concept, wants = [];
+    // the tag over the association region: the word heard (where its record is linked to a thing), the word said
+    const wants = [];
     const heard = this.heardTag && performance.now() < this.heardTag.until ? this.heardTag : null;
-    if (heard) wants.push([heard.text, heard.k, true]); // a word heard: its thing alone (the probes' facets read the state, not the word)
-    else if (c?.kind) wants.push([c.kind.value, this.conf(c.kind), true]);
+    if (heard) wants.push([heard.text, heard.k, true]); // a word heard (its record's link to a thing) or said
     b.centre('ncl', 1, this.tmp).project(b.camera);
     const cx = (this.tmp.x + 1) / 2 * W, cy = (1 - this.tmp.y) / 2 * H;
     this.tags.forEach((t, i) => {
