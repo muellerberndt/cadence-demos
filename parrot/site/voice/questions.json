@@ -1,0 +1,534 @@
+{
+ "voice": "a woman's voice (ElevenLabs eleven_multilingual_v2, voice Jane - Steady, Mature and Clear (made under the owner's ElevenLabs plan)), each question a natural sentence",
+ "questions": {
+  "what_is_this": {
+   "text": "What is this?",
+   "clip": "questions/what_is_this.wav",
+   "meaning": "what is this",
+   "follow": [
+    [
+     0.15,
+     "what"
+    ],
+    [
+     0.35,
+     "is"
+    ],
+    [
+     0.51,
+     "this"
+    ]
+   ],
+   "speech_end": 1.137
+  },
+  "what_colour_is_this": {
+   "text": "What colour is this?",
+   "clip": "questions/what_colour_is_this.wav",
+   "meaning": "what colour is this",
+   "follow": [
+    [
+     0.15,
+     "what"
+    ],
+    [
+     0.41,
+     "colour"
+    ],
+    [
+     0.77,
+     "is"
+    ],
+    [
+     1.15,
+     "this"
+    ]
+   ],
+   "speech_end": 1.783
+  },
+  "what_colour": {
+   "text": "What colour?",
+   "clip": "questions/what_colour.wav",
+   "meaning": "what colour is this",
+   "follow": [
+    [
+     0.15,
+     "what"
+    ],
+    [
+     0.39,
+     "colour"
+    ]
+   ],
+   "speech_end": 0.998
+  },
+  "is_this_white": {
+   "text": "Is this white?",
+   "clip": "questions/is_this_white.wav",
+   "meaning": "is this white",
+   "follow": [
+    [
+     0.15,
+     "is"
+    ],
+    [
+     0.33,
+     "this"
+    ],
+    [
+     0.57,
+     "white"
+    ]
+   ],
+   "speech_end": 1.198
+  },
+  "is_this_red": {
+   "text": "Is this red?",
+   "clip": "questions/is_this_red.wav",
+   "meaning": "is this red",
+   "follow": [
+    [
+     0.15,
+     "is"
+    ],
+    [
+     0.33,
+     "this"
+    ],
+    [
+     0.55,
+     "red"
+    ]
+   ],
+   "speech_end": 1.129
+  },
+  "can_you_eat_this": {
+   "text": "Can you eat this?",
+   "clip": "questions/can_you_eat_this.wav",
+   "meaning": "can you eat this",
+   "follow": [
+    [
+     0.15,
+     "can"
+    ],
+    [
+     0.31,
+     "you"
+    ],
+    [
+     0.51,
+     "eat"
+    ],
+    [
+     0.71,
+     "this"
+    ]
+   ],
+   "speech_end": 1.269
+  },
+  "can_you_eat_it": {
+   "text": "Can you eat it?",
+   "clip": "questions/can_you_eat_it.wav",
+   "meaning": "can you eat this",
+   "follow": [
+    [
+     0.15,
+     "can"
+    ],
+    [
+     0.33,
+     "you"
+    ],
+    [
+     0.49,
+     "eat"
+    ],
+    [
+     0.71,
+     "this"
+    ]
+   ],
+   "speech_end": 1.077
+  },
+  "is_this_round": {
+   "text": "Is this round?",
+   "clip": "questions/is_this_round.wav",
+   "meaning": "is this round",
+   "follow": [
+    [
+     0.15,
+     "is"
+    ],
+    [
+     0.31,
+     "this"
+    ],
+    [
+     0.53,
+     "round"
+    ]
+   ],
+   "speech_end": 1.188
+  },
+  "is_it_round": {
+   "text": "Is it round?",
+   "clip": "questions/is_it_round.wav",
+   "meaning": "is this round",
+   "follow": [
+    [
+     0.15,
+     "is"
+    ],
+    [
+     0.33,
+     "this"
+    ],
+    [
+     0.49,
+     "round"
+    ]
+   ],
+   "speech_end": 1.132
+  },
+  "what_shape": {
+   "text": "What shape?",
+   "clip": "questions/what_shape.wav",
+   "meaning": "what shape has the <this>",
+   "follow": [
+    [
+     0.15,
+     "what"
+    ],
+    [
+     0.39,
+     "shape"
+    ]
+   ],
+   "speech_end": 0.874
+  },
+  "where_is_it": {
+   "text": "Where is it?",
+   "clip": "questions/where_is_it.wav",
+   "meaning": "where is the <this>",
+   "follow": [
+    [
+     0.15,
+     "where"
+    ],
+    [
+     0.33,
+     "is"
+    ],
+    [
+     0.53,
+     "the"
+    ],
+    [
+     0.711,
+     "<this>"
+    ]
+   ],
+   "speech_end": 0.891
+  },
+  "where_is_the_cup": {
+   "text": "Where is the cup?",
+   "clip": "questions/where_is_the_cup.wav",
+   "meaning": "where is the cup",
+   "follow": [
+    [
+     0.15,
+     "where"
+    ],
+    [
+     0.41,
+     "is"
+    ],
+    [
+     0.75,
+     "the"
+    ],
+    [
+     0.99,
+     "cup"
+    ]
+   ],
+   "speech_end": 1.473
+  },
+  "where_is_the_ball": {
+   "text": "Where is the ball?",
+   "clip": "questions/where_is_the_ball.wav",
+   "meaning": "where is the ball",
+   "follow": [
+    [
+     0.15,
+     "where"
+    ],
+    [
+     0.37,
+     "is"
+    ],
+    [
+     0.65,
+     "the"
+    ],
+    [
+     0.87,
+     "ball"
+    ]
+   ],
+   "speech_end": 1.352
+  },
+  "where_is_the_apple": {
+   "text": "Where is the apple?",
+   "clip": "questions/where_is_the_apple.wav",
+   "meaning": "where is the apple",
+   "follow": [
+    [
+     0.15,
+     "where"
+    ],
+    [
+     0.39,
+     "is"
+    ],
+    [
+     0.61,
+     "the"
+    ],
+    [
+     0.83,
+     "apple"
+    ]
+   ],
+   "speech_end": 1.418
+  },
+  "where_is_the_block": {
+   "text": "Where is the block?",
+   "clip": "questions/where_is_the_block.wav",
+   "meaning": "where is the block",
+   "follow": [
+    [
+     0.15,
+     "where"
+    ],
+    [
+     0.41,
+     "is"
+    ],
+    [
+     0.75,
+     "the"
+    ],
+    [
+     0.99,
+     "block"
+    ]
+   ],
+   "speech_end": 1.606
+  },
+  "where_is_the_key": {
+   "text": "Where is the key?",
+   "clip": "questions/where_is_the_key.wav",
+   "meaning": "where is the key",
+   "follow": [
+    [
+     0.15,
+     "where"
+    ],
+    [
+     0.37,
+     "is"
+    ],
+    [
+     0.61,
+     "the"
+    ],
+    [
+     0.83,
+     "key"
+    ]
+   ],
+   "speech_end": 1.264
+  },
+  "what_colour_is_the_apple": {
+   "text": "What colour is the apple?",
+   "clip": "questions/what_colour_is_the_apple.wav",
+   "meaning": "what colour has the apple",
+   "follow": [
+    [
+     0.15,
+     "what"
+    ],
+    [
+     0.39,
+     "colour"
+    ],
+    [
+     0.79,
+     "has"
+    ],
+    [
+     1.15,
+     "the"
+    ],
+    [
+     1.35,
+     "apple"
+    ]
+   ],
+   "speech_end": 1.897
+  },
+  "what_colour_is_the_cup": {
+   "text": "What colour is the cup?",
+   "clip": "questions/what_colour_is_the_cup.wav",
+   "meaning": "what colour has the cup",
+   "follow": [
+    [
+     0.15,
+     "what"
+    ],
+    [
+     0.41,
+     "colour"
+    ],
+    [
+     0.77,
+     "has"
+    ],
+    [
+     1.13,
+     "the"
+    ],
+    [
+     1.31,
+     "cup"
+    ]
+   ],
+   "speech_end": 1.818
+  },
+  "what_shape_is_the_apple": {
+   "text": "What shape is the apple?",
+   "clip": "questions/what_shape_is_the_apple.wav",
+   "meaning": "what shape has the apple",
+   "follow": [
+    [
+     0.15,
+     "what"
+    ],
+    [
+     0.41,
+     "shape"
+    ],
+    [
+     0.79,
+     "has"
+    ],
+    [
+     1.17,
+     "the"
+    ],
+    [
+     1.37,
+     "apple"
+    ]
+   ],
+   "speech_end": 1.943
+  },
+  "what_shape_is_the_block": {
+   "text": "What shape is the block?",
+   "clip": "questions/what_shape_is_the_block.wav",
+   "meaning": "what shape has the block",
+   "follow": [
+    [
+     0.15,
+     "what"
+    ],
+    [
+     0.37,
+     "shape"
+    ],
+    [
+     0.71,
+     "has"
+    ],
+    [
+     1.05,
+     "the"
+    ],
+    [
+     1.19,
+     "block"
+    ]
+   ],
+   "speech_end": 1.774
+  }
+ },
+ "presets": [
+  {
+   "key": "what_is_this",
+   "focus": "key",
+   "text": "What is this?",
+   "clip": "questions/what_is_this.wav"
+  },
+  {
+   "key": "what_colour",
+   "focus": "block",
+   "text": "What colour?",
+   "clip": "questions/what_colour.wav"
+  },
+  {
+   "key": "is_this_white",
+   "focus": "cup",
+   "text": "Is this white?",
+   "clip": "questions/is_this_white.wav"
+  },
+  {
+   "key": "where_is_the_cup",
+   "text": "Where is the cup?",
+   "clip": "questions/where_is_the_cup.wav"
+  },
+  {
+   "key": "can_you_eat_it",
+   "focus": "apple",
+   "text": "Can you eat it?",
+   "clip": "questions/can_you_eat_it.wav"
+  },
+  {
+   "key": "what_colour_is_the_apple",
+   "text": "What colour is the apple?",
+   "clip": "questions/what_colour_is_the_apple.wav"
+  },
+  {
+   "key": "where_is_the_ball",
+   "text": "Where is the ball?",
+   "clip": "questions/where_is_the_ball.wav"
+  },
+  {
+   "key": "what_shape_is_the_apple",
+   "text": "What shape is the apple?",
+   "clip": "questions/what_shape_is_the_apple.wav"
+  },
+  {
+   "key": "is_this_red",
+   "focus": "apple",
+   "text": "Is this red?",
+   "clip": "questions/is_this_red.wav"
+  },
+  {
+   "key": "what_colour_is_this",
+   "focus": "cup",
+   "text": "What colour is this?",
+   "clip": "questions/what_colour_is_this.wav"
+  },
+  {
+   "key": "where_is_it",
+   "focus": "cup",
+   "text": "Where is it?",
+   "clip": "questions/where_is_it.wav"
+  },
+  {
+   "key": "what_colour_is_the_cup",
+   "text": "What colour is the cup?",
+   "clip": "questions/what_colour_is_the_cup.wav"
+  }
+ ]
+}

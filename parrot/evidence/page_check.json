@@ -1,0 +1,792 @@
+{
+ "checked": "2026-11-13T15:18:41Z",
+ "looks": {
+  "realistic": {
+   "look": "realistic",
+   "frames_per_s": 60.3,
+   "moments_per_s": 9.8,
+   "think": "9 ms",
+   "eyes_ms": 13.3,
+   "status": "Ready",
+   "distance_units": {
+    "near": 2.235361480918205,
+    "far": 2.215572135995412,
+    "silenced": 0,
+    "reading_near": 0.07,
+    "reading_far": 0.07,
+    "reading_silenced": null
+   },
+   "skin": {
+    "joints": {
+     "head_yaw": {
+      "worst_ratio": 5.46,
+      "raw_ratio": 11.935,
+      "at_value": -75,
+      "where": [
+       0.0384,
+       0.1779,
+       0.0627
+      ]
+     },
+     "head_pitch": {
+      "worst_ratio": 2.214,
+      "raw_ratio": 3.655,
+      "at_value": -25,
+      "where": [
+       -0.0282,
+       0.2063,
+       0.0442
+      ]
+     },
+     "head_roll": {
+      "worst_ratio": 1.992,
+      "raw_ratio": 4.116,
+      "at_value": 20,
+      "where": [
+       0.0317,
+       0.1797,
+       0.0699
+      ]
+     },
+     "neck_pitch": {
+      "worst_ratio": 2.061,
+      "raw_ratio": 2.635,
+      "at_value": 15,
+      "where": [
+       0.041,
+       0.1745,
+       -0.0013
+      ]
+     },
+     "beak_open": {
+      "worst_ratio": 1,
+      "raw_ratio": 1,
+      "at_value": 0,
+      "where": [
+       -0.0624,
+       0.1585,
+       0.0487
+      ]
+     },
+     "wing_l": {
+      "worst_ratio": 1,
+      "raw_ratio": 1,
+      "at_value": 0,
+      "where": [
+       -0.0624,
+       0.1585,
+       0.0487
+      ]
+     },
+     "wing_r": {
+      "worst_ratio": 1,
+      "raw_ratio": 1,
+      "at_value": 0,
+      "where": [
+       -0.0624,
+       0.1585,
+       0.0487
+      ]
+     },
+     "grip_l": {
+      "worst_ratio": 1.201,
+      "raw_ratio": 1.201,
+      "at_value": 0,
+      "where": [
+       0.0378,
+       -0.0126,
+       0.0259
+      ]
+     },
+     "grip_r": {
+      "worst_ratio": 1.203,
+      "raw_ratio": 1.25,
+      "at_value": 0,
+      "where": [
+       -0.0287,
+       -0.0141,
+       0.0217
+      ]
+     },
+     "leg_l": {
+      "worst_ratio": 1.18,
+      "raw_ratio": 1.18,
+      "at_value": 1,
+      "where": [
+       0.0346,
+       0.0077,
+       -0.0313
+      ]
+     },
+     "leg_r": {
+      "worst_ratio": 1.159,
+      "raw_ratio": 1.188,
+      "at_value": 1,
+      "where": [
+       -0.022,
+       0.0103,
+       -0.0289
+      ]
+     }
+    },
+    "worst": {
+     "ratio": 5.681,
+     "joint": "head_yaw x head_roll",
+     "value": [
+      -75,
+      14
+     ],
+     "where": [
+      0.037,
+      0.1819,
+      0.0622
+     ]
+    },
+    "bind_error_m": 4.470348358154297e-08,
+    "rigid_head_max_change": 3.0587754169530967e-06,
+    "edges": 120649,
+    "vertices": 52840,
+    "pairs": {
+     "head_yaw x head_pitch": {
+      "ratio": 5.564,
+      "yaw": -75,
+      "head_pitch": 21,
+      "where": [
+       0.0387,
+       0.1719,
+       0.0606
+      ]
+     },
+     "head_yaw x head_roll": {
+      "ratio": 5.681,
+      "yaw": -75,
+      "head_roll": 14,
+      "where": [
+       0.037,
+       0.1819,
+       0.0622
+      ]
+     }
+    }
+   }
+  },
+  "anime": {
+   "look": "anime",
+   "frames_per_s": 60.5,
+   "moments_per_s": 9.7,
+   "think": "8 ms",
+   "eyes_ms": 17.3,
+   "status": "Ready",
+   "distance_units": {
+    "near": 2.0220087344749915,
+    "far": 2.048844055440611,
+    "silenced": 0,
+    "reading_near": 0.069,
+    "reading_far": 0.069,
+    "reading_silenced": null
+   },
+   "skin": {
+    "joints": {
+     "head_yaw": {
+      "worst_ratio": 6.809,
+      "raw_ratio": 10.558,
+      "at_value": 75,
+      "where": [
+       0.0116,
+       0.1204,
+       -0.0408
+      ]
+     },
+     "head_pitch": {
+      "worst_ratio": 4.536,
+      "raw_ratio": 6.41,
+      "at_value": 35,
+      "where": [
+       -0.009,
+       0.1218,
+       0.0502
+      ]
+     },
+     "head_roll": {
+      "worst_ratio": 2.697,
+      "raw_ratio": 3.837,
+      "at_value": -20,
+      "where": [
+       -0.0315,
+       0.1025,
+       0.0367
+      ]
+     },
+     "neck_pitch": {
+      "worst_ratio": 2.125,
+      "raw_ratio": 2.621,
+      "at_value": 15,
+      "where": [
+       0.0349,
+       0.1084,
+       -0.0438
+      ]
+     },
+     "beak_open": {
+      "worst_ratio": 1,
+      "raw_ratio": 1,
+      "at_value": 0,
+      "where": [
+       -0.0326,
+       0.0854,
+       -0.057
+      ]
+     },
+     "wing_l": {
+      "worst_ratio": 1,
+      "raw_ratio": 1,
+      "at_value": 0,
+      "where": [
+       -0.0326,
+       0.0854,
+       -0.057
+      ]
+     },
+     "wing_r": {
+      "worst_ratio": 1,
+      "raw_ratio": 1,
+      "at_value": 0,
+      "where": [
+       -0.0326,
+       0.0854,
+       -0.057
+      ]
+     },
+     "grip_l": {
+      "worst_ratio": 1.183,
+      "raw_ratio": 1.183,
+      "at_value": 0,
+      "where": [
+       0.02,
+       0.008,
+       0.0104
+      ]
+     },
+     "grip_r": {
+      "worst_ratio": 1.192,
+      "raw_ratio": 1.192,
+      "at_value": 0,
+      "where": [
+       -0.02,
+       0.0066,
+       -0.0097
+      ]
+     },
+     "leg_l": {
+      "worst_ratio": 1.217,
+      "raw_ratio": 1.217,
+      "at_value": 1,
+      "where": [
+       0.0186,
+       0.0083,
+       -0.0257
+      ]
+     },
+     "leg_r": {
+      "worst_ratio": 1.188,
+      "raw_ratio": 1.188,
+      "at_value": 1,
+      "where": [
+       -0.0174,
+       0.0109,
+       -0.021
+      ]
+     }
+    },
+    "worst": {
+     "ratio": 7.113,
+     "joint": "head_yaw x head_pitch",
+     "value": [
+      75,
+      -15
+     ],
+     "where": [
+      0.0119,
+      0.1246,
+      -0.0393
+     ]
+    },
+    "bind_error_m": 2.9802322387695312e-08,
+    "rigid_head_max_change": 5.1067117059488965e-06,
+    "edges": 78928,
+    "vertices": 32841,
+    "pairs": {
+     "head_yaw x head_pitch": {
+      "ratio": 7.113,
+      "yaw": 75,
+      "head_pitch": -15,
+      "where": [
+       0.0119,
+       0.1246,
+       -0.0393
+      ]
+     },
+     "head_yaw x head_roll": {
+      "ratio": 6.951,
+      "yaw": 75,
+      "head_roll": -14,
+      "where": [
+       0.0122,
+       0.1168,
+       -0.0403
+      ]
+     }
+    }
+   }
+  }
+ },
+ "checks": [
+  {
+   "ok": true,
+   "name": "realistic: the look loads (not the fallback)",
+   "detail": "realistic"
+  },
+  {
+   "ok": true,
+   "name": "realistic: the brain lives near 10 moments a second",
+   "detail": {
+    "look": "realistic",
+    "frames_per_s": 60.3,
+    "moments_per_s": 9.8,
+    "think": "9 ms",
+    "eyes_ms": 13.3,
+    "status": "Ready",
+    "distance_units": {
+     "near": 2.235361480918205,
+     "far": 2.215572135995412,
+     "silenced": 0,
+     "reading_near": 0.07,
+     "reading_far": 0.07,
+     "reading_silenced": null
+    },
+    "skin": {
+     "joints": {
+      "head_yaw": {
+       "worst_ratio": 5.46,
+       "raw_ratio": 11.935,
+       "at_value": -75,
+       "where": [
+        0.0384,
+        0.1779,
+        0.0627
+       ]
+      },
+      "head_pitch": {
+       "worst_ratio": 2.214,
+       "raw_ratio": 3.655,
+       "at_value": -25,
+       "where": [
+        -0.0282,
+        0.2063,
+        0.0442
+       ]
+      },
+      "head_roll": {
+       "worst_ratio": 1.992,
+       "raw_ratio": 4.116,
+       "at_value": 20,
+       "where": [
+        0.0317,
+        0.1797,
+        0.0699
+       ]
+      },
+      "neck_pitch": {
+       "worst_ratio": 2.061,
+       "raw_ratio": 2.635,
+       "at_value": 15,
+       "where": [
+        0.041,
+        0.1745,
+        -0.0013
+       ]
+      },
+      "beak_open": {
+       "worst_ratio": 1,
+       "raw_ratio": 1,
+       "at_value": 0,
+       "where": [
+        -0.0624,
+        0.1585,
+        0.0487
+       ]
+      },
+      "wing_l": {
+       "worst_ratio": 1,
+       "raw_ratio": 1,
+       "at_value": 0,
+       "where": [
+        -0.0624,
+        0.1585,
+        0.0487
+       ]
+      },
+      "wing_r": {
+       "worst_ratio": 1,
+       "raw_ratio": 1,
+       "at_value": 0,
+       "where": [
+        -0.0624,
+        0.1585,
+        0.0487
+       ]
+      },
+      "grip_l": {
+       "worst_ratio": 1.201,
+       "raw_ratio": 1.201,
+       "at_value": 0,
+       "where": [
+        0.0378,
+        -0.0126,
+        0.0259
+       ]
+      },
+      "grip_r": {
+       "worst_ratio": 1.203,
+       "raw_ratio": 1.25,
+       "at_value": 0,
+       "where": [
+        -0.0287,
+        -0.0141,
+        0.0217
+       ]
+      },
+      "leg_l": {
+       "worst_ratio": 1.18,
+       "raw_ratio": 1.18,
+       "at_value": 1,
+       "where": [
+        0.0346,
+        0.0077,
+        -0.0313
+       ]
+      },
+      "leg_r": {
+       "worst_ratio": 1.159,
+       "raw_ratio": 1.188,
+       "at_value": 1,
+       "where": [
+        -0.022,
+        0.0103,
+        -0.0289
+       ]
+      }
+     },
+     "worst": {
+      "ratio": 5.681,
+      "joint": "head_yaw x head_roll",
+      "value": [
+       -75,
+       14
+      ],
+      "where": [
+       0.037,
+       0.1819,
+       0.0622
+      ]
+     },
+     "bind_error_m": 4.470348358154297e-08,
+     "rigid_head_max_change": 3.0587754169530967e-06,
+     "edges": 120649,
+     "vertices": 52840,
+     "pairs": {
+      "head_yaw x head_pitch": {
+       "ratio": 5.564,
+       "yaw": -75,
+       "head_pitch": 21,
+       "where": [
+        0.0387,
+        0.1719,
+        0.0606
+       ]
+      },
+      "head_yaw x head_roll": {
+       "ratio": 5.681,
+       "yaw": -75,
+       "head_roll": 14,
+       "where": [
+        0.037,
+        0.1819,
+        0.0622
+       ]
+      }
+     }
+    }
+   }
+  },
+  {
+   "ok": true,
+   "name": "realistic: silencing the distance units silences them in the host",
+   "detail": {
+    "near": 2.235361480918205,
+    "far": 2.215572135995412,
+    "silenced": 0,
+    "reading_near": 0.07,
+    "reading_far": 0.07,
+    "reading_silenced": null
+   }
+  },
+  {
+   "ok": false,
+   "name": "realistic: no triangle edge stretches beyond 1.25x over every joint's range",
+   "detail": {
+    "ratio": 5.681,
+    "joint": "head_yaw x head_roll",
+    "value": [
+     -75,
+     14
+    ],
+    "where": [
+     0.037,
+     0.1819,
+     0.0622
+    ]
+   }
+  },
+  {
+   "ok": true,
+   "name": "realistic: the head and beak stay rigid as the head turns",
+   "detail": 0.0
+  },
+  {
+   "ok": true,
+   "name": "realistic: at the bind values the skinned body is the prepared body",
+   "detail": 4.470348358154297e-08
+  },
+  {
+   "ok": true,
+   "name": "realistic: no console or page error",
+   "detail": []
+  },
+  {
+   "ok": true,
+   "name": "anime: the look loads (not the fallback)",
+   "detail": "anime"
+  },
+  {
+   "ok": true,
+   "name": "anime: the brain lives near 10 moments a second",
+   "detail": {
+    "look": "anime",
+    "frames_per_s": 60.5,
+    "moments_per_s": 9.7,
+    "think": "8 ms",
+    "eyes_ms": 17.3,
+    "status": "Ready",
+    "distance_units": {
+     "near": 2.0220087344749915,
+     "far": 2.048844055440611,
+     "silenced": 0,
+     "reading_near": 0.069,
+     "reading_far": 0.069,
+     "reading_silenced": null
+    },
+    "skin": {
+     "joints": {
+      "head_yaw": {
+       "worst_ratio": 6.809,
+       "raw_ratio": 10.558,
+       "at_value": 75,
+       "where": [
+        0.0116,
+        0.1204,
+        -0.0408
+       ]
+      },
+      "head_pitch": {
+       "worst_ratio": 4.536,
+       "raw_ratio": 6.41,
+       "at_value": 35,
+       "where": [
+        -0.009,
+        0.1218,
+        0.0502
+       ]
+      },
+      "head_roll": {
+       "worst_ratio": 2.697,
+       "raw_ratio": 3.837,
+       "at_value": -20,
+       "where": [
+        -0.0315,
+        0.1025,
+        0.0367
+       ]
+      },
+      "neck_pitch": {
+       "worst_ratio": 2.125,
+       "raw_ratio": 2.621,
+       "at_value": 15,
+       "where": [
+        0.0349,
+        0.1084,
+        -0.0438
+       ]
+      },
+      "beak_open": {
+       "worst_ratio": 1,
+       "raw_ratio": 1,
+       "at_value": 0,
+       "where": [
+        -0.0326,
+        0.0854,
+        -0.057
+       ]
+      },
+      "wing_l": {
+       "worst_ratio": 1,
+       "raw_ratio": 1,
+       "at_value": 0,
+       "where": [
+        -0.0326,
+        0.0854,
+        -0.057
+       ]
+      },
+      "wing_r": {
+       "worst_ratio": 1,
+       "raw_ratio": 1,
+       "at_value": 0,
+       "where": [
+        -0.0326,
+        0.0854,
+        -0.057
+       ]
+      },
+      "grip_l": {
+       "worst_ratio": 1.183,
+       "raw_ratio": 1.183,
+       "at_value": 0,
+       "where": [
+        0.02,
+        0.008,
+        0.0104
+       ]
+      },
+      "grip_r": {
+       "worst_ratio": 1.192,
+       "raw_ratio": 1.192,
+       "at_value": 0,
+       "where": [
+        -0.02,
+        0.0066,
+        -0.0097
+       ]
+      },
+      "leg_l": {
+       "worst_ratio": 1.217,
+       "raw_ratio": 1.217,
+       "at_value": 1,
+       "where": [
+        0.0186,
+        0.0083,
+        -0.0257
+       ]
+      },
+      "leg_r": {
+       "worst_ratio": 1.188,
+       "raw_ratio": 1.188,
+       "at_value": 1,
+       "where": [
+        -0.0174,
+        0.0109,
+        -0.021
+       ]
+      }
+     },
+     "worst": {
+      "ratio": 7.113,
+      "joint": "head_yaw x head_pitch",
+      "value": [
+       75,
+       -15
+      ],
+      "where": [
+       0.0119,
+       0.1246,
+       -0.0393
+      ]
+     },
+     "bind_error_m": 2.9802322387695312e-08,
+     "rigid_head_max_change": 5.1067117059488965e-06,
+     "edges": 78928,
+     "vertices": 32841,
+     "pairs": {
+      "head_yaw x head_pitch": {
+       "ratio": 7.113,
+       "yaw": 75,
+       "head_pitch": -15,
+       "where": [
+        0.0119,
+        0.1246,
+        -0.0393
+       ]
+      },
+      "head_yaw x head_roll": {
+       "ratio": 6.951,
+       "yaw": 75,
+       "head_roll": -14,
+       "where": [
+        0.0122,
+        0.1168,
+        -0.0403
+       ]
+      }
+     }
+    }
+   }
+  },
+  {
+   "ok": true,
+   "name": "anime: silencing the distance units silences them in the host",
+   "detail": {
+    "near": 2.0220087344749915,
+    "far": 2.048844055440611,
+    "silenced": 0,
+    "reading_near": 0.069,
+    "reading_far": 0.069,
+    "reading_silenced": null
+   }
+  },
+  {
+   "ok": false,
+   "name": "anime: no triangle edge stretches beyond 1.25x over every joint's range",
+   "detail": {
+    "ratio": 7.113,
+    "joint": "head_yaw x head_pitch",
+    "value": [
+     75,
+     -15
+    ],
+    "where": [
+     0.0119,
+     0.1246,
+     -0.0393
+    ]
+   }
+  },
+  {
+   "ok": true,
+   "name": "anime: the head and beak stay rigid as the head turns",
+   "detail": 1e-05
+  },
+  {
+   "ok": true,
+   "name": "anime: at the bind values the skinned body is the prepared body",
+   "detail": 2.9802322387695312e-08
+  },
+  {
+   "ok": true,
+   "name": "anime: no console or page error",
+   "detail": []
+  }
+ ],
+ "commit": "f5f64f8",
+ "load_average": "s: 100.28 90.37 96.92",
+ "passed": false
+}

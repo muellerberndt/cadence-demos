@@ -1,0 +1,261 @@
+{
+ "what": "The parrot page's flow of sounds as symbols, measured 2026-11-15: the starting memory's build, the page's headless checks (tests/test_sound_symbols.py) and offline readings on the page's own host code.",
+ "starting_memory": {
+  "records": 221,
+  "meanings_linked": 42,
+  "other_voices": {
+   "t_mark": 44,
+   "t_brian": 45,
+   "t_hope": 45,
+   "t_ranbir": 41
+  },
+  "link_lessons": 2,
+  "link_min": 0.863,
+  "clips_taken_for_their_meaning": 1.0,
+  "clips_followed_word_by_word": 1.0,
+  "words_it_can_say": 25
+ },
+ "presets": {
+  "note": "the twelve preset questions, two rounds, a pistachio after each right answer. The times of this run were taken with the machine's load between 20 and 220 from other work; on a quiet machine (load 3) words lit a median 212 ms after their start (p90 288, max 327) and answers began a median 658 ms after the question's end (max 896)",
+  "asked": 24,
+  "answered": 24,
+  "understood": 24,
+  "right": 24,
+  "said_with_sound": 24,
+  "answer_sounds": 24,
+  "own_voice": 24,
+  "whisper_ok": 24,
+  "followed_ok": 24,
+  "words_followed": 92,
+  "word_delay_ms": {
+   "median": 892,
+   "p90": 1162,
+   "max": 1803,
+   "within_150": 0,
+   "within_250": 0
+  },
+  "answer_ms": {
+   "median": 3408,
+   "p90": 3924,
+   "max": 4206,
+   "under_1500": 0,
+   "of": 24
+  },
+  "paid_links": 24
+ },
+ "microphone": {
+  "mic_on": "on",
+  "ok": true,
+  "voice": "archer"
+ },
+ "first_visit": [
+  {
+   "step": "the switch, the question list, Ask, Pistachio and the microphone button are on screen",
+   "ok": true,
+   "mic": "on"
+  },
+  {
+   "step": "Listen to me pressed: the question list goes, the parrot looks at you",
+   "ok": true
+  },
+  {
+   "step": "a word said: the ear's sign lights while it is said; it is kept as one utterance and said back",
+   "ear_sign": true,
+   "heard": 1,
+   "taken_for": "apple",
+   "said_back": true,
+   "ok": true
+  },
+  {
+   "step": "Curious pressed: the question list is back",
+   "ok": true
+  },
+  {
+   "step": "a question asked: its words as a subtitle, the parrot's turn shown, the answer by the parrot",
+   "subtitle": "What is this?",
+   "turn_sign": true,
+   "answer": [
+    "key"
+   ],
+   "bubble": "key",
+   "ok": true
+  },
+  {
+   "step": "a pistachio: the dopamine box lights, the lesson is taken",
+   "dopamine_sign": true,
+   "links_paid": 1,
+   "pistachios": "1",
+   "ok": true
+  }
+ ],
+ "false_triggers": {
+  "sounds_kept": 0,
+  "sounds_said_back": 0,
+  "sounds_answered": 0,
+  "of": 40,
+  "kinds": [
+   "breath",
+   "clap",
+   "click",
+   "cough",
+   "door",
+   "fan",
+   "hum",
+   "ring",
+   "scrape",
+   "typing"
+  ],
+  "own_voice_from_the_loudspeaker": [
+   {
+    "question": 0,
+    "right": true,
+    "utterances_kept": 1,
+    "exchanges": 1
+   },
+   {
+    "question": 1,
+    "right": true,
+    "utterances_kept": 1,
+    "exchanges": 1
+   },
+   {
+    "question": 2,
+    "right": true,
+    "utterances_kept": 1,
+    "exchanges": 1
+   },
+   {
+    "question": 3,
+    "right": true,
+    "utterances_kept": 1,
+    "exchanges": 1
+   }
+  ]
+ },
+ "robustness": {
+  "mic_refused": {
+   "mic": "off",
+   "told": "The microphone did not start: Not supported.",
+   "answered_right": true,
+   "ok": true
+  },
+  "reload": {
+   "answered_right": true,
+   "ok": true
+  },
+  "sound_while_speaking": {
+   "kept": 0,
+   "busy_after": false,
+   "next_right": true,
+   "ok": true
+  },
+  "switch": {
+   "presses": 12,
+   "busy_after": false,
+   "next_right": true,
+   "ok": true
+  },
+  "ok": true
+ },
+ "visitors_never_heard_offline": {
+  "note": "four voices in no record (a British man, an Australian man, an Indian woman, an American woman), their clean takes as the ear hears them, nothing written: B the meaning each take is taken for; C after one pistachio on that visitor's first take of the utterance. With the woman's records alone B read 65 right of 160.",
+  "B archer": {
+   "n": 40,
+   "right": 34,
+   "wrong": 0,
+   "none": 6,
+   "evidence_right": 36
+  },
+  "C archer": {
+   "n": 26,
+   "right": 24,
+   "wrong": 0,
+   "none": 2,
+   "evidence_right": 24
+  },
+  "B steve": {
+   "n": 40,
+   "right": 31,
+   "wrong": 1,
+   "none": 8,
+   "evidence_right": 31
+  },
+  "C steve": {
+   "n": 26,
+   "right": 23,
+   "wrong": 0,
+   "none": 3,
+   "evidence_right": 24
+  },
+  "B zara": {
+   "n": 40,
+   "right": 24,
+   "wrong": 3,
+   "none": 13,
+   "evidence_right": 30
+  },
+  "C zara": {
+   "n": 26,
+   "right": 21,
+   "wrong": 1,
+   "none": 4,
+   "evidence_right": 24
+  },
+  "B dakota": {
+   "n": 40,
+   "right": 28,
+   "wrong": 2,
+   "none": 10,
+   "evidence_right": 30
+  },
+  "C dakota": {
+   "n": 26,
+   "right": 24,
+   "wrong": 0,
+   "none": 2,
+   "evidence_right": 23
+  },
+  "B all": {
+   "n": 160,
+   "right": 117,
+   "wrong": 6,
+   "none": 37,
+   "evidence_right": 127
+  },
+  "B phrases": {
+   "n": 96,
+   "right": 88,
+   "wrong": 1,
+   "none": 7,
+   "evidence_right": 92
+  },
+  "C all": {
+   "n": 104,
+   "right": 92,
+   "wrong": 1,
+   "none": 11,
+   "evidence_right": 95
+  },
+  "C phrases": {
+   "n": 60,
+   "right": 57,
+   "wrong": 1,
+   "none": 2,
+   "evidence_right": 60
+  }
+ },
+ "pistachio_and_other_answers": {
+  "note": "the trained host offline",
+  "the_twelve_presets_in_rounds_a_pistachio_after_each_right_answer": {
+   "looks_between_reply_and_pistachio": "65 of 72 and 137 of 144 right",
+   "resting_from_reply_to_pistachio": "143 of 144, 72 of 72, 144 of 144, 71 of 72 right",
+   "no_pistachio": "48 of 48 right"
+  },
+  "one_answer_paid_twelve_times": {
+   "amount_.05": "the cup's colour turns red after 4 pistachios for the apple's red, and stays",
+   "amount_.02": "on and off from 4",
+   "amount_.01": "once, at 7",
+   "with_the_surprise_rule": "no weight moves; six probe answers right after every pistachio"
+  }
+ }
+}

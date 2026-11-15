@@ -1,0 +1,565 @@
+{
+ "what": "the mean activity of every population the page's brain host describes, read from the page's own activity buffer each moment (headless, a silent microphone): the 4 s before a question against the question and its answer",
+ "brain": "the page's trained host: the composed body (cadence.parrot) with the hearing layer, and the equal-senses brain (founder 33400121)",
+ "note": "the trained brain lives only during an exchange, so before the first question its populations are at 0; a population code such as the direction field keeps its mean and moves its pattern",
+ "questions": {
+  "what is this": {
+   "focus": "apple",
+   "said": [
+    "apple"
+   ],
+   "heard_as_sound": [
+    "what",
+    "is",
+    "this"
+   ],
+   "populations": [
+    {
+     "population": "retina_l",
+     "what": "Left eye: what stands out from the room",
+     "neurons": 1075,
+     "drawn_in": "Retina",
+     "before": 0.02,
+     "peak": 0.026
+    },
+    {
+     "population": "retina_r",
+     "what": "Right eye: what stands out from the room",
+     "neurons": 1075,
+     "drawn_in": "Retina",
+     "before": 0.017,
+     "peak": 0.021
+    },
+    {
+     "population": "disparity",
+     "what": "Disparity units: the two eyes' views compared",
+     "neurons": 37,
+     "drawn_in": "Visual Wulst",
+     "before": 0.022,
+     "peak": 0.031
+    },
+    {
+     "population": "parallax",
+     "what": "Parallax units: one eye before and after the head moved",
+     "neurons": 72,
+     "drawn_in": "Visual Wulst",
+     "before": 0.009,
+     "peak": 0.044
+    },
+    {
+     "population": "size_one",
+     "what": "Size in one eye",
+     "neurons": 8,
+     "drawn_in": "Rotundus, entopallium",
+     "before": 0.033,
+     "peak": 0.17
+    },
+    {
+     "population": "elevation_one",
+     "what": "Height in one eye's field",
+     "neurons": 8,
+     "drawn_in": "Optic tectum",
+     "before": 0.029,
+     "peak": 0.158
+    },
+    {
+     "population": "size_both",
+     "what": "Size seen by both eyes",
+     "neurons": 8,
+     "drawn_in": "Rotundus, entopallium",
+     "before": 0.118,
+     "peak": 0.15
+    },
+    {
+     "population": "elevation_both",
+     "what": "Height seen by both eyes",
+     "neurons": 8,
+     "drawn_in": "Optic tectum",
+     "before": 0.11,
+     "peak": 0.146
+    },
+    {
+     "population": "distance",
+     "what": "Distance neurons (the reach)",
+     "neurons": 24,
+     "drawn_in": "Arcopallium",
+     "before": 0.007,
+     "peak": 0.045
+    },
+    {
+     "population": "look",
+     "what": "The look: hue, saturation, light",
+     "neurons": 20,
+     "drawn_in": "Rotundus, entopallium",
+     "before": 0.199,
+     "peak": 0.211
+    },
+    {
+     "population": "kind",
+     "what": "Kinds learned",
+     "neurons": 12,
+     "drawn_in": "Rotundus, entopallium",
+     "before": 0.134,
+     "peak": 0.152
+    },
+    {
+     "population": "focus",
+     "what": "The focus: one winner",
+     "neurons": 16,
+     "drawn_in": "Optic tectum",
+     "before": 0.136,
+     "peak": 0.15
+    },
+    {
+     "population": "map",
+     "what": "The map of things",
+     "neurons": 704,
+     "drawn_in": "Hippocampal formation",
+     "before": 0.012,
+     "peak": 0.012
+    },
+    {
+     "population": "ear",
+     "what": "Ear: the sound's 40 bands",
+     "neurons": 40,
+     "drawn_in": "Cochlea",
+     "before": 0.0,
+     "peak": 0.78
+    },
+    {
+     "population": "fieldl",
+     "what": "Field L",
+     "neurons": 40,
+     "drawn_in": "Field L",
+     "before": 0.0,
+     "peak": 0.78
+    },
+    {
+     "population": "ncm",
+     "what": "NCM and CM: heard sound, held",
+     "neurons": 40,
+     "drawn_in": "NCM, CM",
+     "before": 0.0,
+     "peak": 0.203
+    },
+    {
+     "population": "voice",
+     "what": "Voice: the bands it says",
+     "neurons": 40,
+     "drawn_in": "Syrinx",
+     "before": 0.127,
+     "peak": 0.0
+    },
+    {
+     "population": "t_eyes",
+     "what": "Trained brain: what its eyes report (the thing in focus, then each thing)",
+     "neurons": 1528,
+     "drawn_in": "Rotundus, entopallium",
+     "before": 0.0,
+     "peak": 0.092
+    },
+    {
+     "population": "t_module_0",
+     "what": "Trained brain: its first processing region",
+     "neurons": 128,
+     "drawn_in": "Rotundus, entopallium",
+     "before": 0.0,
+     "peak": 0.181
+    },
+    {
+     "population": "t_module_1",
+     "what": "Trained brain: its second processing region",
+     "neurons": 128,
+     "drawn_in": "Rotundus, entopallium",
+     "before": 0.0,
+     "peak": 0.034
+    },
+    {
+     "population": "t_module_2",
+     "what": "Trained brain: its third processing region",
+     "neurons": 128,
+     "drawn_in": "Rotundus, entopallium",
+     "before": 0.0,
+     "peak": 0.012
+    },
+    {
+     "population": "t_module_3",
+     "what": "Trained brain: its fourth processing region",
+     "neurons": 128,
+     "drawn_in": "Rotundus, entopallium",
+     "before": 0.0,
+     "peak": 0.009
+    },
+    {
+     "population": "t_ear",
+     "what": "Trained brain: the code of the word it hears (a stand-in code)",
+     "neurons": 64,
+     "drawn_in": "NCM, CM",
+     "before": 0.0,
+     "peak": 0.038
+    },
+    {
+     "population": "t_association",
+     "what": "Trained brain: the association region",
+     "neurons": 128,
+     "drawn_in": "NCL",
+     "before": 0.0,
+     "peak": 0.313
+    },
+    {
+     "population": "t_prefrontal",
+     "what": "Trained brain: its working trace",
+     "neurons": 128,
+     "drawn_in": "NCL, delay cells",
+     "before": 0.0,
+     "peak": 0.299
+    },
+    {
+     "population": "t_history",
+     "what": "Trained brain: the words heard before, held",
+     "neurons": 4776,
+     "drawn_in": "NCL, delay cells",
+     "before": 0.0,
+     "peak": 0.077
+    },
+    {
+     "population": "t_voice",
+     "what": "Trained brain: its voice, one neuron a word and one for silence",
+     "neurons": 50,
+     "drawn_in": "Vocal nuclei (core, shell)",
+     "before": 0.0,
+     "peak": 0.132
+    },
+    {
+     "population": "t_direction",
+     "what": "Trained brain: where the thing in focus lies (the direction field of what its eyes report)",
+     "neurons": 12,
+     "drawn_in": "Optic tectum",
+     "before": 0.0,
+     "peak": 0.1
+    }
+   ]
+  },
+  "where is the cup": {
+   "focus": "cup",
+   "said": [
+    "behind"
+   ],
+   "heard_as_sound": [
+    "where",
+    "is",
+    "the",
+    "cup"
+   ],
+   "populations": [
+    {
+     "population": "retina_l",
+     "what": "Left eye: what stands out from the room",
+     "neurons": 1075,
+     "drawn_in": "Retina",
+     "before": 0.014,
+     "peak": 0.026
+    },
+    {
+     "population": "retina_r",
+     "what": "Right eye: what stands out from the room",
+     "neurons": 1075,
+     "drawn_in": "Retina",
+     "before": 0.023,
+     "peak": 0.025
+    },
+    {
+     "population": "disparity",
+     "what": "Disparity units: the two eyes' views compared",
+     "neurons": 37,
+     "drawn_in": "Visual Wulst",
+     "before": 0.009,
+     "peak": 0.032
+    },
+    {
+     "population": "parallax",
+     "what": "Parallax units: one eye before and after the head moved",
+     "neurons": 72,
+     "drawn_in": "Visual Wulst",
+     "before": 0.005,
+     "peak": 0.045
+    },
+    {
+     "population": "size_one",
+     "what": "Size in one eye",
+     "neurons": 8,
+     "drawn_in": "Rotundus, entopallium",
+     "before": 0.075,
+     "peak": 0.176
+    },
+    {
+     "population": "elevation_one",
+     "what": "Height in one eye's field",
+     "neurons": 8,
+     "drawn_in": "Optic tectum",
+     "before": 0.066,
+     "peak": 0.171
+    },
+    {
+     "population": "size_both",
+     "what": "Size seen by both eyes",
+     "neurons": 8,
+     "drawn_in": "Rotundus, entopallium",
+     "before": 0.083,
+     "peak": 0.15
+    },
+    {
+     "population": "elevation_both",
+     "what": "Height seen by both eyes",
+     "neurons": 8,
+     "drawn_in": "Optic tectum",
+     "before": 0.075,
+     "peak": 0.146
+    },
+    {
+     "population": "distance",
+     "what": "Distance neurons (the reach)",
+     "neurons": 24,
+     "drawn_in": "Arcopallium",
+     "before": 0.019,
+     "peak": 0.055
+    },
+    {
+     "population": "look",
+     "what": "The look: hue, saturation, light",
+     "neurons": 20,
+     "drawn_in": "Rotundus, entopallium",
+     "before": 0.186,
+     "peak": 0.211
+    },
+    {
+     "population": "kind",
+     "what": "Kinds learned",
+     "neurons": 12,
+     "drawn_in": "Rotundus, entopallium",
+     "before": 0.104,
+     "peak": 0.152
+    },
+    {
+     "population": "focus",
+     "what": "The focus: one winner",
+     "neurons": 16,
+     "drawn_in": "Optic tectum",
+     "before": 0.124,
+     "peak": 0.15
+    },
+    {
+     "population": "map",
+     "what": "The map of things",
+     "neurons": 704,
+     "drawn_in": "Hippocampal formation",
+     "before": 0.01,
+     "peak": 0.011
+    },
+    {
+     "population": "ear",
+     "what": "Ear: the sound's 40 bands",
+     "neurons": 40,
+     "drawn_in": "Cochlea",
+     "before": 0.0,
+     "peak": 0.779
+    },
+    {
+     "population": "fieldl",
+     "what": "Field L",
+     "neurons": 40,
+     "drawn_in": "Field L",
+     "before": 0.0,
+     "peak": 0.779
+    },
+    {
+     "population": "ncm",
+     "what": "NCM and CM: heard sound, held",
+     "neurons": 40,
+     "drawn_in": "NCM, CM",
+     "before": 0.014,
+     "peak": 0.294
+    },
+    {
+     "population": "voice",
+     "what": "Voice: the bands it says",
+     "neurons": 40,
+     "drawn_in": "Syrinx",
+     "before": 0.233,
+     "peak": 0.318
+    },
+    {
+     "population": "t_eyes",
+     "what": "Trained brain: what its eyes report (the thing in focus, then each thing)",
+     "neurons": 1528,
+     "drawn_in": "Rotundus, entopallium",
+     "before": 0.092,
+     "peak": 0.092
+    },
+    {
+     "population": "t_module_0",
+     "what": "Trained brain: its first processing region",
+     "neurons": 128,
+     "drawn_in": "Rotundus, entopallium",
+     "before": 0.18,
+     "peak": 0.18
+    },
+    {
+     "population": "t_module_1",
+     "what": "Trained brain: its second processing region",
+     "neurons": 128,
+     "drawn_in": "Rotundus, entopallium",
+     "before": 0.034,
+     "peak": 0.034
+    },
+    {
+     "population": "t_module_2",
+     "what": "Trained brain: its third processing region",
+     "neurons": 128,
+     "drawn_in": "Rotundus, entopallium",
+     "before": 0.012,
+     "peak": 0.013
+    },
+    {
+     "population": "t_module_3",
+     "what": "Trained brain: its fourth processing region",
+     "neurons": 128,
+     "drawn_in": "Rotundus, entopallium",
+     "before": 0.008,
+     "peak": 0.009
+    },
+    {
+     "population": "t_ear",
+     "what": "Trained brain: the code of the word it hears (a stand-in code)",
+     "neurons": 64,
+     "drawn_in": "NCM, CM",
+     "before": 0.0,
+     "peak": 0.038
+    },
+    {
+     "population": "t_association",
+     "what": "Trained brain: the association region",
+     "neurons": 128,
+     "drawn_in": "NCL",
+     "before": 0.306,
+     "peak": 0.339
+    },
+    {
+     "population": "t_prefrontal",
+     "what": "Trained brain: its working trace",
+     "neurons": 128,
+     "drawn_in": "NCL, delay cells",
+     "before": 0.289,
+     "peak": 0.312
+    },
+    {
+     "population": "t_history",
+     "what": "Trained brain: the words heard before, held",
+     "neurons": 4776,
+     "drawn_in": "NCL, delay cells",
+     "before": 0.08,
+     "peak": 0.081
+    },
+    {
+     "population": "t_voice",
+     "what": "Trained brain: its voice, one neuron a word and one for silence",
+     "neurons": 50,
+     "drawn_in": "Vocal nuclei (core, shell)",
+     "before": 0.126,
+     "peak": 0.135
+    },
+    {
+     "population": "t_direction",
+     "what": "Trained brain: where the thing in focus lies (the direction field of what its eyes report)",
+     "neurons": 12,
+     "drawn_in": "Optic tectum",
+     "before": 0.1,
+     "peak": 0.1
+    }
+   ]
+  }
+ },
+ "direction_field": {
+  "what": "the 12 direction units of what the trained brain's eyes report of the thing in focus (drawn in the optic tectum), for each thing of the room: the unit most active",
+  "apple": 2,
+  "block": 4,
+  "cup": 6,
+  "key": 11,
+  "greenball": 9
+ },
+ "silenced_fields": {
+  "what": "the page's trained-brain host asked each question 10 times with one sense field of the thing in focus silenced (zero in the glimpse and in the mixed code; the scene left as it is): right answers of 10, and what it said",
+  "none": {
+   "what is this (apple-1)": "10/10 apple",
+   "what is this (key-4)": "10/10 key",
+   "where is the cup (cup-3)": "10/10 behind",
+   "where is the ball (greenball-5)": "10/10 right",
+   "what colour is this (block-2)": "10/10 blue",
+   "can you eat this (apple-1)": "10/10 yes"
+  },
+  "hue": {
+   "what is this (apple-1)": "10/10 apple",
+   "what is this (key-4)": "10/10 key",
+   "where is the cup (cup-3)": "10/10 behind",
+   "where is the ball (greenball-5)": "10/10 right",
+   "what colour is this (block-2)": "0/10 ball,wood",
+   "can you eat this (apple-1)": "10/10 yes"
+  },
+  "lightness": {
+   "what is this (apple-1)": "10/10 apple",
+   "what is this (key-4)": "10/10 key",
+   "where is the cup (cup-3)": "10/10 behind",
+   "where is the ball (greenball-5)": "10/10 right",
+   "what colour is this (block-2)": "10/10 blue",
+   "can you eat this (apple-1)": "10/10 yes"
+  },
+  "shape": {
+   "what is this (apple-1)": "10/10 apple",
+   "what is this (key-4)": "0/10 bottle,metal",
+   "where is the cup (cup-3)": "10/10 behind",
+   "where is the ball (greenball-5)": "10/10 right",
+   "what colour is this (block-2)": "10/10 blue",
+   "can you eat this (apple-1)": "10/10 yes"
+  },
+  "size": {
+   "what is this (apple-1)": "10/10 apple",
+   "what is this (key-4)": "10/10 key",
+   "where is the cup (cup-3)": "10/10 behind",
+   "where is the ball (greenball-5)": "10/10 right",
+   "what colour is this (block-2)": "10/10 blue",
+   "can you eat this (apple-1)": "10/10 yes"
+  },
+  "direction": {
+   "what is this (apple-1)": "10/10 apple",
+   "what is this (key-4)": "10/10 key",
+   "where is the cup (cup-3)": "9/10 behind,right",
+   "where is the ball (greenball-5)": "1/10 left,right",
+   "what colour is this (block-2)": "10/10 blue",
+   "can you eat this (apple-1)": "10/10 yes"
+  },
+  "distance": {
+   "what is this (apple-1)": "10/10 apple",
+   "what is this (key-4)": "10/10 key",
+   "where is the cup (cup-3)": "10/10 behind",
+   "where is the ball (greenball-5)": "10/10 right",
+   "what colour is this (block-2)": "10/10 blue",
+   "can you eat this (apple-1)": "10/10 yes"
+  },
+  "salience": {
+   "what is this (apple-1)": "10/10 apple",
+   "what is this (key-4)": "10/10 key",
+   "where is the cup (cup-3)": "10/10 behind",
+   "where is the ball (greenball-5)": "10/10 right",
+   "what colour is this (block-2)": "10/10 blue",
+   "can you eat this (apple-1)": "10/10 yes"
+  },
+  "surface": {
+   "what is this (apple-1)": "10/10 apple",
+   "what is this (key-4)": "10/10 key",
+   "where is the cup (cup-3)": "10/10 behind",
+   "where is the ball (greenball-5)": "10/10 right",
+   "what colour is this (block-2)": "10/10 blue",
+   "can you eat this (apple-1)": "0/10 no"
+  }
+ }
+}

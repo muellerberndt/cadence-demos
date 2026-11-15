@@ -1,0 +1,101 @@
+{
+ "schema": "cadence-parrot-pack/1",
+ "packed": "2026-11-15",
+ "pyodide": "314.0.7",
+ "packages": [
+  "numpy"
+ ],
+ "package": "parrotbrain",
+ "brain": "composed: cadence.parrot (the parrot-brain lane), with the page's hearing layer; trained: the composed body and hearing with cadence.meaning's MeaningParrot, the brain the meaning lane trained (#334); placeholder: a hand-written controller",
+ "sources": [
+  "__init__.py",
+  "host.py",
+  "page.py",
+  "sounds.py",
+  "trained.py"
+ ],
+ "sources_sha256": {
+  "__init__.py": "aad6e4970d412d3fc56376e9321f46760a285a32d2086c5fc76d1740b02c082f",
+  "host.py": "fddb518a8b77fb70c519262cacf1b7d0c4a5feda3348faff42acb5f1fb7849f1",
+  "page.py": "686ebbe9e742c91265f2b95016458c682d82cc60558218125e928d0df0c8ab6d",
+  "sounds.py": "5fc17dd1ed798255bf50b5c13b499279beddd968bfba05475cf996749bc24830",
+  "trained.py": "eb10dd3fe763b4fd63b2959c1325f297f017881db4efcfa922948514e3926141"
+ },
+ "files": {
+  "calls.json": "645453a2f0c7c4874addbf143bac95861505484018dac7f64bb5fe39fde0dbf7"
+ },
+ "config": {
+  "eye": {
+   "w": 64,
+   "h": 32,
+   "field": 87.5,
+   "vfield": 60,
+   "fovea": 0.4,
+   "axis": 75
+  },
+  "whole": "page",
+  "genes": {
+   "map_cells": 32
+  }
+ },
+ "hosts": {
+  "composed": "parrotbrain.page",
+  "placeholder": "parrotbrain.host",
+  "trained": "parrotbrain.trained"
+ },
+ "host_files": {
+  "trained": {
+   "trained/brain.npz": "c450b3f9e26c2b0d9f2e4cf1413915fabf666c97c7901e5ef7ec67a601055bd7",
+   "trained/spec.json": "a0475091077293af4b6f26a62ef2e60f34d2c126526d9a4fece0a0e0a94b2a0b",
+   "trained/version.json": "8fce26fe6df686a1647c038833c3d6444a04e74e54c90885c41e76afc42edcdb",
+   "trained/probes.json": "196d2941136f677198430ef0cf0f88e6e8956a6f2697a8c364aa2ea9b9f76552"
+  }
+ },
+ "trained_versions": {
+  "trained": {
+   "stage": "pretrain",
+   "step": "the owner's pretraining stage on a brain whose sparse mixed code takes every sense field of the glimpse at unit length: the night's N1 (names), N2 (colour) and N3 (where) from the N0 checkpoint, then every focus question interleaved for 400 blocks",
+   "label": "the equal-senses brain",
+   "good": "in the demo room, right on every one of 10 passes: what is this (key, apple, cup), what colour is this (block, cup, key, apple), is this white (cup: yes; key: no), where is the cup, can you eat this (apple), the colour of the apple and the cup asked by name, the shape of the apple and the block, is this red (apple), where the ball is; held out on fresh rooms through the page host: .787 (pretrain400 .773), the demo room's 50 questions all right on 3 of 3 passes: .80 (pretrain400 .74)",
+   "lost": "what material is this (cup, green ball), is this <colour> on some things (is this yellow of the key, is this blue of the block, is this green of the apple), what colour is this of the green ball, is this round of the green ball",
+   "founder": 33400121,
+   "exported": "2026-11-14 22:36 UTC (pretraining block 400)",
+   "source": "trained on a local machine from the night's N0 checkpoint of founder 33400121 (brain_33400121_N0.npz): night.life N1 to N3 (201, 1200 and 800 blocks), then pretrain_stage.MIX (.25 x 300, .10 x 50, .05 x 50); word records off",
+   "lane": "muellerberndt/cadence lane-0100-meaning (night.py, pretrain_stage.py at 568a0ad8), the mixed code's fields at unit length (spec mixed.fields; the page host's _fields_observation)",
+   "readings": {
+    "the chamber, frozen, 96 a form": "name .99, colour_this .97 (held-out pairs .74), is_colour .70 (held-out .56), colour_of .99 (held-out .77), material .77, is_round .96, can_eat .97, shape 1.00, direction .87, imitate 1.00",
+    "fresh rooms through the page host, 300 a set": "seen pairs .887, held-out pairs .787",
+    "the same reads, the same night from N0 with the glimpse whole at unit length (control)": "room .74, seen .870, held-out .693; is_colour .55 (held-out .63)"
+   },
+   "learned": "the name of the thing in focus, its colour asked as what colour is this or by name, whether it is white, its shape, whether it is round, whether you can eat it, where a thing is (front, right, behind, left)",
+   "not_learned": "is this <colour> on unseen kind-colour pairs (near chance); the material of some things; distance",
+   "probes": "probes.json beside the brain: the association's linear read of the thing in focus with nothing heard, at any look from a cleared state (fitted over looks 1 to 4 after a clearing on 960 random rooms, checked on 240 rooms held out: kind 0.99 against 0.13 by chance, colour 0.99 against 0.20 by chance, round 1.00 against 0.70 by chance, material 0.93 against 0.33 by chance, edible 0.99 against 0.67 by chance, direction 0.96 against 0.27 by chance; at the first look kind 1.00 and colour 1.00, where the probes exported with the brain read 0.40 and 0.29); distance as exported by the meaning lane (.86 against .51)"
+  }
+ },
+ "trained_sources": {
+  "trained": "the pretraining stage with every sense field of the glimpse at unit length in the mixed code, trained on a local machine from the night's N0 checkpoint of founder 33400121 (night N1 to N3, then pretrain_stage.MIX 400 blocks; lane-0100-meaning 568a0ad8), block 400"
+ },
+ "trained_version": {
+  "stage": "pretrain",
+  "step": "the owner's pretraining stage on a brain whose sparse mixed code takes every sense field of the glimpse at unit length: the night's N1 (names), N2 (colour) and N3 (where) from the N0 checkpoint, then every focus question interleaved for 400 blocks",
+  "label": "the equal-senses brain",
+  "good": "in the demo room, right on every one of 10 passes: what is this (key, apple, cup), what colour is this (block, cup, key, apple), is this white (cup: yes; key: no), where is the cup, can you eat this (apple), the colour of the apple and the cup asked by name, the shape of the apple and the block, is this red (apple), where the ball is; held out on fresh rooms through the page host: .787 (pretrain400 .773), the demo room's 50 questions all right on 3 of 3 passes: .80 (pretrain400 .74)",
+  "lost": "what material is this (cup, green ball), is this <colour> on some things (is this yellow of the key, is this blue of the block, is this green of the apple), what colour is this of the green ball, is this round of the green ball",
+  "founder": 33400121,
+  "exported": "2026-11-14 22:36 UTC (pretraining block 400)",
+  "source": "trained on a local machine from the night's N0 checkpoint of founder 33400121 (brain_33400121_N0.npz): night.life N1 to N3 (201, 1200 and 800 blocks), then pretrain_stage.MIX (.25 x 300, .10 x 50, .05 x 50); word records off",
+  "lane": "muellerberndt/cadence lane-0100-meaning (night.py, pretrain_stage.py at 568a0ad8), the mixed code's fields at unit length (spec mixed.fields; the page host's _fields_observation)",
+  "readings": {
+   "the chamber, frozen, 96 a form": "name .99, colour_this .97 (held-out pairs .74), is_colour .70 (held-out .56), colour_of .99 (held-out .77), material .77, is_round .96, can_eat .97, shape 1.00, direction .87, imitate 1.00",
+   "fresh rooms through the page host, 300 a set": "seen pairs .887, held-out pairs .787",
+   "the same reads, the same night from N0 with the glimpse whole at unit length (control)": "room .74, seen .870, held-out .693; is_colour .55 (held-out .63)"
+  },
+  "learned": "the name of the thing in focus, its colour asked as what colour is this or by name, whether it is white, its shape, whether it is round, whether you can eat it, where a thing is (front, right, behind, left)",
+  "not_learned": "is this <colour> on unseen kind-colour pairs (near chance); the material of some things; distance",
+  "probes": "probes.json beside the brain: the association's linear read of the thing in focus with nothing heard, at any look from a cleared state (fitted over looks 1 to 4 after a clearing on 960 random rooms, checked on 240 rooms held out: kind 0.99 against 0.13 by chance, colour 0.99 against 0.20 by chance, round 1.00 against 0.70 by chance, material 0.93 against 0.33 by chance, edible 0.99 against 0.67 by chance, direction 0.96 against 0.27 by chance; at the first look kind 1.00 and colour 1.00, where the probes exported with the brain read 0.40 and 0.29); distance as exported by the meaning lane (.86 against .51)"
+ },
+ "wheel": "cadence_net-0.99.0-lane-meaning-568a0ad8-parrot-5fccf8cb.whl",
+ "wheel_sha256": "ab47bd3167872fe46f9e4f4bc7437b69bc12bee288fb3e7e606aa20b082ab174",
+ "cadence": "0.99.0 with cadence.parrot (lane-0100-parrot 5fccf8cb) and cadence.meaning (lane-0100-meaning 81474696, its host at 568a0ad8)",
+ "wheel_source": "built from muellerberndt/cadence: lane-0100-meaning at 81474696 merged with lane-0100-parrot at 5fccf8cb (the surprise fix: a surprise is a change the brain did not cause and could not predict); cadence/meaning/host.py replaced by lane-0100-meaning 568a0ad8 (an exchange begins clear at the first word heard after the turn)"
+}

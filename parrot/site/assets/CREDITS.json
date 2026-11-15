@@ -1,0 +1,468 @@
+{
+ "source": "Poly Haven (polyhaven.com)",
+ "licence": "CC0 1.0",
+ "assets": [
+  {
+   "asset": "food_apple_01",
+   "name": "Food Apple 01",
+   "type": "model",
+   "page": "https://polyhaven.com/a/food_apple_01",
+   "authors": [
+    "Oliver Harries"
+   ],
+   "licence": "CC0 1.0 (public domain)",
+   "licence_url": "https://polyhaven.com/license",
+   "used_as": "apple",
+   "file": "assets/models/apple.glb",
+   "sha256": "28b29cef98e0668a78db890860c7c2a1b6933187280b17fee40e8258839670f5",
+   "fetched": [
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/food_apple_01/food_apple_01_1k.gltf",
+     "md5": "222a8e136b40f36c1acb87a6036c1106"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/food_apple_01/food_apple_01_diff_1k.jpg",
+     "md5": "3ddf2b8313f20c95f3e04fb057b32d7b"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/food_apple_01/food_apple_01.bin",
+     "md5": "26b23e40de43097b0185a0d93cd72d3b"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/food_apple_01/food_apple_01_nor_gl_1k.jpg",
+     "md5": "e456cb63d6a4c298c826b63be0adfaf7"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/food_apple_01/food_apple_01_rough_1k.jpg",
+     "md5": "e46e242f52a3c2138a1e8c6ce0d82438"
+    }
+   ]
+  },
+  {
+   "asset": "baseball_01",
+   "name": "Baseball 01",
+   "type": "model",
+   "page": "https://polyhaven.com/a/baseball_01",
+   "authors": [
+    "Rico Cilliers"
+   ],
+   "licence": "CC0 1.0 (public domain)",
+   "licence_url": "https://polyhaven.com/license",
+   "used_as": "ball",
+   "file": "assets/models/ball.glb",
+   "sha256": "6b5a30e89f86c1e4eef20d55a5be524cc5916e73bc69c75f5cc4c09abea68bed",
+   "fetched": [
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/baseball_01/baseball_01_1k.gltf",
+     "md5": "9af29589a0a73c8b3e3f4eb8a9b8b804"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/baseball_01/baseball_01_rough_1k.jpg",
+     "md5": "3afe9705ebbab77aba56016c04e9c141"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/baseball_01/baseball_01.bin",
+     "md5": "cef635f66cb787d13c6d55cf5d1fb701"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/baseball_01/baseball_01_nor_gl_1k.jpg",
+     "md5": "73b602ac7dcbd8c739cf5c6499e714ca"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/baseball_01/baseball_01_diff_1k.jpg",
+     "md5": "516deec9f6790472953f58b83f914266"
+    }
+   ]
+  },
+  {
+   "asset": "tea_set_01",
+   "name": "Tea Set 01",
+   "type": "model",
+   "page": "https://polyhaven.com/a/tea_set_01",
+   "authors": [
+    "James Ray Cock",
+    "Jurita Burger",
+    "Rico Cilliers"
+   ],
+   "licence": "CC0 1.0 (public domain)",
+   "licence_url": "https://polyhaven.com/license",
+   "used_as": "cup",
+   "file": "assets/models/cup.glb",
+   "sha256": "bf7c644dd27e34d53966e227633a9817f5cb48be884b03a05c2931d2784d60ca",
+   "fetched": [
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/tea_set_01/tea_set_01_1k.gltf",
+     "md5": "157b3a5ace1f2dfd4419789ff4180c59"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/tea_set_01/tea_set_01.bin",
+     "md5": "9f26672d452e5d155da484951b6277ae"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/tea_set_01/tea_set_01_nor_gl_1k.jpg",
+     "md5": "5618e35b021585a23b2e2f04faa92f9b"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/tea_set_01/tea_set_01_diff_1k.jpg",
+     "md5": "e6a77ef283da8541a67cddc2ff698830"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/tea_set_01/tea_set_01_arm_1k.jpg",
+     "md5": "119115b0c556d85ec257f480b0dc58a6"
+    }
+   ]
+  },
+  {
+   "asset": "bananas",
+   "name": "Bananas",
+   "type": "model",
+   "page": "https://polyhaven.com/a/bananas",
+   "authors": [
+    "Alexander Shulha"
+   ],
+   "licence": "CC0 1.0 (public domain)",
+   "licence_url": "https://polyhaven.com/license",
+   "used_as": "banana",
+   "file": "assets/models/banana.glb",
+   "sha256": "597f3eb543edbda9ce18da329a6dc4a809aa349f2af806b06aef29c7b7031309",
+   "fetched": [
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/bananas/bananas_1k.gltf",
+     "md5": "b710301bd65174db1d3a6dccccb299e0"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/bananas/bananas_nor_gl_1k.jpg",
+     "md5": "34cd2865e2b78ef0995997c71f357ff4"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/bananas/bananas_diff_1k.jpg",
+     "md5": "e874066e400c0c04220723288505506c"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/bananas/bananas_arm_1k.jpg",
+     "md5": "71d93781b8e7774b6e303f5418e4753f"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/bananas/bananas.bin",
+     "md5": "1e1c9dfb934eb50a8edbd6ab848dc11a"
+    }
+   ]
+  },
+  {
+   "asset": "rubber_duck_toy",
+   "name": "Rubber Duck Toy",
+   "type": "model",
+   "page": "https://polyhaven.com/a/rubber_duck_toy",
+   "authors": [
+    "Plat251"
+   ],
+   "licence": "CC0 1.0 (public domain)",
+   "licence_url": "https://polyhaven.com/license",
+   "used_as": "duck",
+   "file": "assets/models/duck.glb",
+   "sha256": "a5671fe63f919f6a8d4d1dff66197c2c8b03f5eec84e2ad1a3d3df92ea40a0da",
+   "fetched": [
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/rubber_duck_toy/rubber_duck_toy_1k.gltf",
+     "md5": "da655b3c5bd4dcf29bc60a7b7bfe903c"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/rubber_duck_toy/rubber_duck_toy_diff_1k.jpg",
+     "md5": "49b9676f8d253baf6c054771fd023608"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/rubber_duck_toy/rubber_duck_toy.bin",
+     "md5": "2ab5ea380067b76e3ba7e8db8ad0844a"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/rubber_duck_toy/rubber_duck_toy_arm_1k.jpg",
+     "md5": "6128a89af1c8e20e432b54abf30c9371"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/rubber_duck_toy/rubber_duck_toy_nor_gl_1k.jpg",
+     "md5": "fb224351ee15cb9c0607d3a28a49ce1d"
+    }
+   ]
+  },
+  {
+   "asset": "lemon",
+   "name": "Lemon",
+   "type": "model",
+   "page": "https://polyhaven.com/a/lemon",
+   "authors": [
+    "Kuutti Siitonen"
+   ],
+   "licence": "CC0 1.0 (public domain)",
+   "licence_url": "https://polyhaven.com/license",
+   "used_as": "lemon",
+   "file": "assets/models/lemon.glb",
+   "sha256": "839165ef2ffb30ee47274e5489a4fddf85d9da8877b6963f9b2249a76ac71206",
+   "fetched": [
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/lemon/lemon_1k.gltf",
+     "md5": "79ad40158b71f7d08d7dcc4efc060468"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/lemon/lemon_nor_gl_1k.jpg",
+     "md5": "967ac253c8a1bc3623f1ebac3c7e543a"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/lemon/lemon_arm_1k.jpg",
+     "md5": "53c105e1a00b864cd0d41fa488f48a1a"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/lemon/lemon_diff_1k.jpg",
+     "md5": "86c47e7daf0f9ba4aa0563be6cb7297c"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/lemon/lemon.bin",
+     "md5": "357973be23fd9b4bcf2a212ef30ecc31"
+    }
+   ]
+  },
+  {
+   "asset": "food_pears_asian_01",
+   "name": "Pears Asian 01",
+   "type": "model",
+   "page": "https://polyhaven.com/a/food_pears_asian_01",
+   "authors": [
+    "Amal Kumar"
+   ],
+   "licence": "CC0 1.0 (public domain)",
+   "licence_url": "https://polyhaven.com/license",
+   "used_as": "pear",
+   "file": "assets/models/pear.glb",
+   "sha256": "bb99ecca61d6117f3d7533b93fae8c6edd1a85b97a5f133f3bc9cae5c8d84e33",
+   "fetched": [
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/food_pears_asian_01/food_pears_asian_01_1k.gltf",
+     "md5": "de92255775de37f9dd685fd73fa2e0ec"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/food_pears_asian_01/food_pears_asian_01_arm_1k.jpg",
+     "md5": "050560a051eae1544158164078cb7823"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/food_pears_asian_01/food_pears_asian_01_nor_gl_1k.jpg",
+     "md5": "78c8a12170c49d9217f86f7c04135e5b"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/food_pears_asian_01/food_pears_asian_01.bin",
+     "md5": "77ae4efe197087f8441a8c98fe719f93"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/food_pears_asian_01/food_pears_asian_01_diff_1k.jpg",
+     "md5": "aab0f3b8e260a7a17216fefad72cb0c1"
+    }
+   ]
+  },
+  {
+   "asset": "wood_table_001",
+   "name": "Wood Table 001",
+   "type": "texture",
+   "page": "https://polyhaven.com/a/wood_table_001",
+   "authors": [
+    "Dimitrios Savva",
+    "Rico Cilliers"
+   ],
+   "licence": "CC0 1.0 (public domain)",
+   "licence_url": "https://polyhaven.com/license",
+   "used_as": "table",
+   "files": {
+    "assets/tex/table_diff.jpg": "460dd08d240f4a1f02982415048c3c5c200f385db212da18dc7e2df68bf4d0be",
+    "assets/tex/table_nor.jpg": "9bf7ddf5721e225c20290f1772ae37f9bdfd49658f6d458259eb794e2149d3cf",
+    "assets/tex/table_rough.jpg": "a2ca9ae89dfe7b8e2e5e92f0aa43467845417de8a50205b5852ef0d57c7624f9"
+   },
+   "fetched": [
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/wood_table_001/wood_table_001_diff_1k.jpg",
+     "md5": "56652a7339b16a76afad20d3585f66ea"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/wood_table_001/wood_table_001_nor_gl_1k.jpg",
+     "md5": "6360e09967add8baecaa5ecc55fb5e03"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/wood_table_001/wood_table_001_rough_1k.jpg",
+     "md5": "05b60bd20a1cc4355c5d73a99b245d44"
+    }
+   ]
+  },
+  {
+   "asset": "wood_floor",
+   "name": "Wood Floor",
+   "type": "texture",
+   "page": "https://polyhaven.com/a/wood_floor",
+   "authors": [
+    "Dimitrios Savva"
+   ],
+   "licence": "CC0 1.0 (public domain)",
+   "licence_url": "https://polyhaven.com/license",
+   "used_as": "floor",
+   "files": {
+    "assets/tex/floor_diff.jpg": "2a1c07687b6dbb214c4b9213739c6d92d425f1f0fc8ab3ac157f105d78240789",
+    "assets/tex/floor_nor.jpg": "452247f0d0d1b7fc7f8324ff3b6ed60bcc6de1405f4284eeb8d9bce90d4939c2",
+    "assets/tex/floor_rough.jpg": "061f1e1293251b2d28c76e3fac1ea9452b0e8648bb8f9b3728e09db386166e5c"
+   },
+   "fetched": [
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/wood_floor/wood_floor_diff_1k.jpg",
+     "md5": "b7e927d2bf2f8f103820ff3890c8407c"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/wood_floor/wood_floor_nor_gl_1k.jpg",
+     "md5": "620f174d2c09b579c5d02d37b2106668"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/wood_floor/wood_floor_rough_1k.jpg",
+     "md5": "36146634f1dbd1bc30cd071857584c10"
+    }
+   ]
+  },
+  {
+   "asset": "beige_wall_001",
+   "name": "Beige Wall 001",
+   "type": "texture",
+   "page": "https://polyhaven.com/a/beige_wall_001",
+   "authors": [
+    "Dimitrios Savva",
+    "Rico Cilliers"
+   ],
+   "licence": "CC0 1.0 (public domain)",
+   "licence_url": "https://polyhaven.com/license",
+   "used_as": "wall",
+   "files": {
+    "assets/tex/wall_diff.jpg": "72104704d0b9bd3713c5f6238971252b63eccf6e61263059c674caa8f3d0fa6d",
+    "assets/tex/wall_nor.jpg": "cec747be50f91da0693986080b6f59ef868d53cb2ab7d577982165ece63ed75e",
+    "assets/tex/wall_rough.jpg": "fc8328f47f4d2d82d5311a75bcb5c8cd8979d171a0ee097ad9e44ca9c5a00d60"
+   },
+   "fetched": [
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/beige_wall_001/beige_wall_001_diff_1k.jpg",
+     "md5": "a99610d7d72ec6fb20ae991ad69b3eb7"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/beige_wall_001/beige_wall_001_nor_gl_1k.jpg",
+     "md5": "2f5fc5b63c425b359089468f4d719ef5"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/beige_wall_001/beige_wall_001_rough_1k.jpg",
+     "md5": "40d8616d65055c4c984a2807ce933287"
+    }
+   ]
+  },
+  {
+   "asset": "bark_brown_02",
+   "name": "Bark Brown 02",
+   "type": "texture",
+   "page": "https://polyhaven.com/a/bark_brown_02",
+   "authors": [
+    "Rob Tuytel"
+   ],
+   "licence": "CC0 1.0 (public domain)",
+   "licence_url": "https://polyhaven.com/license",
+   "used_as": "bark",
+   "files": {
+    "assets/tex/bark_diff.jpg": "920fa0bed0c9d78c1d530e99795113afd532d7db746de440f4a85d7c83ed0f1a",
+    "assets/tex/bark_nor.jpg": "0d5e691e8ad8bcd093a3587887fda2a6b4a948b5708a4f256f7919584c6eb857",
+    "assets/tex/bark_rough.jpg": "68125592de36e15bae7aa6db85c4d135aeb7e5653199ba226483a70f6d69837d"
+   },
+   "fetched": [
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/bark_brown_02/bark_brown_02_diff_1k.jpg",
+     "md5": "6669cca520594bdca19f94084984ab72"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/bark_brown_02/bark_brown_02_nor_gl_1k.jpg",
+     "md5": "1cad3fe0349a44df2d4d1c2859c79920"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/bark_brown_02/bark_brown_02_rough_1k.jpg",
+     "md5": "bbcde696e5b9418cdcb2abe638965417"
+    }
+   ]
+  },
+  {
+   "asset": "plywood",
+   "name": "Plywood",
+   "type": "texture",
+   "page": "https://polyhaven.com/a/plywood",
+   "authors": [
+    "Rob Tuytel"
+   ],
+   "licence": "CC0 1.0 (public domain)",
+   "licence_url": "https://polyhaven.com/license",
+   "used_as": "block",
+   "files": {
+    "assets/tex/block_diff.jpg": "800905650fc6cab2fe7c77c41851f8ea89669f1287ad5ce67c48f435654c0af8",
+    "assets/tex/block_nor.jpg": "a0d8459eb2586435790225440319586775c9b7dff8441062e077501fd0811e53",
+    "assets/tex/block_rough.jpg": "c4600551fa90bf1222de07b5d92e09456501f0449a4f315c203770bfcbd97aaf"
+   },
+   "fetched": [
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/plywood/plywood_diff_1k.jpg",
+     "md5": "8032b768029adffbbfb223dd890102de"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/plywood/plywood_nor_gl_1k.jpg",
+     "md5": "0203f642273e4a3697daf7a6034a4ae5"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/plywood/plywood_rough_1k.jpg",
+     "md5": "d46c674551da8c15b2a82000e22fc60b"
+    }
+   ]
+  },
+  {
+   "asset": "oak_veneer_01",
+   "name": "Oak Veneer 01",
+   "type": "texture",
+   "page": "https://polyhaven.com/a/oak_veneer_01",
+   "authors": [
+    "Jenelle van Heerden"
+   ],
+   "licence": "CC0 1.0 (public domain)",
+   "licence_url": "https://polyhaven.com/license",
+   "used_as": "post",
+   "files": {
+    "assets/tex/post_diff.jpg": "c14681f72f59f17bff568cae7a837641443b607b899f0c279cd64a5638f877a7",
+    "assets/tex/post_nor.jpg": "1297acf7b4476d5ccd83cc8b27be96aa6110f7a9c3a40be0bd767bf81b17db01",
+    "assets/tex/post_rough.jpg": "ca2af5649b628ef05f196793d68cdca874c12ceb6e9ae566976546d9dd5a2604"
+   },
+   "fetched": [
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/oak_veneer_01/oak_veneer_01_diff_1k.jpg",
+     "md5": "39a99df4e328d62d74f3122722a64a95"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/oak_veneer_01/oak_veneer_01_nor_gl_1k.jpg",
+     "md5": "d05406f5fdaf51f0d7b115b35d9af1b7"
+    },
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/oak_veneer_01/oak_veneer_01_rough_1k.jpg",
+     "md5": "a19b44176a078b9ae93314133848c9aa"
+    }
+   ]
+  },
+  {
+   "asset": "lebombo",
+   "name": "Lebombo",
+   "type": "hdri",
+   "page": "https://polyhaven.com/a/lebombo",
+   "authors": [
+    "Greg Zaal"
+   ],
+   "licence": "CC0 1.0 (public domain)",
+   "licence_url": "https://polyhaven.com/license",
+   "used_as": "light",
+   "file": "assets/room.hdr",
+   "sha256": "a02c9615adeba91a753c3e4737c3ce7a719273df822eeaa85d24982bd43c9ecb",
+   "fetched": [
+    {
+     "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/lebombo_1k.hdr",
+     "md5": "eb75d6df7d824e83940e2c7f2ef65c70"
+    }
+   ]
+  }
+ ]
+}
