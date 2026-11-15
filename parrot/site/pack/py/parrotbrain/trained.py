@@ -12,7 +12,8 @@ export protocol says (benchmarks/meaning/export_page.py, COORD 2026-11-13 19:05 
 - `moment`: what it sees (each thing's kind, colour, material, direction from the head and
   distance; the focus; during a scan the glimpse on one thing), the word heard (or None) and
   `more` (the trainer has more to say: its voice is held); it returns the word it says, or None;
-- `pistachio`: the last reply's moments taught with its own words (the three-factor rule);
+- `pistachio`: the last reply's moments taught with its own words (the three-factor rule), where the
+  brain would not give them by itself (the surprise rule: an answer it gives anyway moves no weight);
 - `correct`: the trainer's right word kept as a record under the question's pattern, then heard;
 - `over`: the exchange ends with no pistachio;
 - `look`: between questions, it sees the room with its focus on a thing, its voice held;
@@ -39,6 +40,7 @@ that ends without one lets them go a little (`parrotbrain.host`: `reward_exchang
 """
 from __future__ import annotations
 
+import dataclasses
 import json
 import time
 from pathlib import Path
@@ -98,6 +100,12 @@ class Host(Composed):
         # the glimpse and the last word heard, so a recall at the turn returned the thing's old answer
         # whatever was asked (on fresh rooms with unseen kind-colour pairs: .69 with them, .77 without)
         self.meaning.records = None
+        # a pistachio's lesson is taken where the brain would not give the paid answer by itself (the library's
+        # surprise rule): an answer it gives anyway is no surprise and moves no weight. Without the rule four
+        # pistachios for the apple's "red" turned its answer for the cup's colour to "red"; with it twelve leave
+        # every other answer standing.
+        learner = self.meaning.brain.learner
+        learner.config = dataclasses.replace(learner.config, surprise=True)
         if (self.meaning.spec.get("mixed") or {}).get("fields"):
             self.meaning.observation = self._fields_observation  # the code its brain was trained with
         self.load_s = time.perf_counter() - began

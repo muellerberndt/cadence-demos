@@ -13,11 +13,14 @@ its onset to the quiet after it. A phrase is kept whole, as a parrot takes it.
   replaced last; a record told once and never again fades. The record's depth is the sound's
   strength: a sound whose record is deep enough is one the parrot can say back. No count of its own
   is kept here: depth and fading are the library's.
-- **Synapses** (`cadence.SynapticMemory`): the sound's code as the key and a meaning as the value (one
+- **Synapses** (`cadence.SynapticMemory`): the record's own address as the key (a fixed random direction
+  of its slot, through the library's pattern separator: a record's links are its own, however alike two
+  sounds are) and a meaning as the value (one
   unit per word the parrot's brain knows: things, colours, shapes, directions, yes and no, the
   question words; and one per question its brain was taught, a sequence of those words such as
   "what colour is this"). This is the sound-to-meaning link: a heard sound reads its record, the
-  record's key reads the synapses, and the strongest unit is what the sound stands for. Read backwards
+  record's address reads the synapses, and the strongest unit is what the sound stands for. What a
+  sound with no link of its own stands for is read from the records it lies nearest (`like`). Read backwards
   (from a word to the records), it gives the sound to say for a word. A link is taught with a lesson
   (`link`): the starting sounds' teaching, or a pistachio (below). Repetition accumulates in the slow,
   consolidated matrix (the library's rule).
@@ -180,6 +183,7 @@ def align(take: np.ndarray, ref: np.ndarray) -> np.ndarray:
 
 NEAR = 5  # the records nearest a take (lined up in time) that are kept as what it sounds like
 SAME_WORD = 0.28  # the time-aligned distance (relative to the sounds' own spread) under which a take is told again as the record nearest it (measured on 295 takes of 45 words and phrases by five voices: over half of one voice's takes of an utterance fall under it, five of 6,607 pairs of different utterances do)
+YOUNG, SAME_YOUNG, APART = 6, 0.42, 1.15  # a record heard fewer than YOUNG times is a sound in the learning: a take within SAME_YOUNG of it is told again as it, where the next record lies APART times farther (a sound said three times is one record; a record heard often takes only takes close to it)
 LIKE_WITHIN = 0.55  # a sound within this of its nearest record can be taken for what the records near it stand for
 LIKE_SOFT = 0.08  # among the nearest records, one this share farther than the nearest counts a third as much
 AGREED, AGREED_CLEAR = 0.6, 0.35  # the records near a sound agree on a meaning: its share of their links, and its lead over the next
@@ -293,9 +297,11 @@ class SoundMemory:
                                       hold=36000.0, idle=40.0, depth=2.0)
         # (a lesson's fresh part keeps 0.97 through each later lesson: a meaning one pistachio taught lasts through
         # some thirty more lessons, and repetition consolidates it)
-        # The keys pass a pattern separator (the library's: a wide random code, its strongest few units kept),
-        # so a lesson on one sound barely moves the links of another sound, however alike their codes: a
-        # sound's own links are its own lessons. What sounds alike is found by lining sounds up (`like`).
+        # The links' key is the record's own address (`address`: a fixed random direction of its slot), through
+        # a pattern separator (the library's: a wide random code, its strongest few units kept), so a lesson on
+        # one record leaves every other record's links as they were, however alike their sounds: with the
+        # sound's code as the key, one visitor's "apple" read "red" at .3 and more after a pistachio for their
+        # "red". What sounds alike is found by lining sounds up (`like`).
         self.synapses = SynapticMemory(pre=np.arange(CODE_FRAMES * BANDS), post=np.arange(len(self.words)), rule="delta",
                                        decay=0.97, consolidation=0.05,
                                        separator=PatternSeparator(inputs=CODE_FRAMES * BANDS, expansion=SEPARATE, winners=WINNERS, seed=31))
@@ -399,7 +405,12 @@ class SoundMemory:
         order = np.argsort(d)[:NEAR]
         self.near = [(int(slots[i]), round(float(d[i]), 3)) for i in order]
         best, bd = self.near[0]
-        return (best if bd < SAME_WORD else None), bd
+        if bd < SAME_WORD:
+            return best, bd
+        nxt = self.near[1][1] if len(self.near) > 1 else np.inf
+        if self.heard[best] < YOUNG and bd < SAME_YOUNG and nxt >= APART * bd:
+            return best, bd
+        return None, bd
 
     def distances(self, mine: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         """How far a take's shape is from every record of a like length, each lined up in time (the records
@@ -439,7 +450,7 @@ class SoundMemory:
             for s in range(n):
                 kept = self._cues.get(s)
                 if kept is None or kept[0] != (int(self.born[s]), int(self.heard[s])):
-                    kept = ((int(self.born[s]), int(self.heard[s])), self.cue(self.records.keys[s])[0])
+                    kept = ((int(self.born[s]), int(self.heard[s])), self.cue(self.address(s))[0])
                     self._cues[s] = kept
                 cues.append(kept[1])
             self._reads = np.stack(cues) @ self.synapses.strength[0]
@@ -462,8 +473,13 @@ class SoundMemory:
             self._meanings = [((self.words[int(j)] if b >= LINKED and b - c >= CLEAR else None), round(float(b), 3)) for j, b, c in zip(top, best, second)]
         return self._meanings
 
+    def address(self, slot: int) -> np.ndarray:
+        """A record's own address for its links: a fixed random direction of its slot and of the count of
+        records the slot has held (another record in the slot has another address, and none of its links)."""
+        return np.random.default_rng([31, int(slot), int(self.born[slot])]).normal(size=CODE_FRAMES * BANDS)
+
     def cue(self, keys: np.ndarray) -> np.ndarray:
-        """The synapses' own cue for sound codes: each code through the pattern separator, at unit length."""
+        """The synapses' own cue for keys: each through the pattern separator, at unit length."""
         k = np.atleast_2d(np.asarray(keys, np.float64))
         c = self.synapses.separator.code(k / np.maximum(np.linalg.norm(k, axis=1, keepdims=True), 1e-12))
         return c / np.maximum(np.linalg.norm(c, axis=1, keepdims=True), 1e-12)
@@ -533,11 +549,11 @@ class SoundMemory:
         k = int(self.rng.choice(len(idx), p=p))
         return self.words[idx[k]], round(float(p[k]), 3)
 
-    def guess_sound(self, word: str) -> tuple[int | None, float]:
-        """A sound to say for a word that recalls none: one of the sounds it can say, drawn by each sound's
-        link to the word less its strongest link to anything else (a sound that stands for another meaning is
-        an unlikely name for this one)."""
-        slots = self.sayable()
+    def guess_sound(self, word: str, but: int = -1) -> tuple[int | None, float]:
+        """A sound to say for a word that recalls none: one of the sounds it can say (`but` the sound it is
+        answering), drawn by each sound's link to the word less its strongest link to anything else (a sound
+        that stands for another meaning is an unlikely name for this one)."""
+        slots = [s for s in self.sayable() if s != but]
         if word not in self.words or not slots:
             return None, 0.0
         r, j = self.reads(), self.words.index(word)
@@ -548,7 +564,7 @@ class SoundMemory:
 
     def _toward(self, slot: int, word: str, target: float, amount: float = 0.0) -> None:
         """One link's lesson alone (the other meanings are no teaching targets): its read moves to `target`."""
-        k = self.records.keys[slot].astype(np.float64)
+        k = self.address(slot)
         value, seen = np.zeros(len(self.words)), np.zeros(len(self.words), bool)
         j = self.words.index(word); value[j], seen[j] = target, True
         self.synapses.observe((k / max(float(np.linalg.norm(k)), 1e-12))[None, :], value[None, :], value_mask=seen[None, :], salience=np.array([max(0.0, amount)]))
@@ -592,11 +608,11 @@ class SoundMemory:
         return best, top[1]
 
     def link(self, slot: int, word: str | None, amount: float = 1.0) -> None:
-        """A lesson: the record's sound and the word linked (one delta step of the synapses from the
-        sound's code to the word's unit, as large as the lesson's amount)."""
+        """A lesson: the record and the word linked (one delta step of the synapses from the record's
+        address to the word's unit, as large as the lesson's amount)."""
         if word not in self.words or not 0 <= slot < self.records.count:
             return
-        k = self.records.keys[slot].astype(np.float64)
+        k = self.address(slot)
         onehot = np.zeros(len(self.words)); onehot[self.words.index(word)] = 1.0
         self.synapses.observe((k / max(float(np.linalg.norm(k)), 1e-12))[None, :], onehot[None, :], salience=np.array([max(0.0, amount)]))
         self._changed()

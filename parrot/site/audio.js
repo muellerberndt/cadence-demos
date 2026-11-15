@@ -77,14 +77,16 @@ export class ParrotAudio {
    *  The brain's ear is told, so it does not take its own voice for the visitor's. */
   ownVoice(now = performance.now()) { return now < this.voiceUntil + 250; }
   said(spoken, seconds) { if (spoken) this.voiceUntil = Math.max(this.voiceUntil, performance.now() + 1000 * seconds); return spoken; }
-  /** For the page's checks: samples given to the ear along the microphone's own path (not played aloud), as a
-   *  visitor's voice reaches it. Resolves with the moment (the page's clock) the sound began and its length. */
-  async hearPcm(pcm, rate = RATE, { loop = false } = {}) {
+  /** For the page's checks: samples given to the ear along the microphone's own path, as a visitor's voice
+   *  reaches it (not played aloud; `aloud`: also to the page's output, so a recording of the page holds the
+   *  visitor's voice). Resolves with the moment (the page's clock) the sound began and its length. */
+  async hearPcm(pcm, rate = RATE, { loop = false, aloud = false } = {}) {
     await this.unlock(); await this.openEar();
     const buf = this.ctx.createBuffer(1, pcm.length, rate); buf.copyToChannel(Float32Array.from(pcm), 0);
     const node = this.ctx.createBufferSource(); node.buffer = buf; node.loop = loop; // (a loop: a room's background, all the time)
     if (!this.testIn) { this.testIn = this.ctx.createGain(); this.testIn.connect(this.node); }
     node.connect(this.testIn);
+    if (aloud) node.connect(this.gain);
     const ended = new Promise((resolve) => { node.onended = resolve; });
     const startedAt = performance.now(); node.start();
     return { startedAt, duration: buf.duration, ended };

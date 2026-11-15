@@ -762,6 +762,7 @@ const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&l
 /** The bubble over the parrot's head: what it hears (the visitor's word) or says. */
 function bubble(text, who) {
   const b = askEl.bubble; b.hidden = !text; b.textContent = text || ''; b.className = `say-bubble ${who || ''}`;
+  if (text) flow.bubble = { text, who: who || '', at: performance.now() }; // (the last thing shown by the parrot, for the page's checks)
   clearTimeout(bubble.timer); if (text) bubble.timer = setTimeout(() => { b.hidden = true; }, who === 'it' ? 3200 : 1500);
 }
 /** The visitor's question as a subtitle at the foot of the room (the parrot's answer alone goes by the parrot). */
@@ -1157,7 +1158,7 @@ function frame(now) {
     parrot.update(dt);
     placeFocus();
     // (while an utterance is being followed the moments come as fast as the brain takes them, at most twenty a second: each word lights nearer the moment it is said)
-    if (now - state.lastMomentAt >= (flow.hearing && state.trained ? MOMENT_MS / 2 : MOMENT_MS) || !state.lastMomentAt) { state.lastMomentAt = now; moment(now); }
+    if (now - state.lastMomentAt >= (state.trained && (flow.hearing || trained.queue.length) ? MOMENT_MS / 2 : MOMENT_MS) || !state.lastMomentAt) { state.lastMomentAt = now; moment(now); } // (and while an exchange's moments wait, so the answer comes sooner)
     if (!DEMO) view?.setJoints(parrot.joints.pos, parrot.joints.target);
     syncTags(); if (!DEMO) drawFields(); placeBubble();
   }
@@ -1245,7 +1246,7 @@ ui.pistachio.addEventListener('click', () => {
     state.pistachios += 1; ui.pistachios.textContent = String(state.pistachios);
     brain3d?.reward();
     $('dopamine').hidden = false;
-    $('dopamine-note').textContent = forAnswer ? ` It pays the trained brain\u2019s reply \u201c${forAnswer.said.join(', ')}\u201d: one small lesson for each word it said (a word once), its own words the labels; the tracts the lesson changed glow.`
+    $('dopamine-note').textContent = forAnswer ? ` It pays the trained brain\u2019s reply \u201c${forAnswer.said.join(', ')}\u201d: a lesson for each word it said (a word once), its own words the labels, taken where the brain would not have said the word by itself; the tracts a lesson changed glow.`
       : typeof state.lastReply?.vta === 'number' ? 'Its dopamine runs out from the VTA (the gold wash), and the tracts it strengthens glow.' : 'This brain has no dopamine signal: the view marks the pistachio arriving, and no synapse changes.';
     clearTimeout(state.dopTimer); state.dopTimer = setTimeout(() => { $('dopamine').hidden = true; }, 4200);
   }, () => {});

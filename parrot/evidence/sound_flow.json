@@ -1,7 +1,7 @@
 {
  "what": "The parrot page's flow of sounds as symbols, measured 2026-11-15: the starting memory's build, the page's headless checks (tests/test_sound_symbols.py) and offline readings on the page's own host code.",
  "starting_memory": {
-  "records": 231,
+  "records": 221,
   "meanings_linked": 42,
   "other_voices": {
    "t_mark": 44,
@@ -9,14 +9,14 @@
    "t_hope": 45,
    "t_ranbir": 41
   },
-  "link_lessons": 9,
-  "link_min": 0.867,
+  "link_lessons": 2,
+  "link_min": 0.863,
   "clips_taken_for_their_meaning": 1.0,
   "clips_followed_word_by_word": 1.0,
   "words_it_can_say": 25
  },
  "presets": {
-  "note": "the twelve preset questions, two rounds, a pistachio after each right answer; the machine's load was about 10 during this run (an earlier run at load 3: words lit a median 212 ms after their start, p90 288; answers a median 658 ms after the question's end, max 896; 23 of 24 right, one colour answer unsettled by the pistachios before it)",
+  "note": "the twelve preset questions, two rounds, a pistachio after each right answer. The times of this run were taken with the machine's load between 20 and 220 from other work; on a quiet machine (load 3) words lit a median 212 ms after their start (p90 288, max 327) and answers began a median 658 ms after the question's end (max 896)",
   "asked": 24,
   "answered": 24,
   "understood": 24,
@@ -28,17 +28,17 @@
   "followed_ok": 24,
   "words_followed": 92,
   "word_delay_ms": {
-   "median": 406,
-   "p90": 514,
-   "max": 653,
+   "median": 892,
+   "p90": 1162,
+   "max": 1803,
    "within_150": 0,
-   "within_250": 10
+   "within_250": 0
   },
   "answer_ms": {
-   "median": 1147,
-   "p90": 1369,
-   "max": 1552,
-   "under_1500": 23,
+   "median": 3408,
+   "p90": 3924,
+   "max": 4206,
+   "under_1500": 0,
    "of": 24
   },
   "paid_links": 24
@@ -158,11 +158,11 @@
   "ok": true
  },
  "visitors_never_heard_offline": {
-  "note": "four voices in no record (a British man, an Australian man, an Indian woman, an American woman), their takes as the ear hears them, nothing written: B the meaning each take is taken for; C after one pistachio on that visitor's first take of the utterance",
+  "note": "four voices in no record (a British man, an Australian man, an Indian woman, an American woman), their clean takes as the ear hears them, nothing written: B the meaning each take is taken for; C after one pistachio on that visitor's first take of the utterance. With the woman's records alone B read 65 right of 160.",
   "B archer": {
    "n": 40,
-   "right": 33,
-   "wrong": 1,
+   "right": 34,
+   "wrong": 0,
    "none": 6,
    "evidence_right": 36
   },
@@ -171,42 +171,42 @@
    "right": 24,
    "wrong": 0,
    "none": 2,
-   "evidence_right": 25
+   "evidence_right": 24
   },
   "B steve": {
    "n": 40,
-   "right": 30,
-   "wrong": 4,
-   "none": 6,
+   "right": 31,
+   "wrong": 1,
+   "none": 8,
    "evidence_right": 31
   },
   "C steve": {
    "n": 26,
    "right": 23,
-   "wrong": 1,
-   "none": 2,
-   "evidence_right": 23
+   "wrong": 0,
+   "none": 3,
+   "evidence_right": 24
   },
   "B zara": {
    "n": 40,
-   "right": 25,
-   "wrong": 6,
-   "none": 9,
-   "evidence_right": 26
+   "right": 24,
+   "wrong": 3,
+   "none": 13,
+   "evidence_right": 30
   },
   "C zara": {
    "n": 26,
-   "right": 24,
-   "wrong": 0,
-   "none": 2,
-   "evidence_right": 23
+   "right": 21,
+   "wrong": 1,
+   "none": 4,
+   "evidence_right": 24
   },
   "B dakota": {
    "n": 40,
    "right": 28,
-   "wrong": 4,
-   "none": 8,
-   "evidence_right": 33
+   "wrong": 2,
+   "none": 10,
+   "evidence_right": 30
   },
   "C dakota": {
    "n": 26,
@@ -217,37 +217,45 @@
   },
   "B all": {
    "n": 160,
-   "right": 116,
-   "wrong": 15,
-   "none": 29,
-   "evidence_right": 126
+   "right": 117,
+   "wrong": 6,
+   "none": 37,
+   "evidence_right": 127
   },
   "B phrases": {
    "n": 96,
-   "right": 87,
-   "wrong": 6,
-   "none": 3,
-   "evidence_right": 89
+   "right": 88,
+   "wrong": 1,
+   "none": 7,
+   "evidence_right": 92
   },
   "C all": {
    "n": 104,
-   "right": 95,
+   "right": 92,
    "wrong": 1,
-   "none": 8,
-   "evidence_right": 94
+   "none": 11,
+   "evidence_right": 95
   },
   "C phrases": {
    "n": 60,
-   "right": 60,
-   "wrong": 0,
-   "none": 0,
-   "evidence_right": 59
+   "right": 57,
+   "wrong": 1,
+   "none": 2,
+   "evidence_right": 60
   }
  },
  "pistachio_and_other_answers": {
-  "note": "the twelve presets in rounds through the trained host, a pistachio after each right answer",
-  "looks_between_reply_and_pistachio": "65 of 72 and 137 of 144 right",
-  "resting_from_reply_to_pistachio": "143 of 144, 72 of 72, 144 of 144, 71 of 72 right",
-  "no_pistachio": "48 of 48 right"
+  "note": "the trained host offline",
+  "the_twelve_presets_in_rounds_a_pistachio_after_each_right_answer": {
+   "looks_between_reply_and_pistachio": "65 of 72 and 137 of 144 right",
+   "resting_from_reply_to_pistachio": "143 of 144, 72 of 72, 144 of 144, 71 of 72 right",
+   "no_pistachio": "48 of 48 right"
+  },
+  "one_answer_paid_twelve_times": {
+   "amount_.05": "the cup's colour turns red after 4 pistachios for the apple's red, and stays",
+   "amount_.02": "on and off from 4",
+   "amount_.01": "once, at 7",
+   "with_the_surprise_rule": "no weight moves; six probe answers right after every pistachio"
+  }
  }
 }
