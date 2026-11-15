@@ -13,13 +13,14 @@
 
 ▶ [Watch the video](https://www.youtube.com/watch?v=amR3cnrmgDo)
 
-An African Grey parrot whose Cadence brain hears a preset question as sound and answers in sound.
-Each sound it keeps is a record in the library's long-term memory, linked to a word by synapses: a
-heard word that names a thing lights that thing's tag in the brain view, and an answer brings back
-its sound. The questions are presets, spoken one word at a time with short pauses, and the brain
-answers about the thing in focus. The folder is a preview on a development build of the Cadence
-library, included in the folder. The [Parrot README](parrot/README.md) lists what works and what
-it does not do, and [ATTRIBUTION.md](parrot/ATTRIBUTION.md) credits every asset.
+An African Grey parrot whose Cadence brain hears a spoken question and answers in sound. Each
+sound it keeps is a record in the library's long-term memory, linked to its meaning by synapses:
+each word of a question it knows lights as it is spoken, and an answer brings back its sound. The
+questions come from a list and play as spoken sentences; the ear takes a whole utterance for a
+question it keeps a sound for, and the brain answers about the thing in focus. The folder is a
+preview on a development build of the Cadence library, included in the folder. The
+[Parrot README](parrot/README.md) lists what works and what it does not do, and
+[ATTRIBUTION.md](parrot/ATTRIBUTION.md) credits every asset.
 
 ```sh
 python3 -m http.server 8842 --directory parrot/site   # open http://localhost:8842/ in Chrome
@@ -135,7 +136,7 @@ mark, and has a help page; [shared/STANDARD.md](shared/STANDARD.md) states the s
 | [Connectome](connectome/) · [live](https://cadence.floatingpragma.ai/demos/connectome) | **A brain on real animal wiring that learns.** Cadence runs wiring measured cell by cell in real animals as a live brain. A fish's gaze circuit holds a glance in its own activity: teach it to hold, let go and hold again, and its measured connections learn and keep what they learned. | Cadence rate patches in JavaScript, with plastic fish connections and declared body models |
 | [Patch World](patch-world/) · [live](https://cadence.floatingpragma.ai/demos/patch-world) | **A brain that learns while it lives.** Each creature's Cadence brain has real memory and a real state, runs in real time and learns while it lives. When winter makes berries poisonous, learners learn to leave them (99% eaten in summer, 5% late in winter); frozen twins do not. | One continuing `Brain.live` brain per creature, bred by evolution; in the browser, the released library itself, in Pyodide |
 | [Castlevania](castlevania/) · [watch](https://cadence.floatingpragma.ai/demos/castlevania) | **Real memory, a real state, in real time.** A frozen Cadence brain plays from what its eye sees, with a memory of this game's moments and a state it carries from move to move. A look-ahead on the emulator checks its moves near enemies: stage 3 on all nine starts, lives lost 36 to 5. | A deep `Brain.compose` with recall, raised by a savestate teacher and search; a local server runs the emulator |
-| [Parrot](parrot/) · preview | **Sounds as symbols.** A parrot's brain hears a preset question as sound and answers in sound: each sound it keeps is linked to a word, and an answer brings back its sound. The questions are spoken one word at a time, and it answers about the thing in focus. | A development build of the library with `cadence.meaning` and `cadence.parrot`, included in the folder; in the browser, in Pyodide |
+| [Parrot](parrot/) · preview | **Sounds as symbols.** A parrot's brain hears a spoken question and answers in sound: each sound it keeps is linked to its meaning, and an answer brings back its sound. The questions come from a list, and it answers about the thing in focus. | A development build of the library with `cadence.meaning` and `cadence.parrot`, included in the folder; in the browser, in Pyodide |
 
 ## Putting a demo on your own site
 

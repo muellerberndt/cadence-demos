@@ -9,17 +9,17 @@
 
 **A brain that hears sound and answers in sound, with sounds as its symbols.** An African Grey
 parrot sits on a perch among a few things, and its brain is drawn beside it as a bird's brain. A
-preset question plays as sound and reaches the parrot's ear. Each sound the ear keeps is linked to
-a word: a heard word lights in the question's subtitle, and a word that names a thing on the table
-lights that thing's tag in the brain view. A trained Cadence brain settles on an answer word, and
-the answer brings back the sound kept for that word, which the parrot says. Everything runs in the
-browser; there is no server.
+question from the list plays as a spoken sentence and reaches the parrot's ear. Each sound the ear
+keeps is linked to a meaning, a word or a question: each word of a question it knows lights as it
+is spoken, and a word that names a thing on the table lights that thing's tag. A trained Cadence brain
+settles on an answer word, and the answer brings back the sound kept for that word, which the
+parrot says. Everything runs in the browser; there is no server.
 
-Why it matters for Cadence: a word's sound is a memory that is read in both directions. The ear
-keeps each sound as a record in the library's long-term memory (`cadence.LongTermMemory`), and
-synapses link the record to a word (`cadence.SynapticMemory`). Hearing reads from a sound to its
-word; speaking reads the same synapses backwards, from a word to its sound. The answer between the
-two is the settled state of one trained `Brain`.
+Why it matters for Cadence: a sound is a memory that is read in both directions. The ear keeps each
+utterance (a word or a whole spoken phrase) as a record in the library's long-term memory
+(`cadence.LongTermMemory`), and synapses link the record to its meaning (`cadence.SynapticMemory`).
+Hearing reads from a sound to its meaning; speaking reads the same synapses backwards, from a word
+to its sound. The answer between the two is the settled state of one trained `Brain`.
 
 The page is a step of the parrot goal
 ([cadence#331](https://github.com/muellerberndt/cadence/issues/331)); the trained brain comes
@@ -37,10 +37,13 @@ Open <http://localhost:8842/> in Chrome. Any static file server works. The first
 Pyodide and NumPy from jsDelivr and the fonts from Google Fonts, then the brain from the folder (a
 file of tens of megabytes), so it takes a while. Sound plays from the first click on the page.
 
-Under **Ask it**, pick a question and press **Ask**. The microphone is optional: the preset
+Under **Ask it**, pick a question and press **Ask**. The microphone is optional: the list's
 questions reach the ear inside the page. With the microphone on (`localhost` is a secure page, the
-browser asks first), the ear hears you: a word it matches to a sound it keeps lights that word's
-tag. Nothing is recorded or sent anywhere.
+browser asks first), the ear hears you. Nothing is recorded or sent anywhere.
+
+The switch over the room has two ways of attending. **Curious**: the parrot looks at the things and
+answers a question about the thing in focus. **Listen to me**: it looks at you, keeps what it hears
+and says it back.
 
 `?mic=off` starts with the microphone off, `?look=anime` picks the anime body,
 `?layout=classic` shows the earlier panels, and `?brain=composed|placeholder|off` picks another
@@ -48,67 +51,88 @@ brain or none.
 
 ## What works
 
-The preset questions under **Ask it**, each in the room the page starts with (an apple, a block, a
-cup, a key and a green ball). The page puts the thing a preset is about in focus.
+The questions of the list under **Ask it**, each in the room the page starts with (an apple, a
+block, a cup, a key and a green ball). Each plays as a woman's spoken sentence. The ear takes the
+whole utterance for the question its record is linked to, and the brain hears that question's
+words. The page puts the thing a listed question is about in focus.
 
-| Question | Thing in focus | Answer |
-| --- | --- | --- |
-| What is this? | the key | key |
-| What color is this? | the block | blue |
-| Is this white? | the cup | yes |
-| Where is the cup? | the cup | behind |
-| Can you eat this? | the apple | yes |
-| What color has the apple? | the apple | red |
-| Where is the ball? | the green ball | right |
-| What shape has the apple? | the apple | round |
-| Is this red? | the apple | yes |
-| What color has the cup? | the cup | white |
-| What shape has the block? | the block | no |
+| Question | Thing in focus | Taken for | Answer |
+| --- | --- | --- | --- |
+| What is this? | the key | what is this | key |
+| What colour? | the block | what colour is this | blue |
+| Is this white? | the cup | is this white | yes |
+| Where is the cup? | the cup | where is the cup | behind |
+| Can you eat it? | the apple | can you eat this | yes |
+| What colour is the apple? | the apple | what colour has the apple | red |
+| Where is the ball? | the green ball | where is the ball | right |
+| What shape is the apple? | the apple | what shape has the apple | round |
+| Is this red? | the apple | is this red | yes |
+| What colour is this? | the cup | what colour is this | white |
+| Where is it? | the cup | where is the thing in focus | behind |
+| What colour is the cup? | the cup | what colour has the cup | white |
 
-The shape answer is "round" or "no": the brain's voice has no word for another shape.
+`site/tests/test_sound_symbols.py` checks this on the real page in a headless Chromium. Its
+sections:
 
-`site/tests/test_sound_symbols.py` checks every preset on the real page in a headless Chromium:
-each word of the question is heard as sound (no text stands in), the answer is right, the answer
-is said with a kept sound whose record is linked to the answer's word, and Whisper reads that
-sound as the word. It then plays the word "apple" in a voice the parrot never heard through a
-stand-in microphone, with the apple in focus, and checks that the apple's tag lights in the brain
-view (after a pistachio, where the ear does not link the sound to "apple" at once).
+- `presets`: every listed question plays into the ear. The utterance is taken for its meaning by
+  its record's link (no guess), every word is known as it is spoken, the answer is right, it is said
+  with the sound linked to the word in the parrot's own rendering, and Whisper reads that sound as
+  the word. A pistachio after an answer pays the brain's lesson and the links.
+- `mic`: through a stand-in microphone, in Listen to me, a word in a voice the parrot never heard
+  is kept as one utterance and said back.
+- `first`: a first visit with what is on screen alone, from Listen to me to a question and a
+  pistachio.
+- `false`: sounds that are no speech (a cough, a breath, typing, a click, a door, a fan and others)
+  and the parrot's own voice from the loudspeaker; none may be kept as an utterance, said back or
+  answered.
+- `robust`: the microphone refused, a reload in the middle of an exchange, a sound while it speaks,
+  the switch pressed at any moment; after each the page answers a listed question.
+
+`evidence/sound_flow.json` holds the readings of these sections from development.
 
 ## What it does not do
 
-- **Natural sentences.** The preset questions are spoken one word at a time with short pauses.
-  The ear cuts sound into single words at the quiet between them.
-- **Free questions.** The Ask box holds the presets alone. A question spoken into the microphone
-  is not answered as a question: the page takes each word it recognises by itself.
-- **Every question type.** Some question types are answered wrong and are left out of the
-  presets: a preset is a question the brain answered right on every pass of
-  `site/tools/check_presets.py`. The brain's version file (`site/pack/trained/version.json`)
-  records what it gets wrong, among them a thing's material on some things, "is this" with a
-  colour on some things, and the colour and roundness of the green ball. In rooms other than the
-  starting one it is right less often: the same file records .887 on fresh rooms, and .787 where
-  the pairs of kind and colour are ones it never saw.
+- **Free speech.** It does not take a sentence apart from its sound. The ear matches a whole
+  utterance to the sounds it keeps, and the nearest record's link names the meaning: a word, or one
+  of the questions the brain was taught. The wordings it knows are the ones the starting memory
+  holds. Where each word begins inside a question's record was marked when the starting memory was
+  built, from Whisper's word times.
+- **Any voice at once.** The starting memory holds one woman's questions and answer words and four
+  other voices heard once each. For four voices in no record, `evidence/sound_flow.json` records
+  116 of 160 utterances taken for the right meaning, 15 for a wrong one and 29 for none (measured
+  on the page's own hearing code, outside the browser). In
+  Curious, a sound with no meaning the parrot knows is a guess among the questions about the thing
+  in focus; a pistachio after a right answer links the sound to that meaning.
+- **Every question type.** Some question types are answered wrong and are left out of the list: a
+  listed question is one the brain answered right on every pass of `site/tools/check_presets.py`.
+  The brain's version file (`site/pack/trained/version.json`) records what it gets wrong, among
+  them a thing's material on some things, "is this" with a colour on some things, and the colour
+  and roundness of the green ball. In rooms other than the starting one it is right less often:
+  the same file records .887 on fresh rooms, and .787 where the pairs of kind and colour are ones
+  it never saw.
 - **More than one thing at a time.** It answers about the thing in focus and binds one attended
-  thing at a time. The page puts a thing in focus: the thing a preset is about, the thing a
-  question names, or the thing you click. Questions about the whole room are not among the
-  presets.
-- **Words bound inside the trained brain.** The link between a sound and its word is held in the
-  hearing layer's records and synapses, beside the trained brain. The trained brain receives each
-  recognised word as the code its training drew for that word.
+  thing at a time. The page moves the focus: to the thing a listed question is about, to a thing
+  whose name is heard, or to the thing you click. Questions about the whole room are not in the
+  list.
+- **Words bound inside the trained brain.** The link between a sound and its meaning is held in
+  the hearing layer's records and synapses, beside the trained brain. The trained brain receives
+  each word of a question as the code its training drew for that word.
 - **Sight through the drawn eyes.** The trained brain does not see the rendered room. The page
   reports each thing to it from a table of its kind, colour and material, as the readings of its
   training world: shape and size, hue and lightness, surface, direction and distance. No input
   names a kind or a colour.
 - **A voice made by the brain.** The brain picks the answer word. The sound the parrot says is a
-  recording: the starting sounds were made ahead of time and ship with the page, each with the
-  parrot's rendering of it (see [ATTRIBUTION.md](ATTRIBUTION.md)).
-- **Learning words from nothing in the browser.** The trained brain was trained ahead of time,
-  outside the browser. The starting sounds and their links to words ship with the page, and every
-  start begins from them. In the page, a pistachio after an answer is one small lesson, and a
-  pistachio after a sound you make with a thing in focus links that sound to the thing's word.
-- **A match for every sound.** The ear matches a sound to the nearest record it keeps, so a sound
-  that is no word can be heard as one. Where the ear misses a word of a preset, the page sends the
-  preset's words as text and says so in the browser console; the test counts such a question as
-  failed.
+  recording: the starting sounds and the parrot's rendering of each answer word were made ahead of
+  time and ship with the page (see [ATTRIBUTION.md](ATTRIBUTION.md)).
+- **Learning its words in the browser from nothing.** The trained brain was trained ahead of time,
+  outside the browser, and the starting sounds with their links ship with the page; every start
+  begins from them. In the page a pistachio after an answer is one small lesson for the brain and
+  for the links of the sounds used. A pistachio's lesson can unsettle another answer:
+  `evidence/sound_flow.json` records one earlier run with one colour answer of the list wrong
+  after the pistachios before it. The brain switch also holds an entry that starts the same brain
+  with an empty memory of sounds (`?brain=trained-nowords`); this README claims nothing for it.
+
+The shape answer is "round" or "no": the brain's voice has no word for another shape.
 
 The help page (`site/help.html`) and the brain explainer (`site/brain-explainer.html`) were written
 during development. Parts of them describe earlier panels, the composed and the placeholder brain,
@@ -138,16 +162,16 @@ Cadence brain settles and learns.
 
 | Path | What |
 | --- | --- |
-| `site/index.html`, `styles.css`, `app.js` | the page and its loop: the room, the questions, the focus, sound, the pistachio |
+| `site/index.html`, `styles.css`, `flow.css`, `app.js` | the page and its loop: the room, the two ways of attending, the questions, the focus, sound, the pistachio |
 | `site/scene.js`, `parrot.js`, `rig.json`, `looks.js`, `looks/` | the room, the parrot's rig and its two bodies |
 | `site/dsp.js`, `ear-worklet.js`, `audio.js` | the ear (the library's log-mel front end in JavaScript, in an audio worklet) and the voice |
-| `site/voice/` | the starting sounds with their links to words (`words.json`), the parrot's renderings (`parrot/`), the preset questions as sound (`questions/`) |
+| `site/voice/` | the starting sounds with their links to meanings (`words.json`), the parrot's renderings (`parrot/`), the listed questions as sound (`questions/`, `questions.json`) |
 | `site/brain3d.js`, `brainscan.js`, `brainlive.js`, `atlas.js`, `memview.js`, `brainview.js` | the brain view |
 | `site/worker.js`, `site/pack/` | the brain in Pyodide: the manifest, the hosts (`py/parrotbrain/`: `sounds.py` the hearing layer's memories, `host.py`, `page.py`, `trained.py` the trained brain), the calls, the wheel, the trained brain |
 | `site/help.html`, `site/brain-explainer.html` | the help page and the brain explainer |
-| `site/tools/` | `build_words.py` (the starting sounds and question clips), `check_presets.py` (which questions become presets), `build_pack.py` (the manifest), `fetch_assets.py`, `prepare_look.py`, `make_calls.py`, `check_page.py`, `check_text.py`, `shoot_looks.py` |
-| `site/tests/` | `test_sound_symbols.py` (the check above), `test_sound_memory.py`, `test_words.py`, `dsp_parity.mjs`, `voice_roundtrip.mjs`, fixtures |
-| `evidence/` | the readings behind the help page's numbers and the checks |
+| `site/tools/` | `build_words.py` (the starting sounds and question clips), `check_presets.py` (which questions go on the list), `build_pack.py` (the manifest), `fetch_assets.py`, `prepare_look.py`, `make_calls.py`, `check_page.py`, `check_text.py`, `shoot_looks.py` |
+| `site/tests/` | `test_sound_symbols.py` with `flow_checks.py` and `room.py` (the checks above), `test_sound_memory.py`, `test_words.py`, `dsp_parity.mjs`, `voice_roundtrip.mjs`, fixtures |
+| `evidence/` | the readings behind the checks and the help page's numbers |
 | `ATTRIBUTION.md` | every asset with its source, author and licence |
 
 ## Checks
@@ -155,13 +179,14 @@ Cadence brain settles and learns.
 ```sh
 python3 -m http.server 8842 --directory parrot/site &
 python parrot/site/tests/test_sound_symbols.py --url http://localhost:8842/ --out <dir> \
-    --apple <apple.wav> --whisper <python with mlx-whisper>
+    --voices <dir> --whisper <python with mlx-whisper> --only presets,mic,first,false,robust
 ```
 
 The test needs Python with `playwright` (and its Chromium) and `numpy`, `ffmpeg` on the path, and
-for the Whisper reading a Python with `mlx-whisper` (Apple silicon). `--apple` takes a recording of
-the word "apple" in a voice the page never heard; the folder ships none. `--skip-mic` leaves the
-microphone part out, and `--rounds` sets how often each preset is asked (two by default).
+for the Whisper reading a Python with `mlx-whisper` (Apple silicon). `--voices` takes a folder of
+visitors' takes, one folder a voice, in voices the starting memory never heard; the folder ships
+none. `--only presets` runs the list alone and needs no such folder, and `--rounds` sets how often
+each question is asked (two by default).
 
 ```sh
 node parrot/site/tests/dsp_parity.mjs          # the page's ear against the library's front end

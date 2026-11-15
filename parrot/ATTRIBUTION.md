@@ -63,11 +63,12 @@ is attached; ElevenLabs' terms apply to the output.
 
 | Files | What | How it was made |
 | --- | --- | --- |
-| `site/voice/words.json` (the sound of each starting record) | a woman's voice says each answer word, a man's voice each question word, one take a word | ElevenLabs text to speech (`eleven_multilingual_v2`), the ElevenLabs voices "Jessica Anne Bogart - Chatty and Friendly" and "Mark - Natural Conversations"; each take then heard by the page's own hearing code (`site/tools/build_words.py`) |
-| `site/voice/questions/*.wav`, `site/voice/questions.json` | the preset questions | the man's takes of each word, joined with short pauses (`site/tools/build_words.py`) |
-| `site/voice/parrot/*.wav` | the parrot's rendering of each starting sound | ElevenLabs speech to speech (`eleven_multilingual_sts_v2`) of the kept sound into a parrot voice made with ElevenLabs Voice Design |
+| `site/voice/words.json` (the sound of each of the woman's records) | a woman's voice says each answer word alone and each question as a spoken sentence | ElevenLabs text to speech (`eleven_multilingual_v2`), the ElevenLabs voice "Jane - Steady, Mature and Clear"; each take then heard by the page's own hearing code (`site/tools/build_words.py`) |
+| `site/voice/questions/*.wav`, `site/voice/questions.json` | the listed questions as sound | one of the woman's takes of each question (`site/tools/build_words.py`) |
+| `site/voice/words.json` (records of four other voices) | four other voices ask the same questions and name the things, each heard once; their records hold the ear's frames, and their audio is not in the folder | ElevenLabs text to speech (`eleven_multilingual_v2`), the ElevenLabs voices "Mark", "Brian", "Hope" and "Ranbir" |
+| `site/voice/parrot/*.wav` | the parrot's rendering of each answer word | ElevenLabs speech to speech (`eleven_multilingual_sts_v2`) of the woman's word into a parrot voice made with ElevenLabs Voice Design; for some words ElevenLabs text to speech in that voice (each rendering's `how` in `words.json` says which); then pitched, with raised formants and a little rasp, by the build |
 
-Only takes and renderings that Whisper reads as their word are in the folder.
+Only takes and renderings that Whisper reads as their text are in the folder.
 
 ## The page's own work
 
