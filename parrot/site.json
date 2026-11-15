@@ -10,6 +10,7 @@
   "help": "help.html",
   "evidence": [
     "parrot/evidence/sound_flow.json",
+    "parrot/evidence/fresh_clone_parrot_next.json",
     "parrot/evidence/clean_clone_20261115.json",
     "parrot/evidence/page_check.json",
     "parrot/evidence/dsp_parity.json",
