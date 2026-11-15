@@ -38,9 +38,9 @@ own timeline (`marks`); the host lines the sound coming in up with such records 
 word is known as it is spoken (`host.Follower`).
 
 A word told again must get cleaner with every hearing: the new take is first lined up with the
-record frame by frame (the best path between them in time), then the record moves to the running mean
-of its hearings. The library's revision takes the newest take whole; its `blend` option (the memory lane,
-#336) does the running mean. Until it lands, `_blend_running_mean` below does it here, in one place.
+record frame by frame (the best path between them in time), then the library's record strength
+(`LongTermMemory(blend=True)`, cadence 0.100.0, #336) moves the record toward it by one over one plus its
+depth, so a record told n times holds the mean of its n takes.
 
 **Pronunciation by practice** (the songbird's way: an auditory template and practice by hearing
 itself). Each word the parrot can say has a motor program of its own, which starts immature: the
@@ -301,7 +301,7 @@ class SoundMemory:
         # take is a word it knows by lining it up against the words it has (`same_word`)
         self.records = LongTermMemory(width=CODE_FRAMES * BANDS, value_width=FRAMES_WIDTH, capacity=capacity,
                                       cosine=True, revise=0.9999, temperature=0.08, candidates=0,
-                                      hold=36000.0, idle=40.0, depth=2.0, dtype=np.float32)
+                                      hold=36000.0, idle=40.0, depth=2.0, dtype=np.float32, blend=True)
         self.audio: dict[int, np.ndarray] = {}  # each record's heard audio (8 kHz), for the records that keep it
         # (a lesson's fresh part keeps 0.97 through each later lesson: a meaning one pistachio taught lasts through
         # some thirty more lessons, and repetition consolidates it)
@@ -340,49 +340,32 @@ class SoundMemory:
         read = self.records.read(key)
         self.last_read = {"slots": read.slots.tolist(), "weights": np.round(read.weights[0], 4).tolist(),
                           "cue": self.thumb(key)} if len(read.slots) else {"slots": [], "weights": [], "cue": self.thumb(key)}
-        cos, before, before_audio = None, {}, None
+        cos = None
         if self.records.count:
             k = self.records.keys[: self.records.count]
-            sims = k @ key / np.maximum(np.linalg.norm(k, axis=1), 1e-12)
-            cos = float(np.max(sims))
-            # the record this word would revise, as it stands before the write replaces it
-            before = {int(np.argmax(sims)): self.records.values[int(np.argmax(sims))].copy()}
-            before_audio = self.audio.get(int(np.argmax(sims)))
+            cos = float(np.max(k @ key / np.maximum(np.linalg.norm(k, axis=1), 1e-12)))
         take = to_pcm8k(pcm)
-        value = pack(frames)
         known, self.last_distance = self.same_word(frames, key)
-        slot, revised = self.records.write(self.records.keys[known].copy() if known is not None else key, value)
+        before_audio = self.audio.get(int(known)) if known is not None else None
+        if known is not None:
+            # a take told again: laid on its record's timeline, and the library's record strength
+            # (`blend`, cadence#336) moves the record toward it, so the record holds the mean of its takes
+            slot, revised = self.records.write(key, pack(align(frames, self.template(known))), recognised=int(known))
+        else:
+            slot, revised = self.records.write(key, pack(frames), recognised=-1)
         if not revised:
             self.heard[slot] = 0
             self.born[slot] += 1
             self.programs.pop(slot, None)
             self.marks.pop(slot, None)
             self.typical[slot] = -1.0
+        self.heard[slot] += 1
         self.audio[int(slot)] = take  # (a sound told again: the take, mixed below with what it had)
-        self._blend_running_mean(slot, frames, revised, before.get(int(slot)))
-        self._mix_audio(slot, take, revised, before_audio if int(slot) in before else None)
+        self._mix_audio(slot, take, revised, before_audio)
         self._record_changed(slot)
         self.last_write = {"slot": int(slot), "revised": bool(revised), "best_cosine": None if cos is None else round(cos, 3), "distance": self.last_distance,
                            "heard": int(self.heard[slot])}
         return {"read": self.last_read, "write": self.last_write}
-
-    def _blend_running_mean(self, slot: int, frames: np.ndarray, revised: bool, previous: np.ndarray | None) -> None:
-        """STAND-IN for the library's `blend` option (#336): the record told again moves to the running
-        mean of its hearings, so the stored form gets cleaner with every repetition. The library's
-        write took the newest take whole; this replaces the slot's value and key with the mean."""
-        r = self.records
-        n = int(self.heard[slot]) + 1
-        self.heard[slot] = n
-        if not revised or n == 1 or previous is None:
-            return
-        old = unpack(previous)  # the mean so far (the write put the newest take in its place)
-        new = align(frames, old)
-        mean = old + (new - old) / n
-        r.values[slot] = pack(mean)
-        key = code(self.frames_of_value(r.values[slot]))
-        r.keys[slot] = key
-        if r.cosine:
-            r.norms[slot] = float(np.linalg.norm(key))
 
     def _mix_audio(self, slot: int, take: np.ndarray, revised: bool, previous: np.ndarray | None) -> None:
         """The record's sound: a first hearing keeps its take; a word told again keeps a mix of the

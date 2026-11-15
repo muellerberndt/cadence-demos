@@ -9,6 +9,7 @@
   "howTo": "Pick a question under Ask it and press Ask. Watch each word light as it is spoken and the answer bring back its sound. Click a thing to put it in focus. Throw a pistachio after a right answer. In Listen to me it says back what it hears.",
   "help": "help.html",
   "evidence": [
+    "parrot/evidence/release_0100.json",
     "parrot/evidence/sound_flow.json",
     "parrot/evidence/fresh_clone_parrot_voices.json",
     "parrot/evidence/fresh_clone_parrot_next.json",

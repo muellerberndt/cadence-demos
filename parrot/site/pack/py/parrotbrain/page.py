@@ -15,7 +15,7 @@ from typing import Any
 
 import numpy as np
 
-from cadence.parrot.host import Host as Composed
+from .parrot.host import Host as Composed
 
 from .host import Host as Hearing
 

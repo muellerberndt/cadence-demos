@@ -42,7 +42,8 @@ def main() -> int:
     ap.add_argument("--trained-source", action="append", default=[], help="where each trained brain's files come from, in order")
     args = ap.parse_args()
     src = PACK / "py" / args.package
-    sources = sorted(p.name for p in src.glob("*.py"))
+    sources = sorted(str(p.relative_to(src)) for p in src.rglob("*")  # the package's modules and its subpackages' (and their data files)
+                     if p.is_file() and p.suffix in (".py", ".json") and "__pycache__" not in p.parts)
     manifest = {
         "schema": "cadence-parrot-pack/1",
         "packed": datetime.date.today().isoformat(),

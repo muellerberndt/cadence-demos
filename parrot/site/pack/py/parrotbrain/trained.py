@@ -51,7 +51,7 @@ from typing import Any
 
 import numpy as np
 
-from cadence.meaning.host import MeaningParrot
+from .meaning.host import MeaningParrot
 from cadence.recording import record_settlements
 
 from .page import Host as Composed
