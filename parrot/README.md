@@ -85,7 +85,9 @@ the sounds used.
 **Not understood.** A sound it makes nothing of brings a **?** by the parrot, and a line by the
 Pistachio button says what to do: say it again, or pick a question from the list. An answer it
 guessed brings the same **?** first, and the line says to give it a pistachio if the answer is
-right and to say it again if not.
+right and to say it again if not. A single word it only guessed brings the **?** and the line too, and moves
+its attention nowhere. After you click a thing it says nothing by itself for three seconds, so a
+question asked at once is heard.
 
 `site/tests/test_sound_symbols.py` checks these on the real page in a headless Chromium. Its
 sections:
@@ -149,8 +151,8 @@ hold these readings.
   British man, an Australian man, an Indian woman, an American woman), 288 takes of the listed
   questions and ten answer words, heard for the first time: 241 taken for the right meaning, 8 for
   a wrong one and 39 for none with clean takes (the questions 153 of 156 right, none wrong; the
-  words 88 of 132 right, 8 wrong); 213 right and 10 wrong through a laptop's microphone with the
-  room's noise 20 dB below the voice; 129 right and 9 wrong at 10 dB. After one paid hearing of an
+  words 88 of 132 right, 8 wrong); 215 right and 10 wrong through a laptop's microphone with the
+  room's noise 20 dB below the voice; 147 right and 15 wrong at 10 dB. After one paid hearing of an
   utterance, that visitor's other takes of it: 175 of 200 right and 3 wrong (clean; the questions
   103 of 108, none wrong). The starting
   memory with four other voices read 170 right and 7 wrong of the same 288. In Curious, a sound

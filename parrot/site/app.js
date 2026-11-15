@@ -223,7 +223,7 @@ function cueFor(id) {
 }
 function endDrag(e) {
   if (!state.dragging) return;
-  if (!state.dragging.moved) { state.cue = cueFor(state.dragging.id); state.focus = { id: state.dragging.id, why: 'you pointed at it' }; state.pointed = { id: state.dragging.id, until: performance.now() + (state.trained ? POINT_MS : 6000), cued: performance.now() }; if (flow.mode === 'curious') { trained.focus = state.dragging.id; askNote(); } }
+  if (!state.dragging.moved) { flow.pointedAt = performance.now(); state.cue = cueFor(state.dragging.id); state.focus = { id: state.dragging.id, why: 'you pointed at it' }; state.pointed = { id: state.dragging.id, until: performance.now() + (state.trained ? POINT_MS : 6000), cued: performance.now() }; if (flow.mode === 'curious') { trained.focus = state.dragging.id; askNote(); } }
   state.dragging = null; state.behind = false;
   controls.enabled = true; canvas.classList.remove('dragging');
   if (e?.pointerId !== undefined && canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId);
@@ -282,7 +282,7 @@ async function moment(now) {
     // while the trained brain hears a question and answers, the hearing layer's calls wait
     const calls = voiceOk && !(state.trained && (trained.busy || now < trained.quietUntil));
     // how it attends (flow.mode), and the page's knowledge of its own voice sounding (so its ear does not take its voice for yours)
-    const attend = state.trained ? { mode: flow.mode, own_voice: audio.ownVoice(now), hold: flow.asking } : {}; // (hold: a question is about to sound, so it says nothing by itself)
+    const attend = state.trained ? { mode: flow.mode, own_voice: audio.ownVoice(now), hold: flow.asking || now - (flow.pointedAt || -1e9) < POINTED_HOLD_MS } : {}; // (hold: a question is about to sound, or you just pointed at a thing and may ask about it, so it says nothing by itself)
     reply = await brain.call('step', { meta: { t: state.moment, reward, voice_ok: calls, cue, things: room.things.size, focus_kind: focusKind, scene, learn: true, viz: !!state.composed && state.moment % VIZ_EVERY === 0, memory_shown: state.tab === 'tab-memory', ...attend, ...(op ? { meaning: op.meta } : {}) }, arrays: { left, right, proprio: pro, mel: sound.mel, audio: sound.audio, pcm: sound.pcm } },
       [left.buffer, right.buffer, pro.buffer, sound.mel.buffer, sound.audio.buffer, sound.pcm.buffer]);
   } catch (error) { state.pending = false; op?.reject(error); setStatus(`The brain stopped: ${error.message}`, 'error'); state.brainReady = false; return; }
@@ -648,6 +648,7 @@ const WORLD = {
 const ROUND = new Set(['apple', 'ball', 'cup', 'lemon']); // the round kinds of its world (night.py ROUND)
 const DIRECTIONS = ['front', 'right', 'behind', 'left']; // a quarter each, front within 45 degrees (night.py direction_of)
 const OPEN_MS = 9000; // an answer waits this long for its pistachio
+const POINTED_HOLD_MS = 3000; // after you point at a thing it says nothing by itself for this long: your question may follow
 const gaze = { id: null, n: 0, clear: true }; // the looks at the thing in focus since its state was cleared
 const trained = { listen: null, busy: false, queue: [], lastAt: 0, momentMs: 300, turn: 3, vocab: new Set(), colours: [], materials: [], focus: null, open: null, quietUntil: 0, serial: 0, log: [] };
 
@@ -775,8 +776,8 @@ const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&l
 /** The bubble over the parrot's head: what it hears (the visitor's word) or says. */
 function bubble(text, who) {
   const b = askEl.bubble; b.hidden = !text; b.textContent = text || ''; b.className = `say-bubble ${who || ''}`;
-  if (text) flow.bubble = { text, who: who || '', at: performance.now() }; // (the last thing shown by the parrot, for the page's checks)
-  clearTimeout(bubble.timer); if (text) bubble.timer = setTimeout(() => { b.hidden = true; }, who === 'it' ? 3200 : 1500);
+  if (text) { flow.bubble = { text, who: who || '', at: performance.now() }; flow.bubbles = [...(flow.bubbles || []).slice(-19), flow.bubble]; } // (what the parrot showed, for the page's checks)
+  clearTimeout(bubble.timer); if (text) bubble.timer = setTimeout(() => { b.hidden = true; }, (who || '').startsWith('it') ? 3200 : 1500);
 }
 /** The visitor's question as a subtitle at the foot of the room (the parrot's answer alone goes by the parrot). */
 const sub = { el: $('subtitle'), words: [], at: 0, timer: 0, preset: false };
@@ -955,7 +956,7 @@ async function answerHeard(h) {
   if (!words || words.length < 2) { // no question: a word it knows, or a sound it makes nothing of
     if (live) await trainedOp({ op: 'over' });
     trained.busy = false; trained.quietUntil = performance.now() + 500; subtitleDone(900);
-    if (words) heardWordAlone(words[0], h); else notKnown(h, meaning ? 'no thing in focus' : 'unknown');
+    if (words && h.word) heardWordAlone(words[0], h); else notKnown(h, meaning ? (h.word ? 'no thing in focus' : 'a word it guessed') : 'unknown'); // (a word it only guessed moves nothing: it is not sure)
     return;
   }
   trained.busy = true; trained.open = null; ui.pistachio.classList.remove('ask');
@@ -992,7 +993,7 @@ async function answerHeard(h) {
     let li = null, firstAt = null;
     const say = (w, sound) => {
       if (!w || said[said.length - 1] === w) return;
-      said.push(w); bubble(said.join(', '), 'it'); firstAt ??= performance.now();
+      said.push(w); bubble(said.join(', ') + (h.word ? '' : ' ?'), h.word ? 'it' : 'it unsure'); firstAt ??= performance.now(); // (a guess: its answer with the ? beside it)
       const how = sayWord(w, sound); li ||= logLine('', 'a');
       li.innerHTML = `<span class="who">parrot</span> <b>${esc(said.join(', '))}</b> <span class="dim">(${esc(how)})</span>`;
     };
