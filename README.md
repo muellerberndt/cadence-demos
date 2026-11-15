@@ -13,6 +13,9 @@
 
 ▶ [Watch the video](https://www.youtube.com/watch?v=amR3cnrmgDo)
 
+The video is a recording of an earlier build of this page; for the video the voices were
+re-recorded and the picture was timed to them.
+
 An African Grey parrot whose Cadence brain hears a spoken question and answers in sound. Each
 sound it keeps is a record in the library's long-term memory, linked to its meaning by synapses:
 each word of a question it knows lights as it is spoken, and an answer brings back its sound. The

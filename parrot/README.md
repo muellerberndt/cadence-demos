@@ -9,11 +9,15 @@
 
 **A brain that hears sound and answers in sound, with sounds as its symbols.** An African Grey
 parrot sits on a perch among a few things, and its brain is drawn beside it as a bird's brain. A
-question from the list plays as a spoken sentence and reaches the parrot's ear. Each sound the ear
-keeps is linked to a meaning, a word or a question: each word of a question it knows lights as it
-is spoken, and a word that names a thing on the table lights that thing's tag. A trained Cadence brain
-settles on an answer word, and the answer brings back the sound kept for that word, which the
-parrot says. Everything runs in the browser; there is no server.
+question from the list plays as a woman's spoken sentence and reaches the parrot's ear. Each sound
+the ear keeps is linked to a meaning, a word or a question: each word of a question it knows
+lights as it is spoken, and a word that names a thing on the table lights that thing's tag. A
+trained Cadence brain settles on an answer word, and the answer brings back the sound kept for
+that word, which the parrot says. A pistachio after a right answer pays the brain's lesson and the
+links of the sounds used. One switch holds two ways of attending: **Curious**, in which the parrot
+looks at the things and answers a question about the thing in focus, and **Listen to me**, in
+which it looks at you, keeps what it hears and says it back. Everything runs in the browser; there
+is no server.
 
 Why it matters for Cadence: a sound is a memory that is read in both directions. The ear keeps each
 utterance (a word or a whole spoken phrase) as a record in the library's long-term memory
@@ -24,6 +28,9 @@ to its sound. The answer between the two is the settled state of one trained `Br
 The page is a step of the parrot goal
 ([cadence#331](https://github.com/muellerberndt/cadence/issues/331)); the trained brain comes
 from [cadence#334](https://github.com/muellerberndt/cadence/issues/334).
+
+**Video.** [A recording of an earlier build of this page](https://www.youtube.com/watch?v=amR3cnrmgDo);
+for the video the voices were re-recorded and the picture was timed to them.
 
 ## Run it locally
 
@@ -37,13 +44,11 @@ Open <http://localhost:8842/> in Chrome. Any static file server works. The first
 Pyodide and NumPy from jsDelivr and the fonts from Google Fonts, then the brain from the folder (a
 file of tens of megabytes), so it takes a while. Sound plays from the first click on the page.
 
-Under **Ask it**, pick a question and press **Ask**. The microphone is optional: the list's
-questions reach the ear inside the page. With the microphone on (`localhost` is a secure page, the
-browser asks first), the ear hears you. Nothing is recorded or sent anywhere.
-
-The switch over the room has two ways of attending. **Curious**: the parrot looks at the things and
-answers a question about the thing in focus. **Listen to me**: it looks at you, keeps what it hears
-and says it back.
+The page starts in **Curious**. Under **Ask it**, pick a question and press **Ask**; throw a
+**Pistachio** after a right answer. Press **Listen to me** and say a word: the parrot keeps it and
+says it back. The microphone is optional for the list: its questions reach the ear inside the
+page. With the microphone on (`localhost` is a secure page, the browser asks first), the ear hears
+you. Nothing is recorded or sent anywhere.
 
 `?mic=off` starts with the microphone off, `?look=anime` picks the anime body,
 `?layout=classic` shows the earlier panels, and `?brain=composed|placeholder|off` picks another
@@ -51,10 +56,11 @@ brain or none.
 
 ## What works
 
-The questions of the list under **Ask it**, each in the room the page starts with (an apple, a
-block, a cup, a key and a green ball). Each plays as a woman's spoken sentence. The ear takes the
-whole utterance for the question its record is linked to, and the brain hears that question's
-words. The page puts the thing a listed question is about in focus.
+**Spoken questions, answered in sound.** The questions of the list under **Ask it**, each in the
+room the page starts with (an apple, a block, a cup, a key and a green ball). Each plays as a
+woman's spoken sentence. The ear takes the whole utterance for the question its record is linked
+to, and the brain hears that question's words. The page puts the thing a listed question is about
+in focus.
 
 | Question | Thing in focus | Taken for | Answer |
 | --- | --- | --- | --- |
@@ -71,7 +77,12 @@ words. The page puts the thing a listed question is about in focus.
 | Where is it? | the cup | where is the thing in focus | behind |
 | What colour is the cup? | the cup | what colour has the cup | white |
 
-`site/tests/test_sound_symbols.py` checks this on the real page in a headless Chromium. Its
+**A pistachio.** After an answer, a pistachio pays one small lesson of the brain and the links of
+the sounds used.
+
+**Listen to me.** A word said to it is kept as one utterance and said back.
+
+`site/tests/test_sound_symbols.py` checks these on the real page in a headless Chromium. Its
 sections:
 
 - `presets`: every listed question plays into the ear. The utterance is taken for its meaning by
@@ -97,12 +108,12 @@ sections:
   of the questions the brain was taught. The wordings it knows are the ones the starting memory
   holds. Where each word begins inside a question's record was marked when the starting memory was
   built, from Whisper's word times.
-- **Any voice at once.** The starting memory holds one woman's questions and answer words and four
-  other voices heard once each. For four voices in no record, `evidence/sound_flow.json` records
-  116 of 160 utterances taken for the right meaning, 15 for a wrong one and 29 for none (measured
-  on the page's own hearing code, outside the browser). In
-  Curious, a sound with no meaning the parrot knows is a guess among the questions about the thing
-  in focus; a pistachio after a right answer links the sound to that meaning.
+- **Any voice at once.** A voice it has never heard is understood far less often than the starting
+  voice, until it has been heard and paid with a pistachio. The starting memory holds one woman's
+  questions and answer words and four other voices heard once each. In Curious, a sound with no
+  meaning the parrot knows is a guess among the questions about the thing in focus; a pistachio
+  after a right answer links the sound to that meaning. `evidence/sound_flow.json` holds the
+  development readings on voices in no record.
 - **Every question type.** Some question types are answered wrong and are left out of the list: a
   listed question is one the brain answered right on every pass of `site/tools/check_presets.py`.
   The brain's version file (`site/pack/trained/version.json`) records what it gets wrong, among
@@ -127,10 +138,10 @@ sections:
 - **Learning its words in the browser from nothing.** The trained brain was trained ahead of time,
   outside the browser, and the starting sounds with their links ship with the page; every start
   begins from them. In the page a pistachio after an answer is one small lesson for the brain and
-  for the links of the sounds used. A pistachio's lesson can unsettle another answer:
-  `evidence/sound_flow.json` records one earlier run with one colour answer of the list wrong
-  after the pistachios before it. The brain switch also holds an entry that starts the same brain
-  with an empty memory of sounds (`?brain=trained-nowords`); this README claims nothing for it.
+  for the links of the sounds used. About one answer in a hundred flips after a paid answer: a
+  pistachio's lesson can unsettle a neighbouring answer (`evidence/sound_flow.json`). The brain
+  switch also holds an entry that starts the same brain with an empty memory of sounds
+  (`?brain=trained-nowords`). That entry is an experiment, and this README claims nothing for it.
 
 The shape answer is "round" or "no": the brain's voice has no word for another shape.
 
