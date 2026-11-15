@@ -3,9 +3,10 @@
 1. Questions: each preset is asked; the man's voice plays and reaches the parrot's ear, the ear
    recognises each word against its records (their links), the trained brain hears the words and
    answers; the answer is said with the sound its memory links to the word. Checked: the words heard
-   as sound (no typed stand-in), the answer right, the answer said with a sound, that sound one of the
-   woman's records (voice/words.json `speakers`), and each answer's audio (the record's sound through
-   the page's parrot voice, rendered by the page) read by Whisper as the word.
+   as sound (no typed stand-in), the answer right, the answer said with a sound, that sound a record
+   linked to the answer's word (voice/words.json `links`; any speaker's record of the word), and each
+   answer's audio as the page says it (the parrot's own rendering of the record's sound where the record
+   holds it, else the record's sound through the page's parrot voice) read by Whisper as the word.
 2. The microphone: a visitor's "apple" (a voice the parrot never heard) comes in through the fake
    microphone, every few seconds, with the apple in focus. Where the ear does not link it to "apple"
    at once, a pistachio after it does; "apple" heard again lights the apple tag in the brain view.
@@ -82,6 +83,9 @@ def wait_idle(page, serial: int) -> dict:
     return page.evaluate("""() => { const t = window.parrotPage.trained; return { last: t.last, heard: t.lastHeard, spoken: (t.spoken || []).slice(-4) }; }""")
 
 
+LINKS: dict = {}  # each record's word (voice/words.json `links`)
+
+
 def ask_presets(page, out: Path, speakers: dict, rounds: int) -> list[dict]:
     presets = page.evaluate("[...document.querySelectorAll('#ask-preset option')].map((o) => ({ text: o.value || o.textContent, focus: o.dataset.focus || null }))")
     rows = []
@@ -105,7 +109,7 @@ def ask_presets(page, out: Path, speakers: dict, rounds: int) -> list[dict]:
                 y = np.frombuffer(base64.b64decode(b64), np.float32)
                 f = out / "answers" / f"r{r}_{i:02d}_{k}_{s['word']}.wav"
                 write_wav(f, np.concatenate([np.zeros(4800), y / (np.abs(y).max() + 1e-9) * 0.9, np.zeros(4800)]), 16000)
-                clips.append({"word": s["word"], "id": s["id"], "speaker": speakers.get(s["id"][4:]), "file": str(f)})
+                clips.append({"word": s["word"], "id": s["id"], "speaker": speakers.get(s["id"][4:]), "record_word": LINKS.get(s["id"][4:]), "file": str(f)})
             row = {"round": r, "question": p["text"], "focus": p["focus"], "said": last["said"], "expected": last["expected"], "right": last["right"],
                    "heard_as_sound": got["heard"], "by_sound": bool(got["heard"]) and got["heard"]["heard"] == got["heard"]["expected"],
                    "answer_sounds": clips, "said_with_sound": len(clips) == len(last["said"]) > 0, "seconds": round(time.time() - began, 1)}
@@ -170,7 +174,8 @@ def main() -> int:
     a = ap.parse_args()
     a.out.mkdir(parents=True, exist_ok=True)
     site = Path(__file__).resolve().parents[1]
-    speakers = json.loads((site / "voice" / "words.json").read_text()).get("speakers", {})
+    bundle = json.loads((site / "voice" / "words.json").read_text())
+    speakers, links = bundle.get("speakers", {}), bundle.get("links", {})
     quiet = a.out / "quiet.wav"; write_wav(quiet, np.zeros(16000 * 600), 16000)
     report: dict = {}
     with sync_playwright() as pw:
@@ -180,6 +185,7 @@ def main() -> int:
         report["brain"] = page.evaluate("document.getElementById('ask-version')?.textContent")
         if a.video:
             page.wait_for_timeout(2000); start_recording(page)
+        LINKS.update(links)
         report["questions"] = ask_presets(page, a.out, speakers, a.rounds)
         report["log_questions"] = logs[:]
         report["ear_events"] = page.evaluate("window.parrotPage.ear().then((r) => r.events)")
@@ -211,13 +217,14 @@ def main() -> int:
         "asked": len(qs), "right": sum(bool(q["right"]) for q in qs), "by_sound": sum(q["by_sound"] for q in qs),
         "said_with_sound": sum(q["said_with_sound"] for q in qs), "answer_sounds": len(files),
         "woman": sum(c["speaker"] == "woman" for q in qs for c in q["answer_sounds"]),
+        "record_of_word": sum(c["record_word"] == c["word"] for q in qs for c in q["answer_sounds"]),
         "whisper_ok": sum(c["whisper_ok"] for q in qs for c in q["answer_sounds"]),
         "mic_apple_lit": report.get("mic", {}).get("apple_lit"),
     }
     (a.out / "report.json").write_text(json.dumps(report, indent=1))
     print(json.dumps(report["summary"]), flush=True)
     s = report["summary"]
-    ok = (s["right"] == s["asked"] == s["by_sound"] == s["said_with_sound"] and s["whisper_ok"] == s["answer_sounds"] == s["woman"]
+    ok = (s["right"] == s["asked"] == s["by_sound"] == s["said_with_sound"] and s["whisper_ok"] == s["answer_sounds"] == s["record_of_word"]
           and (a.skip_mic or s["mic_apple_lit"]))
     return 0 if ok else 1
 

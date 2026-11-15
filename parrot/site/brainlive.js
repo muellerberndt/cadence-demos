@@ -32,6 +32,7 @@ export const PARTS = [
   { id: 'map', name: 'Map of things', colour: '#3fd6c2', explain: 'The hippocampus holds a map of the table: its place cells glow where things are. White dots are things in view, grey rings things held out of view; the lines from the centre are the head’s heading and the two eyes’ fields. The amber ring is the thing in focus, and the line to it comes from the tectum, which chose it.' },
   { id: 'saying', name: 'Saying', colour: '#ff8a5c', explain: 'When the parrot says a word it knows, the word is read out of its record to the vocal core and the voice: a packet flies from the slot to the voice, and the label shows how well the attempt matched the word it remembers.' },
 ];
+const WAVE = 1.6; // seconds of the view's clock a settle's waves take, from its first sweep to its last
 const HEAD_COLOURS = ['#ff9f43', '#54a0ff', '#ff6bcb', '#7bed9f'];
 // the association's populations (the whole brain's paid tracts) as atlas regions
 const PAID_AREAS = { association: 'ncl', prefrontal: 'trace', history: 'trace', recall: 'records', next: 'records', recall_1: 'heads', next_1: 'heads', motor: 'arco' };
@@ -134,6 +135,7 @@ export class Live {
     this.stepEls = [0, 1, 2, 3].map(() => { const el = document.createElement('span'); el.className = 'b3-step'; el.hidden = true; this.b.labels.append(el); return el; });
     this.colour = (hex) => new THREE.Color(hex);
     this.cHear = this.colour('#b49cff'); this.cWhite = this.colour('#ffffff'); this.cWarm = this.colour('#ff7a3d'); this.cLink = this.colour('#f2e48a');
+    this.cWave = this.colour('#ffe2a8');
     this.cThing = this.colour('#6cb6ff'); this.cFocus = this.colour('#f2b33d'); this.cSay = this.colour('#ff8a5c'); this.cGold = this.colour(MOD.dopamine.colour);
     this.modColour = Object.fromEntries(Object.entries(MOD).map(([k, v]) => [k, this.colour(v.colour)]));
     this.headColour = HEAD_COLOURS.map((h) => this.colour(h));
@@ -239,9 +241,10 @@ export class Live {
       this.washes.push({ name, level: Math.max(-1, Math.min(1, m.level)), targets: m.targets || MOD[name].to, from: MOD[name].from, t0: vt, paid });
     }
     // the settle: each region's residual through the moment's sweeps
-    // a settle plays out over 0.1 s of the view's clock; one arriving while another plays waits its turn
-    // (at ten times slower the view shows about one moment's settle in ten, each whole)
-    if (viz.settle?.regions && (!this.settle || vt - this.settle.t0 >= 0.1)) { this.settle = { ...viz.settle, t0: vt }; this.setStatus('repairs', 'live'); this.scaleSettle(); }
+    // a settle plays out as waves over WAVE s of the view's clock (the brain settles in milliseconds; this
+    // is that settle, sweep by sweep in its recorded order, slowed to be seen); one arriving while another
+    // plays is skipped, so the view shows one moment's settle in every few, each whole
+    if (viz.settle?.regions && (!this.settle || vt - this.settle.t0 >= WAVE * 1.15)) { this.settle = { ...viz.settle, t0: vt }; this.setStatus('repairs', 'live'); this.scaleSettle(); }
   }
 
   focusPlaceChanged(f) { const a = this.focus?.place, b = f.place; return !a || !b || Math.hypot(a[0] - b[0], a[1] - b[1]) > 0.05; }
@@ -323,7 +326,7 @@ export class Live {
   /** Where the settle is in its sweeps (0 to frames - 1), or -1 when it is over. */
   settlePhase(vt, delay = 0) {
     const s = this.settle; if (!s) return -1;
-    const x = (vt - s.t0 - delay) / 0.1; if (x < 0 || x > 1.6) return -1;
+    const x = (vt - s.t0 - delay) / WAVE; if (x < 0 || x > 1) return -1;
     return Math.min(1, x) * ((s.frames || s.regions[Object.keys(s.regions)[0]].length) - 1);
   }
   static at(arr, phi) { const i = Math.floor(phi), u = phi - i; return i + 1 < arr.length ? arr[i] + (arr[i + 1] - arr[i]) * u : arr[arr.length - 1]; }
@@ -336,7 +339,7 @@ export class Live {
       for (const [a, b] of w.paid) if ((t.a === a && t.b === b) || (t.a === b && t.b === a)) x += 0.7 * env(this.b.clock.vt - w.t0 - 0.6, 0.3, 1.6) * w.level;
     }
     const carried = this.settle?.byPair?.get(`${t.a}>${t.b}`);
-    if (carried) { const phi = this.settlePhase(this.b.clock.vt, 0.02); if (phi >= 0) { const i = Math.max(1, Math.round(phi)); x += 0.8 * Math.abs(carried[Math.min(i, carried.length - 1)] - carried[i - 1]) / this.tScale; } }
+    if (carried) { const phi = this.settlePhase(this.b.clock.vt, 0.05); if (phi >= 0) { const i = Math.max(1, Math.round(phi)); x += 0.8 * Math.abs(carried[Math.min(i, carried.length - 1)] - carried[i - 1]) / this.tScale; } }
     return x;
   }
 
@@ -430,6 +433,7 @@ export class Live {
     // word links: each record to each thing it names, as bright as the link
     for (const s of list) {
       if (!s.links || !s.pos) continue;
+      if (b.scanMode && !(vt - (s.flash ?? -1e9) < 3.5 || vt - (s.arrive ?? -1e9) < 3.5)) continue; // the scan: only the record in use
       for (let k = 0; k < s.links.length && k < T; k++) {
         const v = Math.min(1, s.links[k] / 0.4); if (v < 0.04) continue;
         const lit = this.things[k] === focusKind, bright = (0.25 + 0.75 * v) * (lit ? 1.3 : 0.8) * (words ? 1.4 : pathOn ? 0.3 : 1);
@@ -522,12 +526,29 @@ export class Live {
     }
     // the settle: each region glows with what it has left to repair, and settles out
     const phi = this.settlePhase(vt);
-    if (phi >= 0 || (this.settle && vt - this.settle.t0 < 0.4)) {
-      const ph = phi >= 0 ? phi : (this.settle.frames || 2) - 1, fade = phi >= 0 ? 1 : Math.max(0, 1 - (vt - this.settle.t0 - 0.16) / 0.24);
+    if (phi >= 0 || (this.settle && vt - this.settle.t0 < WAVE * 1.15)) {
+      const ph = phi >= 0 ? phi : (this.settle.frames || 2) - 1, fade = phi >= 0 ? 1 : Math.max(0, 1 - (vt - this.settle.t0 - WAVE) / (WAVE * 0.15));
       for (const [id, arr] of Object.entries(this.settle.regions)) {
         const r = b.byId[id]; if (!r) continue;
         const v = (Live.at(arr, ph) / this.rScale) * fade * 0.8;
         for (let j = 0; j < r.count; j++) flash[r.start + j] = Math.max(flash[r.start + j], v);
+      }
+    }
+
+    // the settle's waves: along each tract the settle recorded (sending region to receiving region), a front
+    // of light runs from sender to receiver once per sweep, as bright as the change in what the tract carried
+    // in that sweep; the regions' glow above is each region's residual at the same sweep
+    if (phi >= 0 && this.settle.tracts) {
+      const i = Math.floor(phi), u = phi - i;
+      for (const t of this.settle.tracts) {
+        const c = t.carried; if (!c || c.length < 2 || !b.byId[t.from] || !b.byId[t.to]) continue;
+        const k = Math.min(c.length - 1, i + 1), d = Math.abs(c[k] - c[k - 1]) / this.tScale;
+        if (d < 0.03) continue;
+        for (let j = 0; j < 4; j++) { // the front and a short tail behind it
+          const uu = u - j * 0.06; if (uu < 0) break;
+          this.along([t.from, t.to], uu, P);
+          this.put(P, this.cWave, 0.1 + 0.18 * Math.min(1, d), Math.min(1, 0.25 + d) * (1 - j / 4), 0);
+        }
       }
     }
 
