@@ -101,13 +101,14 @@ sections:
 
 `evidence/sound_flow.json` holds the readings of these sections from development.
 
-`evidence/clean_clone_20261115.json` holds a run from a fresh clone, on a machine shared with
-other jobs. Every listed question, asked twice, was taken for its meaning by its record's link,
-followed word by word, answered right and said in the parrot's rendering, which Whisper read as
-the word; no sound that is no speech was kept; the `robust` cases passed. In that first run, under
-heavy load, the `mic` word was kept and was not said back within the test's four seconds, one step
-of `first` missed its window, and one of the four answers in the own-voice part of `false` was
-wrong. Run again by themselves, the three sections passed.
+`evidence/clean_clone_20261115.json` holds runs from a fresh clone, on a machine shared with
+other jobs. With every section in one go, all five passed: every listed question, asked twice, was
+taken for its meaning by its record's link, followed word by word, answered right and said in the
+parrot's rendering, which Whisper read as the word; the six steps of the first visit passed; no
+sound that is no speech was kept; the `robust` cases passed. The `mic` section sits at the edge of
+its own window. Over seven runs the visitor's word was kept and linked every time, and it was said
+back within the test's four seconds in three; where the log shows a later sound, it came 3.6 to
+4.4 s after the word. The same action inside `first` passed in three of three runs.
 
 ## What it does not do
 

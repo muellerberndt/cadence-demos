@@ -1,11 +1,11 @@
 {
  "what": "The parrot preview's headless checks (site/tests/test_sound_symbols.py) run on 2026-11-15 from a fresh clone of the branch parrot-preview, the page served by a static file server on the same machine. The machine was shared with other jobs; its load average is given for each run.",
- "page_files_at": "8d4407b (the parrot branch at 51c7f2e with the preview pass; the commits after it change the READMEs and this file alone)",
+ "page_files_at": "893e627 (the parrot branch at f04dbc6 with the preview pass; the commits after it change the READMEs and this file alone)",
  "command": "python parrot/site/tests/test_sound_symbols.py --url <url> --out <dir> --voices <a folder of four visitors' takes, voices in no record> --whisper <python with mlx-whisper> --only <sections>",
  "run_1": {
   "sections": "presets,mic,first,false,robust",
-  "exit": 1,
-  "load_average": "about 8 at the start; between 22 and 59 while the later sections ran",
+  "exit": 0,
+  "load_average": "13 at the start, 141 at the end",
   "presets": {
    "note": "the listed questions, two rounds, a pistachio after each right answer",
    "asked": 24,
@@ -19,17 +19,17 @@
    "followed_ok": 24,
    "words_followed": 92,
    "word_delay_ms": {
-    "median": 680,
-    "p90": 1046,
-    "max": 1530,
+    "median": 748,
+    "p90": 1118,
+    "max": 2047,
     "within_150": 0,
-    "within_250": 3
+    "within_250": 2
    },
    "answer_ms": {
-    "median": 2423,
-    "p90": 3810,
-    "max": 3958,
-    "under_1500": 6,
+    "median": 3108,
+    "p90": 4041,
+    "max": 4437,
+    "under_1500": 8,
     "of": 24
    },
    "paid_links": 24,
@@ -377,16 +377,18 @@
    "voice": "archer",
    "heard": [
     {
-     "slot": 231,
+     "slot": 221,
      "word": "apple",
      "known": false,
      "frames": 56,
-     "spotted": []
+     "spotted": [
+      "apple"
+     ]
     }
    ],
-   "said_back": 0,
-   "ok": false,
-   "note": "the word was kept as one utterance and linked to apple; it was not said back within the test's four seconds"
+   "said_back_within_4_s": 1,
+   "a_later_sound_s_after_the_word": [],
+   "ok": true
   },
   "first": {
    "steps": [
@@ -415,9 +417,11 @@
      "step": "a question asked: its words as a subtitle, the parrot's turn shown, the answer by the parrot",
      "subtitle": "What is this?",
      "turn_sign": true,
-     "answer": null,
-     "bubble": "",
-     "ok": false
+     "answer": [
+      "key"
+     ],
+     "bubble": "key",
+     "ok": true
     },
     {
      "step": "a pistachio: the dopamine box lights, the lesson is taken",
@@ -427,8 +431,7 @@
      "ok": true
     }
    ],
-   "ok": false,
-   "note": "the answer to the question did not arrive within the test's window"
+   "ok": true
   },
   "false": {
    "sounds_kept": 0,
@@ -462,7 +465,7 @@
     },
     {
      "question": 2,
-     "right": false,
+     "right": true,
      "utterances_kept": 1,
      "exchanges": 1
     },
@@ -473,8 +476,7 @@
      "exchanges": 1
     }
    ],
-   "ok": false,
-   "note": "no sound that is no speech was kept, said back or answered; of the four questions asked while its own voice came back from the loudspeaker, one was answered wrong"
+   "ok": true
   },
   "robust": {
    "mic_refused": {
@@ -505,20 +507,25 @@
  "run_2": {
   "sections": "mic,first",
   "exit": 0,
-  "load_average": "20 at the start, 14 at the end",
+  "load_average": "125 at the start, 71 at the end",
   "mic": {
    "mic_on": "on",
    "voice": "archer",
    "heard": [
     {
-     "slot": 231,
+     "slot": 221,
      "word": "apple",
-     "known": true,
-     "frames": 56,
-     "spotted": []
+     "known": false,
+     "frames": 57,
+     "spotted": [
+      "apple"
+     ]
     }
    ],
-   "said_back": 1,
+   "said_back_within_4_s": 1,
+   "a_later_sound_s_after_the_word": [
+    3.63
+   ],
    "ok": true
   },
   "first": {
@@ -566,54 +573,172 @@
   }
  },
  "run_3": {
-  "sections": "false",
-  "exit": 0,
-  "load_average": "13 at the start, 10 at the end",
-  "false": {
-   "sounds_kept": 0,
-   "sounds_said_back": 0,
-   "sounds_answered": 0,
-   "of": 40,
-   "kinds": [
-    "breath",
-    "clap",
-    "click",
-    "cough",
-    "door",
-    "fan",
-    "hum",
-    "ring",
-    "scrape",
-    "typing"
+  "sections": "mic,first",
+  "exit": 1,
+  "load_average": "59 at the start, 28 at the end",
+  "mic": {
+   "mic_on": "on",
+   "voice": "archer",
+   "heard": [
+    {
+     "slot": 221,
+     "word": "apple",
+     "known": false,
+     "frames": 56,
+     "spotted": [
+      "apple"
+     ]
+    }
    ],
-   "own_voice_from_the_loudspeaker": [
+   "said_back_within_4_s": 0,
+   "a_later_sound_s_after_the_word": [],
+   "ok": false
+  },
+  "first": {
+   "steps": [
     {
-     "question": 0,
-     "right": true,
-     "utterances_kept": 1,
-     "exchanges": 1
+     "step": "the switch, the question list, Ask, Pistachio and the microphone button are on screen",
+     "ok": true,
+     "mic": "on"
     },
     {
-     "question": 1,
-     "right": true,
-     "utterances_kept": 1,
-     "exchanges": 1
+     "step": "Listen to me pressed: the question list goes, the parrot looks at you",
+     "ok": true
     },
     {
-     "question": 2,
-     "right": true,
-     "utterances_kept": 1,
-     "exchanges": 1
+     "step": "a word said: the ear's sign lights while it is said; it is kept as one utterance and said back",
+     "ear_sign": true,
+     "heard": 1,
+     "taken_for": "apple",
+     "said_back": true,
+     "ok": true
     },
     {
-     "question": 3,
-     "right": true,
-     "utterances_kept": 1,
-     "exchanges": 1
+     "step": "Curious pressed: the question list is back",
+     "ok": true
+    },
+    {
+     "step": "a question asked: its words as a subtitle, the parrot's turn shown, the answer by the parrot",
+     "subtitle": "What is this?",
+     "turn_sign": true,
+     "answer": [
+      "key"
+     ],
+     "bubble": "key",
+     "ok": true
+    },
+    {
+     "step": "a pistachio: the dopamine box lights, the lesson is taken",
+     "dopamine_sign": true,
+     "links_paid": 1,
+     "pistachios": "1",
+     "ok": true
     }
    ],
    "ok": true
   }
+ },
+ "runs_4_to_7": {
+  "sections": "mic, four runs one after another",
+  "runs": [
+   {
+    "exit": 0,
+    "load_average": "17 at the start, 16 at the end",
+    "mic": {
+     "mic_on": "on",
+     "voice": "archer",
+     "heard": [
+      {
+       "slot": 221,
+       "word": "apple",
+       "known": false,
+       "frames": 57,
+       "spotted": [
+        "apple"
+       ]
+      }
+     ],
+     "said_back_within_4_s": 1,
+     "a_later_sound_s_after_the_word": [
+      3.98
+     ],
+     "ok": true
+    }
+   },
+   {
+    "exit": 1,
+    "load_average": "16 at the start, 19 at the end",
+    "mic": {
+     "mic_on": "on",
+     "voice": "archer",
+     "heard": [
+      {
+       "slot": 221,
+       "word": "apple",
+       "known": false,
+       "frames": 56,
+       "spotted": [
+        "apple"
+       ]
+      }
+     ],
+     "said_back_within_4_s": 0,
+     "a_later_sound_s_after_the_word": [
+      4.36
+     ],
+     "ok": false
+    }
+   },
+   {
+    "exit": 1,
+    "load_average": "19 at the start, 16 at the end",
+    "mic": {
+     "mic_on": "on",
+     "voice": "archer",
+     "heard": [
+      {
+       "slot": 221,
+       "word": "apple",
+       "known": false,
+       "frames": 57,
+       "spotted": [
+        "apple"
+       ]
+      }
+     ],
+     "said_back_within_4_s": 0,
+     "a_later_sound_s_after_the_word": [],
+     "ok": false
+    }
+   },
+   {
+    "exit": 1,
+    "load_average": "16 at the start, 14 at the end",
+    "mic": {
+     "mic_on": "on",
+     "voice": "archer",
+     "heard": [
+      {
+       "slot": 221,
+       "word": "apple",
+       "known": false,
+       "frames": 56,
+       "spotted": [
+        "apple"
+       ]
+      }
+     ],
+     "said_back_within_4_s": 0,
+     "a_later_sound_s_after_the_word": [],
+     "ok": false
+    }
+   }
+  ]
+ },
+ "the_microphone_section_over_the_seven_runs": {
+  "said_back_within_the_test's_four_seconds": 3,
+  "of": 7,
+  "note": "In every run the visitor's word was a first hearing, kept as one utterance and linked to apple. Passes and misses came at low and at high load alike. Where the log shows a later sound it came 3.6 to 4.4 s after the word, at the edge of the test's four-second window. The same action in the first-visit section (a word said in Listen to me, said back) passed in three of three runs."
  },
  "also": {
   "node site/tests/dsp_parity.mjs": {
@@ -625,6 +750,157 @@
    "mean_offset_nats": 0,
    "mean_abs_error_nats": 0.639,
    "ok": true
+  },
+  "python tools/check_explain.py parrot": "18 of 18"
+ },
+ "an_earlier_tree": {
+  "page_files_at": "8d4407b (the parrot branch at 51c7f2e with the preview pass)",
+  "run_1": {
+   "sections": "presets,mic,first,false,robust",
+   "exit": 1,
+   "load_average": "about 8 at the start; between 22 and 59 while the later sections ran",
+   "presets": {
+    "note": "the listed questions, two rounds, a pistachio after each right answer",
+    "asked": 24,
+    "answered": 24,
+    "understood": 24,
+    "right": 24,
+    "said_with_sound": 24,
+    "answer_sounds": 24,
+    "own_voice": 24,
+    "whisper_ok": 24,
+    "followed_ok": 24,
+    "words_followed": 92,
+    "word_delay_ms": {
+     "median": 680,
+     "p90": 1046,
+     "max": 1530,
+     "within_150": 0,
+     "within_250": 3
+    },
+    "answer_ms": {
+     "median": 2423,
+     "p90": 3810,
+     "max": 3958,
+     "under_1500": 6,
+     "of": 24
+    },
+    "paid_links": 24
+   },
+   "mic": {
+    "mic_on": "on",
+    "voice": "archer",
+    "heard": [
+     {
+      "slot": 231,
+      "word": "apple",
+      "known": false,
+      "frames": 56,
+      "spotted": []
+     }
+    ],
+    "said_back": 0,
+    "ok": false,
+    "note": "the word was kept as one utterance and linked to apple; it was not said back within the test's four seconds"
+   },
+   "first": {
+    "ok": false,
+    "steps_ok": [
+     true,
+     true,
+     true,
+     true,
+     false,
+     true
+    ],
+    "note": "the answer to the question did not arrive within the test's window"
+   },
+   "false": {
+    "sounds_kept": 0,
+    "sounds_said_back": 0,
+    "sounds_answered": 0,
+    "of": 40,
+    "kinds": [
+     "breath",
+     "clap",
+     "click",
+     "cough",
+     "door",
+     "fan",
+     "hum",
+     "ring",
+     "scrape",
+     "typing"
+    ],
+    "own_voice_from_the_loudspeaker": [
+     {
+      "question": 0,
+      "right": true,
+      "utterances_kept": 1,
+      "exchanges": 1
+     },
+     {
+      "question": 1,
+      "right": true,
+      "utterances_kept": 1,
+      "exchanges": 1
+     },
+     {
+      "question": 2,
+      "right": false,
+      "utterances_kept": 1,
+      "exchanges": 1
+     },
+     {
+      "question": 3,
+      "right": true,
+      "utterances_kept": 1,
+      "exchanges": 1
+     }
+    ],
+    "ok": false,
+    "note": "no sound that is no speech was kept, said back or answered; of the four questions asked while its own voice came back from the loudspeaker, one was answered wrong"
+   },
+   "robust": {
+    "mic_refused": {
+     "mic": "off",
+     "told": "The microphone did not start: Not supported.",
+     "answered_right": true,
+     "ok": true
+    },
+    "reload": {
+     "answered_right": true,
+     "ok": true
+    },
+    "sound_while_speaking": {
+     "kept": 0,
+     "busy_after": false,
+     "next_right": true,
+     "ok": true
+    },
+    "switch": {
+     "presses": 12,
+     "busy_after": false,
+     "next_right": true,
+     "ok": true
+    },
+    "ok": true
+   }
+  },
+  "run_2": {
+   "sections": "mic,first",
+   "exit": 0,
+   "load_average": "20 at the start, 14 at the end",
+   "mic_ok": true,
+   "first_ok": true
+  },
+  "run_3": {
+   "sections": "false",
+   "exit": 0,
+   "load_average": "13 at the start, 10 at the end",
+   "sounds_kept": 0,
+   "of": 40,
+   "own_voice_right": 4
   }
  }
 }
