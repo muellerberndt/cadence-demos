@@ -260,7 +260,7 @@ for _ in range(RUNS):
         recog.setdefault(key, []).append({"meaning": [g.get("word") for g in got], "spotted": [s["word"] for s in spotted]})
         feed(h2, np.zeros(8000, np.float32), t2)
 report["recognition"] = {k: {"runs": v, "right": sum(r["meaning"] == [PHRASES[k]["meaning"]] for r in v),
-                             "spotted_right": sum(r["spotted"] == [w for g in PHRASES[k]["spoken"] for w in g] for r in v)} for k, v in recog.items()}
+                             "spotted_right": sum(r["spotted"] == [w for g in PHRASES[k]["spoken"] for w in g if w != "<this>"] for r in v)} for k, v in recog.items()}  # (no thing is in focus here: "<this>" names none)
 n = sum(len(v) for v in recog.values())
 report["recognition_rate"] = round(sum(v["right"] for v in report["recognition"].values()) / n, 3)
 report["spotted_rate"] = round(sum(v["spotted_right"] for v in report["recognition"].values()) / n, 3)

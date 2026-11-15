@@ -111,19 +111,19 @@
      "can"
     ],
     [
-     0.33,
+     0.31,
      "you"
     ],
     [
-     0.53,
+     0.51,
      "eat"
     ],
     [
-     0.77,
+     0.71,
      "this"
     ]
    ],
-   "speech_end": 1.396
+   "speech_end": 1.269
   },
   "can_you_eat_it": {
    "text": "Can you eat it?",
@@ -135,19 +135,19 @@
      "can"
     ],
     [
-     0.35,
+     0.33,
      "you"
     ],
     [
-     0.55,
+     0.49,
      "eat"
     ],
     [
-     0.77,
+     0.71,
      "this"
     ]
    ],
-   "speech_end": 1.112
+   "speech_end": 1.077
   },
   "is_this_round": {
    "text": "Is this round?",
@@ -179,15 +179,15 @@
      "is"
     ],
     [
-     0.31,
+     0.33,
      "this"
     ],
     [
-     0.47,
+     0.49,
      "round"
     ]
    ],
-   "speech_end": 1.073
+   "speech_end": 1.132
   },
   "what_shape": {
    "text": "What shape?",
@@ -215,7 +215,7 @@
      "where"
     ],
     [
-     0.35,
+     0.33,
      "is"
     ],
     [
@@ -223,11 +223,11 @@
      "the"
     ],
     [
-     0.691,
+     0.711,
      "<this>"
     ]
    ],
-   "speech_end": 0.852
+   "speech_end": 0.891
   },
   "where_is_the_cup": {
    "text": "Where is the cup?",
@@ -239,19 +239,19 @@
      "where"
     ],
     [
-     0.39,
+     0.41,
      "is"
     ],
     [
-     0.63,
+     0.75,
      "the"
     ],
     [
-     0.87,
+     0.99,
      "cup"
     ]
    ],
-   "speech_end": 1.335
+   "speech_end": 1.473
   },
   "where_is_the_ball": {
    "text": "Where is the ball?",
@@ -267,15 +267,15 @@
      "is"
     ],
     [
-     0.57,
+     0.65,
      "the"
     ],
     [
-     0.73,
+     0.87,
      "ball"
     ]
    ],
-   "speech_end": 1.165
+   "speech_end": 1.352
   },
   "where_is_the_apple": {
    "text": "Where is the apple?",
@@ -291,15 +291,15 @@
      "is"
     ],
     [
-     0.73,
+     0.61,
      "the"
     ],
     [
-     0.97,
+     0.83,
      "apple"
     ]
    ],
-   "speech_end": 1.549
+   "speech_end": 1.418
   },
   "where_is_the_block": {
    "text": "Where is the block?",

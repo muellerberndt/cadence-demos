@@ -10,3 +10,7 @@ body[data-turn="parrot"] .mic-mini { opacity: 0.45; }
 .say-bubble.unsure { background: rgb(232 235 240 / 0.92); color: #1a1c22; font-weight: 600; min-width: 1.6em; text-align: center; }
 .ask-log .guess { font: 400 10px var(--mono); letter-spacing: 0.06em; color: #ffd27a; border: 1px solid rgb(255 210 122 / 0.4); border-radius: 999px; padding: 0 6px; margin-left: 4px; }
 .scan-box.ears .sb-word { display: block; min-height: 1.1em; }
+/* the box under the brain kept narrow: the cochlea's and the syrinx's labels stay in view beside it */
+body.demo .ask { width: min(216px, 40%); }
+body.demo .ask-row select { min-width: 0; }
+body.demo .ask-actions { gap: 6px; }

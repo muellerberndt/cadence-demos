@@ -384,7 +384,7 @@ class Host:
         slot, link = self.mem.recall(word)
         guessed = False
         if slot is None:
-            slot, link = self.mem.guess_sound(word)
+            slot, link = self.mem.guess_sound(word, but=self.exchange["slot"] if self.exchange is not None else -1)
             guessed = slot is not None
         if slot is None:
             return None
@@ -410,9 +410,17 @@ class Host:
         x, self.exchange = self.exchange, None
         if x is None:
             return
-        (self.mem.doubt if x["guessed"] else self.mem.fade)(x["slot"], x["meaning"])
+        # (where the meaning and a sound were both guesses the blame is shared: each is doubted half as much)
+        both = x["guessed"] and any(a["guessed"] for a in x["answers"])
+        if x["guessed"]:
+            self.mem.doubt(x["slot"], x["meaning"], 0.1 if both else 0.2)
+        else:
+            self.mem.fade(x["slot"], x["meaning"])
         for a in x["answers"]:
-            (self.mem.doubt if a["guessed"] else self.mem.fade)(a["slot"], a["word"])
+            if a["guessed"]:
+                self.mem.doubt(a["slot"], a["word"], 0.1 if both else 0.2)
+            else:
+                self.mem.fade(a["slot"], a["word"])
 
     def you_sounds(self) -> list:
         """Records deep enough to say back: the repertoire's sounds learned from the visitor."""
@@ -560,6 +568,8 @@ class Host:
 
     def step(self, meta: dict[str, Any], arrays: dict[str, np.ndarray]) -> dict[str, Any]:
         self.t += 1
+        if meta.get("mode") != self.mode:  # another way of attending: the drive to call begins low (it listens first)
+            self.drive = min(self.drive, 0.3)
         self.mode = meta.get("mode")
         if meta.get("own_voice"):  # the page is playing its voice (an answer said with a kept sound): what the ear hears at that moment is its own
             self.saying = max(self.saying, OWN_TAIL)
@@ -726,6 +736,9 @@ class Host:
         self.things = count if count is not None else self.things
         # (in "curious" it listens for questions: the drive rises at half the pace, a word by itself every eight seconds or so)
         self.drive += (0.5 if self.mode == "curious" else 1.0) * float(self.rng.uniform(0.012, 0.04)) + (0.4 if ended and self.mode != "curious" else 0.0)
+        if self.mode == "listen" or (self.mode == "curious" and (ended or self.sound)):
+            self.drive = min(self.drive, 0.5)  # while it listens to the visitor (and for a few seconds after a sound) it says nothing by itself
+        self.drive = min(self.drive, 1.5)
         reward = float(meta.get("reward") or 0.0)
         linked = None
         if reward > 0 and self.exchange is not None:  # a pistachio for its answer

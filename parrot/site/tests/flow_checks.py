@@ -77,6 +77,7 @@ def first_visit(pw, a, T) -> dict:
     steps.append({"step": "Curious pressed: the question list is back", "ok": page.evaluate("window.parrotPage.flow.mode") == "curious" and seen("#ask-preset")})
     T.quiet_for(page)
     serial = page.evaluate("window.parrotPage.trained.serial")
+    t_ask = T.now(page)
     page.select_option("#ask-preset", index=0)
     page.click("#ask-form button[type=submit]")
     sub, turn = "", False
@@ -85,7 +86,7 @@ def first_visit(pw, a, T) -> dict:
         turn = turn or page.evaluate("document.body.dataset.turn") == "parrot"
         page.wait_for_timeout(50)
     last = T.answer_after(page, serial, 60)
-    bubble = page.evaluate("document.getElementById('say-bubble').hidden ? '' : document.getElementById('say-bubble').textContent")
+    bubble = page.evaluate("(t) => { const b = window.parrotPage.flow.bubble; return b && b.at > t && b.who === 'it' ? b.text : ''; }", t_ask)  # the answer shown by the parrot (it goes after three seconds)
     steps.append({"step": "a question asked: its words as a subtitle, the parrot's turn shown, the answer by the parrot", "subtitle": sub.strip(), "turn_sign": turn,
                   "answer": last["said"] if last else None, "bubble": bubble, "ok": bool(last and last["right"] and sub and turn and bubble == " ".join(last["said"]))})
     t = T.now(page)
