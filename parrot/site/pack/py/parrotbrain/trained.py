@@ -9,6 +9,9 @@ trained brain lives only during an exchange, one of its own moments (300 ms) at 
 export protocol says (benchmarks/meaning/export_page.py, COORD 2026-11-13 19:05 and 22:15):
 
 - `begin`: a new exchange (the brain's state reset, the last reply forgotten);
+- `hears`: a question heard whole (`words`), one of its moments a word with its voice held, after a
+  `begin` of its own (`begin`) and with the first moment of its turn (`turn`), all in one step of the
+  page: the page sends it where it did not follow the sound word by word, so the answer comes sooner;
 - `moment`: what it sees (each thing's kind, colour, material, direction from the head and
   distance; the focus; during a scan the glimpse on one thing), the word heard (or None) and
   `more` (the trainer has more to say: its voice is held); it returns the word it says, or None;
@@ -338,14 +341,41 @@ class Host(Composed):
         out: dict[str, Any] = {"op": kind, "id": op.get("id")}
         things = [t for t in (op.get("things") or []) if t.get("kind") in m.spec["kinds"]]
         heard = op.get("heard")  # the sound this exchange answers: its record, the meaning it was taken for
-        if kind == "begin":
+        fresh = kind == "begin" or (kind == "hears" and bool(op.get("begin")))
+        if fresh:
             self.hearing.close_exchange()  # the exchange before it ended with no pistachio
-        if kind in ("begin", "moment") and isinstance(heard, dict) and heard.get("meaning"):
+        if kind in ("begin", "moment", "hears") and isinstance(heard, dict) and heard.get("meaning"):
             self.hearing.open_exchange(int(heard.get("slot", -1)), str(heard["meaning"]), bool(heard.get("guessed")))
-        if kind == "begin":
+        if fresh:
             m.brain.reset()
             m.own = None
             m.turn_over()
+        if kind == "begin":
+            pass
+        elif kind == "hears":  # a question heard whole: its words one a moment with its voice held, then (`turn`) the first moment of its turn, all in this one step
+            g = op.get("glimpse")
+            glimpse = things[g] if isinstance(g, int) and 0 <= g < len(things) else None
+            got: list[Any] = []
+            for word in op.get("words") or []:
+                m.see(things, glimpse=glimpse)
+                m.hear(word if word in m.codes else None)
+                got = []
+                with record_settlements(got.append, label="trained moment"):
+                    m.moment(more=True)
+                self.moments += 1
+            if op.get("turn"):
+                m.see(things, glimpse=glimpse)
+                m.hear(None)
+                in_turn = m.in_turn
+                got = []
+                with record_settlements(got.append, label="trained moment"):
+                    out["said"] = m.moment(more=False)
+                if out["said"]:
+                    out["sound"] = self.hearing.sound_for(out["said"])
+                if m.in_turn and not in_turn:
+                    out["recalled"] = self._recalled()
+                self.moments += 1
+            self.settle = self._settle_viz(got)
         elif kind == "moment":
             g = op.get("glimpse")
             m.see(things, glimpse=things[g] if isinstance(g, int) and 0 <= g < len(things) else None)
@@ -398,7 +428,7 @@ class Host(Composed):
         else:
             raise ValueError(f"unknown trained-brain step {kind!r}")
         self._activation()
-        if kind in ("moment", "look", "correct"):
+        if kind in ("moment", "look", "correct", "hears"):
             out["mind"] = self._mind()
         out["records"] = 0 if m.records is None else int(m.records.count)
         out["ms"] = round(1000.0 * (time.perf_counter() - began), 1)

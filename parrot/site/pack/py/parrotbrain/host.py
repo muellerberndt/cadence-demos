@@ -49,6 +49,7 @@ JOINTS = ["head_yaw", "head_pitch", "head_roll", "neck_pitch", "beak_open", "win
 RANGE = {"head_yaw": (-75.0, 75.0), "head_pitch": (-25.0, 35.0), "head_roll": (-20.0, 20.0)}
 DISTANCE_UNITS = 12
 END_QUIET = 30   # frames of quiet that end an utterance (0.3 s: the pauses inside a spoken phrase are shorter)
+ONSET, STAY = 2.5, 1.5  # nats above the room's level at which an utterance begins, and above which it goes on (11 dB and 6.5 dB: a voice 10 dB above a room's noise is heard whole; with 4.0 for both, short words in a room at 20 dB were cut to their peaks and left out as clicks)
 OWN_TAIL = 3     # moments after its own voice in which a sound counts as its own (the room's echo of it)
 VOICED = 0.15    # the least share of an utterance's loud frames that repeat at a voice's pitch (speech reads 0.19 to 1, also in a noisy room; a cough, a breath, typing, a fan read 0)
 
@@ -277,6 +278,7 @@ class Host:
         self.follower = Follower(self.mem)
         self.spotted: list = []  # the words known in the utterance being heard, each as it was spoken
         self.echo = None         # in "listen": the sound just heard, to say back (slot, moment)
+        self.view_due = None     # the moment the memory's picture goes to the page after a change (a large reply, kept out of the moment a sound is answered in)
         self.exchange = None     # a sound heard and answered: what a pistachio pays (the sound, its meaning, the sounds said)
         self.unpaid = None       # a word said by itself for the thing in focus, while no pistachio has come (slot, word, moment)
         self.heard_event = None
@@ -309,7 +311,7 @@ class Host:
         spectrum)."""
         n = len(frames)
         e = np.log(np.exp(frames.astype(np.float64)).sum(axis=1))
-        if n < 12 or int(np.sum(e > self.floor + 4.0)) < 12:  # under 120 ms of loud sound: a pop or a click, not a word
+        if n < 12 or int(np.sum(e > self.floor + STAY)) < 12:  # under 120 ms of sound above the room: a pop or a click, not a word
             return False, "click"
         if n > VALUE_FRAMES + 30:
             return False, "too long"
@@ -350,7 +352,7 @@ class Host:
         # what stands above the background once its spectrum is out (a sound the background has
         # taken in, such as a hum going on, stands at or below it)
         excess = float(np.percentile(np.log(np.exp(cleaned.astype(np.float64)).sum(axis=1)), 75) - np.log(np.exp(self.noise).sum()))  # its louder part (its soft start and end are kept too)
-        if excess < 2.0:
+        if excess < 1.5:
             return None
         self.heard_event = self.mem.hear(cleaned, pcm)
         slot = self.heard_event["write"]["slot"]
@@ -492,9 +494,11 @@ class Host:
             f = (1 - blur) * f + blur * soft
         return f.astype(np.float32)
 
-    def repertoire_list(self) -> list:
+    def repertoire_list(self, slots: list | None = None) -> list:
+        """The sounds it can make, for the page (each with its audio); `slots`: those records alone (the sounds
+        that changed: the page keeps the others, and their audio is not sent again)."""
         out = []
-        for r in self.repertoire + self.you_sounds():
+        for r in ([s for s in self.you_sounds() if s["slot"] in slots] if slots is not None else self.repertoire + self.you_sounds()):
             row = {"id": r["id"], "tag": r["tag"], "source": r["source"], "paid": round(self.paid.get(r["id"], 0.0), 2),
                    **({"pcm": np.round(r["pcm"], 4).tolist(), "pcm_rate": r["pcm_rate"]} if r.get("source") == "recording" and len(r.get("pcm", [])) else {}),
                    "frames": None if r["frames"] is None else r["frames"].ravel().round(2).tolist()}
@@ -504,15 +508,28 @@ class Host:
             out.append(row)
         return out
 
-    def _repertoire_changed(self, learned: dict | None, call: dict | None) -> bool:
-        """Whether the page needs the repertoire again (its sounds' audio is large): when the sounds it can say
-        changed (a sound heard or a call said can change them)."""
+    def _view(self, changed: bool) -> dict | None:
+        """The memory's picture for the page: a large reply, sent two and a half seconds after a change (once
+        the sound is said back or answered) and every five seconds for the fading."""
+        if changed:
+            self.view_due = self.t + 25
+        if self.t % 50 == 0 or (self.view_due is not None and self.t >= self.view_due):
+            self.view_due = None
+            return self.mem.view()
+        return None
+
+    def _repertoire_changed(self, learned: dict | None, call: dict | None) -> list | None:
+        """The records whose sound the page needs (again): a sound it can say that was heard this moment (told
+        again, its audio is another mix), and the sounds it can say since this moment. None: nothing changed."""
         if learned is None and call is None:
-            return False
+            return None
         sig = tuple(self.mem.sayable())
-        changed = sig != getattr(self, "_sayable_sig", None)
+        before = set(getattr(self, "_sayable_sig", None) or ())
         self._sayable_sig = sig
-        return changed
+        changed = set(sig) - before
+        if learned is not None and learned["slot"] in sig:
+            changed.add(learned["slot"])
+        return sorted(changed) if changed or before - set(sig) else None
 
     def describe(self) -> dict[str, Any]:
         return {
@@ -676,9 +693,9 @@ class Host:
             self.levels[self.level_at % len(self.levels)] = e; self.level_at += 1
             seen = self.levels[: min(self.level_at, len(self.levels))]
             self.floor = float(np.percentile(seen, 10)) if len(seen) >= 20 else max(self.floor, e)
-            if e < self.floor + 2.0:
+            if e < self.floor + STAY:
                 self.noise = np.logaddexp(self.noise + math.log(0.97), f.astype(np.float64) + math.log(0.03))
-            loud = e > self.floor + 4.0
+            loud = e > self.floor + (STAY if self.sound else ONSET)
             self.since_loud = 0 if loud else self.since_loud + 1
             if loud and self.saying > 0:
                 self.spoiled = True  # the visitor spoke while the parrot was making a sound
@@ -717,10 +734,10 @@ class Host:
                         if got:
                             heard_list.append(got)
                             if self.mode == "listen":  # it says back what it heard
-                                self.echo = (got["slot"], self.t + 2)
+                                self.echo = (got["slot"], self.t + 1)
                         ended = True
                     e_h = np.log(np.exp(heard.astype(np.float64)).sum(axis=1))
-                    self.events = (self.events + [{"t": self.t, "frames": len(heard), "loud": int(np.sum(e_h > self.floor + 4.0)), "kind": why, "gap": int(self.gap), "start": int(self.level_at - len(self.sound)),
+                    self.events = (self.events + [{"t": self.t, "frames": len(heard), "loud": int(np.sum(e_h > self.floor + STAY)), "kind": why, "gap": int(self.gap), "start": int(self.level_at - len(self.sound)),
                                                    "spoiled": bool(self.spoiled), "audio": 0 if heard_pcm is None else int(len(heard_pcm)),
                                                    "kept": got is not None, "write": None if got is None else self.heard_event["write"]}])[-40:]
                     self.sound = []; self.sound_pcm = []; self.quiet = 0; self.spoiled = False
@@ -803,14 +820,15 @@ class Host:
                 self.voice_rate = self.say_rate
             self.say_pcm = None
             names.append("voice")
+        changed = self._repertoire_changed(learned, call)  # the sounds whose audio the page needs
         return {"buffers": names, "group_activity": {"distance": dist_units.tolist()}, "readout": readout,
                 "looked": {"eye": eye, "row": row, "col": col, "strength": round(strength, 3)},
                 "focus": self.focus, "heard": bool(ear.max() > 0.35), "newborn": True,
                 "drive": round(min(1.0, self.drive), 3), "said": call, "saying": self.saying > 0, "heard_sound": learned, "heard_sounds": heard_list, "startle": startle,
                 "spotted": spotted, "hearing": bool(self.sound) and not self.spoiled, "recalled": self.mem_recalled(), "voice_rate": getattr(self, "voice_rate", 8000), "knows": self.knows(),
                 "words": len(self.mem.sayable()),
-                "memory": self.mem.view() if (learned is not None or linked is not None or self.t % 50 == 0) else None,  # (a large reply: when something changed, and every five seconds for the fading)
-                "repertoire": self.repertoire_list() if self._repertoire_changed(learned, call) else None,
+                "memory": self._view(learned is not None or linked is not None),
+                "repertoire": None if changed is None else self.repertoire_list(changed), "sayable": None if changed is None else [f"you-{s}" for s in self._sayable_sig],
                 "paid": {k: round(v, 2) for k, v in self.paid.items() if v}, "linked": linked}
 
     def handle(self, message: dict[str, Any]) -> dict[str, Any]:

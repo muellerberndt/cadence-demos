@@ -68,7 +68,7 @@ class Host:
                 names.append("voice_pcm")
         lessons = int(getattr(getattr(self.brain.parrot, "distance", None), "lessons", 0) or 0)
         out.update(voice_rate=heard.get("voice_rate", 8000), knows=heard.get("knows", []), recalled=heard.get("recalled"), buffers=names, lessons=lessons, words=len(self.hearing.mem.sayable()), drive=heard["drive"], said_sound=heard["said"], heard_sound=heard["heard_sound"], saying=heard.get("saying", False), heard_sounds=heard.get("heard_sounds", []),
-                   memory=heard["memory"], repertoire=heard["repertoire"], heard=heard["heard"], paid_sounds=heard["paid"], linked=heard.get("linked"),
+                   memory=heard["memory"], repertoire=heard["repertoire"], sayable=heard.get("sayable"), heard=heard["heard"], paid_sounds=heard["paid"], linked=heard.get("linked"),
                    spotted=heard.get("spotted", []), hearing=heard.get("hearing", False))
         return out
 

@@ -9,7 +9,10 @@ presets   The shipped voice. Every preset question's clip (a woman's natural sen
           rendering, read by Whisper as the word; the time from the end of the question to the start of the
           answer; a pistachio after an answer pays the brain's lesson and the links.
 mic       The microphone itself (the browser's fake device plays a file in a loop): in Listen to me a
-          visitor's word is kept as one utterance and said back.
+          visitor's word is kept as one utterance and said back within a second of the keeping. Then six
+          utterances in that voice, each heard for the first time, timed from the utterance's end: each is
+          said back within 1.5 s and the middle one within 1.2 s, with the machine as found and again with
+          every core kept busy (--busy N processes).
 first     A first visit with what is on screen alone: Listen to me, a word, said back; the switch to Curious; a
           question asked; a pistachio; the signs on screen at each step (the ear, the turn, the answer).
 visitors  The usability matrix: voices the parrot never heard, through a laptop microphone's simulation
@@ -28,6 +31,7 @@ nowords   The parrot with no words yet: sounds taught in Listen to me, then in C
 
     python tests/test_sound_symbols.py --url http://localhost:8842/ --out DIR --voices DIR
         [--only presets,mic,...] [--whisper PYTHON] [--video] [--rounds N] [--conditions clean,lap20,lap10]
+        [--busy N]
 
 --voices DIR holds one folder a visitor (takes <key>_<k>.wav with meta.json), voices the starting memory never
 heard. Writes DIR/report.json (and with --video the page's video and its sound).
@@ -37,6 +41,7 @@ from __future__ import annotations
 import argparse
 import base64
 import json
+import os
 import re
 import subprocess
 import sys
@@ -294,10 +299,14 @@ def mic_lesson(page) -> dict:
     end = time.time() + 60
     while time.time() < end and not got:  # the first utterance that ended in Listen to me
         got = [h for h in heard_after(page, t0, 30) if h.get("mode") == "listen"]
-    page.wait_for_timeout(4000)
+    page.wait_for_timeout(2500)
     said = page.evaluate("(t) => window.parrotPage.flow.said.filter((s) => s.at > t)", t0)
+    back = [round(s["at"] - got[0]["at"]) for s in said if got and s["echo"] and s["slot"] == got[0]["slot"] and s["at"] >= got[0]["at"]]  # (its say-back: the first after it was kept)
+    # (the word's end in the looped file is not known on the page's clock: the utterance is kept 0.3 s of quiet after
+    # it, and the say-back must follow that within a second; tests with the visitor's sound given to the ear directly
+    # time it from the word's end)
     return {"mic_on": page.evaluate("document.body.dataset.mic"), "heard": [{k: h.get(k) for k in ("slot", "word", "known", "frames", "spotted")} for h in got],
-            "said_back": said, "ok": bool(got) and any(s["echo"] and s["slot"] == got[0]["slot"] for s in said)}
+            "said_back": said, "said_back_ms_after_the_utterance_was_kept": back[0] if back else None, "ok": bool(back) and 0 <= back[0] <= 1000}
 
 
 def main() -> int:
@@ -311,6 +320,7 @@ def main() -> int:
     ap.add_argument("--conditions", default="clean,lap20,lap10")
     ap.add_argument("--visitors", default="")
     ap.add_argument("--video", action="store_true")
+    ap.add_argument("--busy", type=int, default=os.cpu_count() or 4, help="processes that keep a core busy each in the mic section's loaded pass")
     a = ap.parse_args()
     a.out.mkdir(parents=True, exist_ok=True)
     only = [s for s in a.only.split(",") if s]
@@ -344,7 +354,13 @@ def main() -> int:
             browser, ctx, page, logs, t0 = open_page(pw, a.url, micf)
             report["mic"] = {**mic_lesson(page), "voice": v.name, "log": logs[:]}
             ctx.close(); browser.close()
-            print("mic", json.dumps({k: report["mic"][k] for k in ("mic_on", "ok")}), flush=True)
+            # several first hearings, timed from each utterance's end: the machine as found, then with every core kept busy
+            import flow_checks
+            for name, busy in (("as_found", 0), ("busy", a.busy)):
+                report["mic"][name] = flow_checks.first_hearings(pw, a, sys.modules[__name__], v, busy)
+                report["mic"]["ok"] = report["mic"]["ok"] and report["mic"][name]["ok"]
+                print("mic", name, json.dumps({k: report["mic"][name][k] for k in ("busy_processes", "load_1min", "said_back_ms", "ok")}), flush=True)
+            print("mic", json.dumps({k: report["mic"][k] for k in ("mic_on", "said_back_ms_after_the_utterance_was_kept", "ok")}), flush=True)
             ok &= report["mic"]["ok"]
         (a.out / "report.json").write_text(json.dumps(report, indent=1))
         import flow_checks  # the longer sections (tests/flow_checks.py)

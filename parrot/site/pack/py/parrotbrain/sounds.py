@@ -187,6 +187,7 @@ YOUNG, SAME_YOUNG, APART = 6, 0.42, 1.15  # a record heard fewer than YOUNG time
 LIKE_WITHIN = 0.55  # a sound within this of its nearest record can be taken for what the records near it stand for
 LIKE_SOFT = 0.08  # among the nearest records, one this share farther than the nearest counts a third as much
 AGREED, AGREED_CLEAR = 0.6, 0.35  # the records near a sound agree on a meaning: its share of their links, and its lead over the next
+VOICES = 2  # and at least this many of them stand for it (one record alike in sound is no agreement: a visitor's "what colour" lay within reach of their own "white")
 LENGTHS = 1.7  # a take is lined up only with records no more than this many times longer or shorter
 TERMS = 13  # the smooth shape of a frame's bands: its first cosine terms (the resonances of the mouth, without the voice's pitch lines)
 _COSINES = np.cos(np.pi / BANDS * (np.arange(BANDS)[None, :] + 0.5) * np.arange(1, TERMS + 1)[:, None])
@@ -508,7 +509,8 @@ class SoundMemory:
 
     def taken_for(self, own: np.ndarray, near: list | None, reads: np.ndarray, but: int = -1) -> tuple[str | None, float]:
         """What a sound is taken for: the meaning its own links read (strong, and clear of the next); without
-        one, the meaning the records nearest it agree on, where it lies within LIKE_WITHIN of the nearest."""
+        one, the meaning the records nearest it agree on (VOICES of them at least), where it lies within
+        LIKE_WITHIN of the nearest."""
         j = int(np.argmax(own))
         rest = float(np.max(np.delete(own, j))) if len(own) > 1 else 0.0
         if own[j] >= LINKED and own[j] - rest >= CLEAR:
@@ -516,7 +518,8 @@ class SoundMemory:
         like = self.like(near, reads, but)
         if like is not None and min(d for s, d in near if s != but) < LIKE_WITHIN:
             k = int(np.argmax(like))
-            if like[k] >= AGREED and like[k] - float(np.max(np.delete(like, k))) >= AGREED_CLEAR:
+            voices = sum(1 for s, d in near if s != but and 0 <= s < len(reads) and d < LIKE_WITHIN and reads[s][k] >= LINKED)
+            if like[k] >= AGREED and like[k] - float(np.max(np.delete(like, k))) >= AGREED_CLEAR and voices >= VOICES:
                 return self.words[k], round(float(like[k]), 3)
         return None, round(float(own[j]), 3)
 
@@ -552,12 +555,21 @@ class SoundMemory:
     def guess_sound(self, word: str, but: int = -1) -> tuple[int | None, float]:
         """A sound to say for a word that recalls none: one of the sounds it can say (`but` the sound it is
         answering), drawn by each sound's link to the word less its strongest link to anything else (a sound
-        that stands for another meaning is an unlikely name for this one)."""
+        that stands for another meaning, or lies close to a record that does, is an unlikely name for this one)."""
         slots = [s for s in self.sayable() if s != but]
         if word not in self.words or not slots:
             return None, 0.0
         r, j = self.reads(), self.words.index(word)
-        z = np.array([(r[s][j] - max(0.0, float(np.max(np.delete(r[s], j))))) / TEMPERATURE for s in slots])
+        z = []
+        for s in slots:
+            other = max(0.0, float(np.max(np.delete(r[s], j))))
+            if other < LINKED:  # a sound with no meaning of its own: what the record it lies nearest stands for (another take of a word it knows is that word)
+                at, d = self.distances(shape(self.template(s)))
+                near = sorted(((int(a), float(x)) for a, x in zip(at, d) if int(a) != s), key=lambda n: n[1])[:1]
+                if near and near[0][1] < SAME_YOUNG:
+                    other = max(other, float(np.max(np.delete(np.clip(r[near[0][0]], 0.0, 1.0), j))))
+            z.append((r[s][j] - other) / TEMPERATURE)
+        z = np.array(z)
         p = np.exp(z - z.max()); p /= p.sum()
         k = int(self.rng.choice(len(slots), p=p))
         return int(slots[k]), round(float(p[k]), 3)
@@ -740,6 +752,9 @@ class SoundMemory:
             self.synapses.consolidated = np.asarray(c, np.float64)
             self.synapses.reset(1)
         self._changed()
+        for slot in range(self.records.count):  # each record's shape, ready before the first sound is heard
+            self._shapes[slot] = ((int(self.born[slot]), int(self.heard[slot])), shape(self.template(slot)))
+        self.reads()
 
     @staticmethod
     def frames_of_value(v: np.ndarray) -> np.ndarray:

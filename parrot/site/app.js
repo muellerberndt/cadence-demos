@@ -335,7 +335,7 @@ async function moment(now) {
     : words || lessons ? `learning: ${words} word${words === 1 ? '' : 's'}${state.composed ? `, distance taught by ${lessons} head turn${lessons === 1 ? '' : 's'}` : ''}` : 'a newborn: it has learned nothing yet';
   const el = document.querySelector('.newborn');
   if (el && el.firstChild.textContent !== badge) el.firstChild.textContent = badge;
-  if (reply.repertoire) syncChips(reply.repertoire);
+  if (reply.repertoire) syncChips(reply.repertoire, reply.sayable); // (the sounds that changed, and the ids of all it can say)
   // every sound the ear heard this moment (a long moment can end several), in order; every start begins from the
   // starting memory, so nothing heard is kept past the visit
   // each word known in the utterance as it is spoken (the hearing layer's follower), before the utterance's end
@@ -436,9 +436,9 @@ function placeFocus() {
 // Sounds learned in a visit last for the visit: every start begins from the starting memory (an older page
 // kept them in this browser; that copy is cleared).
 const learnedStore = { clear() { try { localStorage.removeItem('parrot.memory'); } catch (e) { /* storage blocked */ } } };
-function syncChips(list) {
-  const ids = new Set(list.map((r) => r.id));
-  for (const c of ui.sounds.querySelectorAll('.chip-s.you')) if (!ids.has(c.dataset.sound)) c.remove();
+function syncChips(list, sayable = null) {
+  const ids = new Set(sayable || list.map((r) => r.id));
+  for (const c of ui.sounds.querySelectorAll('.chip-s.you')) if (!ids.has(c.dataset.sound)) { soundPcm.delete(c.dataset.sound); c.remove(); }
   for (const r of list) {
     addChip(r);
     const c = ui.sounds.querySelector(`[data-sound="${r.id}"]`);
@@ -678,6 +678,7 @@ function nextOp(now) {
     if (now - trained.lastAt < trained.momentMs - 8) return null; // (a look every 300 ms; an exchange's moments run with every moment of the body)
     if (trained.open && now - trained.open.at > OPEN_MS) { trained.open = null; ui.pistachio.classList.remove('ask'); trained.queue.push({ meta: { op: 'over' }, resolve() {}, reject() {} }); gaze.clear = true; } // an answer no pistachio followed
     else if (trained.open) return null; // an answer waits for its pistachio: its brain rests on the reply (measured: with looks between the reply and the pistachio the lesson unsettles other answers, 65 of 72 right; resting, 143 of 144)
+    else if (flow.hearing) return null; // an utterance is being heard: no look, so the moment it ends in carries the hearing alone and the answer comes sooner
     else {
       const f = !trained.busy && flow.mode === 'curious' && lookFocus();
       if (!f) { gaze.id = null; return null; }
@@ -691,7 +692,7 @@ function nextOp(now) {
   }
   trained.lastAt = now;
   const op = trained.queue.shift();
-  if (op.meta.op === 'moment' || op.meta.op === 'correct' || op.meta.op === 'look') {
+  if (op.meta.op === 'moment' || op.meta.op === 'correct' || op.meta.op === 'look' || op.meta.op === 'hears') {
     const seen = trainedThings(op.meta.focus, op.meta.glimpseId);
     op.meta = { ...op.meta, things: seen.things, glimpse: seen.glimpse };
   }
@@ -910,8 +911,7 @@ function spottedWord(s) {
   if (named && named.id !== flow.live.focus) { // the question names a thing: its focus goes there as the name is said, and its brain hears the words so far with that thing in focus
     flow.live.focus = named.id; trained.focus = named.id; askNote();
     state.cue = cueFor(named.id); state.pointed = { id: named.id, until: now + POINT_MS, why: 'it heard its name', cued: now };
-    trainedOp({ op: 'begin' }).catch(() => {});
-    for (const w of flow.live.words) trainedOp({ op: 'moment', hear: w, more: true, focus: named.id }).catch(() => {});
+    trainedOp({ op: 'hears', begin: true, words: [...flow.live.words], focus: named.id }).catch(() => {});
   } else trainedOp({ op: 'moment', hear: word, more: true, focus: flow.live.focus }).catch(() => {});
 }
 /** An utterance heard whole: in Listen to me the hearing layer says it back; in Curious it is answered. */
@@ -968,10 +968,13 @@ async function answerHeard(h) {
     // its brain hears the question's words: those it followed as they were spoken stand; the rest follow
     let fed = live ? live.words : [];
     const stands = !!live && live.focus === focusId && fed.length <= words.length && fed.every((w, i) => w === words[i]);
-    if (!stands) { trainedOp({ op: 'begin' }).catch(() => {}); fed = []; }
-    for (const w of words.slice(fed.length)) { if (sub.preset) subtitleHeard(w); else subtitleAdd(w); trainedOp({ op: 'moment', hear: w, more: true, focus: focusId }).catch(() => {}); }
+    if (!stands) fed = [];
+    const rest = words.slice(fed.length);
+    for (const w of rest) { if (sub.preset) subtitleHeard(w); else subtitleAdd(w); }
     for (const x of sub.words) x.span.classList.add('on');
     subtitleDone(1600);
+    // the words it has not heard as they were said, and the first moment of its turn, in one step of its brain
+    const first = trainedOp({ op: 'hears', begin: !stands, words: rest, turn: true, focus: focusId, heard: { slot: h.slot, meaning, guessed: !h.word } });
     const said = [];
     let li = null, firstAt = null;
     const say = (w, sound) => {
@@ -981,7 +984,7 @@ async function answerHeard(h) {
       li.innerHTML = `<span class="who">parrot</span> <b>${esc(said.join(', '))}</b> <span class="dim">(${esc(how)})</span>`;
     };
     for (let k = 0; k < trained.turn; k++) {
-      const r = await trainedOp({ op: 'moment', hear: null, more: false, focus: focusId, ...(k === 0 ? { heard: { slot: h.slot, meaning, guessed: !h.word } } : {}) });
+      const r = k === 0 ? await first : await trainedOp({ op: 'moment', hear: null, more: false, focus: focusId });
       if (!r.said && said.length) break;
       say(r.said, r.sound);
     }

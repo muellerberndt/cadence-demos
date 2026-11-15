@@ -4,6 +4,9 @@ helpers); every section writes its rows into the report and returns whether it p
 from __future__ import annotations
 
 import json
+import os
+import subprocess
+import sys
 import time
 from pathlib import Path
 
@@ -41,6 +44,44 @@ class Room:
         got = self.T.hear(self.page, pad(x))
         got.update(speech_end=got["startedAt"] + 1000 * (0.25 + len(x) / 16000), gain_db=round(gain, 1))
         return got
+
+
+# --- the say-back's delay --------------------------------------------------------------------------------
+SAY_BACK_MS = 1500         # each say-back starts within this of the end of the utterance
+SAY_BACK_MEDIAN_MS = 1200  # and the middle one of a pass within this
+FIRST_HEARD = ("apple", "cup", "white", "what_colour", "what_is_this", "where_is_it")
+
+
+def first_hearings(pw, a, T, voice: Path, busy: int) -> dict:
+    """Listen to me, a fresh page: several utterances in a voice in no record, each heard for the first time. Each
+    is kept as one utterance and said back about a second after its end. `busy`: that many processes keep a core
+    busy each meanwhile (a loaded machine)."""
+    burners = [subprocess.Popen([sys.executable, "-c", "while True: pass"]) for _ in range(busy)]
+    try:
+        takes = T.takes(voice)
+        browser, ctx, page, logs, t0 = T.open_page(pw, a.url, a.out / "quiet.wav")
+        mic = Room(T, page, "clean", seed=1)
+        T.set_flow(page, "listen")
+        rows = []
+        for key in FIRST_HEARD:
+            T.quiet_for(page)
+            page.wait_for_timeout(600)
+            t = T.now(page)
+            sound = mic.say(takes[key][0])
+            got = T.heard_after(page, t, 15)
+            page.wait_for_timeout(2600)
+            said = page.evaluate("(t) => window.parrotPage.flow.said.filter((s) => s.at > t && s.echo)", t)
+            ms = round(said[0]["at"] - sound["speech_end"]) if said else None
+            rows.append({"key": key, "heard": len(got), "first_heard": bool(got) and not got[0].get("known"), "said_back": bool(said) and bool(got) and said[0]["slot"] == got[0]["slot"],
+                         "said_back_ms": ms, "ok": len(got) == 1 and bool(said) and said[0]["slot"] == got[0]["slot"] and ms is not None and ms <= SAY_BACK_MS})
+        ctx.close(); browser.close()
+    finally:
+        for b in burners:
+            b.kill()
+    ms = [r["said_back_ms"] for r in rows if r["said_back_ms"] is not None]
+    median = None if not ms else round(float(np.median(ms)))
+    return {"busy_processes": busy, "load_1min": round(os.getloadavg()[0], 1), "rows": rows, "said_back_ms": {"min": min(ms) if ms else None, "median": median, "max": max(ms) if ms else None},
+            "ok": all(r["ok"] for r in rows) and median is not None and median <= SAY_BACK_MEDIAN_MS}
 
 
 def _spoken_since(page, t):
@@ -115,11 +156,12 @@ def visitor(pw, a, T, voice: Path, cond: str) -> dict:
         T.quiet_for(page)
         page.wait_for_timeout(600)
         t = T.now(page)
-        mic.say(takes[key][0])
+        sound = mic.say(takes[key][0])
         got = T.heard_after(page, t, 15)
         page.wait_for_timeout(3200)
         said = page.evaluate("(t) => window.parrotPage.flow.said.filter((s) => s.at > t && s.echo)", t)
-        row = {"key": key, "take": takes[key][0].name, "heard": len(got), "frames": got[0]["frames"] if got else None, "said_back": bool(said), "visitor_reads": said_as.get(takes[key][0].stem, {}).get("heard")}
+        row = {"key": key, "take": takes[key][0].name, "heard": len(got), "frames": got[0]["frames"] if got else None, "said_back": bool(said), "visitor_reads": said_as.get(takes[key][0].stem, {}).get("heard"),
+               "said_back_ms": round(said[0]["at"] - sound["speech_end"]) if said else None}  # from the end of the visitor's utterance to the start of the say-back
         if said:
             y = T.parrot_audio(page, said[0]["id"])
             if y is not None:
@@ -127,7 +169,7 @@ def visitor(pw, a, T, voice: Path, cond: str) -> dict:
                 T.write_wav(f, np.concatenate([np.zeros(4800), y / (np.abs(y).max() + 1e-9) * 0.9, np.zeros(4800)]))
                 row["file"] = str(f)
         out["listen"].append(row)
-        print("  listen", json.dumps({k: row[k] for k in ("key", "heard", "said_back")}), flush=True)
+        print("  listen", json.dumps({k: row[k] for k in ("key", "heard", "said_back", "said_back_ms")}), flush=True)
     # (b) Curious: each short question until it is answered right RUN times running
     T.set_flow(page, "curious")
     for q, kinds in T.SHORT.items():
@@ -175,12 +217,17 @@ def judge_visitors(rows: list[dict], heard: dict, T) -> dict:
                 r["read_alike"] = T.words_of(r["parrot_reads"] or "") == want
                 back += r["read_alike"]
         ans = [r["answer_ms"] for q in v["curious"].values() for r in q["rows"] if r.get("answer_ms") is not None and r["right"]]
+        sb = [r["said_back_ms"] for r in v["listen"] if r.get("said_back_ms") is not None]
         table.append({"voice": v["voice"], "cond": v["cond"], "one_utterance": sum(r["heard"] == 1 for r in v["listen"]), "said_back": sum(r["said_back"] for r in v["listen"]),
-                      "said_back_read_alike": back, "of": len(v["listen"]),
+                      "said_back_read_alike": back, "of": len(v["listen"]), "said_back_ms_median": None if not sb else round(float(np.median(sb))), "said_back_ms_max": None if not sb else max(sb),
                       **{q: (f"{c['pistachios_before_the_run']} pistachios, {c['trials_before_the_run']} trials" if c["reached"] else f"not in {len(c['rows'])} trials") for q, c in v["curious"].items()},
                       "answer_ms_median": None if not ans else round(float(np.median(ans))), "answer_ms_max": None if not ans else max(ans)})
+    sb = [r["said_back_ms"] for v in rows for r in v["listen"] if r.get("said_back_ms") is not None]
+    ans = [r["answer_ms"] for v in rows for q in v["curious"].values() for r in q["rows"] if r.get("answer_ms") is not None and r["right"]]
     return {"table": table, "all_reached": all(c["reached"] for v in rows for c in v["curious"].values()),
-            "all_one_utterance": all(r["heard"] == 1 for v in rows for r in v["listen"])}
+            "all_one_utterance": all(r["heard"] == 1 for v in rows for r in v["listen"]),
+            "said_back_ms": {"median": None if not sb else round(float(np.median(sb))), "max": None if not sb else max(sb), "within_1500": sum(x <= 1500 for x in sb), "of": len(sb)},
+            "answer_ms": {"median": None if not ans else round(float(np.median(ans))), "max": None if not ans else max(ans), "within_1500": sum(x <= 1500 for x in ans), "of": len(ans)}}
 
 
 # --- false triggers --------------------------------------------------------------------------------------

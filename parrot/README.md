@@ -90,7 +90,9 @@ sections:
   with the sound linked to the word in the parrot's own rendering, and Whisper reads that sound as
   the word. A pistachio after an answer pays the brain's lesson and the links.
 - `mic`: through a stand-in microphone, in Listen to me, a word in a voice the parrot never heard
-  is kept as one utterance and said back.
+  is kept as one utterance and said back within a second of the keeping; then six first hearings,
+  each said back within 1.5 s of the utterance's end, with the machine as found and with every
+  core kept busy.
 - `first`: a first visit with what is on screen alone, from Listen to me to a question and a
   pistachio.
 - `false`: sounds that are no speech (a cough, a breath, typing, a click, a door, a fan and others)
@@ -109,6 +111,19 @@ sound that is no speech was kept; the `robust` cases passed. The `mic` section s
 its own window. Over seven runs the visitor's word was kept and linked every time, and it was said
 back within the test's four seconds in three; where the log shows a later sound, it came 3.6 to
 4.4 s after the word. The same action inside `first` passed in three of three runs.
+
+**The say-back's delay.** In the build those runs read, each sound that became one the parrot can
+say sent the audio of every kept sound to the page again, and the say-back waited for it. This
+build sends the changed sounds alone, and the memory's picture goes to the page two and a half
+seconds after a change, outside the moment a sound is answered in. The `mic` section times six
+first hearings of a voice in no record from each utterance's end and passes where each say-back
+starts within 1.5 s and the middle one within 1.2 s, once with the machine as found and once with
+one busy process a core. Readings on a ten-core machine shared with other jobs: 0.74 to 0.93 s
+as found (median 0.78 s, load average 12) and 0.76 to 1.02 s with ten busy processes (median
+0.89 s, load average 18); over four voices in no record, 0.7 to 1.1 s (median 0.93 s, 24
+utterances). The answer to a visitor's own question in Curious starts 1.1 to 2.6 s after the
+question's end on that machine (median 1.8 s, 36 questions), most of it the brain's moments for
+the question's words under the machine's load. `evidence/sound_flow.json` holds these readings.
 
 ## What it does not do
 
@@ -207,8 +222,9 @@ python parrot/site/tests/test_sound_symbols.py --url http://localhost:8842/ --ou
 The test needs Python with `playwright` (and its Chromium) and `numpy`, `ffmpeg` on the path, and
 for the Whisper reading a Python with `mlx-whisper` (Apple silicon). `--voices` takes a folder of
 visitors' takes, one folder a voice, in voices the starting memory never heard; the folder ships
-none. `--only presets` runs the list alone and needs no such folder, and `--rounds` sets how often
-each question is asked (two by default).
+none. `--only presets` runs the list alone and needs no such folder, `--rounds` sets how often
+each question is asked (two by default), and `--busy` sets the busy processes of the `mic`
+section's loaded pass (one a core by default).
 
 ```sh
 node parrot/site/tests/dsp_parity.mjs          # the page's ear against the library's front end
