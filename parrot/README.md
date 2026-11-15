@@ -112,8 +112,8 @@ wrong. Run again by themselves, the three sections passed.
 ## What it does not do
 
 - **Free speech.** It does not take a sentence apart from its sound. The ear matches a whole
-  utterance to the sounds it keeps, and the nearest record's link names the meaning: a word, or one
-  of the questions the brain was taught. The wordings it knows are the ones the starting memory
+  utterance to the sounds it keeps, and the matched record's link, or the vote of the records
+  nearest it, names the meaning: a word, or one of the questions the brain was taught. The wordings it knows are the ones the starting memory
   holds. Where each word begins inside a question's record was marked when the starting memory was
   built, from Whisper's word times.
 - **Any voice at once.** A voice it has never heard is understood far less often than the starting
