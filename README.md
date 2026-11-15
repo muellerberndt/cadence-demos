@@ -5,6 +5,19 @@
 </p>
 <h3 align="center">▶ <a href="https://cadence.floatingpragma.ai/">Try them live in your browser: cadence.floatingpragma.ai</a></h3>
 
+## Coming soon: the parrot
+
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=amR3cnrmgDo"><img src="https://i.ytimg.com/vi/amR3cnrmgDo/maxresdefault.jpg" alt="Video: a virtual African Grey parrot whose Cadence brain learns spoken words as sounds linked to the things it sees" width="80%"></a>
+</p>
+
+A virtual African Grey whose Cadence brain learns spoken words as sounds linked to the things it
+sees, and answers questions about them in sound. It learns with no backpropagation, during its
+whole life. ▶ [Watch the video](https://www.youtube.com/watch?v=amR3cnrmgDo)
+
+**The parrot's code is coming to this repository.** To get it the day it lands, click **Watch** at
+the top of this page, then **Custom**, then **Releases**.
+
 Small example applications for [Cadence](https://github.com/muellerberndt/cadence):
 brains that learn from experience through bounded patches, local relations,
 readback and settlement. Each demo demonstrates a specific mechanism and names
