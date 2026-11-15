@@ -6,7 +6,7 @@
  "lost": "what material is this (cup, green ball), is this <colour> on some things (is this yellow of the key, is this blue of the block, is this green of the apple), what colour is this of the green ball, is this round of the green ball",
  "founder": 33400121,
  "exported": "2026-11-14 22:36 UTC (pretraining block 400)",
- "source": "trained on the owner's Mac from s3://cadence-0100-meaning-20261113/data/meaning334/night/s5/brains_code/brain_33400121_N0.npz: night.life N1 to N3 (201, 1200 and 800 blocks), then pretrain_stage.MIX (.25 x 300, .10 x 50, .05 x 50); word records off",
+ "source": "trained on a local machine from the night's N0 checkpoint of founder 33400121 (brain_33400121_N0.npz): night.life N1 to N3 (201, 1200 and 800 blocks), then pretrain_stage.MIX (.25 x 300, .10 x 50, .05 x 50); word records off",
  "lane": "muellerberndt/cadence lane-0100-meaning (night.py, pretrain_stage.py at 568a0ad8), the mixed code's fields at unit length (spec mixed.fields; the page host's _fields_observation)",
  "readings": {
   "the chamber, frozen, 96 a form": "name .99, colour_this .97 (held-out pairs .74), is_colour .70 (held-out .56), colour_of .99 (held-out .77), material .77, is_round .96, can_eat .97, shape 1.00, direction .87, imitate 1.00",

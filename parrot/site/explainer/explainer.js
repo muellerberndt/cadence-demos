@@ -142,7 +142,7 @@
     // --- the brains the page carries (their version files beside the brains) -------------------------
     const line = document.getElementById('xp-brains');
     if (line && window.fetch) {
-      const files = ['pack/trained/version.json', 'pack/trained-names/version.json'];
+      const files = ['pack/trained/version.json'];
       Promise.all(files.map((f) => fetch(f).then((r) => (r.ok ? r.json() : null)).catch(() => null))).then((found) => {
         const names = found.filter(Boolean).map((v) => `${v.label || v.step || 'a trained brain'}, founder ${v.founder}`);
         if (names.length) line.textContent = `The page carries: ${names.join('; ')}.`;

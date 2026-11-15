@@ -34,7 +34,7 @@
     "label": "N1 names",
     "founder": 33400106,
     "exported": "2026-11-13 23:12 UTC",
-    "source": "s3://cadence-0100-meaning-20261113/meaning334/night/s5/page_N1/",
+    "source": "the meaning lane's export page_N1 (night s5)",
     "lane": "muellerberndt/cadence lane-0100-meaning, benchmarks/meaning/export_page.py",
     "readings": {
      "N0 imitation": "1.00",
@@ -130,7 +130,7 @@
      "wrote": true,
      "records": 2048
     },
-    "video": "~/Desktop/parrot-demos/parrot-page-20261114T0042Z-N1-names-33400106.mp4 (71.9 s, the waits between steps cut)"
+    "video": "parrot-page-20261114T0042Z-N1-names-33400106.mp4 (71.9 s, the waits between steps cut), a local recording outside this repository"
    },
    "brain_label": "N1 names, founder 33400106"
   },
@@ -141,7 +141,7 @@
     "label": "N2 colour, deep",
     "founder": 33400110,
     "exported": "2026-11-14 00:07 UTC",
-    "source": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/deep_33400110_N2/",
+    "source": "the meaning lane's export page/deep_33400110_N2",
     "lane": "muellerberndt/cadence lane-0100-meaning, the night's deep composition (4 processing regions and the association, apical .5)",
     "readings": {
      "N0 imitation": ".94",
@@ -156,7 +156,7 @@
      "places (N3)",
      "relations (N4)"
     ],
-    "probes": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/deep_33400110_N2/probes.json (exported 2026-11-14 00:44 UTC)"
+    "probes": "probes.json of the meaning lane's export page/deep_33400110_N2 (exported 2026-11-14 00:44 UTC)"
    },
    "brain_label": "N2 colour, deep, founder 33400110",
    "page_room_native": {
@@ -264,7 +264,7 @@
      "wrote": true,
      "records": 2048
     },
-    "video": "~/Desktop/parrot-demos/parrot-page-20261114T0057Z-N2-colour-deep-33400110.mp4 (72.0 s)"
+    "video": "parrot-page-20261114T0057Z-N2-colour-deep-33400110.mp4 (72.0 s), a local recording outside this repository"
    }
   }
  ]

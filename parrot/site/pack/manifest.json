@@ -6,7 +6,7 @@
   "numpy"
  ],
  "package": "parrotbrain",
- "brain": "composed: cadence.parrot (the parrot-brain lane), with the page's hearing layer; trained: the composed body and hearing with cadence.meaning's MeaningParrot, the brains the meaning lane trained (#334); placeholder: a hand-written controller",
+ "brain": "composed: cadence.parrot (the parrot-brain lane), with the page's hearing layer; trained: the composed body and hearing with cadence.meaning's MeaningParrot, the brain the meaning lane trained (#334); placeholder: a hand-written controller",
  "sources": [
   "__init__.py",
   "host.py",
@@ -41,76 +41,14 @@
  "hosts": {
   "composed": "parrotbrain.page",
   "placeholder": "parrotbrain.host",
-  "trained": "parrotbrain.trained",
-  "trained-pretrain400": "parrotbrain.trained",
-  "trained-dir15": "parrotbrain.trained",
-  "trained-demo200": "parrotbrain.trained",
-  "trained-code120": "parrotbrain.trained",
-  "trained-112": "parrotbrain.trained",
-  "trained-110": "parrotbrain.trained",
-  "trained-names": "parrotbrain.trained",
-  "trained-shallow": "parrotbrain.trained"
+  "trained": "parrotbrain.trained"
  },
  "host_files": {
   "trained": {
    "trained/brain.npz": "c450b3f9e26c2b0d9f2e4cf1413915fabf666c97c7901e5ef7ec67a601055bd7",
    "trained/spec.json": "a0475091077293af4b6f26a62ef2e60f34d2c126526d9a4fece0a0e0a94b2a0b",
-   "trained/version.json": "1bfe40d82d011f4ca863f25697afcd02f11a3c84189d88ba972d8a605fe6e9c0",
+   "trained/version.json": "4fc90e5472b28fbd9269f2aa4a3ca8c65a8e7710118fcc5791e2aaaa27fb2c31",
    "trained/probes.json": "2d15643fe10f56b1cac076423881d66b0c7de94fb0fbfa5958284ff37d1be586"
-  },
-  "trained-pretrain400": {
-   "trained-pretrain400/brain.npz": "27d5b01df520de5b007284e0506b462c8e06ac7bd2128c56fe8a945b2b484c5f",
-   "trained-pretrain400/brain.records.npz": "b4a0230e305869aeaa65be82181fa94a7e48e6824c0ca73f0bb40e1221bb85eb",
-   "trained-pretrain400/spec.json": "95ff41dadb5d57969d353a6a438436fd59ecb27ac87f385f7b2bb8a17ed56076",
-   "trained-pretrain400/version.json": "ecaaaae573b7a5acecc86772a20f5a346467ce0fde50c14cedf35e889f0db598"
-  },
-  "trained-dir15": {
-   "trained-dir15/brain.npz": "53642068ea8e94770fc645b1f682c6fa6e9d7e5ad4ab4aba2d0b54f8d36f33a3",
-   "trained-dir15/brain.records.npz": "0612de959d8d4abcd8fec8fcbf7cbc021199cb5694458afea72a628a6eaea916",
-   "trained-dir15/spec.json": "12df827d17ecde53f135515f4d48c9229a792d037ccab26958fdb67facabef8e",
-   "trained-dir15/version.json": "9ace20365cf8e24fc2d7ddad36ce9164014753439a4f9f23e1829643682bed2b",
-   "trained-dir15/probes.json": "23f8e7e87ae9353924a15c215f15e2d3f5d0c98148e2e61e87389bc3414e93b2"
-  },
-  "trained-demo200": {
-   "trained-demo200/brain.npz": "1c638d5e4e23cfc8bbdec311eed5b8e21896c8bc2044dbdaeabb8f7f2ccc1cd7",
-   "trained-demo200/brain.records.npz": "ce2a87dec0f662243bd5973953dd0d5a57229f118f2864f8ac53d95728c11754",
-   "trained-demo200/spec.json": "12df827d17ecde53f135515f4d48c9229a792d037ccab26958fdb67facabef8e",
-   "trained-demo200/version.json": "e1d387438ae2484993d44db87b1f897ab239dedbb24ecef0f379282e85875b11",
-   "trained-demo200/probes.json": "35a3224d7b015687a14d5af538485eb8bf87903344b929e3eae6859685a26df2"
-  },
-  "trained-code120": {
-   "trained-code120/brain.npz": "4028c7433efea2673af1aab7f93bd695cb00253efe0953ef5470ab237c046830",
-   "trained-code120/brain.records.npz": "bf72484643da825c2ab9b7f7ab61eba5d29e102e008249b4ed984b0a30ac231d",
-   "trained-code120/spec.json": "b258d2c819197652a4550655e3b072487ab415d2752b4bbaf7b30a73b42120b4",
-   "trained-code120/version.json": "00c3030805392676d4d5780b487774c6e75bc1b4baa87b612a772112771021f1",
-   "trained-code120/probes.json": "e7052dae42e13cba2d37040c8f47e1f3e7e2d073426bc6f51611076038d182bf"
-  },
-  "trained-112": {
-   "trained-112/brain.npz": "40ce1561f8afffc1ae57f775d83cc7ede08c809adc4a04ed38c0a0a688582041",
-   "trained-112/brain.records.npz": "7eb0adf4e440d4e41ffc29f89d182c142fe7ace0a0f76776f13b16fbf2e030b9",
-   "trained-112/spec.json": "b68776889150ab6216094bf41f4a461e1f70e248ef913b36367a290c71d068ee",
-   "trained-112/version.json": "69d2bb8b71d7f8d7875bbfe52180ee74989f37c089ff03e383c0d419279184bd",
-   "trained-112/probes.json": "c898b4253472f0b8eca694a0c7965ce508e25aa9bab1fb9445535591496b886d"
-  },
-  "trained-110": {
-   "trained-110/brain.npz": "320048e24922efae25776648cf20c4b36d804fc6d8bbda7caea630e88fa56c0f",
-   "trained-110/brain.records.npz": "08df00f4bd85eebc5fdd268d849f045f11fb94165086d771d1df2f31dcbd0e97",
-   "trained-110/spec.json": "6f9cf6f85fb940d583cf97771a4f0851311b557ea9817cb3248fda4d42782001",
-   "trained-110/version.json": "a40c72bcda3a441a724aa42155b72167548817b582666ff843a7e2901f330637",
-   "trained-110/probes.json": "18d32f6ffc464ef7625b4b6c0155cafbd65717b675e8fe6227669b09e97ddd0f"
-  },
-  "trained-names": {
-   "trained-names/brain.npz": "fba2683992387e393f30f5b83ba5125a9a72f021d69c06a85b124e0f3485ed8f",
-   "trained-names/brain.records.npz": "dcfb8b8f2fff188aadc5bcae4c7819d05ea0299da5b3a03fa10b585ad7f6beb3",
-   "trained-names/spec.json": "260d7cb1ddfe9c880eb1ffea64d80554b0881d9ecc1b9e1f6448d3fe04d69cbc",
-   "trained-names/version.json": "d42ef2a7eb16b044354c0b3265e515679e1e4c33283e0803c97c705257b0852d",
-   "trained-names/probes.json": "e6b043979eed67e426e505df924110090b7e604e0ecd9877f3418d5b2f043634"
-  },
-  "trained-shallow": {
-   "trained-shallow/brain.npz": "e58e73f6ee4e8b63bcd37e20d0e7f6c9ac60521f00bedd034c7925b0a40b009e",
-   "trained-shallow/spec.json": "8ea4966587efaaf67e3b3d88231671d72438bcb27844a493d372a6218a366cb6",
-   "trained-shallow/version.json": "36065de7a3ca4e182dc8b20717ea1e7f7337826941bc8ed988f861f99bbc6669",
-   "trained-shallow/probes.json": "05882e2e345c2056ec1ead1dd2e578b9f3b391fea176851888eebdd03696edd9"
   }
  },
  "trained_versions": {
@@ -122,7 +60,7 @@
    "lost": "what material is this (cup, green ball), is this <colour> on some things (is this yellow of the key, is this blue of the block, is this green of the apple), what colour is this of the green ball, is this round of the green ball",
    "founder": 33400121,
    "exported": "2026-11-14 22:36 UTC (pretraining block 400)",
-   "source": "trained on the owner's Mac from s3://cadence-0100-meaning-20261113/data/meaning334/night/s5/brains_code/brain_33400121_N0.npz: night.life N1 to N3 (201, 1200 and 800 blocks), then pretrain_stage.MIX (.25 x 300, .10 x 50, .05 x 50); word records off",
+   "source": "trained on a local machine from the night's N0 checkpoint of founder 33400121 (brain_33400121_N0.npz): night.life N1 to N3 (201, 1200 and 800 blocks), then pretrain_stage.MIX (.25 x 300, .10 x 50, .05 x 50); word records off",
    "lane": "muellerberndt/cadence lane-0100-meaning (night.py, pretrain_stage.py at 568a0ad8), the mixed code's fields at unit length (spec mixed.fields; the page host's _fields_observation)",
    "readings": {
     "the chamber, frozen, 96 a form": "name .99, colour_this .97 (held-out pairs .74), is_colour .70 (held-out .56), colour_of .99 (held-out .77), material .77, is_round .96, can_eat .97, shape 1.00, direction .87, imitate 1.00",
@@ -132,185 +70,10 @@
    "learned": "the name of the thing in focus, its colour asked as what colour is this or by name, whether it is white, its shape, whether it is round, whether you can eat it, where a thing is (front, right, behind, left)",
    "not_learned": "is this <colour> on unseen kind-colour pairs (near chance); the material of some things; distance",
    "probes": "probes.json beside the brain: the association's linear read of the thing in focus, nothing heard, fitted with the brain's own mixed code (held out: kind .77 against .14 by chance, colour .95 against .59, round 1.00 against .71, material .84 against .36, edible .96 against .64, direction .92 against .27, distance .86 against .51)"
-  },
-  "trained-pretrain400": {
-   "stage": "pretrain",
-   "step": "the owner's pretraining stage: every focus question interleaved (what is this, its colour, is this <colour>, its shape, is this round, can you eat this, where is it, what material), from the demo brain",
-   "label": "the pretrained brain",
-   "good": "in the demo room, answered from its own state (the word records off at the turn): what is this (apple, cup, key, block), what colour is this (apple, cup, green ball), can you eat this (all five things), where each thing is, the shape of each thing, is this round, the colour of a thing asked by name (four of five), is this white of the key; held out: name .91, colour of a named thing .91, shape 1.00, is this round 1.00, can you eat this 1.00, direction .88",
-   "lost": "what colour is this of the block, is this <colour> on some things (is this white of the cup, is this blue of the green ball), what material is this on some things, what is this of the green ball",
-   "founder": 33400121,
-   "exported": "2026-11-14 16:20 UTC (pretraining block 400)",
-   "source": "the meaning lane's pretraining stage (benchmarks/meaning/pretrain_stage.py) from code_33400121_demo_dir15, block 400",
-   "lane": "muellerberndt/cadence lane-0100-meaning (pretrain_stage.py at 4759916d; host 568a0ad8)",
-   "readings": {
-    "held out at block 400 (32 a form)": "name .91, colour_of .91, colour_this .66, is_colour .59, shape_of 1.00, shape_not 1.00, is_round 1.00, can_eat 1.00, direction .88, material .56, imitate 1.00",
-    "the demo room's 50 questions through the page host, three passes": "32 right every time; the page's presets are taken from these",
-    "the demo room's 50 questions through the page host, three passes, word records off at the turn": "37 right every time; the page's presets are taken from these"
-   },
-   "learned": "the name of the thing in focus, the colour of a thing asked about by name, its shape (round, or no), whether it is round, whether you can eat it, where a thing is (front, right, behind, left)",
-   "not_learned": "the colour of the thing in focus asked as what colour is this; distance",
-   "host": "the word records are off at the turn: on fresh rooms through the host, .89 seen and .77 held-out pairs without them, .74 and .69 with them as trained"
-  },
-  "trained-dir15": {
-   "stage": "demo",
-   "step": "the owner's demo stage: the shape of a thing and where it is, with names, colour and saying back revisited",
-   "label": "the demo brain",
-   "good": "in its room it answers the five demo questions: what is this (apple), the apple's colour (red), its shape (round), where the ball is (right) and the block's shape (no); held out: shape 1.00, direction .91, name .94, colour .75",
-   "lost": "what is left of a thing and what objects are round (it says round); distance",
-   "founder": 33400121,
-   "exported": "2026-11-14 05:53 UTC",
-   "source": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/code_33400121_demo_dir15/",
-   "lane": "muellerberndt/cadence lane-0100-meaning, the code composition's demo stage (demo_stage.py: interleaved blocks, balanced fields, decay .9, word records keyed on the input; host 81474696)",
-   "readings": {
-    "held out, shape of a thing (round)": "1.00",
-    "held out, a thing that is not round (no)": "1.00",
-    "held out, where is the thing (direction)": ".91",
-    "held out, names": ".94",
-    "held out, colour of a named thing": ".75",
-    "held out, saying back a word": ".91",
-    "the demo room's five": "right at blocks 5, 10 and 15",
-    "page test at pistachio(0.05, first)": "red and apple hold through 10 paid namings"
-   },
-   "learned": "the name of the thing in focus, the colour of a thing asked about by name, its shape (round, or no), where a thing is (front, right, behind, left) and saying back a word",
-   "not_learned": "what is left of a thing; what objects are round; distance",
-   "probes": "probes.json beside the brain (kind .89, colour .89, round .98, material .85, edible .97, direction .91 held out; distance .62 against .51 by chance)"
-  },
-  "trained-demo200": {
-   "stage": "demo",
-   "step": "the owner's demo stage, a longer run (block 200)",
-   "label": "demo brain, stronger on new scenes (calls the white cup blue)",
-   "good": "held out: direction .94, colour .88, names .94, shape 1.00, saying back a word .97; in its room the five demo questions right at block 200",
-   "lost": "it calls the white cup blue; its five right came after swings between room checks; what is left of a thing; what objects are round; where is the apple (it says round)",
-   "founder": 33400121,
-   "exported": "2026-11-14 05:59 UTC",
-   "source": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/code_33400121_demo/",
-   "lane": "muellerberndt/cadence lane-0100-meaning, the code composition's demo stage (demo_stage.py; host 81474696)",
-   "readings": {
-    "held out, shape of a thing (round)": "1.00",
-    "held out, a thing that is not round (no)": "1.00",
-    "held out, where is the thing (direction)": ".94",
-    "held out, names": ".94",
-    "held out, colour of a named thing": ".88",
-    "held out, saying back a word": ".97",
-    "the demo room's five": "right at block 200",
-    "page test at pistachio(0.05, first)": "red and apple hold through 10 paid namings; the cup is blue throughout"
-   },
-   "learned": "the name of the thing in focus, the colour of a thing asked about by name, its shape (round, or no), where a thing is and saying back a word",
-   "not_learned": "the white cup's colour (it says blue); what is left of a thing; what objects are round; distance",
-   "probes": "probes.json beside the brain (kind .91, colour .84, round .99, material .82, edible .96, direction .93 held out; distance .62 against .51 by chance)"
-  },
-  "trained-code120": {
-   "stage": "N2",
-   "step": "colour, after names",
-   "label": "names and colour (code 120)",
-   "good": "names .98 and colour .84 held out, saying back a word 1.00; its answers hold through 10 paid namings even at a full pistachio",
-   "lost": "shape and places: asked where a thing is, it says its colour; what objects are round",
-   "founder": 33400120,
-   "exported": "2026-11-14 05:46 UTC",
-   "source": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/code_33400120_N2/",
-   "lane": "muellerberndt/cadence lane-0100-meaning, the code composition (word records keyed on the input; host 81474696)",
-   "readings": {
-    "held out, names": ".98",
-    "held out, colour of a named thing": ".84",
-    "held out, saying back a word": "1.00",
-    "page test at pistachio(0.05, first) and at 1.0": "red, apple and the cup's white hold through 10 paid namings"
-   },
-   "learned": "the name of the thing in focus and the colour of a thing asked about by name, each holding when its answers are paid",
-   "not_learned": "shape, places and relations; what objects are round",
-   "probes": "probes.json beside the brain (kind .74, colour .98, round .99, material .89, edible .92 held out; direction .61 against .30 by chance, distance at chance)"
-  },
-  "trained-112": {
-   "stage": "N2",
-   "step": "colour, after names",
-   "label": "N2 colour, holds under rewards (deep 112)",
-   "good": "names .82, colour .49; its colour answer holds through paid namings",
-   "lost": "colour .49 held out, lower than deep 110's .83; places and relations",
-   "founder": 33400112,
-   "exported": "2026-11-14 03:12 UTC",
-   "source": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/deep_33400112_N2/",
-   "lane": "muellerberndt/cadence lane-0100-meaning, the night's deep composition (4 processing regions and the association, apical .5); word records keyed on the input (host 518e727a)",
-   "readings": {
-    "N1 naming of the thing in focus, held out": ".82",
-    "N2 colour of a named thing, held out": ".49",
-    "page test at pistachio(0.05, first)": "colour red, cup white and names hold through 10 paid namings"
-   },
-   "learned": "the name of the thing in focus (.82) and the colour of a thing asked about by name (.49), each holding when a name is paid with pistachios",
-   "not_learned": "places and relations; what objects are round",
-   "probes": "probes.json beside the brain (kind 1.00, colour .77, round 1.00, material .72, edible .98 held out; direction .48, distance at chance)"
-  },
-  "trained-110": {
-   "stage": "N2",
-   "step": "colour, after names",
-   "label": "N2 colour (deep 110)",
-   "founder": 33400110,
-   "exported": "2026-11-14 00:07 UTC",
-   "source": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/deep_33400110_N2/",
-   "lane": "muellerberndt/cadence lane-0100-meaning, the night's deep composition (4 processing regions and the association, apical .5)",
-   "readings": {
-    "N0 imitation": ".94",
-    "N1 naming of the thing in focus": ".67",
-    "N2 colour of a named thing, kind-colour pairs it never saw": ".83",
-    "N2 which thing has a colour (what is red?)": ".00"
-   },
-   "learned": "the colour of a thing it is asked about by name, what colour has the apple (.83 on kind-colour pairs it never saw), the name of the thing in focus (.67) and to say back a word it hears (.94)",
-   "not_learned": "which thing has a colour (what is red?: .00), places and relations; its N2 step did not pass its mastery mark",
-   "not_learned_list": [
-    "which thing has a colour (N2, by colour)",
-    "places (N3)",
-    "relations (N4)"
-   ],
-   "probes": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/deep_33400110_N2/probes.json (exported 2026-11-14 00:44 UTC)",
-   "good": "colour of a named thing .83, names .67",
-   "lost": "names fell from .98 to .67 in its colour step; which thing has a colour .00; its colour answer can turn to a name after several paid namings"
-  },
-  "trained-names": {
-   "stage": "N1",
-   "step": "names",
-   "label": "N1 names (deep 111)",
-   "good": "names .98, saying back a word 1.00",
-   "lost": "colour: it has not learned it, and its probe reads colour below chance",
-   "founder": 33400111,
-   "exported": "2026-11-14 00:44 UTC",
-   "source": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/deep_33400111_N1/",
-   "lane": "muellerberndt/cadence lane-0100-meaning, the night's deep composition (4 processing regions and the association, apical .5)",
-   "readings": {
-    "N0 imitation": "1.00",
-    "N1 naming of the thing in focus": ".98"
-   },
-   "learned": "the name of the thing in focus when asked what is this (.98) and to say back a word it hears (1.00)",
-   "not_learned": "colour, places and relations; asked those, it names a thing",
-   "probes": "probes.json beside the brain (kind 1.00, round .99, material .84, edible .99 held out; colour .14 against .35 by chance)"
-  },
-  "trained-shallow": {
-   "stage": "N2",
-   "step": "colour, after names",
-   "label": "N2 names and colour (shallow 102)",
-   "good": "names .95 with colour .77, saying back a word 1.00",
-   "lost": "it misnames the apple in this room (it says ball); word records off",
-   "founder": 33400102,
-   "exported": "2026-11-14 02:06 UTC",
-   "source": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/shallow_33400102_N2/",
-   "lane": "muellerberndt/cadence lane-0100-meaning, a shallow composition (2 processing regions), the night's ear-to-voice and eyes-into-association routes, sleep, the mirror label",
-   "readings": {
-    "N0 imitation": "1.00",
-    "N1 naming of the thing in focus": ".95",
-    "N2 colour of a named thing, kind-colour pairs it never saw": ".77"
-   },
-   "learned": "names of the things in focus (.95), the colour of a thing asked about by name (.77) and to say back a word it hears (1.00)",
-   "not_learned": "places and relations; in this room it calls the apple a ball"
   }
  },
  "trained_sources": {
-  "trained": "the pretraining stage with every sense field of the glimpse at unit length in the mixed code, trained on the owner's Mac from the night's N0 checkpoint of founder 33400121 (night N1 to N3, then pretrain_stage.MIX 400 blocks; lane-0100-meaning 568a0ad8), block 400",
-  "trained-pretrain400": "the meaning lane's pretraining stage from code_33400121_demo_dir15, block 400 (pretrain_stage.py, lane-0100-meaning 4759916d)",
-  "trained-dir15": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/code_33400121_demo_dir15/ (exported 2026-11-14 05:53 UTC)",
-  "trained-demo200": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/code_33400121_demo/ (exported 2026-11-14 05:59 UTC)",
-  "trained-code120": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/code_33400120_N2/ (exported 2026-11-14 05:46 UTC)",
-  "trained-112": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/deep_33400112_N2/ (exported 2026-11-14 03:12 UTC)",
-  "trained-110": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/deep_33400110_N2/ (exported 2026-11-14 00:07 UTC, probes 00:44 UTC)",
-  "trained-names": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/deep_33400111_N1/ (exported 2026-11-14 00:44 UTC)",
-  "trained-shallow": "s3://cadence-0100-meaning-20261113/data/meaning334/night/page/shallow_33400102_N2/ (exported 2026-11-14 02:06 UTC)"
+  "trained": "the pretraining stage with every sense field of the glimpse at unit length in the mixed code, trained on a local machine from the night's N0 checkpoint of founder 33400121 (night N1 to N3, then pretrain_stage.MIX 400 blocks; lane-0100-meaning 568a0ad8), block 400"
  },
  "trained_version": {
   "stage": "pretrain",
@@ -320,7 +83,7 @@
   "lost": "what material is this (cup, green ball), is this <colour> on some things (is this yellow of the key, is this blue of the block, is this green of the apple), what colour is this of the green ball, is this round of the green ball",
   "founder": 33400121,
   "exported": "2026-11-14 22:36 UTC (pretraining block 400)",
-  "source": "trained on the owner's Mac from s3://cadence-0100-meaning-20261113/data/meaning334/night/s5/brains_code/brain_33400121_N0.npz: night.life N1 to N3 (201, 1200 and 800 blocks), then pretrain_stage.MIX (.25 x 300, .10 x 50, .05 x 50); word records off",
+  "source": "trained on a local machine from the night's N0 checkpoint of founder 33400121 (brain_33400121_N0.npz): night.life N1 to N3 (201, 1200 and 800 blocks), then pretrain_stage.MIX (.25 x 300, .10 x 50, .05 x 50); word records off",
   "lane": "muellerberndt/cadence lane-0100-meaning (night.py, pretrain_stage.py at 568a0ad8), the mixed code's fields at unit length (spec mixed.fields; the page host's _fields_observation)",
   "readings": {
    "the chamber, frozen, 96 a form": "name .99, colour_this .97 (held-out pairs .74), is_colour .70 (held-out .56), colour_of .99 (held-out .77), material .77, is_round .96, can_eat .97, shape 1.00, direction .87, imitate 1.00",
