@@ -101,6 +101,14 @@ sections:
 
 `evidence/sound_flow.json` holds the readings of these sections from development.
 
+`evidence/clean_clone_20261115.json` holds a run from a fresh clone, on a machine shared with
+other jobs. Every listed question, asked twice, was taken for its meaning by its record's link,
+followed word by word, answered right and said in the parrot's rendering, which Whisper read as
+the word; no sound that is no speech was kept; the `robust` cases passed. In that first run, under
+heavy load, the `mic` word was kept and was not said back within the test's four seconds, one step
+of `first` missed its window, and one of the four answers in the own-voice part of `false` was
+wrong. Run again by themselves, the three sections passed.
+
 ## What it does not do
 
 - **Free speech.** It does not take a sentence apart from its sound. The ear matches a whole
