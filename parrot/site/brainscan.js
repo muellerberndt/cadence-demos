@@ -80,6 +80,7 @@ export class Scan {
     // the ears' running spectrogram
     this.ear = document.createElement('canvas'); this.ear.width = 96; this.ear.height = 40; this.boxes.ears.body.append(this.ear);
     this.earG = this.ear.getContext('2d'); this.earImg = this.earG.createImageData(1, 40);
+    this.earWord = document.createElement('b'); this.earWord.className = 'sb-word'; this.boxes.ears.body.append(this.earWord); this.earHeld = 0;
     this.voiceWord = document.createElement('b'); this.voiceWord.className = 'sb-word'; this.voiceWord.textContent = '·';
     this.voiceBar = document.createElement('i'); this.voiceBar.className = 'sb-bar';
     this.boxes.voice.body.append(this.voiceWord, this.voiceBar);
@@ -140,6 +141,31 @@ export class Scan {
     this.heardTag = { text: `${window.parrotPage?.label?.(kind) || kind} · heard`, k: Math.max(0.35, Math.min(1, strength)), until: performance.now() + 3800 };
     this.lastHeardTag = { word: kind, at: performance.now() };
   }
+  /** A word known in an utterance as it is spoken (the hearing layer follows the sound along its records): the
+   *  ears' box shows it and the hearing regions light that moment; a thing's word lights its concept tag, marked heard. */
+  heardWord(word) {
+    const L = this.b.live, vt = this.b.clock.vt;
+    L.flashes.push({ region: 'ear', t0: vt, level: 0.9 }); L.flashes.push({ region: 'fieldl', t0: vt + 0.05, level: 0.8 }); L.flashes.push({ region: 'ncm', t0: vt + 0.1, level: 0.9 });
+    this.earWord.textContent = word; this.earHeld = 1.4;
+    this.lastHeardWord = { word, at: performance.now() };
+    if (!THINGS.has(word)) return;
+    this.heardTag = { text: `${window.parrotPage?.label?.(word) || word} · heard`, k: 1, until: performance.now() + 3800 };
+    this.lastHeardTag = { word, at: performance.now() };
+  }
+  /** What its state holds of the thing in focus: the probes' facets, read at a look from a cleared state (the
+   *  moments the probes were fitted for: looks 1 to 4 after a clearing; kind .99, colour .99, round 1.00 on rooms
+   *  held out). A facet is tagged where its answer stands clear of the next (kind and colour by .02, round by
+   *  .2); null: no tag. */
+  holds(facets, thing = null) {
+    if (!facets) { this.concept = null; return; }
+    const clear = (f, by) => f && f.p - (f.p2 ?? 0) >= by;
+    const c = {};
+    if (clear(facets.kind, 0.02)) c.kind = facets.kind.value;
+    if (clear(facets.colour, 0.02)) c.colour = facets.colour.value;
+    if (clear(facets.round, 0.2)) c.round = facets.round.value === 'True' ? 'round' : null;
+    this.concept = c.kind ? c : null; this.conceptOf = thing;
+    this.lastConcept = this.concept ? { ...this.concept, thing, at: performance.now() } : this.lastConcept;
+  }
   clearConcept() { this.concept = null; }
 
   /** The boxes' places in the view (read once in a while, never in the middle of a frame's writes). */
@@ -193,6 +219,7 @@ export class Scan {
     }
     this.earG.putImageData(this.earImg, this.ear.width - 1, 0);
     }
+    if (this.earHeld > 0) { this.earHeld -= dt; if (this.earHeld <= 0) this.earWord.textContent = ''; } // the word heard stays a moment
     // the voice and the dopamine
     const loud = window.parrotPage?.audio?.loudness(performance.now()) || 0;
     this.voiceBar.style.transform = `scaleX(${Math.max(0.02, loud).toFixed(3)})`;
@@ -202,7 +229,11 @@ export class Scan {
     // the tag over the association region: the word heard (where its record is linked to a thing), the word said
     const wants = [];
     const heard = this.heardTag && performance.now() < this.heardTag.until ? this.heardTag : null;
-    if (heard) wants.push([heard.text, heard.k, true]); // a word heard (its record's link to a thing) or said
+    if (heard) wants.push([heard.text, heard.k, true]);
+    else if (this.concept) { // the thing its state holds, and what it holds of it
+      wants.push([window.parrotPage?.label?.(this.concept.kind) || this.concept.kind, 1, true]);
+      for (const f of [this.concept.colour, this.concept.round]) if (f) wants.push([f, 0.8, false]);
+    } // a word heard (its record's link to a thing) or said
     b.centre('ncl', 1, this.tmp).project(b.camera);
     const cx = (this.tmp.x + 1) / 2 * W, cy = (1 - this.tmp.y) / 2 * H;
     this.tags.forEach((t, i) => {

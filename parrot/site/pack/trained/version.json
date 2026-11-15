@@ -15,5 +15,5 @@
  },
  "learned": "the name of the thing in focus, its colour asked as what colour is this or by name, whether it is white, its shape, whether it is round, whether you can eat it, where a thing is (front, right, behind, left)",
  "not_learned": "is this <colour> on unseen kind-colour pairs (near chance); the material of some things; distance",
- "probes": "probes.json beside the brain: the association's linear read of the thing in focus, nothing heard, fitted with the brain's own mixed code (held out: kind .77 against .14 by chance, colour .95 against .59, round 1.00 against .71, material .84 against .36, edible .96 against .64, direction .92 against .27, distance .86 against .51)"
+ "probes": "probes.json beside the brain: the association's linear read of the thing in focus with nothing heard, at any look from a cleared state (fitted over looks 1 to 4 after a clearing on 960 random rooms, checked on 240 rooms held out: kind 0.99 against 0.13 by chance, colour 0.99 against 0.20 by chance, round 1.00 against 0.70 by chance, material 0.93 against 0.33 by chance, edible 0.99 against 0.67 by chance, direction 0.96 against 0.27 by chance; at the first look kind 1.00 and colour 1.00, where the probes exported with the brain read 0.40 and 0.29); distance as exported by the meaning lane (.86 against .51)"
 }
