@@ -1,7 +1,7 @@
 # Cadence demos
 
 <p align="center">
-  <a href="https://cadence.floatingpragma.ai/"><img src="assets/cadence-live-demos.jpg" alt="Cadence live demos: one brain design that sees, moves, plays and keeps learning. Robot arm, robot arena, Atari, Castlevania, Patch World and Tron, all running live in the browser. 363 of 400 games won against the perfect Connect Four solver." width="100%"></a>
+  <a href="https://cadence.floatingpragma.ai/"><img src="assets/cadence-live-demos.jpg" alt="Cadence live demos: one brain design that sees, moves, plays and keeps learning. Robot arm, robot arena, Atari, Castlevania, Patch World and Tron, all running live in the browser." width="100%"></a>
 </p>
 <h3 align="center">▶ <a href="https://cadence.floatingpragma.ai/">Try them live in your browser: cadence.floatingpragma.ai</a></h3>
 
