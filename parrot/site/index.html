@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Cadence Parrot (preview)</title>
-<meta name="description" content="An African Grey parrot on a low perch sees through two eyes on the sides of its head. Place things round it and watch what its eyes see and how its brain answers. Everything runs in your browser.">
+<title>Cadence Parrot</title>
+<meta name="description" content="An African Grey parrot whose Cadence brain hears spoken questions, keeps sounds as symbols for things and meanings, and answers in sound. Everything runs in your browser.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,8 +24,8 @@
     <header class="topbar">
       <div class="lead">
         <div class="title" data-standalone>
-          <h1>Cadence Parrot (preview)</h1>
-          <p>Two eyes, a wide view, and a brain that learns where things are</p>
+          <h1>Cadence Parrot</h1>
+          <p>It hears sounds, keeps them as words, and answers in sound</p>
         </div>
         <p class="coach" id="coach" role="status" aria-live="polite"><span class="step" id="coach-step"></span><span id="coach-text">The room, the parrot and its brain are loading in your browser.</span></p>
       </div>
@@ -44,7 +44,7 @@
       <p class="im-voice" id="im-voice"></p>
       <p class="im-outside" id="im-outside"></p>
     </section>
-    <div class="you-focus" id="you-focus" hidden data-explain-title="Its focus: you" data-explain="A sudden sound, one its ear did not expect from the room's steady level, draws the parrot's attention: it turns its head toward where the sound came from, you in front of the screen. A steady sound draws nothing."><span class="ring"></span>focus: you</div>
+    <div class="you-focus" id="you-focus" hidden data-explain-title="Its focus: you" data-explain="In Listen to me the parrot looks at you, keeps what you say and says it back. A sudden sound turns its head to you too."><span class="ring"></span>focus: you</div>
     <div class="talk" id="talk" role="dialog" aria-labelledby="talk-title" hidden>
       <h3 id="talk-title">Talk to the parrot</h3>
       <p>It hears through your microphone: its ear lights up as you speak, and it may answer with sounds of its own.</p>
@@ -98,17 +98,18 @@ The ring at the back holds the sounds it kept, the card in the hippocampus is it
         <div class="knows" id="knows"><span class="knows-empty">It links no word to a thing yet.</span></div>
       </div>
       <div class="ask" id="ask" hidden>
-        <div class="ask-title">Ask it <span class="ask-brain">the brain trained tonight</span><a class="how" href="brain-explainer.html#ask-it" target="_blank" rel="noopener" hidden>how?</a></div>
+        <div class="ask-title">Ask it <span class="ask-brain">the trained brain</span><a class="how" href="brain-explainer.html#ask-it" target="_blank" rel="noopener" hidden>how?</a></div>
         <p class="ask-version" id="ask-version"></p>
-        <p class="ask-learned" id="ask-learned">Learned tonight: to say back a word it hears, and the name of the thing in focus when asked <i>what is this</i>. Not learned: colour, places and relations.</p>
+        <p class="ask-learned" id="ask-learned"></p>
         <div class="segmented flow-mode" id="flow-mode" role="group" aria-label="What the parrot attends to"><button type="button" class="seg" data-flow="listen" aria-pressed="false" title="It looks at you, keeps what you say and says it back">Listen to me</button><button type="button" class="seg" data-flow="curious" aria-pressed="true" title="It looks at the things, answers questions about the thing in focus and says words it knows">Curious</button></div>
-        <form class="ask-row" id="ask-form" autocomplete="off"><select id="ask-preset" aria-label="A question to ask"><option data-focus="key">What is this?</option><option data-focus="block">What color is this?</option><option data-focus="cup">Is this white?</option><option>Where is the cup?</option><option data-focus="apple">Can you eat this?</option><option>What color has the apple?</option><option>Where is the ball?</option><option>What shape has the apple?</option><option data-focus="apple">Is this red?</option><option>What color has the cup?</option><option>What shape has the block?</option></select><input id="ask-q" type="hidden"><button type="submit">Ask</button></form>
-        <div class="ask-actions"><button type="button" id="ask-nut" class="nut-mini" aria-label="Throw a pistachio">Pistachio</button><button type="button" id="ask-mic" class="mic-mini" aria-pressed="false" aria-label="Let it hear you">Mic</button></div>
+        <form class="ask-row" id="ask-form" autocomplete="off"><select id="ask-preset" aria-label="A question to ask" title="Questions it was taught; the thing a question is about comes into focus"><option data-focus="key">What is this?</option><option data-focus="block">What color is this?</option><option data-focus="cup">Is this white?</option><option>Where is the cup?</option><option data-focus="apple">Can you eat this?</option><option>What color has the apple?</option><option>Where is the ball?</option><option>What shape has the apple?</option><option data-focus="apple">Is this red?</option><option>What color has the cup?</option><option>What shape has the block?</option></select><input id="ask-q" type="hidden"><button type="submit" title="Plays the question into its ear; it answers in sound">Ask</button></form>
+        <div class="ask-actions"><button type="button" id="ask-nut" class="nut-mini" aria-label="Throw a pistachio" title="Its reward: after a right answer it learns from it">Pistachio</button><button type="button" id="ask-mic" class="mic-mini" aria-pressed="false" aria-label="Let it hear you" title="Lets it hear you; nothing is recorded or sent">Mic</button></div>
         <p class="ask-hint" id="ask-hint" role="status" aria-live="polite" hidden></p>
-        <button type="button" id="ask-forget" class="forget-mini">Forget all sounds</button>
+        <p class="ask-next" id="ask-next" aria-live="polite" hidden></p>
         <p class="ask-note" id="ask-note"></p>
         <ol class="ask-log" id="ask-log" aria-live="polite"></ol>
         <details class="ask-words"><summary>Its words</summary><p id="ask-words"></p><p class="dim">Its trained brain hears each word as a code its training drew for the word. The parrot&#8217;s ear links each sound it keeps to one of these words: a sound it hears sends that word to the brain, and a word it says plays the sound linked to it.</p></details>
+        <button type="button" id="ask-forget" class="forget-mini" title="Forgets what it learned on this page and starts again from the sounds it came with">Forget all sounds</button>
       </div>
     </footer>
   </section>
@@ -117,7 +118,7 @@ The ring at the back holds the sounds it kept, the card in the hippocampus is it
       <div class="brain-name">
         <h2 data-explain-title="The parrot's brain, in detail" data-explain="What the brain receives and what it does, ten moments a second: the two eyes' images, then one card a region of the brain, each the neurons of that region lit by their activity, in the order a memory travels: seeing, the map of things, hearing, the sounds kept and the links that make them words. Each card has its region&#8217;s colour in the 3D view; point at one to light its region there. Below: the distance neurons and the joints.">The brain</h2>
         <p id="brain-sub">Loading&hellip;</p>
-        <label class="brain-kind" data-explain-title="Which brain" data-explain="Composed: the parrot brain the experiment builds (its eyes, the distance it learns from head turns, its focus and its map), with the page&#8217;s hearing beside it. Trained tonight: the composed body and hearing, with the brain the meaning lane trained tonight beside them; it names the thing in focus when you ask it (Ask it, under the brain). Placeholder: a hand-written newborn the page falls back to if a brain does not start.">brain <select id="brain-kind"><option value="composed">composed</option><option value="trained">trained tonight (names)</option><option value="trained-nowords">the same brain, no words yet</option><option value="placeholder">placeholder</option></select></label>
+        <label class="brain-kind" data-explain-title="Which brain" data-explain="Trained (the page starts with it): the brain that answers questions, with the parrot&#8217;s body and hearing beside it. No words yet: the same brain with no sounds; you teach them. Composed: the body alone, which sees, keeps a map of the table and learns distance; it answers no questions. Placeholder: a hand-written stand-in the page falls back to if a brain does not start.">brain <select id="brain-kind"><option value="composed">composed</option><option value="trained">trained</option><option value="trained-nowords">the same brain, no words yet</option><option value="placeholder">placeholder</option></select></label>
         <button id="how-brain" class="ghost small how-brain" type="button" data-explain="Opens the explainer: how this brain works." data-explain-mark="none">How this brain works</button>
       </div>
       <dl class="stats">

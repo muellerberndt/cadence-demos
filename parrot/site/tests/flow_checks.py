@@ -98,12 +98,17 @@ def first_visit(pw, a, T) -> dict:
     browser, ctx, page, logs, t0 = T.open_page(pw, a.url, a.out / "quiet.wav")
     steps = []
     seen = lambda sel: page.is_visible(sel)  # noqa: E731
-    steps.append({"step": "the switch, the question list, Ask, Pistachio and the microphone button are on screen",
-                  "ok": all(seen(s) for s in ("#flow-mode .seg[data-flow=listen]", "#flow-mode .seg[data-flow=curious]", "#ask-preset", "#ask-form button[type=submit]", "#ask-nut", "#ask-mic")),
-                  "mic": page.evaluate("document.body.dataset.mic")})
+    next_now = "(() => { const e = document.getElementById('ask-next'); return e && !e.hidden ? e.textContent : ''; })()"
+    page.wait_for_timeout(600)
+    first_line = page.evaluate(next_now)
+    steps.append({"step": "the switch, the question list, Ask, Pistachio and the microphone button are on screen, and the line under them says to pick a question and press Ask",
+                  "ok": all(seen(s) for s in ("#flow-mode .seg[data-flow=listen]", "#flow-mode .seg[data-flow=curious]", "#ask-preset", "#ask-form button[type=submit]", "#ask-nut", "#ask-mic")) and "press Ask" in first_line,
+                  "mic": page.evaluate("document.body.dataset.mic"), "next": first_line})
     page.click("#flow-mode .seg[data-flow=listen]")
     page.wait_for_timeout(700)
-    steps.append({"step": "Listen to me pressed: the question list goes, the parrot looks at you", "ok": page.evaluate("window.parrotPage.flow.mode") == "listen" and not seen("#ask-preset") and not page.evaluate("document.getElementById('you-focus').hidden")})
+    listen_line = page.evaluate(next_now)
+    steps.append({"step": "Listen to me pressed: the question list goes, the parrot looks at you, the line says to say a word", "next": listen_line,
+                  "ok": page.evaluate("window.parrotPage.flow.mode") == "listen" and not seen("#ask-preset") and not page.evaluate("document.getElementById('you-focus').hidden") and "say a word" in listen_line.lower()})
     t = T.now(page)
     T.hear(page, pad(T.read16(takes["apple"][0])))
     ear = False
@@ -129,8 +134,14 @@ def first_visit(pw, a, T) -> dict:
         page.wait_for_timeout(50)
     last = T.answer_after(page, serial, 60)
     bubble = page.evaluate("(t) => { const b = window.parrotPage.flow.bubble; return b && b.at > t && b.who === 'it' ? b.text : ''; }", t_ask)  # the answer shown by the parrot (it goes after three seconds)
-    steps.append({"step": "a question asked: its words as a subtitle, the parrot's turn shown, the answer by the parrot", "subtitle": sub.strip(), "turn_sign": turn,
-                  "answer": last["said"] if last else None, "bubble": bubble, "ok": bool(last and last["right"] and sub and turn and bubble == " ".join(last["said"]))})
+    pay_line = ""
+    for _ in range(20):
+        pay_line = page.evaluate(next_now)
+        if "Pistachio" in pay_line:
+            break
+        page.wait_for_timeout(100)
+    steps.append({"step": "a question asked: its words as a subtitle, the parrot's turn shown, the answer by the parrot, and the line asks for a pistachio if it was right", "subtitle": sub.strip(), "turn_sign": turn,
+                  "answer": last["said"] if last else None, "bubble": bubble, "next": pay_line, "ok": bool(last and last["right"] and sub and turn and bubble == " ".join(last["said"]) and "Pistachio" in pay_line)})
     t = T.now(page)
     page.click("#ask-nut")
     dop = False
@@ -287,9 +298,13 @@ def false_triggers(pw, a, T) -> dict:
                 answered = page.evaluate("window.parrotPage.trained.serial") > serial
                 out["sounds"].append({"mode": mode, "sound": name, "kept": got, "said_back": said, "answered": answered})
         print("  false", mode, json.dumps({n: sum(r["kept"] for r in out["sounds"] if r["sound"] == n and r["mode"] == mode) for n in room.NOT_SPEECH}), flush=True)
-    # its own voice from the loudspeaker: the page's output reaches the ear again, later and softer
+    # its own voice from the loudspeaker: the page's output reaches the ear again, later and softer. First 25 s
+    # alone in Curious, in which it says words by itself; then four questions. Over the whole span no word of its
+    # own is stopped as if another voice came in, and nothing is kept but the four questions.
     T.set_flow(page, "curious")
     page.evaluate("window.parrotPage.audio.loopback(0.5, 0.06)")
+    t_loop = T.now(page)
+    page.wait_for_timeout(25000)
     rows = []
     for i in range(4):
         T.quiet_for(page)
@@ -301,7 +316,9 @@ def false_triggers(pw, a, T) -> dict:
         heard = page.evaluate("(t) => window.parrotPage.flow.heard.filter((h) => h.at > t).length", t)
         more = page.evaluate("window.parrotPage.trained.serial") - serial
         rows.append({"question": i, "right": bool(last and last["right"]), "utterances_kept": heard, "exchanges": more})
-    out["own_voice"] = {"rows": rows, "ok": all(r["right"] and r["utterances_kept"] == 1 and r["exchanges"] == 1 for r in rows)}
+    own = page.evaluate("(t) => ({ said: window.parrotPage.flow.said.filter((s) => s.at > t && !s.echo).length, stopped: (window.parrotPage.flow.stopped || []).filter((s) => s.at > t).length, heard: window.parrotPage.flow.heard.filter((h) => h.at > t).length })", t_loop)
+    out["own_voice"] = {"rows": rows, "words_said_by_itself": own["said"], "own_words_stopped": own["stopped"], "kept_over_the_span": own["heard"],
+                        "ok": all(r["right"] and r["utterances_kept"] == 1 and r["exchanges"] == 1 for r in rows) and own["stopped"] == 0 and own["heard"] == len(rows)}
     out["ok"] = out["own_voice"]["ok"] and not any(r["kept"] or r["said_back"] or r["answered"] for r in out["sounds"])
     out["log"] = logs[-40:]
     ctx.close(); browser.close()
@@ -482,7 +499,7 @@ def run(pw, a, only, report, T) -> bool:
         ok &= report["visitors"]["summary"]["all_reached"] and report["visitors"]["summary"]["all_one_utterance"]
     if "false" in only:
         report["false"] = false_triggers(pw, a, T); save()
-        print("false", json.dumps({"kept": sum(r["kept"] for r in report["false"]["sounds"]), "of": len(report["false"]["sounds"]), "own_voice": report["false"]["own_voice"]["rows"]}), flush=True)
+        print("false", json.dumps({"kept": sum(r["kept"] for r in report["false"]["sounds"]), "of": len(report["false"]["sounds"]), "own_voice": report["false"]["own_voice"]["rows"], "words_said_by_itself": report["false"]["own_voice"]["words_said_by_itself"], "own_words_stopped": report["false"]["own_voice"]["own_words_stopped"], "kept_over_the_span": report["false"]["own_voice"]["kept_over_the_span"]}), flush=True)
         ok &= report["false"]["ok"]
     if "robust" in only:
         report["robust"] = robust(pw, a, T); save()

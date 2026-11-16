@@ -143,14 +143,19 @@ export class ParrotAudio {
     return (await off.startRendering()).getChannelData(0);
   }
 
+  /** The audio context, made once, whichever starts first (the microphone or a click): the output and the
+   *  analyser that measures it, the copy of its own voice the ear compares what it hears with. */
+  open() {
+    if (this.ctx) return;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    this.ctx = new AC({ sampleRate: RATE });
+    this.gain = this.ctx.createGain(); this.gain.gain.value = 0.9; this.gain.connect(this.ctx.destination);
+    this.outA = this.ctx.createAnalyser(); this.outA.fftSize = 4096; this.gain.connect(this.outA); this.outBuf = new Float32Array(4096); this.outPrev = 0; // (what the page plays: its own voice's copy for the ear)
+  }
+
   /** Audio may start only from a visitor's gesture; the first click calls this. */
   async unlock() {
-    if (!this.ctx) {
-      const AC = window.AudioContext || window.webkitAudioContext;
-      this.ctx = new AC({ sampleRate: RATE });
-      this.gain = this.ctx.createGain(); this.gain.gain.value = 0.9; this.gain.connect(this.ctx.destination);
-      this.outA = this.ctx.createAnalyser(); this.outA.fftSize = 4096; this.gain.connect(this.outA); this.outBuf = new Float32Array(4096); this.outPrev = 0; // (what the page plays: its own voice's copy for the ear)
-    }
+    this.open();
     if (this.ctx.state !== 'running') await this.ctx.resume();
     return this.ctx.state === 'running';
   }
@@ -158,7 +163,7 @@ export class ParrotAudio {
   async startMic() {
     // the context starts here; a browser lets it run only after a click or a key, so a page that opens
     // with the microphone on hears from the first click or key on
-    if (!this.ctx) { const AC = window.AudioContext || window.webkitAudioContext; this.ctx = new AC({ sampleRate: RATE }); this.gain = this.ctx.createGain(); this.gain.gain.value = 0.9; this.gain.connect(this.ctx.destination); }
+    this.open();
     if (this.ctx.state !== 'running') {
       this.ctx.resume().catch(() => {});
       const go = () => { this.ctx.resume().catch(() => {}); if (this.ctx.state === 'running') for (const ev of ['pointerdown', 'keydown']) window.removeEventListener(ev, go, true); };
@@ -278,8 +283,15 @@ export class ParrotAudio {
   outLevel() {
     if (!this.outA) return 0;
     this.outA.getFloatTimeDomainData(this.outBuf);
-    let e = 0; for (let i = 0; i < this.outBuf.length; i++) e += this.outBuf[i] * this.outBuf[i];
-    const now = Math.sqrt(e / this.outBuf.length), level = Math.max(now, this.outPrev);
+    // the loudest 10 ms (one ear frame, HOP samples) of the last 256 ms it played: the ear's loudest frame of
+    // its own voice comes from these, a little later; the whole window's mean would sit below a syllable's peak
+    let now = 0;
+    for (let i = 0; i + HOP <= this.outBuf.length; i += HOP) {
+      let e = 0; for (let j = i; j < i + HOP; j++) e += this.outBuf[j] * this.outBuf[j];
+      now = Math.max(now, e / HOP);
+    }
+    now = Math.sqrt(now);
+    const level = Math.max(now, this.outPrev);
     this.outPrev = now;
     return level;
   }

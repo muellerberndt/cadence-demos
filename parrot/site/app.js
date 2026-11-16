@@ -122,7 +122,7 @@ function tagFor(id, kind) {
   const el = document.createElement('span');
   el.className = 'tag'; el.dataset.thing = id;
   el.setAttribute('data-explain-title', `The ${KINDS[kind].label}`);
-  el.setAttribute('data-explain', `A ${KINDS[kind].label} at its real size. Drag it on the table: the parrot’s eyes see it move. Its distance from the parrot’s eyes is the page’s measure, for the curves on the right; the brain is never told it.`);
+  el.setAttribute('data-explain', `${/^[aeiou]/i.test(KINDS[kind].label) ? 'An' : 'A'} ${KINDS[kind].label} at its real size, and its distance from the parrot’s eyes. Click it to put it in the parrot’s focus: a question is about the thing in focus. Drag it to move it.`);
   const t = document.createElement('span'); t.className = 't'; t.textContent = KINDS[kind].label;
   el.append(t); ui.tags.append(el); tags.set(id, el);
   return el;
@@ -336,7 +336,7 @@ async function moment(now) {
   if (reply.memory) memview?.update(reply.memory);
   // the badge says what it has learned so far
   const words = reply.words || 0, lessons = reply.lessons || 0;
-  const badge = state.trained ? `trained tonight: names of things${words ? `; ${words} sound${words === 1 ? '' : 's'} from you` : ''}`
+  const badge = state.trained ? `trained brain${words ? `; ${words} sound${words === 1 ? '' : 's'} from you` : ''}`
     : words || lessons ? `learning: ${words} word${words === 1 ? '' : 's'}${state.composed ? `, distance taught by ${lessons} head turn${lessons === 1 ? '' : 's'}` : ''}` : 'a newborn: it has learned nothing yet';
   const el = document.querySelector('.newborn');
   if (el && el.firstChild.textContent !== badge) el.firstChild.textContent = badge;
@@ -431,7 +431,7 @@ function placeFocus() {
   if (!t) { focusTag.hidden = true; return; }
   const size = KINDS[t.kind].size;
   ring.position.set(t.obj.position.x, 0.002, t.obj.position.z); ring.scale.setScalar(size * 0.85 + 0.03);
-  focusTag.setAttribute('data-explain', `The one thing the parrot attends to now. Its head turns to it, and it is what a heard word is linked to. It won because ${f.why}.`);
+  focusTag.setAttribute('data-explain', `The thing the parrot attends to: its head turns to it, and a question is about it. Click another thing to move its focus.${/^(you|it) /.test(f.why || '') ? ` In focus because ${f.why}.` : ''}`);
   const v = new THREE.Vector3(t.obj.position.x, 0.0, t.obj.position.z + size * 0.6 + 0.02).project(camera);
   focusTag.hidden = v.z > 1;
   focusTag.style.transform = `translate(${Math.round((v.x + 1) / 2 * canvas.clientWidth)}px, ${Math.round((1 - v.y) / 2 * canvas.clientHeight)}px) translate(-50%, 0)`;
@@ -632,7 +632,7 @@ function drawFields() {
   }
 }
 
-// --- the brain trained tonight: ask it ------------------------------------------------------------------
+// --- the trained brain: ask it ------------------------------------------------------------------------
 // The trained brain (cadence#334, the meaning lane's night) lives one of its own moments at a time
 // (300 ms), each riding with a moment of the body: the question heard one word a moment with its
 // voice held, then its turn in the gap after the last word (three moments; for a question about the
@@ -718,6 +718,26 @@ function hint(kind) {
   el.hidden = !kind; el.innerHTML = kind ? `<span class="q">?</span>${HINTS[kind]}` : '';
   if (kind) hint.timer = setTimeout(() => hint(null), kind === 'guess' ? OPEN_MS : 7000);
 }
+/** What to try next, under the buttons: one plain line from the page's state; a hint above takes its place. */
+const NEXT = {
+  ask: 'Pick a question and press <b>Ask</b>.',
+  askMic: 'Pick a question and press <b>Ask</b>. Or click a thing and ask about it out loud.',
+  pay: 'Was the answer right? Give it a <b>Pistachio</b>.',
+  listen: 'Say a word: it keeps it and says it back.',
+  listenMic: 'Turn on <b>Mic</b>, then say a word: it says it back.',
+};
+function nextLine() {
+  const el = $('ask-next'); if (!el || !state.trained) return;
+  let k = '';
+  if (!flow.hint) {
+    if (flow.mode === 'listen') k = mic.want ? 'listen' : 'listenMic';
+    else if (trained.open) k = 'pay';
+    else if (!trained.busy && !flow.live) k = mic.want ? 'askMic' : 'ask';
+  }
+  if (el.dataset.k === k) return;
+  el.dataset.k = k; el.hidden = !k; el.innerHTML = k ? NEXT[k] : '';
+}
+setInterval(nextLine, 250);
 function setupTrained(t) {
   trained.vocab = new Set(t.words); trained.colours = t.colours; trained.materials = t.materials;
   trained.momentMs = t.moment_ms || 300; trained.turn = t.turn_moments || 3;
@@ -726,7 +746,7 @@ function setupTrained(t) {
   askEl.words.textContent = [...t.words].sort().join(' · ');
   const v = t.version || {};
   $('ask-version').textContent = `Version: step ${v.stage || '?'} (${v.step || ''}) · founder ${v.founder ?? '?'} · exported ${v.exported || '?'}${v.good ? ` · does well: ${v.good}` : ''}${v.lost ? ` · lacks: ${v.lost}` : ''}`;
-  if (v.learned) $('ask-learned').textContent = `Learned tonight: ${v.learned}. Not learned: ${v.not_learned || 'see the help'}.`;
+  if (v.learned) $('ask-learned').textContent = `Learned in training: ${v.learned}. Not learned: ${v.not_learned || 'see the help'}.`;
   $('ask-version').title = `${t.neurons.toLocaleString('en')} neurons, ${t.synapses.toLocaleString('en')} synapses, ${t.records.toLocaleString('en')} word records; from ${v.source || 'the meaning lane'}`;
   askNote();
   const foot = document.querySelector('.mind-foot'); if (foot) foot.scrollTop = foot.scrollHeight;

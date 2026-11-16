@@ -37,7 +37,7 @@
  ],
  "sources_sha256": {
   "__init__.py": "aad6e4970d412d3fc56376e9321f46760a285a32d2086c5fc76d1740b02c082f",
-  "host.py": "507ec155c2789b89a14e38d58aa202a4e5e2458c4f81043acc47a9890f1d8e2e",
+  "host.py": "05598e798e32f7ef657901ae6dd348d0e6cdae52d9283321469d2640bd3346e8",
   "meaning/__init__.py": "55d42e4445a880ba0aa8753043a8d45a911fa993b318d914b9f58a19433e40d2",
   "meaning/host.py": "3e03ab9a1eeff4f266d51e9f634b5416030689908477e5679d2a20587cc0b388",
   "meaning/parrot.py": "0c6df6f24b39503a976a4e2a0d3c32df93fccbbbd6d790e4415dc2ec44bed1f1",
@@ -56,7 +56,7 @@
   "parrot/voice.py": "6bb5bdd21f62e2c0a180d51e9150a1d5a882cae49553f9b1b5cbac980376c2b7",
   "parrot/whole.py": "2da9ec0614bd6ce29966ef339803979fac98334a26d3df1fa58562349266e5dc",
   "parrot/world.py": "26a5bee98bd974dd8f881c00e473851491615627c278374d544c90dee049d4fd",
-  "sounds.py": "a4efa6e77a161b7921500cc988457ad94e1f4bcd81c62964f3d8eeb38b8a5cf6",
+  "sounds.py": "1c3ae1ef0688f1d6d12f0443319456c8cecfccf576d101fe63594ae9d266ec35",
   "trained.py": "a47256bc12de7a898072ab826d62faa5cbce3b167ab35c8c3ffdc6aa905d5071",
   "words/__init__.py": "70c33bb3a1993e4e8154a6003be85a5b4156d9ca6e899aea9543db8c8c64700c",
   "words/lexicon.py": "45cd159910248f3602dcb7b71f73be360c74d791af55af765d44b488dcff6bda",
@@ -136,8 +136,8 @@
   "not_learned": "is this <colour> on unseen kind-colour pairs (near chance); the material of some things; distance",
   "probes": "probes.json beside the brain: the association's linear read of the thing in focus with nothing heard, at any look from a cleared state (fitted over looks 1 to 4 after a clearing on 960 random rooms, checked on 240 rooms held out: kind 0.99 against 0.13 by chance, colour 0.99 against 0.20 by chance, round 1.00 against 0.70 by chance, material 0.93 against 0.33 by chance, edible 0.99 against 0.67 by chance, direction 0.96 against 0.27 by chance; at the first look kind 1.00 and colour 1.00, where the probes exported with the brain read 0.40 and 0.29); distance as exported by the meaning lane (.86 against .51)"
  },
- "wheel": "cadence_net-0.100.0-py3-none-any.whl",
- "wheel_sha256": "4ace88d364bffb6fb4d630789effec4c286ee1ce3dbdf90c807cf7fabf6d8d4c",
- "cadence": "0.100.0, released (PyPI cadence-net)",
- "wheel_source": "cadence-net 0.100.0 as released on PyPI (tag v0.100.0), unchanged; the page carries the lane packages it uses in its own package: parrotbrain.meaning (lane-0100-meaning 613bcbc6), parrotbrain.parrot (lane-0100-parrot 5fccf8cb) and parrotbrain.words (as the lane-meaning wheel at 81474696 held it)"
+ "wheel": "cadence_net-0.101.0-py3-none-any.whl",
+ "wheel_sha256": "fc1c50072517110fd827ad006f7090c4617e494064821d040acfb082ab540463",
+ "cadence": "0.101.0, released (PyPI cadence-net)",
+ "wheel_source": "cadence-net 0.101.0 as released on PyPI (tag v0.101.0), unchanged; the page carries the lane packages it uses in its own package: parrotbrain.meaning (lane-0100-meaning 613bcbc6), parrotbrain.parrot (lane-0100-parrot 5fccf8cb) and parrotbrain.words (as the lane-meaning wheel at 81474696 held it)"
 }

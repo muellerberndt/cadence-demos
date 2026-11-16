@@ -39,7 +39,7 @@ word is known as it is spoken (`host.Follower`).
 
 A word told again must get cleaner with every hearing: the new take is first lined up with the
 record frame by frame (the best path between them in time), then the library's record strength
-(`LongTermMemory(blend=True)`, cadence 0.100.0, #336) moves the record toward it by one over one plus its
+(`LongTermMemory(blend=True)`, cadence 0.100, #336) moves the record toward it by one over one plus its
 depth, so a record told n times holds the mean of its n takes.
 
 **Pronunciation by practice** (the songbird's way: an auditory template and practice by hearing
@@ -57,6 +57,7 @@ from typing import Any
 import numpy as np
 
 from cadence import LongTermMemory, PatternSeparator, SynapticMemory
+from cadence.senses import Ear
 
 CODE_FRAMES = 16
 VALUE_FRAMES = 300  # the longest utterance kept at its own timing (3 s: a word or a whole spoken phrase); a longer one is squeezed to fit
@@ -271,21 +272,25 @@ def blend_audio(kept: np.ndarray, take: np.ndarray, n: int) -> np.ndarray:
     return (y * min(1.0, float(np.abs(kept).max()) / peak)).astype(np.float64)
 
 
+_EAR = Ear(frames=CODE_FRAMES, bands=BANDS, range=RANGE)  # the library's ear (cadence.senses, 0.101): resampled, clamped, centred, unit length
+
+
 def code(frames: np.ndarray) -> np.ndarray:
-    """A sound's key: each band kept within RANGE of its frame's loudest (what lies below is the
-    room's noise, not the word), smoothed across neighbouring bands and frames (so a take a little
-    higher, faster or louder reads alike), resampled to 16 frames, less its mean level, at unit
-    length. Takes of one word read a cosine of 0.76 to 0.98 (mean 0.92) with tempo +-15 %, pitch
-    +-1 semitone, level +-6 dB and room noise; another word reads 0.31 at most (tests/test_words.py)."""
+    """A sound's key: the word's loud core (its soft start and end are kept for the voice, not the key),
+    smoothed across neighbouring bands (a take a semitone higher reads alike), then the library's ear's
+    code (`cadence.senses.Ear`: resampled to 16 frames, each band kept within RANGE of its frame's
+    loudest, less its mean level, at unit length), smoothed across neighbouring frames. Takes of one
+    word read a cosine of 0.76 to 0.98 (mean 0.92) with tempo +-15 %, pitch +-1 semitone, level +-6 dB
+    and room noise; another word reads 0.31 at most (tests/test_words.py)."""
     f = frames.astype(np.float64)
-    e = np.log(np.exp(f).sum(axis=1))  # the word's loud core: its soft start and end are kept for the voice, not the key
+    e = np.log(np.exp(f).sum(axis=1))
     on = np.flatnonzero(e > e.max() - 6.0)
     if len(on) >= 2:
         f = f[on[0]: on[-1] + 1]
     f = np.maximum(f, f.max(axis=1, keepdims=True) - RANGE)
     g = np.pad(f, ((0, 0), (2, 2)), mode="edge")
     f = sum(SMOOTH[k] * g[:, k: k + f.shape[1]] for k in range(len(SMOOTH)))
-    r = resample(f, CODE_FRAMES)
+    r = _EAR.code(f)[0].reshape(CODE_FRAMES, BANDS)
     r = 0.25 * np.roll(r, 1, axis=0) + 0.5 * r + 0.25 * np.roll(r, -1, axis=0)
     r = r - r.mean()
     n = float(np.linalg.norm(r))

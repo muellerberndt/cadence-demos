@@ -14,7 +14,9 @@ mic       The microphone itself (the browser's fake device plays a file in a loo
           said back within 1.5 s and the middle one within 1.2 s, with the machine as found and again with
           every core kept busy (--busy N processes).
 first     A first visit with what is on screen alone: Listen to me, a word, said back; the switch to Curious; a
-          question asked; a pistachio; the signs on screen at each step (the ear, the turn, the answer). Then,
+          question asked; a pistachio; the signs on screen at each step (the ear, the turn, the answer) and
+          the line under the buttons that says what to try next (press Ask; say a word; a pistachio if the
+          answer was right). Then,
           in the visitor's own voice (a voice in no record): a question, answered right when understood, and
           when guessed the hint by the Pistachio button (a pistachio if right, else say it again), a right
           guess paid and the question understood when asked again; and a sound it cannot make out (the
@@ -26,8 +28,9 @@ visitors  The usability matrix: voices the parrot never heard, through a laptop 
           and "Where is it?" are answered right three times running; the time from the end of each question
           to the start of the answer.
 false     Sounds that are no speech (a cough, a breath, typing, a click, a door, a scrape, a fan, a hum, a ring, a
-          clap) in both modes, and the parrot's own voice coming back from the loudspeaker: none may be kept
-          as an utterance, said back or answered.
+          clap) in both modes, and the parrot's own voice coming back from the loudspeaker (25 s in which it
+          says words by itself, then four questions answered): none may be kept as an utterance, said back
+          or answered, and no word it says by itself is stopped as if another voice came in.
 robust    The microphone refused; a reload in the middle of an exchange; a sound arriving while it speaks; the
           switch pressed at any moment. After each the page answers a preset.
 nowords   The parrot with no words yet: sounds taught in Listen to me, then in Curious the pistachios until it

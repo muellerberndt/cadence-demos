@@ -3,8 +3,8 @@
 Every asset the parrot page ships or loads, with its source, author and licence.
 
 The rule for third-party assets in this folder: CC0 first, CC BY with attribution, and no asset
-with an unclear licence. Two groups were generated for this page under the owner's own accounts and
-are listed apart: the parrot's two bodies and the voices.
+with an unclear licence. Two groups were generated for this page with paid accounts of the services named, and are
+listed apart: the parrot's two bodies and the voices.
 
 ## Third-party assets in the folder
 
@@ -45,7 +45,7 @@ the page's own code (`site/scene.js`, `site/pistachio.js`); they have no model f
 | Files | Source | Author | Licence |
 | --- | --- | --- | --- |
 | `site/vendor/three/three.module.min.js` and `site/vendor/three/jsm/` (`OrbitControls.js`, `GLTFLoader.js`, `RGBELoader.js`, `BufferGeometryUtils.js`) | [three.js](https://github.com/mrdoob/three.js) r160 | the three.js authors | MIT (`site/vendor/three/LICENSE`) |
-| `site/pack/cadence_net-0.100.0-py3-none-any.whl` | [Cadence](https://github.com/muellerberndt/cadence) 0.100.0, the release on PyPI | Bernhard Mueller | GPL-3.0 (the licence text is inside the wheel) |
+| `site/pack/cadence_net-0.101.0-py3-none-any.whl` | [Cadence](https://github.com/muellerberndt/cadence) 0.101.0, the release on PyPI | Bernhard Mueller | GPL-3.0 (the licence text is inside the wheel) |
 | `site/pack/py/parrotbrain/meaning/`, `parrot/`, `words/` | [Cadence](https://github.com/muellerberndt/cadence), its branches `lane-0100-meaning` and `lane-0100-parrot` | Bernhard Mueller | GPL-3.0 |
 
 ## Generated for this page
@@ -54,12 +54,12 @@ the page's own code (`site/scene.js`, `site/pistachio.js`); they have no model f
 
 | Files | Source | Made by | Terms |
 | --- | --- | --- | --- |
-| `site/looks/realistic.glb`, `site/looks/realistic.rig.json` | made with [Meshy](https://www.meshy.ai) from a generated image of an African Grey (an image, then image to 3D), then fitted to the page's rig by `site/tools/prepare_look.py` | the repository owner, under the owner's Meshy account | output of that account under Meshy's terms; no Creative Commons licence is attached |
-| `site/looks/anime.glb`, `site/looks/anime.rig.json` | an original design, made with Meshy the same way and fitted the same way | the repository owner, under the owner's Meshy account | output of that account under Meshy's terms; no Creative Commons licence is attached |
+| `site/looks/realistic.glb`, `site/looks/realistic.rig.json` | made with [Meshy](https://www.meshy.ai) from a generated image of an African Grey (an image, then image to 3D), then fitted to the page's rig by `site/tools/prepare_look.py` | made for this repository with Meshy | output made with Meshy, under Meshy's terms; no Creative Commons licence is attached |
+| `site/looks/anime.glb`, `site/looks/anime.rig.json` | an original design, made with Meshy the same way and fitted the same way | made for this repository with Meshy | output made with Meshy, under Meshy's terms; no Creative Commons licence is attached |
 
 ### The voices
 
-Voices generated with ElevenLabs, under the owner's ElevenLabs account. No Creative Commons licence
+Voices generated with ElevenLabs for this repository. No Creative Commons licence
 is attached; ElevenLabs' terms apply to the output.
 
 | Files | What | How it was made |

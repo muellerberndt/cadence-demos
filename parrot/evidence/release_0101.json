@@ -1,0 +1,38 @@
+{
+ "what": "The page on cadence-net 0.101.0 as released on PyPI (tag v0.101.0), unchanged; SHA-256 fc1c50072517110fd827ad006f7090c4617e494064821d040acfb082ab540463. The lane packages are carried in the page's package as on 0.100.0 (parrotbrain.meaning at lane-0100-meaning 613bcbc6, parrotbrain.parrot at lane-0100-parrot 5fccf8cb, parrotbrain.words), and the library's ear (cadence.senses.Ear) does the resampling, band clamp, centring and length of a sound's key.",
+ "presets_three_passes": {
+  "note": "the twelve listed questions through the page's trained host, three passes, each with its thing in focus (offline, no page): the answers on the PyPI wheel of 0.101.0 against the answers of the page on 0.100.0",
+  "asked": 36,
+  "right": 36,
+  "same_as_on_0100": 36
+ },
+ "sound_key": {
+  "note": "sounds.code: the page keeps the word's loud core and its smoothing across bands and frames; cadence.senses.Ear(frames=16, bands=40, range=8) does the resampling to 16 frames, the band clamp, the centring and the unit length. The key against the page's own code on 0.100.0, 120 random frame sets of 8 to 300 frames: largest difference 1.5e-16.",
+  "largest_difference": 1.5e-16
+ },
+ "host_tests": {
+  "test_sound_memory": "pass",
+  "test_words": "pass (a new take's cosine with its record .96 to .97, as on 0.100.0)"
+ },
+ "release_features": {
+  "used": [
+   "cadence.senses.Ear: the resampling, band clamp, centring and unit length of a sound's key (sounds.code)",
+   "cadence.LongTermMemory(blend=True): a sound told again moves its record toward the new take (as on 0.100.0)"
+  ],
+  "not_used": {
+   "cadence.bound.BoundRecords, Brain.compose(bound=, voice=), Brain.say, Brain.complete": "they keep records of a brain's own bound moments and its paid voice inside a Brain composed with senses and a fixed code; the page's trained brain was trained through the meaning lane's own mixed code, and its weights do not read the library's code, so moving the page onto them is a new trained brain. The page's sound memory keeps the same rule for an answer: a guessed sound is linked to its meaning only once a pistachio pays it.",
+   "cadence.senses.Things": "a population code per field; the trained brain's eyes are its training world's tuned readings, which its weights were trained on"
+  }
+ },
+ "pypi_wheel": {
+  "note": "the PyPI wheel against the wheel built unchanged from release-0.101 at 9dd66844, on which the fresh-clone runs ran: 50 files each, the same names; 48 identical, the two that differ are the dist-info METADATA (the package's README as its long description) and RECORD (that file's hash)",
+  "files": 50,
+  "identical": 48,
+  "differ": [
+   "cadence_net-0.101.0.dist-info/METADATA",
+   "cadence_net-0.101.0.dist-info/RECORD"
+  ],
+  "built_sha256": "731831a6b5003b0c4ae406b328607a4787155e3e0859608f469a36c7bb15d110",
+  "pypi_sha256": "fc1c50072517110fd827ad006f7090c4617e494064821d040acfb082ab540463"
+ }
+}
