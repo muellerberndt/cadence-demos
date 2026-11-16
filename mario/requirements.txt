@@ -1,0 +1,7 @@
+cadence-net[fast]==0.95.2
+nes-py==8.2.1
+# nes-py 8.2.1 multiplies uint8 header bytes and needs NumPy 1 (cadence-net accepts numpy>=1.26)
+numpy>=1.26,<2
+# play.py --video only
+imageio-ffmpeg>=0.5
+Pillow>=10
