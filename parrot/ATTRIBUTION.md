@@ -45,7 +45,7 @@ the page's own code (`site/scene.js`, `site/pistachio.js`); they have no model f
 | Files | Source | Author | Licence |
 | --- | --- | --- | --- |
 | `site/vendor/three/three.module.min.js` and `site/vendor/three/jsm/` (`OrbitControls.js`, `GLTFLoader.js`, `RGBELoader.js`, `BufferGeometryUtils.js`) | [three.js](https://github.com/mrdoob/three.js) r160 | the three.js authors | MIT (`site/vendor/three/LICENSE`) |
-| `site/pack/cadence_net-0.101.0-py3-none-any.whl` | [Cadence](https://github.com/muellerberndt/cadence) 0.101.0, the release | Bernhard Mueller | GPL-3.0 (the licence text is inside the wheel) |
+| `site/pack/cadence_net-0.101.0-py3-none-any.whl` | [Cadence](https://github.com/muellerberndt/cadence) 0.101.0, the release on PyPI | Bernhard Mueller | GPL-3.0 (the licence text is inside the wheel) |
 | `site/pack/py/parrotbrain/meaning/`, `parrot/`, `words/` | [Cadence](https://github.com/muellerberndt/cadence), its branches `lane-0100-meaning` and `lane-0100-parrot` | Bernhard Mueller | GPL-3.0 |
 
 ## Generated for this page

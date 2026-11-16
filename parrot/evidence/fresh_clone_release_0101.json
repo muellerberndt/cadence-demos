@@ -1,0 +1,375 @@
+{
+ "what": "tests/test_sound_symbols.py run from fresh clones of the branch (git clone --depth 1): the five sections at cb8d3b8 and the visitors' matrix on that clone, the false section again at f81abd6 with the stricter own-voice check (25 s of words said by itself through a loopback, then four questions). The page on cadence-net 0.101.0 built unchanged from release-0.101 at 9dd66844, whose files match the PyPI wheel of 0.101.0 file for file apart from its README (METADATA, RECORD); served by python3 -m http.server, headless Chromium, on a ten-core machine shared with other jobs (load average 3 to 15).",
+ "passed": {
+  "presets": true,
+  "mic": true,
+  "first": true,
+  "false": true,
+  "false_stricter": true,
+  "robust": true,
+  "visitors_all_reached": true,
+  "visitors_all_one_utterance": true
+ },
+ "presets": {
+  "asked": 24,
+  "answered": 24,
+  "understood": 24,
+  "right": 24,
+  "said_with_sound": 24,
+  "answer_sounds": 24,
+  "own_voice": 24,
+  "whisper_ok": 24,
+  "followed_ok": 24,
+  "words_followed": 92,
+  "word_delay_ms": {
+   "median": 317,
+   "p90": 430,
+   "max": 634,
+   "within_150": 0,
+   "within_250": 20
+  },
+  "answer_ms": {
+   "median": 741,
+   "p90": 815,
+   "max": 880,
+   "under_1500": 24,
+   "of": 24
+  },
+  "paid_links": 24
+ },
+ "mic": {
+  "said_back_ms_after_the_utterance_was_kept": 175,
+  "as_found": {
+   "busy_processes": 0,
+   "load_1min": 5.3,
+   "said_back_ms": {
+    "min": 549,
+    "median": 562,
+    "max": 648
+   },
+   "ok": true
+  },
+  "busy": {
+   "busy_processes": 10,
+   "load_1min": 15.4,
+   "said_back_ms": {
+    "min": 671,
+    "median": 702,
+    "max": 729
+   },
+   "ok": true
+  }
+ },
+ "first": [
+  {
+   "step": "the switch, the question list, Ask, Pistachio and the microphone button are on screen, and the line under them says to pick a question and press Ask",
+   "ok": true,
+   "next": "Pick a question and press Ask. Or click a thing and ask about it out loud."
+  },
+  {
+   "step": "Listen to me pressed: the question list goes, the parrot looks at you, the line says to say a word",
+   "next": "Say a word: it keeps it and says it back.",
+   "ok": true
+  },
+  {
+   "step": "a word said: the ear's sign lights while it is said; it is kept as one utterance and said back",
+   "ok": true
+  },
+  {
+   "step": "Curious pressed: the question list is back",
+   "ok": true
+  },
+  {
+   "step": "a question asked: its words as a subtitle, the parrot's turn shown, the answer by the parrot, and the line asks for a pistachio if it was right",
+   "answer": [
+    "key"
+   ],
+   "next": "Was the answer right? Give it a Pistachio.",
+   "ok": true
+  },
+  {
+   "step": "a pistachio: the dopamine box lights, the lesson is taken",
+   "ok": true
+  },
+  {
+   "step": "the visitor's own question: answered right when understood; a guess shows the hint to give a pistachio if right, else to say it again",
+   "said": [
+    "white"
+   ],
+   "right": true,
+   "guessed": false,
+   "hint": "",
+   "ok": true
+  },
+  {
+   "step": "a sound it cannot make out: a ? by the parrot and, by the Pistachio button, what to do",
+   "question_mark": true,
+   "hint_kind": "guess",
+   "hint": "?It was not sure what you asked, and guessed. If the answer is right, give it a Pistachio: it learns what your words mean. If not, say it again.",
+   "ok": true
+  }
+ ],
+ "false": {
+  "kept": 0,
+  "said_back": 0,
+  "answered": 0,
+  "of": 40,
+  "own_voice": [
+   {
+    "question": 0,
+    "right": true,
+    "utterances_kept": 1,
+    "exchanges": 1
+   },
+   {
+    "question": 1,
+    "right": true,
+    "utterances_kept": 1,
+    "exchanges": 1
+   },
+   {
+    "question": 2,
+    "right": true,
+    "utterances_kept": 1,
+    "exchanges": 1
+   },
+   {
+    "question": 3,
+    "right": true,
+    "utterances_kept": 1,
+    "exchanges": 1
+   }
+  ]
+ },
+ "false_stricter": {
+  "kept": 0,
+  "of": 40,
+  "own_voice": [
+   {
+    "question": 0,
+    "right": true,
+    "utterances_kept": 1,
+    "exchanges": 1
+   },
+   {
+    "question": 1,
+    "right": true,
+    "utterances_kept": 1,
+    "exchanges": 1
+   },
+   {
+    "question": 2,
+    "right": true,
+    "utterances_kept": 1,
+    "exchanges": 1
+   },
+   {
+    "question": 3,
+    "right": true,
+    "utterances_kept": 1,
+    "exchanges": 1
+   }
+  ],
+  "words_said_by_itself": 4,
+  "own_words_stopped": 0,
+  "kept_over_the_span": 4
+ },
+ "robust": {
+  "mic_refused": true,
+  "reload": true,
+  "sound_while_speaking": true,
+  "switch": true,
+  "asked_after_a_click": true
+ },
+ "asked_after_a_click": [
+  {
+   "asked_after_s": 0.5,
+   "clicked": "key",
+   "parrot_said_by_itself": [
+    {
+     "word": "fruit",
+     "stopped": true
+    }
+   ],
+   "heard": 1,
+   "said": [
+    "key"
+   ],
+   "right": true,
+   "ok": true
+  },
+  {
+   "asked_after_s": 3.0,
+   "clicked": "apple",
+   "parrot_said_by_itself": [
+    {
+     "word": "apple",
+     "stopped": true
+    }
+   ],
+   "heard": 1,
+   "said": [
+    "apple"
+   ],
+   "right": true,
+   "ok": true
+  },
+  {
+   "asked_after_s": 3.5,
+   "clicked": "cup",
+   "parrot_said_by_itself": [
+    {
+     "word": "cup",
+     "stopped": false
+    }
+   ],
+   "heard": 1,
+   "said": [
+    "cup"
+   ],
+   "right": true,
+   "ok": true
+  }
+ ],
+ "visitors": {
+  "table": [
+   {
+    "voice": "archer",
+    "cond": "clean",
+    "one_utterance": 6,
+    "said_back": 6,
+    "said_back_read_alike": 5,
+    "of": 6,
+    "said_back_ms_median": 530,
+    "said_back_ms_max": 555,
+    "what_colour": "0 pistachios, 0 trials",
+    "what_is_this": "0 pistachios, 0 trials",
+    "where_is_it": "0 pistachios, 0 trials",
+    "answer_ms_median": 912,
+    "answer_ms_max": 1084
+   },
+   {
+    "voice": "archer",
+    "cond": "lap20",
+    "one_utterance": 6,
+    "said_back": 6,
+    "said_back_read_alike": 6,
+    "of": 6,
+    "said_back_ms_median": 524,
+    "said_back_ms_max": 565,
+    "what_colour": "0 pistachios, 0 trials",
+    "what_is_this": "0 pistachios, 0 trials",
+    "where_is_it": "0 pistachios, 0 trials",
+    "answer_ms_median": 823,
+    "answer_ms_max": 974
+   },
+   {
+    "voice": "dakota",
+    "cond": "clean",
+    "one_utterance": 6,
+    "said_back": 6,
+    "said_back_read_alike": 6,
+    "of": 6,
+    "said_back_ms_median": 612,
+    "said_back_ms_max": 635,
+    "what_colour": "0 pistachios, 0 trials",
+    "what_is_this": "0 pistachios, 0 trials",
+    "where_is_it": "0 pistachios, 0 trials",
+    "answer_ms_median": 800,
+    "answer_ms_max": 1307
+   },
+   {
+    "voice": "dakota",
+    "cond": "lap20",
+    "one_utterance": 6,
+    "said_back": 6,
+    "said_back_read_alike": 6,
+    "of": 6,
+    "said_back_ms_median": 534,
+    "said_back_ms_max": 560,
+    "what_colour": "0 pistachios, 0 trials",
+    "what_is_this": "0 pistachios, 0 trials",
+    "where_is_it": "0 pistachios, 0 trials",
+    "answer_ms_median": 661,
+    "answer_ms_max": 942
+   },
+   {
+    "voice": "steve",
+    "cond": "clean",
+    "one_utterance": 6,
+    "said_back": 6,
+    "said_back_read_alike": 6,
+    "of": 6,
+    "said_back_ms_median": 613,
+    "said_back_ms_max": 646,
+    "what_colour": "0 pistachios, 1 trials",
+    "what_is_this": "0 pistachios, 0 trials",
+    "where_is_it": "0 pistachios, 0 trials",
+    "answer_ms_median": 801,
+    "answer_ms_max": 1038
+   },
+   {
+    "voice": "steve",
+    "cond": "lap20",
+    "one_utterance": 6,
+    "said_back": 6,
+    "said_back_read_alike": 5,
+    "of": 6,
+    "said_back_ms_median": 470,
+    "said_back_ms_max": 502,
+    "what_colour": "0 pistachios, 0 trials",
+    "what_is_this": "0 pistachios, 0 trials",
+    "where_is_it": "0 pistachios, 0 trials",
+    "answer_ms_median": 805,
+    "answer_ms_max": 885
+   },
+   {
+    "voice": "zara",
+    "cond": "clean",
+    "one_utterance": 6,
+    "said_back": 6,
+    "said_back_read_alike": 6,
+    "of": 6,
+    "said_back_ms_median": 574,
+    "said_back_ms_max": 663,
+    "what_colour": "0 pistachios, 0 trials",
+    "what_is_this": "0 pistachios, 0 trials",
+    "where_is_it": "0 pistachios, 0 trials",
+    "answer_ms_median": 968,
+    "answer_ms_max": 1138
+   },
+   {
+    "voice": "zara",
+    "cond": "lap20",
+    "one_utterance": 6,
+    "said_back": 6,
+    "said_back_read_alike": 6,
+    "of": 6,
+    "said_back_ms_median": 519,
+    "said_back_ms_max": 548,
+    "what_colour": "0 pistachios, 0 trials",
+    "what_is_this": "0 pistachios, 1 trials",
+    "where_is_it": "0 pistachios, 0 trials",
+    "answer_ms_median": 848,
+    "answer_ms_max": 999
+   }
+  ],
+  "all_reached": true,
+  "all_one_utterance": true,
+  "said_back_ms": {
+   "median": 542,
+   "max": 663,
+   "within_1500": 48,
+   "of": 48
+  },
+  "answer_ms": {
+   "median": 850,
+   "max": 1307,
+   "within_1500": 72,
+   "of": 72
+  }
+ },
+ "reached": 24,
+ "from_the_first_trial": 22,
+ "kept_as_one": 48
+}

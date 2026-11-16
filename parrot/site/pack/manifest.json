@@ -137,7 +137,7 @@
   "probes": "probes.json beside the brain: the association's linear read of the thing in focus with nothing heard, at any look from a cleared state (fitted over looks 1 to 4 after a clearing on 960 random rooms, checked on 240 rooms held out: kind 0.99 against 0.13 by chance, colour 0.99 against 0.20 by chance, round 1.00 against 0.70 by chance, material 0.93 against 0.33 by chance, edible 0.99 against 0.67 by chance, direction 0.96 against 0.27 by chance; at the first look kind 1.00 and colour 1.00, where the probes exported with the brain read 0.40 and 0.29); distance as exported by the meaning lane (.86 against .51)"
  },
  "wheel": "cadence_net-0.101.0-py3-none-any.whl",
- "wheel_sha256": "731831a6b5003b0c4ae406b328607a4787155e3e0859608f469a36c7bb15d110",
- "cadence": "0.101.0 (cadence-net, built from the release at 9dd66844)",
- "wheel_source": "cadence-net 0.101.0, built unchanged from the release branch (release-0.101 at 9dd66844); the page carries the lane packages it uses in its own package: parrotbrain.meaning (lane-0100-meaning 613bcbc6), parrotbrain.parrot (lane-0100-parrot 5fccf8cb) and parrotbrain.words (as the lane-meaning wheel at 81474696 held it)"
+ "wheel_sha256": "fc1c50072517110fd827ad006f7090c4617e494064821d040acfb082ab540463",
+ "cadence": "0.101.0, released (PyPI cadence-net)",
+ "wheel_source": "cadence-net 0.101.0 as released on PyPI (tag v0.101.0), unchanged; the page carries the lane packages it uses in its own package: parrotbrain.meaning (lane-0100-meaning 613bcbc6), parrotbrain.parrot (lane-0100-parrot 5fccf8cb) and parrotbrain.words (as the lane-meaning wheel at 81474696 held it)"
 }
