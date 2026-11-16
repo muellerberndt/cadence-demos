@@ -42,7 +42,8 @@ async function initialize(payload) {
   }
   const pkg = manifest.package || 'parrotbrain';
   python.FS.mkdirTree(`/home/pyodide/${pkg}`);
-  for (const name of manifest.sources) {
+  for (const name of manifest.sources) { // (a subpackage's file: its folder first)
+    if (name.includes('/')) python.FS.mkdirTree(`/home/pyodide/${pkg}/${name.slice(0, name.lastIndexOf('/'))}`);
     python.FS.writeFile(`/home/pyodide/${pkg}/${name}`, await checked(new URL(`py/${pkg}/${name}`, base), manifest.sources_sha256[name]));
   }
   python.FS.mkdirTree('/home/pyodide/brain');

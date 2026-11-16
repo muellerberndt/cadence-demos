@@ -2,8 +2,8 @@
 
 > **Preview.** A development build of the parrot page, published so that its code can be read and
 > run. It does what [What works](#what-works) lists, with the limits under
-> [What it does not do](#what-it-does-not-do). It runs on a development build of the Cadence
-> library, included in this folder; it does not run on a released `cadence-net`.
+> [What it does not do](#what-it-does-not-do). It runs on the released `cadence-net` 0.100.0; the
+> parts of the brain that the library does not release live in this folder.
 
 ## What it shows
 
@@ -199,19 +199,40 @@ what the preview does.
 
 ## What it runs on
 
-- **A development build of the Cadence library**, included in the folder:
-  `site/pack/cadence_net-0.99.0-lane-meaning-568a0ad8-parrot-5fccf8cb.whl`. It is built from the
-  library's development branches
+- **The released Cadence library**: `cadence-net` 0.100.0 from PyPI, unchanged, in the folder as
+  `site/pack/cadence_net-0.100.0-py3-none-any.whl`.
+- **The parts of the brain the library does not release**, in the page's own package
+  (`site/pack/py/parrotbrain/`): `meaning/` (the answering brain's host, its senses and its build),
+  `parrot/` (the parrot's body, eyes, map, focus and voice) and `words/`, carried from the library's
+  development branches
   [`lane-0100-meaning`](https://github.com/muellerberndt/cadence/tree/lane-0100-meaning) and
-  [`lane-0100-parrot`](https://github.com/muellerberndt/cadence/tree/lane-0100-parrot), which add
-  `cadence.meaning` and `cadence.parrot`; `site/pack/manifest.json` names the commits. Its version
-  field reads 0.99.0, and it is no released build.
-- **The page does not run on the released `cadence-net` 0.99.1**, which has no `cadence.meaning`
-  and no `cadence.parrot`. The library release that carries these features is in preparation.
+  [`lane-0100-parrot`](https://github.com/muellerberndt/cadence/tree/lane-0100-parrot) with their
+  imports of the library made absolute; and the hearing layer (`sounds.py`, `host.py`), the page's
+  own. `site/pack/manifest.json` names the commits.
 - **The trained brain**, `site/pack/trained/`: `brain.npz` and `spec.json`, with `version.json`
   (its training step, its readings, what it gets wrong) and `probes.json`.
 - **In the browser**: Python through Pyodide in a web worker, which checks the SHA-256 of every
   pack file against the manifest before it runs anything; three.js for the room and the brain view.
+
+On 0.100.0 the library does two things the page did itself: a record told again moves toward the
+new take (`LongTermMemory(blend=True)`, the record strength of cadence#336; the page lays the take on
+the record's timeline first), and the carried host of the answering brain is the meaning lane's at
+613bcbc6, with the `exact` rule removed. These stay in the folder, and why:
+
+- **Equal senses and senses by name** (`senses=`, `code=units`): the trained brain's weights were
+  learned through the meaning lane's own mixed code; the library's door draws its own fixed code,
+  which those weights do not read.
+- **The map read of one attended thing** (`Map.thing_at`): the answering brain's glimpse comes from
+  the page's description of the room, as its training world reported things; the body's map holds
+  places, not the colour and material that brain was trained on.
+- **The pistachio with an open slot** (`learning.OPEN`): the carried host teaches the reply's word
+  with the second slot at 0, as its training did; leaving that slot open changes what a pistachio
+  teaches.
+- **"It moved", "it appeared" and the focus they draw** (`cadence.surprise`): the carried focus
+  weighs a thing's move against its usual move on its own scale; the library's per-unit surprise
+  uses another, so its focus would move at other moments.
+- **The ear, the follower and the sound memory's vote and lessons** (`host.py`, `sounds.py`): no
+  library feature takes their place.
 
 [Cadence](https://github.com/muellerberndt/cadence) is the library; its README explains how a
 Cadence brain settles and learns.
