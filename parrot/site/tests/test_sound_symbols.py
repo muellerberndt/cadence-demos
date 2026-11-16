@@ -28,8 +28,9 @@ visitors  The usability matrix: voices the parrot never heard, through a laptop 
           and "Where is it?" are answered right three times running; the time from the end of each question
           to the start of the answer.
 false     Sounds that are no speech (a cough, a breath, typing, a click, a door, a scrape, a fan, a hum, a ring, a
-          clap) in both modes, and the parrot's own voice coming back from the loudspeaker: none may be kept
-          as an utterance, said back or answered.
+          clap) in both modes, and the parrot's own voice coming back from the loudspeaker (25 s in which it
+          says words by itself, then four questions answered): none may be kept as an utterance, said back
+          or answered, and no word it says by itself is stopped as if another voice came in.
 robust    The microphone refused; a reload in the middle of an exchange; a sound arriving while it speaks; the
           switch pressed at any moment. After each the page answers a preset.
 nowords   The parrot with no words yet: sounds taught in Listen to me, then in Curious the pistachios until it

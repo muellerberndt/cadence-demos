@@ -298,9 +298,13 @@ def false_triggers(pw, a, T) -> dict:
                 answered = page.evaluate("window.parrotPage.trained.serial") > serial
                 out["sounds"].append({"mode": mode, "sound": name, "kept": got, "said_back": said, "answered": answered})
         print("  false", mode, json.dumps({n: sum(r["kept"] for r in out["sounds"] if r["sound"] == n and r["mode"] == mode) for n in room.NOT_SPEECH}), flush=True)
-    # its own voice from the loudspeaker: the page's output reaches the ear again, later and softer
+    # its own voice from the loudspeaker: the page's output reaches the ear again, later and softer. First 25 s
+    # alone in Curious, in which it says words by itself; then four questions. Over the whole span no word of its
+    # own is stopped as if another voice came in, and nothing is kept but the four questions.
     T.set_flow(page, "curious")
     page.evaluate("window.parrotPage.audio.loopback(0.5, 0.06)")
+    t_loop = T.now(page)
+    page.wait_for_timeout(25000)
     rows = []
     for i in range(4):
         T.quiet_for(page)
@@ -312,7 +316,9 @@ def false_triggers(pw, a, T) -> dict:
         heard = page.evaluate("(t) => window.parrotPage.flow.heard.filter((h) => h.at > t).length", t)
         more = page.evaluate("window.parrotPage.trained.serial") - serial
         rows.append({"question": i, "right": bool(last and last["right"]), "utterances_kept": heard, "exchanges": more})
-    out["own_voice"] = {"rows": rows, "ok": all(r["right"] and r["utterances_kept"] == 1 and r["exchanges"] == 1 for r in rows)}
+    own = page.evaluate("(t) => ({ said: window.parrotPage.flow.said.filter((s) => s.at > t && !s.echo).length, stopped: (window.parrotPage.flow.stopped || []).filter((s) => s.at > t).length, heard: window.parrotPage.flow.heard.filter((h) => h.at > t).length })", t_loop)
+    out["own_voice"] = {"rows": rows, "words_said_by_itself": own["said"], "own_words_stopped": own["stopped"], "kept_over_the_span": own["heard"],
+                        "ok": all(r["right"] and r["utterances_kept"] == 1 and r["exchanges"] == 1 for r in rows) and own["stopped"] == 0 and own["heard"] == len(rows)}
     out["ok"] = out["own_voice"]["ok"] and not any(r["kept"] or r["said_back"] or r["answered"] for r in out["sounds"])
     out["log"] = logs[-40:]
     ctx.close(); browser.close()
@@ -493,7 +499,7 @@ def run(pw, a, only, report, T) -> bool:
         ok &= report["visitors"]["summary"]["all_reached"] and report["visitors"]["summary"]["all_one_utterance"]
     if "false" in only:
         report["false"] = false_triggers(pw, a, T); save()
-        print("false", json.dumps({"kept": sum(r["kept"] for r in report["false"]["sounds"]), "of": len(report["false"]["sounds"]), "own_voice": report["false"]["own_voice"]["rows"]}), flush=True)
+        print("false", json.dumps({"kept": sum(r["kept"] for r in report["false"]["sounds"]), "of": len(report["false"]["sounds"]), "own_voice": report["false"]["own_voice"]["rows"], "words_said_by_itself": report["false"]["own_voice"]["words_said_by_itself"], "own_words_stopped": report["false"]["own_voice"]["own_words_stopped"], "kept_over_the_span": report["false"]["own_voice"]["kept_over_the_span"]}), flush=True)
         ok &= report["false"]["ok"]
     if "robust" in only:
         report["robust"] = robust(pw, a, T); save()
