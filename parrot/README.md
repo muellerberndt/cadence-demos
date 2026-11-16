@@ -87,7 +87,10 @@ Pistachio button says what to do: say it again, or pick a question from the list
 guessed brings the same **?** first, and the line says to give it a pistachio if the answer is
 right and to say it again if not. A single word it only guessed brings the **?** and the line too, and moves
 its attention nowhere. After you click a thing it says nothing by itself for three seconds, so a
-question asked at once is heard.
+question asked at once is heard; and a word it says by itself stops when a voice comes in over it,
+as a bird stops calling. The ear tells another voice from its own by what the page plays: it learns
+how loud its own voice comes back to it, and a voiced sound well above that is someone else. The
+brain view's Voice box shows a word while it is said.
 
 `site/tests/test_sound_symbols.py` checks these on the real page in a headless Chromium. Its
 sections:
@@ -109,7 +112,9 @@ sections:
   and the parrot's own voice from the loudspeaker; none may be kept as an utterance, said back or
   answered.
 - `robust`: the microphone refused, a reload in the middle of an exchange, a sound while it speaks,
-  the switch pressed at any moment; after each the page answers a listed question.
+  the switch pressed at any moment; after each the page answers a listed question. Then a question
+  in a voice in no record asked 0.5, 3.0 and 3.5 s after a click on a thing: heard and answered
+  right each time.
 
 `evidence/sound_flow.json` holds the readings of these sections from development.
 

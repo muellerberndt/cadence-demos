@@ -50,7 +50,7 @@ class Host:
     def step(self, meta: dict[str, Any], arrays: dict[str, np.ndarray]) -> dict[str, Any]:
         audio = arrays.get("audio")
         out = self.brain.step({**meta, "show_eyes": True}, {} if audio is None else {"audio": audio})
-        heard = self.hearing.step({k: meta.get(k) for k in ("t", "reward", "voice_ok", "things", "focus_kind", "mode", "own_voice", "hold", "memory_shown")},
+        heard = self.hearing.step({k: meta.get(k) for k in ("t", "reward", "voice_ok", "things", "focus_kind", "mode", "own_voice", "own_level", "hold", "memory_shown")},
                                   {"left": self.blank, "right": self.blank, "proprio": np.zeros(22, np.float32),
                                    "mel": arrays.get("mel", np.zeros(0, np.float32)), "pcm": arrays.get("pcm")})
         activity = np.zeros(self.neurons, np.float32)
@@ -69,7 +69,7 @@ class Host:
         lessons = int(getattr(getattr(self.brain.parrot, "distance", None), "lessons", 0) or 0)
         out.update(voice_rate=heard.get("voice_rate", 8000), knows=heard.get("knows", []), recalled=heard.get("recalled"), buffers=names, lessons=lessons, words=len(self.hearing.mem.sayable()), drive=heard["drive"], said_sound=heard["said"], heard_sound=heard["heard_sound"], saying=heard.get("saying", False), heard_sounds=heard.get("heard_sounds", []),
                    memory=heard["memory"], repertoire=heard["repertoire"], sayable=heard.get("sayable"), heard=heard["heard"], paid_sounds=heard["paid"], linked=heard.get("linked"),
-                   spotted=heard.get("spotted", []), hearing=heard.get("hearing", False))
+                   spotted=heard.get("spotted", []), hearing=heard.get("hearing", False), stop_voice=heard.get("stop_voice", False))
         return out
 
     def handle(self, message: dict[str, Any]) -> dict[str, Any]:

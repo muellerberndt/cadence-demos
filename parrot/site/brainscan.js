@@ -224,6 +224,7 @@ export class Scan {
     const loud = window.parrotPage?.audio?.loudness(performance.now()) || 0;
     this.voiceBar.style.transform = `scaleX(${Math.max(0.02, loud).toFixed(3)})`;
     this.said = Math.max(0, this.said - dt); this.boxes.voice.box.classList.toggle('on', this.said > 0 || loud > 0.05);
+    if (this.said <= 0 && loud <= 0.05 && this.voiceWord.textContent !== '·') this.voiceWord.textContent = '·'; // a word shows while it is said, and goes
     this.dop = Math.max(0, this.dop - dt * 0.45);
     this.dopBar.style.transform = `scaleX(${Math.max(0.02, this.dop).toFixed(3)})`; this.boxes.dopamine.box.classList.toggle('on', this.dop > 0.1);
     // the tag over the association region: the word heard (where its record is linked to a thing), the word said
