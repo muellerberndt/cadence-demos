@@ -14,7 +14,9 @@ mic       The microphone itself (the browser's fake device plays a file in a loo
           said back within 1.5 s and the middle one within 1.2 s, with the machine as found and again with
           every core kept busy (--busy N processes).
 first     A first visit with what is on screen alone: Listen to me, a word, said back; the switch to Curious; a
-          question asked; a pistachio; the signs on screen at each step (the ear, the turn, the answer). Then,
+          question asked; a pistachio; the signs on screen at each step (the ear, the turn, the answer) and
+          the line under the buttons that says what to try next (press Ask; say a word; a pistachio if the
+          answer was right). Then,
           in the visitor's own voice (a voice in no record): a question, answered right when understood, and
           when guessed the hint by the Pistachio button (a pistachio if right, else say it again), a right
           guess paid and the question understood when asked again; and a sound it cannot make out (the

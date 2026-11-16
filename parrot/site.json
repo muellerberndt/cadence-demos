@@ -1,14 +1,16 @@
 {
   "slug": "parrot",
-  "title": "Parrot (preview)",
+  "title": "Parrot",
   "page_dir": "site",
-  "card": "An African Grey whose Cadence brain hears a spoken question from a list and answers in sound. A preview from development.",
+  "card": "An African Grey whose Cadence brain hears spoken questions, keeps sounds as symbols, and answers in sound.",
   "tagline": "A brain that hears and speaks sounds as symbols",
   "kicker": "SOUNDS AS SYMBOLS, KEPT IN MEMORY",
-  "feature": "Each sound the parrot keeps is a record in Cadence's long-term memory, linked to its meaning by synapses. A listed question reaches its ear as a spoken sentence, its trained brain settles on an answer, and the answer brings back its sound.",
-  "howTo": "Pick a question under Ask it and press Ask. Watch each word light as it is spoken and the answer bring back its sound. Click a thing to put it in focus. Throw a pistachio after a right answer. In Listen to me it says back what it hears.",
+  "feature": "Each sound the parrot keeps is a record in Cadence's long-term memory, linked by synapses to what it means. It hears a spoken question, its trained brain settles on an answer, and the answer brings back its sound.",
+  "howTo": "Pick a question and press Ask, or click a thing and ask about it out loud. Give it a pistachio after a right answer. A ? means it did not understand: say it again. In Listen to me it says back what you say.",
   "help": "help.html",
   "evidence": [
+    "parrot/evidence/fresh_clone_release_0101.json",
+    "parrot/evidence/release_0101.json",
     "parrot/evidence/fresh_clone_turns.json",
     "parrot/evidence/release_0100.json",
     "parrot/evidence/fresh_clone_release_0100.json",
@@ -22,5 +24,13 @@
     "parrot/evidence/sound_memory.json",
     "parrot/evidence/words.json"
   ],
-  "promise_test": "python parrot/site/tests/test_sound_symbols.py --url <url> --out <dir> --voices <dir> --whisper <python with mlx-whisper> --only presets,mic,first,false,robust"
+  "promise_test": "python parrot/site/tests/test_sound_symbols.py --url <url> --out <dir> --voices <dir> --whisper <python with mlx-whisper> --only presets,mic,first,false,robust",
+  "about": "An African Grey parrot on a perch, with an apple, a block, a cup, a key and a green ball on the table. It hears you through the microphone or the question list and keeps every utterance as a record in long-term memory, linked by synapses to its meaning. A trained Cadence brain settles on the answer word, and the word brings back the sound kept for it. A pistachio after a right answer teaches the brain and the links, and one paid hearing teaches it a new voice's sound for a question.",
+  "runsOn": "The library's long-term and synaptic memory and its ear (cadence.LongTermMemory, cadence.SynapticMemory, cadence.senses.Ear) with a trained Brain, cadence-net 0.101.0 in Pyodide",
+  "brainLabel": "the sound memory and the trained brain",
+  "zones": [
+    "sensory",
+    "cortex",
+    "episodic"
+  ]
 }

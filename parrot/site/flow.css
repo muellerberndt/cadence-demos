@@ -10,6 +10,9 @@ body[data-turn="parrot"] .mic-mini { opacity: 0.45; }
 /* what to do when it did not understand, or guessed: by the Pistachio button */
 .ask-hint { margin: 6px 0 0; padding: 6px 8px; border-radius: 8px; background: rgb(255 214 150 / 0.08); border: 1px solid rgb(255 214 150 / 0.25); color: #ffe8c4; font: 400 12px/1.4 var(--body); }
 .ask-hint b { color: #fff3dc; font-weight: 600; }
+.ask-next { margin: 6px 0 0; color: rgb(232 235 240 / 0.62); font: 400 12px/1.4 var(--body); }
+.ask-next b { color: #e8ebf0; font-weight: 600; }
+.ask-next[hidden] { display: none; }
 .ask-hint .q { display: inline-block; min-width: 1.3em; margin-right: 4px; border-radius: 999px; background: rgb(232 235 240 / 0.92); color: #1a1c22; font-weight: 700; text-align: center; }
 .say-bubble.unsure { background: rgb(232 235 240 / 0.92); color: #1a1c22; font-weight: 600; min-width: 1.6em; text-align: center; }
 .ask-log .guess { font: 400 10px var(--mono); letter-spacing: 0.06em; color: #ffd27a; border: 1px solid rgb(255 210 122 / 0.4); border-radius: 999px; padding: 0 6px; margin-left: 4px; }

@@ -98,12 +98,17 @@ def first_visit(pw, a, T) -> dict:
     browser, ctx, page, logs, t0 = T.open_page(pw, a.url, a.out / "quiet.wav")
     steps = []
     seen = lambda sel: page.is_visible(sel)  # noqa: E731
-    steps.append({"step": "the switch, the question list, Ask, Pistachio and the microphone button are on screen",
-                  "ok": all(seen(s) for s in ("#flow-mode .seg[data-flow=listen]", "#flow-mode .seg[data-flow=curious]", "#ask-preset", "#ask-form button[type=submit]", "#ask-nut", "#ask-mic")),
-                  "mic": page.evaluate("document.body.dataset.mic")})
+    next_now = "(() => { const e = document.getElementById('ask-next'); return e && !e.hidden ? e.textContent : ''; })()"
+    page.wait_for_timeout(600)
+    first_line = page.evaluate(next_now)
+    steps.append({"step": "the switch, the question list, Ask, Pistachio and the microphone button are on screen, and the line under them says to pick a question and press Ask",
+                  "ok": all(seen(s) for s in ("#flow-mode .seg[data-flow=listen]", "#flow-mode .seg[data-flow=curious]", "#ask-preset", "#ask-form button[type=submit]", "#ask-nut", "#ask-mic")) and "press Ask" in first_line,
+                  "mic": page.evaluate("document.body.dataset.mic"), "next": first_line})
     page.click("#flow-mode .seg[data-flow=listen]")
     page.wait_for_timeout(700)
-    steps.append({"step": "Listen to me pressed: the question list goes, the parrot looks at you", "ok": page.evaluate("window.parrotPage.flow.mode") == "listen" and not seen("#ask-preset") and not page.evaluate("document.getElementById('you-focus').hidden")})
+    listen_line = page.evaluate(next_now)
+    steps.append({"step": "Listen to me pressed: the question list goes, the parrot looks at you, the line says to say a word", "next": listen_line,
+                  "ok": page.evaluate("window.parrotPage.flow.mode") == "listen" and not seen("#ask-preset") and not page.evaluate("document.getElementById('you-focus').hidden") and "say a word" in listen_line.lower()})
     t = T.now(page)
     T.hear(page, pad(T.read16(takes["apple"][0])))
     ear = False
@@ -129,8 +134,14 @@ def first_visit(pw, a, T) -> dict:
         page.wait_for_timeout(50)
     last = T.answer_after(page, serial, 60)
     bubble = page.evaluate("(t) => { const b = window.parrotPage.flow.bubble; return b && b.at > t && b.who === 'it' ? b.text : ''; }", t_ask)  # the answer shown by the parrot (it goes after three seconds)
-    steps.append({"step": "a question asked: its words as a subtitle, the parrot's turn shown, the answer by the parrot", "subtitle": sub.strip(), "turn_sign": turn,
-                  "answer": last["said"] if last else None, "bubble": bubble, "ok": bool(last and last["right"] and sub and turn and bubble == " ".join(last["said"]))})
+    pay_line = ""
+    for _ in range(20):
+        pay_line = page.evaluate(next_now)
+        if "Pistachio" in pay_line:
+            break
+        page.wait_for_timeout(100)
+    steps.append({"step": "a question asked: its words as a subtitle, the parrot's turn shown, the answer by the parrot, and the line asks for a pistachio if it was right", "subtitle": sub.strip(), "turn_sign": turn,
+                  "answer": last["said"] if last else None, "bubble": bubble, "next": pay_line, "ok": bool(last and last["right"] and sub and turn and bubble == " ".join(last["said"]) and "Pistachio" in pay_line)})
     t = T.now(page)
     page.click("#ask-nut")
     dop = False
