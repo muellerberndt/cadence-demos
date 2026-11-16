@@ -1,5 +1,5 @@
 {
- "what": "The page on cadence-net 0.101.0, built unchanged from the release branch (release-0.101 at e66a2feb; SHA-256 d132fc3e70d074ce7891ea23c31e9a24cf012b5477c8e0651a38b81155a12cd6), the lane packages carried in the page's package as on 0.100.0 (parrotbrain.meaning at lane-0100-meaning 613bcbc6, parrotbrain.parrot at lane-0100-parrot 5fccf8cb, parrotbrain.words), and the library's ear (cadence.senses.Ear) for the resampling, band clamp, centring and length of a sound's key.",
+ "what": "The page on cadence-net 0.101.0, built unchanged from the release branch (release-0.101 at 9dd66844, the release's final library code; SHA-256 731831a6b5003b0c4ae406b328607a4787155e3e0859608f469a36c7bb15d110), the lane packages carried in the page's package as on 0.100.0 (parrotbrain.meaning at lane-0100-meaning 613bcbc6, parrotbrain.parrot at lane-0100-parrot 5fccf8cb, parrotbrain.words), and the library's ear (cadence.senses.Ear) for the resampling, band clamp, centring and length of a sound's key.",
  "presets_three_passes": {
   "note": "the twelve listed questions through the page's trained host, three passes, each with its thing in focus (offline, no page): the answers on 0.101.0 against the answers of the page on 0.100.0",
   "asked": 36,

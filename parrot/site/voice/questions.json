@@ -1,5 +1,5 @@
 {
- "voice": "a woman's voice (ElevenLabs eleven_multilingual_v2, voice Jane - Steady, Mature and Clear (made under the owner's ElevenLabs plan)), each question a natural sentence",
+ "voice": "a woman's voice (ElevenLabs eleven_multilingual_v2, voice Jane - Steady, Mature and Clear), each question a natural sentence",
  "questions": {
   "what_is_this": {
    "text": "What is this?",

@@ -37,7 +37,7 @@
  ],
  "sources_sha256": {
   "__init__.py": "aad6e4970d412d3fc56376e9321f46760a285a32d2086c5fc76d1740b02c082f",
-  "host.py": "507ec155c2789b89a14e38d58aa202a4e5e2458c4f81043acc47a9890f1d8e2e",
+  "host.py": "05598e798e32f7ef657901ae6dd348d0e6cdae52d9283321469d2640bd3346e8",
   "meaning/__init__.py": "55d42e4445a880ba0aa8753043a8d45a911fa993b318d914b9f58a19433e40d2",
   "meaning/host.py": "3e03ab9a1eeff4f266d51e9f634b5416030689908477e5679d2a20587cc0b388",
   "meaning/parrot.py": "0c6df6f24b39503a976a4e2a0d3c32df93fccbbbd6d790e4415dc2ec44bed1f1",
@@ -137,7 +137,7 @@
   "probes": "probes.json beside the brain: the association's linear read of the thing in focus with nothing heard, at any look from a cleared state (fitted over looks 1 to 4 after a clearing on 960 random rooms, checked on 240 rooms held out: kind 0.99 against 0.13 by chance, colour 0.99 against 0.20 by chance, round 1.00 against 0.70 by chance, material 0.93 against 0.33 by chance, edible 0.99 against 0.67 by chance, direction 0.96 against 0.27 by chance; at the first look kind 1.00 and colour 1.00, where the probes exported with the brain read 0.40 and 0.29); distance as exported by the meaning lane (.86 against .51)"
  },
  "wheel": "cadence_net-0.101.0-py3-none-any.whl",
- "wheel_sha256": "d132fc3e70d074ce7891ea23c31e9a24cf012b5477c8e0651a38b81155a12cd6",
- "cadence": "0.101.0 (cadence-net, built from the release branch at e66a2feb)",
- "wheel_source": "cadence-net 0.101.0, built unchanged from the release branch (release-0.101 at e66a2feb); the page carries the lane packages it uses in its own package: parrotbrain.meaning (lane-0100-meaning 613bcbc6), parrotbrain.parrot (lane-0100-parrot 5fccf8cb) and parrotbrain.words (as the lane-meaning wheel at 81474696 held it)"
+ "wheel_sha256": "731831a6b5003b0c4ae406b328607a4787155e3e0859608f469a36c7bb15d110",
+ "cadence": "0.101.0 (cadence-net, built from the release at 9dd66844)",
+ "wheel_source": "cadence-net 0.101.0, built unchanged from the release branch (release-0.101 at 9dd66844); the page carries the lane packages it uses in its own package: parrotbrain.meaning (lane-0100-meaning 613bcbc6), parrotbrain.parrot (lane-0100-parrot 5fccf8cb) and parrotbrain.words (as the lane-meaning wheel at 81474696 held it)"
 }

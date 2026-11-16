@@ -53,7 +53,9 @@ ONSET, STAY = 2.5, 1.5  # nats above the room's level at which an utterance begi
 OWN_TAIL = 3     # moments after its own voice in which a sound counts as its own (the room's echo of it)
 ROOM = 256  # the slots a memory keeps free for a visit's sounds beyond the saved memory it starts from
 SHORTEST = 8  # frames (80 ms): the least a word stands above the room
-FOREIGN, FOREIGN_FRAMES, ECHO_RATE = 2.0, 3, 0.1  # a voice that is not its own: this far (log power) above the echo of its own voice it expects, for 30 ms, stops a word it says by itself; the echo is learned this fast a moment
+FOREIGN, FOREIGN_FRAMES = 1.5, 3  # a voice that is not its own: this far (log power) above the echo of its own voice it expects, for 30 ms, stops a word it says by itself
+ECHO_FIRST, ECHO_UP, ECHO_NEAR, ECHO_DOWN = 10, 0.3, 0.5, 0.02  # the echo it expects: the loudest its voice has come back. Its first ten moments heard set it at once; later a moment at most ECHO_NEAR above it raises it a third of the way (one further above is a voice coming in, not its echo), and it eases down slowly
+OWN_LOUD, NO_ECHO = -5.0, 10  # a moment it plays its voice this loud (log power of its output) and its ear hears none of it, ten times before any is heard: its echo is below the room (headphones), and any voice heard while it speaks is another's
 VOICED = 0.15    # the least share of an utterance's loud frames that repeat at a voice's pitch (speech reads 0.19 to 1, also in a noisy room; a cough, a breath, typing, a fan read 0)
 
 
@@ -282,6 +284,8 @@ class Host:
         self.spotted: list = []  # the words known in the utterance being heard, each as it was spoken
         self.echo = None         # in "listen": the sound just heard, to say back (slot, moment)
         self.calling = False     # a word it is saying by itself (it stops for a voice that comes in, as a bird stops calling)
+        self.echo_heard = 0      # the moments its ear heard its own voice come back
+        self.echo_silent = 0     # the moments it played its voice loud and its ear heard none of it
         self.echo_gain = None    # how loud its own voice comes back to the ear against the voice it plays (log power), learned while it speaks
         self.foreign_run = 0     # frames running of a voice over its own that its own voice does not explain
         self.stopped = False     # it stopped its word this moment (the page stops the sound)
@@ -833,9 +837,21 @@ class Host:
         voice, call = None, None
         if self.saying <= 1:
             self.calling = False
+        top = float(np.max(np.log(np.exp(frames.astype(np.float64)).sum(axis=1))))  # the ear's loudest frame this moment
         if self.saying > 0 and self.own_log is not None and self.foreign_run == 0 and not self.stopped and self.t - self.own_since >= 2:
-            gap = float(np.max(np.log(np.exp(frames.astype(np.float64)).sum(axis=1)))) - self.own_log  # its own voice as the ear gets it at its loudest this moment, against the loudest it plays
-            self.echo_gain = gap if self.echo_gain is None else self.echo_gain + ECHO_RATE * (gap - self.echo_gain)
+            gap = top - self.own_log  # its own voice as the ear gets it at its loudest this moment, against the loudest it played
+            if top > self.floor + ONSET:  # the ear heard its voice come back (a moment that holds none of it, as its word's end, teaches nothing)
+                self.echo_heard += 1
+                if self.echo_gain is None or (gap > self.echo_gain and self.echo_heard <= ECHO_FIRST and self.echo_silent < NO_ECHO):
+                    self.echo_gain = gap
+                elif self.echo_gain < gap <= self.echo_gain + ECHO_NEAR:
+                    self.echo_gain += ECHO_UP * (gap - self.echo_gain)
+                elif gap <= self.echo_gain:
+                    self.echo_gain += ECHO_DOWN * (gap - self.echo_gain)
+            elif self.echo_heard == 0 and self.own_log > OWN_LOUD:  # its voice played loud and its ear heard none of it: its echo lies below the room's onset
+                self.echo_silent += 1
+                below = self.floor + ONSET - self.own_log
+                self.echo_gain = below if self.echo_gain is None else min(self.echo_gain, below)
         free = meta.get("voice_ok") and self.saying <= 0 and not self.sound
         if self.echo and (self.mode != "listen" or self.t - self.echo[1] > 30):
             self.echo = None
