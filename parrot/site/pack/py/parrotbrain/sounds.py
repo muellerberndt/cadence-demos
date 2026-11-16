@@ -38,9 +38,9 @@ own timeline (`marks`); the host lines the sound coming in up with such records 
 word is known as it is spoken (`host.Follower`).
 
 A word told again must get cleaner with every hearing: the new take is first lined up with the
-record frame by frame (the best path between them in time), then the record moves to the running mean
-of its hearings. The library's revision takes the newest take whole; its `blend` option (the memory lane,
-#336) does the running mean. Until it lands, `_blend_running_mean` below does it here, in one place.
+record frame by frame (the best path between them in time), then the library's record strength
+(`LongTermMemory(blend=True)`, cadence 0.100.0, #336) moves the record toward it by one over one plus its
+depth, so a record told n times holds the mean of its n takes.
 
 **Pronunciation by practice** (the songbird's way: an auditory template and practice by hearing
 itself). Each word the parrot can say has a motor program of its own, which starts immature: the
@@ -51,6 +51,7 @@ the parrot says is always its own memory of the word, more or less precisely sai
 """
 from __future__ import annotations
 
+import base64
 from typing import Any
 
 import numpy as np
@@ -63,10 +64,13 @@ SILENT = float(np.log(1e-6))
 PCM_RATE = 8000                  # the heard audio itself, kept at 8 kHz (a telephone's clarity)
 PCM_MAX = VALUE_FRAMES * 80      # 3 s of it
 FRAMES_WIDTH = VALUE_FRAMES * 40 + 1
+FRAME_LOW, FRAME_STEP = -14.0, 0.1  # a saved frame's bands as bytes: from -14 nats (the ear's floor) in steps of 0.1
 BANDS = 40
 KINDS = ["apple", "ball", "cup", "banana", "block", "duck", "lemon", "pear"]  # the words of a brain that knows only things
 LINKED = 0.3  # a record whose strongest link reaches this stands for that meaning
-SEPARATE, WINNERS = 2048, 40  # the pattern separator of the links' keys: its code's width, and the units a key keeps
+DOUBTED = 0.05  # a record's own link this far below zero speaks against a meaning the records near it agree on
+SEPARATE, WINNERS = 4096, 40  # the pattern separator of the links' keys: its code's width, and the units a key keeps (wide enough that some 1,700 records each hold their own links)
+FAN_IN = 32  # each of its code's units reads 32 of the key's (the library's sparse projection: a record's cue costs a twentieth of a dense one's, and reads the same)
 CLEAR = 0.15  # and stands this far above its next strongest (two meanings read alike: neither is known)
 TEMPERATURE = 0.15  # a guess is drawn by exp(link / TEMPERATURE): flat while the links are flat
 PISTACHIO = 3.0  # a pistachio's weight as a lesson of the links (a fifth of the way in the consolidated matrix)
@@ -93,29 +97,21 @@ def to_pcm8k(pcm: np.ndarray | None) -> np.ndarray:
     return x[:PCM_MAX]
 
 
-def pack(frames: np.ndarray, pcm8k: np.ndarray | None = None) -> np.ndarray:
+def pack(frames: np.ndarray) -> np.ndarray:
     """A record's value: the frames at their own timing (squeezed only past 3 s), padded with
-    silence, and their count; then the heard audio itself (8 kHz) and its length."""
+    silence, and their count. (The heard audio is kept beside the records, `SoundMemory.audio`: only
+    the sounds the parrot can say need it, and most records are sounds heard once.)"""
     f = frames.astype(np.float64)
     if len(f) > VALUE_FRAMES:
         f = resample(f, VALUE_FRAMES)
     out = np.full((VALUE_FRAMES, BANDS), SILENT)
     out[: len(f)] = f
-    a = np.zeros(PCM_MAX)
-    n = 0 if pcm8k is None else min(len(pcm8k), PCM_MAX)
-    if n:
-        a[:n] = pcm8k[:n]
-    return np.concatenate([out.ravel(), [len(f)], a, [n]])
+    return np.concatenate([out.ravel(), [len(f)]])
 
 
 def unpack(v: np.ndarray) -> np.ndarray:
     n = int(min(VALUE_FRAMES, max(2, round(float(v[FRAMES_WIDTH - 1])))))
-    return v[: FRAMES_WIDTH - 1].reshape(VALUE_FRAMES, BANDS)[:n].copy()
-
-
-def unpack_pcm(v: np.ndarray) -> np.ndarray:
-    n = int(round(float(v[-1])))
-    return v[FRAMES_WIDTH: FRAMES_WIDTH + n].copy()
+    return v[: FRAMES_WIDTH - 1].reshape(VALUE_FRAMES, BANDS)[:n].astype(np.float64)
 
 
 def blur(f: np.ndarray, passes: int) -> np.ndarray:
@@ -187,6 +183,7 @@ YOUNG, SAME_YOUNG, APART = 6, 0.42, 1.15  # a record heard fewer than YOUNG time
 LIKE_WITHIN = 0.55  # a sound within this of its nearest record can be taken for what the records near it stand for
 LIKE_SOFT = 0.08  # among the nearest records, one this share farther than the nearest counts a third as much
 AGREED, AGREED_CLEAR = 0.6, 0.35  # the records near a sound agree on a meaning: its share of their links, and its lead over the next
+VOICES = 2  # and at least this many of them stand for it (one record alike in sound is no agreement: a visitor's "what colour" lay within reach of their own "white")
 LENGTHS = 1.7  # a take is lined up only with records no more than this many times longer or shorter
 TERMS = 13  # the smooth shape of a frame's bands: its first cosine terms (the resonances of the mouth, without the voice's pitch lines)
 _COSINES = np.cos(np.pi / BANDS * (np.arange(BANDS)[None, :] + 0.5) * np.arange(1, TERMS + 1)[:, None])
@@ -205,6 +202,15 @@ def shape(frames: np.ndarray) -> np.ndarray:
     f = np.maximum(f, f.max(axis=1, keepdims=True) - RANGE)
     c = f @ _COSINES.T
     return c - c.mean(axis=0, keepdims=True)
+
+
+FIRST_PASS, BRIEF = 96, 16  # of many records, the 96 nearest by their shapes squeezed to 16 frames are lined up in time
+
+
+def brief(sh: np.ndarray) -> np.ndarray:
+    """An utterance's shape squeezed to BRIEF frames, at unit loudness: the first pass of the search."""
+    b = resample(sh, BRIEF)
+    return (b / max(float(np.sqrt((b ** 2).mean())), 1e-9)).ravel()
 
 
 def distance(a: np.ndarray, b: np.ndarray) -> float:
@@ -277,7 +283,8 @@ def code(frames: np.ndarray) -> np.ndarray:
     if len(on) >= 2:
         f = f[on[0]: on[-1] + 1]
     f = np.maximum(f, f.max(axis=1, keepdims=True) - RANGE)
-    f = np.stack([np.convolve(np.pad(row, 2, mode="edge"), SMOOTH, "valid") for row in f])
+    g = np.pad(f, ((0, 0), (2, 2)), mode="edge")
+    f = sum(SMOOTH[k] * g[:, k: k + f.shape[1]] for k in range(len(SMOOTH)))
     r = resample(f, CODE_FRAMES)
     r = 0.25 * np.roll(r, 1, axis=0) + 0.5 * r + 0.25 * np.roll(r, -1, axis=0)
     r = r - r.mean()
@@ -292,9 +299,10 @@ class SoundMemory:
         self.words = list(words or KINDS)
         # a write is the record "told again" only with that record's own key: the parrot decides that a
         # take is a word it knows by lining it up against the words it has (`same_word`)
-        self.records = LongTermMemory(width=CODE_FRAMES * BANDS, value_width=FRAMES_WIDTH + PCM_MAX + 1, capacity=capacity,
+        self.records = LongTermMemory(width=CODE_FRAMES * BANDS, value_width=FRAMES_WIDTH, capacity=capacity,
                                       cosine=True, revise=0.9999, temperature=0.08, candidates=0,
-                                      hold=36000.0, idle=40.0, depth=2.0)
+                                      hold=36000.0, idle=40.0, depth=2.0, dtype=np.float32, blend=True)
+        self.audio: dict[int, np.ndarray] = {}  # each record's heard audio (8 kHz), for the records that keep it
         # (a lesson's fresh part keeps 0.97 through each later lesson: a meaning one pistachio taught lasts through
         # some thirty more lessons, and repetition consolidates it)
         # The links' key is the record's own address (`address`: a fixed random direction of its slot), through
@@ -304,7 +312,7 @@ class SoundMemory:
         # "red". What sounds alike is found by lining sounds up (`like`).
         self.synapses = SynapticMemory(pre=np.arange(CODE_FRAMES * BANDS), post=np.arange(len(self.words)), rule="delta",
                                        decay=0.97, consolidation=0.05,
-                                       separator=PatternSeparator(inputs=CODE_FRAMES * BANDS, expansion=SEPARATE, winners=WINNERS, seed=31))
+                                       separator=PatternSeparator(inputs=CODE_FRAMES * BANDS, expansion=SEPARATE, winners=WINNERS, seed=31, fan_in=FAN_IN))
         self.synapses.reset(1)
         self.last_read: dict[str, Any] | None = None
         self.last_write: dict[str, Any] | None = None
@@ -315,9 +323,11 @@ class SoundMemory:
         self.marks: dict[int, list] = {}  # where each word of a record's meaning begins on its timeline: [[frame, word], ...]
         self.born = np.zeros(capacity, int)  # how many records each slot has held (a slot's new record is another sound)
         self._shapes: dict[int, tuple] = {}  # each record's shape, kept until the record changes
+        self._briefs: dict[int, np.ndarray] = {}  # each record's shape squeezed to BRIEF frames (the first pass of `distances`)
         self.near: list = []  # the records nearest the sound last heard, lined up in time: [(slot, distance), ...]
-        self._cues: dict[int, tuple] = {}  # each record's cue for the links (its key through the separator), kept until the record changes
+        self._cues: dict[int, tuple] = {}  # each record's cue for the links (its key through the separator: its winners and their values), kept until the record changes
         self._reads: np.ndarray | None = None  # every record's links as read, kept until a record or a link changes
+        self._stale: set = set()  # the records heard since the links were read, the links unchanged
         self._meanings: list | None = None
         self._view: list | None = None  # each record's picture and links as the page draws them
         self.rng = np.random.default_rng(31)
@@ -330,72 +340,49 @@ class SoundMemory:
         read = self.records.read(key)
         self.last_read = {"slots": read.slots.tolist(), "weights": np.round(read.weights[0], 4).tolist(),
                           "cue": self.thumb(key)} if len(read.slots) else {"slots": [], "weights": [], "cue": self.thumb(key)}
-        cos, before = None, {}
+        cos = None
         if self.records.count:
             k = self.records.keys[: self.records.count]
-            sims = k @ key / np.maximum(np.linalg.norm(k, axis=1), 1e-12)
-            cos = float(np.max(sims))
-            # the record this word would revise, as it stands before the write replaces it
-            before = {int(np.argmax(sims)): self.records.values[int(np.argmax(sims))].copy()}
+            cos = float(np.max(k @ key / np.maximum(np.linalg.norm(k, axis=1), 1e-12)))
         take = to_pcm8k(pcm)
-        value = pack(frames, take)
         known, self.last_distance = self.same_word(frames, key)
-        slot, revised = self.records.write(self.records.keys[known].copy() if known is not None else key, value)
+        before_audio = self.audio.get(int(known)) if known is not None else None
+        if known is not None:
+            # a take told again: laid on its record's timeline, and the library's record strength
+            # (`blend`, cadence#336) moves the record toward it, so the record holds the mean of its takes
+            slot, revised = self.records.write(key, pack(align(frames, self.template(known))), recognised=int(known))
+        else:
+            slot, revised = self.records.write(key, pack(frames), recognised=-1)
         if not revised:
             self.heard[slot] = 0
             self.born[slot] += 1
             self.programs.pop(slot, None)
             self.marks.pop(slot, None)
             self.typical[slot] = -1.0
-        self._blend_running_mean(slot, frames, revised, before.get(int(slot)))
-        self._mix_audio(slot, take, revised, before.get(int(slot)))
-        self._changed()
+        self.heard[slot] += 1
+        self.audio[int(slot)] = take  # (a sound told again: the take, mixed below with what it had)
+        self._mix_audio(slot, take, revised, before_audio)
+        self._record_changed(slot)
         self.last_write = {"slot": int(slot), "revised": bool(revised), "best_cosine": None if cos is None else round(cos, 3), "distance": self.last_distance,
                            "heard": int(self.heard[slot])}
         return {"read": self.last_read, "write": self.last_write}
 
-    def _blend_running_mean(self, slot: int, frames: np.ndarray, revised: bool, previous: np.ndarray | None) -> None:
-        """STAND-IN for the library's `blend` option (#336): the record told again moves to the running
-        mean of its hearings, so the stored form gets cleaner with every repetition. The library's
-        write took the newest take whole; this replaces the slot's value and key with the mean."""
-        r = self.records
-        n = int(self.heard[slot]) + 1
-        self.heard[slot] = n
-        if not revised or n == 1 or previous is None:
-            return
-        old = unpack(previous)  # the mean so far (the write put the newest take in its place)
-        new = align(frames, old)
-        mean = old + (new - old) / n
-        r.values[slot] = pack(mean, unpack_pcm(r.values[slot]))
-        key = code(self.frames_of_value(r.values[slot]))
-        r.keys[slot] = key
-        if r.cosine:
-            r.norms[slot] = float(np.linalg.norm(key))
-
     def _mix_audio(self, slot: int, take: np.ndarray, revised: bool, previous: np.ndarray | None) -> None:
         """The record's sound: a first hearing keeps its take; a word told again keeps a mix of the
-        sound it had and the new take (`blend_audio`), so it never repeats one recording exactly."""
+        sound it had and the new take (`blend_audio`), so it never repeats one recording exactly.
+        `previous`: the audio the record held before."""
         if not revised or previous is None:
             return
-        kept = unpack_pcm(previous)
-        mixed = blend_audio(kept, take, int(self.heard[slot])) if len(take) else kept
-        self.records.values[slot] = pack(unpack(self.records.values[slot]), mixed)
-
-    def _keep_typical_take(self, slot: int, frames: np.ndarray, take: np.ndarray, previous: np.ndarray | None) -> None:
-        """The audio the record keeps: of all takes heard, the one most like the record (its code
-        nearest the record's key), so the word it says back is a real, clear take of it."""
-        r = self.records
-        score = float(code(frames) @ r.keys[slot]) / max(float(np.linalg.norm(r.keys[slot])), 1e-12)
-        if len(take) and score >= self.typical[slot]:
-            self.typical[slot] = score
-            return  # the write holds this take's audio
-        if previous is not None and len(unpack_pcm(previous)):
-            r.values[slot] = pack(unpack(r.values[slot]), unpack_pcm(previous))  # the earlier, more typical take stays
+        kept = previous
+        mixed = blend_audio(kept, take, int(self.heard[slot])) if len(take) and len(kept) else (kept if len(kept) else take)
+        self.audio[int(slot)] = np.asarray(mixed, np.float64)[:PCM_MAX]
 
     def same_word(self, frames: np.ndarray, key: np.ndarray) -> tuple[int | None, float | None]:
         """The utterance the parrot knows that this take is, if any: of its records (those of a like length),
-        the one nearest once lined up in time, if under SAME_WORD. The nearest few are kept as what the take
-        sounds like (`near`)."""
+        the one nearest once lined up in time, if under SAME_WORD; or a record in the learning (heard fewer than
+        YOUNG times) under SAME_YOUNG, where every record that stands for another meaning lies APART times
+        farther (a visitor's "what is this" is not told again as their own "what colour" record). The nearest
+        few are kept as what the take sounds like (`near`)."""
         self.near = []
         if not self.records.count:
             return None, None
@@ -407,14 +394,17 @@ class SoundMemory:
         best, bd = self.near[0]
         if bd < SAME_WORD:
             return best, bd
-        nxt = self.near[1][1] if len(self.near) > 1 else np.inf
+        mine = self.word_of(best)[0]
+        other = [d for s_, d in self.near[1:] if (w := self.word_of(s_)[0]) is not None and w != mine]  # the nearest record that stands for another meaning
+        nxt = other[0] if other else np.inf
         if self.heard[best] < YOUNG and bd < SAME_YOUNG and nxt >= APART * bd:
             return best, bd
         return None, bd
 
     def distances(self, mine: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-        """How far a take's shape is from every record of a like length, each lined up in time (the records
-        warped side by side, a row of the table a frame of the take): the records' slots and distances."""
+        """How far a take's shape is from the records of a like length, each lined up in time (the records
+        warped side by side, a row of the table a frame of the take): the records' slots and distances. Of
+        many records, the FIRST_PASS nearest by their shapes squeezed to BRIEF frames are lined up."""
         r, n = self.records, len(mine)
         lens = {}
         for s in range(r.count):
@@ -422,10 +412,15 @@ class SoundMemory:
             if kept is None or kept[0] != (int(self.born[s]), int(self.heard[s])):
                 kept = ((int(self.born[s]), int(self.heard[s])), shape(self.template(s)))
                 self._shapes[s] = kept
+                self._briefs[s] = brief(kept[1])
             if n <= LENGTHS * len(kept[1]) and len(kept[1]) <= LENGTHS * n:
                 lens[s] = len(kept[1])
         if not lens:
             return np.zeros(0, int), np.zeros(0)
+        if len(lens) > FIRST_PASS:  # a first pass: the records nearest by their brief shapes
+            cand = np.array(sorted(lens))
+            far = np.sqrt(((np.stack([self._briefs[int(s)] for s in cand]) - brief(mine)[None, :]) ** 2).mean(axis=1))
+            lens = {int(s): lens[int(s)] for s in cand[np.argsort(far)[:FIRST_PASS]]}
         slots = np.array(sorted(lens)); ln = np.array([lens[int(s)] for s in slots]); m = int(ln.max())
         T = np.zeros((len(slots), m, mine.shape[1]))
         for i, s in enumerate(slots):
@@ -445,20 +440,42 @@ class SoundMemory:
         n = self.records.count
         if not n:
             return np.zeros((0, len(self.words)))
-        if self._reads is None or len(self._reads) != n:  # kept until a record or a link changes (`_changed`)
-            cues = []
-            for s in range(n):
-                kept = self._cues.get(s)
-                if kept is None or kept[0] != (int(self.born[s]), int(self.heard[s])):
-                    kept = ((int(self.born[s]), int(self.heard[s])), self.cue(self.address(s))[0])
-                    self._cues[s] = kept
-                cues.append(kept[1])
-            self._reads = np.stack(cues) @ self.synapses.strength[0]
+        if self._reads is None or len(self._reads) != n or self._stale:  # kept until a record or a link changes (`_changed`)
+            stale = [s for s in range(n) if (kept := self._cues.get(s)) is None or kept[0] != (int(self.born[s]), int(self.heard[s]))]
+            for at in range(0, len(stale), 64):  # (the cues of the records that have none, a block at a time)
+                block = stale[at: at + 64]
+                for s, c in zip(block, self.cue(np.stack([self.address(s) for s in block]))):
+                    top = np.sort(np.argsort(c)[-WINNERS:])  # a cue is its separator's winners: kept as those units and their values
+                    self._cues[s] = ((int(self.born[s]), int(self.heard[s])), top, c[top])
+            if self._reads is None or len(self._reads) > n:
+                self._reads = self.through(self.synapses.strength[0], range(n))
+            else:  # a record heard, the links as they were: its row alone (and a new record's)
+                rows = sorted({s for s in self._stale if s < n} | set(range(len(self._reads), n)))
+                self._reads = np.concatenate([self._reads, np.zeros((n - len(self._reads), len(self.words)))])
+                self._reads[rows] = self.through(self.synapses.strength[0], rows)
+            self._stale = set()
         return self._reads
 
+    def through(self, weights: np.ndarray, slots) -> np.ndarray:
+        """The records' cues (their winners and values) through a matrix of the links: one row a record."""
+        slots = list(slots)
+        if not slots:
+            return np.zeros((0, weights.shape[1]))
+        idx = np.stack([self._cues[s][1] for s in slots]); val = np.stack([self._cues[s][2] for s in slots])
+        out = np.empty((len(slots), weights.shape[1]))
+        for at in range(0, len(slots), 256):
+            out[at: at + 256] = np.einsum("nk,nkm->nm", val[at: at + 256], weights[idx[at: at + 256]])
+        return out
+
     def _changed(self) -> None:
-        """A record or a link changed: the links are read anew at the next read."""
+        """A link changed: every record's links are read anew at the next read."""
         self._reads = self._meanings = self._view = None
+        self._stale = set()
+
+    def _record_changed(self, slot: int) -> None:
+        """A record was heard (written or told again), the links as they were: its row is read anew."""
+        self._meanings = self._view = None
+        self._stale.add(int(slot))
 
     def meanings(self) -> list:
         """What each record stands for, by its own links (kept with the reads): (meaning or None, link)."""
@@ -504,11 +521,12 @@ class SoundMemory:
             return None
         d0 = max(min(d for _, d in near), 1e-6)
         w = np.array([np.exp(-(d - d0) / (LIKE_SOFT * d0)) for _, d in near])
-        return (w[:, None] * np.clip(reads[[s for s, _ in near]], 0.0, 1.0)).sum(axis=0) / w.sum()
+        return (w[:, None] * np.clip(reads[[s for s, _ in near]], -1.0, 1.0)).sum(axis=0) / w.sum()  # (a doubted link, below zero, speaks against its meaning)
 
     def taken_for(self, own: np.ndarray, near: list | None, reads: np.ndarray, but: int = -1) -> tuple[str | None, float]:
         """What a sound is taken for: the meaning its own links read (strong, and clear of the next); without
-        one, the meaning the records nearest it agree on, where it lies within LIKE_WITHIN of the nearest."""
+        one, the meaning the records nearest it agree on (VOICES of them at least), where it lies within
+        LIKE_WITHIN of the nearest."""
         j = int(np.argmax(own))
         rest = float(np.max(np.delete(own, j))) if len(own) > 1 else 0.0
         if own[j] >= LINKED and own[j] - rest >= CLEAR:
@@ -516,7 +534,8 @@ class SoundMemory:
         like = self.like(near, reads, but)
         if like is not None and min(d for s, d in near if s != but) < LIKE_WITHIN:
             k = int(np.argmax(like))
-            if like[k] >= AGREED and like[k] - float(np.max(np.delete(like, k))) >= AGREED_CLEAR:
+            voices = sum(1 for s, d in near if s != but and 0 <= s < len(reads) and d < LIKE_WITHIN and reads[s][k] >= LINKED)
+            if like[k] >= AGREED and like[k] - float(np.max(np.delete(like, k))) >= AGREED_CLEAR and voices >= VOICES and own[k] > -DOUBTED:
                 return self.words[k], round(float(like[k]), 3)
         return None, round(float(own[j]), 3)
 
@@ -552,12 +571,21 @@ class SoundMemory:
     def guess_sound(self, word: str, but: int = -1) -> tuple[int | None, float]:
         """A sound to say for a word that recalls none: one of the sounds it can say (`but` the sound it is
         answering), drawn by each sound's link to the word less its strongest link to anything else (a sound
-        that stands for another meaning is an unlikely name for this one)."""
+        that stands for another meaning, or lies close to a record that does, is an unlikely name for this one)."""
         slots = [s for s in self.sayable() if s != but]
         if word not in self.words or not slots:
             return None, 0.0
         r, j = self.reads(), self.words.index(word)
-        z = np.array([(r[s][j] - max(0.0, float(np.max(np.delete(r[s], j))))) / TEMPERATURE for s in slots])
+        z = []
+        for s in slots:
+            other = max(0.0, float(np.max(np.delete(r[s], j))))
+            if other < LINKED:  # a sound with no meaning of its own: what the record it lies nearest stands for (another take of a word it knows is that word)
+                at, d = self.distances(shape(self.template(s)))
+                near = sorted(((int(a), float(x)) for a, x in zip(at, d) if int(a) != s), key=lambda n: n[1])[:1]
+                if near and near[0][1] < SAME_YOUNG:
+                    other = max(other, float(np.max(np.delete(np.clip(r[near[0][0]], 0.0, 1.0), j))))
+            z.append((r[s][j] - other) / TEMPERATURE)
+        z = np.array(z)
         p = np.exp(z - z.max()); p /= p.sum()
         k = int(self.rng.choice(len(slots), p=p))
         return int(slots[k]), round(float(p[k]), 3)
@@ -577,10 +605,16 @@ class SoundMemory:
         if word in self.words and 0 <= slot < self.records.count:
             self._toward(slot, word, 1.0, amount)
 
-    def doubt(self, slot: int, word: str | None, by: float = 0.2) -> None:
-        """A guess no pistachio followed: its link a little lower for a while, so the next guess looks elsewhere."""
+    def doubt(self, slot: int, word: str | None, by: float = 0.2, near: list | None = None) -> None:
+        """A meaning no pistachio followed (a guess, or what the sounds like it stand for): the record's own link
+        a little lower for a while, so the next guess looks elsewhere; where the meaning came from the records
+        near it (`near`: those it was nearest when heard), the record's own link falls `by` below what they
+        say, so that their vote stops naming it for this sound."""
         if word in self.words and 0 <= slot < self.records.count:
-            self._toward(slot, word, float(self.reads()[slot][self.words.index(word)]) - by)
+            r, j = self.reads(), self.words.index(word)
+            like = self.like(near, r, but=slot) if near else None
+            said = 0.0 if like is None else max(0.0, float(like[j]))
+            self._toward(slot, word, max(-1.0, min(float(r[slot][j]), -said) - by))
 
     def fade(self, slot: int, word: str | None, keep: float = 0.6) -> None:
         """A link used with no pistachio after it: its fresh part shrinks to `keep` of itself (the link moves
@@ -588,9 +622,8 @@ class SoundMemory:
         if word not in self.words or not 0 <= slot < self.records.count:
             return
         self.reads()
-        key = self._cues[slot][1]
         j = self.words.index(word)
-        slow, now = float(key @ self.synapses.consolidated[:, j]), float(key @ self.synapses.strength[0][:, j])
+        slow, now = float(self.through(self.synapses.consolidated[:, j: j + 1], [slot])[0, 0]), float(self.through(self.synapses.strength[0][:, j: j + 1], [slot])[0, 0])
         if now > slow:
             self._toward(slot, word, slow + keep * (now - slow))
 
@@ -621,7 +654,7 @@ class SoundMemory:
 
     def pcm_of(self, slot: int) -> np.ndarray:
         """The word's audio as the record keeps it (8 kHz): what the parrot says back."""
-        return unpack_pcm(self.records.values[slot]).astype(np.float32)
+        return np.asarray(self.audio.get(int(slot), np.zeros(0)), np.float32)
 
     def template(self, slot: int) -> np.ndarray:
         """The word as remembered: the record's frames at their own timing."""
@@ -685,9 +718,8 @@ class SoundMemory:
     def links(self, slot: int) -> tuple[list, list]:
         """The synapses' read of a record's code: the consolidated part and the fading residual."""
         self.reads()
-        unit = self._cues[slot][1]
-        slow = unit @ self.synapses.consolidated
-        fast = unit @ (self.synapses.strength[0] - self.synapses.consolidated)
+        slow = self.through(self.synapses.consolidated, [slot])[0]
+        fast = self.through(self.synapses.strength[0], [slot])[0] - slow
         return np.round(slow, 4).tolist(), np.round(fast, 4).tolist()
 
     def view(self) -> dict[str, Any]:
@@ -696,8 +728,8 @@ class SoundMemory:
         r = self.records
         reads = self.reads()
         if self._view is None or len(self._view) != r.count:
-            slow = np.stack([self._cues[s][1] for s in range(r.count)]) @ self.synapses.consolidated if r.count else np.zeros((0, len(self.words)))
-            self._view = [{"slot": s, "thumb": self.thumb(r.keys[s]), "frames": int(round(r.values[s][-1])),
+            slow = self.through(self.synapses.consolidated, range(r.count))
+            self._view = [{"slot": s, "thumb": self.thumb(r.keys[s]), "frames": len(self.audio.get(s, ())),
                            "slow": np.round(slow[s], 4).tolist(), "fast": np.round(reads[s] - slow[s], 4).tolist()} for s in range(r.count)]
         rows = []
         for s in range(r.count):
@@ -707,26 +739,57 @@ class SoundMemory:
         return {"records": rows, "things": self.words, "level": self.LEVEL, "revise": r.revise,
                 "read": self.last_read, "write": self.last_write}
 
-    def save(self) -> dict[str, Any]:
+    def save(self, compact: bool = False) -> dict[str, Any]:
+        """Every record with its frames, audio, depth, hearings and marks, and the links' consolidated part.
+        `compact`: the frames as bytes (FRAME_STEP nats a step) and the audio as 16-bit samples, in base64
+        (format 3, the starting memory's file); else as lists of numbers (format 2)."""
         r = self.records
-        return {"format": 2,
-                "records": [{"frames": np.round(unpack(r.values[s]), 3).tolist(), "pcm": np.round(unpack_pcm(r.values[s]), 4).tolist(),
-                             "deep": float(r.deep[s]), "heard": int(self.heard[s]), "typical": float(self.typical[s]),
-                             "marks": self.marks.get(s),
-                             "program": None if s not in self.programs else np.round(self.programs[s]["P"], 3).tolist(),
-                             "matches": [] if s not in self.programs else [round(m, 3) for m in self.programs[s]["matches"][-20:]]} for s in range(r.count)],
-                "words": self.words, "consolidated": np.round(self.synapses.consolidated, 5).tolist()}
+        rows = []
+        for s in range(r.count):
+            f, a = unpack(r.values[s]), np.asarray(self.audio.get(s, np.zeros(0)), np.float64)
+            row = {"deep": float(r.deep[s]), "heard": int(self.heard[s]), "typical": float(self.typical[s]), "marks": self.marks.get(s),
+                   "program": None if s not in self.programs else np.round(self.programs[s]["P"], 3).tolist(),
+                   "matches": [] if s not in self.programs else [round(m, 3) for m in self.programs[s]["matches"][-20:]]}
+            if compact:
+                row["f8"] = base64.b64encode(np.clip(np.round((f - FRAME_LOW) / FRAME_STEP), 0, 255).astype(np.uint8).tobytes()).decode()
+                row["a16"] = base64.b64encode(np.clip(np.round(a * 32767), -32767, 32767).astype("<i2").tobytes()).decode() if len(a) else ""
+            else:
+                row["frames"], row["pcm"] = np.round(f, 3).tolist(), np.round(a, 4).tolist()
+            rows.append(row)
+        return {"format": 3 if compact else 2, "records": rows, "words": self.words, "consolidated": np.round(self.synapses.consolidated, 5).tolist()}
+
+    @staticmethod
+    def _frames_audio(rec: dict) -> tuple[np.ndarray | None, np.ndarray]:
+        """A saved record's frames and audio, in either format."""
+        if "f8" in rec:
+            f = np.frombuffer(base64.b64decode(rec["f8"]), np.uint8).astype(np.float64) * FRAME_STEP + FRAME_LOW
+            a = np.frombuffer(base64.b64decode(rec["a16"]), "<i2").astype(np.float64) / 32767 if rec.get("a16") else np.zeros(0)
+            return f.reshape(-1, BANDS), a
+        if "frames" in rec:
+            return np.asarray(rec["frames"], np.float64).reshape(-1, BANDS), np.asarray(rec.get("pcm") or [], np.float64)
+        return None, np.zeros(0)  # kept by an older page in another format
 
     def load(self, saved: dict[str, Any]) -> None:
+        """A saved memory's records written (into an empty memory in one pass, the library's `fill`), their
+        links' consolidated part, and each record's shape and cue made ready before the first sound."""
+        got = []
         for rec in saved.get("records", []):
-            if "frames" not in rec:
-                continue  # kept by an older page in another format
-            frames = np.asarray(rec["frames"], np.float64).reshape(-1, BANDS)
-            if not 2 <= len(frames) <= VALUE_FRAMES:
+            frames, audio = self._frames_audio(rec)
+            if frames is None or not 2 <= len(frames) <= VALUE_FRAMES:
                 continue
-            v = pack(frames, np.asarray(rec.get("pcm") or [], np.float64))
-            slot, _ = self.records.write(code(frames), v)
+            got.append((rec, frames, audio))
+        if not got:
+            return
+        keys = np.stack([code(f) for _, f, _ in got])
+        values = np.stack([pack(f) for _, f, _ in got])
+        if self.records.count == 0 and len(got) <= self.records.capacity:
+            slots = [int(x) for x in self.records.fill(keys, values)]
+        else:
+            slots = [self.records.write(k, v)[0] for k, v in zip(keys, values)]
+        for slot, (rec, frames, audio) in zip(slots, got):
             self.born[slot] += 1
+            if len(audio):
+                self.audio[slot] = audio[:PCM_MAX]
             if rec.get("marks"):
                 self.marks[slot] = [[int(f), str(w)] for f, w in rec["marks"]]
             self.records.deep[slot] = float(rec.get("deep", 1.0))
@@ -740,6 +803,10 @@ class SoundMemory:
             self.synapses.consolidated = np.asarray(c, np.float64)
             self.synapses.reset(1)
         self._changed()
+        for slot in range(self.records.count):  # each record's shape, ready before the first sound is heard
+            self._shapes[slot] = ((int(self.born[slot]), int(self.heard[slot])), shape(self.template(slot)))
+            self._briefs[slot] = brief(self._shapes[slot][1])
+        self.reads()
 
     @staticmethod
     def frames_of_value(v: np.ndarray) -> np.ndarray:

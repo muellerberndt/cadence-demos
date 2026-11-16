@@ -19,9 +19,10 @@ natural sentence ("What colour is this?"); only takes Whisper (small.en) reads a
    is then heard RUNS times through a copy of the memory (the same hearing path); the meaning its record
    links to and the words the follower knew as they were spoken are logged.
 
-Other voices (--more DIR ...): the parrot has also heard other people ask the same questions and name the
-things, so a visitor's voice finds records near it. Each of their takes is heard once, alone (a record heard
-once: kept, linked to its meaning, too shallow to be said back; its audio is not shipped).
+Other voices (--more DIR ...): the parrot has also heard other people, men and women of several ages and
+accents, ask the same questions and say the answer words, so a visitor's voice finds records near it. One take
+of each utterance a voice is heard once, alone (a record heard once: kept, linked to its meaning, too shallow to
+be said back; its audio is not shipped).
 
     python tools/build_words.py WHEEL_DIR WORDS_DIR PHRASES_DIR PHRASES.json OUT_DIR [PACK_PY] [--more DIR ...]
 
@@ -72,7 +73,7 @@ def takes_of(d, wanted):
     out = {}
     for name, m in meta.items():
         key = m.get("key") or name.rsplit("_", 1)[0]
-        if key not in wanted:
+        if key not in wanted or name not in heard:
             continue
         got, text = norm(heard.get(name, {}).get("heard", "")), norm(m["text"])
         if got == text or (len(text) == 1 and len(got) == 1 and got[0] in SAME.get(text[0], ())):
@@ -170,12 +171,11 @@ for kind, table, rounds in (("word", words, 3), ("phrase", phrases, 2)):
             records.append(rec); origin.append({"kind": kind, "key": key, "meaning": meaning, "deep": round(rec["deep"], 2), "frames": len(rec["frames"]), "marks": rec["marks"]})
         print(kind, key, len(files), "takes ->", len(saved), "records", [round(r["deep"], 2) for r in saved], flush=True)
 
-# the other voices: each take heard once, alone
-THINGS = sorted(k for k in BRAIN["kinds"] if k in VOCAB)
+# the other voices: one take of each utterance heard once, alone
 report["other_voices"] = {}
 for d in MORE:
     made = 0
-    for kind, table, most in (("word", takes_of(d, set(THINGS)), 1), ("phrase", takes_of(d, set(PHRASES)), 2)):
+    for kind, table, most in (("word", takes_of(d, set(VOCAB)), 1), ("phrase", takes_of(d, set(PHRASES)), 1)):
         for key, files in table.items():
             for f, said in files[:most]:
                 h, t = host(), [0]
@@ -195,10 +195,9 @@ for d in MORE:
 
 # 2. one memory, each record linked to its meaning
 h = host()
-h.handle({"command": "remember", "saved": {"format": 2, "records": records}})
-keys = h.mem.records.keys[: h.mem.records.count]
-slot_of = [int(np.argmax(keys @ code(np.asarray(r["frames"], np.float64)))) for r in records]  # each record's slot, by its key
-assert len(set(slot_of)) == len(records) == h.mem.records.count, (len(set(slot_of)), len(records), h.mem.records.count)
+h.handle({"command": "remember", "saved": {"format": 2, "records": records}, "view": False})
+slot_of = list(range(len(records)))  # (an empty memory takes the records in order)
+assert h.mem.records.count == len(records), (h.mem.records.count, len(records))
 slot_meaning = {slot_of[i]: o["meaning"] for i, o in enumerate(origin)}
 kind_of = {str(slot_of[i]): o["kind"] for i, o in enumerate(origin)}
 voice_of = {str(slot_of[i]): o.get("voice", "woman") for i, o in enumerate(origin)}
@@ -216,7 +215,7 @@ for epoch in range(2000):
 report["link_lessons"] = epoch
 report["link_min"] = round(float(own.min()), 3)
 report["link_clear_min"] = round(float((own - rest).min()), 3)
-saved = h.handle({"command": "memory"})["saved"]
+saved = h.mem.save(compact=True)
 links = {str(s): h.mem.word_of(s, reads)[0] for s in range(h.mem.records.count)}
 report["records"] = [{"slot": s, "kind": kind_of.get(str(s)), "key": key_of.get(str(s)), "voice": voice_of.get(str(s)), "meaning": links[str(s)], "link": h.mem.word_of(s, reads)[1],
                       "deep": round(float(h.mem.records.deep[s]), 2), "sayable": s in h.mem.sayable(), "marks": h.mem.marks.get(s)} for s in range(h.mem.records.count)]

@@ -45,7 +45,8 @@ the page's own code (`site/scene.js`, `site/pistachio.js`); they have no model f
 | Files | Source | Author | Licence |
 | --- | --- | --- | --- |
 | `site/vendor/three/three.module.min.js` and `site/vendor/three/jsm/` (`OrbitControls.js`, `GLTFLoader.js`, `RGBELoader.js`, `BufferGeometryUtils.js`) | [three.js](https://github.com/mrdoob/three.js) r160 | the three.js authors | MIT (`site/vendor/three/LICENSE`) |
-| `site/pack/cadence_net-0.99.0-lane-meaning-568a0ad8-parrot-5fccf8cb.whl` | [Cadence](https://github.com/muellerberndt/cadence), a development build from its branches `lane-0100-meaning` and `lane-0100-parrot` | Bernhard Mueller | GPL-3.0 (the licence text is inside the wheel) |
+| `site/pack/cadence_net-0.100.0-py3-none-any.whl` | [Cadence](https://github.com/muellerberndt/cadence) 0.100.0, the release on PyPI | Bernhard Mueller | GPL-3.0 (the licence text is inside the wheel) |
+| `site/pack/py/parrotbrain/meaning/`, `parrot/`, `words/` | [Cadence](https://github.com/muellerberndt/cadence), its branches `lane-0100-meaning` and `lane-0100-parrot` | Bernhard Mueller | GPL-3.0 |
 
 ## Generated for this page
 
@@ -65,7 +66,7 @@ is attached; ElevenLabs' terms apply to the output.
 | --- | --- | --- |
 | `site/voice/words.json` (the sound of each of the woman's records) | a woman's voice says each answer word alone and each question as a spoken sentence | ElevenLabs text to speech (`eleven_multilingual_v2`), the ElevenLabs voice "Jane - Steady, Mature and Clear"; each take then heard by the page's own hearing code (`site/tools/build_words.py`) |
 | `site/voice/questions/*.wav`, `site/voice/questions.json` | the listed questions as sound | one of the woman's takes of each question (`site/tools/build_words.py`) |
-| `site/voice/words.json` (records of four other voices) | four other voices ask the same questions and name the things, each heard once; their records hold the ear's frames, and their audio is not in the folder | ElevenLabs text to speech (`eleven_multilingual_v2`), the ElevenLabs voices "Mark", "Brian", "Hope" and "Ranbir" |
+| `site/voice/words.json` (records of thirty-six other voices) | thirty-six other voices say each question and each answer word once, each take heard once; their records hold the ear's frames, and their audio is not in the folder | ElevenLabs text to speech (`eleven_multilingual_v2`), the ElevenLabs voices "Mark", "Brian", "Hope", "Ranbir", "Adam", "Alice", "Bella", "Bill", "Callum", "Charlie", "Chris", "Daniel", "Eric", "George", "Jessica", "Laura", "Liam", "Lily", "Matilda", "River", "Roger", "Sarah", "Will", "Harry", "Alexandra", "Amanda", "Amy", "Annie K", "Elise", "Jack John", "Jessica Anne Bogart", "Josh", "Kimberly", "Lauren B", "Pamela" and "Zuri" |
 | `site/voice/parrot/*.wav` | the parrot's rendering of each answer word | ElevenLabs speech to speech (`eleven_multilingual_sts_v2`) of the woman's word into a parrot voice made with ElevenLabs Voice Design; for some words ElevenLabs text to speech in that voice (each rendering's `how` in `words.json` says which); then pitched, with raised formants and a little rasp, by the build |
 
 Only takes and renderings that Whisper reads as their text are in the folder.

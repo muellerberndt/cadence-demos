@@ -2,8 +2,8 @@
 
 > **Preview.** A development build of the parrot page, published so that its code can be read and
 > run. It does what [What works](#what-works) lists, with the limits under
-> [What it does not do](#what-it-does-not-do). It runs on a development build of the Cadence
-> library, included in this folder; it does not run on a released `cadence-net`.
+> [What it does not do](#what-it-does-not-do). It runs on the released `cadence-net` 0.100.0; the
+> parts of the brain that the library does not release live in this folder.
 
 ## What it shows
 
@@ -82,6 +82,13 @@ the sounds used.
 
 **Listen to me.** A word said to it is kept as one utterance and said back.
 
+**Not understood.** A sound it makes nothing of brings a **?** by the parrot, and a line by the
+Pistachio button says what to do: say it again, or pick a question from the list. An answer it
+guessed brings the same **?** first, and the line says to give it a pistachio if the answer is
+right and to say it again if not. A single word it only guessed brings the **?** and the line too, and moves
+its attention nowhere. After you click a thing it says nothing by itself for three seconds, so a
+question asked at once is heard.
+
 `site/tests/test_sound_symbols.py` checks these on the real page in a headless Chromium. Its
 sections:
 
@@ -90,9 +97,14 @@ sections:
   with the sound linked to the word in the parrot's own rendering, and Whisper reads that sound as
   the word. A pistachio after an answer pays the brain's lesson and the links.
 - `mic`: through a stand-in microphone, in Listen to me, a word in a voice the parrot never heard
-  is kept as one utterance and said back.
+  is kept as one utterance and said back within a second of the keeping; then six first hearings,
+  each said back within 1.5 s of the utterance's end, with the machine as found and with every
+  core kept busy.
 - `first`: a first visit with what is on screen alone, from Listen to me to a question and a
-  pistachio.
+  pistachio; then a question in the visitor's own voice (a voice in no record), answered right
+  when understood, and when guessed the hint by the Pistachio button, a right guess paid and the
+  question understood when asked again; and a sound it cannot make out (the visitor's question
+  played backwards), with the **?** and the hint to say it again.
 - `false`: sounds that are no speech (a cough, a breath, typing, a click, a door, a fan and others)
   and the parrot's own voice from the loudspeaker; none may be kept as an utterance, said back or
   answered.
@@ -110,6 +122,20 @@ its own window. Over seven runs the visitor's word was kept and linked every tim
 back within the test's four seconds in three; where the log shows a later sound, it came 3.6 to
 4.4 s after the word. The same action inside `first` passed in three of three runs.
 
+**The say-back's delay.** In the build those runs read, each sound that became one the parrot can
+say sent the audio of every kept sound to the page again, and the say-back waited for it. This
+build sends the changed sounds alone, and the memory's picture goes to the page two and a half
+seconds after a change, outside the moment a sound is answered in. The `mic` section times six
+first hearings of a voice in no record from each utterance's end and passes where each say-back
+starts within 1.5 s and the middle one within 1.2 s, once with the machine as found and once with
+one busy process a core. Readings from a fresh clone on a ten-core machine shared with other
+jobs: 0.57 to 0.67 s as found (median 0.63 s, load average 12) and 0.56 to 0.80 s with ten busy
+processes (median 0.68 s, load average 17); over four voices in no record, clean and through a
+laptop's microphone, 47 utterances said back a median 0.64 s after their end (at most 0.77 s).
+The answer to a visitor's own question in Curious starts a median 1.07 s after the question's end
+(73 of 76 within 1.5 s). `evidence/sound_flow.json` and `evidence/fresh_clone_parrot_voices.json`
+hold these readings.
+
 ## What it does not do
 
 - **Free speech.** It does not take a sentence apart from its sound. The ear matches a whole
@@ -117,12 +143,22 @@ back within the test's four seconds in three; where the log shows a later sound,
   nearest it, names the meaning: a word, or one of the questions the brain was taught. The wordings it knows are the ones the starting memory
   holds. Where each word begins inside a question's record was marked when the starting memory was
   built, from Whisper's word times.
-- **Any voice at once.** A voice it has never heard is understood far less often than the starting
-  voice, until it has been heard and paid with a pistachio. The starting memory holds one woman's
-  questions and answer words and four other voices heard once each. In Curious, a sound with no
-  meaning the parrot knows is a guess among the questions about the thing in focus; a pistachio
-  after a right answer links the sound to that meaning. `evidence/sound_flow.json` holds the
-  development readings on voices in no record.
+- **Any voice at once.** A voice it has never heard is understood less often than the starting
+  voice. The starting memory holds one woman's questions and answer words and thirty-six other
+  voices (men and women, young to old, American, British, Australian and Indian), each heard once
+  saying every question and answer word: 1,606 records, their audio not shipped. A visitor's
+  utterance is taken for what the records nearest it agree on. On four voices in no record (a
+  British man, an Australian man, an Indian woman, an American woman), 288 takes of the listed
+  questions and ten answer words, heard for the first time: 241 taken for the right meaning, 8 for
+  a wrong one and 39 for none with clean takes (the questions 153 of 156 right, none wrong; the
+  words 88 of 132 right, 8 wrong); 215 right and 10 wrong through a laptop's microphone with the
+  room's noise 20 dB below the voice; 147 right and 15 wrong at 10 dB. After one paid hearing of an
+  utterance, that visitor's other takes of it: 175 of 200 right and 3 wrong (clean; the questions
+  103 of 108, none wrong). The starting
+  memory with four other voices read 170 right and 7 wrong of the same 288. In Curious, a sound
+  with no meaning the parrot knows is a guess among the questions about the thing in focus; a
+  pistachio after a right answer links the sound to that meaning. `evidence/sound_flow.json`
+  holds these readings and the routes measured on the way.
 - **Every question type.** Some question types are answered wrong and are left out of the list: a
   listed question is one the brain answered right on every pass of `site/tools/check_presets.py`.
   The brain's version file (`site/pack/trained/version.json`) records what it gets wrong, among
@@ -163,19 +199,40 @@ what the preview does.
 
 ## What it runs on
 
-- **A development build of the Cadence library**, included in the folder:
-  `site/pack/cadence_net-0.99.0-lane-meaning-568a0ad8-parrot-5fccf8cb.whl`. It is built from the
-  library's development branches
+- **The released Cadence library**: `cadence-net` 0.100.0 from PyPI, unchanged, in the folder as
+  `site/pack/cadence_net-0.100.0-py3-none-any.whl`.
+- **The parts of the brain the library does not release**, in the page's own package
+  (`site/pack/py/parrotbrain/`): `meaning/` (the answering brain's host, its senses and its build),
+  `parrot/` (the parrot's body, eyes, map, focus and voice) and `words/`, carried from the library's
+  development branches
   [`lane-0100-meaning`](https://github.com/muellerberndt/cadence/tree/lane-0100-meaning) and
-  [`lane-0100-parrot`](https://github.com/muellerberndt/cadence/tree/lane-0100-parrot), which add
-  `cadence.meaning` and `cadence.parrot`; `site/pack/manifest.json` names the commits. Its version
-  field reads 0.99.0, and it is no released build.
-- **The page does not run on the released `cadence-net` 0.99.1**, which has no `cadence.meaning`
-  and no `cadence.parrot`. The library release that carries these features is in preparation.
+  [`lane-0100-parrot`](https://github.com/muellerberndt/cadence/tree/lane-0100-parrot) with their
+  imports of the library made absolute; and the hearing layer (`sounds.py`, `host.py`), the page's
+  own. `site/pack/manifest.json` names the commits.
 - **The trained brain**, `site/pack/trained/`: `brain.npz` and `spec.json`, with `version.json`
   (its training step, its readings, what it gets wrong) and `probes.json`.
 - **In the browser**: Python through Pyodide in a web worker, which checks the SHA-256 of every
   pack file against the manifest before it runs anything; three.js for the room and the brain view.
+
+On 0.100.0 the library does two things the page did itself: a record told again moves toward the
+new take (`LongTermMemory(blend=True)`, the record strength of cadence#336; the page lays the take on
+the record's timeline first), and the carried host of the answering brain is the meaning lane's at
+613bcbc6, with the `exact` rule removed. These stay in the folder, and why:
+
+- **Equal senses and senses by name** (`senses=`, `code=units`): the trained brain's weights were
+  learned through the meaning lane's own mixed code; the library's door draws its own fixed code,
+  which those weights do not read.
+- **The map read of one attended thing** (`Map.thing_at`): the answering brain's glimpse comes from
+  the page's description of the room, as its training world reported things; the body's map holds
+  places, not the colour and material that brain was trained on.
+- **The pistachio with an open slot** (`learning.OPEN`): the carried host teaches the reply's word
+  with the second slot at 0, as its training did; leaving that slot open changes what a pistachio
+  teaches.
+- **"It moved", "it appeared" and the focus they draw** (`cadence.surprise`): the carried focus
+  weighs a thing's move against its usual move on its own scale; the library's per-unit surprise
+  uses another, so its focus would move at other moments.
+- **The ear, the follower and the sound memory's vote and lessons** (`host.py`, `sounds.py`): no
+  library feature takes their place.
 
 [Cadence](https://github.com/muellerberndt/cadence) is the library; its README explains how a
 Cadence brain settles and learns.
@@ -207,8 +264,9 @@ python parrot/site/tests/test_sound_symbols.py --url http://localhost:8842/ --ou
 The test needs Python with `playwright` (and its Chromium) and `numpy`, `ffmpeg` on the path, and
 for the Whisper reading a Python with `mlx-whisper` (Apple silicon). `--voices` takes a folder of
 visitors' takes, one folder a voice, in voices the starting memory never heard; the folder ships
-none. `--only presets` runs the list alone and needs no such folder, and `--rounds` sets how often
-each question is asked (two by default).
+none. `--only presets` runs the list alone and needs no such folder, `--rounds` sets how often
+each question is asked (two by default), and `--busy` sets the busy processes of the `mic`
+section's loaded pass (one a core by default).
 
 ```sh
 node parrot/site/tests/dsp_parity.mjs          # the page's ear against the library's front end

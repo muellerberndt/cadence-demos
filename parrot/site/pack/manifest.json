@@ -1,25 +1,67 @@
 {
  "schema": "cadence-parrot-pack/1",
- "packed": "2026-11-15",
+ "packed": "2026-11-16",
  "pyodide": "314.0.7",
  "packages": [
   "numpy"
  ],
  "package": "parrotbrain",
- "brain": "composed: cadence.parrot (the parrot-brain lane), with the page's hearing layer; trained: the composed body and hearing with cadence.meaning's MeaningParrot, the brain the meaning lane trained (#334); placeholder: a hand-written controller",
+ "brain": "composed: the parrot-brain lane's host (parrotbrain.parrot, carried in the page), with the page's hearing layer; trained: the composed body and hearing with the meaning lane's MeaningParrot (parrotbrain.meaning, carried in the page), the brain the meaning lane trained (#334); placeholder: a hand-written controller",
  "sources": [
   "__init__.py",
   "host.py",
+  "meaning/__init__.py",
+  "meaning/host.py",
+  "meaning/parrot.py",
+  "meaning/senses.py",
   "page.py",
+  "parrot/__init__.py",
+  "parrot/brain.py",
+  "parrot/distance.py",
+  "parrot/eyes.py",
+  "parrot/focus.py",
+  "parrot/host.py",
+  "parrot/kinds.json",
+  "parrot/kinds.py",
+  "parrot/records.py",
+  "parrot/vision.py",
+  "parrot/voice.py",
+  "parrot/whole.py",
+  "parrot/world.py",
   "sounds.py",
-  "trained.py"
+  "trained.py",
+  "words/__init__.py",
+  "words/lexicon.py",
+  "words/room.py",
+  "words/several.py"
  ],
  "sources_sha256": {
   "__init__.py": "aad6e4970d412d3fc56376e9321f46760a285a32d2086c5fc76d1740b02c082f",
-  "host.py": "fddb518a8b77fb70c519262cacf1b7d0c4a5feda3348faff42acb5f1fb7849f1",
-  "page.py": "686ebbe9e742c91265f2b95016458c682d82cc60558218125e928d0df0c8ab6d",
-  "sounds.py": "5fc17dd1ed798255bf50b5c13b499279beddd968bfba05475cf996749bc24830",
-  "trained.py": "eb10dd3fe763b4fd63b2959c1325f297f017881db4efcfa922948514e3926141"
+  "host.py": "6f3ccb729f7c33d1ffb10963908564d15149a462a5e05c774fa9fdedbd08c834",
+  "meaning/__init__.py": "55d42e4445a880ba0aa8753043a8d45a911fa993b318d914b9f58a19433e40d2",
+  "meaning/host.py": "3e03ab9a1eeff4f266d51e9f634b5416030689908477e5679d2a20587cc0b388",
+  "meaning/parrot.py": "0c6df6f24b39503a976a4e2a0d3c32df93fccbbbd6d790e4415dc2ec44bed1f1",
+  "meaning/senses.py": "0d35616c4e4fd4ca6541a23e3c071f2929e1437a24b7e532048c4de7cef71d0e",
+  "page.py": "7974ba4ec7baa8d9f369191951b56a2ceda638184fc5282e21975586609de1da",
+  "parrot/__init__.py": "95ca0f2910fd3b64253fc7e5ade2e06b5915317935cabe379a7e551fd619769e",
+  "parrot/brain.py": "b79e43605e9d61953d97ca4a4a7e852a17d54ade2857791354e3fe378606bb55",
+  "parrot/distance.py": "1066c5a8a8b1749c449ef00bead78f2221f6b7799846a419895dd7356ba4014f",
+  "parrot/eyes.py": "e1332400ae64c099e195d740469e9031865a5289ae2c403eec9152ee4adae283",
+  "parrot/focus.py": "40b949b738e94e18dc4174d3513bf0d53f50e5b570fd936d03e406e796bc8761",
+  "parrot/host.py": "bee3a009cddca802378878aba6995afcd2f8189285be5454a9c2563175e3de91",
+  "parrot/kinds.json": "03096f933571c4adfbefe9a248e5c1175801d936997310fb126f7d6037ca02b7",
+  "parrot/kinds.py": "7c0704e64eb8fc10d1dd69082abb21d549fbb1d01166e7e823de779a922f7f84",
+  "parrot/records.py": "c92f32267b9652db1d4d77ac4ea6e4ea45f96dd13a63446340dd5d540f87e8c3",
+  "parrot/vision.py": "646cf08ed0c455fba226e1096d251896bf9a886b182989d9ef610f92ddae0463",
+  "parrot/voice.py": "6bb5bdd21f62e2c0a180d51e9150a1d5a882cae49553f9b1b5cbac980376c2b7",
+  "parrot/whole.py": "2da9ec0614bd6ce29966ef339803979fac98334a26d3df1fa58562349266e5dc",
+  "parrot/world.py": "26a5bee98bd974dd8f881c00e473851491615627c278374d544c90dee049d4fd",
+  "sounds.py": "a4efa6e77a161b7921500cc988457ad94e1f4bcd81c62964f3d8eeb38b8a5cf6",
+  "trained.py": "a47256bc12de7a898072ab826d62faa5cbce3b167ab35c8c3ffdc6aa905d5071",
+  "words/__init__.py": "70c33bb3a1993e4e8154a6003be85a5b4156d9ca6e899aea9543db8c8c64700c",
+  "words/lexicon.py": "45cd159910248f3602dcb7b71f73be360c74d791af55af765d44b488dcff6bda",
+  "words/room.py": "7a1ea636eb46ad48c4acb00267887a8e96512af1abaa85f1f666947689028f97",
+  "words/several.py": "4bccdd6c74a61fc0cae25763817523a8bfe8c6aaf945e04c65fd39d284655f25"
  },
  "files": {
   "calls.json": "645453a2f0c7c4874addbf143bac95861505484018dac7f64bb5fe39fde0dbf7"
@@ -94,8 +136,8 @@
   "not_learned": "is this <colour> on unseen kind-colour pairs (near chance); the material of some things; distance",
   "probes": "probes.json beside the brain: the association's linear read of the thing in focus with nothing heard, at any look from a cleared state (fitted over looks 1 to 4 after a clearing on 960 random rooms, checked on 240 rooms held out: kind 0.99 against 0.13 by chance, colour 0.99 against 0.20 by chance, round 1.00 against 0.70 by chance, material 0.93 against 0.33 by chance, edible 0.99 against 0.67 by chance, direction 0.96 against 0.27 by chance; at the first look kind 1.00 and colour 1.00, where the probes exported with the brain read 0.40 and 0.29); distance as exported by the meaning lane (.86 against .51)"
  },
- "wheel": "cadence_net-0.99.0-lane-meaning-568a0ad8-parrot-5fccf8cb.whl",
- "wheel_sha256": "ab47bd3167872fe46f9e4f4bc7437b69bc12bee288fb3e7e606aa20b082ab174",
- "cadence": "0.99.0 with cadence.parrot (lane-0100-parrot 5fccf8cb) and cadence.meaning (lane-0100-meaning 81474696, its host at 568a0ad8)",
- "wheel_source": "built from muellerberndt/cadence: lane-0100-meaning at 81474696 merged with lane-0100-parrot at 5fccf8cb (the surprise fix: a surprise is a change the brain did not cause and could not predict); cadence/meaning/host.py replaced by lane-0100-meaning 568a0ad8 (an exchange begins clear at the first word heard after the turn)"
+ "wheel": "cadence_net-0.100.0-py3-none-any.whl",
+ "wheel_sha256": "4ace88d364bffb6fb4d630789effec4c286ee1ce3dbdf90c807cf7fabf6d8d4c",
+ "cadence": "0.100.0, released (PyPI cadence-net)",
+ "wheel_source": "cadence-net 0.100.0 as released on PyPI (tag v0.100.0), unchanged; the page carries the lane packages it uses in its own package: parrotbrain.meaning (lane-0100-meaning 613bcbc6), parrotbrain.parrot (lane-0100-parrot 5fccf8cb) and parrotbrain.words (as the lane-meaning wheel at 81474696 held it)"
 }
