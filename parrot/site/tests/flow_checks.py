@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import os
+import zlib
 import subprocess
 import sys
 import time
@@ -138,6 +139,40 @@ def first_visit(pw, a, T) -> dict:
         page.wait_for_timeout(50)
     paid = page.evaluate("(t) => (window.parrotPage.flow.linked || []).filter((l) => l.at > t).length", t)
     steps.append({"step": "a pistachio: the dopamine box lights, the lesson is taken", "dopamine_sign": dop, "links_paid": paid, "pistachios": page.evaluate("document.getElementById('pistachios').textContent"), "ok": dop and paid >= 1})
+    # the visitor's own question, in a voice in no record: answered right, or a guess with the hint by the Pistachio button
+    hint_now = "(() => { const e = document.getElementById('ask-hint'); return e && !e.hidden ? e.textContent : ''; })()"
+    T.quiet_for(page); page.wait_for_timeout(2500); T.focus_on(page, "cup"); page.wait_for_timeout(600)
+    serial = page.evaluate("window.parrotPage.trained.serial")
+    T.hear(page, pad(T.read16(takes["what_colour"][1])))
+    last = T.answer_after(page, serial, 30)
+    page.wait_for_timeout(300)
+    shown = page.evaluate(hint_now)
+    guessed = bool(last and last.get("guessed"))
+    steps.append({"step": "the visitor's own question: answered right when understood; a guess shows the hint to give a pistachio if right, else to say it again",
+                  "said": last["said"] if last else None, "right": bool(last and last["right"]), "guessed": guessed, "hint": shown,
+                  "ok": bool(last) and ((not guessed and bool(last["right"]) and not shown) or (guessed and "Pistachio" in shown and "say it again" in shown))})
+    if guessed and last["right"]:  # a right guess paid: asked again, it is understood
+        page.click("#ask-nut"); page.wait_for_timeout(2500); T.quiet_for(page); page.wait_for_timeout(1500)
+        serial = page.evaluate("window.parrotPage.trained.serial")
+        T.hear(page, pad(T.read16(takes["what_colour"][1])))
+        again = T.answer_after(page, serial, 30)
+        steps[-1].update(after_a_pistachio={"said": again["said"] if again else None, "guessed": bool(again and again.get("guessed")), "right": bool(again and again["right"])})
+        steps[-1]["ok"] = steps[-1]["ok"] and bool(again and again["right"] and not again.get("guessed"))
+    # a sound it cannot make out (the visitor's question played backwards): "?" by the parrot and the hint
+    T.quiet_for(page); page.wait_for_timeout(2500)
+    serial = page.evaluate("window.parrotPage.trained.serial"); t = T.now(page)
+    T.hear(page, pad(T.read16(takes["what_is_this"][0])[::-1].copy()))
+    got = T.heard_after(page, t, 15)
+    shown, mark = "", False
+    for _ in range(60):
+        shown = shown or page.evaluate(hint_now)
+        mark = mark or page.evaluate("(t) => (window.parrotPage.flow.bubbles || []).some((b) => b.at > t && b.text.includes('?'))", t)
+        if shown and mark:
+            break
+        page.wait_for_timeout(100)
+    kind = page.evaluate("window.parrotPage.flow.hint && window.parrotPage.flow.hint.kind")
+    steps.append({"step": "a sound it cannot make out: a ? by the parrot and, by the Pistachio button, what to do", "heard": len(got), "taken_for": got[0].get("word") if got else None,
+                  "question_mark": mark, "hint_kind": kind, "hint": shown, "ok": len(got) == 1 and not got[0].get("word") and mark and "say it again" in shown})
     ctx.close(); browser.close()
     return {"voice": voice.name, "steps": steps, "ok": all(s["ok"] for s in steps), "log": logs[-40:]}
 
@@ -147,7 +182,7 @@ def visitor(pw, a, T, voice: Path, cond: str) -> dict:
     takes = T.takes(voice)
     said_as = json.loads((voice / "wer.json").read_text()) if (voice / "wer.json").exists() else {}
     browser, ctx, page, logs, t0 = T.open_page(pw, a.url, a.out / "quiet.wav")
-    mic = Room(T, page, cond, seed=abs(hash((voice.name, cond))) % 2**31)
+    mic = Room(T, page, cond, seed=zlib.crc32(f"{voice.name} {cond}".encode()))  # (the same draws on every run)
     out: dict = {"voice": voice.name, "cond": cond, "listen": [], "curious": {}}
     (a.out / "said_back").mkdir(exist_ok=True)
     # (a) Listen to me: each utterance kept whole, and said back
@@ -299,16 +334,23 @@ def robust(pw, a, T) -> dict:
     page.reload(wait_until="domcontentloaded"); T.ready(page)
     last = _ask(page, T, 1)
     out["reload"] = {"answered_right": bool(last and last["right"]), "ok": bool(last and last["right"])}
-    # 3. a sound arriving while it speaks
-    serial = page.evaluate("window.parrotPage.trained.serial")
-    page.select_option("#ask-preset", index=0); page.click("#ask-form button[type=submit]")
-    page.wait_for_function("window.parrotPage.audio.ownVoice() && window.parrotPage.audio.loudness() > 0", timeout=60000)
-    t = T.now(page)
-    T.hear(page, pad(apple, 0.0, 0.2))
-    page.wait_for_timeout(4000)
-    kept = page.evaluate("(t) => window.parrotPage.flow.heard.filter((h) => h.at > t).length", t)
+    # 3. a sound arriving while it speaks (a try whose sound began after its voice ended tests nothing: up to three tries)
+    tries = []
+    for _ in range(3):
+        T.quiet_for(page); page.wait_for_timeout(1500)
+        page.select_option("#ask-preset", index=0); page.click("#ask-form button[type=submit]")
+        page.wait_for_function("window.parrotPage.audio.ownVoice() && window.parrotPage.audio.loudness() > 0", timeout=60000)
+        t = T.now(page)
+        started = T.hear(page, pad(apple, 0.0, 0.2))["startedAt"]
+        during = page.evaluate("(at) => at < window.parrotPage.audio.voiceUntil", started)  # the sound began while its voice played
+        page.wait_for_timeout(4000)
+        tries.append({"began_while_it_spoke": during, "kept": page.evaluate("(t) => window.parrotPage.flow.heard.filter((h) => h.at > t).length", t)})
+        if during:
+            break
+    kept = tries[-1]["kept"]
     last = _ask(page, T, 2)
-    out["sound_while_speaking"] = {"kept": kept, "busy_after": page.evaluate("window.parrotPage.trained.busy"), "next_right": bool(last and last["right"]), "ok": kept == 0 and bool(last and last["right"])}
+    out["sound_while_speaking"] = {"tries": tries, "kept": kept, "busy_after": page.evaluate("window.parrotPage.trained.busy"), "next_right": bool(last and last["right"]),
+                                   "ok": tries[-1]["began_while_it_spoke"] and kept == 0 and bool(last and last["right"])}
     # 4. the switch pressed at any moment: while a question plays, while it thinks, while a word is being said to it
     presses = 0
     for delay in (150, 600, 1200, 2000, 2800):

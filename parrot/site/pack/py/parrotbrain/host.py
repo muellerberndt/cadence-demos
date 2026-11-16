@@ -51,6 +51,8 @@ DISTANCE_UNITS = 12
 END_QUIET = 30   # frames of quiet that end an utterance (0.3 s: the pauses inside a spoken phrase are shorter)
 ONSET, STAY = 2.5, 1.5  # nats above the room's level at which an utterance begins, and above which it goes on (11 dB and 6.5 dB: a voice 10 dB above a room's noise is heard whole; with 4.0 for both, short words in a room at 20 dB were cut to their peaks and left out as clicks)
 OWN_TAIL = 3     # moments after its own voice in which a sound counts as its own (the room's echo of it)
+ROOM = 256  # the slots a memory keeps free for a visit's sounds beyond the saved memory it starts from
+SHORTEST = 8  # frames (80 ms): the least a word stands above the room
 VOICED = 0.15    # the least share of an utterance's loud frames that repeat at a voice's pitch (speech reads 0.19 to 1, also in a noisy room; a cough, a breath, typing, a fan read 0)
 
 
@@ -279,6 +281,7 @@ class Host:
         self.spotted: list = []  # the words known in the utterance being heard, each as it was spoken
         self.echo = None         # in "listen": the sound just heard, to say back (slot, moment)
         self.view_due = None     # the moment the memory's picture goes to the page after a change (a large reply, kept out of the moment a sound is answered in)
+        self.view_shown = False  # whether the page showed the memory's picture at the last moment
         self.exchange = None     # a sound heard and answered: what a pistachio pays (the sound, its meaning, the sounds said)
         self.unpaid = None       # a word said by itself for the thing in focus, while no pistachio has come (slot, word, moment)
         self.heard_event = None
@@ -304,14 +307,14 @@ class Host:
         self.repertoire.append({"id": "babble", "tag": "babble", "source": "newborn", "frames": None})
 
     def voice_like(self, frames: np.ndarray, pcm: np.ndarray | None = None) -> tuple[bool, str]:
-        """Whether a heard sound is voice-like: not too short (a click, under 120 ms), not a steady tone (a
+        """Whether a heard sound is voice-like: not too short (a click, under 80 ms above the room), not a steady tone (a
         hum: its bands barely change from frame to frame), with power where a voice's first resonance lies (not
         a high tone alone, not a thump under 150 Hz alone), and voiced in part (`voiced`: a cough, a breath,
         a hiss or typing has no pitch); without the audio itself, not a steady broadband hiss (a flat
         spectrum)."""
         n = len(frames)
         e = np.log(np.exp(frames.astype(np.float64)).sum(axis=1))
-        if n < 12 or int(np.sum(e > self.floor + STAY)) < 12:  # under 120 ms of sound above the room: a pop or a click, not a word
+        if n < 12 or int(np.sum(e > self.floor + STAY)) < SHORTEST:  # under 80 ms of sound above the room: a pop or a click, not a word (a short word said softly in a noisy room stands 80 to 120 ms above it)
             return False, "click"
         if n > VALUE_FRAMES + 30:
             return False, "too long"
@@ -351,7 +354,8 @@ class Host:
         cleaned = self.clean(frames)
         # what stands above the background once its spectrum is out (a sound the background has
         # taken in, such as a hum going on, stands at or below it)
-        excess = float(np.percentile(np.log(np.exp(cleaned.astype(np.float64)).sum(axis=1)), 75) - np.log(np.exp(self.noise).sum()))  # its louder part (its soft start and end are kept too)
+        level = np.sort(np.log(np.exp(cleaned.astype(np.float64)).sum(axis=1)))
+        excess = float(level[-SHORTEST:].mean() - np.log(np.exp(self.noise).sum()))  # its loudest 80 ms (a short word's soft start, closure and end are most of its frames)
         if excess < 1.5:
             return None
         self.heard_event = self.mem.hear(cleaned, pcm)
@@ -379,7 +383,8 @@ class Host:
     def open_exchange(self, slot: int, meaning: str | None, guessed: bool) -> None:
         self.close_exchange()
         if meaning in self.words and 0 <= slot < self.mem.records.count:
-            self.exchange = {"slot": int(slot), "meaning": meaning, "guessed": bool(guessed), "answers": [], "t": self.t}
+            own = self.mem.word_of(int(slot))[0] == meaning  # the record's own link named it (else the records near it did)
+            self.exchange = {"slot": int(slot), "meaning": meaning, "guessed": bool(guessed), "own": own, "near": list(self.mem.near), "answers": [], "t": self.t}
 
     def sound_for(self, word: str) -> dict | None:
         """The sound to say for a word: the record the word recalls; without one, a sound it can say, guessed."""
@@ -407,15 +412,15 @@ class Host:
                 "answers": [{**a, "link": self.mem.word_of(a["slot"])[1]} for a in x["answers"]]}
 
     def close_exchange(self) -> None:
-        """The exchange ends with no pistachio: a guess is doubted for a while, a link used fades a little
-        toward what repetition has consolidated."""
+        """The exchange ends with no pistachio: a guess, or a meaning the records near the sound agreed on, is
+        doubted for a while; a record's own link used fades a little toward what repetition has consolidated."""
         x, self.exchange = self.exchange, None
         if x is None:
             return
         # (where the meaning and a sound were both guesses the blame is shared: each is doubted half as much)
         both = x["guessed"] and any(a["guessed"] for a in x["answers"])
-        if x["guessed"]:
-            self.mem.doubt(x["slot"], x["meaning"], 0.1 if both else 0.2)
+        if x["guessed"] or not x.get("own", True):  # a guess, or what the records near it said: doubted
+            self.mem.doubt(x["slot"], x["meaning"], 0.1 if both else 0.2, near=x.get("near"))
         else:
             self.mem.fade(x["slot"], x["meaning"])
         for a in x["answers"]:
@@ -435,10 +440,15 @@ class Host:
                         "matches": [] if prog is None else prog["matches"][-20:]})
         return out
 
-    def remember(self, saved: dict) -> dict[str, Any]:
+    def remember(self, saved: dict, view: bool = True) -> dict[str, Any]:
+        """A saved memory loaded; a memory with too few slots for it and ROOM more is made larger first."""
+        many = len((saved or {}).get("records", []))
+        if self.mem.records.count == 0 and many + ROOM > self.mem.records.capacity:
+            self.mem = SoundMemory(revise=self.revise, words=self.words, capacity=many + ROOM)
+            self.follower = Follower(self.mem)
         self.mem.load(saved or {})
         self._sayable_sig = tuple(self.mem.sayable())
-        return {"repertoire": self.repertoire_list(), "memory": self.mem.view()}
+        return {"repertoire": self.repertoire_list(), "memory": self.mem.view() if view else None}
 
     def forget(self) -> dict[str, Any]:
         self.mem.clear()
@@ -508,12 +518,14 @@ class Host:
             out.append(row)
         return out
 
-    def _view(self, changed: bool) -> dict | None:
-        """The memory's picture for the page: a large reply, sent two and a half seconds after a change (once
-        the sound is said back or answered) and every five seconds for the fading."""
+    def _view(self, changed: bool, shown: bool) -> dict | None:
+        """The memory's picture for the page, while the page shows it (`shown`): a large reply, sent when it is
+        first shown, two and a half seconds after a change (once the sound is said back or answered) and every
+        five seconds for the fading."""
         if changed:
             self.view_due = self.t + 25
-        if self.t % 50 == 0 or (self.view_due is not None and self.t >= self.view_due):
+        first, self.view_shown = shown and not self.view_shown, shown
+        if shown and (first or self.t % 50 == 0 or (self.view_due is not None and self.t >= self.view_due)):
             self.view_due = None
             return self.mem.view()
         return None
@@ -827,7 +839,7 @@ class Host:
                 "drive": round(min(1.0, self.drive), 3), "said": call, "saying": self.saying > 0, "heard_sound": learned, "heard_sounds": heard_list, "startle": startle,
                 "spotted": spotted, "hearing": bool(self.sound) and not self.spoiled, "recalled": self.mem_recalled(), "voice_rate": getattr(self, "voice_rate", 8000), "knows": self.knows(),
                 "words": len(self.mem.sayable()),
-                "memory": self._view(learned is not None or linked is not None),
+                "memory": self._view(learned is not None or linked is not None, meta.get("memory_shown", True) is not False),
                 "repertoire": None if changed is None else self.repertoire_list(changed), "sayable": None if changed is None else [f"you-{s}" for s in self._sayable_sig],
                 "paid": {k: round(v, 2) for k, v in self.paid.items() if v}, "linked": linked}
 
@@ -840,7 +852,7 @@ class Host:
         if cmd == "silence":
             return self.silence(str(message.get("group")), bool(message.get("on")))
         if cmd == "remember":
-            return self.remember(message.get("saved") or {})
+            return self.remember(message.get("saved") or {}, message.get("view", True) is not False)
         if cmd == "memory":
             return {"memory": self.mem.view(), "saved": self.mem.save()}
         if cmd == "forget":

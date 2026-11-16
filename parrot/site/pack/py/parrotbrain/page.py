@@ -15,7 +15,7 @@ from typing import Any
 
 import numpy as np
 
-from cadence.parrot.host import Host as Composed
+from .parrot.host import Host as Composed
 
 from .host import Host as Hearing
 
@@ -50,7 +50,7 @@ class Host:
     def step(self, meta: dict[str, Any], arrays: dict[str, np.ndarray]) -> dict[str, Any]:
         audio = arrays.get("audio")
         out = self.brain.step({**meta, "show_eyes": True}, {} if audio is None else {"audio": audio})
-        heard = self.hearing.step({k: meta.get(k) for k in ("t", "reward", "voice_ok", "things", "focus_kind", "mode", "own_voice", "hold")},
+        heard = self.hearing.step({k: meta.get(k) for k in ("t", "reward", "voice_ok", "things", "focus_kind", "mode", "own_voice", "hold", "memory_shown")},
                                   {"left": self.blank, "right": self.blank, "proprio": np.zeros(22, np.float32),
                                    "mel": arrays.get("mel", np.zeros(0, np.float32)), "pcm": arrays.get("pcm")})
         activity = np.zeros(self.neurons, np.float32)
