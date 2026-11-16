@@ -46,9 +46,15 @@ export const APPENDIX = [
 ];
 
 const fishEntry = APPENDIX.find((p) => p.id === "fish");
+// The nav of every page: the two demo pages, then the help link (site.js). The how-it-works and
+// model-choices pages are folded into help.html and stay reachable from it.
 export const PAGES = [
-  { id: "index", nav: "the larva", title: "The larva: a whole-body connectome", paragraphs: [] },
-  { id: "fish", nav: "the fish", title: fishEntry.title, paragraphs: fishEntry.paragraphs },
+  { id: "index", nav: "the larva", title: "The larva: a whole-body connectome", paragraphs: [],
+    explain: "A marine worm larva whose whole body's measured wiring, 25,609 cells, runs as a Cadence brain. Light and touch reach its real sense cells; its connections stay fixed." },
+  { id: "fish", nav: "the fish", title: fishEntry.title, paragraphs: fishEntry.paragraphs,
+    explain: "A zebrafish gaze circuit on measured wiring. Teach it to hold its gaze, let it return, then hold again: its connections learn while it lives." },
+];
+export const MORE_PAGES = [
   { id: "explain", nav: "how it works", title: "From wiring to a learning circuit", paragraphs: [] },
   { id: "disclaimers", nav: "model choices", title: "What is measured, what is modeled", paragraphs: [] },
 ];

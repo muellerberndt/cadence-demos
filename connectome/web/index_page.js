@@ -8,7 +8,7 @@
 // cell from the net's activity vector and flashes it gold by the repair it made in the last
 // step, so a tap or the lamp shows as a wave of repairs sweeping through the net before it
 // rests again. window.__app carries the parts for tools/scenario_larva.py.
-import { mountShell, app, el, $, int, fetchJSON, tooltips, TITLE } from "./site.js";
+import { mountShell, app, el, $, int, fetchJSON, tooltips, explainScan, TITLE } from "./site.js";
 import { BrainView, loadPayload, HOT } from "./brain_view.js";
 import { SettlingBrain } from "./brain.js";
 import { TANK, WATER, DEG, SPEED } from "./larva_body.js";
@@ -32,7 +32,9 @@ const START = { position: [3, 3, WATER - 0.8], heading: 0.3 };  // near the surf
 const FOLLOW_DISTANCE = 6;                    // mm, the orbit's distance when the camera follows the larva
 const LABEL = "compiled: measured cell-to-cell wiring · declared: dynamics, senses, body and time scale";
 
-const shell = mountShell("index", { connectome: "Verasztó et al. 2025", connectomeUrl: "https://doi.org/10.7554/eLife.97964", status: LABEL });
+const shell = mountShell("index", { brief: true, connectome: "Verasztó et al. 2025", connectomeUrl: "https://doi.org/10.7554/eLife.97964", status: LABEL });
+$("status-text").setAttribute("data-explain", "What comes from the animal and what the model adds. Measured: which cells connect, and by how many synapses. Declared by the model: how a cell responds, the signs and strengths, the senses, the body and the time scale.");
+$("status-text").setAttribute("data-explain-mark", "none");
 document.title = `the larva · ${TITLE}`;
 const S = { paused: false, seed: Number(params.get("seed") || 1), frames: 0, totalFrames: 0, fps: 0, fpsClock: 0, lastHud: -Infinity, lastLit: -Infinity, brainMs: 0, brainSteps: 0, reflections: 0, repairFloor: REPAIR_FLOOR, repairGain: REPAIR_GAIN };
 
@@ -63,7 +65,10 @@ let brainView = null;
 // ---- the controls ---------------------------------------------------------------------------
 function toast(text) { const t = $("toast"); t.textContent = text; t.classList.add("show"); clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove("show"), 1600); }
 /** A tap on the glass: the rings on the pane, the pulse on the collar receptors. */
+/** The first hint: once the visitor has tapped or moved the light, it points on to the fish. */
+function tried() { const t = $("try-text"); if (t && !tried.done) { tried.done = true; t.textContent = "The measured wiring answered: watch the cilia and the brain. Next, "; } }
 function tap(side) {
+  tried();
   const hit = aquarium.tap(side);
   life.tap(hit.side);
   toast(`tap on the ${hit.side < 0 ? "left" : "right"} pane`);
@@ -77,7 +82,7 @@ function setLight(opts = {}) {
   $("light-on").classList.toggle("on", L.on);
   return L;
 }
-function moveLight() { return setLight({ x: 2 + (TANK[0] - 4) * Math.random(), y: 1 + (TANK[1] - 2) * Math.random(), z: TANK[2] + 2 + 2 * Math.random() }); }
+function moveLight() { tried(); return setLight({ x: 2 + (TANK[0] - 4) * Math.random(), y: 1 + (TANK[1] - 2) * Math.random(), z: TANK[2] + 2 + 2 * Math.random() }); }
 /** The ultraviolet from above, 0 or 1: the ciliary photoreceptors answer it, strongest at the surface. */
 function setUv(uv) {
   const v = Math.max(0, Math.min(1, Number(uv) || 0));
@@ -111,18 +116,11 @@ $("fit").onclick = () => { if (brainView) brainView.fit(); };
 $("spin").onclick = () => { if (!brainView) return; brainView.options.spin = !brainView.options.spin; $("spin").classList.toggle("on", brainView.options.spin); };
 addEventListener("keydown", (e) => { if (e.key === " " && e.target === document.body) { e.preventDefault(); togglePause(); } });
 addEventListener("resize", () => { if (brainView) brainView.resize(); });
-tooltips($("tank")); tooltips($("brain"));  // the hover explanations of the buttons, drawn inside their pane
+tooltips($("tank")); tooltips($("brain"));  // the hover explanations of the buttons (the shared explanation cards)
+explainScan(document);
 setLight({});    // the tank's lamp as the senses' lamp
 setUv(0);        // the ultraviolet off until asked for: on, the ciliary photoreceptors arrest the cilia near the surface
 setFollow(true); // the camera follows the larva by default
-
-// ---- the card ---------------------------------------------------------------------------------
-shell.card([
-  "<b>A whole-body connectome.</b> This model uses the published wiring of a three-day Platynereis larva, including sensory neurons, muscles and ciliated cells.",
-  "<b>Try light and touch.</b> The lamp drives identified photoreceptors; a tap drives touch receptors. Activity travels through the compiled circuit to the modeled muscles and cilia.",
-  "<b>Fixed connections.</b> These flashes show activity settling, not learning. Switch to the fish to teach a circuit whose connection strengths change.",
-  el("p", {}, el("a", { href: PAPER_URL }, "Verasztó et al. 2025 · whole-body connectome")),
-]);
 
 // ---- the view's two channels: the activity, and the repair since the last reading, fading ----
 const flash = new Float32Array(brain.n);
@@ -137,7 +135,24 @@ skeletonLoad.then((skeletons) => {
   if (!skeletons) { $("view-host").append(el("div", { id: "noscan" }, "brain view skipped (noscan)")); return; }
   brainView = new BrainView($("view-host"), skeletons, { spin: true, controls: "legend", scale: "auto", gamma: 0.5, floor: 0.05, exposure: 0.5, fitScale: 0.62, pointRadius: 0.3, pointDim: 0.35 });
   app.brainView = brainView;
+  explainParts(brainView);
 }).catch((e) => { app.errors.push(String(e.message || e)); shell.status(`brain view unavailable: ${e.message || e}`); });
+
+// What each kind of cell does in the larva, on the brain view's colour key.
+const PARTS = {
+  sensory: "Cells that sense. Among them are the photoreceptors of the eyes and eyespots, which the lamp reaches, and the collar's touch receptors, which a tap reaches.",
+  inter: "Neurons between sensing and acting: they pass signals on and combine them.",
+  motor: "Neurons that drive the muscles and the ciliary bands. One of them, the ciliomotor neuron MC, stops the cilia after a tap.",
+  muscle: "Muscle cells. After a tap the long muscles of the body contract, and the larva stops and sinks for a moment.",
+  ciliated: "The cells of the ciliary bands: their beating hairs, the cilia, swim the larva. When the lamp lights one eye, the cilia on that side beat harder and the larva turns toward the light.",
+  gland: "Gland cells of the body.",
+  other: "Every other cell of the body, drawn as a point.",
+};
+function explainParts(view) {
+  const rows = view.overlay.querySelectorAll(".bv-legend label");
+  view.classes.forEach((name, k) => { const row = rows[k]; if (row && PARTS[name]) { row.setAttribute("data-explain", PARTS[name]); row.style.cursor = "help"; } });
+  explainScan(view.overlay);
+}
 
 // ---- the loop ---------------------------------------------------------------------------------
 let last = performance.now(), lastHit = -1;

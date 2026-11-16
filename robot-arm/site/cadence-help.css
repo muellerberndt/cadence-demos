@@ -1,0 +1,46 @@
+/* Cadence demos: the help page, the same on every demo. Dark, the demos site's mono headings,
+   readable body text. */
+:root {
+  color-scheme: dark;
+  --h-bg: #0b1215; --h-panel: #10191d; --h-line: #22323a; --h-text: #cfe0e3; --h-strong: #eef7f8;
+  --h-muted: #8ea4aa; --h-accent: var(--primary, #4fe3e8); --h-memory: #f1bf62;
+  --h-mono: ui-monospace, "IBM Plex Mono", Menlo, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--h-bg); color: var(--h-text); }
+body { font: 15.5px/1.62 system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+a { color: var(--h-accent); }
+.help-bar { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid var(--h-line); background: rgba(11, 18, 21, 0.92); backdrop-filter: blur(6px); font: 500 12px/1.4 var(--h-mono); }
+.help-bar .crumb { color: var(--h-muted); } .help-bar .crumb b { color: var(--h-accent); font-weight: 500; }
+.help-bar .spacer { flex: 1; }
+.help-bar a { text-decoration: none; }
+html.embedded .help-bar { display: none; }
+main.help { max-width: 760px; margin: 0 auto; padding: 28px 16px 64px; }
+main.help h1 { margin: 0 0 8px; color: var(--h-strong); font: 600 clamp(22px, 4vw, 30px)/1.2 var(--h-mono); }
+main.help .lede { margin: 0 0 10px; color: var(--h-strong); font-size: 17px; }
+main.help .shows { margin: 0 0 22px; padding: 10px 14px; border-left: 2px solid var(--h-accent); background: var(--h-panel); color: var(--h-text); }
+main.help .shows b { color: var(--h-accent); font: 600 11.5px/1.6 var(--h-mono); text-transform: uppercase; display: block; }
+main.help nav.toc { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 0 0 8px; font: 12.5px/1.6 var(--h-mono); }
+main.help nav.toc a { color: var(--h-muted); text-decoration: none; } main.help nav.toc a:hover { color: var(--h-accent); }
+main.help h2 { margin: 38px 0 10px; color: var(--h-strong); font: 600 16px/1.3 var(--h-mono); }
+main.help h3 { margin: 22px 0 6px; color: var(--h-strong); font-size: 15px; }
+main.help p { margin: 0 0 12px; }
+main.help b, main.help strong { color: var(--h-strong); font-weight: 600; }
+main.help ul, main.help ol { margin: 0 0 14px; padding-left: 22px; } main.help li { margin: 0 0 7px; }
+main.help li::marker { color: var(--h-muted); }
+main.help figure { margin: 18px 0 10px; }
+main.help figure img, main.help figure svg { display: block; width: 100%; height: auto; border: 1px solid var(--h-line); border-radius: 10px; background: var(--h-panel); }
+main.help figcaption { margin-top: 8px; color: var(--h-muted); font-size: 13px; }
+main.help dl.words { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0 0 14px; }
+main.help dl.words dt { color: var(--h-strong); font: 500 13px/1.6 var(--h-mono); }
+main.help dl.words dd { margin: 0; }
+main.help table { width: 100%; border-collapse: collapse; margin: 6px 0 14px; font-size: 14px; }
+main.help th, main.help td { padding: 7px 10px 7px 0; border-bottom: 1px solid var(--h-line); text-align: left; vertical-align: top; }
+main.help th { color: var(--h-muted); font: 600 11.5px/1.5 var(--h-mono); text-transform: uppercase; }
+main.help td.n { color: var(--h-strong); font-family: var(--h-mono); white-space: nowrap; }
+main.help .note { color: var(--h-muted); font-size: 14px; }
+main.help code { font: 0.88em var(--h-mono); color: var(--h-strong); }
+main.help kbd { display: inline-block; min-width: 1.6em; padding: 0 5px; border: 1px solid var(--h-line); border-radius: 4px; background: var(--h-panel); font: 500 11.5px/1.6 var(--h-mono); text-align: center; color: var(--h-strong); }
+main.help .keys { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; }
+main.help footer { margin-top: 40px; padding-top: 14px; border-top: 1px solid var(--h-line); color: var(--h-muted); font-size: 13.5px; }
+@media (max-width: 560px) { body { font-size: 15px; } main.help dl.words, main.help .keys { grid-template-columns: 1fr; gap: 2px; } main.help dl.words dd { margin-bottom: 8px; } }

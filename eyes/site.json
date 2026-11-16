@@ -1,0 +1,18 @@
+{
+  "slug": "eyes",
+  "title": "Eyes",
+  "page_dir": "web",
+  "card": "One brain gives every shape its own eye, from the page's pixels alone. When nothing moves, the brain rests and does no work.",
+  "tagline": "One brain, an eye on every shape, and no work while nothing moves",
+  "kicker": "IT WORKS ONLY WHEN SOMETHING MOVES",
+  "feature": "One Cadence brain follows every shape with its own eye, from pixels alone. Its state holds what each eye saw, so a motionless scene costs it zero settling sweeps, like a resting animal. A network without state recomputes every frame.",
+  "howTo": "Untick shapes move on their own: the brain's sweeps fall to zero. Drag a shape away: its eye jumps after it, and the brain works only for that move. Double-click a shape to give it an eye; click one to watch its eye in the brain.",
+  "help": "help.html",
+  "evidence": [
+    "eyes/evidence/page_check-20261113-1155.txt",
+    "eyes/evidence/fovea-v1x8-s1-summary.json",
+    "eyes/evidence/comparison.json",
+    "eyes/evidence/page_check.txt"
+  ],
+  "promise_test": "python check_page.py --hardware"
+}

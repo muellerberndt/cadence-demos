@@ -177,13 +177,14 @@ def main() -> int:
                     box = page.locator("#brain-gl").bounding_box()
                     target = page.evaluate("""() => { const v = c4.view, m = v.groups.motor[3], a = v.groups.association[0];
                         return {motor: [v.pos[2 * m], v.pos[2 * m + 1]], assoc: [v.pos[2 * a], v.pos[2 * a + 1]]}; }""")
+                    # the neuron card opens after the pointer rests 140 ms on a neuron
                     page.mouse.move(box["x"] + target["motor"][0], box["y"] + target["motor"][1])
-                    page.wait_for_timeout(150)
+                    page.wait_for_timeout(600)
                     tip = page.locator("#tooltip")
                     check("hover_shows_motor_neuron", tip.is_visible() and "Motor neuron" in tip.inner_text(),
                           tip.inner_text()[:160] if tip.is_visible() else None)
                     page.mouse.move(box["x"] + target["assoc"][0], box["y"] + target["assoc"][1])
-                    page.wait_for_timeout(150)
+                    page.wait_for_timeout(600)
                     check("hover_shows_association_inputs", tip.is_visible() and "strongest inputs" in tip.inner_text().lower(),
                           tip.inner_text()[:200] if tip.is_visible() else None)
                     shot(page, "desktop-1280x800-hover.png")

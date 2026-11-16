@@ -4,58 +4,63 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#06080e">
-  <meta name="description" content="Play Connect Four against a Cadence brain and watch every neuron settle on its move.">
+  <meta name="description" content="Play Connect Four against a Cadence brain: watch its whole brain settle on every move, and teach it a better one.">
   <title>Connect Four · Cadence</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="cadence-explain.css">
+  <script src="cadence-explain.js" defer></script>
 </head>
 <body>
   <header class="masthead">
-    <a class="brand" href="../" aria-label="Cadence demos"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 17h5l4-10 7 20 4-13h6"/></svg><span>cadence</span><span class="slash">/</span><span class="sub">connect four</span></a>
-    <span class="runtime" id="runtime"><i id="runtime-dot"></i><span id="runtime-text">Starting the brain…</span><span class="runtime-more" id="runtime-more"></span></span>
+    <a class="brand" href="../" aria-label="Cadence demos" data-standalone><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 17h5l4-10 7 20 4-13h6"/></svg><span>cadence</span><span class="slash">/</span><span class="sub">connect four</span></a>
+    <span class="mast-tools">
+      <span class="runtime" id="runtime"><i id="runtime-dot"></i><span id="runtime-text">Starting the brain…</span><span class="runtime-more" id="runtime-more"></span></span>
+      <a class="help-link" data-help href="help.html" target="_blank" rel="noopener" data-explain="Everything this page shows, in full: the board, the brain, the search, teaching, the numbers and the limits." data-explain-mark="none">Help</a>
+    </span>
   </header>
 
   <main>
-    <section class="intro">
-      <h1>Play Connect Four against a Cadence brain and watch every neuron settle on its move.</h1>
-      <p class="task">Take turns dropping stones; four in a row wins. The brain sees the stones and the cells where a stone would land. On its turn the whole brain settles once: its column neurons propose the move, and three more hold its verdict on the position. With <b>Brain + search</b> a look-ahead over the rules vets the proposal; <b>Brain alone</b> plays the strongest column neuron.</p>
+    <section class="intro" data-standalone>
+      <h1>Play Connect Four against a Cadence brain.</h1>
+      <p class="task">Its whole brain settles on every move and judges the game, a search over the rules checks the move, and you can teach it a better column. Rest the pointer on a <span class="q-sample">?</span> to see what a part does.</p>
     </section>
 
     <div class="stage">
       <section class="game" aria-label="The game">
         <div class="board-wrap" id="board-wrap">
-          <div class="motor-head"><span>Motor neurons</span><span class="hint" id="motor-hint">one per column</span></div>
-          <div class="verdict" id="verdict" aria-live="polite" hidden></div>
-          <div class="search-note" id="search-note" aria-live="polite" hidden></div>
+          <div class="motor-head"><span class="label" data-explain-title="Motor neurons" data-explain="Seven neurons of the brain's motor strip, one above each column. Their bars rise as the brain settles. The strongest one whose column has room is the column the brain picks.">Motor neurons</span><span class="hint" id="motor-hint">one per column</span></div>
+          <div class="readline" id="verdict-row" hidden data-explain-title="Its verdict" data-explain="The brain's own judgement of the game before its move: will the side to move lose, draw or win? Three neurons settle on it in the same settle as the move. On positions it never saw in training it agrees with a perfect player 89.2% of the time. The move does not read it."><div class="verdict" id="verdict" aria-live="polite"></div></div>
+          <div class="readline" id="search-row" hidden data-explain-title="The search" data-explain="What the search did with the brain's column. The search is ordinary code that looks ahead over the rules of the game; it has no neurons and does not learn. It plays a win it can prove, drops a column it proves lost, and otherwise keeps the brain's column unless another scores clearly higher."><div class="search-note" id="search-note" aria-live="polite"></div></div>
           <div class="motor" id="motor" aria-label="The brain's seven motor neurons, one above each column"></div>
           <div class="board" id="board"></div>
-          <div class="ghost-head"><span>What it imagines you would reply</span><span class="ghost-tools"><label class="toggle"><input type="checkbox" id="imagine-toggle"> imagine</label><button class="info" id="ghost-info" type="button" aria-expanded="false" aria-controls="ghost-note">?</button></span></div>
-          <p class="ghost-note" id="ghost-note" hidden>Before it moves, the brain privately settles on the board each column would leave and reads the reply it would make in your seat (<code>Brain.imagine</code>). Its move comes from one settle on the real board; it does not search these. Off by default: imagining settles seven boards before each move, which adds several seconds in the browser.</p>
-          <div class="ghosts" id="ghosts"></div>
+          <div class="ghost-head" id="ghost-head" hidden><span>What it imagines you would reply</span></div>
+          <div class="ghosts" id="ghosts" hidden></div>
         </div>
         <div class="status" id="status" role="status" aria-live="polite">Starting Python in your browser…</div>
         <div class="controls">
-          <button class="primary" id="new-game" type="button" disabled>New game</button>
-          <div class="segmented" role="group" aria-label="Who plays">
-            <button type="button" data-player="search" aria-pressed="true" title="The brain proposes its columns, a look-ahead over the rules vets them">Brain + search</button>
-            <button type="button" data-player="brain" aria-pressed="false" title="One settle of the brain, its strongest column">Brain alone</button>
+          <button class="primary" id="new-game" type="button" disabled data-explain="Clears the board and starts a new game. The brain keeps what you taught it." data-explain-mark="none">New game</button>
+          <div class="segmented" role="group" aria-label="Who plays" data-explain-title="Brain + search or brain alone" data-explain="Brain + search: the brain proposes its column, and a search over the rules checks it. Brain alone: the brain's own column from one settle, with no search. It plays weaker alone.">
+            <button type="button" data-player="search" aria-pressed="true">Brain + search</button>
+            <button type="button" data-player="brain" aria-pressed="false">Brain alone</button>
           </div>
-          <div class="segmented" role="group" aria-label="Who moves first">
+          <div class="segmented" role="group" aria-label="Who moves first" data-explain-title="Who starts" data-explain="Who drops the first stone. The first player can always win Connect Four with perfect play, so starting gives you the better side.">
             <button type="button" data-first="you" aria-pressed="true">You start</button>
             <button type="button" data-first="brain" aria-pressed="false">Brain starts</button>
           </div>
-          <button id="undo" type="button" disabled>Undo</button>
-          <button id="teach" type="button" disabled title="Show the brain a better move for its last turn">Teach it</button>
+          <button id="undo" type="button" disabled data-explain="Takes back your last move and the brain's reply." data-explain-mark="none">Undo</button>
+          <span class="teach-wrap" data-explain-title="Teach it" data-explain="After the brain's move, press Teach it and click the column it should have played. One lesson changes its synapses here in your browser, and the same board settles again. Click the column again to repeat the lesson. Reset brain undoes your lessons."><button id="teach" type="button" disabled>Teach it</button></span>
+          <label class="toggle" data-explain-title="Imagine" data-explain="Before its move, the brain privately settles on the board each of its columns would leave, from your seat, and shows the reply it would make there. Nothing in it changes, and its move does not use these. Adds a few seconds a move."><input type="checkbox" id="imagine-toggle"> imagine</label>
         </div>
       </section>
 
       <section class="brain" aria-label="The whole brain">
         <div class="brain-head">
-          <div class="brain-title"><h2>The whole brain</h2><p id="brain-size">loading…</p></div>
-          <div class="readout" aria-live="off"><span id="settle-text">at rest</span><canvas id="spark" aria-label="Largest activation change in each sweep"></canvas></div>
+          <div class="brain-title"><h2 data-explain-title="The whole brain" data-explain="Every neuron of the brain and the synapses carrying its messages, laid out like an animal brain seen from the side, front to the left. On its turn the whole brain settles: messages run both ways between its regions until no neuron changes. Rest the pointer on a neuron to see its activity.">The whole brain</h2><p id="brain-size">loading…</p></div>
+          <div class="readout" aria-live="off" data-explain-title="The settle" data-explain="Each sweep, every neuron updates from the neurons it reads. The line is the largest change in a sweep; the brain's answer is ready when it falls under the dashed line."><span id="settle-text">at rest</span><canvas id="spark" aria-label="Largest activation change in each sweep"></canvas></div>
         </div>
         <div class="brain-stage" id="brain-stage">
           <canvas id="brain-gl" aria-label="Every neuron of the brain and the synapses carrying its messages"></canvas>
@@ -63,19 +68,19 @@
           <div class="tooltip" id="tooltip" hidden></div>
         </div>
         <div class="brain-foot">
-          <span class="legend"><span><i class="sw own"></i>its stones</span><span><i class="sw opp"></i>your stones</span><span><i class="sw play"></i>playable</span><span><i class="sw first"></i>module 0</span><span><i class="sw assoc"></i>association</span><span><i class="sw motor"></i>motor</span><span><i class="sw verdict"></i>verdict</span><span><i class="ln exc"></i>excites</span><span><i class="ln inh"></i>inhibits</span></span>
-          <span class="lessons"><span id="lessons-note"></span><button type="button" id="reset-brain" hidden>Reset brain</button></span>
+          <span class="legend" data-explain-title="Colours" data-explain="The colours of the neurons by region, and of the synapses: warm lines carry exciting messages, cool lines inhibiting ones. A brighter line carries a stronger message in this sweep."><span><i class="sw own"></i>its stones</span><span><i class="sw opp"></i>your stones</span><span><i class="sw play"></i>playable</span><span><i class="sw first"></i>module 0</span><span><i class="sw assoc"></i>association</span><span><i class="sw motor"></i>motor</span><span><i class="sw verdict"></i>verdict</span><span><i class="ln exc"></i>excites</span><span><i class="ln inh"></i>inhibits</span></span>
+          <span class="lessons"><span id="lessons-note"></span><button type="button" id="reset-brain" hidden data-explain="Puts back the brain as it was trained, undoing every lesson you gave it." data-explain-mark="none">Reset brain</button></span>
         </div>
       </section>
     </div>
 
-    <details class="model-card" id="model-card">
+    <details class="model-card" id="model-card" data-standalone>
       <summary><span>Model card</span><span class="summary-line" id="card-summary">numbers, training, provenance and licence</span></summary>
       <div class="card-body" id="card-body"><p>Loading…</p></div>
     </details>
   </main>
 
-  <footer class="footer">Made with <a href="https://github.com/muellerberndt/cadence" target="_blank" rel="noreferrer">Cadence</a>. The brain runs in this tab, in Python, through Pyodide. GPL-3.0.</footer>
+  <footer class="footer" data-standalone>Made with <a href="https://github.com/muellerberndt/cadence" target="_blank" rel="noreferrer">Cadence</a>. The brain runs in this tab, in Python, through Pyodide. GPL-3.0.</footer>
   <script type="module" src="app.js"></script>
 </body>
 </html>

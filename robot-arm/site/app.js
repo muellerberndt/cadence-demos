@@ -1,5 +1,6 @@
 // The page: the cell in three.js, the visitor's placements, and the run loop that asks the brain
-// (in the worker) for one decision at a time and steps the physics in real time between them.
+// (in the worker) for one decision at a time, steps the physics between them, and plays the arm
+// back on screen from a short buffer so it moves without pauses.
 import * as THREE from 'three';
 import { OrbitControls } from './vendor/three/jsm/controls/OrbitControls.js';
 import { RoomEnvironment } from './vendor/three/jsm/environments/RoomEnvironment.js';
@@ -19,10 +20,18 @@ const BIN_ZONE = { x: [0.60, 0.72], y: [-0.33, 0.33] };
 const CAP = 120; // decisions per run
 const TRAIL = 240; // fingertip positions kept in the trail
 const PHYSICS_DT = 0.002;
+// The screen plays the arm back from a short buffer: the physics and the brain run up to LEAD
+// seconds of arm time (times the speed) ahead of what is shown, so the arm never stops on screen
+// while the brain settles. The dynamics are the training cell's exactly (the physics still waits
+// for every decision); only the picture, the brain panel and the messages lag by up to LEAD.
+const LEAD = 0.3;
+const play = { t: 0, simT: 0, snaps: [], events: [], expected: 0, shown: 0 };
 const $ = (id) => document.getElementById(id);
 
 const ui = { status: $('status'), statusText: $('status-text'), run: $('run'), reset: $('reset'), shuffle: $('shuffle'), toast: $('toast'),
-  targetA: $('target-A'), targetB: $('target-B'), sub: $('brain-sub'), decision: $('s-decision'), sweeps: $('s-sweeps'), ms: $('s-ms') };
+  targetA: $('target-A'), targetB: $('target-B'), sub: $('brain-sub'), decision: $('s-decision'), sweeps: $('s-sweeps'), ms: $('s-ms'),
+  coach: $('coach'), coachStep: $('coach-step'), coachText: $('coach-text'),
+  tags: { block: $('tag-block'), A: $('tag-A'), B: $('tag-B') } };
 const state = { phase: 'loading', speed: 1, decision: 0, placement: [0.45, 0.10], target: 'A', budget: 0, brainReady: false, events: [] };
 let cell, mujoco, brain, view;
 
@@ -32,6 +41,38 @@ function toast(text, kind = '', ms = 2200) {
   ui.toast.textContent = text; ui.toast.className = `toast ${kind}`; ui.toast.hidden = false;
   clearTimeout(toastTimer);
   if (ms) toastTimer = setTimeout(() => { ui.toast.hidden = true; }, ms);
+}
+
+// --- the coach: one line that walks the visitor through the page, by what is happening ----------
+const COACH = {
+  loading: ['', 'The physics and the brain are loading in your browser.'],
+  idle: ['Try it', 'Drag the <b class="c-block">block</b> or a <b>bin</b>, or leave them. Click a bin to make it the <b class="c-target">target</b>. Then press <b>Run</b>.'],
+  reach: ['Watch', 'The arm reaches for the block. About five times a second, its brain (right) settles on the next move.'],
+  carry: ['Your turn', 'It carries the block. <b>Drag the lit bin</b> to a new place: the arm follows it.'],
+  dragging: ['Your turn', 'Let go anywhere inside the dashed area.'],
+  moved: ['Watch', 'You moved the bin. At its next decision the brain senses the new place and steers there.'],
+  slipped: ['Watch', 'The block slipped. The brain goes back for it.'],
+  doneMoved: ['Again?', 'It placed the block in the bin you moved. Move things and press <b>Run again</b>.'],
+  done: ['Again?', 'Press <b>Run again</b>, and this time drag the lit bin while the arm carries the block.'],
+};
+function coachKey() {
+  if (state.phase === 'loading' || !state.brainReady) return 'loading';
+  if (state.phase === 'idle') return 'idle';
+  if (state.phase === 'done') return state.movedMidCarry && /^Placed in bin/.test(document.body.dataset.result || '') ? 'doneMoved' : 'done';
+  if (drag && drag.kind === 'bin' && cell.holding) return 'dragging';
+  if (state.movedMidCarry) return 'moved';
+  if (cell.holding) return 'carry';
+  return state.grasped ? 'slipped' : 'reach';
+}
+function updateCoach() {
+  const key = coachKey();
+  if (key === state.coach) return;
+  state.coach = key;
+  const [step, html] = COACH[key];
+  ui.coachStep.textContent = step;
+  ui.coachText.innerHTML = html;
+  ui.coach.classList.toggle('call', key === 'carry');
+  document.body.dataset.coach = key;
 }
 
 // Where the runtime pack lives: <meta name="cadence-pack"> if the host page sets one, else pack/ beside this page.
@@ -59,9 +100,9 @@ class BrainWorker {
 // --- three.js -----------------------------------------------------------------------------------
 const canvas = $('scene');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.type = THREE.PCFShadowMap;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 const scene = new THREE.Scene();
@@ -122,6 +163,7 @@ scene.add(catcher);
 
 // Post-processing: bloom on what glows (the lamp, the target bin, the hand's aim and trail).
 const composer = new EffectComposer(renderer);
+composer.setPixelRatio(1);
 composer.addPass(new RenderPass(scene, camera));
 const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.5, 0.4, 1.6);
 composer.addPass(bloom);
@@ -247,15 +289,43 @@ async function buildPanda() {
   }
 }
 
+// One physics step's poses (the arm's bodies, then the block) and the fingertip, for the playback.
+function record() {
+  const d = cell.data, n = scenery.bodies.length + 1;
+  const pos = new Float64Array(3 * n), quat = new Float64Array(4 * n);
+  const put = (i, id) => {
+    for (let k = 0; k < 3; k++) pos[3 * i + k] = d.xpos[3 * id + k];
+    for (let k = 0; k < 4; k++) quat[4 * i + k] = d.xquat[4 * id + k];
+  };
+  scenery.bodies.forEach(({ id }, i) => put(i, id));
+  put(n - 1, cell.blockBody);
+  play.snaps.push({ t: play.simT, pos, quat, tip: cell.tip() });
+}
+// Show fn when the playback reaches the physics' present moment.
+function defer(fn) { play.events.push({ t: play.simT, fn }); }
+function clearPlay() { play.t = 0; play.simT = 0; play.snaps.length = 0; play.events.length = 0; }
+
 function syncScene() {
-  const d = cell.data, m = cell.model;
-  for (const { id, group } of scenery.bodies) {
-    group.position.set(d.xpos[3 * id], d.xpos[3 * id + 1], d.xpos[3 * id + 2]);
-    group.quaternion.set(d.xquat[4 * id + 1], d.xquat[4 * id + 2], d.xquat[4 * id + 3], d.xquat[4 * id]);
-  }
+  const d = cell.data, m = cell.model, s = play.snaps[0];
+  const pos = s ? s.pos : null, quat = s ? s.quat : null;
+  scenery.bodies.forEach(({ id, group }, i) => {
+    if (s) {
+      group.position.set(pos[3 * i], pos[3 * i + 1], pos[3 * i + 2]);
+      group.quaternion.set(quat[4 * i + 1], quat[4 * i + 2], quat[4 * i + 3], quat[4 * i]);
+    } else {
+      group.position.set(d.xpos[3 * id], d.xpos[3 * id + 1], d.xpos[3 * id + 2]);
+      group.quaternion.set(d.xquat[4 * id + 1], d.xquat[4 * id + 2], d.xquat[4 * id + 3], d.xquat[4 * id]);
+    }
+  });
   const b = cell.blockBody, block = scenery.block;
-  block.position.set(d.xpos[3 * b], d.xpos[3 * b + 1], d.xpos[3 * b + 2]);
-  block.quaternion.set(d.xquat[4 * b + 1], d.xquat[4 * b + 2], d.xquat[4 * b + 3], d.xquat[4 * b]);
+  if (s) {
+    const i = scenery.bodies.length;
+    block.position.set(pos[3 * i], pos[3 * i + 1], pos[3 * i + 2]);
+    block.quaternion.set(quat[4 * i + 1], quat[4 * i + 2], quat[4 * i + 3], quat[4 * i]);
+  } else {
+    block.position.set(d.xpos[3 * b], d.xpos[3 * b + 1], d.xpos[3 * b + 2]);
+    block.quaternion.set(d.xquat[4 * b + 1], d.xquat[4 * b + 2], d.xquat[4 * b + 3], d.xquat[4 * b]);
+  }
   block.scale.setScalar(2 * cell.half);
   for (const k of ['A', 'B']) {
     const isTarget = state.target === k;
@@ -273,6 +343,32 @@ function syncScene() {
   const pts = scenery.releaseLine.geometry.attributes.position;
   pts.setXYZ(0, rx, ry, 0.0); pts.setXYZ(1, rx, ry, LIFT); pts.needsUpdate = true;
   scenery.releaseLine.computeLineDistances();
+}
+
+// The names over the block and the bins follow them on screen.
+const tagPoint = new THREE.Vector3();
+function placeTag(el, x, y, z, show) {
+  if (!show) { el.hidden = true; return; }
+  tagPoint.set(x, y, z).project(camera);
+  if (tagPoint.z > 1) { el.hidden = true; return; }
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  el.hidden = false;
+  el.style.transform = `translate(${Math.round((tagPoint.x + 1) / 2 * w)}px, ${Math.round((1 - tagPoint.y) / 2 * h) - 6}px) translate(-50%, -100%)`;
+}
+function syncTags() {
+  const running = state.phase === 'running';
+  const [bx, by, bz] = scenery.block.position.toArray();
+  placeTag(ui.tags.block, bx, by, bz + cell.half + 0.02, !running && cell.inBin(bx, by, 0.02) === null); // a placed block keeps its bin's name clear
+  const call = running && cell.holding && !state.movedMidCarry;
+  for (const k of ['A', 'B']) {
+    const [x, y] = cell.bins[k], el = ui.tags[k], isTarget = state.target === k;
+    placeTag(el, x, y, 0.07, true);
+    const text = isTarget ? (call ? `drag bin ${k}` : `bin ${k} · target`) : `bin ${k}`;
+    const t = el.firstElementChild;
+    if (t.textContent !== text) t.textContent = text;
+    el.classList.toggle('target', isTarget);
+    el.classList.toggle('call', isTarget && call);
+  }
 }
 
 const fitted = { portrait: null };
@@ -355,7 +451,13 @@ canvas.addEventListener('pointermove', (e) => {
     if (blockAllowed(x, y) && canDragBlock()) { cell.placeBlock(x, y); if (state.phase !== 'running') state.placement = [x, y]; }
   } else {
     const [x, y] = binClamp(p.x + drag.dx, p.y + drag.dy);
-    if (binAllowed(drag.name, x, y)) cell.moveBin(drag.name, x, y);
+    if (binAllowed(drag.name, x, y)) {
+      cell.moveBin(drag.name, x, y);
+      if (state.phase === 'running' && cell.holding && drag.name === state.target) {
+        state.movedMidCarry = true;
+        (state.moves ||= []).push({ decision: state.decision, to: [x, y] });
+      }
+    }
   }
 });
 function endDrag(e) {
@@ -384,7 +486,8 @@ async function resetScene() {
   cell.home();
   cell.placeBlock(...state.placement);
   cell.setOrder(state.target);
-  state.decision = 0; state.budget = 0;
+  state.decision = 0; state.ended = false;
+  clearPlay();
   scenery.aim.visible = false;
   scenery.trailCount = 0; scenery.trail.geometry.setDrawRange(0, 0);
   view?.clear();
@@ -396,7 +499,9 @@ async function run() {
   if (!state.brainReady || state.phase === 'running') return;
   if (state.phase === 'done' || state.decision > 0) await resetScene();
   else await brain.call('reset');
-  state.phase = 'running'; state.decision = 0; state.started = performance.now();
+  clearPlay();
+  state.phase = 'running'; state.decision = 0; state.ended = false; state.started = performance.now();
+  state.movedMidCarry = false; state.grasped = false; state.moves = [];
   ui.run.textContent = 'Stop'; ui.run.disabled = false;
   ui.toast.hidden = true;
   setStatus('Running', 'ready');
@@ -417,8 +522,8 @@ function stop(message, kind = '') {
 const WAVE_EVERY = (() => { const v = new URLSearchParams(location.search).get('wave'); return v === null ? 2 : Math.max(0, Number(v) || 0); })();
 
 async function think() {
-  if (state.phase !== 'running') return;
-  if (state.decision >= CAP) { stop(`Out of time after ${CAP} decisions`, 'bad'); return; }
+  if (state.phase !== 'running' || state.ended) return;
+  if (state.decision >= CAP) { state.ended = true; defer(() => stop(`Out of time after ${CAP} decisions`, 'bad')); return; }
   const x = cell.observe();
   state.awaiting = true;
   let reply;
@@ -427,38 +532,44 @@ async function think() {
   state.awaiting = false;
   if (state.phase !== 'running') return;
   const answer = reply.refused ? holdAnswer() : reply.answer;
-  view.update(reply, reply.refused ? null : answer);
-  if (reply.activation && view.pop?.association) {
-    const p = view.pop.association;
-    let mean = 0;
-    for (let i = 0; i < p.size; i++) mean += Math.max(0, reply.activation[p.start + i]);
-    rimState.target = 0.25 + 1.1 * Math.min(1, mean / p.size / 0.5);
-  }
-  ui.decision.textContent = String(state.decision + 1);
-  ui.sweeps.textContent = reply.refused ? 'refused' : `${reply.sweeps}`;
-  ui.ms.textContent = `${Math.round(reply.ms ?? reply.worker_ms)} ms`;
   (state.thinkMs ||= []).push(reply.ms ?? reply.worker_ms);
   (state.frames ||= []).push([reply.worker_ms ?? reply.ms, reply.wave ? 1 : 0]);
-  if (reply.wave) view.playWave(reply.wave, (k, of) => { ui.sweeps.textContent = `${k} / ${of}`; }, () => { ui.sweeps.textContent = `${reply.sweeps}`; });
   const { target, qTarget } = cell.command(answer);
-  scenery.aim.position.set(...target); scenery.aim.visible = true;
+  const number = state.decision + 1;
+  defer(() => { // the brain panel and the counters, when the arm on screen reaches this decision
+    view.update(reply, reply.refused ? null : answer);
+    if (reply.activation && view.pop?.association) {
+      const p = view.pop.association;
+      let mean = 0;
+      for (let i = 0; i < p.size; i++) mean += Math.max(0, reply.activation[p.start + i]);
+      rimState.target = 0.25 + 1.1 * Math.min(1, mean / p.size / 0.5);
+    }
+    ui.decision.textContent = String(number);
+    ui.sweeps.textContent = reply.refused ? 'refused' : `${reply.sweeps}`;
+    ui.ms.textContent = `${Math.round(reply.ms ?? reply.worker_ms)} ms`;
+    if (reply.wave) view.playWave(reply.wave, (k, of) => { ui.sweeps.textContent = `${k} / ${of}`; }, () => { ui.sweeps.textContent = `${reply.sweeps}`; });
+    scenery.aim.position.set(...target); scenery.aim.visible = true;
+  });
   cell.decideBegin(qTarget, answer[3]);
-  state.phase = 'running'; state.moving = true;
+  state.moving = true;
 }
 
 function finishDecision() {
   state.moving = false;
   const out = cell.decideEnd();
   state.decision += 1;
-  if (out.event === 'grasped') toast('Grasped', '', 1200);
-  else if (out.event === 'slipped') toast('The block slipped. The brain tries again.', 'bad', 1800);
-  else if (out.dropped) toast('Dropped outside a bin. The brain tries again.', 'bad', 1800);
-  if (out.lost) { stop('The block left the table', 'bad'); return; }
+  defer(() => {
+    if (out.event === 'grasped') { state.grasped = true; toast('Grasped', '', 1200); }
+    else if (out.event === 'slipped') toast('The block slipped. The brain tries again.', 'bad', 1800);
+    else if (out.dropped) toast('Dropped outside a bin. The brain tries again.', 'bad', 1800);
+  });
+  if (out.lost) { state.ended = true; defer(() => stop('The block left the table', 'bad')); return; }
   if (out.done) {
     const [, bin, verdict] = out.event.split(':');
-    const seconds = (state.decision * 0.2).toFixed(1);
-    if (verdict === 'right') stop(`Placed in bin ${bin} in ${state.decision} decisions (${seconds} s of arm time)`, 'good');
-    else stop(`Placed in bin ${bin}, the other bin`, 'bad');
+    const n = state.decision, seconds = (n * 0.2).toFixed(1);
+    state.ended = true;
+    if (verdict === 'right') defer(() => stop(`Placed in bin ${bin} in ${n} decisions (${seconds} s of arm time)`, 'good'));
+    else defer(() => stop(`Placed in bin ${bin}, the other bin`, 'bad'));
     return;
   }
   think();
@@ -488,7 +599,7 @@ document.querySelectorAll('.speed .seg').forEach((b) => b.addEventListener('clic
 
 function trailStep() {
   if (state.phase !== 'running') return;
-  const [x, y, z] = cell.tip();
+  const [x, y, z] = play.snaps[0] ? play.snaps[0].tip : cell.tip();
   const n = TRAIL, P = scenery.trailPos, C = scenery.trailCol;
   if (scenery.trailCount < n) scenery.trailCount += 1; else P.copyWithin(0, 3);
   const k = scenery.trailCount - 1;
@@ -508,13 +619,24 @@ let last = performance.now();
 function frame(now) {
   const dt = Math.min(0.05, (now - last) / 1000);
   last = now;
-  if (cell && state.phase === 'running' && state.moving) {
-    state.budget += (dt / PHYSICS_DT) * state.speed;
-    const steps = Math.min(Math.floor(state.budget), 200);
-    state.budget -= steps;
-    if (steps > 0 && cell.stepPhysics(steps) === 0) finishDecision();
+  if (cell && state.phase === 'running') {
+    // the physics: up to LEAD (times the speed) of arm time ahead of the screen
+    let room = Math.min(600, Math.floor((play.t + LEAD * Math.max(1, state.speed) - play.simT) / PHYSICS_DT));
+    while (room-- > 0 && state.moving && state.phase === 'running') {
+      const left = cell.stepPhysics(1);
+      play.simT += PHYSICS_DT;
+      record();
+      if (left === 0) finishDecision();
+    }
+    // the screen: steady arm time, unless the buffer runs dry (the brain slower than the clock)
+    const want = dt * state.speed, next = Math.min(play.t + want, play.simT);
+    if (play.simT > 0 && !state.ended) { play.expected += want; play.shown += next - play.t; }
+    play.t = next;
+    while (play.snaps.length > 1 && play.snaps[1].t <= play.t + 1e-9) play.snaps.shift();
+    while (play.events.length && play.events[0].t <= play.t + 1e-9 && state.phase === 'running') play.events.shift().fn();
   }
-  if (cell) { syncScene(); trailStep(); }
+  if (cell) { syncScene(); trailStep(); syncTags(); }
+  updateCoach();
   rimState.level += (rimState.target - rimState.level) * (1 - Math.exp(-dt / 0.18));
   rimState.target += (0.08 - rimState.target) * (1 - Math.exp(-dt / 0.6));
   rim.strength.value = rimState.level;
@@ -540,13 +662,28 @@ async function start() {
     setTarget('A');
     resize();
     requestAnimationFrame(frame);
-    window.cadenceArm = { cell, state, run, setTarget, resetScene, get view() { return view; }, // for the page check
-      screenOf(x, y, z) { const v = new THREE.Vector3(x, y, z).project(camera); const r = canvas.getBoundingClientRect(); return [r.left + (v.x + 1) / 2 * r.width, r.top + (1 - v.y) / 2 * r.height]; } };
+    window.cadenceArm = { cell, state, play, run, setTarget, resetScene, get view() { return view; }, // for the page check
+      screenOf(x, y, z) { const v = new THREE.Vector3(x, y, z).project(camera); const r = canvas.getBoundingClientRect(); return [r.left + (v.x + 1) / 2 * r.width, r.top + (1 - v.y) / 2 * r.height]; },
+      // a screen point whose first hit is the named bin ('A', 'B') or the block, as a visitor would press it
+      grabPoint(name) {
+        const [x, y] = name === 'block' ? cell.blockPos() : cell.bins[name];
+        const r = canvas.getBoundingClientRect();
+        for (const [ox, oy, z] of [[0, 0, 0.004], [0.03, 0, 0.004], [-0.03, 0, 0.004], [0, 0.03, 0.004], [0, -0.03, 0.004], [BIN_SIDE / 2, 0, 0.035], [0, BIN_SIDE / 2, 0.035], [0, -BIN_SIDE / 2, 0.035]]) {
+          const v = new THREE.Vector3(x + ox, y + oy, z).project(camera);
+          const sx = r.left + (v.x + 1) / 2 * r.width, sy = r.top + (1 - v.y) / 2 * r.height;
+          pick({ clientX: sx, clientY: sy });
+          const hit = raycaster.intersectObjects(scene.children, true).find((h) => h.object.visible && h.object.isMesh && h.object !== ground && h.object !== catcher);
+          const d = hit?.object.userData;
+          if (d && (name === 'block' ? d.kind === 'block' : d.kind === 'bin' && d.name === name)) return [sx, sy];
+        }
+        return null;
+      },
+      tableAt(sx, sy) { const p = onTable({ clientX: sx, clientY: sy }); return p ? [p.x, p.y] : null; } };
   } catch (error) {
     setStatus(`Physics failed to load: ${error.message}`, 'error');
     throw error;
   }
-  view = new BrainView($('brain'), $('brain-tip'));
+  view = new BrainView($('brain'));
   brain = new BrainWorker();
   try {
     const desc = await brain.call('init', { pack: PACK });

@@ -1,7 +1,8 @@
-"""The player page's promise, tried end to end in a headless Chromium: it loads, plays, stays on
-the decision the video shows (after playing, a seek, a pause and a speed change), and live mode
-settles the brain on the recorded inputs and chooses the recorded buttons. Frame time with the
-brain view on is measured. Writes player/evidence/player_check.json.
+"""The player page's brain-alone recording, tried end to end in a headless Chromium: it loads,
+plays, stays on the decision the video shows (after playing, a seek, a pause and a speed change),
+and live mode settles the brain on the recorded inputs and chooses the recorded buttons. Frame
+time with the brain view on is measured. The page is served from player/ by itself, as the demos
+site serves it. Writes player/evidence/player_check.json (or --out).
 
     python player/check_player.py --live 40
 """
@@ -64,7 +65,7 @@ class RangeHandler(http.server.SimpleHTTPRequestHandler):
 
 
 def serve() -> tuple[http.server.ThreadingHTTPServer, int]:
-    handler = functools.partial(RangeHandler, directory=str(ROOT))
+    handler = functools.partial(RangeHandler, directory=str(HERE))
     server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
     threading.Thread(target=server.serve_forever, daemon=True).start()
     return server, server.server_address[1]
@@ -76,11 +77,12 @@ def main() -> None:
     p.add_argument("--live-timeout", type=float, default=900)
     p.add_argument("--screenshot", type=Path, default=ROOT / "docs" / "player.png")
     p.add_argument("--only-live", action="store_true", help="skip the recorded-mode checks")
+    p.add_argument("--out", type=Path, default=HERE / "evidence" / "player_check.json")
     a = p.parse_args()
     from playwright.sync_api import sync_playwright
     server, port = serve()
-    url = f"http://127.0.0.1:{port}/player/index.html"
-    report = {"url": "player/index.html", "checks": {}}
+    url = f"http://127.0.0.1:{port}/index.html?rec=alone"
+    report = {"url": "player/index.html?rec=alone", "checks": {}}
     with sync_playwright() as pw:
         browser = pw.chromium.launch(args=["--autoplay-policy=no-user-gesture-required"])
         page = browser.new_page(viewport={"width": 1500, "height": 960})
@@ -155,8 +157,8 @@ def main() -> None:
         browser.close()
     server.shutdown()
     report["ok"] = all(c["ok"] for c in report["checks"].values()) and not report["page_errors"]
-    out = HERE / "evidence" / "player_check.json"
-    out.parent.mkdir(exist_ok=True)
+    out = a.out
+    out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report, indent=1) + "\n")
     print(json.dumps(report, indent=1))
 

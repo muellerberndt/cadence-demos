@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Eyes · Help</title>
+  <meta name="description" content="What the Eyes demo shows: one Cadence brain gives every shape its own eye from the page's pixels, and when nothing moves it rests and does no work.">
+  <link rel="stylesheet" href="cadence-help.css">
+  <script src="cadence-explain.js" defer></script>
+  <style>
+    .svg-label { font: 500 11px ui-monospace, "IBM Plex Mono", Menlo, monospace; fill: #cfe0e3; }
+    .svg-quiet { font: 500 10px ui-monospace, "IBM Plex Mono", Menlo, monospace; fill: #8ea4aa; }
+    .svg-num { font: 700 11px ui-monospace, "IBM Plex Mono", Menlo, monospace; fill: #0b1215; }
+  </style>
+</head>
+<body>
+  <header class="help-bar"><span class="crumb">cadence / <b>eyes</b> / help</span><span class="spacer"></span><a href="./">Back to the demo</a></header>
+  <main class="help">
+    <h1>Eyes</h1>
+    <p class="lede">Shapes drift over a grey surface. One brain, running inside your browser, gives each shape its own eye and keeps the eye on its shape. It sees nothing but the page's pixels.</p>
+    <p class="shows"><b>What it shows about Cadence</b>A Cadence brain has a real state that carries over from one moment to the next, and it runs in real time, like the brain of a living being. When nothing moves, that state is the answer, so the brain rests and does no settling work at all, like a resting animal. Move a shape and the brain works only for that move: the shape's eye jumps after it, and the brain comes to rest again.</p>
+    <nav class="toc" aria-label="On this page"><a href="#see">What you see</a><a href="#why">Why it matters</a><a href="#do">What you can do</a><a href="#how">How it works</a><a href="#numbers">The numbers</a><a href="#limits">Limits</a><a href="#keys">Keys</a></nav>
+
+    <h2 id="see">What you see</h2>
+    <figure>
+      <svg viewBox="0 0 720 400" role="img" aria-label="The page: on the left the surface with shapes and their eyes, the walk-through line, the brain's state, the work strip and the controls; on the right the brain with its regions, the settle curve and what each eye sees.">
+        <rect x="0.5" y="0.5" width="719" height="399" rx="10" fill="#0b0e13" stroke="#22323a"/>
+        <!-- left: the surface -->
+        <rect x="16" y="16" width="380" height="368" rx="8" fill="#131821" stroke="#222a37"/>
+        <rect x="28" y="28" width="356" height="20" rx="4" fill="#1d2430"/>
+        <rect x="28" y="56" width="356" height="200" rx="6" fill="#16191d"/>
+        <circle cx="96" cy="112" r="12" fill="#bfc4c9"/>
+        <rect x="80" y="96" width="32" height="32" fill="none" stroke="#46d07a" stroke-width="2"/>
+        <rect x="40" y="60" width="112" height="104" fill="none" stroke="#46d07a" stroke-dasharray="4 5" stroke-opacity="0.6"/>
+        <rect x="91" y="107" width="10" height="10" fill="none" stroke="#46d07a" stroke-width="2"/>
+        <rect x="236" y="168" width="22" height="22" fill="#d9dde2" transform="rotate(20 247 179)"/>
+        <rect x="231" y="163" width="32" height="32" fill="none" stroke="#6aa8ff" stroke-width="2"/>
+        <rect x="242" y="174" width="10" height="10" fill="none" stroke="#6aa8ff" stroke-width="2"/>
+        <polygon points="320,90 334,116 306,116" fill="#9aa1a8"/>
+        <rect x="28" y="264" width="356" height="22" rx="5" fill="#121b29" stroke="#2c3a52"/>
+        <rect x="28" y="294" width="112" height="16" rx="8" fill="#1f3326"/>
+        <text class="svg-quiet" x="38" y="306" fill="#b6f1c6">at rest: no work</text>
+        <rect x="28" y="318" width="356" height="28" rx="4" fill="#080a0e"/>
+        <line x1="34" y1="340" x2="378" y2="340" stroke="#363c49" stroke-width="2"/>
+        <rect x="300" y="324" width="3" height="16" fill="#6aa8ff"/><rect x="306" y="328" width="3" height="12" fill="#6aa8ff"/>
+        <rect x="28" y="354" width="356" height="16" rx="4" fill="#131821"/>
+        <!-- right: the brain -->
+        <rect x="408" y="16" width="296" height="368" rx="8" fill="#131821" stroke="#222a37"/>
+        <ellipse cx="556" cy="150" rx="118" ry="92" fill="#0d1a26" stroke="#2c4a6a"/>
+        <circle cx="520" cy="170" r="26" fill="#59b7ff" fill-opacity="0.35"/>
+        <circle cx="560" cy="120" r="20" fill="#59b7ff" fill-opacity="0.25"/>
+        <circle cx="610" cy="150" r="10" fill="#59e5cb" fill-opacity="0.5"/>
+        <circle cx="630" cy="186" r="6" fill="#ffbf70" fill-opacity="0.7"/>
+        <rect x="420" y="262" width="110" height="34" rx="4" fill="#0a1119"/>
+        <polyline points="424,268 450,276 476,284 502,290 526,292" fill="none" stroke="#6aa8ff" stroke-width="1.5"/>
+        <rect x="420" y="306" width="36" height="36" rx="4" fill="#0f1218" stroke="#46d07a"/><rect x="462" y="306" width="36" height="36" rx="4" fill="#0f1218" stroke="#6aa8ff"/>
+        <circle cx="438" cy="324" r="6" fill="#ddd"/><rect x="474" y="318" width="12" height="12" fill="#ddd"/>
+        <!-- the numbers -->
+        <g>
+          <circle cx="160" cy="40" r="9" fill="#ffd296"/><text class="svg-num" x="160" y="44" text-anchor="middle">1</text>
+          <circle cx="140" cy="200" r="9" fill="#ffd296"/><text class="svg-num" x="140" y="204" text-anchor="middle">2</text>
+          <circle cx="60" cy="146" r="9" fill="#ffd296"/><text class="svg-num" x="60" y="150" text-anchor="middle">3</text>
+          <circle cx="396" cy="275" r="9" fill="#ffd296"/><text class="svg-num" x="396" y="279" text-anchor="middle">4</text>
+          <circle cx="154" cy="302" r="9" fill="#ffd296"/><text class="svg-num" x="154" y="306" text-anchor="middle">5</text>
+          <circle cx="396" cy="332" r="9" fill="#ffd296"/><text class="svg-num" x="396" y="336" text-anchor="middle">6</text>
+          <circle cx="396" cy="362" r="9" fill="#ffd296"/><text class="svg-num" x="396" y="366" text-anchor="middle">7</text>
+          <circle cx="676" cy="64" r="9" fill="#ffd296"/><text class="svg-num" x="676" y="68" text-anchor="middle">8</text>
+          <circle cx="544" cy="279" r="9" fill="#ffd296"/><text class="svg-num" x="544" y="283" text-anchor="middle">9</text>
+          <circle cx="514" cy="324" r="9" fill="#ffd296"/><text class="svg-num" x="514" y="328" text-anchor="middle">10</text>
+        </g>
+        <text class="svg-label" x="420" y="372">the brain, live</text>
+        <text class="svg-label" x="28" y="394" fill="#8ea4aa">the surface the brain sees</text>
+      </svg>
+      <figcaption>The page, drawn simply. The numbers match the list below.</figcaption>
+    </figure>
+    <ol>
+      <li><b>The toolbar.</b> Add a shape, start a new scene (Three, Six, Crowd, Unseen), clear the surface, open this help.</li>
+      <li><b>The surface.</b> Shapes on a grey, slightly noisy background. These pixels are everything the brain sees. A faint circle around a shape means it has an eye.</li>
+      <li><b>An eye.</b> Each eye has its own colour. The solid square is its sharp centre, where it sees one pixel at a time. The dashed square is how far it sees, 40 pixels each way, coarser the farther out. The small box is the brain's answer: where it says the eye's shape is. It is solid when the answer is right and dashed when it is not, and it is larger the farther out it points, because the eye sees coarser there.</li>
+      <li><b>The walk-through.</b> One line that says what to try next, and says what the page just showed.</li>
+      <li><b>What the brain is doing.</b> <i>At rest: no work</i> when nothing any eye sees has changed; <i>settling: 32 sweeps</i> when something moved and the brain repaired its state. Beside it: the sweeps of the last frame, the brain's time for it, how many frames a second it answers, and how many eyes have their own shape at their centre.</li>
+      <li><b>Work, frame by frame.</b> The settling sweeps of the last 300 frames. A flat line is a brain at rest.</li>
+      <li><b>The controls.</b> Let the shapes move on their own or hold them, show or hide the eyes, pause, and set how often the brain may look.</li>
+      <li><b>The brain.</b> Every neuron and synapse of the one brain, showing the stream of one eye (the eye with the outlined view below). Its regions carry their names; point at a name to read what the region does.</li>
+      <li><b>The settle.</b> Several times a second one frame's settle plays sweep by sweep on the brain, a wave from the retina to the gaze neurons. This curve shows how much the busiest neuron changed at each sweep: it falls as the brain comes to agree.</li>
+      <li><b>What each eye sees.</b> Each eye's 25 by 25 receptors, sharp in the middle and coarse at the edge, with what changed since the last frame in red. Click one to show that eye in the brain.</li>
+    </ol>
+    <p>Every part of the page carries a question mark or explains itself when the pointer rests on it.</p>
+
+    <h2 id="why">Why it matters</h2>
+    <p><b>Work only when something moves.</b> A resting animal spends little on a scene that does not change; what moves draws its eyes and its effort. A Cadence brain has the same habit, from the way it computes. Its answer is a settled state: a state in which all its parts agree with each other and with what the eyes see. That state carries over to the next frame. When the next frame is the same, the state it holds is the answer, and the brain passes its check without a single sweep of work. When a shape moves, the parts that disagree repair their state, sweep by sweep, until the brain agrees again, and then it rests.</p>
+    <p>A conventional network that answers each frame in one pass has no state to rest in: shown the same frame again, it runs the same whole pass again, unless a rule outside it decides to skip the frame. For a robot or a game character that watches a mostly unchanging world, a brain whose work follows what changes keeps its effort for the moments that matter.</p>
+    <p><b>One brain, many eyes.</b> Every eye is one stream of the same brain. All streams settle together, each from its own last state, so adding an eye adds a stream, not a brain.</p>
+    <p><b>An eye that finds its shape again.</b> Each eye sees sharply at its centre and coarsely around it, and it sees what changed. When its shape jumps away, the change shows where it went, and the eye jumps there, often in a single saccade. The control eye, which sees only a 26 by 26 pixel window at full detail, never finds a shape that jumps 20 pixels out of its window (the numbers below).</p>
+
+    <h2 id="do">What you can do</h2>
+    <ul>
+      <li><b>Untick "shapes move on their own".</b> The shapes stop moving, every eye settles on its shape, and the brain comes to rest: zero sweeps, a flat work strip, a dark brain view, and a brain time of a few milliseconds.</li>
+      <li><b>Drag a shape.</b> Its eye jumps after it. In a motionless scene the work strip shows a short burst of sweeps for your move and goes flat again.</li>
+      <li><b>Drag a shape away fast.</b> The eye finds it again from the change it saw, in one jump or a few.</li>
+      <li><b>Double-click a shape</b> to give it an eye or take its eye away (up to eight eyes). <b>Right-click</b> a shape to remove it.</li>
+      <li><b>Click a shape with an eye</b>, or its view under the brain, to show that eye's stream in the brain.</li>
+      <li><b>Add a shape</b> from the menu. The shapes under "never seen" were never shown to the brain while it was raised.</li>
+      <li><b>Three, Six, Crowd, Unseen</b> start a new scene. In Crowd, six eyes must stay on their own shapes among twelve. Unseen gives eyes to a star, a tee and an ell, shapes the brain never saw while it was raised.</li>
+      <li><b>Drag the brain</b> to turn it, scroll to zoom, point at a neuron to read its activity.</li>
+      <li><b>Show the eyes, pause, frames per second</b>: what the surface draws, and how often the brain may look.</li>
+    </ul>
+
+    <h2 id="how">How it works</h2>
+    <p><b>What it sees.</b> Each frame, for each eye, the brain gets 625 receptors pooled from the page's pixels around the eye's centre: one pixel apart out to 6 pixels, then spreading out to 40 pixels, each pooling its patch, from one pixel at the centre to ten at the edge. Each receptor reports two things: brightness, and how much its patch changed since the last frame. Change is measured on the surface, so the eye's own jumps do not count as change. Nothing else reaches the brain: no positions, no names of shapes, no labels. Where an eye opens is your choice; after that, only the brain's answers move it.</p>
+    <p><b>The brain.</b> 2,413 neurons and 74,612 synapses in four regions, named for the parts of an animal's visual system whose roles they play:</p>
+    <dl class="words">
+      <dt>Retina</dt><dd>1,250 neurons: the 625 receptors in two channels, brightness and change. The pixels enter here.</dd>
+      <dt>V1</dt><dd>968 neurons in eight feature maps, each reading the retina through small 5 by 5 fields. Every place uses the same weights, as in a visual cortex.</dd>
+      <dt>Colliculus map</dt><dd>169 neurons, a 13 by 13 map of the space around the eye's centre, wired both ways with V1. It settles on where the eye's own shape is, as the superior colliculus does.</dd>
+      <dt>Gaze neurons</dt><dd>26 neurons, 13 for left and right and 13 for up and down. The most active one on each axis is the eye's jump: none, or 2.5, 4.5, 7.1, 13.4, 25 or 40 pixels either way.</dd>
+    </dl>
+    <p><b>How it answers.</b> The answer is the settled state of the whole brain: retina, V1, the map and the gaze neurons in one equilibrium. There is no separate pass from input to output. The brain sweeps: every neuron repairs its disagreement with the neurons it reads, and the sweeps repeat until the largest change falls below a tolerance. The page runs the brain at a tolerance of 0.03, where a frame in which something moved usually settles in one chunk of 32 sweeps (35.7 on average in the page check). The eye then jumps to the answered place.</p>
+    <p><b>Why a motionless scene costs nothing.</b> The state each eye settled into stays with the brain. Given the same input again, that state agrees with it, and the brain's check passes at zero sweeps. On the page, the brain's host compares each frame with the last, and when no eye's input changed it keeps the answers without calling the brain, since the brain would pass at zero sweeps with the same answers. When the brain was raised, each frame of its first-glance assays (600 frames) was shown to it twice more: every repeat cost zero sweeps.</p>
+    <p><b>How it was raised.</b> Offline, before the page: 100,000 lessons in a world of moving shapes, one lesson a frame. After each free answer the world showed where the eye's own shape was, and the library's local learning rule nudged the gaze neurons toward it; the nudge spread back through the brain's two-way synapses, and every synapse changed by the activity at its two ends. Nothing is sent backwards through layers. The page runs the raised brain as it is: it does not learn in the page.</p>
+    <p><b>Where it runs.</b> In your browser: Python and NumPy in Pyodide, the released <code>cadence-net</code> 0.95.2 library, unmodified, in up to six web workers that each hold the same brain. The page checks every file of the brain against its SHA-256 hash before it runs anything. Nothing is sent to a server.</p>
+
+    <h2 id="numbers">The numbers</h2>
+    <table>
+      <thead><tr><th>Reading</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Raising assay: a frame shown again, share of repeats at zero sweeps (600 frames, each twice more)</td><td class="n">1.00</td></tr>
+        <tr><td>On this page, three seconds with the shapes held: frames at zero sweeps</td><td class="n" id="n-rest">65 of 65 (3.6 ms a frame)</td></tr>
+        <tr><td>On this page, shapes moving: sweeps per frame, on average</td><td class="n" id="n-move">35.7 (62 ms a frame)</td></tr>
+        <tr><td>Six eyes on six moving shapes: eyes on their own shape, on average</td><td class="n">5.83 of 6</td></tr>
+        <tr><td>A shape dragged 20 px in 150 ms: its eye centred on it again</td><td class="n">0.6 px away</td></tr>
+        <tr><td>On this page, a shape dragged 18 px in 150 ms: the eye's jumps after the release to centre it, then frames at zero sweeps in 3 s</td><td class="n">1 · 65 of 65</td></tr>
+        <tr><td>Its shape jumps 10 px: centred again after one / three frames</td><td class="n">0.93 / 1.00</td></tr>
+        <tr><td>... 20 px</td><td class="n">0.23 / 0.85</td></tr>
+        <tr><td>... 30 px</td><td class="n">0.22 / 0.58</td></tr>
+        <tr><td>The window eye (control), same jumps: 10 / 20 / 30 px after three frames</td><td class="n">0.65 / 0.00 / 0.00</td></tr>
+        <tr><td>Another shape jumps 10, 20 or 30 px: the eye stays on its own</td><td class="n">1.00 (control 0.75 to 0.88)</td></tr>
+        <tr><td>Eight shapes moving: frames on the eye's own shape, two seeds</td><td class="n">0.95, 0.87 (control 0.80, 0.75)</td></tr>
+        <tr><td>First glance from rest: shape found within 3 / 3 to 12 / 12 to 34 px of the centre</td><td class="n">0.99 / 0.94 / 0.74</td></tr>
+        <tr><td>Never-seen shapes, first glance: star / tee / ell</td><td class="n">0.83 / 0.89 / 0.75</td></tr>
+        <tr><td>The brain</td><td class="n">2,413 neurons · 74,612 synapses</td></tr>
+      </tbody>
+    </table>
+    <p class="note">Where each number comes from, in the <code>eyes/evidence/</code> folder of the repository: the repeated frames, the first glance and the never-seen shapes from <code>fovea-v1x8-s1-summary.json</code> (the raised brain, at its raised tolerance); the jumps, the other shape's jumps and the eight moving shapes from <code>comparison.json</code> (60 trials per jump, 30 s scenes at 20 frames a second, the page's tolerance); the six eyes and the dragged shape from <code>page_check.txt</code>; the page's rest, moving and drag readings from <code>page_check-20261113-1155.txt</code> (this page in a headless Chrome on an Apple M4 under a load average of about 130, the brain view drawn with the GPU). The window eye is the control: a Cadence brain that sees a 26 by 26 pixel window at full detail, with no change channel, raised on eight shapes without faces (the tests include faces).</p>
+
+    <h2 id="limits">Limits</h2>
+    <ul>
+      <li>The brain does not learn in the page. It was raised offline and runs as raised. Continuing to learn from its own misses made every raised eye worse in development.</li>
+      <li>On the page, the host skips a frame in which no eye's input changed, without calling the brain. The brain's own zero-sweep answer to a repeated frame is measured in the raising assay (every repeat), and the page's answers are the same either way.</li>
+      <li>The rest is for the whole scene: when any eye's input changes, all the eyes settle that frame together.</li>
+      <li>A shape that jumps 30 pixels between two answers is found again only some of the time. A fast drag works because the brain answers often enough that each step stays short.</li>
+      <li>When two shapes pass through each other, an eye can go on with the other one.</li>
+      <li>The brain has no working memory: an eye's continuity is its own settled state, carried from frame to frame.</li>
+      <li>Grayscale shapes on a plain surface only.</li>
+      <li>The brain's time per frame depends on your computer; a busy computer answers fewer frames a second.</li>
+    </ul>
+
+    <h2 id="keys">Keys</h2>
+    <div class="keys">
+      <span><kbd>Space</kbd></span><span>Pause or resume</span>
+      <span><kbd>←</kbd> <kbd>↑</kbd> <kbd>→</kbd> <kbd>↓</kbd></span><span>Move the shape you clicked last (with <kbd>Shift</kbd>: faster)</span>
+      <span><kbd>E</kbd></span><span>Give it an eye or take its eye away</span>
+      <span><kbd>Delete</kbd></span><span>Remove it</span>
+    </div>
+
+    <footer>The brain runs in your browser with cadence-net 0.95.2, in Pyodide 314.0.7. <a href="https://github.com/muellerberndt/cadence-demos/tree/main/eyes" target="_blank" rel="noopener">The demo on GitHub</a> · <a href="https://github.com/muellerberndt/cadence" target="_blank" rel="noopener">Cadence on GitHub</a></footer>
+  </main>
+</body>
+</html>

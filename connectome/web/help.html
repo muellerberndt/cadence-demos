@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Connectome · Help</title>
+  <meta name="description" content="What the Connectome demo shows: wiring measured cell by cell in a zebrafish and a marine worm larva runs as a Cadence brain, and the fish's gaze circuit can be taught.">
+  <link rel="stylesheet" href="cadence-help.css">
+  <script src="cadence-explain.js" defer></script>
+  <style>
+    .svg-label { font: 500 11px ui-monospace, "IBM Plex Mono", Menlo, monospace; fill: #cfe0e3; }
+    .svg-quiet { font: 500 10px ui-monospace, "IBM Plex Mono", Menlo, monospace; fill: #8ea4aa; }
+    .svg-num { font: 700 11px ui-monospace, "IBM Plex Mono", Menlo, monospace; fill: #0b1215; }
+  </style>
+</head>
+<body>
+  <header class="help-bar"><span class="crumb">cadence / <b>connectome</b> / help</span><span class="spacer"></span><a href="./">Back to the demo</a></header>
+  <main class="help">
+    <h1>Connectome</h1>
+    <p class="lede">Two small animals whose nervous systems were mapped cell by cell: the gaze circuit of a young zebrafish, and the whole body of a marine worm larva. Here that measured wiring runs as a Cadence brain in your browser, steers the animal's body, and, in the fish, learns what you teach it.</p>
+    <p class="shows"><b>What it shows about Cadence</b>Cadence can run real animal wiring as a living brain: every cell's activity settles with the cells it is wired to, step by step in real time, and the brain keeps a real state. The fish holds a glance in its own activity, a small memory. Teach it to hold its gaze, to let it go and to hold it again, and the strengths of its measured connections change while it lives and keep what they learned.</p>
+    <nav class="toc" aria-label="On this page"><a href="#see">What you see</a><a href="#why">Why it matters</a><a href="#do">What you can do</a><a href="#how">How it works</a><a href="#numbers">The numbers</a><a href="#limits">Limits</a><a href="#keys">Keys</a></nav>
+
+    <h2 id="see">What you see</h2>
+    <p>The demo has two pages, switched by the tabs at the top: <b>the larva</b> (it opens first) and <b>the fish</b>. Both show the animal in a tank on the left and its brain, live, on the right.</p>
+    <figure>
+      <svg viewBox="0 0 720 360" role="img" aria-label="The fish page: the tabs, the Teach this fish panel, the tank with the fish and its buttons, the brain view with its colour key and learning key, and the status line.">
+        <rect x="0.5" y="0.5" width="719" height="359" rx="10" fill="#000" stroke="#22323a"/>
+        <rect x="16" y="14" width="64" height="18" rx="3" fill="none" stroke="#2c5940"/><text class="svg-quiet" x="24" y="27">THE LARVA</text>
+        <rect x="86" y="14" width="60" height="18" rx="3" fill="#0e2a17" stroke="#67e78e"/><text class="svg-quiet" x="95" y="27" fill="#c8ffd8">THE FISH</text>
+        <rect x="152" y="14" width="40" height="18" rx="3" fill="none" stroke="#2c5940"/><text class="svg-quiet" x="160" y="27">HELP</text>
+        <rect x="16" y="40" width="688" height="30" rx="5" fill="#02100a" stroke="#2c5940"/>
+        <text class="svg-label" x="28" y="60" fill="#ffd166">▸ Teach this fish</text><text class="svg-quiet" x="150" y="60">hold its gaze, let it return, hold again</text>
+        <rect x="16" y="80" width="420" height="236" rx="6" fill="#02160a" stroke="#2c5940"/>
+        <path d="M150 210 q60 -24 140 0 q-80 22 -140 0z" fill="none" stroke="#9df5b4"/>
+        <circle cx="168" cy="206" r="6" fill="none" stroke="#9df5b4"/>
+        <rect x="16" y="292" width="420" height="24" rx="0" fill="#02100a"/>
+        <rect x="26" y="297" width="40" height="14" rx="3" fill="none" stroke="#2c5940"/><rect x="72" y="297" width="40" height="14" rx="3" fill="none" stroke="#2c5940"/><rect x="330" y="297" width="44" height="14" rx="3" fill="none" stroke="#ffd166"/><rect x="380" y="297" width="44" height="14" rx="3" fill="none" stroke="#ffd166"/>
+        <rect x="446" y="80" width="258" height="236" rx="6" fill="#000" stroke="#2c5940"/>
+        <ellipse cx="575" cy="190" rx="40" ry="80" fill="#0f3a1c" stroke="#67e78e" stroke-opacity="0.5"/>
+        <circle cx="570" cy="200" r="16" fill="#ffd166" fill-opacity="0.35"/>
+        <rect x="456" y="92" width="120" height="26" rx="3" fill="#000a04"/><text class="svg-quiet" x="462" y="108" fill="#c8ffd8">green · gold</text>
+        <rect x="456" y="250" width="92" height="56" rx="4" fill="#02100a" stroke="#2c5940"/>
+        <rect x="0" y="326" width="720" height="22" fill="#000c05"/>
+        <g>
+          <circle cx="206" cy="23" r="9" fill="#ffd166"/><text class="svg-num" x="206" y="27" text-anchor="middle">1</text>
+          <circle cx="424" cy="55" r="9" fill="#ffd166"/><text class="svg-num" x="424" y="55" dy="4" text-anchor="middle">2</text>
+          <circle cx="300" cy="150" r="9" fill="#ffd166"/><text class="svg-num" x="300" y="154" text-anchor="middle">3</text>
+          <circle cx="250" cy="304" r="9" fill="#ffd166"/><text class="svg-num" x="250" y="308" text-anchor="middle">4</text>
+          <circle cx="660" cy="150" r="9" fill="#ffd166"/><text class="svg-num" x="660" y="154" text-anchor="middle">5</text>
+          <circle cx="590" cy="105" r="9" fill="#ffd166"/><text class="svg-num" x="590" y="109" text-anchor="middle">6</text>
+          <circle cx="562" cy="278" r="9" fill="#ffd166"/><text class="svg-num" x="562" y="282" text-anchor="middle">7</text>
+          <circle cx="360" cy="337" r="9" fill="#ffd166"/><text class="svg-num" x="360" y="341" text-anchor="middle">8</text>
+        </g>
+      </svg>
+      <figcaption>The fish page, drawn simply. The larva page has the same layout without the teaching panel. The numbers match the list below.</figcaption>
+    </figure>
+    <ol>
+      <li><b>The tabs.</b> The larva, the fish, and this help.</li>
+      <li><b>Teach this fish</b> (the fish page only). Opens the teaching controls: choose a lesson, teach it, test the gaze, pause learning. A line under them says what to try next.</li>
+      <li><b>The tank.</b> The animal swims in a tank you can turn: drag to orbit, scroll to zoom. The camera follows the animal.</li>
+      <li><b>The buttons under the tank.</b> What you can do to the animal: tap the glass, switch or move the light, feed the fish, make it glance left or right, follow it with the camera, pause, set the time speed.</li>
+      <li><b>The brain, live.</b> The traced cells of the animal, laid out as in its body, lit green by their activity in the running brain. On the larva, gold flashes where a cell repairs its activity as the brain settles after a change. On the fish, gold marks cells whose incoming connections a lesson changed: learning.</li>
+      <li><b>The learning key</b> (the fish page). Green is activity, gold is learning, and a line counts the connections the last lesson changed.</li>
+      <li><b>The colour key.</b> The kinds of cells, each in its colour. Point at one to read what it does.</li>
+      <li><b>The status line.</b> On the fish page: the lesson chosen, how the last fixation went and whether learning is on. On the larva page: what is measured and what the model adds.</li>
+    </ol>
+    <p>Every button and every part of the brain explains itself when the pointer rests on it; parts marked with a question mark open a card on a click too.</p>
+
+    <h2 id="why">Why it matters</h2>
+    <p><b>What a connectome is.</b> A connectome is the complete wiring diagram of a nervous system: every nerve cell, and which cell connects to which, by how many synapses. Scientists make one by cutting a piece of brain into thousands of very thin slices, imaging each slice with an electron microscope, and tracing every cell and every contact through the stack. The fish wiring here, one side of a young zebrafish's hindbrain, has 2,884 neurons and 75,195 synapses. The larva's covers its whole body: 25,609 cells.</p>
+    <p><b>Why running it and teaching it is remarkable.</b> A wiring diagram by itself does nothing. It says who connects to whom, not what the circuit does. To run it, every cell needs a response and activity has to flow through the measured connections; to teach it, the strengths of those connections have to change through practice while the wiring itself, who connects to whom, stays as measured. Cadence does both with local rules: each cell settles its activity with the cells it hears from, and a lesson changes each connection from the activity at its two ends. Nothing is sent backwards through layers.</p>
+    <p>So measured anatomy becomes a brain you can watch, poke and teach, in real time. The fish's gaze circuit learns to hold a glance, to let it go, and to hold it again, and in every one of 12 seeded runs it did all three. The larva's whole-body wiring turns it toward a light and stops it after a tap, with no autopilot in between: the turn and the stop come out of the wiring, read from its real motor cells. For anyone building brains, this is a way to start from nature's wiring instead of a blank network of layers.</p>
+    <p><b>A real state, a real memory.</b> Holding a gaze is a memory: after a glance ends, the fish's integrator neurons keep the eye position in their own lasting activity. In the running brain that activity is the brain's state, carried from moment to moment, as it is in the animal.</p>
+
+    <h2 id="do">What you can do</h2>
+    <h3>On the larva page</h3>
+    <ul>
+      <li><b>tap left</b>, <b>tap right</b>: tap the glass. The jolt reaches the larva's touch cells; its wiring stops the cilia and contracts the muscles, so it stops and sinks for a moment.</li>
+      <li><b>move light</b>: the lamp jumps to a new place. Its light reaches the eye on one side, the cilia on that side beat harder, and the larva turns toward the light.</li>
+      <li><b>light on</b>: switch the lamp on or off. <b>UV off</b>: switch ultraviolet from above on; the larva's ultraviolet-sensing cells stop the cilia and it sinks away from the surface.</li>
+      <li><b>follow</b>, <b>pause</b>: the camera follows the larva; pause stops the larva and its brain (the space bar does the same). Drag the tank or the brain to turn it, scroll to zoom; <b>fit</b> and <b>spin</b> set the brain view.</li>
+    </ul>
+    <h3>On the fish page</h3>
+    <ol>
+      <li>Open <b>Teach this fish</b>. With <b>Hold your gaze</b> chosen, press <b>Teach this lesson</b>. The fish practises for 10 minutes of fish time (time runs eight times faster during a lesson), glancing around by itself. Gold flashes in the brain mark connections changing, and the bars show how much of a glance it holds five seconds later. Learning then pauses so you can see the result.</li>
+      <li>Choose <b>Let it return</b> and press <b>Teach this lesson</b> again. On the same brain, for two and a half fish minutes, the connections learn to let the gaze drift back. The bars fall.</li>
+      <li>Choose <b>Hold your gaze</b> and teach once more. The same brain learns to hold again. The bars climb back.</li>
+    </ol>
+    <ul>
+      <li><b>Test its gaze</b> compares the brain's connections, untaught and as taught, on copies: the live fish is not disturbed and learns nothing from the test.</li>
+      <li><b>Pause learning</b> stops the connections from changing; the fish keeps living with everything it learned. <b>More controls</b> holds <b>Reset learning</b>, which restores the starting connections, and the switch for the fish's own glances.</li>
+      <li><b>look left</b>, <b>look right</b> ask the fish to glance (wait four fish seconds between glances while teaching by hand). <b>tap left</b>, <b>tap right</b> start the escape reflex, <b>feed</b> drops prey for the autopilot to hunt, <b>light on</b> switches the lamp, <b>Time</b> sets 1×, 4× or 8×.</li>
+    </ul>
+
+    <h2 id="how">How it works</h2>
+    <p><b>From wiring to a running brain.</b> Each measured cell becomes a Cadence patch, and each recorded connection stays between the same two cells and carries its measured synapse count. The model adds what the anatomy does not record: whether a connection excites or inhibits, how strongly a synapse counts, how a cell responds to its input, the time scale, and how the senses and muscles connect to the body. Each step, a cell moves its activity toward the combined input from the cells it hears from; the brain settles where every cell agrees with its inputs. The fish brain takes 25 steps per fish second, the larva's 25 per larva second, fast enough to run in real time on the page.</p>
+    <p><b>The larva.</b> The lamp drives the photoreceptors of its eyes, a tap drives the touch receptors of its collar, ultraviolet drives its ciliary photoreceptors. The brain's own motor cells, read through declared mappings, set how hard the cilia on each side beat and how the muscles pull. Its connections stay fixed: the larva runs, it does not learn.</p>
+    <dl class="words">
+      <dt>sensory neuron</dt><dd>Cells that sense, among them the eyes' photoreceptors and the collar's touch receptors.</dd>
+      <dt>interneuron</dt><dd>Neurons between sensing and acting.</dd>
+      <dt>motor neuron</dt><dd>Neurons that drive muscles and cilia, among them the ciliomotor neuron MC that stops the cilia after a tap.</dd>
+      <dt>muscle, ciliated cell</dt><dd>What moves the body: the long muscles, and the ciliary bands whose beating hairs swim the larva.</dd>
+    </dl>
+    <p><b>The fish.</b> The measured half of the hindbrain runs twice, one copy per side. A glance (a saccade) sends a burst into the circuit; the integrator neurons keep that activity, and the eye position is read from the abducens neurons that drive the eye muscles. Swimming, hunting and escape come from a fixed autopilot, which is not learned.</p>
+    <dl class="words">
+      <dt>integrator</dt><dd>Neurons whose lasting activity holds the eyes where a glance put them. The connections into them are the ones that learn.</dd>
+      <dt>abducens</dt><dd>Motor neurons that turn the eye, and internuclear neurons that carry the command to the other eye.</dd>
+      <dt>DO, axial, vSPN</dt><dd>Neurons of the balance system, of the body's axial movements, and neurons that project toward the spinal cord.</dd>
+    </dl>
+    <p><b>How the fish learns.</b> Every connection starts at 0.8 of the selected strength, where an untaught gaze drifts back within a second. One second after a glance, the brain notes the integrator's activity. At the next glance, or after ten seconds of looking, if that activity slipped by more than 5%, the brain takes a lesson toward a target: 95% of the noted activity for "hold your gaze", a quarter of it for "let it return". The lesson compares a nudged settle with a free one, and every connection changes from the activity of its own two cells. The wiring never changes; only connection strengths do, within bounds, keeping their signs. The teacher reads the circuit's own activity; it does not see the tank.</p>
+    <p><b>Deeper pages.</b> The demo's other pages go further: <a href="./explain.html">from wiring to a learning circuit</a>, <a href="./disclaimers.html">what is measured, what is modeled</a>, <a href="./copy.html">the measured wiring, neuron by neuron</a>, <a href="./paste.html">the same wiring with its weights fixed</a>, <a href="./why.html">spiking neurons against rate patches</a>, <a href="./match.html">measured wiring against shuffled wiring</a> and <a href="./limits.html">the model choices in numbers</a>. The mathematics is in two preprints: <a href="https://philpapers.org/rec/MUEAAS-2" target="_blank" rel="noopener">Agreement and Surprise</a> and <a href="https://philpapers.org/rec/MUECAP-2" target="_blank" rel="noopener">Cadence: Learning Through Local Patch Settlement</a>.</p>
+
+    <h2 id="numbers">The numbers</h2>
+    <table>
+      <thead><tr><th>Reading</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>The fish wiring: neurons · connections · synapses</td><td class="n">2,884 · 44,969 · 75,195</td></tr>
+        <tr><td>The larva wiring: cells · connections · synapses</td><td class="n">25,609 · 18,970 · 32,202</td></tr>
+        <tr><td>Untaught fish: share of a glance held after 12 s</td><td class="n">0.00</td></tr>
+        <tr><td>After "hold your gaze": held after 12 s / 24 s</td><td class="n">0.77–0.87 / 0.61–0.76</td></tr>
+        <tr><td>After "let it return": held after 12 s</td><td class="n">0.01–0.04</td></tr>
+        <tr><td>After holding again: held after 12 s</td><td class="n">0.79–0.89</td></tr>
+        <tr><td>Runs that hold, return and hold again</td><td class="n">12 of 12</td></tr>
+        <tr><td>On this page, through its buttons: held after 5 s, untaught / taught to hold / to return / to hold again (left, right half)</td><td class="n" id="n-ui">0.006 / 0.87, 0.87 / 0.20, 0.30 / 0.93, 0.92</td></tr>
+        <tr><td>Larva, lamp on its left / right for 3 s: turn toward it</td><td class="n">21.6° left / 35.0° right</td></tr>
+        <tr><td>Larva, tap: cilia stop signal within 0.5 s, with a tap / without</td><td class="n">0.45 / 0.14</td></tr>
+      </tbody>
+    </table>
+    <p class="note">Where each number comes from, in the <code>connectome/</code> folder of the repository: the wiring sizes from <code>web/data/brain.json</code> and <code>web/data/larva_brain.json</code> (the compiled nets, described in <code>MODEL_CARD.md</code>); the fish's learning from <code>web/data/learning_reteach.json</code> (3 seeds × 2 sides × 2 glance sizes = 12 runs, in node, on the page's own engine and teacher; ranges over the 12 runs; the hold and return readings are the same in <code>web/data/learning_release.json</code>); the page's own readings from <code>receipts/learning_ui-20261113.json</code> (this page in a headless Chromium, teaching through its buttons: 10, 2½ and 10 fish minutes); the larva's turns and its tap from <code>receipts/scenario_larva-20261113.json</code> (this larva page in a headless Chromium; the run of 7 October 2026, <code>receipts/scenario_larva.json</code>, read 21.6°, 34.5°, 0.37 and 0.14).</p>
+
+    <h2 id="limits">Limits</h2>
+    <ul>
+      <li>The wiring is measured; the rest is declared by the model: signs, connection strengths, how a cell responds, the time scale, the senses and the body. A synapse count is not a measured strength.</li>
+      <li>Only the fish's gaze connections learn. Swimming, hunting and escape come from a fixed autopilot. The larva's connections never change.</li>
+      <li>The fish's teacher reads the circuit's own activity and a declared target. It does not see the tank or its pixels.</li>
+      <li>The fish wiring covers one side of the hindbrain; the other side is a copy.</li>
+      <li>These are working circuit models, not complete reconstructions of the animals' brains or behaviour, and the learning rule is the model's, not a claim about how a fish learns.</li>
+      <li>Nothing is saved between visits: a reload starts from the untaught connections.</li>
+    </ul>
+
+    <h2 id="keys">Keys</h2>
+    <div class="keys">
+      <span><kbd>Space</kbd></span><span>Pause or resume the animal and its brain</span>
+    </div>
+
+    <footer>The brains run in your browser: Cadence rate patches in JavaScript, compiled from the published wiring of Vishwanathan et al. 2024 (zebrafish hindbrain, <a href="https://doi.org/10.1038/s41593-024-01784-3" target="_blank" rel="noopener">Nature Neuroscience</a>) and Verasztó et al. 2025 (Platynereis larva, <a href="https://doi.org/10.7554/eLife.97964" target="_blank" rel="noopener">eLife</a>). <a href="https://github.com/muellerberndt/cadence-demos/tree/main/connectome" target="_blank" rel="noopener">The demo on GitHub</a> · <a href="https://github.com/muellerberndt/cadence" target="_blank" rel="noopener">Cadence on GitHub</a></footer>
+  </main>
+</body>
+</html>

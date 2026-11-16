@@ -16,6 +16,7 @@
 // active neurons. Palette: the Matrix green of the fly pages; the view sits beside a main view.
 // Payload: web/data/skeletons.json from tools/export_skeletons.py (cadence.zebrafish-skeletons/v1).
 import * as THREE from "three";
+import { brainColor, brainUnit } from "./cadence-palette.js";
 
 export const VERSION = "cadence.zebrafish-brain-view/v1";
 export const HOT = 0.05; // activity below this counts as resting
@@ -26,20 +27,20 @@ export const CLASS_LABELS = {
 };
 // soma and legend colours, RGB in 0..255: shades of the Matrix green, one warm accent for the descending outputs
 export const CLASS_COLORS = {
-  _Int_: [103, 231, 142], _Axl_: [184, 223, 129], _DOs_: [90, 220, 190], ABD_m: [210, 255, 120],
-  ABD_i: [60, 170, 160], vSPNs: [255, 214, 102], periphery: [60, 92, 72],
+  _Int_: brainColor("signal"), _Axl_: brainColor("recall"), _DOs_: brainColor("trace"), ABD_m: brainColor("memory"),
+  ABD_i: brainColor("inhibit"), vSPNs: brainColor("memory"), periphery: brainColor("dim"),
 };
 const DEFAULTS = {
-  rest: [0.02, 0.16, 0.06], // a resting skeleton, before the tone map
-  lit: [0.64, 1.0, 0.5], // a fully active skeleton: warmer than rest; overlapping lit lines add up to a warm white
+  rest: brainUnit("signal").map((v) => v * 0.045),
+  lit: brainUnit("signal"),
   exposure: 1.4, // the tone map's gain
-  background: [0, 0.012, 0.004],
+  background: brainUnit("rest").map((v) => v * 0.2),
   somaRadius: 0.007, // in the payload's frame (the longest axis spans 2.0)
   spin: true,
   spinRate: 0.1, // radians per second
   spinAfter: 6, // seconds after the last drag before the spin resumes
   fov: 30,
-  dpr: 2,
+  dpr: 1.5,
   controls: true, // the overlay with the legend, the filter and the counts; "legend" for the colour key alone
   hotOnly: false,
   gain: 1, // display gain on the activity before the scale
@@ -47,7 +48,7 @@ const DEFAULTS = {
   floor: 0.05, // the auto scale never falls below this
   release: 0.995, // the auto scale's peak decays by this per reading
   gamma: 1, // below 1 lifts the small activities (level = (activity / scale) ^ gamma)
-  flash: [1.0, 0.8, 0.3], // what a full repair adds to a cell's colour: gold, the site's burst colour, so a repair reads apart from lit activity
+  flash: brainUnit("memory"),
   fitScale: 1, // below 1 the resting view sits closer than the full frame
   pointRadius: 1, // the soma radius of a cell drawn as a point alone (no skeleton), as a fraction of somaRadius
   pointDim: 1, // the colour of such a point at rest, as a fraction; activity and repair bring it back
@@ -76,8 +77,12 @@ export async function loadPayload(url) {
   const response = await fetch(url);
   if (!response.ok) throw Error(`${url}: ${response.status}`);
   if (/\.gz$/.test(url)) {
+    // Hosts may already decode Content-Encoding: gzip before fetch exposes the body.
+    const bytes = new Uint8Array(await response.arrayBuffer());
+    if (bytes[0] !== 0x1f || bytes[1] !== 0x8b) return JSON.parse(new TextDecoder().decode(bytes));
     if (typeof DecompressionStream === "undefined") throw Error("no DecompressionStream for a .gz payload");
-    return JSON.parse(await new Response(response.body.pipeThrough(new DecompressionStream("gzip"))).text());
+    const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"));
+    return JSON.parse(await new Response(stream).text());
   }
   return response.json();
 }

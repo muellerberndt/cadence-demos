@@ -1,0 +1,222 @@
+{
+  "page": "web/index.html",
+  "query": "?noscan=1&nobloom=1",
+  "date": "2026-11-13T04:56:24+00:00",
+  "browser": "156.0.8078.4",
+  "launch": "the default build",
+  "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+  "checks": {
+    "constants": {
+      "baseline_beat": 0.3,
+      "step_ms": 40,
+      "water": 9,
+      "tank": [
+        20,
+        10,
+        10
+      ]
+    },
+    "lamp": {
+      "left": {
+        "lamp": {
+          "on": true,
+          "x": 4.001,
+          "y": 9.5,
+          "z": 10.2
+        },
+        "seconds": 3.0333999999999364,
+        "samples": 259,
+        "turn_deg": 21.60368515617467,
+        "turned_left_deg": 21.60368515617467,
+        "turned_right_deg": 0.0,
+        "one_sign": true,
+        "reflections": 0,
+        "eye_left_mean": 0.10565698842112645,
+        "eye_right_mean": 0.0,
+        "arrest_peak": 0.1959709264709062,
+        "command_end": {
+          "ciliaLeft": 0.4511275349559734,
+          "ciliaRight": 0.36546151815230454,
+          "arrest": 0.1606501785050316,
+          "muscleLeft": 0.014772997613556457,
+          "muscleRight": 0.015041796482713515,
+          "parapodia": 0.00039396997452095285
+        },
+        "z_end": 8.4,
+        "hot_fraction": 0
+      },
+      "right": {
+        "lamp": {
+          "on": true,
+          "x": 4.001,
+          "y": 0.5,
+          "z": 10.2
+        },
+        "seconds": 3.049999999999935,
+        "samples": 313,
+        "turn_deg": -35.02187002169808,
+        "turned_left_deg": 0.0,
+        "turned_right_deg": 35.02187002169808,
+        "one_sign": true,
+        "reflections": 0,
+        "eye_left_mean": 0.0,
+        "eye_right_mean": 0.16865745613807728,
+        "arrest_peak": 0.1606501785050316,
+        "command_end": {
+          "ciliaLeft": 0.31912940027619835,
+          "ciliaRight": 0.4567274425967753,
+          "arrest": 0.07784996261132981,
+          "muscleLeft": 0.006171571650353455,
+          "muscleRight": 0.012931728489320683,
+          "parapodia": 0.00012233296109536264
+        },
+        "z_end": 8.4,
+        "hot_fraction": 0
+      },
+      "lit_eye_left_lamp": "left",
+      "lit_eye_right_lamp": "right",
+      "conditions": {
+        "body_placed": {
+          "position": [
+            4.0,
+            5.0,
+            8.2
+          ],
+          "heading": 0.0
+        },
+        "brain_rested": true,
+        "uv": 0,
+        "lamp_offset_mm": {
+          "side": 4.5,
+          "ahead": 0.001,
+          "above": 2.0
+        },
+        "seconds": 3.0
+      },
+      "pass": true
+    },
+    "tap": {
+      "control": {
+        "tap": false,
+        "pane": null,
+        "arrest_before": 0.09560021482290537,
+        "arrest_peak_0_5s": 0.14364688842644924,
+        "arrest_above_0_3_after_s": null,
+        "arrest_1s": 0.1667935592532519,
+        "parapodia_peak_0_5s": 0.0003368063396391528,
+        "z_before_mm": 5.306166915956425,
+        "z_1s_mm": 5.06603086315442,
+        "z_change_1s_mm": -0.24013605280200423,
+        "on_floor_1s": false,
+        "seconds": 1.133399999999984
+      },
+      "tap": {
+        "tap": true,
+        "pane": "left",
+        "arrest_before": 0.09076587751952303,
+        "arrest_peak_0_5s": 0.4513093690623986,
+        "arrest_above_0_3_after_s": 0.2999999999999936,
+        "arrest_1s": 0.5184753658560766,
+        "parapodia_peak_0_5s": 0.003269429619431219,
+        "z_before_mm": 5.318245981565307,
+        "z_1s_mm": 4.6787283965888955,
+        "z_change_1s_mm": -0.6395175849764119,
+        "on_floor_1s": false,
+        "seconds": 1.0499999999999776
+      },
+      "tap_effect": {
+        "arrest_peak_0_5s": 0.30766248063594936,
+        "arrest_1s": 0.35168180660282466,
+        "z_change_1s_mm": -0.39938153217440764
+      },
+      "conditions": {
+        "body_placed": {
+          "position": [
+            10.0,
+            5.0,
+            5.0
+          ],
+          "heading": 0.5
+        },
+        "brain_rested": true,
+        "seconds_before_tap": 1.0,
+        "uv": 0
+      },
+      "pass": true
+    },
+    "brain_off": {
+      "command_1s": {
+        "ciliaLeft": 0.3,
+        "ciliaRight": 0.3,
+        "arrest": 0,
+        "muscleLeft": 0,
+        "muscleRight": 0,
+        "parapodia": 0
+      },
+      "command_3s": {
+        "ciliaLeft": 0.3,
+        "ciliaRight": 0.3,
+        "arrest": 0,
+        "muscleLeft": 0,
+        "muscleRight": 0,
+        "parapodia": 0
+      },
+      "baseline_beat": 0.3,
+      "turn_deg_1s_to_3s": 0.0,
+      "reflections": 0,
+      "brain_steps_while_off": 0,
+      "activity_max": 0,
+      "pass": true
+    },
+    "fps": {
+      "frames": 21,
+      "seconds": 5.02,
+      "fps": 4.183108606998137,
+      "page_fps": 19.999999999999996
+    },
+    "summary": {
+      "larva_seconds": 16.533499999999794,
+      "life_steps": 413,
+      "brain_steps": 26,
+      "ms_per_brain_step": 0.9104166733367103,
+      "page_fps": 19.999999999999996,
+      "frames": 336,
+      "position": [
+        18.148403217623315,
+        4.4634473166129,
+        8.397854459910782
+      ],
+      "on_floor": false,
+      "command": {
+        "ciliaLeft": 0.37860698813271965,
+        "ciliaRight": 0.4720631889445762,
+        "arrest": 0.07090940863971973,
+        "muscleLeft": 0.011116782695329341,
+        "muscleRight": 0.017494278579250584,
+        "parapodia": 0.00016336351809296976
+      },
+      "senses": {
+        "eye_left": 0,
+        "eye_right": 0,
+        "eyespot_left": 0.021728653078243933,
+        "eyespot_right": 0.10121104351948024,
+        "cprc": 0,
+        "pressure": 0.06674126115894394,
+        "mechanical": 7.820600075093264e-10
+      },
+      "brain_on": true,
+      "light": {
+        "on": true,
+        "x": 10,
+        "y": 5,
+        "z": 13
+      },
+      "uv": 0,
+      "reflections": 0,
+      "hot_fraction": 0
+    }
+  },
+  "errors": [],
+  "passed": true,
+  "seconds": 105.2
+}

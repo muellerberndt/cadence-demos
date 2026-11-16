@@ -1,5 +1,15 @@
 # Connect Four
 
+**What it shows.** Cadence brains excel at games. The brain settles on each move and judges the
+game (loss, draw or win for the side to move); a search over the rules checks the move. Moving
+first against a perfect player, which only flawless play beats, the pair won 363 of 400 games
+(`evidence/search_reading.json`); the brain alone, from the same seat, won 119 of 200
+(`evidence/reading.json`). Teach it a better column and it learns it in your browser, with
+Cadence's local rule. Connect Four is won by the first player with perfect play, so moving second
+against the perfect player every player loses, and so did this one (0 of 40). The page's
+[help](web/help.html) explains every part of the screen, what you can do and the limits; on the
+page, every control and every region of the brain explains itself (a small **?**).
+
 Play Connect Four against a deep Cadence brain and watch every neuron settle on its move. You
 and the brain take turns dropping stones; four in a row wins. On its turn the whole brain
 settles once on the board it sees, and the page draws that settle sweep by sweep: every neuron
@@ -109,8 +119,13 @@ phases of a fixed 32 sweeps. 3,208 neurons and 3,295,232 synapses.
   strengthened and blue where they weakened, with the number changed. Lessons live in the tab;
   *Reset brain* or a reload restores the shipped brain.
 - **Game controls:** *Brain + search* or *Brain alone*, new game, who starts, undo, keys 1–7,
-  and a collapsed model card with the sizes, the training, the readings, the timings in this tab
-  and the provenance.
+  and, on the page opened by itself, a collapsed model card with the sizes, the training, the
+  readings, the timings in this tab and the provenance.
+- **Explanations:** every control and every region of the brain carries a small **?** whose card
+  opens when the pointer rests on it (the demos' shared `cadence-explain.js`); the neuron card
+  opens after the same short rest and stays a moment after the pointer leaves. *Help* opens
+  `web/help.html`. Inside the demos site (in a frame) the page's title, introduction, model card
+  and footer hide, since the site's header carries the title, the claim and what to try.
 
 ## How it learned
 
@@ -246,6 +261,51 @@ precision the brain was trained in): the moves are unchanged and the file is a q
 size. `pack.py` copies the brain, the receipt's numbers and the host into `web/pack/` with the
 released wheel and a manifest of hashes.
 
+### Distilling the search into the brain
+
+The player's own games can teach the brain what the search finds (expert iteration, as in
+AlphaZero). `c4train/label.py` plays games of brain + search from a few random opening moves, in
+self-play (a move drawn now and then among the columns the search keeps) and, on 40% of the games,
+against the solver at 1.0, 0.9 or 0.7, and keeps every position the player faced with the solver's
+scores, the search's values and column, and the brain's own column:
+
+```sh
+.venv/bin/python -m c4train.label ../web/pack/brain.npz --games 6000 --workers 60 --out runs/labels/g0
+```
+
+`train.py --label-dir runs/labels/g0 --label-share 0.6 --label-soft 0.5 --label-weight 3` then
+draws that share of every batch from the labelled positions: `targets=` half on the search's
+column, half spread over the columns the search and the solver both keep (a proven win one-hot),
+`weights=` 3 where the search overrode the brain or a win or block decides the position. The rest
+of the batch keeps the solver's value-keeping target, so the brain does not forget it.
+
+Measured on an A10G, with up to five generations of 6,000 labelled games (796,452 positions; two
+of the generations were played with a distilled brain as the player's prior):
+
+| Brain | Lessons | Held-out optimal / keeps the result | Alone, first vs perfect (80) | Alone vs 0.9, second | Alone vs packed brain, first / second | Brain + search 40k, first vs perfect (80) |
+| --- | --- | --- | --- | --- | --- | --- |
+| the packed brain | — | 0.773 / 0.923 | 42-25-13 | 12-7-21 | 18-9-13 / 13-9-18 | 66-6-8 |
+| search labels 60% of each batch, rate as packed | 5,000 | 0.796 / 0.914 | 46-21-13 | 17-3-20 | 27-7-6 / 19-5-16 | 61-7-12 |
+| the same | 10,000 | 0.799 / 0.916 | 55-14-11 | 12-8-20 | 30-6-4 / 14-5-21 | 59-5-16 |
+| the same, then labels from its own player | 5,000 + 4,000 | 0.810 / 0.918 | 55-18-7 | 11-10-19 | 32-3-5 / 21-6-13 | 67-2-11 |
+| labels 30% of each batch, a third of the rate | 4,000 | 0.787 / 0.925 | 39-22-19 | 12-6-22 | 23-7-10 / 11-4-25 | 62-5-13 |
+| labels 50%, a tenth of the rate | 4,000 | 0.786 / 0.922 | 52-20-8 | 6-10-24 | 25-7-8 / 11-7-22 | 67-5-8 |
+| labels 30% of each batch, a third of the rate | 6,000 | 0.793 / 0.924 | 39-23-18 | 11-4-25 | 24-7-9 / 12-6-22 | 64-5-11 |
+| labels 50%, a tenth of the rate | 6,000 | 0.792 / 0.925 | 43-24-13 | 7-10-23 | 25-6-9 / 9-7-24 | 52-6-22 |
+
+Counts are won-drawn-lost for the brain's side; "alone vs packed brain" is the new brain alone
+against the packed brain alone, after two random opening moves, 40 games from each seat; the
+packed brain's row against itself shows that baseline. The records are in
+`evidence/distill_reading.json`.
+
+Every distilled brain gained optimal moves and tactics, and several played the perfect solver
+better from the first seat; most kept the theoretical result less often on held-out positions or
+played worse from the second seat. At 6,000 lessons the 30%-share arm passes the gate as written,
+narrowly: it keeps the result on 0.9244 of held-out positions against 0.9234, its head-to-head score
+against the packed brain is 0.53 over both seats, within noise, and its player at 40,000 positions
+reads 64-5-11 against 66-6-8; the page's player at 120,000 positions was not measured with it, so
+the packed brain stays.
+
 ## What it does not claim
 
 - **The search is not the brain.** *Brain alone* plays from one settle per move. *Brain + search*
@@ -272,7 +332,15 @@ python -m venv .venv
 .venv/bin/python -m pytest tests -q
 .venv/bin/python check_page.py
 node tests/parity_search.mjs        # the page's search against connect4/search.py
+.venv/bin/python tools/promise_test.py --out evidence/promise_test-<date>.json   # the claim, on the page
 ```
+
+`tools/promise_test.py` plays the claim on the real page: brain + search is the player, every
+brain move is a finished settle with a verdict and the search's report, the brain's column is its
+strongest legal motor neuron, a visitor who builds threats of four has every single threat blocked
+and the brain takes every immediate win it has, brain alone plays its strongest legal column with
+no search, lessons on the brain's first move make the taught column its move, and the claim's
+numbers are those of `evidence/search_reading.json` (record: `evidence/promise_test-20261113.json`).
 
 The tests check the rules and the three-plane encoding, the search (wins it must take, blocks it
 must make, cells it must not open, the brain's column where the search sees no difference), that the drawn settle is the
@@ -295,7 +363,8 @@ learning module a NumPy whose `repeat` casts its counts. The shim does nothing o
 | `pack.py` | packs the wheel, the brain, the receipt's numbers and the host into `web/pack/` |
 | `training/` | the trainer (`c4train`), the solver bridge, the readings and the page copy |
 | `tests/`, `check_page.py` | the rules, the host and the search (Python), the search's port (`parity_search.mjs` with `fixtures/`); the page's promise in headless Chromium |
-| `evidence/` | `reading.json`, `search_reading.json`, `page_check.json` |
+| `tools/promise_test.py`, `site.json`, `web/help.html` | the claim on the demos site (`site.json`), its help page, and the claim played on the page |
+| `evidence/` | `reading.json`, `search_reading.json`, `page_check.json`, `promise_test-20261113.json` |
 | `MODEL_CARD.md` | the brain: composition, training, readings, limits |
 | `docs/` | the screenshot |
 

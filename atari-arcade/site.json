@@ -1,0 +1,17 @@
+{
+  "slug": "atari-arcade",
+  "title": "Atari Arcade",
+  "page_dir": "web",
+  "card": "A newborn brain learns Atari games in your browser by watching a teacher, then plays alone. In Freeway it beats its teacher.",
+  "tagline": "Born knowing nothing, it learns a game by watching, then plays alone",
+  "kicker": "LEARNS DURING ITS LIFE, FROM A TEACHER",
+  "feature": "A newborn brain learns each game in your browser: it watches a teacher for about a minute, then takes the controls and plays in real time, the game never waiting for it. In Freeway it beats its teacher; in Atlantis it ties.",
+  "howTo": "Watch the agreement with the teacher climb until the brain takes the controls. Compare its scores with the teacher's in each row's header: the badge reads legend above the teacher. Speed slows the games. Rest on a ? to learn more.",
+  "help": "help.html",
+  "evidence": [
+    "atari-arcade/evidence/promise-20261113.json",
+    "atari-arcade/evidence/headless-0952/",
+    "atari-arcade/evidence/page_check.json"
+  ],
+  "promise_test": "python atari-arcade/tools/promise_test.py --out atari-arcade/evidence/promise-<date>.json"
+}

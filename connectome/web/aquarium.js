@@ -8,6 +8,7 @@
 //
 // The page drives it: aquarium.render(dt, fishPosition) once per frame.
 import * as THREE from "three";
+import { brainColor, brainHex } from "./cadence-palette.js";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
@@ -18,9 +19,10 @@ export const toThree = (x, y, z) => new THREE.Vector3(x, z, -y);
 export const fromThree = (v) => [v.x, -v.z, v.y];
 
 export const MATRIX = {
-  background: 0x010603, edge: 0x39ff6a, bright: 0x9dffb0, dim: 0x1f8a3c, fill: 0x03150a,
-  prey: 0xe8fff0, lamp: 0xd8ffe4, water: 0x39ff6a, rain: "#39ff6a", rainHead: "#d8ffe4",
+  background: brainHex("rest"), edge: brainHex("signal"), bright: brainHex("white"), dim: brainHex("dim"), fill: brainHex("rest"),
+  prey: brainHex("white"), lamp: brainHex("white"), water: brainHex("signal"), rain: brainHex("signal"), rainHead: brainHex("white"),
 };
+const SIGNAL_RGB = brainColor("signal").join(",");
 
 export const STRIPE_PERIOD = 4;     // mm, one bright and one dark bar
 export const PREY_MAX = 64;
@@ -120,7 +122,7 @@ function digitalRain(cols = 96, rows = 48) {
         g.fillStyle = MATRIX.rain; g.fillText(pick(), i * cw + cw / 2, (row - 1) * ch);
         g.fillStyle = MATRIX.rainHead; g.fillText(pick(), i * cw + cw / 2, row * ch);
       }
-      if (Math.random() < 0.06) { const rr = Math.floor(Math.random() * rows); g.fillStyle = "rgba(57,255,106,.55)"; g.fillText(pick(), i * cw + cw / 2, rr * ch); }
+      if (Math.random() < 0.06) { const rr = Math.floor(Math.random() * rows); g.fillStyle = `rgba(${SIGNAL_RGB},.25)`; g.fillText(pick(), i * cw + cw / 2, rr * ch); }
       heads[i] += speeds[i];
       if (heads[i] > rows + tails[i]) { heads[i] = -Math.floor(Math.random() * rows); speeds[i] = 0.6 + 0.9 * Math.random(); }
     }

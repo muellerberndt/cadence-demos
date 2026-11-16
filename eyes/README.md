@@ -1,5 +1,18 @@
 # Eyes
 
+## What it shows
+
+**A Cadence brain works only when something moves.** One Cadence brain gives every shape on
+the page its own eye and follows it live, from the page's pixels alone. Its state holds what
+each eye saw, so when nothing moves the brain rests: zero settling sweeps, like a resting
+animal, where a network without state recomputes every frame. Drag a shape away and its eye
+jumps after it; the brain works only for that move, then rests again. The page's
+[help page](web/help.html) explains every part of the screen, what you can do, how the brain
+works, the numbers with their evidence files, and the limits. The site's text for the demo is
+[`site.json`](site.json); the promise test is `check_page.py`.
+
+## The demo
+
 One Cadence brain runs in a browser tab and follows every shape on a large surface with its own
 eye, seeing nothing but the page's pixels. Drag a shape, add more, or let them freeze, walk and
 dart on their own. Each tracked shape has an eye that sees sharply at its centre and coarsely
@@ -125,6 +138,13 @@ The page's promise (`evidence/page_check.txt`, `check_page.py`, headless Chrome 
 brain loads in Pyodide; six eyes on six moving shapes, 5.83 of 6 on average on their own shapes;
 a still world costs zero sweeps; a shape dragged 20 px in 150 ms is centred in its eye again a
 second later; no console errors.
+
+The promise as the demos site states it (`evidence/page_check-20261113-1155.txt`, `check_page.py
+--hardware`, the brain view drawn with the GPU, Apple M4 at a load average of about 130): with
+every shape moving, 60 of 60 frames settled, 35.7 sweeps and 62 ms per frame on average; with the
+shapes held, 65 of 65 frames in three seconds cost zero sweeps, 3.6 ms per frame; a shape dragged
+18 px in 150 ms was centred again after one jump of its eye (two frames settled, up to 32 sweeps),
+and then 65 of 65 frames cost zero sweeps again.
 
 The eye against its control, as the page runs them (`evidence/comparison.json`, `compare.py`;
 the window eye sees a 26×26 window at full resolution and was raised on eight shapes without

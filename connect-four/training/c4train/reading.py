@@ -47,7 +47,7 @@ def main(path: str, games: int = 200, seed: int = 20991) -> None:
                                  for i in range(0, len(held.x), 500)])
         out["heldout"]["verdict"] = round(float(np.mean(judged == np.sign(best) + 1)), 4)
     out["games"] = []
-    for first, strength in ((True, 1.0), (False, 0.9)):
+    for first, strength in (((True, 1.0), (False, 0.9)) if games else ()):
         rng = np.random.default_rng(seed)
         results = {"win": 0, "draw": 0, "loss": 0}
         clean = 0

@@ -31,6 +31,23 @@ const PLANE = 576;
 const RF_FLOOR = 0.35; // a field shows its weights above this share of its largest
 const MONO = "ui-monospace, Menlo, monospace";
 
+// What each part of the brain view does, for the page's question marks.
+export const EYE_TEXT = { title: "What the brain sees", text: "The whole 24 by 24 arena, turned so that the brain's own heading points up: walls and trails, your trail, its head and your head. Beside it, two close-ups of the 9 by 9 cells around its head (walls and trails, your head) and the arrow of your heading. 2,470 inputs, every move." };
+
+export function partText(L, hidden, where, layers = false) {
+  const n = `${L.count} neurons`;
+  if (L.kind === "motor") return { title: "Motor strip", text: "Three neurons: turn left, ride straight, turn right. The strongest one in the settled brain is the brain's move." };
+  if (L.kind === "trace") return { title: "Working trace", text: "The working trace, switched off in these brains: every move is settled from rest, so nothing carries over from one move to the next." };
+  const j = hidden.indexOf(L);
+  const dots = "Each dot is a neuron, lit as the brain settles; point at one to see what it tracks, such as a wall ahead.";
+  const last = layers ? "Beside the layer: what it knows, read from its settled state each move and scored on games it never saw."
+    : "An amber ring marks a neuron that changes the move when it is silenced or driven.";
+  const drawn = where ? `, drawn as ${where} cortex` : "";
+  if (hidden.length === 1) return { title: `Association cortex · ${n}`, text: `One region of ${n} between the eye and the motor strip. ${dots} ${last}` };
+  if (j === 0) return { title: `${L.name} · ${n}`, text: `The first layer${drawn}: it reads the eye. ${dots} ${last}` };
+  return { title: `${L.name} · ${n}`, text: `A deeper layer${drawn}. The deep layers decide the moves: with their pathway cut, this brain changes 82% of its moves and loses every game against a simple bot.` };
+}
+
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const sigmoid = (z) => 1 / (1 + Math.exp(-z));
 
@@ -59,6 +76,8 @@ export class DeepView extends RippleView {
     this.intro = null;
     this.sel = null;
     this.hover = null;
+    this.hoverWant = null;
+    this.hoverTimer = 0;
     this.heading = null;
     this.frontMs = 520;
     this.probeShown = {};
@@ -566,6 +585,33 @@ export class DeepView extends RippleView {
     return this.board;
   }
 
+  // ---- the page's explanation spots (cadence-explain.js) --------------------------------------
+  // The parts of the drawing, each a box in CSS pixels of the canvas with a title and what it does.
+  // `search`: the page's player is the brain + the look-ahead.
+  explainParts(search) {
+    if (!this.field || !this.bands) return [];
+    const d = this.dpr, out = [];
+    const box = (x0, y0, x1, y1) => ({ x: x0 / d, y: y0 / d, w: Math.max(8, (x1 - x0) / d), h: Math.max(8, (y1 - y0) / d) });
+    out.push({ box: this.inputBox(), ...EYE_TEXT });
+    const hidden = this.layers.filter((L) => L.kind === "hidden");
+    for (const b of this.bands) {
+      const r = b.rect;
+      out.push({ box: box(r.x, r.y, r.x + r.w, r.y + r.h), ...partText(b.L, hidden, b.where, true) });
+    }
+    return out;
+  }
+
+  // The eye's box: the field, the two foveas and the heading arrow, with the field's label.
+  inputBox() {
+    const d = this.dpr, f = this.field;
+    let x0 = f.x, y0 = f.y - 14 * d, x1 = f.x + f.S, y1 = f.y + f.S;
+    for (const q of [...this.eyes, this.arrow]) {
+      x0 = Math.min(x0, q.x - q.R); x1 = Math.max(x1, q.x + q.R);
+      y0 = Math.min(y0, q.y - q.R); y1 = Math.max(y1, q.y + q.R);
+    }
+    return { x: x0 / d, y: y0 / d, w: (x1 - x0) / d, h: (y1 - y0) / d };
+  }
+
   // ---- picking and the card ------------------------------------------------------------------
   pick(e) {
     if (!this.layerOf) return null;
@@ -582,12 +628,21 @@ export class DeepView extends RippleView {
 
   active() { return this.sel !== null ? this.sel : this.hover; }
 
+  // The neuron card follows the pointer calmly: it opens once the pointer has rested on a neuron
+  // for 140 ms and stays 450 ms after the pointer has left it (the timing of the page's other
+  // explanation cards), so it does not flicker while the pointer crosses the neurons.
   setHover(i) {
-    if (i === this.hover) return;
-    this.hover = i;
     this.canvas.style.cursor = i === null ? "" : "pointer";
-    this.cardFor = null;
-    if (this.active() === null) this.hideCard();
+    if (i === this.hoverWant) return;
+    this.hoverWant = i;
+    clearTimeout(this.hoverTimer);
+    const apply = () => {
+      this.hover = i;
+      this.cardFor = null;
+      if (this.active() === null) this.hideCard();
+    };
+    if (i === this.hover) return;
+    this.hoverTimer = setTimeout(apply, i === null ? 450 : 140);
   }
 
   select(i) {
@@ -621,7 +676,7 @@ export class DeepView extends RippleView {
       if (x && x.causal) {
         html += `<div class="zc${x.causal.clear ? " ok" : ""}">${esc(x.causal.effect)} · n ${x.causal.n}</div>`;
       } else if (x && !x.silent && !x.mixed && L.kind !== "motor") html += `<div class="zc dim">causal check: not tested</div>`;
-      html += `<div class="za"><span>now</span><i><b></b></i><em></em></div>`;
+      html += `<div class="za"><span>live</span><i><b></b></i><em></em></div>`;
       if (L.rf) html += `<div class="zk"><span class="e"></span>excites <span class="n"></span>inhibits · its field on the board</div>`;
       this.card.innerHTML = html;
       this.card.classList.add("on");

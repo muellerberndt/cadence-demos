@@ -1,0 +1,80 @@
+{
+ "pages": {
+  "index": {
+   "ready": true,
+   "seconds_to_ready": 31.6,
+   "console_errors": [],
+   "app_errors": [],
+   "failed_requests": [],
+   "screenshot": "docs/screenshots/check-20261113_index.png"
+  },
+  "explain": {
+   "ready": true,
+   "seconds_to_ready": 8.5,
+   "console_errors": [],
+   "app_errors": [],
+   "failed_requests": [],
+   "screenshot": "docs/screenshots/check-20261113_explain.png"
+  },
+  "disclaimers": {
+   "ready": true,
+   "seconds_to_ready": 4.7,
+   "console_errors": [],
+   "app_errors": [],
+   "failed_requests": [],
+   "screenshot": "docs/screenshots/check-20261113_disclaimers.png"
+  },
+  "copy": {
+   "ready": true,
+   "seconds_to_ready": 5.0,
+   "console_errors": [],
+   "app_errors": [],
+   "failed_requests": [],
+   "screenshot": "docs/screenshots/check-20261113_copy.png"
+  },
+  "paste": {
+   "ready": true,
+   "seconds_to_ready": 5.5,
+   "console_errors": [],
+   "app_errors": [],
+   "failed_requests": [],
+   "screenshot": "docs/screenshots/check-20261113_paste.png"
+  },
+  "match": {
+   "ready": true,
+   "seconds_to_ready": 8.8,
+   "console_errors": [],
+   "app_errors": [],
+   "failed_requests": [],
+   "screenshot": "docs/screenshots/check-20261113_match.png"
+  },
+  "limits": {
+   "ready": true,
+   "seconds_to_ready": 5.7,
+   "console_errors": [],
+   "app_errors": [],
+   "failed_requests": [],
+   "screenshot": "docs/screenshots/check-20261113_limits.png"
+  },
+  "why": {
+   "ready": true,
+   "seconds_to_ready": 6.1,
+   "console_errors": [],
+   "app_errors": [],
+   "failed_requests": [],
+   "screenshot": "docs/screenshots/check-20261113_why.png"
+  },
+  "fish": {
+   "ready": true,
+   "seconds_to_ready": 6.8,
+   "console_errors": [],
+   "app_errors": [],
+   "failed_requests": [],
+   "screenshot": "docs/screenshots/check-20261113_fish.png"
+  }
+ },
+ "date": "2026-11-13",
+ "renderer": "hardware",
+ "browser": "156.0.8078.4",
+ "clean": true
+}

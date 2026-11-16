@@ -1,0 +1,20 @@
+/* The two ways it attends (Listen to me, Curious), and the signs of hearing and of whose turn it is. */
+.flow-mode { display: flex; width: 100%; margin: 0 0 8px; border: 1px solid rgb(255 255 255 / 0.12); border-radius: 9px; overflow: hidden; }
+.flow-mode .seg { flex: 1; height: 30px; border: 0; background: transparent; color: rgb(232 235 240 / 0.6); font: 500 12.5px var(--body); cursor: pointer; }
+.flow-mode .seg[aria-pressed="true"] { background: rgb(255 190 110 / 0.16); color: #ffe8c4; }
+body[data-flow="listen"] .ask-row { display: none; }
+/* it is hearing an utterance: the microphone button glows */
+body[data-hearing="1"] .mic-mini, body[data-hearing="1"] #mic { box-shadow: 0 0 0 2px rgb(120 200 255 / 0.55), 0 0 18px rgb(120 200 255 / 0.45); }
+/* whose turn: while it thinks or speaks the microphone button dims (a sound then is not taken in) */
+body[data-turn="parrot"] .mic-mini { opacity: 0.45; }
+/* what to do when it did not understand, or guessed: by the Pistachio button */
+.ask-hint { margin: 6px 0 0; padding: 6px 8px; border-radius: 8px; background: rgb(255 214 150 / 0.08); border: 1px solid rgb(255 214 150 / 0.25); color: #ffe8c4; font: 400 12px/1.4 var(--body); }
+.ask-hint b { color: #fff3dc; font-weight: 600; }
+.ask-hint .q { display: inline-block; min-width: 1.3em; margin-right: 4px; border-radius: 999px; background: rgb(232 235 240 / 0.92); color: #1a1c22; font-weight: 700; text-align: center; }
+.say-bubble.unsure { background: rgb(232 235 240 / 0.92); color: #1a1c22; font-weight: 600; min-width: 1.6em; text-align: center; }
+.ask-log .guess { font: 400 10px var(--mono); letter-spacing: 0.06em; color: #ffd27a; border: 1px solid rgb(255 210 122 / 0.4); border-radius: 999px; padding: 0 6px; margin-left: 4px; }
+.scan-box.ears .sb-word { display: block; min-height: 1.1em; }
+/* the box under the brain kept narrow: the cochlea's and the syrinx's labels stay in view beside it */
+body.demo .ask { width: min(216px, 40%); }
+body.demo .ask-row select { min-width: 0; }
+body.demo .ask-actions { gap: 6px; }

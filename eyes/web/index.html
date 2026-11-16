@@ -3,64 +3,82 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="One Cadence brain gives every shape its own eye and follows it from the page's pixels alone. When nothing moves, the brain rests and does no settling work.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23070d13'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%236aa8ff' stroke-width='2.5'/%3E%3Ccircle cx='16' cy='16' r='3.5' fill='%23ffd296'/%3E%3C/svg%3E">
 <title>Cadence Eyes</title>
 <link rel="stylesheet" href="eyes.css">
+<link rel="stylesheet" href="cadence-explain.css">
+<script src="cadence-explain.js" defer></script>
 </head>
 <body>
-<header>
-  <div>
-    <h1>Cadence eyes</h1>
-    <p class="about" id="about">One Cadence brain runs in this page and follows every tracked shape.
-      Each tracked shape has an eye on the pixels below. Every frame the brain answers, for each
-      eye, where its shape is, and the eye jumps there. The pixels are all the brain gets. While
-      nothing moves it stays in equilibrium and does no settling at all.</p>
-  </div>
-  <div class="loading" id="loading">starting</div>
+<header class="top">
+  <h1 data-standalone>Cadence eyes</h1>
+  <p class="lede" data-standalone>One brain gives every shape its own eye, from the page's pixels alone. When nothing moves, it rests.</p>
+  <span class="spacer"></span>
+  <div class="loading" id="loading" role="status" data-explain="The brain loads in your browser: Python, NumPy and the released Cadence library run inside the page, with no server. The first visit downloads about 10 MB." data-explain-mark="none">starting</div>
 </header>
 <main>
-  <section class="left">
+  <section class="left" aria-label="The shapes and their eyes">
     <div class="toolbar">
-      <span class="group" id="palette" aria-label="add a shape"></span>
-      <span class="group">
-        <button data-preset="three">Three</button>
-        <button data-preset="six">Six</button>
-        <button data-preset="crowd">Crowd</button>
-        <button data-preset="unseen" title="shapes the brain never saw while learning">Unseen</button>
-        <button id="clear">Clear</button>
+      <label class="add" data-explain="Adds a shape with its own eye. The shapes under &quot;never seen&quot; were never shown to the brain while it was raised: its eyes follow them too." data-explain-mark="none"><span class="sr">Add a shape</span>
+        <select id="add" aria-label="Add a shape"><option value="">+ add a shape</option></select>
+      </label>
+      <span class="group" role="group" aria-label="Scenes">
+        <button type="button" data-preset="three" data-explain="A new scene: three shapes, each with its own eye." data-explain-mark="none">Three</button>
+        <button type="button" data-preset="six" data-explain="A new scene: six shapes, each with its own eye. The page opens with this one." data-explain-mark="none">Six</button>
+        <button type="button" data-preset="crowd" data-explain="A new scene: twelve shapes, six of them with an eye. An eye has to stay on its own shape while others pass close by." data-explain-mark="none">Crowd</button>
+        <button type="button" data-preset="unseen" data-explain="A new scene: a star, a tee and an ell, shapes the brain never saw while it was raised, each with an eye, beside two shapes it knows." data-explain-mark="none">Unseen</button>
+        <button type="button" id="clear" data-explain="Removes every shape. The brain rests: with nothing to see, it does no work." data-explain-mark="none">Clear</button>
       </span>
+      <span class="spacer"></span>
+      <a class="helplink" data-help href="help.html" target="_blank" rel="noopener" data-explain="Everything this page shows, explained in full, with the numbers and where they come from." data-explain-mark="none">help</a>
     </div>
-    <div class="surface-wrap"><canvas id="surface" tabindex="0" aria-label="the pixels the brain sees; drag the shapes"></canvas></div>
+    <div class="surface-wrap" id="surface-wrap">
+      <canvas id="surface" tabindex="0" aria-label="The pixels the brain sees. Drag a shape to move it; double-click a shape to give it an eye or take the eye away; right-click removes a shape; click a shape with an eye to show its stream in the brain."></canvas>
+      <span class="corner-label" data-explain-title="The pixels the brain sees" data-explain="Shapes on a grey surface: the only thing the brain sees is these pixels. Each coloured square is an eye: sharp in its solid centre, coarse out to the dashed square. The small box is where the brain says the eye's shape is, solid when it is right.
+
+Drag a shape and its eye jumps after it. Double-click a shape to give it an eye or take it away; right-click removes it.">the pixels the brain sees</span>
+      <span class="mouse" aria-hidden="true">drag a shape · double-click: eye on or off · right-click: remove</span>
+    </div>
+    <div class="coach" id="coach" role="status" aria-live="polite">
+      <span class="dots" id="coach-dots" aria-hidden="true"></span>
+      <span class="coach-text" id="coach-text">The brain is waking up in your browser.</span>
+      <button type="button" id="coach-next" hidden data-explain="Skips to the next thing to try." data-explain-mark="none">next ›</button>
+    </div>
     <div class="status">
-      <span class="pill" id="state">loading</span>
-      <span><span class="k">sweeps</span> <b id="sweeps">-</b></span>
-      <span><span class="k">brain</span> <b id="ms">-</b> ms</span>
-      <span><span class="k">frames</span> <b id="fps">-</b>/s</span>
-      <span><span class="k">eyes on their shape</span> <b id="own">-</b></span>
+      <span class="pillwrap" data-explain-title="What the brain is doing" data-explain="At rest: nothing any eye sees has changed. The brain's state holds what its eyes saw, so it does no settling work at all.
+
+Settling: something moved. The brain repairs its state, sweep by sweep, until all its parts agree again, and the eye jumps to the answer."><span class="pill" id="state">loading</span></span>
+      <span data-explain="Sweeps in the last frame: rounds of repair until the brain's parts agree with what its eyes see. Zero when nothing moved." data-explain-mark="none"><span class="k">sweeps</span> <b id="sweeps">-</b></span>
+      <span data-explain="The brain's time for the last frame, in your browser. While nothing moves it falls to a few milliseconds: the time to look and see that nothing changed." data-explain-mark="none"><span class="k">brain</span> <b id="ms">-</b> ms</span>
+      <span data-explain="How many times a second the brain answers for all its eyes." data-explain-mark="none"><span class="k">frames</span> <b id="fps">-</b>/s</span>
+      <span data-explain="How many eyes have their own shape at their centre in this frame." data-explain-mark="none"><span class="k">eyes on their shape</span> <b id="own">-</b></span>
     </div>
-    <canvas id="strip" width="900" height="70" aria-label="settling sweeps per frame"></canvas>
+    <div class="strip-wrap" data-explain-title="Work, frame by frame" data-explain="The settling sweeps of the last 300 frames, newest at the right. Flat at the bottom: the brain rested and did no work. A bar: something moved, and the brain settled again." data-explain-mark="corner">
+      <canvas id="strip" width="900" height="46" aria-label="settling sweeps per frame"></canvas>
+    </div>
     <div class="controls">
-      <label title="shapes freeze, walk and dart on their own; a shape you hold waits"><input type="checkbox" id="animate" checked> shapes move on their own</label>
-      <label><input type="checkbox" id="windows" checked> show the eyes' windows</label>
-      <label><input type="checkbox" id="pause"> pause</label>
-      <label>frames per second <input type="range" id="rate" min="2" max="40" value="30"><span id="ratev">30</span></label>
+      <label class="key" data-explain="Shapes freeze, walk and dart by themselves. Untick it and nothing moves: the brain rests and does no work until you move a shape."><input type="checkbox" id="animate" checked> shapes move on their own</label>
+      <label data-explain="Shows each eye: its sharp centre (solid square), how far it sees (dashed square) and its answer (small box)." data-explain-mark="none"><input type="checkbox" id="windows" checked> show the eyes</label>
+      <label data-explain="Stops the brain and the shapes. The space bar does the same." data-explain-mark="none"><input type="checkbox" id="pause"> pause</label>
+      <label data-explain="How often the brain may look: up to this many frames a second." data-explain-mark="none">frames per second <input type="range" id="rate" min="2" max="40" value="30"><span id="ratev">30</span></label>
     </div>
-    <p class="hint">Drag shapes with the mouse. Double-click a shape to give it an eye or take
-      the eye away; right-click or Delete removes it. Click a shape with an eye to see that eye's
-      stream in the brain view. <span id="legend-eye">Coloured squares are the eyes' windows; the
-      small box is the eye's answer, solid on its own shape and dashed off it.</span></p>
   </section>
-  <section class="right">
-    <div class="viewbar"><span id="brainname"></span><span id="streams"></span></div>
-    <div class="stage">
+  <section class="right" aria-label="The brain">
+    <div class="viewbar"><span id="brainname" data-explain="The whole brain: every neuron and synapse, run by the released Cadence library inside this page. The eyes are spread over several workers, each holding the same brain." data-explain-mark="none"></span></div>
+    <div class="stage" id="stage">
       <canvas id="scan" aria-label="every neuron and synapse of the brain, live"></canvas>
       <div id="labels"></div>
-      <div id="inspector">drag to rotate · scroll to zoom · hover a neuron</div>
+      <span class="corner-label" data-explain-title="The brain, live" data-explain="Every neuron of the brain, showing the stream of one eye (the outlined one; click a shape to choose). Several times a second one frame's settle plays sweep by sweep: a wave from the retina through V1 and the map to the gaze neurons that dies down as the brain agrees. When nothing moves, it goes dark.
+
+Drag to turn it, scroll to zoom. Point at a region's name to see what it does.">the brain, live</span>
+      <div id="inspector">drag to turn · scroll to zoom · point at a neuron</div>
     </div>
-    <div class="waverow"><canvas id="wavecurve" width="240" height="44" aria-label="the largest change of any neuron per sweep of the settle shown"></canvas><span id="wavetext">the settle, sweep by sweep, appears here while shapes move</span></div>
-    <canvas id="montage" aria-label="activity of every module over the last frames"></canvas>
-    <div class="eyeviews" id="eyeviews"></div>
-    <p class="legend" id="legend"></p>
+    <div class="waverow"><canvas id="wavecurve" width="240" height="44" aria-label="the largest change of any neuron per sweep of the settle shown" data-explain-mark="none" data-explain="One frame's settle: the largest change of any neuron at each sweep. It falls as the brain's parts come to agree; the dot is the sweep the brain view shows."></canvas><span id="wavetext">the settle, sweep by sweep, appears here while shapes move</span></div>
+    <div class="eyeviews-wrap">
+      <span class="caption" data-explain-title="What each eye sees" data-explain="Each eye's 25 by 25 receptors: sharp at the centre, coarse at the edge, with what changed since the last frame in red. Under each, its shape, and whether the eye is on it. Click one to show its stream in the brain.">what each eye sees</span>
+      <div class="eyeviews" id="eyeviews"></div>
+    </div>
   </section>
 </main>
 <script type="module" src="eyes.js"></script>

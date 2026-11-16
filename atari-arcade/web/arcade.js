@@ -168,6 +168,7 @@ export class GameSide {
     return {
       game: this.game, phase: this.phase, badge: this.badge, score: this.score, best: this.best, episode: this.episode,
       teacher: this.teacherReturns.length ? Math.round(mean(this.teacherReturns) * 10) / 10 : null,
+      teacher_returns: this.teacherReturns,
       agent: AGENT_HINTS[this.game] ?? 'the brain is the player',
       returns: this.returns, action: this.metaAction(),
     };

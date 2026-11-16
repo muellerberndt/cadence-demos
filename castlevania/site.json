@@ -1,0 +1,25 @@
+{
+  "slug": "castlevania",
+  "title": "Castlevania",
+  "page_dir": "player",
+  "card": "A Cadence brain plays NES Castlevania from what its eye sees, with a memory of the game's moments. Watch it play beside its brain.",
+  "tagline": "Stage 3 on all nine starts with a look-ahead; the giant bat is not beaten",
+  "kicker": "REAL MEMORY, A REAL STATE, IN REAL TIME",
+  "feature": "A frozen Cadence brain plays from what its eye sees, with a memory of this game's moments and a state it carries from move to move. A look-ahead on the emulator checks its moves near enemies: stage 3 on all nine starts, lives lost 36 to 5.",
+  "howTo": "Play the highlights: the brain proposes every move, and amber marks the few the look-ahead overrules. Switch to Brain alone for its own whole game beside its brain, and press Live to run the brain in your browser.",
+  "help": "help.html",
+  "evidence": [
+    "castlevania/evidence/lookahead_receipt.json",
+    "castlevania/evidence/receipt.json",
+    "castlevania/evidence/castlevania-run.json",
+    "castlevania/evidence/castlevania-brain-alone-run.json",
+    "castlevania/player/evidence/player_check.json",
+    "castlevania/player/evidence/player_check-20261113.json",
+    "castlevania/evidence/promise_test-20261113.json"
+  ],
+  "promise_test": "python castlevania/tools/promise_test.py --out castlevania/evidence/promise_test-<date>.json",
+  "localOnly": {
+    "reason": "The game is not included, so this page plays recordings. To watch the brain play the game live, run it on your own machine with your own copy of the ROM.",
+    "command": "cd castlevania && python -m simon.rom ~/roms && python server.py"
+  }
+}

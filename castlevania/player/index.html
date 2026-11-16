@@ -3,50 +3,62 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cadence Castlevania, the recorded run</title>
-<link rel="stylesheet" href="../web/style.css">
+<meta name="description" content="A Cadence brain plays NES Castlevania from what its eye sees, with a memory of the game's moments: two recorded runs beside its brain, and the brain itself running in your browser.">
+<title>Castlevania · Cadence</title>
+<link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="player.css">
+<link rel="stylesheet" href="cadence-explain.css">
+<script src="cadence-explain.js" defer></script>
 </head>
 <body>
-<header>
-  <h1>Castlevania, played by a Cadence brain: the recorded run</h1>
-  <p class="about">The video is one whole game the brain played, frozen, from the first frame Simon can
-    move. Beside it the brain view replays that decision's real state, in step with the video: play,
-    pause, seek or change the speed. <b>Live</b> runs the brain itself in your browser (Python and
-    the released cadence-net in Pyodide) on the same eye inputs and checks its buttons against the
-    recording. No ROM is involved.</p>
+<header class="topbar">
+  <h1 data-standalone>Castlevania, played by a Cadence brain</h1>
+  <div class="segmented" role="group" aria-label="Which recording" data-explain-title="Two recordings" data-explain="Brain + look-ahead: highlights of two games where a look-ahead on the emulator checks the brain's moves near enemies. Brain alone: one whole game of the brain by itself, with its brain beside the game, and the brain running live in your browser.">
+    <button type="button" data-rec="lookahead" aria-pressed="true">Brain + look-ahead</button>
+    <button type="button" data-rec="alone" aria-pressed="false">Brain alone</button>
+  </div>
+  <span class="spacer"></span>
+  <a class="help-link" data-help href="help.html" target="_blank" rel="noopener" data-explain="Everything this page shows, in full: the game, the brain, its memory, the look-ahead, the numbers and the limits." data-explain-mark="none">Help</a>
 </header>
-<main class="player">
-  <section class="game">
-    <video id="video" controls playsinline muted preload="auto"></video>
-    <div class="stats" id="stats"></div>
-    <div class="live-row">
-      <button id="live">Live: off</button>
-      <span id="live-status" class="note">recorded state</span>
+
+<main>
+  <section class="rec rec-lookahead" id="rec-lookahead" aria-label="Brain + look-ahead, recorded highlights">
+    <div class="hl-wrap" id="hl-wrap">
+      <video id="hl" controls playsinline muted preload="none"></video>
     </div>
-    <div class="card answer-card">
-      <h2>The answer <span class="note" id="settle"></span></h2>
-      <div class="answer">
-        <div class="pad" id="pad">
-          <div class="dpad"><span data-b="UP">&#9650;</span><span data-b="LEFT">&#9664;</span><span data-b="RIGHT">&#9654;</span><span data-b="DOWN">&#9660;</span></div>
-          <div class="ab"><span data-b="B">B<small>whip</small></span><span data-b="A">A<small>jump</small></span></div>
+    <p class="hl-hint" id="hl-hint">Press play. Each frame shows the game, the brain's choice and its brain. Rest the pointer on a <span class="q-sample">?</span> to see what a part is.</p>
+  </section>
+
+  <section class="rec rec-alone player" id="rec-alone" aria-label="Brain alone, the recorded game beside its brain" hidden>
+    <div class="game">
+      <div class="video-box" data-explain-title="The game" data-explain="One whole game the brain played alone, frozen, from the first moment Simon can move until its fourth life ends. The brain on the right follows the video: play, pause, seek or change the speed." data-explain-mark="corner">
+        <video id="video" controls playsinline muted preload="auto"></video>
+      </div>
+      <div class="stats" id="stats" data-explain-title="Where Simon is" data-explain="Read from the game at this decision: the stage (0 and 1 are the game's STAGE 01, then 2 and 3), the block within it, how far along the stage, Simon's health and lives, and the decision's number (five a second)."></div>
+      <div class="live-row">
+        <button id="live" data-explain-title="Live" data-explain="Runs the brain itself in your browser: Python and the released Cadence library load in this tab, the brain settles on the same eye inputs from the game's start, and the line beside the button counts how often it presses the recorded buttons and how long a decision takes. The game needs one every 200 ms." data-explain-mark="none">Live: off</button>
+        <span id="live-status" class="note">recorded state</span>
+      </div>
+      <div class="card answer-card">
+        <h2><span data-explain-title="The answer" data-explain="The pad the brain presses at this decision: one choice in each of four slots (left or right, up or down, whip, jump), each slot's bars the brain's probabilities. The lit bar is its choice. It holds the buttons for 12 frames, a fifth of a second.">The answer</span> <span class="note" id="settle"></span></h2>
+        <div class="answer">
+          <div class="pad" id="pad">
+            <div class="dpad"><span data-b="UP">&#9650;</span><span data-b="LEFT">&#9664;</span><span data-b="RIGHT">&#9654;</span><span data-b="DOWN">&#9660;</span></div>
+            <div class="ab"><span data-b="B">B<small>whip</small></span><span data-b="A">A<small>jump</small></span></div>
+          </div>
+          <div class="slots" id="slots"></div>
         </div>
-        <div class="slots" id="slots"></div>
+      </div>
+    </div>
+    <div class="brain">
+      <div class="brain-head"><h2 data-explain-title="The brain" data-explain="The whole brain at this decision, drawn like an animal brain seen from the left: front on the left, the eye's maps at the back. Every mark is its recorded state: activity sweep by sweep through the settle, the strongest connections, its choice, and its memory.">The brain</h2><span class="note" id="source">recorded</span></div>
+      <div class="brain-stage" id="brain-stage">
+        <canvas id="brainview" width="1000" height="900" aria-label="the brain, region by region, settling"></canvas>
       </div>
     </div>
   </section>
-  <section class="brain">
-    <div class="card brain-card">
-      <h2>The brain <span class="note" id="source">recorded</span></h2>
-      <canvas id="brainview" width="1000" height="900" aria-label="the brain, region by region, settling"></canvas>
-      <p class="caption">Every mark is the decision's real state, recorded while the brain played: the
-        eye's input maps, each neuron's activity through the settle (every second sweep kept), the
-        projections between regions, the strongest synapses, the choice per slot, and the recall
-        memory's slots with the moment the brightest one holds.</p>
-    </div>
-  </section>
 </main>
-<script src="../web/brain.js"></script>
+<script src="brain.js"></script>
 <script src="player.js"></script>
 </body>
 </html>

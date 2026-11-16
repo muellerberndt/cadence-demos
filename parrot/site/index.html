@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cadence Parrot (preview)</title>
+<meta name="description" content="An African Grey parrot on a low perch sees through two eyes on the sides of its head. Place things round it and watch what its eyes see and how its brain answers. Everything runs in your browser.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Sora:wght@500;600&display=swap">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="cadence-explain.css">
+<link rel="stylesheet" href="brain3d.css">
+<link rel="stylesheet" href="flow.css">
+<script src="cadence-explain.js" defer></script>
+<script type="importmap">{ "imports": { "three": "./vendor/three/three.module.min.js" } }</script>
+</head>
+<body>
+<div class="app">
+  <section class="stage" id="stage">
+    <canvas id="scene" aria-label="An African Grey parrot on a low wooden perch on a table, with things round it: an apple, a ball, a cup and a block. Drag a thing to move it; drag empty space to look round; scroll to zoom."></canvas>
+    <div class="tags" id="tags" aria-hidden="true"></div>
+    <header class="topbar">
+      <div class="lead">
+        <div class="title" data-standalone>
+          <h1>Cadence Parrot (preview)</h1>
+          <p>Two eyes, a wide view, and a brain that learns where things are</p>
+        </div>
+        <p class="coach" id="coach" role="status" aria-live="polite"><span class="step" id="coach-step"></span><span id="coach-text">The room, the parrot and its brain are loading in your browser.</span></p>
+      </div>
+      <div class="top-right">
+        <div class="status" id="status" role="status" data-explain="What the page is doing: building the room, loading the brain, or ready. All of it runs inside your browser; nothing runs on a server." data-explain-mark="none"><span class="dot"></span><span id="status-text">Loading</span></div>
+        <a class="help" data-help href="help.html" target="_blank" rel="noopener" data-explain="What this page shows and why, every part explained, the numbers and the credits for every model used." data-explain-mark="none">Help</a>
+      </div>
+    </header>
+    <div class="toast" id="toast" hidden></div>
+    <div class="say-bubble" id="say-bubble" hidden aria-live="polite"></div>
+    <p class="subtitle" id="subtitle" hidden aria-live="polite"></p>
+    <section class="in-mind" id="in-mind" hidden aria-label="In its mind" data-explain-title="In its mind" data-explain="What the trained brain&#8217;s state holds of the thing in focus, at each of its moments. Its facets are read from its settled neurons by the meaning lane&#8217;s probes, each a readout fitted on its states and checked on scenes it never saw (the share it gets right is beside each). The page never fills a facet from what it knows of the room. The design: compressed representations of concepts live in the brain&#8217;s state. A concept can be an apple: an object, round, red, a metre in front of me, edible, a fruit, the letters A P P L E, the sound &#8216;apple&#8217;. That is what the state needs to hold: the contents of consciousness.">
+      <h3>In its mind <span id="im-thing"></span><a class="how" href="brain-explainer.html#in-its-mind" target="_blank" rel="noopener" hidden>how?</a></h3>
+      <div class="im-facets" id="im-facets"></div>
+      <p class="im-note" id="im-note" hidden>Read from its state as each probe sees it, in a room unlike its training scenes (the things&#8217; sizes and places, how near they are). The number is the probe&#8217;s share for its answer; the mark on each bar is chance.</p>
+      <p class="im-voice" id="im-voice"></p>
+      <p class="im-outside" id="im-outside"></p>
+    </section>
+    <div class="you-focus" id="you-focus" hidden data-explain-title="Its focus: you" data-explain="A sudden sound, one its ear did not expect from the room's steady level, draws the parrot's attention: it turns its head toward where the sound came from, you in front of the screen. A steady sound draws nothing."><span class="ring"></span>focus: you</div>
+    <div class="talk" id="talk" role="dialog" aria-labelledby="talk-title" hidden>
+      <h3 id="talk-title">Talk to the parrot</h3>
+      <p>It hears through your microphone: its ear lights up as you speak, and it may answer with sounds of its own.</p>
+      <div class="talk-buttons"><button id="talk-yes" class="primary">Let it hear me</button><button id="talk-no" class="ghost">Later</button></div>
+      <p class="talk-error" id="talk-error" role="alert" hidden></p>
+      <p class="talk-note">Your browser asks first. The sound stays in this page: nothing is recorded or sent.</p>
+    </div>
+    <div class="drawer" id="drawer" hidden aria-label="The joints, moved by you"></div>
+    <div class="controls">
+      <div class="row">
+        <div class="palette" id="palette" role="group" aria-label="Add a thing" data-explain-title="Add a thing" data-explain="Puts a thing of that kind on the table, beside or in front of the parrot. Each is a real object at its real size. Drag it anywhere on the table afterwards, even behind the parrot."><span class="lbl">Add</span></div>
+      </div>
+      <div class="row">
+        <button id="test" class="ghost" aria-pressed="false" data-explain="The experiment's test: things are placed round the parrot one after another, at set places, near and far, beside it and behind it. The chamber that tests the brain uses the same placements." data-explain-mark="none">Test run</button>
+        <button id="clear" class="ghost" data-explain="Takes every thing off the table." data-explain-mark="none">Clear</button>
+        <button id="mic" class="mic" aria-pressed="false" data-explain="Turns the microphone on (your browser asks first; it works on this computer or over https). The parrot hears you: its ear regions light up as you speak. Nothing is recorded or sent anywhere; it stays in this page." data-explain-mark="none"><span class="dot"></span>Microphone<span class="lvl"><i id="mic-level"></i></span></button>
+        <button id="pistachio" class="nut" data-explain="Throws the parrot a pistachio. It catches it in its beak and eats it; the moment the nut is in its beak, the reward reaches its brain (the dopamine rush in the brain view). Give one when it does something you like, such as a sound you want to hear again." data-explain-mark="none">Pistachio <b id="pistachios">0</b></button>
+        <div class="segmented" id="mode" role="group" aria-label="Who moves the parrot" data-explain-title="Who moves it" data-explain="Brain: the parrot's brain moves its head, beak, wings and feet. You: sliders move each joint, and the brain's moves wait; it keeps seeing." data-explain-mark="none">
+          <button class="seg" data-mode="brain" aria-pressed="true">Brain</button>
+          <button class="seg" data-mode="you" aria-pressed="false">You</button>
+        </div>
+        <div class="segmented" id="looks" role="group" aria-label="The parrot's look" data-explain-title="Its look" data-explain="Two bodies for the same parrot: one as real as a photograph, one drawn in an anime style. Both have the same joints and the same eyes, so its brain moves either one." data-explain-mark="none" hidden></div>
+        <button id="home" class="ghost icon" aria-label="Back to the first view" data-explain="Back to the first view of the room." data-explain-mark="none">&#8634;</button>
+      </div>
+    </div>
+  </section>
+  <section class="mind" id="mind" aria-label="The brain in 3D">
+    <header class="mind-head">
+      <div class="tabs" role="tablist" aria-label="Brain or memory"><button class="tab" id="tab-brain" role="tab" aria-selected="true" data-explain="The brain in 3D: its regions and their neurons, live." data-explain-mark="none">Brain</button><button class="tab" id="tab-memory" role="tab" aria-selected="false" data-explain="What the parrot remembers of what it heard: its records and its synapses, as the library holds them." data-explain-mark="none">Memory</button></div>
+      <h2 data-explain-title="The brain in 3D, live" data-explain="The parrot&#8217;s brain drawn as a bird&#8217;s brain: each region where it sits in a bird&#8217;s head. Every dot is a neuron and glows with its activity at each moment; the lines are the tracts between regions, and light flows along them from the region that sends. Bright regions are in the running brain; faint ones are not in this brain yet.
+
+The ring at the back holds the sounds it kept, the card in the hippocampus is its map of things, and the dots in Words are the things a sound can name. Point at How it connects to light the path of each kind of memory. Drag to turn the brain; point at a region to light its card on the right.">The brain, live</h2>
+      <span class="newborn" data-explain-title="What it has learned" data-explain="What the parrot has learned since you arrived: the words it can say back, and how many of its own head turns have taught it distance. A newborn has learned nothing; it learns from what it sees, hears and is rewarded for.">a newborn: it has learned nothing yet</span>
+    </header>
+    <div class="mind-view" id="view-brain"><canvas id="brain3d" aria-label="The parrot's brain in 3D"></canvas><div class="b3-labels" id="b3-labels"></div><p class="dopamine" id="dopamine" hidden data-explain-title="A pistachio" data-explain="The reward reaches the VTA, the midbrain&#8217;s dopamine nucleus. In a brain with dopamine, a reward above what it expected makes the connections that just fired stronger. The 3D view marks the pistachio&#8217;s arrival; a gold wash runs out from the VTA only when the running brain reports its dopamine.">A pistachio: the reward reaches the VTA, the midbrain&#8217;s dopamine nucleus.<span id="dopamine-note"></span></p></div>
+    <div class="mind-view" id="view-memory" hidden><canvas id="memory" aria-label="The parrot's memory of sounds: records and synapses"></canvas></div>
+    <footer class="mind-foot">
+      <div class="meter" data-explain-mark="corner" data-explain-title="What it hears" data-explain="The loudness of what the microphone hears, and below it the ear&#8217;s 40 frequency bands (low on the left), as the brain receives them each moment."><span class="lbl">Ear</span><span class="bar"><i id="ear-level"></i></span><canvas id="ear-bands" width="40" height="1"></canvas></div>
+      <div class="meter" data-explain-mark="corner" data-explain-title="What it says" data-explain="The loudness of the parrot&#8217;s own voice. It has no words: it babbles sounds made of the same 40 bands its ear hears, played through a simple voice of its own."><span class="lbl">Voice</span><span class="bar voice"><i id="voice-level"></i></span><span id="voice-note" class="note"></span></div>
+      <div class="meter" data-explain-mark="corner" data-explain-title="Its drive to call" data-explain="How much the parrot wants to make a sound. It rises while all is quiet, and faster when something new appears or you have just spoken; when it is full the parrot calls, and it drops. In this placeholder the drive is a hand-written stand-in; the composed brain learns when to call from the pistachio."><span class="lbl">Drive</span><span class="bar drive"><i id="drive-level"></i></span></div>
+      <div class="turns" data-explain-mark="corner" data-explain-title="Whose turn" data-explain="The last eight seconds: when you made a sound (top row) and when the parrot did (bottom row). Under it: whether the parrot answered in the gap after your sound, spoke over you, or stayed quiet. Nothing in the brain follows a rule about turns; the composed brain learns them from the pistachio."><canvas id="turns"></canvas><span id="turn-note" class="note"></span></div>
+      <div class="repertoire" data-explain-mark="corner" data-explain-title="Its sounds" data-explain="The sounds the parrot can make. The grey ones are African Grey calls from a recording; the babble is its own; a sound you make three times alike joins as learned from you. Click one to hear it in the parrot&#8217;s voice. A pistachio after a sound makes it choose that sound more often."><div class="chips" id="sounds"></div><button id="forget" class="ghost small" hidden>Forget my sounds</button><button id="sound-report" class="ghost small" title="Saves what the parrot heard and kept (each sound, why it was kept or not, and its memory of each word) as a file, to look into a problem">Save a sound report</button></div>
+      <div class="teach" id="teach" data-explain-mark="corner" data-explain-title="Teach it a word" data-explain="A lesson the way parrots are taught: you show a thing and name it; looking at the thing then brings the word back from its memory, and it says it; a pistachio for the right word makes the link stronger. The list shows what it knows: each thing and the word it links to it.">
+        <div class="teach-title">Teach it a word</div>
+        <ol class="teach-steps">
+          <li data-step="1">Click a thing on the table: it looks at it.</li>
+          <li data-step="2">Say the thing&#8217;s name, a few times.</li>
+          <li data-step="3">Wait: the thing brings the word back, and it says it.</li>
+          <li data-step="4">The right word? Give it a pistachio.</li>
+        </ol>
+        <div class="knows" id="knows"><span class="knows-empty">It links no word to a thing yet.</span></div>
+      </div>
+      <div class="ask" id="ask" hidden>
+        <div class="ask-title">Ask it <span class="ask-brain">the brain trained tonight</span><a class="how" href="brain-explainer.html#ask-it" target="_blank" rel="noopener" hidden>how?</a></div>
+        <p class="ask-version" id="ask-version"></p>
+        <p class="ask-learned" id="ask-learned">Learned tonight: to say back a word it hears, and the name of the thing in focus when asked <i>what is this</i>. Not learned: colour, places and relations.</p>
+        <div class="segmented flow-mode" id="flow-mode" role="group" aria-label="What the parrot attends to"><button type="button" class="seg" data-flow="listen" aria-pressed="false" title="It looks at you, keeps what you say and says it back">Listen to me</button><button type="button" class="seg" data-flow="curious" aria-pressed="true" title="It looks at the things, answers questions about the thing in focus and says words it knows">Curious</button></div>
+        <form class="ask-row" id="ask-form" autocomplete="off"><select id="ask-preset" aria-label="A question to ask"><option data-focus="key">What is this?</option><option data-focus="block">What color is this?</option><option data-focus="cup">Is this white?</option><option>Where is the cup?</option><option data-focus="apple">Can you eat this?</option><option>What color has the apple?</option><option>Where is the ball?</option><option>What shape has the apple?</option><option data-focus="apple">Is this red?</option><option>What color has the cup?</option><option>What shape has the block?</option></select><input id="ask-q" type="hidden"><button type="submit">Ask</button></form>
+        <div class="ask-actions"><button type="button" id="ask-nut" class="nut-mini" aria-label="Throw a pistachio">Pistachio</button><button type="button" id="ask-mic" class="mic-mini" aria-pressed="false" aria-label="Let it hear you">Mic</button></div>
+        <p class="ask-hint" id="ask-hint" role="status" aria-live="polite" hidden></p>
+        <button type="button" id="ask-forget" class="forget-mini">Forget all sounds</button>
+        <p class="ask-note" id="ask-note"></p>
+        <ol class="ask-log" id="ask-log" aria-live="polite"></ol>
+        <details class="ask-words"><summary>Its words</summary><p id="ask-words"></p><p class="dim">Its trained brain hears each word as a code its training drew for the word. The parrot&#8217;s ear links each sound it keeps to one of these words: a sound it hears sends that word to the brain, and a word it says plays the sound linked to it.</p></details>
+      </div>
+    </footer>
+  </section>
+  <aside class="brain" aria-label="The brain">
+    <div class="brain-head">
+      <div class="brain-name">
+        <h2 data-explain-title="The parrot's brain, in detail" data-explain="What the brain receives and what it does, ten moments a second: the two eyes' images, then one card a region of the brain, each the neurons of that region lit by their activity, in the order a memory travels: seeing, the map of things, hearing, the sounds kept and the links that make them words. Each card has its region&#8217;s colour in the 3D view; point at one to light its region there. Below: the distance neurons and the joints.">The brain</h2>
+        <p id="brain-sub">Loading&hellip;</p>
+        <label class="brain-kind" data-explain-title="Which brain" data-explain="Composed: the parrot brain the experiment builds (its eyes, the distance it learns from head turns, its focus and its map), with the page&#8217;s hearing beside it. Trained tonight: the composed body and hearing, with the brain the meaning lane trained tonight beside them; it names the thing in focus when you ask it (Ask it, under the brain). Placeholder: a hand-written newborn the page falls back to if a brain does not start.">brain <select id="brain-kind"><option value="composed">composed</option><option value="trained">trained tonight (names)</option><option value="trained-nowords">the same brain, no words yet</option><option value="placeholder">placeholder</option></select></label>
+        <button id="how-brain" class="ghost small how-brain" type="button" data-explain="Opens the explainer: how this brain works." data-explain-mark="none">How this brain works</button>
+      </div>
+      <dl class="stats">
+        <div><dt data-explain="How many moments the brain has lived on this page. Each moment it receives both eyes' images and its joints' readings, and sends its joints' targets back. Ten moments a second.">Moment</dt><dd id="s-moment">&ndash;</dd></div>
+        <div><dt data-explain="How long the brain took for one moment, in your browser (the median of the last 50). A moment lasts 100 ms; while this stays below that, the brain keeps up with real time.">Think</dt><dd id="s-think">&ndash;</dd></div>
+        <div><dt data-explain="How many pictures a second the page draws. The room, the parrot and its two eyes are drawn on your graphics card.">Frames/s</dt><dd id="s-fps">&ndash;</dd></div>
+      </dl>
+    </div>
+    <section class="eyes">
+      <div class="eye-pair">
+        <figure data-explain-title="The left eye" data-explain="What the left eye sees, the image its brain receives: 64 by 32 colours over a field of 175 degrees. Its rear edge is on the left, the beak side on the right. It is sharpest in the middle, where the eye looks."><canvas id="eye-l" width="64" height="32"></canvas><figcaption>Left eye</figcaption></figure>
+        <figure data-explain-title="The right eye" data-explain="What the right eye sees, shown mirrored, so the two images read from the left rear, round the front, to the right rear. Things straight ahead show at the inner edges of both: there the two fields overlap."><canvas id="eye-r" width="64" height="32"></canvas><figcaption>Right eye</figcaption></figure>
+      </div>
+      <figure class="fields-fig" data-explain-title="Its fields of view, from above" data-explain="The parrot's head from above, its beak pointing at the dot's line. Blue: the left eye's field; amber: the right eye's. They overlap a little in front of the beak; behind the head is a blind spot. White dots are things in view; grey dots are things in the blind spot."><canvas id="fields"></canvas></figure>
+    </section>
+    <div class="regions" id="brain" aria-label="The brain's regions, each with its neurons, live"></div>
+    <section class="dist" id="dist-card" data-explain-title="Distance neurons" data-explain="The neurons the brain uses for distance, named by the brain itself.">
+      <h3 id="dist-title">Distance neurons</h3>
+      <canvas id="dist-units" aria-hidden="true"></canvas>
+      <canvas id="dist-tuning" aria-label="Each distance neuron's activity against the true distance of the thing you move"></canvas>
+      <div class="dist-row"><span id="dist-readout">Its sense of distance: &ndash;</span><button id="silence" class="ghost small" aria-pressed="false" data-explain="Silences the distance neurons inside the brain: they stay at zero while the brain settles. Watch its sense of distance go; press again to wake them." data-explain-mark="none">Silence them</button></div>
+    </section>
+    <section class="joints-card" data-explain-title="The joints" data-explain="Each joint the brain drives: head turn, tilt and cock, neck, beak, both wings, both feet's grip and both legs. The bar is where the joint stands; the thin mark is the brain's target. Each joint moves toward its target at most at its own speed."><h3>Joints</h3><div id="joints" class="joints"></div></section>
+    <footer class="foot"><span id="credit"></span> &middot; Objects, textures and light: Poly Haven (CC0) &middot; <a href="https://github.com/muellerberndt/cadence" target="_blank" rel="noopener">Cadence on GitHub</a></footer>
+  </aside>
+</div>
+<aside class="explain-drawer" id="explain-drawer" hidden aria-label="How this brain works">
+  <div class="ed-bar"><b>How this brain works</b><a id="ed-tab" href="brain-explainer.html" target="_blank" rel="noopener">open in a tab</a><button id="ed-close" type="button" aria-label="Close">&#215;</button></div>
+  <iframe id="ed-frame" title="How this brain works"></iframe>
+</aside>
+<script type="module" src="app.js"></script>
+</body>
+</html>

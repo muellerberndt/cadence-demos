@@ -43,23 +43,23 @@ export function LeaguePanel({ league, roster, manifest, onReset, persisted, desc
   return (
     <section className="card p-4 md:p-5 space-y-5">
       <div className="flex flex-wrap items-center gap-3">
-        <h2 className="kicker">The league in this browser</h2>
+        <h2 className="kicker" data-explain="Everything the six robots lived through in this browser. Their brains are saved here after every fight and come back when you open the page again: the robot that fights tomorrow is the robot that learned today." data-explain-title="The league in this browser">The league in this browser</h2>
         <span className="text-xs text-muted">{league.fights.length} fights here · {(league.totalMoments / 1000).toFixed(0)}k brain moments lived here · brains {persisted === "fresh" ? "as they arrived" : persisted === "restored" ? "restored from your last visit" : "saved after the last fight"}</span>
-        <button className="btn ml-auto text-xs" onClick={onReset}>Reset the brains to how they arrived</button>
+        <button className="btn ml-auto text-xs" data-explain="Forgets everything the brains learned in this browser and starts again from the brains as they were shipped." data-explain-mark="none" onClick={onReset}>Reset the brains to how they arrived</button>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-2">
         {[
-          [league.fights.length, "fights in this browser"],
-          [(league.totalMoments / 1000).toFixed(0) + "k", "brain moments lived here"],
-          [sweeps >= 1000 ? (sweeps / 1000).toFixed(0) + "k" : sweeps, "learning sweeps so far"],
-          [early === null ? "–" : `${early.toFixed(0)} → ${late!.toFixed(0)}`, "damage per robot per fight, first third → last third"],
-          [burnEarly === null ? "–" : `${burnEarly.toFixed(0)} → ${burnLate!.toFixed(0)}`, "moments in the burn per robot per fight, first third → last third"],
-          [calmLate === null ? "–" : `${Math.round(100 * calmLate)}%`, "calm moments, last fights"],
-        ].map(([v, l], i) => <div key={i} className="rounded-xl border border-line px-3 py-2"><b className="block text-lg tnum">{v as any}</b><span className="text-[11px] text-muted leading-tight block">{l as any}</span></div>)}
+          [league.fights.length, "fights in this browser", "Fights finished in this browser since the brains arrived or were reset."],
+          [(league.totalMoments / 1000).toFixed(0) + "k", "brain moments lived here", "Moments the six brains lived here, all together; a moment is a twentieth of a second of the ring."],
+          [sweeps >= 1000 ? (sweeps / 1000).toFixed(0) + "k" : sweeps, "learning sweeps so far", "The settles of aroused moments that learned, all together. Calm moments learn nothing and add nothing here."],
+          [early === null ? "–" : `${early.toFixed(0)} → ${late!.toFixed(0)}`, "damage per robot per fight, first third → last third", "Damage dealt per robot per fight: the first third of the fights here against the last third. It shows how the fights change as the brains keep learning; it does not prove they improve."],
+          [burnEarly === null ? "–" : `${burnEarly.toFixed(0)} → ${burnLate!.toFixed(0)}`, "moments in the burn per robot per fight, first third → last third", "Moments spent outside the closing ring per robot per fight, the first third of the fights here against the last third."],
+          [calmLate === null ? "–" : `${Math.round(100 * calmLate)}%`, "calm moments, last fights", "The share of moments the brains spent calm in the last third of the fights here: answering from their settled state, learning nothing."],
+        ].map(([v, l, e], i) => <div key={i} className="rounded-xl border border-line px-3 py-2 cursor-help" data-explain={e as string} data-explain-mark="none"><b className="block text-lg tnum">{v as any}</b><span className="text-[11px] text-muted leading-tight block">{l as any}</span></div>)}
       </div>
       <div className="overflow-auto">
         <table className="w-full text-sm tnum min-w-[720px]">
-          <thead><tr className="text-muted text-xs"><th className="text-left font-medium py-1">#</th><th className="text-left font-medium">robot</th><th className="text-left font-medium">body</th><th className="text-right font-medium">elo here</th><th className="text-right font-medium">fights</th><th className="text-right font-medium">wins</th><th className="text-right font-medium">mean place</th><th className="text-left font-medium pl-4">elo over your fights</th><th className="text-left font-medium pl-4">damage dealt per fight</th><th className="text-right font-medium">arrived with</th></tr></thead>
+          <thead><tr className="text-muted text-xs"><th className="text-left font-medium py-1">#</th><th className="text-left font-medium">robot</th><th className="text-left font-medium">body</th><th className="text-right font-medium"><span data-explain="The robot's rating from its places in the fights in this browser. Every robot starts at 1000." data-explain-mark="none" className="cursor-help">elo here</span></th><th className="text-right font-medium">fights</th><th className="text-right font-medium">wins</th><th className="text-right font-medium">mean place</th><th className="text-left font-medium pl-4">elo over your fights</th><th className="text-left font-medium pl-4">damage dealt per fight</th><th className="text-right font-medium"><span data-explain="What the robot brought from its breeding: its lineage and generation, the fights and rating it had, and its driving test: eight marks (approach, escape, the closing ring, engagement, chase, facing, no spinning, no stalling), + passed, - missed." data-explain-mark="none" className="cursor-help">arrived with</span></th></tr></thead>
           <tbody>
             {ladder.map((r, k) => (
               <tr key={r.name} className="border-t border-line">
@@ -80,7 +80,7 @@ export function LeaguePanel({ league, roster, manifest, onReset, persisted, desc
       </div>
       <div className="grid md:grid-cols-2 gap-5">
         <div>
-          <h3 className="kicker mb-2">Where they come from</h3>
+          <h3 className="kicker mb-2" data-explain="Each robot was raised alone in a nursery, where it learned to drive, aim and stay inside a ring from what the world paid it, then took a driving test, and was bred over generations against earlier robots. The help page has the full story." data-explain-title="Where they come from">Where they come from</h3>
           {evo.length ? (
           <p className="text-sm text-muted leading-relaxed">
             {lineages.length || 8} stock bodies founded lineages. Every generation the robots, each with one continuing brain, were raised in a

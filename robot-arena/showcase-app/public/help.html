@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Robot Arena · Help</title>
+  <meta name="description" content="What the Robot Arena demo shows: robots with one Cadence brain for life, calm in routine, learning when a surprise wakes them, kept in your browser from fight to fight.">
+  <link rel="stylesheet" href="cadence-help.css">
+  <script src="cadence-explain.js" defer></script>
+  <style>
+    .svg-label { font: 500 11px ui-monospace, "IBM Plex Mono", Menlo, monospace; fill: #cfe0e3; }
+    .svg-quiet { font: 500 10px ui-monospace, "IBM Plex Mono", Menlo, monospace; fill: #8ea4aa; }
+  </style>
+</head>
+<body>
+  <header class="help-bar"><span class="crumb">cadence / <b>robot arena</b> / help</span><span class="spacer"></span><a href="./">Back to the demo</a></header>
+  <main class="help">
+    <h1>Robot Arena</h1>
+    <p class="lede">Six robots built from parts fight in a ring that closes. Each robot is driven by its own Cadence brain, running in your browser, and each brain keeps learning while it fights.</p>
+    <p class="shows"><b>What it shows about Cadence</b>A Cadence brain lives one continuing life. It has real memory and a real state that carry on from moment to moment and from fight to fight, and it runs live, like the brain of an animal. In routine it settles calmly and learns nothing. When an outcome surprises it, or the ring pays it less than it is used to, it wakes (amber), learns from what its commands bring, and settles back. Your browser keeps every brain between fights and between visits.</p>
+    <nav class="toc" aria-label="On this page"><a href="#see">What you see</a><a href="#why">Why it matters</a><a href="#do">What you can do</a><a href="#how">How it works</a><a href="#numbers">The numbers</a><a href="#limits">Limits</a></nav>
+
+    <h2 id="see">What you see</h2>
+    <figure>
+      <svg viewBox="0 0 560 330" role="img" aria-label="The page: the ring at the top left with six robots, each on a blue or amber halo; the standings at the right; the toolbar under the ring; the brain inspector below; the league in this browser at the bottom.">
+        <rect x="0.5" y="0.5" width="559" height="329" rx="10" fill="#0b0e14" stroke="#273040"/>
+        <rect x="14" y="14" width="370" height="170" rx="8" fill="#141924" stroke="#273040"/>
+        <ellipse cx="199" cy="92" rx="160" ry="62" fill="#1d2430" stroke="#ff7a45" stroke-dasharray="6 5"/>
+        <ellipse cx="140" cy="78" rx="16" ry="7" fill="none" stroke="#4fa3ff" stroke-width="2"/><circle cx="140" cy="72" r="7" fill="#63b3ed"/>
+        <ellipse cx="230" cy="110" rx="16" ry="7" fill="none" stroke="#ffb347" stroke-width="2.5"/><circle cx="230" cy="104" r="7" fill="#f6ad55"/>
+        <ellipse cx="275" cy="72" rx="16" ry="7" fill="none" stroke="#4fa3ff" stroke-width="2"/><circle cx="275" cy="66" r="7" fill="#68d391"/>
+        <text class="svg-label" x="140" y="58" text-anchor="middle">calm</text>
+        <text class="svg-label" x="230" y="134" text-anchor="middle" style="fill:#ffb347">aroused: learning</text>
+        <text class="svg-quiet" x="199" y="168" text-anchor="middle">the ring closes; outside it, the burn</text>
+        <rect x="14" y="188" width="370" height="22" rx="5" fill="#141924" stroke="#273040"/>
+        <text class="svg-quiet" x="24" y="203">Pause · 1× 2× fast · New fight · Help</text>
+        <rect x="394" y="14" width="152" height="196" rx="8" fill="#141924" stroke="#273040"/>
+        <text class="svg-label" x="404" y="34">Standings</text>
+        <g class="svg-quiet"><text x="404" y="56">robot · hp · dealt</text><text x="404" y="72">mode · learning %</text></g>
+        <rect x="404" y="82" width="132" height="5" rx="2" fill="#5ad37a"/><rect x="404" y="112" width="100" height="5" rx="2" fill="#5ad37a"/><rect x="404" y="142" width="60" height="5" rx="2" fill="#ff5d5d"/>
+        <rect x="14" y="220" width="532" height="62" rx="8" fill="#141924" stroke="#273040"/>
+        <text class="svg-label" x="24" y="240">Brain inspector</text>
+        <text class="svg-quiet" x="24" y="258">the clicked robot's brain, live: calm or learning, the settle, every region</text>
+        <rect x="14" y="290" width="532" height="28" rx="8" fill="#141924" stroke="#273040"/>
+        <text class="svg-label" x="24" y="308">The league in this browser</text>
+      </svg>
+      <figcaption>The page. The ring sits at the top left, the standings at the right, the brain of the robot you click below them.</figcaption>
+    </figure>
+    <ul>
+      <li><b>The ring</b>: six robots seen from above at an angle, each with a name, a hit-point bar and a halo: <b>blue</b> while its brain is calm, <b>amber</b> while it is aroused and learning. The dashed orange line is the ring; it closes from 10 m to 3.5 m over 2,000 moments, and outside it robots burn. Sparks are hits, flames the burn.</li>
+      <li><b>Standings</b>: the robots of this fight, strongest first: hit points, damage dealt, the brain’s mode, and in this fight the share of moments it spent learning and its learning sweeps. The number at the right is its rating in this browser.</li>
+      <li><b>The toolbar</b> under the ring and the fight’s line: fight number, moment, time and the ring’s radius.</li>
+      <li><b>The brain inspector</b>, after you click a robot: its brain seen from the side, every dot one neuron at the activity it settled to. Every region’s name carries a small question mark.</li>
+      <li><b>Fight over</b>: places, damage dealt and taken, the share of the fight each brain spent learning, and the change of rating.</li>
+      <li><b>The league in this browser</b>: fights and moments lived here, learning sweeps, damage and burn per fight early against late, the calm share, the ladder, and what each robot arrived with.</li>
+    </ul>
+
+    <h2 id="why">Why it matters</h2>
+    <p>Most neural networks are trained once, offline, then frozen and deployed. A Cadence brain lives one continuing life instead. The brain that learned to drive in the nursery is the brain that fights here, and it keeps its state and its memory from one moment to the next and from one fight to the next. Nothing is reset between fights.</p>
+    <p><b>Calm routine, learning on surprise.</b> Each moment the brain settles: all its neurons drive one another until they agree, and the motor commands are read from that agreed state. While things go as usual it stays calm, takes its settled answer and learns nothing, so routine costs little. When an outcome surprises it, or the ring pays it less than it is used to, it wakes: it tries alternative commands, learns from what they bring, and settles back to calm. On the page you see this as the amber halo, the amber mode in the standings, and in the brain inspector as the gold wash and the flashing synapses.</p>
+    <p><b>A life you can keep.</b> After every fight your browser saves all six brains and restores them when you come back: the robot that fights tomorrow is the robot you watched learn today. For a game this means robots that players raise and keep, each with its own history.</p>
+
+    <h2 id="do">What you can do</h2>
+    <ul>
+      <li><b>Watch the halos</b>: blue calm, amber learning. Most of a fight is calm; amber comes and goes.</li>
+      <li><b>Click a robot</b> in the ring, or its row in the standings, to open its brain. Rest the pointer on a region, a part, or a <b>?</b> for what it does; rest it on a single neuron for its sense and activity. Click the robot again to close it.</li>
+      <li><b>Speed</b>: 1× is the ring’s own time, 20 moments a second, when your machine keeps up; 2× twice that; <b>as fast as they settle</b> shows each moment as soon as the brains have answered it. <b>Pause</b> stops the fight.</li>
+      <li><b>New fight</b> leaves this fight and starts another; the brains keep what they learned.</li>
+      <li>When a fight ends: <b>Next fight</b>, and <b>Continuous rounds</b> on or off (on: the next fight starts by itself).</li>
+      <li><b>Reload the page</b> after a fight: the brains come back as you left them. <b>Reset the brains to how they arrived</b> starts again from the shipped brains.</li>
+    </ul>
+
+    <h2 id="how">How it works</h2>
+    <h3>The robots</h3>
+    <p>Each robot is assembled from a parts catalogue: a chassis, wheels or legs, and arms with a hammer, a spike or a spinner. Its brain is one <code>Brain.compose</code> with one motor slot per motor: a wheel or a leg is three motor neurons (back, hold, forward), a spinner’s switch two. Every motor is commanded by the same settled state of the whole brain; nothing between the brain and the motors adds a controller.</p>
+    <h3>What a brain senses</h3>
+    <p>Where the nearest rival is and where the ring’s edge is (four direction cells each), how fast the rival closes in, a weapon near the hull, its own speed and turning, hit points, pain, damage dealt, whether it stands outside the ring, each leg’s stride and footing, each arm’s angle and whether a rival is in its reach.</p>
+    <h3>The brain’s regions</h3>
+    <dl class="words">
+      <dt>sensory cortex</dt><dd>Where every sense enters each moment.</dd>
+      <dt>cortex, association cortex</dt><dd>The regions that settle with the senses into one agreed state; the motor cortex reads it.</dd>
+      <dt>prefrontal cortex</dt><dd>The working trace: the last settled state feeds back, a short-term memory.</dd>
+      <dt>motor cortex</dt><dd>One group of neurons per motor; the strongest neuron of a group is the motor’s command.</dd>
+      <dt>basal ganglia</dt><dd>The actor’s choice: greedy while calm, sampling while aroused.</dd>
+      <dt>dopamine</dt><dd>The critic’s prediction error: gold when an outcome was better than expected, blue when worse.</dd>
+      <dt>hippocampus</dt><dd>The recall memory (three of the six robots carry one): stored moments, lit when read.</dd>
+    </dl>
+    <h3>Learning</h3>
+    <p>Each moment is one <code>Brain.live</code> call: the brain receives its senses and what its last command brought, settles, and answers. Arousal decides whether the moment learns. A surprise (an outcome its forecast did not expect) or a want (pay below what its life usually brings) raises the arousal level; above the robot’s threshold the brain samples its commands, and the lesson of each command, through the actor, the critic and eligibility traces over its recent commands, lands with the command’s outcome one moment later. In the ring the actor learns at a thirtieth of the nursery’s rate, so a fight refines what the nursery built.</p>
+    <h3>Where the robots come from</h3>
+    <p>A newborn brain is raised alone in a nursery against a dummy and a sparring partner, paid for closing in, damage dealt and staying inside a standing ring. A frozen copy then takes a driving test of eight marks: approach, escape, the closing ring, engagement, chase, facing, no spinning, no stalling. Bodies and brain genes were bred over about 110 generations in three populations; the six robots here passed a gate against the previous roster. Nobody told any brain which motor is which.</p>
+
+    <h2 id="numbers">The numbers</h2>
+    <h3>On this page</h3>
+    <p>A script plays one fight on the real page at full speed, with the most aroused robot’s brain open (<code>tools/promise_arena.py</code>, <code>evidence/promise-arena-20261113.json</code>):</p>
+    <table>
+      <thead><tr><th>Reading</th><th>Value</th></tr></thead>
+      <tbody id="promise-rows">
+        <tr><td>Robot-moments of the fight spent calm</td><td class="n">82% of 2,481</td></tr>
+        <tr><td>The inspected brain (Roller-32.4): moments, aroused moments, onsets of arousal (each with a surprise, 5, or a want, 6, or both)</td><td class="n">277 · 155 · 8</td></tr>
+        <tr><td>Its moments with changed synapses: aroused, or the moment after an aroused one</td><td class="n">155: 147 aroused, 8 the moment after</td></tr>
+        <tr><td>Calm moments in which a synapse changed otherwise</td><td class="n">0</td></tr>
+        <tr><td>Brains saved in the browser after the fight, each changed from the shipped brain, restored on reload</td><td class="n">6 of 6</td></tr>
+      </tbody>
+    </table>
+    <h3>The roster</h3>
+    <table>
+      <thead><tr><th>Robot</th><th>Body</th><th>Moments lived</th><th>Driving test</th></tr></thead>
+      <tbody>
+        <tr><td>Dozer-31.27</td><td>heavy: 3 wheels, 3 hammers</td><td class="n">173,997</td><td class="n">+0.77 ++++++++</td></tr>
+        <tr><td>Mantis-25.44</td><td>medium: 4 legs, 2 hammers</td><td class="n">131,751</td><td class="n">+0.56 ++++--++</td></tr>
+        <tr><td>Roller-32.4</td><td>heavy: 4 wheels, 1 leg, 2 hammers, 1 spinner</td><td class="n">153,189</td><td class="n">+0.44 +--++-++</td></tr>
+        <tr><td>Cart-28.4</td><td>medium: 2 wheels, 3 legs, 1 hammer</td><td class="n">257,796</td><td class="n">+0.37 +--+--++</td></tr>
+        <tr><td>Tumbler-44.41</td><td>medium: 1 wheel, 1 leg, 3 hammers, 1 spike</td><td class="n">115,308</td><td class="n">+0.16 ---+--++</td></tr>
+        <tr><td>Crab-25.33</td><td>medium: 4 legs, 1 hammer, 1 spike</td><td class="n">136,120</td><td class="n">+0.04 ---+---+</td></tr>
+      </tbody>
+    </table>
+    <h3>The gate this roster passed</h3>
+    <table>
+      <thead><tr><th>Test</th><th>Reading</th></tr></thead>
+      <tbody>
+        <tr><td>48 royales, three new and three previous robots each, both sides learning: new minus previous placement</td><td class="n">+0.261 [+0.128, +0.400]</td></tr>
+        <tr><td>Driving test, mean of the six (previous roster +0.22)</td><td class="n">+0.391</td></tr>
+        <tr><td>Each brain against a uniform-random twin of the same body: brains significantly below their twin</td><td class="n">none</td></tr>
+        <tr><td>The roster’s mean placement minus the twins’, 70 royales</td><td class="n">+0.117 [−0.024, +0.253]</td></tr>
+      </tbody>
+    </table>
+    <p class="note">Brackets: 95% bootstrap intervals. The roster, the gate and the bodies: <code>MODEL_CARD.md</code>. The ring’s learning rate: <code>docs/brain.md</code> (measured on six brains over sixty fights: at the nursery’s actor step three fights undo the driving test; at a thirtieth of it the test’s mean held at 0.49). The driving tests: <code>showcase-app/public/pack/manifest.json</code>.</p>
+
+    <h2 id="limits">Limits</h2>
+    <ul>
+      <li>The page shows the brains learning in every fight; it does not show that they fight better after more fights. The league panel’s early and late numbers are readings of your browser’s fights, not a measured improvement.</li>
+      <li>Placement rewards survival: uniform-random twins survive by not engaging, and two brains (Roller, Dozer) place about level with them. The roster’s interval against the twins includes zero.</li>
+      <li>Some robots stay calm through whole fights, hits included: in the fight above, Tumbler, Cart, Crab and Dozer were calm in every moment. What wakes a brain is an outcome it did not expect, or pay below what it is used to, and each robot’s threshold is its own gene.</li>
+      <li>Crab and Tumbler pass few marks of the driving test; Tumbler fights well in the ring.</li>
+      <li>Placement, damage and the driving test are counts in this world with these pay rules; they do not certify skill outside it.</li>
+      <li>On a slow or busy machine the brains take longer than a twentieth of a second per moment, and the ring runs slower than its own time.</li>
+    </ul>
+
+    <footer>The ring and the six brains run in your browser, in Python through Pyodide, with cadence-net 0.95.2. Nothing is sent to a server; the brains are saved in your browser only. <a href="https://github.com/muellerberndt/cadence-demos/tree/main/robot-arena" target="_blank" rel="noopener">The demo on GitHub</a> · <a href="https://github.com/muellerberndt/cadence" target="_blank" rel="noopener">Cadence on GitHub</a></footer>
+  </main>
+</body>
+</html>

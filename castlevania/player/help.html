@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Castlevania · Help</title>
+  <meta name="description" content="What the Castlevania demo shows: a Cadence brain with a memory of the game's moments and a state it carries from move to move, playing NES Castlevania from what its eye sees.">
+  <link rel="stylesheet" href="cadence-help.css">
+  <script src="cadence-explain.js"></script>
+  <style>
+    .badge circle { fill: #f2c14e; stroke: #0b090e; stroke-width: 3; }
+    .badge text { font: 700 15px ui-monospace, Menlo, monospace; fill: #0b090e; text-anchor: middle; dominant-baseline: central; }
+  </style>
+</head>
+<body>
+  <header class="help-bar"><span class="crumb">cadence / <b>Castlevania</b> / help</span><span class="spacer"></span><a href="./">Back to the demo</a></header>
+  <main class="help">
+    <h1>Castlevania</h1>
+    <p class="lede">A brain made with Cadence plays the NES game Castlevania from what its eye sees on the screen. The page plays recordings of its games beside its brain, and can run the brain itself in your browser.</p>
+    <p class="shows"><b>What it shows about Cadence</b>A Cadence brain has real memory and a real state, and runs in real time, like the brain of a living being. This one keeps a memory of the moments of the game it is playing, carries its state from one decision to the next, and decides five times a second from what its eye sees. With a look-ahead on the emulator checking its moves near enemies, it reaches stage 3 on all nine starts of a measured set and loses 5 lives where it alone lost 36. The giant bat at stage 3 is not beaten.</p>
+    <nav class="toc" aria-label="On this page"><a href="#see">What you see</a><a href="#why">Why it matters</a><a href="#do">What you can do</a><a href="#how">How it works</a><a href="#numbers">The numbers</a><a href="#limits">Limits</a></nav>
+
+    <h2 id="see">What you see</h2>
+    <p>The page has two recordings; the switch at the top picks one.</p>
+    <p><b>Brain + look-ahead</b> plays highlights of two games: three stretches, each played as recorded, with a card at each cut. Every frame shows the game, the brain's choice and its brain:</p>
+    <figure>
+      <svg viewBox="0 0 1280 720" role="img" aria-label="A frame of the highlights: the game on the left, the brain's choice under it, and the brain on the right with its settle, motor strip, association, module 0, visual cortex, prefrontal region, choice, recall memory and what was played, numbered.">
+        <image href="pack/castlevania-highlights-poster.png" x="0" y="0" width="1280" height="720"/>
+        <g class="badge"><circle cx="40" cy="190" r="17"/><text x="40" y="190">1</text></g>
+        <g class="badge"><circle cx="300" cy="604" r="17"/><text x="300" y="604">2</text></g>
+        <g class="badge"><circle cx="760" cy="26" r="17"/><text x="760" y="26">3</text></g>
+        <g class="badge"><circle cx="780" cy="100" r="17"/><text x="780" y="100">4</text></g>
+        <g class="badge"><circle cx="1012" cy="64" r="17"/><text x="1012" y="64">5</text></g>
+        <g class="badge"><circle cx="1050" cy="246" r="17"/><text x="1050" y="246">6</text></g>
+        <g class="badge"><circle cx="1250" cy="160" r="17"/><text x="1250" y="160">7</text></g>
+        <g class="badge"><circle cx="680" cy="250" r="17"/><text x="680" y="250">8</text></g>
+        <g class="badge"><circle cx="904" cy="330" r="17"/><text x="904" y="330">9</text></g>
+        <g class="badge"><circle cx="1010" cy="432" r="17"/><text x="1010" y="432">10</text></g>
+        <g class="badge"><circle cx="672" cy="540" r="17"/><text x="672" y="540">11</text></g>
+        <g class="badge"><circle cx="1180" cy="636" r="17"/><text x="1180" y="636">12</text></g>
+      </svg>
+      <figcaption>A frame of the brain + look-ahead highlights, numbered as in the list below. The brain view in Brain alone has the same parts, larger.</figcaption>
+    </figure>
+    <ol>
+      <li><b>The game.</b> The red box is the eye's sharp window ahead of Simon, the blue box the one behind him.</li>
+      <li><b>The brain's choice.</b> One row per slot of the pad: left or right, up or down, whip, jump. The bars are its probabilities; the red one is its choice. An amber outline marks the move the look-ahead played instead.</li>
+      <li><b>The settle.</b> Each decision the whole brain settles, sweep by sweep, until nothing changes; the line is the largest change in a sweep.</li>
+      <li><b>Motor strip.</b> Ten motor neurons in the four slots.</li>
+      <li><b>Association.</b> 128 neurons, the hub: every other region reads it and writes to it.</li>
+      <li><b>Module 0.</b> 256 neurons that read the eye's maps and the body sense.</li>
+      <li><b>Visual cortex: the eye.</b> Four maps of what the eye sees: the whole screen, what moved since the last decision, and the windows ahead of and behind Simon. Beside them the body-sense strip: position, health, lives, facing, stage, block and floor.</li>
+      <li><b>Prefrontal: working memory.</b> 128 neurons that carry a trace of the last moments from one decision to the next.</li>
+      <li><b>The choice.</b> Each slot's choice, read from its motor neurons (the role of the striatum). Amber ring: the look-ahead overruled the brain here; teal: route recovery.</li>
+      <li><b>Hippocampus: recall memory.</b> 128 slots, each holding a moment of this game. Gold slots are the ones this decision reads back.</li>
+      <li><b>What it recalls.</b> The game frame of the moment the brightest slot holds, and the scene parts of what the two read heads recall and expect next.</li>
+      <li><b>What was played.</b> The brain's move, or the look-ahead's (amber), or route recovery's (teal), and the running shares of the three.</li>
+    </ol>
+    <p><b>Brain alone</b> plays one whole game of the brain by itself: the game video on the left with the stage, health and lives under it, the pad the brain presses, and its brain on the right, drawn from the recorded state of the decision the video shows. Every part with a small <b>?</b> explains itself when the pointer rests on it.</p>
+
+    <h2 id="why">Why it matters</h2>
+    <p><b>Real memory.</b> The brain keeps a recall memory of the game it is playing: every decision it writes the moment it is in, and reads back the moments that match it. The memory starts empty when a game starts and fills as the game goes; the hippocampus line counts the moments held.</p>
+    <p><b>A real state.</b> Each decision the brain settles starting from the state the last decision left, and its prefrontal region carries a working trace of the last moments. It is a continuing brain: what it did a moment ago shapes what it does next.</p>
+    <p><b>Real time.</b> It decides five times a second, at the game's own speed, from 827 readings of its eye. In your browser, <b>Live</b> runs the same brain on the recorded eye inputs and shows how long each decision takes; the recorded check took about a tenth of a second a decision, where the game needs one every fifth of a second.</p>
+    <p><b>What the look-ahead adds.</b> The brain alone loses all its lives on every start, most of them in stage 2. A look-ahead on the emulator, which tries the brain's move and a few safer ones a short way ahead, overrules about 4 decisions in 100; together they reach stage 3 on every start and lose few lives. That result belongs to the brain and the look-ahead together; 93 of every 100 moves played are the brain's own.</p>
+
+    <h2 id="do">What you can do</h2>
+    <ul>
+      <li><b>Play the highlights</b> with the video's controls: play, pause, seek, full screen. Rest the pointer on a part of the frame to see what it is.</li>
+      <li><b>Switch to Brain alone</b> to watch the brain's own whole game. Play, pause, seek or change the speed: the brain beside the game follows the decision the video shows, settling sweep by sweep.</li>
+      <li><b>Press Live</b> (in Brain alone) to run the brain itself in your browser. The first time, Python, NumPy, the released Cadence library and the 37 MB brain load into the tab. From the game's start the brain settles on the recorded eye inputs, decision by decision, and the line beside the button counts how often it presses the recorded buttons and how long a decision takes. The brain view then shows the state your browser computed.</li>
+      <li><b>Run the live game</b> on your own machine: the game is not included, so the emulator runs locally with your own copy of the cartridge (see the README in the repository).</li>
+    </ul>
+
+    <h2 id="how">How it works</h2>
+    <p><b>Senses.</b> Every 12 frames the eye reads the screen: the whole picture pooled to 12 by 16 cells, what moved since the last decision, and a sharp window 64 by 48 pixels ahead of Simon and another behind him. Simon's position, facing and body state, and the stage, block and floor, come from the console's memory. 827 numbers in all.</p>
+    <p><b>Thinking.</b> The whole brain, 4,697 neurons and 724,736 synapses, settles on those numbers, starting from the state the last decision left: module 0, the association hub, the prefrontal working trace, the recall memory's two read heads and the motor strip agree.</p>
+    <p><b>Acting.</b> The strongest motor neuron of each slot is pressed, and held for 12 frames: five decisions a second.</p>
+    <p><b>Memory.</b> The synapses hold what it learned, and are frozen here. The working trace and the recall memory are written at every decision, read by the next ones, and emptied when a new game starts.</p>
+    <p><b>Learning.</b> Offline, the brain imitated a scripted teacher that reads the console's memory and knows each stage's route: about 425,000 decisions of practice, the last 100,160 of them driven by the brain itself while the teacher labelled every state it reached, so it learned from its own mistakes. The brain never reads the console's memory beyond its eye's position readings. Nothing is learned while it plays here.</p>
+    <p><b>The look-ahead.</b> Near enemies, and at two known trouble spots, the look-ahead saves the emulator's state, plays the brain's proposed move and a few safer moves 12 decisions ahead, and restores the state. It plays the brain's move unless another loses clearly less health. Where the brain makes no progress along the route for 40 decisions, the route's move stands in for 30 decisions: route recovery. The look-ahead is ordinary code over the emulator, not part of the brain.</p>
+
+    <h2 id="numbers">The numbers</h2>
+    <table><thead><tr><th>Reading (1,500 decisions from power-on per start)</th><th>Brain alone</th><th>+ look-ahead</th></tr></thead><tbody>
+      <tr><td>Selection starts (9): stage 3 reached</td><td class="n">3 of 9</td><td class="n">9 of 9</td></tr>
+      <tr><td>Selection starts: lives lost (of 36)</td><td class="n">36</td><td class="n">5</td></tr>
+      <tr><td>Selection starts: health lost</td><td class="n">1,648</td><td class="n">664</td></tr>
+      <tr><td>Fresh starts (9): stage 3 reached</td><td class="n">2 of 9</td><td class="n">9 of 9</td></tr>
+      <tr><td>Fresh starts: lives lost (of 36)</td><td class="n">36</td><td class="n">4</td></tr>
+      <tr><td>Fresh starts: health lost</td><td class="n">1,848</td><td class="n">616</td></tr>
+      <tr><td>Decisions: the brain's own move played · overruled · route recovery (selection)</td><td class="n">100%</td><td class="n">93.2% · 4.2% · 2.7%</td></tr>
+      <tr><td>The giant bat beaten</td><td class="n">no</td><td class="n">no</td></tr>
+    </tbody></table>
+    <table><thead><tr><th>Reading</th><th>Value</th></tr></thead><tbody>
+      <tr><td>The brain</td><td class="n">4,697 neurons · 724,736 synapses</td></tr>
+      <tr><td>Recall memory</td><td class="n">128 slots · 2 read heads</td></tr>
+      <tr><td>The uncut brain + look-ahead game (start 21): the brain's move · overruled · route recovery</td><td class="n">1,407 · 65 · 28 of 1,500</td></tr>
+      <tr><td>Live in a browser, headless Chromium on a cloud CPU: decisions matching the recording · time a decision (the game needs 200 ms)</td><td class="n">60 of 60 · 99 ms</td></tr>
+      <tr><td>The same on an Apple M4 shared with other jobs (load average 61): matching · time a decision</td><td class="n">40 of 40 · 90 ms</td></tr>
+    </tbody></table>
+    <p class="note">Selection starts (0, 3, 7, 10, 14, 21, 28, 35, 42 idle decisions before Simon starts) were used to pick the brain among its checkpoints; fresh starts (1, 5, 11, 17, 25, 31, 38, 45, 49) were read once, after the pick. Where the files are, in the <code>castlevania/</code> folder of the repository: both tables' comparisons, <code>evidence/lookahead_receipt.json</code>; the brain and its readings, <code>evidence/receipt.json</code>; the uncut games, <code>evidence/castlevania-run.json</code> and <code>evidence/castlevania-brain-alone-run.json</code>; live mode, <code>player/evidence/player_check.json</code> (cloud CPU) and <code>evidence/promise_test-20261113.json</code> (Apple M4); this page's promise, played on the page, <code>evidence/promise_test-20261113.json</code>.</p>
+
+    <h2 id="limits">Limits</h2>
+    <ul>
+      <li><b>The look-ahead is not the brain.</b> Every overruled move and every route-recovery move comes from a search over the emulator's saved states and the teacher's route. The brain's own record is Brain alone: it loses all four lives on every start, and reaches stage 3 on 3 and 2 of 9.</li>
+      <li><b>The giant bat is not beaten,</b> by the brain alone or with the look-ahead. With the look-ahead, five of the nine selection starts end in a standoff at the bat; the brain alone took at most 36 of its 64 health.</li>
+      <li><b>Frozen.</b> The brain learned by imitating a teacher, offline; it does not learn while it plays, and the game's score or reward played no part.</li>
+      <li><b>Part of the eye reads the console's memory.</b> Simon's position, facing and body state, and the stage, block and floor, come from memory; everything inside the eye's windows is pixels.</li>
+      <li><b>Recordings.</b> The game is not included, so the site shows recorded games. Live mode runs the real brain on the recorded eye inputs; it does not play the game.</li>
+      <li><b>One cartridge.</b> Raised and checked on one printing of the cartridge, on one emulator core.</li>
+    </ul>
+
+    <footer>The brain runs in your browser with cadence-net 0.95.2. <a href="https://github.com/muellerberndt/cadence-demos/tree/main/castlevania" target="_blank" rel="noopener">The demo on GitHub</a> · <a href="https://github.com/muellerberndt/cadence" target="_blank" rel="noopener">Cadence on GitHub</a></footer>
+  </main>
+</body>
+</html>

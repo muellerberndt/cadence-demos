@@ -1,0 +1,132 @@
+{
+ "schema": "patch-world-promise-flip/1",
+ "url": "http://127.0.0.1:65294/",
+ "checked_utc": "2026-11-13T05:08:56.006255+00:00",
+ "checks": [
+  {
+   "check": "summer: the learners eat most berries they stand on (at least 80%)",
+   "ok": true,
+   "learners": {
+    "ate": 75,
+    "passed": 1,
+    "stood_on": 76,
+    "share": 0.987
+   }
+  },
+  {
+   "check": "winter: late in the winter the learners eat at most half their summer share, and less than early in the winter",
+   "ok": true,
+   "summer": 0.987,
+   "first_150": 0.164,
+   "from_500": 0.063,
+   "stood_on_late": 191
+  },
+  {
+   "check": "winter: the frozen twins keep eating the berries (at least 80%, 30 points above the learners late in the winter)",
+   "ok": false,
+   "twins": {
+    "ate": 5,
+    "passed": 2,
+    "stood_on": 7,
+    "share": 0.714
+   },
+   "learners_late": 0.063
+  },
+  {
+   "check": "no console errors, page errors or failed requests",
+   "ok": true,
+   "errors": []
+  }
+ ],
+ "errors": [],
+ "boot_seconds": 7.2,
+ "flip_moment": 405,
+ "last_moment": 1705,
+ "creatures": {
+  "live": 12,
+  "frozen": 2,
+  "random": 2
+ },
+ "ms_per_moment": 134.3,
+ "learners": {
+  "summer": {
+   "ate": 75,
+   "passed": 1,
+   "stood_on": 76,
+   "share": 0.987
+  },
+  "winter_first_150": {
+   "ate": 11,
+   "passed": 56,
+   "stood_on": 67,
+   "share": 0.164
+  },
+  "winter_from_500": {
+   "ate": 12,
+   "passed": 179,
+   "stood_on": 191,
+   "share": 0.063
+  },
+  "winter": {
+   "ate": 37,
+   "passed": 276,
+   "stood_on": 313,
+   "share": 0.118
+  }
+ },
+ "frozen_twins": {
+  "summer": {
+   "ate": 11,
+   "passed": 0,
+   "stood_on": 11,
+   "share": 1.0
+  },
+  "winter": {
+   "ate": 5,
+   "passed": 2,
+   "stood_on": 7,
+   "share": 0.714
+  }
+ },
+ "random_walkers": {
+  "summer": {
+   "ate": 6,
+   "passed": 8,
+   "stood_on": 14,
+   "share": 0.429
+  },
+  "winter": {
+   "ate": 15,
+   "passed": 36,
+   "stood_on": 51,
+   "share": 0.294
+  }
+ },
+ "tally": {
+  "frozen": {
+   "lives": 22,
+   "ended": 20,
+   "mean_age_at_death": 147.4,
+   "poisonings_per_1000": 1.76,
+   "good_berries_per_1000": 3.519,
+   "income_per_moment": 0.0697
+  },
+  "live": {
+   "lives": 42,
+   "ended": 30,
+   "mean_age_at_death": 368.3,
+   "poisonings_per_1000": 2.801,
+   "good_berries_per_1000": 5.663,
+   "income_per_moment": 0.1356
+  },
+  "random": {
+   "lives": 23,
+   "ended": 21,
+   "mean_age_at_death": 157.1,
+   "poisonings_per_1000": 4.692,
+   "good_berries_per_1000": 2.053,
+   "income_per_moment": 0.028
+  }
+ },
+ "passed": false
+}

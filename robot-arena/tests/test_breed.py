@@ -1,6 +1,7 @@
 """Breeding: the 0.95 brain genes compose, mutation stays valid, and an anchor never changes."""
 
 import hashlib
+import json
 import random
 from dataclasses import replace
 from pathlib import Path
@@ -38,14 +39,15 @@ def test_mutations_stay_valid_and_reach_the_new_genes():
 
 def test_a_pool_fight_leaves_the_anchor_file_unchanged(tmp_path):
     root = Path(__file__).resolve().parents[1] / "league-live"
-    pool = breed.reference_pool(root, ["Cart", "Random-Tumbler"])
+    brain = next(n for n, e in json.loads((root / "league.json").read_text())["robots"].items() if e["policy"] == "brain")
+    pool = breed.reference_pool(root, [brain, "Random-Tumbler"])
     before = hashlib.sha256(Path(pool[0]["brain_path"]).read_bytes()).hexdigest()
     body = stock_designs()[0]
     path = tmp_path / "cand.npz"
     compose(body).save(path)
     cand = [{"name": body.name, "blueprint": body.to_dict(), "brain_path": str(path), "owed": None}]
     out = breed._pool_fight((cand, pool, 1, 60, 50, 3.5, None))
-    assert set(out["stats"]) == {body.name, "ref:Cart", "ref:Random-Tumbler"}
+    assert set(out["stats"]) == {body.name, f"ref:{brain}", "ref:Random-Tumbler"}
     assert hashlib.sha256(Path(pool[0]["brain_path"]).read_bytes()).hexdigest() == before
 
 

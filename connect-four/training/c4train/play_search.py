@@ -32,6 +32,8 @@ def main() -> None:
     p.add_argument("--demo", default=str(Path(__file__).resolve().parents[2]))
     p.add_argument("--only", default="", help="comma list of conditions to run")
     p.add_argument("--alone", action="store_true", help="the brain alone plays (the baseline on the same seeds)")
+    p.add_argument("--parity", type=int, default=None, help="the search keeps only finished depths of this parity")
+    p.add_argument("--opponent", default=None, help="vs_brain_* games against this brain alone (default: the same brain)")
     a = p.parse_args()
     sys.path.insert(0, a.demo)
     from connect4.game import Board as DemoBoard
@@ -41,6 +43,11 @@ def main() -> None:
     inner.brain = Brain.load(a.brain, backend="cpu", precision="float64")
     policy = Planes(inner) if len(inner.brain.sensory_index) == 126 else inner
     temperature = float(inner.brain.learner.config.temperature)
+    opponent = policy
+    if a.opponent:
+        other = CadencePolicy(modules=(8,), seed=0, surprise=False, verdict=True, inputs=126)
+        other.brain = Brain.load(a.opponent, backend="cpu", precision="float64")
+        opponent = Planes(other) if len(other.brain.sensory_index) == 126 else other
     stats = {"overruled": 0, "moves": 0, "ms": [], "depth": []}
 
     def player(boards):
@@ -50,7 +57,7 @@ def main() -> None:
         for b in boards:
             motor = policy.readout(b.encode()[None, :])[0]
             t = time.perf_counter()
-            r = search_choose(DemoBoard(b.mine, b.theirs), motor, temperature, nodes=a.nodes)
+            r = search_choose(DemoBoard(b.mine, b.theirs), motor, temperature, nodes=a.nodes, parity=a.parity)
             stats["ms"].append((time.perf_counter() - t) * 1000)
             stats["depth"].append(r["depth"])
             stats["moves"] += 1
@@ -59,7 +66,8 @@ def main() -> None:
         return np.array(out)
 
     solver = Solver()
-    out = {"brain": Path(a.brain).name, "player": "brain alone" if a.alone else "brain + search", "nodes": a.nodes, "games": a.games, "conditions": []}
+    out = {"brain": Path(a.brain).name, "player": "brain alone" if a.alone else "brain + search", "nodes": a.nodes,
+           "opponent": Path(a.opponent).name if a.opponent else None, "parity": a.parity, "games": a.games, "conditions": []}
     only = set(filter(None, a.only.split(",")))
     for name, strength, first in (("solver100_first", 1.0, True), ("solver100_second", 1.0, False),
                                   ("solver090_first", 0.9, True), ("solver090_second", 0.9, False),
@@ -90,7 +98,7 @@ def main() -> None:
                 elif turn:
                     column = int(player([board])[0])
                 else:
-                    column = int(policy.choose([board])[0])
+                    column = int(opponent.choose([board])[0])
                 if board.winning(column):
                     result = "win" if turn else "loss"
                     break

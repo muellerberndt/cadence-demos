@@ -1,0 +1,19 @@
+{
+  "slug": "robot-arena",
+  "title": "Robot Arena",
+  "page_dir": "showcase-app/public",
+  "deploy_dir": "showcase-app/dist",
+  "build": "cd showcase-app && npm ci --no-audit --no-fund && npm run build",
+  "card": "Robots with one brain for life that learn while they fight: calm in routine, woken by surprise, kept in your browser from fight to fight.",
+  "tagline": "Robots with one brain for life, fighting and learning live in your browser",
+  "kicker": "CALM IN ROUTINE, LEARNING ON SURPRISE",
+  "feature": "Each robot has one Cadence brain for life, with real memory and a real state, running live in your browser. Routine settles calmly; a surprise, or less pay than usual, wakes learning (amber). Each brain carries on from fight to fight.",
+  "howTo": "Watch the halos: blue is calm, amber is learning. Click a robot to watch its brain settle and its synapses change. Speed up with as fast as they settle. After a fight, reload: the brains come back as you left them.",
+  "help": "help.html",
+  "evidence": [
+    "robot-arena/MODEL_CARD.md",
+    "robot-arena/docs/brain.md",
+    "robot-arena/evidence/promise-arena-20261113.json"
+  ],
+  "promise_test": "cd robot-arena/showcase-app && npm ci && npm run build && cd ../.. && python robot-arena/tools/promise_arena.py --out <dir> --shots <dir>"
+}

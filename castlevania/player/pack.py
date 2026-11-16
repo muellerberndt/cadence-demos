@@ -1,7 +1,9 @@
 """Pack the player page (player/pack/): the trace of the recorded run, the released cadence-net
-wheel and the demo's Python sources for live mode, and a manifest naming every file with its
-SHA-256. The brain and the game video stay where they are (../brain/, ../docs/); the manifest
-points at them.
+wheel and the demo's Python sources for live mode, copies of the brain (../brain/brain.npz) and
+of the two videos (the brain-alone game and the brain + look-ahead highlights, ../docs/), and a
+manifest naming every file with its SHA-256. The page's renderer and style are copies of
+../web/brain.js and ../web/style.css. With the copies, player/ is a folder a static host serves by
+itself (the demos site serves it as /demos/castlevania/); git stores each copy once.
 
     python player/pack.py --trace runs/trace42.json.gz
 """
@@ -29,7 +31,8 @@ def sha(path: Path) -> str:
 def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--trace", type=Path, required=True, help="record.py --trace output")
-    p.add_argument("--video", default="../../docs/castlevania-game.mp4", help="the game video, relative to pack/")
+    p.add_argument("--video", type=Path, default=ROOT / "docs" / "castlevania-game.mp4", help="the game video of the traced run")
+    p.add_argument("--highlights", type=Path, default=ROOT / "docs" / "castlevania-highlights.mp4", help="the brain + look-ahead highlights")
     p.add_argument("--cadence", default="0.95.2")
     a = p.parse_args()
     out = HERE / "pack"
@@ -40,15 +43,24 @@ def main() -> None:
                         "--only-binary", ":all:", "-d", str(out), "-q"], check=True)
     for name in SOURCES:
         shutil.copy(ROOT / "simon" / name, out / "py" / "simon" / name)
-    shutil.copy(a.trace, out / "trace.json.gz")
-    brain = ROOT / "brain" / "brain.npz"
+    if a.trace.resolve() != (out / "trace.json.gz").resolve():
+        shutil.copy(a.trace, out / "trace.json.gz")
+    brain = out / "brain.npz"
+    shutil.copy(ROOT / "brain" / "brain.npz", brain)
+    shutil.copy(a.video, out / "castlevania-game.mp4")
+    shutil.copy(a.highlights, out / "castlevania-highlights.mp4")
+    shutil.copy(a.highlights.with_name(a.highlights.stem + "-poster.png"), out / "castlevania-highlights-poster.png")
+    for name in ("brain.js", "style.css"):
+        shutil.copy(ROOT / "web" / name, HERE / name)
     manifest = {
         "schema": "cadence-castlevania-player/1", "created": time.strftime("%Y-%m-%d"),
         "pyodide": PYODIDE, "cadence": a.cadence, "wheel": wheel.name, "wheel_sha256": sha(wheel),
         "sources": SOURCES, "sources_sha256": {n: sha(out / "py" / "simon" / n) for n in SOURCES},
-        "brain": {"file": "../../brain/brain.npz", "sha256": sha(brain)},
+        "brain": {"file": "brain.npz", "sha256": sha(brain)},
         "trace": {"file": "trace.json.gz", "sha256": sha(out / "trace.json.gz")},
-        "video": {"file": a.video},
+        "video": {"file": "castlevania-game.mp4", "sha256": sha(out / "castlevania-game.mp4")},
+        "highlights": {"file": "castlevania-highlights.mp4", "sha256": sha(out / "castlevania-highlights.mp4"),
+                       "poster": "castlevania-highlights-poster.png"},
     }
     (out / "manifest.json").write_text(json.dumps(manifest, indent=1) + "\n")
     sizes = {f.relative_to(out).as_posix(): f.stat().st_size for f in sorted(out.rglob("*")) if f.is_file()}

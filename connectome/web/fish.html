@@ -10,6 +10,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <link rel="stylesheet" href="./site.css">
+<link rel="stylesheet" href="./cadence-explain.css">
+<script src="./cadence-explain.js" defer></script>
 <style>
   #toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:4px 5px;padding:6px 12px;flex-shrink:0;background:rgba(2,14,7,.96);border-top:1px solid var(--line)}
   #toolbar button{font-size:11px;padding:3px 7px;white-space:nowrap}
@@ -25,19 +27,25 @@
   #noscan{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
   #lesson-panel{flex-shrink:0;border:1px solid var(--line);border-radius:7px;padding:10px 12px;margin-bottom:12px;background:rgba(2,14,7,.9)}
   .lesson-controls{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center}
-  #teaching-controls>summary{cursor:pointer;min-height:26px;line-height:26px}
+  #teaching-controls>summary{cursor:pointer;min-height:26px;line-height:26px;color:var(--burst)}
+  #teaching-controls>summary b{color:var(--burst)}
+  #teaching-controls>summary .what{color:var(--soft);font-size:11px;margin-left:8px}
+  #teaching-controls:not([open])>summary{animation:beckon 2.4s ease-in-out 3}
+  @keyframes beckon{50%{text-shadow:0 0 10px rgba(255,209,102,.8)}}
+  .view .top .h{cursor:help;overflow:visible}
+  #lesson-guide b{color:var(--burst);font-weight:500}
   #lesson-panel{position:relative}.lesson-heading span,.lesson-scope{color:var(--dim);font-size:10px}
   .lesson-controls{margin:8px 0}.lesson-controls button{font-size:11px}
   #lesson-guide{font-size:11px;color:var(--soft);margin:6px 0}
   .lesson-readout{display:grid;grid-template-columns:1fr 1.5fr;gap:14px;font-size:11px}
   .lesson-readout p{margin:4px 0;min-width:0}.lesson-scope{margin:5px 0 0}
-  #probe-result{color:var(--burst);margin-bottom:5px}
+  #probe-result{color:var(--burst);margin-bottom:5px}#gaze-test{position:relative}
   .teach-primary{background:#173d22;border-color:#67e78e;color:#d8ffe1}
   #response-bars>div{display:grid;grid-template-columns:115px 1fr 55px;gap:8px;align-items:center;font-size:10px}
   #response-bars output{text-align:right}#response-bars meter{width:100%;height:12px;accent-color:#67e78e}
   #practice-progress{width:100%;height:7px;accent-color:#ffd166}
   #more-controls{margin-top:5px;font-size:10px;color:var(--soft)}#more-controls summary{cursor:pointer;width:max-content}
-  #learning-key{position:absolute;left:10px;top:10px;z-index:2;font-size:11px;pointer-events:none;background:rgba(0,10,4,.86);padding:5px 8px;border-radius:4px}
+  #learning-key{position:absolute;left:10px;top:10px;z-index:2;font-size:11px;cursor:help;background:rgba(0,10,4,.86);padding:5px 8px;border-radius:4px}
   #learning-key span{color:var(--burst)}#brain-learning{display:block;font-size:10px;color:var(--soft)}
   @media(max-height:800px) and (min-width:761px){#page{position:static;min-height:100vh;padding-bottom:45px}html,body{overflow:auto}#main{min-height:430px}}
   @media(max-width:760px){#hint{display:none}.lesson-readout{grid-template-columns:1fr;gap:0}#world{display:flex;flex-wrap:wrap;overflow:visible}.seg button{flex:1}#toast{white-space:normal;width:90%;text-align:center}}
@@ -45,11 +53,13 @@
 </head>
 <body>
 <div id="page">
-  <header id="mast"></header>
+  <header id="mast" data-standalone></header>
   <nav id="nav" aria-label="Pages"></nav>
   <section id="lesson-panel" aria-label="Teach the compiled brain">
     <details id="teaching-controls">
-    <summary class="lesson-heading"><b>Teach this fish</b></summary>
+    <summary class="lesson-heading" data-explain-title="Teach this fish" data-explain="Opens the teaching controls. After a glance to the side, the fish's gaze circuit holds the eyes there in its own activity: a small memory. Teach it to hold its gaze, then to let it return, then to hold again, all on the same brain: its connections change as it practises, and keep what they learned.
+
+Only the gaze circuit learns. Swimming, hunting and escape come from a fixed autopilot."><b>Teach this fish</b><span class="what">hold its gaze, let it return, hold again</span></summary>
     <div class="lesson-controls">
       <span id="world" class="seg" aria-label="What to teach">
         <button type="button" data-world="still" class="on" aria-pressed="true" data-tip="Teach the eyes to keep looking to the side after a glance.">Hold your gaze</button>
@@ -59,15 +69,15 @@
       <button id="measure-learning" type="button" data-tip="Compare the starting and learned brains after the same glance. The test runs on copies, so it does not disturb or teach the fish.">Test its gaze</button>
       <button id="learning-toggle" type="button" data-tip="Pause changes to the connections while the fish keeps living. Resume continues with everything it has learned.">Pause learning</button>
     </div>
-    <p id="lesson-guide">Teach it to keep looking to the side after a glance. Gold flashes mark connections changing as it learns.</p>
+    <p id="lesson-guide" role="status"><b>1 · </b>Press <b>Teach this lesson</b>: the fish practises holding its gaze after each glance. Gold flashes in the brain mark connections changing.</p>
     <div class="lesson-readout">
       <div><p id="learning-progress" role="status"></p><progress id="practice-progress" max="1" value="0" aria-label="Lesson progress" hidden></progress></div>
-      <div id="gaze-test" data-tip="The bars update as the fish learns during a lesson. They show how much of a glance it can hold five seconds later. A longer bar means a stronger hold. Values over 100% mean the response is growing." tabindex="0">
+      <div id="gaze-test" data-explain-title="Gaze held after 5 seconds" data-explain-mark="corner" data-tip="The bars update as the fish learns during a lesson. They show how much of a glance it can hold five seconds later. A longer bar means a stronger hold. Values over 100% mean the response is growing." tabindex="0">
         <p id="probe-result" aria-live="polite">Gaze held after 5 seconds · updates during teaching.</p>
         <div id="response-bars" hidden>
           <div><span>Before learning</span><meter id="response-before" min="0" max="100" value="0"></meter><output id="value-before"></output></div>
-          <div><span>Now · left</span><meter id="response-left" min="0" max="100" value="0"></meter><output id="value-left"></output></div>
-          <div><span>Now · right</span><meter id="response-right" min="0" max="100" value="0"></meter><output id="value-right"></output></div>
+          <div><span>Taught · left</span><meter id="response-left" min="0" max="100" value="0"></meter><output id="value-left"></output></div>
+          <div><span>Taught · right</span><meter id="response-right" min="0" max="100" value="0"></meter><output id="value-right"></output></div>
         </div>
       </div>
     </div>
@@ -75,12 +85,13 @@
       <button id="reset-synapses" type="button" data-tip="Forget the lessons and restore the starting connections. The fish stays in the same tank.">Reset learning</button>
       <button id="auto-saccades" type="button" aria-pressed="true" data-tip="Let the fish glance around on its own. Each undisturbed glance can provide a lesson.">Automatic glances on</button>
     </div></details>
-    <p class="lesson-scope">The gaze circuit learns. Swimming uses a fixed pilot. <a href="./explain.html">How it works →</a></p>
     </details>
   </section>
   <main id="main" class="two">
     <section class="view" id="tank" aria-label="Aquarium">
-      <div class="top"><p class="h" id="tank-title">The fish</p></div>
+      <div class="top"><p class="h" id="tank-title" data-explain-title="The fish" data-explain="A larval zebrafish in a tank. Its gaze runs on a Cadence brain built from measured wiring: one side of a larval zebrafish hindbrain, 2,884 neurons whose connections were traced one by one in electron microscope images. The fish carries two copies, one per side.
+
+When the fish glances to the side, the brain's activity holds the eyes there, or lets them drift back. A fixed autopilot swims, hunts and escapes.">The fish</p></div>
       <div class="host" id="tank-host">
         <div id="hint">drag to orbit · wheel to zoom · space pauses</div>
         <div id="toast"></div>
@@ -106,8 +117,10 @@
       </div>
     </section>
     <section class="view" id="brain" aria-label="Cadence patch net, compiled from the connectome">
-      <div class="top"><p class="h">Inside the compiled brain</p><div class="tools"><button id="fit" type="button" data-tip="The brain view back to its resting frame." data-tip-side="below">fit</button><button id="spin" type="button" class="on" data-tip="A slow spin of the brain view until you drag it." data-tip-side="below">spin</button></div></div>
-      <div class="host" id="view-host"><div id="learning-key">Green: activity · <span>gold: learning</span><small id="brain-learning">Waiting for a lesson</small></div></div>
+      <div class="top"><p class="h" data-explain-title="The fish's brain, live" data-explain="The traced neurons of the measured half of the hindbrain, lit green by their activity in the running Cadence brain. Gold marks neurons whose incoming connections a lesson changed: the brain learning. The view shows the half that learned last; the other half is a copy of the same wiring.
+
+Point at a group below to see what it does.">The fish's brain, live</p><div class="tools"><button id="fit" type="button" data-tip="The brain view back to its resting frame." data-tip-side="below">fit</button><button id="spin" type="button" class="on" data-tip="A slow spin of the brain view until you drag it." data-tip-side="below">spin</button></div></div>
+      <div class="host" id="view-host"><div id="learning-key" data-explain="Green is activity: what the brain is doing. Gold is learning: neurons whose incoming connections a lesson changed. The line below counts the connections the last lesson changed." data-explain-mark="none">Green: activity · <span>gold: learning</span><small id="brain-learning">Waiting for a lesson</small></div></div>
     </section>
   </main>
 </div>

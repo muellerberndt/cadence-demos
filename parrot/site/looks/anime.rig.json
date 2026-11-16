@@ -1,0 +1,200 @@
+{
+ "bar_radius": 0.00981,
+ "bones": [
+  {
+   "name": "root",
+   "parent": null,
+   "at": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "body",
+   "parent": "root",
+   "at": [
+    0.0,
+    0.04,
+    -0.02307
+   ]
+  },
+  {
+   "name": "tail",
+   "parent": "body",
+   "at": [
+    0.0,
+    0.02,
+    -0.11033
+   ]
+  },
+  {
+   "name": "neck",
+   "parent": "body",
+   "at": [
+    6e-05,
+    0.10359,
+    -0.00307
+   ]
+  },
+  {
+   "name": "head",
+   "parent": "neck",
+   "at": [
+    6e-05,
+    0.13959,
+    0.00893
+   ]
+  },
+  {
+   "name": "upper_mandible",
+   "parent": "head",
+   "at": [
+    6e-05,
+    0.16507,
+    0.04017
+   ]
+  },
+  {
+   "name": "lower_mandible",
+   "parent": "head",
+   "at": [
+    6e-05,
+    0.14967,
+    0.04327
+   ]
+  },
+  {
+   "name": "wing_l_shoulder",
+   "parent": "body",
+   "at": [
+    0.04462,
+    0.09159,
+    -0.01507
+   ]
+  },
+  {
+   "name": "wing_l_elbow",
+   "parent": "wing_l_shoulder",
+   "at": [
+    0.05262,
+    0.06159,
+    -0.04507
+   ]
+  },
+  {
+   "name": "wing_l_wrist",
+   "parent": "wing_l_elbow",
+   "at": [
+    0.05262,
+    0.04159,
+    -0.06507
+   ]
+  },
+  {
+   "name": "wing_r_shoulder",
+   "parent": "body",
+   "at": [
+    -0.04462,
+    0.09159,
+    -0.01507
+   ]
+  },
+  {
+   "name": "wing_r_elbow",
+   "parent": "wing_r_shoulder",
+   "at": [
+    -0.05262,
+    0.06159,
+    -0.04507
+   ]
+  },
+  {
+   "name": "wing_r_wrist",
+   "parent": "wing_r_elbow",
+   "at": [
+    -0.05262,
+    0.04159,
+    -0.06507
+   ]
+  },
+  {
+   "name": "leg_l",
+   "parent": "body",
+   "at": [
+    0.0221,
+    0.034,
+    0.002
+   ]
+  },
+  {
+   "name": "leg_r",
+   "parent": "body",
+   "at": [
+    -0.02191,
+    0.034,
+    0.002
+   ]
+  },
+  {
+   "name": "foot_l",
+   "parent": "root",
+   "at": [
+    0.0221,
+    0.01131,
+    0.0
+   ]
+  },
+  {
+   "name": "foot_r",
+   "parent": "root",
+   "at": [
+    -0.02191,
+    0.01131,
+    0.0
+   ]
+  }
+ ],
+ "sockets": {
+  "eye_l": {
+   "bone": "head",
+   "at": [
+    0.02159,
+    0.16715,
+    0.02903
+   ],
+   "yaw": 57.2
+  },
+  "eye_r": {
+   "bone": "head",
+   "at": [
+    -0.02164,
+    0.16664,
+    0.02828
+   ],
+   "yaw": -53.0
+  },
+  "mouth": {
+   "bone": "head",
+   "at": [
+    6e-05,
+    0.1536,
+    0.04327
+   ],
+   "yaw": 0.0,
+   "radius": 0.01049
+  }
+ },
+ "toe_rest": "closed",
+ "wing_mode": "lift",
+ "wing_lift": 0.0,
+ "toe_open": 0.25,
+ "head_rest_yaw": 0.0,
+ "source": {
+  "glb": "model_50k.glb",
+  "height": 0.28,
+  "grip": 0.28,
+  "dx": 0.0,
+  "dz": -0.04
+ }
+}

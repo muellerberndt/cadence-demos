@@ -3,95 +3,94 @@
 | | |
 | --- | --- |
 | Demo | Robot Arena, the Cadence Showcase League (`robot-arena/`) |
-| Files | six brains in `showcase-app/public/pack/brains/` (the page's pack), the same files and the two robots not packed in `league-live/brains/`; SHA-256 per brain in `showcase-app/public/pack/manifest.json` |
+| Files | six brains in `showcase-app/public/pack/brains/` (the page's pack) and `league-live/brains/`; SHA-256 per brain in `showcase-app/public/pack/manifest.json` |
 | Library | `cadence-net` 0.95.2 (`Brain.load` on the CPU, float64; in the page the same wheel in Pyodide) |
-| Composition | per robot `Brain.compose(inputs, motor neurons, modules=(48, 24), slots=<one slot per motor>, recall=False, episodic=True, consolidation=0.05, working_memory_amplitude=0.3, working_memory_decay=0.1, efference_amplitude=0, lateral=-0.5, scales={"sensory": 4, "trace": 12}, temperature=0.3, actor_eta=0.03, actor_eta_bias=0.003, actor_lam=0.6, actor_gamma=0.95, actor_eta_critic=5, arousal=<founder>)` (`arena/brain.py:compose`) |
-| Size | 132 to 154 neurons, 4,632 to 5,708 synapses per brain |
+| Composition | per robot `arena/brain.py:compose`: `Brain.compose(inputs, motor neurons, modules=<gene>, slots=<one slot per motor>, recall=<gene>, teaching=<gene>, episodic=True, working_memory_amplitude=<gene>, efference_amplitude=<gene>, scales={"sensory": <gene>, "trace": 12}, lateral=-0.5, temperature=<gene>, actor_eta=<gene>, ...)`; the genes per robot are below |
 | Date | 2026-11-09 |
 
 ## The roster
 
-| Robot | Body | Motor neurons | Inputs | Neurons | Synapses | File (SHA-256) | Moments lived | Driving test | Marks | Elo |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Dozer | heavy: wheel@70, wheel@-70, wheel@110, wheel@-110, arm/spike@15, arm/spike@-15, arm/hammer@0 | 21 | 26 | 143 | 5,178 | `Dozer.npz` (115 KB, `08fb2c823ff01742…`) | 114,615 | +0.28 (4/8) | `+-++---+` | 1143 |
-| Crab | medium: leg@60, leg@-60, leg@120, leg@-120, arm/hammer@20, arm/spike@-20 | 18 | 32 | 146 | 5,316 | `Crab.npz` (127 KB, `2814f8d419c34d74…`) | 109,888 | +0.25 (3/8) | `-+-+---+` | 1050 |
-| Hexapod | heavy: leg@40, leg@-40, leg@90, leg@-90, leg@140, leg@-140, arm/spinner@0 | 23 | 35 | 154 | 5,708 | `Hexapod.npz` (138 KB, `00a5a8727cc36396…`) | 109,356 | +0.38 (4/8) | `++----++` | 997 |
-| Mantis | medium: leg@50, leg@-50, leg@130, leg@-130, arm/hammer@0 | 15 | 30 | 141 | 5,070 | `Mantis.npz` (121 KB, `9f436ab56de8147b…`) | 108,705 | +0.23 (3/8) | `----+-++` | 991 |
-| Cart | medium: wheel@100, wheel@-100, arm/spike@25, arm/spike@-25 | 12 | 24 | 132 | 4,632 | `Cart.npz` (107 KB, `b32f2276eaba1556…`) | 108,191 | +0.54 (6/8) | `+-+-++++` | 983 |
-| Scorpion | medium: leg@45, leg@-45, leg@135, leg@-135, arm/spinner@180 | 17 | 31 | 144 | 5,216 | `Scorpion.npz` (123 KB, `9b6a60d79a956fa4…`) | 107,202 | -0.39 (1/8) | `------+-` | 941 |
+| Robot | Body | Layout | Recall | Teaching | Other genes off the founder | Moments lived | Driving test | Marks |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Dozer-31.27 | heavy: 3 wheels, 3 hammer arms | (256, 128) | on | composed | eta 0.027, temperature 0.16, lam 0.70, trace 0.17, efference 0.12 | 173,997 | +0.77 | `++++++++` |
+| Mantis-25.44 | medium: 4 legs, 2 hammer arms | (128,) | off | composed | eta 0.033, sensory scale 6.2, lam 0.62, trace 0.26 | 131,751 | +0.56 | `++++--++` |
+| Roller-32.4 | heavy: 4 wheels, 1 leg, 2 hammer arms, 1 spinner | (128,) | on | deep | temperature 0.30, lam 0.61, trace 0.18, efference 0.14, bias rate 0.0041 | 153,189 | +0.44 | `+--++-++` |
+| Cart-28.4 | medium: 2 wheels, 3 legs, 1 hammer arm | (64,) | on | deep | sensory scale 2.8, trace 0.43, efference 0.23 | 257,796 | +0.37 | `+--+--++` |
+| Tumbler-44.41 | medium: 1 wheel, 1 leg, 3 hammer arms, 1 spike arm | (128, 64) | off | normalized | lam 0.36, critic rate 7.2, trace 0.40, efference 0.20, bias rate 0.0025 | 115,308 | +0.16 | `---+--++` |
+| Crab-25.33 | medium: 4 legs, 1 hammer arm, 1 spike arm | (64, 32) | off | deep | eta 0.038, sensory scale 4.7, lam 0.90, bias rate 0.0014 | 136,120 | +0.04 | `---+---+` |
 
-Marks, in order: approach, escape, the closing ring, engagement, chase, facing, no spinning,
-no stalling. The driving test and the Elo are those the pack records: the test was run by
-`pack.py` on the packed files, after the league's royales. Elo is over the league's 20 royales
-(start 1000).
+Names are lineage and generation: a lineage keeps its founder's name, its body mutates. Marks,
+in order: approach, escape, the closing ring, engagement, chase, facing, no spinning, no
+stalling. The driving test is deterministic for a brain file and was read on the packed files.
 
 ## What it sees and does
 
 Inputs: four cosine-tuned direction cells for the nearest robot and four for the ring's edge,
 closing and receding speed of the nearest robot, a weapon within half a metre of the hull,
 speed forward and backward, turning left and right, hit points, pain, damage dealt, outside the
-ring, each leg's stride and whether it is planted, each arm's angle and whether a rival is in its reach, and a constant drive (`arena/senses.py`).
-Outputs: one motor slot per motor of the body, read from one settlement of the whole brain: a
-wheel or leg is three motor neurons (reverse, brake, forward), an arm three, a spinner's switch
-two. A moment is one `Brain.live` call: calm, the brain answers from one settled state and
-learns nothing; aroused (a contradicted forecast, pain, a want), it samples, learns from the
-outcome of its last command and remembers. Every moment continues from the last; nothing is
-reset between fights.
+ring, each leg's stride and whether it is planted, each arm's angle and whether a rival is in
+its reach, and a constant drive (`arena/senses.py`). Outputs: one motor slot per motor, read
+from one settlement of the whole brain. A moment is one `Brain.live` call: calm, the brain
+answers from one settled state and learns nothing; aroused, it samples, learns from the
+outcome of its last command and remembers. Nothing is reset between fights.
 
-## How it was trained
+## How it was bred and trained
 
-From the world's pay alone; no teacher, no labels. Recipe in `README.md` ("Train your own
-league"), run on an Apple M4 (10 cores, shared with other jobs) with `cadence-net[fast]`:
+From the world's pay alone; no teacher, no labels. `python -m arena.breed` on one c7i.24xlarge
+(96 vCPU, `cadence-net[fast]`), 9.7 hours, three populations: 64 to 80 robots with the best two
+of every lineage kept (47 generations, 80,000-moment nurseries), an independent population of
+64 (35 generations, 120,000-moment nurseries), and a population of 72 whose lineages keep their
+founder's chassis, locomotion and weapon kinds (28 generations, 100,000-moment nurseries).
+Every generation: newborns go through the nursery and survivors through a 20,000-moment
+refresher; every robot fights six royales of six against anchors (the previous roster's brains,
+reloaded fresh every fight, and two uniform-random twins); every brain takes the driving test.
+Fitness: placement against the anchors, plus the driving test, plus a share for damage dealt,
+plus a share for the fights in which it placed above every random twin, minus a cost for slower
+layouts (every layout, with or without recall, runs within twice the founder's cost per moment
+in plain NumPy, the page's path; Dozer's (256, 128) with recall is the costliest, about 1.9). The
+elite keep their brains; offspring are mutants of body and genes with newborn brains.
 
-1. **Nursery** (`python -m arena nursery --moments 100000`): every stock body alone with a
-   dummy and a sparring partner, immortal, inside a standing ring that burns at its edge. Pay:
-   metres closed on the target, damage dealt, a destroyed target; cost: damage taken, the burn.
-   Three founder seeds per body, 100,000 moments each (36 and 43 minutes for the two batches).
-2. **Driving test** (`python -m arena licence --all`) of every seed; the best-licensed seed of
-   each body stays (one per body: Cart seed 1, Crab seed 2, Dozer seed 1, Mantis seed 2, Roller
-   seed 1; Hexapod, Scorpion, Tumbler the stock seed).
-3. **Royales** (`python -m arena royale --fights 20 --size 6 --duration 2400 --zone-moments 2000
-   --zone-end 3.5 --stage <PAGE_STAGE>`): the eight chosen robots and two uniform-random twins,
-   on the ring stage the page uses (need 0, heat 0, temperature 0.2, actor rate 0.001). 7 minutes.
-4. **Pack** (`showcase-app/pack.py`): the six highest-rated brains, their driving test, the wheel.
+The roster: for each body, the living robot with the best driving test plus share of fights
+above the twins among those placing at least +0.3 against the anchors; the six best bodies.
 
-The recall memory that `Brain.compose` holds by default is off: with and without it the
-nursery gave the same readings to the last decimal on three bodies over 9,000 moments. MLX is
-slower at this size (100.5 ms against 40.6 ms per moment on one CPU core for Mantis), and
-`backend="auto"` keeps these brains on the CPU.
+## How it was measured (`python -m arena.gate`, as run)
 
-## How it was measured
-
-| Reading | Number | Where |
+| Test | Reading | Bar |
 | --- | --- | --- |
-| Nursery progress, 100,000 moments, the packed seeds | Dozer 1,674 m, Cart 1,858, Crab 1,201, Mantis 861, Hexapod 433, Scorpion 602 | `python -m arena nursery` output |
-| The eight bodies at their stock seed, uniform random | -22 to -80 m | `--controls` |
-| The eight bodies at their stock seed, frozen newborn (greedy, never learning) | -5 to -1,618 m | `--controls` |
-| Driving test, random policy, every body | -0.02 to -0.05 (1 to 2 of 8 marks) | `licence --random` |
-| Driving test, packed brains | +0.54 to -0.39, mean +0.22 | manifest |
-| Royales, 20 of six | Dozer 11 wins of 12 fights; Random-Mantis 3; Hexapod and Cart 2; Crab and Mantis 1 | league ladder |
-| Damage dealt per fight in the royales | Dozer 217, Crab 159, Mantis 144, Cart 132, Hexapod 73, Scorpion 7; random twins 15 and 26 | royale output |
-| Page check (`check_page.mjs`) | the league wakes, a fight runs and ends, a brain is inspected, the brains are saved and restored | headless Chrome |
+| Head to head: 48 royales, three new and three previous robots each, both sides learning through the series | new minus previous placement score +0.261, 95% bootstrap interval [+0.128, +0.400]; Elo 1027 against 973 | interval above zero: met |
+| Driving test, mean of the six | +0.391; previous roster +0.22 | clearly above the previous: met |
+| Random twins (3b): for each brain and twin, the brain's placement minus the twin's over the fights they shared (36 to 41 each) | no interval entirely below zero | met |
+| Random twins (3a): the roster's mean placement minus the twins' mean in the same fight, 70 of 72 royales | +0.117, 95% bootstrap interval [-0.024, +0.253] | interval above zero: missed narrowly |
+
+Per pair (3b), mean placement difference against the Mantis twin / the Tumbler twin: Tumbler
++0.54 / +0.39 (both intervals above zero), Cart +0.33 / +0.18, Mantis +0.17 / +0.25,
+Crab -0.25 / +0.09, Roller -0.04 / -0.16, Dozer +0.03 / +0.02. Wins in the head to head: Tumbler
+15, Mantis 8, Cart 5, Roller 2, Crab 2, Dozer 1; the previous roster's Dozer 9, Crab 3, Cart 2,
+Hexapod 1, Mantis 0, Scorpion 0.
+
+The owner chose to ship this roster because it beats the previous one on every measured
+reading, including against the twins: in the previous roster's 20 royales the random Mantis
+twin rated above five of its six brains. The breeding continues toward a roster that also
+clears (3a) and a driving-test mean of +0.54.
 
 ## In the page
 
-The brains keep learning while the visitor watches: every robot runs its `Brain.live` life on
-the ring stage, and in the first fight of the page check the brains were aroused and learning
-on 72 to 82 percent of moments (3,200 to 4,900 learning sweeps each). Their brains are saved
-in the browser (IndexedDB) after each fight and restored on the next visit; "Reset the brains
-to how they arrived" restores the packed files. Six brains took 55 to 98 ms per moment in
-Pyodide on the M4 while other jobs ran.
+Every robot runs its `Brain.live` life on the ring stage (need 0, heat 0, temperature 0.2,
+actor rate 0.001) and keeps learning in every fight; brains are saved in the browser
+(IndexedDB) after each fight and restored on the next visit. The brain inspector draws the
+selected brain from its own state every moment (`showcase-app/src/arena/brainview.ts`); for
+Dozer, Roller and Cart it includes the recall memory's reads.
 
 ## Limits
 
-- The ranking is narrow: Dozer won 11 of its 12 fights, and the uniform-random Mantis twin
-  rated above five brains (it places by staying alive, dealing 26 damage per fight).
-- The driving test moved during the royales: the brains learn in fights, and Scorpion fell
-  from +0.14 to -0.39 and Dozer from +0.49 to +0.28. Tumbler, the best driving test after the
-  nursery (+0.56, 7 of 8 marks), rated last in the royales and is not packed.
-- Three seeds per body is a small selection; no lineage evolution was run for this roster.
-- Nursery progress and kills are counts in this world with these pay rules; they do not
-  certify skill outside it.
+- Placement rewards survival: the random twins survive by not engaging, and two brains (Roller,
+  Dozer) place about level with them. The 95% interval of the roster against the twins
+  includes zero.
+- Crab and Tumbler pass few marks of the driving test: they fight well in the ring (Tumbler won
+  15 of the head-to-head royales) but approach, escape and chase poorly in the test's open
+  space.
+- Placement, damage and the driving test are counts in this world with these pay rules; they do
+  not certify skill outside it.
 
 ## Licence
 

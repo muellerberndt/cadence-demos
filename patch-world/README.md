@@ -1,5 +1,15 @@
 # Patch World
 
+**What it shows.** A Cadence brain learns while it lives. Each creature's brain has real memory
+and a real state that carry on from moment to moment, and it runs in real time in your browser.
+When winter makes berries poisonous, the learners find out by eating one and learn to leave them
+(they ate 99% of the berries they stood on at the end of summer and 5% at the end of winter); their
+frozen twins, the same brains without learning, keep eating them (97% and 96%,
+`evidence/flip.json`). On the page: press **Flip the season** and watch the chart *Berries eaten
+when standing on one*; a learner's brain is open at the right and glows gold while it learns. The
+[help page](web/help.html) explains everything on the screen; `tools/promise_flip.py` runs the
+same flip on the real page (`evidence/promise-flip-20261113.json`).
+
 A world of creatures with Cadence brains, in your browser tab. Each creature forages, drinks,
 flees a predator, gets poisoned and learns from it while it lives; well-fed creatures bear
 young that inherit a copy of their brain and mutated genes. Berries nourish in summer and
@@ -239,13 +249,16 @@ console errors.
   (`brain.py`), the brain view's readout (`inspect.py`), births, deaths and inheritance
   (`ecosystem.py`), the page's Python hosts (`host.py`), the measured scenarios
   (`scenarios.py`).
-- `web/`: the page (`index.html`, `app.js`, `brainview.js`, `worker.js`, `styles.css`) and
+- `web/`: the page (`index.html`, `app.js`, `brainview.js`, `worker.js`, `styles.css`, the help
+  page `help.html` and the shared explanation files `cadence-explain.*`, `cadence-help.css`) and
   `web/pack/`, written by `pack.py`: the wheel, the sources and the founders.
 - `training/`: `breed.py` (nursery, evolution, selection), `evaluate.py` (the scenarios and
   their receipts), `readings.py`, `seasons.py`, `islands.py`, `group.py`; commands in
   [TRAINING.md](TRAINING.md).
 - `tests/`: `python -m pytest -q tests`. `check_page.py`: the page in headless Chromium
   (`pip install playwright`, `playwright install chromium`).
+  `tools/promise_flip.py --out DIR`: the promise on the real page (flip the season; the
+  learners leave the berries, the frozen twins do not).
 - `evidence/`: the receipts. [MODEL_CARD.md](MODEL_CARD.md): the founders.
 
 GPL-3.0, as Cadence.

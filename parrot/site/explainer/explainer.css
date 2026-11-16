@@ -1,0 +1,127 @@
+/* The brain explainer (brain-explainer.html): the help page's look (cadence-help.css) with the
+   demo's fonts, a wider page whose sections set text beside a diagram, and the diagrams' colours.
+   Path colours follow the brain view's atlas: images #6cb6ff, sounds #b49cff, words #f2e48a,
+   saying #ff8a5c; the pistachio is the parrot's scarlet. */
+:root {
+  --x-eye: #6cb6ff; --x-ear: #b49cff; --x-word: #f2e48a; --x-say: #ff8a5c; --x-red: #e5534b;
+  --x-assoc: #f2b33d; --x-rec: #f1bf62; --x-cyan: #4fe3e8; --x-good: #5fd08e;
+  --x-raised: #14212a; --x-chart-a: #3f93d9; --x-chart-b: #c2821a;
+  --x-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+body { font-family: var(--x-body); }
+main.help.xp { max-width: 1140px; }
+main.help.xp > .lede, main.help.xp > .shows, main.help.xp > nav.toc, main.help.xp > h1 { max-width: 760px; }
+main.help.xp .shows .xp-brains { display: block; margin-top: 6px; color: var(--h-muted); font-size: 14px; }
+
+/* a section: its text, and the diagram beside it on a wide screen */
+.xp-sec { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px 36px; padding-top: 6px; scroll-margin-top: 52px; }
+.xp-sec + .xp-sec { border-top: 1px solid var(--h-line); margin-top: 26px; }
+.xp-sec h2 { margin-top: 26px !important; }
+.xp-sec .xp-text { min-width: 0; }
+.xp-sec .xp-fig { min-width: 0; }
+@media (min-width: 980px) {
+  .xp-sec { grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr); }
+  .xp-sec .xp-fig { position: sticky; top: 60px; align-self: start; padding-top: 22px; }
+  .xp-sec.wide { grid-template-columns: minmax(0, 1fr); }
+}
+main.help.xp figure { margin: 10px 0 14px; }
+main.help.xp figure svg { border-radius: 10px; }
+main.help.xp figure svg.bare { border: 0; background: transparent; }
+main.help.xp figcaption { line-height: 1.5; }
+[id] { scroll-margin-top: 56px; }
+.xp-anchor { display: block; height: 0; }
+
+/* the diagrams' ink */
+.xp-svg { font-family: var(--x-body); }
+.xp-svg text { fill: var(--h-text); font-size: 12px; }
+.xp-svg .t { fill: var(--h-strong); font-weight: 600; font-size: 13px; }
+.xp-svg .s { fill: var(--h-muted); font-size: 11px; }
+.xp-svg .m { font-family: var(--h-mono); }
+.xp-svg .lbl { font-size: 11px; fill: var(--h-muted); }
+.xp-svg .big { font-size: 14px; font-weight: 600; fill: var(--h-strong); }
+.xp-svg .bx { fill: var(--x-raised); stroke: #2c434c; stroke-width: 1.2; }
+.xp-svg .bx.beside { stroke-dasharray: 4 3; fill: #0f1a1f; }
+.xp-svg .eye { stroke: var(--x-eye); } .xp-svg .ear { stroke: var(--x-ear); } .xp-svg .word { stroke: var(--x-word); }
+.xp-svg .say { stroke: var(--x-say); } .xp-svg .red { stroke: var(--x-red); } .xp-svg .assoc { stroke: var(--x-assoc); }
+.xp-svg .rec { stroke: var(--x-rec); } .xp-svg .cyan { stroke: var(--x-cyan); } .xp-svg .good { stroke: var(--x-good); }
+.xp-svg .neutral { stroke: #7f979d; }
+.xp-svg .f-eye { fill: var(--x-eye); } .xp-svg .f-ear { fill: var(--x-ear); } .xp-svg .f-word { fill: var(--x-word); }
+.xp-svg .f-say { fill: var(--x-say); } .xp-svg .f-red { fill: var(--x-red); } .xp-svg .f-assoc { fill: var(--x-assoc); }
+.xp-svg .f-rec { fill: var(--x-rec); } .xp-svg .f-cyan { fill: var(--x-cyan); } .xp-svg .f-good { fill: var(--x-good); }
+.xp-svg text.f-eye, .xp-svg text.f-ear, .xp-svg text.f-word, .xp-svg text.f-say, .xp-svg text.f-red,
+.xp-svg text.f-assoc, .xp-svg text.f-rec, .xp-svg text.f-cyan, .xp-svg text.f-good { font-weight: 600; }
+.xp-svg .rt { fill: none; stroke-width: 1.7; transition: opacity 0.18s, stroke-width 0.18s; }
+.xp-svg .dash { stroke-dasharray: 5 4; }
+.xp-svg .thin { stroke-width: 1.1; }
+.xp-svg .node { fill: #1b2c33; stroke: #47616a; stroke-width: 1.2; }
+
+/* diagram 1: point at a region to light its routes */
+.xp-net .nd { cursor: pointer; transition: opacity 0.18s; outline: none; }
+.xp-net .nd:focus-visible .bx { stroke: var(--x-cyan); stroke-width: 2; }
+.xp-net.focusing .rt[data-a] { opacity: 0.12; }
+.xp-net.focusing .rt[data-a].lit { opacity: 1; stroke-width: 2.8; }
+.xp-net.focusing .nd { opacity: 0.38; }
+.xp-net.focusing .nd.lit { opacity: 1; }
+.xp-net.focusing .nd.on .bx { stroke-width: 2.4; }
+.xp-info { min-height: 4.6em; margin: 8px 0 0; padding: 9px 12px; border-left: 2px solid var(--x-cyan); background: var(--h-panel); color: var(--h-text); font-size: 14px; line-height: 1.5; }
+.xp-info b { color: var(--h-strong); }
+
+/* switches and controls under a diagram */
+.xp-switch { display: inline-flex; gap: 0; margin: 0 0 8px; border: 1px solid var(--h-line); border-radius: 999px; overflow: hidden; }
+.xp-switch button, .xp-controls button { padding: 5px 12px; border: 0; background: transparent; color: var(--h-muted); font: 500 12.5px/1.4 var(--h-mono); cursor: pointer; }
+.xp-switch button[aria-pressed="true"] { background: var(--h-panel); color: var(--h-strong); box-shadow: inset 0 -2px 0 var(--x-cyan); }
+.xp-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin: 8px 0 4px; }
+.xp-controls button { border: 1px solid var(--h-line); border-radius: 999px; color: var(--h-text); background: var(--h-panel); }
+.xp-controls button:hover { border-color: var(--x-cyan); color: var(--h-strong); }
+.xp-controls label { display: inline-flex; align-items: center; gap: 8px; color: var(--h-muted); font: 12.5px/1.4 var(--h-mono); }
+.xp-controls input[type="range"] { width: 150px; accent-color: var(--x-cyan); }
+.xp-readout { margin: 4px 0 0; color: var(--h-muted); font: 12.5px/1.6 var(--h-mono); }
+.xp-readout b { color: var(--h-strong); font-weight: 500; }
+.xp-note { margin: 4px 0 0; color: var(--h-text); font-size: 13.5px; line-height: 1.5; }
+.xp-sleep .dot { transition: cx 0.45s ease, cy 0.45s ease; }
+.xp-sleep .tan { transition: all 0.45s ease; }
+@media (prefers-reduced-motion: reduce) { .xp-sleep .dot, .xp-sleep .tan, .xp-net .nd, .xp-svg .rt { transition: none; } }
+
+/* the lesson diagram's two modes */
+.xp-lesson[data-mode="pistachio"] .only-corr { display: none; }
+.xp-lesson[data-mode="correction"] .only-pist { display: none; }
+
+/* tables */
+main.help.xp table.xp-read td, main.help.xp table.xp-read th { padding-right: 8px; }
+main.help.xp table.xp-read td.v { font-family: var(--h-mono); white-space: nowrap; position: relative; }
+main.help.xp table.xp-read td.v span.bar { position: absolute; left: 0; bottom: 3px; height: 3px; border-radius: 2px; background: var(--x-chart-a); opacity: 0.8; }
+main.help.xp table.xp-read td.v.hi { color: var(--h-strong); }
+main.help.xp table.xp-read td.v.lo { color: var(--h-muted); }
+main.help.xp table.xp-read td.base { color: var(--h-muted); font-family: var(--h-mono); }
+main.help.xp .xp-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+main.help.xp .tag { display: inline-block; padding: 0 7px; border-radius: 999px; border: 1px solid var(--h-line); font: 500 11px/1.7 var(--h-mono); white-space: nowrap; }
+main.help.xp .tag.born { color: var(--x-cyan); border-color: color-mix(in oklab, var(--x-cyan) 45%, transparent); }
+main.help.xp .tag.designed { color: var(--x-say); border-color: color-mix(in oklab, var(--x-say) 45%, transparent); }
+main.help.xp .tag.teacher { color: var(--x-ear); border-color: color-mix(in oklab, var(--x-ear) 45%, transparent); }
+main.help.xp .tag.learned { color: var(--x-good); border-color: color-mix(in oklab, var(--x-good) 45%, transparent); }
+
+/* the chart */
+.xp-legend { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 6px 0 2px; color: var(--h-text); font-size: 13px; }
+.xp-legend i { display: inline-block; width: 16px; height: 3px; margin-right: 6px; vertical-align: 4px; border-radius: 2px; }
+.xp-chart .grid { stroke: #1d2b31; stroke-width: 1; }
+.xp-chart .axis { stroke: #33474f; stroke-width: 1; }
+.xp-chart .ln { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.xp-chart .pt { stroke: var(--h-panel); stroke-width: 2; }
+.xp-chart .hit { fill: transparent; cursor: crosshair; }
+.xp-tip { position: fixed; z-index: 10; pointer-events: none; padding: 6px 9px; border: 1px solid #2c434c; border-radius: 6px; background: rgba(9, 14, 18, 0.96); color: var(--h-text); font: 12.5px/1.45 var(--x-body); box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5); }
+.xp-tip b { color: var(--h-strong); }
+
+main.help.xp th .short { display: none; }
+@media (max-width: 640px) {
+  main.help.xp th .long { display: none; }
+  main.help.xp th .short { display: inline; }
+  main.help.xp table.xp-stack thead { display: none; }
+  main.help.xp table.xp-stack tr { display: block; padding: 8px 0; border-bottom: 1px solid var(--h-line); }
+  main.help.xp table.xp-stack td { display: block; padding: 2px 0; border: 0; }
+  main.help.xp table.xp-stack td:first-child { color: var(--h-strong); font-weight: 600; }
+}
+@media (max-width: 560px) {
+  .xp-info { font-size: 13.5px; }
+  .xp-controls input[type="range"] { width: 120px; }
+  main.help.xp table { font-size: 13px; }
+}

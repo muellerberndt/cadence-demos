@@ -1,6 +1,6 @@
 """Exercise the visible fish teaching controls in Chromium; preserve historical receipts.
 
-python3 tools/check_learning_ui.py [--url http://127.0.0.1:8000/]
+python3 tools/check_learning_ui.py [--url http://127.0.0.1:8000/] [--out receipts/learning_ui-DATE.json] [--hardware]
 Teaching automatically selects 8x on the visible speed control, without injecting lessons.
 """
 import argparse
@@ -18,6 +18,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--url")
     parser.add_argument("--out", default="receipts/learning_ui.json")
+    parser.add_argument("--hardware", action="store_true", help="render with the GPU instead of SwiftShader (a busy machine)")
     args = parser.parse_args()
     server, url = (None, args.url) if args.url else serve(ROOT / "web")
     files = ["web/fish.html", "web/fish_page.js", "web/learning_probe.js", "web/brain.js",
@@ -27,7 +28,7 @@ def main():
     out = {"scope": "Visible practice, freeze, probe, return, reteach, reset and mobile controls", "sources_sha256": sources}
     errors = []
     with sync_playwright() as p:
-        browser = launch(p, False)
+        browser = launch(p, args.hardware)
         page = browser.new_page(viewport={"width": 1440, "height": 1000})
         page.on("pageerror", lambda error: errors.append(str(error)))
         page.on("console", lambda message: errors.append(message.text) if message.type == "error" else None)

@@ -1,5 +1,16 @@
 # Cadence Showcase League
 
+**What it shows.** A Cadence brain lives one continuing life. Each robot's brain has real memory
+and a real state that carry on from moment to moment and from fight to fight, and it runs live in
+your browser. In routine it settles calmly and learns nothing; a surprise, or less pay than usual,
+wakes it (amber): it samples its commands, learns from what they bring and settles back. After every
+fight the browser saves the six brains and a reload restores them. On a fight played by
+`tools/promise_arena.py` on the real page, 82% of the 2,481 robot-moments were calm (four of the
+six robots were calm throughout), every synapse change of the inspected brain was the lesson of a
+command chosen while aroused, and the six saved brains, each changed by the fight, came back on
+reload (`evidence/promise-arena-20261113.json`). The
+[help page](showcase-app/public/help.html) explains everything on the screen.
+
 Robots assembled from parts, each with one continuing Cadence brain wired to every motor.
 A robot is nursed alone until it can drive, aim and stay inside a ring. Then it fights
 six-robot royales for the rest of its life and keeps learning from every fight. Nothing is
@@ -15,7 +26,10 @@ cd showcase-app && npm install && npm run build && npx vite preview --port 4173
 ```
 
 Open http://localhost:4173/. `public/pack/` holds the six brains, the arena's Python and the
-cadence-net wheel; Pyodide runs them in a worker. What to watch:
+cadence-net wheel; Pyodide runs them in a worker. `public/` also holds the help page and the
+demos' shared explanation files (`cadence-explain.*`, `cadence-help.css`, copies of `shared/`).
+The build (`showcase-app/dist/`, not committed) is the folder a site serves; it uses relative
+paths and works from any folder. What to watch:
 
 - the ladder's last column, the driving test each brain arrived with (eight marks: approach,
   escape, the closing ring, engagement, chase, facing, no spinning, no stalling);
@@ -37,12 +51,21 @@ over.
 
 The brains run on cadence-net 0.95.2, the same wheel in the page and in the native code.
 
-The six packed robots and how they were raised are in [MODEL_CARD.md](MODEL_CARD.md). In
-short, from the world's pay alone over 100,000 nursery moments, the packed brains closed 433 to
-1,858 m on their targets, against -22 to -80 m for uniform random with the same bodies. In 20
-royales Dozer won 11 of its 12 fights. The uniform-random Mantis twin rated above five brains
-by staying alive. The packed brains score +0.54 to -0.39 on the driving test (random: about
--0.04).
+The six packed robots were bred with `python -m arena.breed` (bodies and brain genes, about
+110 generations over three populations on one 96-vCPU machine) and passed through
+`python -m arena.gate` against the previous roster; their bodies, genes and every reading are
+in [MODEL_CARD.md](MODEL_CARD.md). The gate as run:
+
+| Test | Reading | Bar |
+| --- | --- | --- |
+| Head to head: 48 royales of three new and three previous robots | new minus previous placement +0.261, 95% interval [+0.128, +0.400] | interval above zero: met |
+| Driving test, mean of the six | +0.391 (previous roster +0.22) | clearly above the previous: met |
+| No brain significantly below a random twin (72 royales with the two twins) | none | met |
+| The roster's placement minus the twins' in the same fights | +0.117, 95% interval [-0.024, +0.253], 70 fights | interval above zero: missed narrowly |
+
+The owner chose to ship this roster because it beats the previous one on every measured
+reading, including against the twins: in the previous roster's 20 royales the random Mantis
+twin rated above five of its six brains.
 
 ## How a robot learns
 
@@ -114,4 +137,5 @@ life and learns from every fight.
 `arena/` the parts catalogue, physics, senses, brain wrapper, nursery, royale, licence,
 league, evolution and dashboard; `viewer/` the isometric replay page and the league page;
 `showcase-app/` the page and its packer; `league-live/` the roster the page ships with;
-`tests/` the checks; `docs/` the brain settings and screenshots.
+`tests/` the checks; `tools/promise_arena.py` the page's promise, played on the real page;
+`evidence/` its readings; `docs/` the brain settings and screenshots.

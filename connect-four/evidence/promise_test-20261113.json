@@ -1,0 +1,2399 @@
+{
+ "schema": "connect-four-promise/1",
+ "checked_utc": "2026-11-13T05:01:23.794521+00:00",
+ "claim": "The brain settles on each move and judges the game; a search over the rules checks the move. Moving first against a perfect player, beaten only by flawless play, the pair won 363 of 400 games. Teach it a better column and it learns.",
+ "checks": [
+  {
+   "name": "claim_numbers_are_the_evidence",
+   "passed": true,
+   "detail": {
+    "evidence": {
+     "games": 400,
+     "win": 363,
+     "draw": 25,
+     "loss": 12
+    },
+    "page_search_nodes": 120000
+   }
+  },
+  {
+   "name": "brain_plus_search_is_the_default",
+   "passed": true,
+   "detail": "search"
+  },
+  {
+   "name": "every_brain_move_is_a_finished_settle_with_a_verdict",
+   "passed": true,
+   "detail": [
+    [
+     69,
+     true,
+     [
+      0.004094,
+      0.004062,
+      0.991843
+     ]
+    ],
+    [
+     63,
+     true,
+     [
+      0.004231,
+      0.004378,
+      0.991392
+     ]
+    ],
+    [
+     92,
+     true,
+     [
+      0.005148,
+      0.007774,
+      0.987079
+     ]
+    ],
+    [
+     53,
+     true,
+     [
+      0.012484,
+      0.013758,
+      0.973758
+     ]
+    ],
+    [
+     50,
+     true,
+     [
+      0.016444,
+      0.058361,
+      0.925195
+     ]
+    ],
+    [
+     43,
+     true,
+     [
+      0.071311,
+      0.042582,
+      0.886107
+     ]
+    ],
+    [
+     38,
+     true,
+     [
+      0.879886,
+      0.011224,
+      0.108889
+     ]
+    ],
+    [
+     44,
+     true,
+     [
+      0.025099,
+      0.032109,
+      0.942791
+     ]
+    ],
+    [
+     104,
+     true,
+     [
+      0.004355,
+      0.004882,
+      0.990763
+     ]
+    ],
+    [
+     64,
+     true,
+     [
+      0.004063,
+      0.991745,
+      0.004191
+     ]
+    ],
+    [
+     70,
+     true,
+     [
+      0.00407,
+      0.004075,
+      0.991855
+     ]
+    ],
+    [
+     67,
+     true,
+     [
+      0.004266,
+      0.004212,
+      0.991523
+     ]
+    ],
+    [
+     46,
+     true,
+     [
+      0.009058,
+      0.010787,
+      0.980156
+     ]
+    ],
+    [
+     51,
+     true,
+     [
+      0.007882,
+      0.007378,
+      0.98474
+     ]
+    ],
+    [
+     63,
+     true,
+     [
+      0.006558,
+      0.007499,
+      0.985943
+     ]
+    ],
+    [
+     99,
+     true,
+     [
+      0.004878,
+      0.00458,
+      0.990542
+     ]
+    ],
+    [
+     65,
+     true,
+     [
+      0.004056,
+      0.991823,
+      0.004121
+     ]
+    ],
+    [
+     93,
+     true,
+     [
+      0.004392,
+      0.99118,
+      0.004428
+     ]
+    ],
+    [
+     126,
+     true,
+     [
+      0.004408,
+      0.990452,
+      0.005139
+     ]
+    ],
+    [
+     104,
+     true,
+     [
+      0.004074,
+      0.00409,
+      0.991836
+     ]
+    ],
+    [
+     104,
+     true,
+     [
+      0.004277,
+      0.005667,
+      0.990056
+     ]
+    ],
+    [
+     79,
+     true,
+     [
+      0.004174,
+      0.005599,
+      0.990227
+     ]
+    ],
+    [
+     68,
+     true,
+     [
+      0.00766,
+      0.816477,
+      0.175863
+     ]
+    ],
+    [
+     52,
+     true,
+     [
+      0.005761,
+      0.98341,
+      0.010829
+     ]
+    ],
+    [
+     68,
+     true,
+     [
+      0.005055,
+      0.004506,
+      0.99044
+     ]
+    ],
+    [
+     64,
+     true,
+     [
+      0.004063,
+      0.991745,
+      0.004191
+     ]
+    ],
+    [
+     83,
+     true,
+     [
+      0.00413,
+      0.004777,
+      0.991092
+     ]
+    ],
+    [
+     105,
+     true,
+     [
+      0.004095,
+      0.004072,
+      0.991833
+     ]
+    ],
+    [
+     94,
+     true,
+     [
+      0.004097,
+      0.004091,
+      0.991812
+     ]
+    ],
+    [
+     122,
+     true,
+     [
+      0.004645,
+      0.00433,
+      0.991025
+     ]
+    ],
+    [
+     50,
+     true,
+     [
+      0.005127,
+      0.004631,
+      0.990242
+     ]
+    ],
+    [
+     51,
+     true,
+     [
+      0.009124,
+      0.009763,
+      0.981113
+     ]
+    ],
+    [
+     29,
+     true,
+     [
+      0.010721,
+      0.011236,
+      0.978043
+     ]
+    ],
+    [
+     44,
+     true,
+     [
+      0.006192,
+      0.018408,
+      0.9754
+     ]
+    ],
+    [
+     79,
+     true,
+     [
+      0.004789,
+      0.005161,
+      0.99005
+     ]
+    ],
+    [
+     70,
+     true,
+     [
+      0.00639,
+      0.005407,
+      0.988203
+     ]
+    ],
+    [
+     94,
+     true,
+     [
+      0.00564,
+      0.005397,
+      0.988963
+     ]
+    ],
+    [
+     69,
+     true,
+     [
+      0.005597,
+      0.005062,
+      0.989342
+     ]
+    ],
+    [
+     74,
+     true,
+     [
+      0.0052,
+      0.004936,
+      0.989864
+     ]
+    ],
+    [
+     64,
+     true,
+     [
+      0.004063,
+      0.991745,
+      0.004191
+     ]
+    ],
+    [
+     70,
+     true,
+     [
+      0.00407,
+      0.004075,
+      0.991855
+     ]
+    ],
+    [
+     56,
+     true,
+     [
+      0.004365,
+      0.004412,
+      0.991223
+     ]
+    ],
+    [
+     66,
+     true,
+     [
+      0.004124,
+      0.004181,
+      0.991695
+     ]
+    ],
+    [
+     65,
+     true,
+     [
+      0.004609,
+      0.004345,
+      0.991046
+     ]
+    ],
+    [
+     61,
+     true,
+     [
+      0.004287,
+      0.004437,
+      0.991277
+     ]
+    ],
+    [
+     40,
+     true,
+     [
+      0.007661,
+      0.058497,
+      0.933841
+     ]
+    ],
+    [
+     49,
+     true,
+     [
+      0.005748,
+      0.082786,
+      0.911466
+     ]
+    ],
+    [
+     41,
+     true,
+     [
+      0.00561,
+      0.033617,
+      0.960774
+     ]
+    ],
+    [
+     55,
+     true,
+     [
+      0.005577,
+      0.006202,
+      0.988221
+     ]
+    ],
+    [
+     66,
+     true,
+     [
+      0.00589,
+      0.006225,
+      0.987884
+     ]
+    ],
+    [
+     39,
+     true,
+     [
+      0.005805,
+      0.006296,
+      0.987899
+     ]
+    ],
+    [
+     59,
+     true,
+     [
+      0.005961,
+      0.00484,
+      0.989199
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "the_search_reports_on_every_move",
+   "passed": true,
+   "detail": [
+    {
+     "reason": "brain",
+     "depth": 9,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "brain",
+     "depth": 9,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "brain",
+     "depth": 10,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "brain",
+     "depth": 10,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "brain",
+     "depth": 10,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "brain",
+     "depth": 11,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "search",
+     "depth": 12,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "win",
+     "depth": 1,
+     "nodes": 6,
+     "immediate": false
+    },
+    {
+     "reason": "win",
+     "depth": 0,
+     "nodes": 0,
+     "immediate": true
+    },
+    {
+     "reason": "brain",
+     "depth": 9,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "brain",
+     "depth": 10,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "brain",
+     "depth": 9,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "brain",
+     "depth": 10,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "win",
+     "depth": 3,
+     "nodes": 240,
+     "immediate": false
+    },
+    {
+     "reason": "win",
+     "depth": 1,
+     "nodes": 7,
+     "immediate": false
+    },
+    {
+     "reason": "win",
+     "depth": 0,
+     "nodes": 0,
+     "immediate": true
+    },
+    {
+     "reason": "brain",
+     "depth": 9,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "brain",
+     "depth": 9,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "brain",
+     "depth": 9,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "brain",
+     "depth": 11,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "brain",
+     "depth": 11,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "brain",
+     "depth": 13,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "brain",
+     "depth": 14,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "win",
+     "depth": 1,
+     "nodes": 6,
+     "immediate": false
+    },
+    {
+     "reason": "win",
+     "depth": 0,
+     "nodes": 0,
+     "immediate": true
+    },
+    {
+     "reason": "brain",
+     "depth": 9,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "brain",
+     "depth": 9,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "brain",
+     "depth": 11,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "brain",
+     "depth": 10,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "search",
+     "depth": 11,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "search",
+     "depth": 11,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "brain",
+     "depth": 14,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "brain",
+     "depth": 12,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "brain",
+     "depth": 14,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "win",
+     "depth": 15,
+     "nodes": 84528,
+     "immediate": false
+    },
+    {
+     "reason": "win",
+     "depth": 13,
+     "nodes": 26141,
+     "immediate": false
+    },
+    {
+     "reason": "win",
+     "depth": 11,
+     "nodes": 4072,
+     "immediate": false
+    },
+    {
+     "reason": "win",
+     "depth": 1,
+     "nodes": 4,
+     "immediate": false
+    },
+    {
+     "reason": "win",
+     "depth": 0,
+     "nodes": 0,
+     "immediate": true
+    },
+    {
+     "reason": "brain",
+     "depth": 9,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "brain",
+     "depth": 10,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "brain",
+     "depth": 10,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "brain",
+     "depth": 10,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "brain",
+     "depth": 14,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "brain",
+     "depth": 12,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "brain",
+     "depth": 12,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "brain",
+     "depth": 15,
+     "nodes": 120001,
+     "immediate": false
+    },
+    {
+     "reason": "win",
+     "depth": 7,
+     "nodes": 3781,
+     "immediate": false
+    },
+    {
+     "reason": "win",
+     "depth": 5,
+     "nodes": 1036,
+     "immediate": false
+    },
+    {
+     "reason": "win",
+     "depth": 3,
+     "nodes": 113,
+     "immediate": false
+    },
+    {
+     "reason": "win",
+     "depth": 1,
+     "nodes": 5,
+     "immediate": false
+    },
+    {
+     "reason": "win",
+     "depth": 0,
+     "nodes": 0,
+     "immediate": true
+    }
+   ]
+  },
+  {
+   "name": "the_brains_column_is_its_strongest_legal_motor_neuron",
+   "passed": true,
+   "detail": [
+    [
+     2,
+     2
+    ],
+    [
+     1,
+     1
+    ],
+    [
+     2,
+     2
+    ],
+    [
+     2,
+     2
+    ],
+    [
+     4,
+     4
+    ],
+    [
+     5,
+     5
+    ],
+    [
+     3,
+     3
+    ],
+    [
+     4,
+     4
+    ],
+    [
+     3,
+     3
+    ],
+    [
+     3,
+     3
+    ],
+    [
+     3,
+     3
+    ],
+    [
+     3,
+     3
+    ],
+    [
+     2,
+     2
+    ],
+    [
+     1,
+     1
+    ],
+    [
+     2,
+     2
+    ],
+    [
+     2,
+     2
+    ],
+    [
+     3,
+     3
+    ],
+    [
+     3,
+     3
+    ],
+    [
+     3,
+     3
+    ],
+    [
+     2,
+     2
+    ],
+    [
+     2,
+     2
+    ],
+    [
+     4,
+     4
+    ],
+    [
+     4,
+     4
+    ],
+    [
+     4,
+     4
+    ],
+    [
+     4,
+     4
+    ],
+    [
+     3,
+     3
+    ],
+    [
+     3,
+     3
+    ],
+    [
+     3,
+     3
+    ],
+    [
+     3,
+     3
+    ],
+    [
+     3,
+     3
+    ],
+    [
+     3,
+     3
+    ],
+    [
+     1,
+     1
+    ],
+    [
+     2,
+     2
+    ],
+    [
+     2,
+     2
+    ],
+    [
+     2,
+     2
+    ],
+    [
+     1,
+     1
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     3,
+     3
+    ],
+    [
+     3,
+     3
+    ],
+    [
+     3,
+     3
+    ],
+    [
+     3,
+     3
+    ],
+    [
+     4,
+     4
+    ],
+    [
+     2,
+     2
+    ],
+    [
+     2,
+     2
+    ],
+    [
+     2,
+     2
+    ],
+    [
+     2,
+     2
+    ],
+    [
+     1,
+     1
+    ],
+    [
+     4,
+     4
+    ],
+    [
+     4,
+     4
+    ],
+    [
+     0,
+     0
+    ]
+   ]
+  },
+  {
+   "name": "immediate_wins_taken",
+   "passed": true,
+   "detail": {
+    "chances": 5,
+    "taken": 5
+   }
+  },
+  {
+   "name": "single_threats_blocked",
+   "passed": true,
+   "detail": {
+    "threats": 2,
+    "blocked": 2
+   }
+  },
+  {
+   "name": "brain_alone_plays_its_strongest_legal_motor_neuron",
+   "passed": true,
+   "detail": {
+    "column": 3,
+    "motor": [
+     -0.1,
+     -0.1,
+     -0.099992,
+     0.999999,
+     -0.099982,
+     -0.1,
+     -0.1
+    ],
+    "search": null
+   }
+  },
+  {
+   "name": "each_lesson_changes_synapses",
+   "passed": true,
+   "detail": [
+    {
+     "accepted": true,
+     "changed": 2124800,
+     "choice_before": 3,
+     "choice_after": 3,
+     "taught_before": -0.099998,
+     "taught_after": -0.1
+    },
+    {
+     "accepted": true,
+     "changed": 2124800,
+     "choice_before": 3,
+     "choice_after": 2,
+     "taught_before": -0.1,
+     "taught_after": -0.1
+    }
+   ]
+  },
+  {
+   "name": "the_taught_column_becomes_its_move_within_four_lessons",
+   "passed": true,
+   "detail": {
+    "lessons": 2,
+    "taught": 2,
+    "after": 2
+   }
+  },
+  {
+   "name": "reset_brain_brings_back_the_trained_move",
+   "passed": true,
+   "detail": {
+    "first": 3,
+    "after_reset": 3
+   }
+  },
+  {
+   "name": "no_console_error_page_error_or_failed_request",
+   "passed": true,
+   "detail": []
+  }
+ ],
+ "games": [
+  {
+   "moves": [
+    {
+     "visitor": 1,
+     "brain": {
+      "column": 2,
+      "brain_column": 2,
+      "sweeps": 69,
+      "settled": true,
+      "verdict": [
+       0.004094,
+       0.004062,
+       0.991843
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 9,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 2,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 1,
+     "brain": {
+      "column": 1,
+      "brain_column": 1,
+      "sweeps": 63,
+      "settled": true,
+      "verdict": [
+       0.004231,
+       0.004378,
+       0.991392
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 9,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 1,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 1,
+     "brain": {
+      "column": 2,
+      "brain_column": 2,
+      "sweeps": 92,
+      "settled": true,
+      "verdict": [
+       0.005148,
+       0.007774,
+       0.987079
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 10,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 2,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 2,
+     "brain": {
+      "column": 2,
+      "brain_column": 2,
+      "sweeps": 53,
+      "settled": true,
+      "verdict": [
+       0.012484,
+       0.013758,
+       0.973758
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 10,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 2,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 2,
+     "brain": {
+      "column": 4,
+      "brain_column": 4,
+      "sweeps": 50,
+      "settled": true,
+      "verdict": [
+       0.016444,
+       0.058361,
+       0.925195
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 10,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 4,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 1,
+     "brain": {
+      "column": 5,
+      "brain_column": 5,
+      "sweeps": 43,
+      "settled": true,
+      "verdict": [
+       0.071311,
+       0.042582,
+       0.886107
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 11,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 5,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 3,
+     "brain": {
+      "column": 4,
+      "brain_column": 3,
+      "sweeps": 38,
+      "settled": true,
+      "verdict": [
+       0.879886,
+       0.011224,
+       0.108889
+      ],
+      "search": {
+       "reason": "search",
+       "depth": 12,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 3,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 2,
+     "brain": {
+      "column": 5,
+      "brain_column": 4,
+      "sweeps": 44,
+      "settled": true,
+      "verdict": [
+       0.025099,
+       0.032109,
+       0.942791
+      ],
+      "search": {
+       "reason": "win",
+       "depth": 1,
+       "nodes": 6,
+       "immediate": false
+      },
+      "own_strongest": 4,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 5,
+     "brain": {
+      "column": 3,
+      "brain_column": 3,
+      "sweeps": 104,
+      "settled": true,
+      "verdict": [
+       0.004355,
+       0.004882,
+       0.990763
+      ],
+      "search": {
+       "reason": "win",
+       "depth": 0,
+       "nodes": 0,
+       "immediate": true
+      },
+      "own_strongest": 3,
+      "brain_wins": [
+       3
+      ],
+      "visitor_wins": []
+     }
+    }
+   ],
+   "winner": 1,
+   "brain_player": 1,
+   "result": "brain"
+  },
+  {
+   "moves": [
+    {
+     "visitor": 4,
+     "brain": {
+      "column": 3,
+      "brain_column": 3,
+      "sweeps": 64,
+      "settled": true,
+      "verdict": [
+       0.004063,
+       0.991745,
+       0.004191
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 9,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 3,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 2,
+     "brain": {
+      "column": 3,
+      "brain_column": 3,
+      "sweeps": 70,
+      "settled": true,
+      "verdict": [
+       0.00407,
+       0.004075,
+       0.991855
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 10,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 3,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 3,
+     "brain": {
+      "column": 3,
+      "brain_column": 3,
+      "sweeps": 67,
+      "settled": true,
+      "verdict": [
+       0.004266,
+       0.004212,
+       0.991523
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 9,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 3,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 3,
+     "brain": {
+      "column": 2,
+      "brain_column": 2,
+      "sweeps": 46,
+      "settled": true,
+      "verdict": [
+       0.009058,
+       0.010787,
+       0.980156
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 10,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 2,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 1,
+     "brain": {
+      "column": 1,
+      "brain_column": 1,
+      "sweeps": 51,
+      "settled": true,
+      "verdict": [
+       0.007882,
+       0.007378,
+       0.98474
+      ],
+      "search": {
+       "reason": "win",
+       "depth": 3,
+       "nodes": 240,
+       "immediate": false
+      },
+      "own_strongest": 1,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 4,
+     "brain": {
+      "column": 2,
+      "brain_column": 2,
+      "sweeps": 63,
+      "settled": true,
+      "verdict": [
+       0.006558,
+       0.007499,
+       0.985943
+      ],
+      "search": {
+       "reason": "win",
+       "depth": 1,
+       "nodes": 7,
+       "immediate": false
+      },
+      "own_strongest": 2,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 5,
+     "brain": {
+      "column": 0,
+      "brain_column": 2,
+      "sweeps": 99,
+      "settled": true,
+      "verdict": [
+       0.004878,
+       0.00458,
+       0.990542
+      ],
+      "search": {
+       "reason": "win",
+       "depth": 0,
+       "nodes": 0,
+       "immediate": true
+      },
+      "own_strongest": 2,
+      "brain_wins": [
+       0
+      ],
+      "visitor_wins": [
+       2
+      ]
+     }
+    }
+   ],
+   "winner": 1,
+   "brain_player": 1,
+   "result": "brain"
+  },
+  {
+   "moves": [
+    {
+     "visitor": 2,
+     "brain": {
+      "column": 3,
+      "brain_column": 3,
+      "sweeps": 65,
+      "settled": true,
+      "verdict": [
+       0.004056,
+       0.991823,
+       0.004121
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 9,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 3,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 3,
+     "brain": {
+      "column": 3,
+      "brain_column": 3,
+      "sweeps": 93,
+      "settled": true,
+      "verdict": [
+       0.004392,
+       0.99118,
+       0.004428
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 9,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 3,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 3,
+     "brain": {
+      "column": 3,
+      "brain_column": 3,
+      "sweeps": 126,
+      "settled": true,
+      "verdict": [
+       0.004408,
+       0.990452,
+       0.005139
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 9,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 3,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 3,
+     "brain": {
+      "column": 2,
+      "brain_column": 2,
+      "sweeps": 104,
+      "settled": true,
+      "verdict": [
+       0.004074,
+       0.00409,
+       0.991836
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 11,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 2,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 2,
+     "brain": {
+      "column": 2,
+      "brain_column": 2,
+      "sweeps": 104,
+      "settled": true,
+      "verdict": [
+       0.004277,
+       0.005667,
+       0.990056
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 11,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 2,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 4,
+     "brain": {
+      "column": 4,
+      "brain_column": 4,
+      "sweeps": 79,
+      "settled": true,
+      "verdict": [
+       0.004174,
+       0.005599,
+       0.990227
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 13,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 4,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 5,
+     "brain": {
+      "column": 4,
+      "brain_column": 4,
+      "sweeps": 68,
+      "settled": true,
+      "verdict": [
+       0.00766,
+       0.816477,
+       0.175863
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 14,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 4,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 2,
+     "brain": {
+      "column": 4,
+      "brain_column": 4,
+      "sweeps": 52,
+      "settled": true,
+      "verdict": [
+       0.005761,
+       0.98341,
+       0.010829
+      ],
+      "search": {
+       "reason": "win",
+       "depth": 1,
+       "nodes": 6,
+       "immediate": false
+      },
+      "own_strongest": 4,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 5,
+     "brain": {
+      "column": 4,
+      "brain_column": 4,
+      "sweeps": 68,
+      "settled": true,
+      "verdict": [
+       0.005055,
+       0.004506,
+       0.99044
+      ],
+      "search": {
+       "reason": "win",
+       "depth": 0,
+       "nodes": 0,
+       "immediate": true
+      },
+      "own_strongest": 4,
+      "brain_wins": [
+       1,
+       4
+      ],
+      "visitor_wins": []
+     }
+    }
+   ],
+   "winner": 1,
+   "brain_player": 1,
+   "result": "brain"
+  },
+  {
+   "moves": [
+    {
+     "visitor": 4,
+     "brain": {
+      "column": 3,
+      "brain_column": 3,
+      "sweeps": 64,
+      "settled": true,
+      "verdict": [
+       0.004063,
+       0.991745,
+       0.004191
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 9,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 3,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 1,
+     "brain": {
+      "column": 3,
+      "brain_column": 3,
+      "sweeps": 83,
+      "settled": true,
+      "verdict": [
+       0.00413,
+       0.004777,
+       0.991092
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 9,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 3,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 2,
+     "brain": {
+      "column": 3,
+      "brain_column": 3,
+      "sweeps": 105,
+      "settled": true,
+      "verdict": [
+       0.004095,
+       0.004072,
+       0.991833
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 11,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 3,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 3,
+     "brain": {
+      "column": 3,
+      "brain_column": 3,
+      "sweeps": 94,
+      "settled": true,
+      "verdict": [
+       0.004097,
+       0.004091,
+       0.991812
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 10,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 3,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 4,
+     "brain": {
+      "column": 4,
+      "brain_column": 3,
+      "sweeps": 122,
+      "settled": true,
+      "verdict": [
+       0.004645,
+       0.00433,
+       0.991025
+      ],
+      "search": {
+       "reason": "search",
+       "depth": 11,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 3,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 1,
+     "brain": {
+      "column": 0,
+      "brain_column": 3,
+      "sweeps": 50,
+      "settled": true,
+      "verdict": [
+       0.005127,
+       0.004631,
+       0.990242
+      ],
+      "search": {
+       "reason": "search",
+       "depth": 11,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 3,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 1,
+     "brain": {
+      "column": 1,
+      "brain_column": 1,
+      "sweeps": 51,
+      "settled": true,
+      "verdict": [
+       0.009124,
+       0.009763,
+       0.981113
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 14,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 1,
+      "brain_wins": [],
+      "visitor_wins": [
+       1
+      ]
+     }
+    },
+    {
+     "visitor": 3,
+     "brain": {
+      "column": 2,
+      "brain_column": 2,
+      "sweeps": 29,
+      "settled": true,
+      "verdict": [
+       0.010721,
+       0.011236,
+       0.978043
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 12,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 2,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 5,
+     "brain": {
+      "column": 2,
+      "brain_column": 2,
+      "sweeps": 44,
+      "settled": true,
+      "verdict": [
+       0.006192,
+       0.018408,
+       0.9754
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 14,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 2,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 1,
+     "brain": {
+      "column": 2,
+      "brain_column": 2,
+      "sweeps": 79,
+      "settled": true,
+      "verdict": [
+       0.004789,
+       0.005161,
+       0.99005
+      ],
+      "search": {
+       "reason": "win",
+       "depth": 15,
+       "nodes": 84528,
+       "immediate": false
+      },
+      "own_strongest": 2,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 2,
+     "brain": {
+      "column": 1,
+      "brain_column": 1,
+      "sweeps": 70,
+      "settled": true,
+      "verdict": [
+       0.00639,
+       0.005407,
+       0.988203
+      ],
+      "search": {
+       "reason": "win",
+       "depth": 13,
+       "nodes": 26141,
+       "immediate": false
+      },
+      "own_strongest": 1,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 2,
+     "brain": {
+      "column": 0,
+      "brain_column": 0,
+      "sweeps": 94,
+      "settled": true,
+      "verdict": [
+       0.00564,
+       0.005397,
+       0.988963
+      ],
+      "search": {
+       "reason": "win",
+       "depth": 11,
+       "nodes": 4072,
+       "immediate": false
+      },
+      "own_strongest": 0,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 6,
+     "brain": {
+      "column": 0,
+      "brain_column": 0,
+      "sweeps": 69,
+      "settled": true,
+      "verdict": [
+       0.005597,
+       0.005062,
+       0.989342
+      ],
+      "search": {
+       "reason": "win",
+       "depth": 1,
+       "nodes": 4,
+       "immediate": false
+      },
+      "own_strongest": 0,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 0,
+     "brain": {
+      "column": 0,
+      "brain_column": 0,
+      "sweeps": 74,
+      "settled": true,
+      "verdict": [
+       0.0052,
+       0.004936,
+       0.989864
+      ],
+      "search": {
+       "reason": "win",
+       "depth": 0,
+       "nodes": 0,
+       "immediate": true
+      },
+      "own_strongest": 0,
+      "brain_wins": [
+       0
+      ],
+      "visitor_wins": []
+     }
+    }
+   ],
+   "winner": 1,
+   "brain_player": 1,
+   "result": "brain"
+  },
+  {
+   "moves": [
+    {
+     "visitor": 4,
+     "brain": {
+      "column": 3,
+      "brain_column": 3,
+      "sweeps": 64,
+      "settled": true,
+      "verdict": [
+       0.004063,
+       0.991745,
+       0.004191
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 9,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 3,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 2,
+     "brain": {
+      "column": 3,
+      "brain_column": 3,
+      "sweeps": 70,
+      "settled": true,
+      "verdict": [
+       0.00407,
+       0.004075,
+       0.991855
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 10,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 3,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 4,
+     "brain": {
+      "column": 3,
+      "brain_column": 3,
+      "sweeps": 56,
+      "settled": true,
+      "verdict": [
+       0.004365,
+       0.004412,
+       0.991223
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 10,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 3,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 3,
+     "brain": {
+      "column": 3,
+      "brain_column": 3,
+      "sweeps": 66,
+      "settled": true,
+      "verdict": [
+       0.004124,
+       0.004181,
+       0.991695
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 10,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 3,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 4,
+     "brain": {
+      "column": 4,
+      "brain_column": 4,
+      "sweeps": 65,
+      "settled": true,
+      "verdict": [
+       0.004609,
+       0.004345,
+       0.991046
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 14,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 4,
+      "brain_wins": [],
+      "visitor_wins": [
+       4
+      ]
+     }
+    },
+    {
+     "visitor": 3,
+     "brain": {
+      "column": 2,
+      "brain_column": 2,
+      "sweeps": 61,
+      "settled": true,
+      "verdict": [
+       0.004287,
+       0.004437,
+       0.991277
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 12,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 2,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 1,
+     "brain": {
+      "column": 2,
+      "brain_column": 2,
+      "sweeps": 40,
+      "settled": true,
+      "verdict": [
+       0.007661,
+       0.058497,
+       0.933841
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 12,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 2,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 2,
+     "brain": {
+      "column": 2,
+      "brain_column": 2,
+      "sweeps": 49,
+      "settled": true,
+      "verdict": [
+       0.005748,
+       0.082786,
+       0.911466
+      ],
+      "search": {
+       "reason": "brain",
+       "depth": 15,
+       "nodes": 120001,
+       "immediate": false
+      },
+      "own_strongest": 2,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 1,
+     "brain": {
+      "column": 1,
+      "brain_column": 2,
+      "sweeps": 41,
+      "settled": true,
+      "verdict": [
+       0.00561,
+       0.033617,
+       0.960774
+      ],
+      "search": {
+       "reason": "win",
+       "depth": 7,
+       "nodes": 3781,
+       "immediate": false
+      },
+      "own_strongest": 2,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 5,
+     "brain": {
+      "column": 5,
+      "brain_column": 1,
+      "sweeps": 55,
+      "settled": true,
+      "verdict": [
+       0.005577,
+       0.006202,
+       0.988221
+      ],
+      "search": {
+       "reason": "win",
+       "depth": 5,
+       "nodes": 1036,
+       "immediate": false
+      },
+      "own_strongest": 1,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 2,
+     "brain": {
+      "column": 0,
+      "brain_column": 4,
+      "sweeps": 66,
+      "settled": true,
+      "verdict": [
+       0.00589,
+       0.006225,
+       0.987884
+      ],
+      "search": {
+       "reason": "win",
+       "depth": 3,
+       "nodes": 113,
+       "immediate": false
+      },
+      "own_strongest": 4,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 4,
+     "brain": {
+      "column": 0,
+      "brain_column": 4,
+      "sweeps": 39,
+      "settled": true,
+      "verdict": [
+       0.005805,
+       0.006296,
+       0.987899
+      ],
+      "search": {
+       "reason": "win",
+       "depth": 1,
+       "nodes": 5,
+       "immediate": false
+      },
+      "own_strongest": 4,
+      "brain_wins": [],
+      "visitor_wins": []
+     }
+    },
+    {
+     "visitor": 4,
+     "brain": {
+      "column": 0,
+      "brain_column": 0,
+      "sweeps": 59,
+      "settled": true,
+      "verdict": [
+       0.005961,
+       0.00484,
+       0.989199
+      ],
+      "search": {
+       "reason": "win",
+       "depth": 0,
+       "nodes": 0,
+       "immediate": true
+      },
+      "own_strongest": 0,
+      "brain_wins": [
+       0
+      ],
+      "visitor_wins": []
+     }
+    }
+   ],
+   "winner": 1,
+   "brain_player": 1,
+   "result": "brain"
+  }
+ ],
+ "errors": [],
+ "startup_ms": 25667,
+ "summary": {
+  "brain_moves": 52,
+  "win_chances": 5,
+  "single_threats": 2,
+  "search_changed_brain_column": 9,
+  "results": [
+   "brain",
+   "brain",
+   "brain",
+   "brain",
+   "brain"
+  ]
+ },
+ "teaching": {
+  "played": 3,
+  "brain_column": 3,
+  "taught": 2,
+  "lessons": [
+   {
+    "accepted": true,
+    "changed": 2124800,
+    "choice_before": 3,
+    "choice_after": 3,
+    "taught_before": -0.099998,
+    "taught_after": -0.1
+   },
+   {
+    "accepted": true,
+    "changed": 2124800,
+    "choice_before": 3,
+    "choice_after": 2,
+    "taught_before": -0.1,
+    "taught_after": -0.1
+   }
+  ],
+  "status": "One lesson changed 2,124,800 synapses. Column 3\u2019s motor neuron: -0.100 \u2192 -0.100. After the lesson it plays column 3 here. Click the column again to repeat the lesson."
+ },
+ "seconds": 367.8,
+ "passed": true
+}

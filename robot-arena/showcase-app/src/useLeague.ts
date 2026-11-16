@@ -19,8 +19,14 @@ export type LeagueRecord = {
 };
 export type Speed = 1 | 2 | 0; // 0 = as fast as the brains settle
 
-// Where the pack lives: <meta name="cadence-pack"> if the host page sets one, else /pack/ at the site root.
-const PACK = new URL(document.querySelector('meta[name="cadence-pack"]')?.getAttribute("content") || "/pack/", document.baseURI).href;
+// Where the pack lives: <meta name="cadence-pack"> if the host page sets one, else pack/ beside the page.
+const PACK = new URL(document.querySelector('meta[name="cadence-pack"]')?.getAttribute("content") || "pack/", document.baseURI).href;
+// What the page showed, one entry per moment, for the promise test (tools/promise_arena.py): each
+// robot's mode and hit points, and the inspected brain's arousal and changed synapses.
+type LogEntry = { fight: number; t: number; mode: number[]; hp: number[]; inspected: number | null;
+  ins: { mode: string; level: number; surprise: number; want: number; changed: number; rpe: number | null } | null };
+const SHOWN: { log: LogEntry[]; fight: number; names: string[] } = { log: [], fight: 0, names: [] };
+(window as any).__arena = SHOWN;
 // the training ring: the fight lasts up to 2400 moments and the ring closes to 3.5 m over 2000
 const DURATION = 2400, ZONE = 2000, ZONE_END = 3.5, BATCH = 6;
 
@@ -134,6 +140,7 @@ export function useLeague() {
     if (timerRef.current) { window.clearInterval(timerRef.current); timerRef.current = null; }
     const started = await call("new_fight", { names, seed, duration: DURATION, zone_moments: ZONE, zone_end: ZONE_END });
     const sp: Spec[] = started.robots; setSpecs(sp); specsRef.current = sp;
+    SHOWN.fight += 1; SHOWN.names = sp.map((x) => x.name);
     tallyRef.current = { dealt: sp.map(() => 0), aroused: sp.map(() => 0), alive: sp.map(() => 0), sweeps: sp.map(() => 0) };
     setTallies({ ...tallyRef.current });
     setFrame(started.frame); setFrameIndex(0); setFightSeed(seed);
@@ -201,6 +208,10 @@ export function useLeague() {
   }, [pump]);
 
   function tally(f: Frame) {
+    const i = f.inspect;
+    SHOWN.log.push({ fight: SHOWN.fight, t: f.t, mode: f.robots.map((r) => r[4]), hp: f.robots.map((r) => r[3]), inspected: selectedRef.current,
+      ins: i ? { mode: i.arousal.mode, level: i.arousal.level, surprise: i.arousal.surprise, want: i.arousal.want, changed: i.plasticity.changed, rpe: i.rpe } : null });
+    if (SHOWN.log.length > 30000) SHOWN.log.splice(0, 10000);
     const t = tallyRef.current;
     for (const h of f.hits) t.dealt[h[3]] += h[2];
     f.robots.forEach((r, i) => { if (r[4] !== 9) { t.alive[i]++; if (r[4] === 1) t.aroused[i]++; if (r[9]) t.sweeps[i] += r[9][6] || 0; } });

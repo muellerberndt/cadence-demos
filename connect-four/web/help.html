@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Connect Four · Help</title>
+  <meta name="description" content="What the Connect Four demo shows: a Cadence brain that plays strong Connect Four, settles on every move, judges the game and learns a lesson in your browser.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="cadence-help.css">
+  <script src="cadence-explain.js"></script>
+  <style>
+    .fig-label { font: 500 11px ui-monospace, "IBM Plex Mono", Menlo, monospace; fill: #dcebee; }
+    .fig-quiet { font: 500 9.5px ui-monospace, "IBM Plex Mono", Menlo, monospace; fill: #8ea4aa; }
+  </style>
+</head>
+<body>
+  <header class="help-bar"><span class="crumb">cadence / <b>Connect Four</b> / help</span><span class="spacer"></span><a href="./">Back to the demo</a></header>
+  <main class="help">
+    <h1>Connect Four</h1>
+    <p class="lede">You play Connect Four against a brain made with Cadence. On the right you watch that brain think: every neuron, every region, and the messages between them while it settles on its move.</p>
+    <p class="shows"><b>What it shows about Cadence</b>Cadence brains excel at games. This one proposes every move by settling its whole brain, and judges the game in the same settle. With a small search over the rules to check its moves, it wins 363 of 400 games against a perfect player from the first seat. Show it a better move and it learns in your browser, with a local rule and no backward pass.</p>
+    <nav class="toc" aria-label="On this page"><a href="#see">What you see</a><a href="#why">Why it matters</a><a href="#do">What you can do</a><a href="#how">How it works</a><a href="#numbers">The numbers</a><a href="#limits">Limits</a><a href="#keys">Keys</a></nav>
+
+    <h2 id="see">What you see</h2>
+    <figure>
+      <svg viewBox="0 0 720 360" role="img" aria-label="The page: the board with its motor bars, verdict line and controls on the left; the whole brain on the right with the board's neurons at the back, module 0, the association field, the silent prefrontal region at the front, the motor strip, the verdict neurons and the search panel.">
+        <rect x="0.5" y="0.5" width="719" height="359" rx="10" fill="#0a0e19" stroke="#22323a"/>
+        <!-- the game column -->
+        <rect x="18" y="20" width="250" height="262" rx="10" fill="#10172a" stroke="#22323a"/>
+        <text class="fig-quiet" x="28" y="36">MOTOR NEURONS</text>
+        <g fill="#2a3a5c">
+          <rect x="34" y="44" width="8" height="20" rx="2"/><rect x="68" y="44" width="8" height="20" rx="2"/><rect x="102" y="44" width="8" height="20" rx="2"/>
+          <rect x="136" y="44" width="8" height="20" rx="2"/><rect x="170" y="44" width="8" height="20" rx="2"/><rect x="204" y="44" width="8" height="20" rx="2"/><rect x="238" y="44" width="8" height="20" rx="2"/>
+        </g>
+        <rect x="136" y="48" width="8" height="16" rx="2" fill="#3fe0cf"/>
+        <rect x="28" y="72" width="230" height="196" rx="10" fill="#1d2747"/>
+        <g fill="#070a13">
+          <circle cx="45" cy="90" r="11"/><circle cx="79" cy="90" r="11"/><circle cx="113" cy="90" r="11"/><circle cx="147" cy="90" r="11"/><circle cx="181" cy="90" r="11"/><circle cx="215" cy="90" r="11"/><circle cx="249" cy="90" r="11"/>
+          <circle cx="45" cy="122" r="11"/><circle cx="79" cy="122" r="11"/><circle cx="113" cy="122" r="11"/><circle cx="147" cy="122" r="11"/><circle cx="181" cy="122" r="11"/><circle cx="215" cy="122" r="11"/><circle cx="249" cy="122" r="11"/>
+          <circle cx="45" cy="154" r="11"/><circle cx="79" cy="154" r="11"/><circle cx="113" cy="154" r="11"/><circle cx="147" cy="154" r="11"/><circle cx="181" cy="154" r="11"/><circle cx="215" cy="154" r="11"/><circle cx="249" cy="154" r="11"/>
+          <circle cx="45" cy="186" r="11"/><circle cx="79" cy="186" r="11"/><circle cx="113" cy="186" r="11"/><circle cx="147" cy="186" r="11"/><circle cx="181" cy="186" r="11"/><circle cx="215" cy="186" r="11"/><circle cx="249" cy="186" r="11"/>
+          <circle cx="45" cy="218" r="11"/><circle cx="79" cy="218" r="11"/><circle cx="113" cy="218" r="11"/><circle cx="181" cy="218" r="11"/><circle cx="215" cy="218" r="11"/><circle cx="249" cy="218" r="11"/>
+          <circle cx="45" cy="250" r="11"/><circle cx="79" cy="250" r="11"/><circle cx="215" cy="250" r="11"/><circle cx="249" cy="250" r="11"/>
+        </g>
+        <circle cx="113" cy="250" r="11" fill="#ff9f4a"/><circle cx="181" cy="250" r="11" fill="#ff9f4a"/>
+        <circle cx="147" cy="250" r="11" fill="#3fe0cf"/><circle cx="147" cy="218" r="11" fill="#3fe0cf"/>
+        <rect x="18" y="292" width="250" height="22" rx="6" fill="#10172a" stroke="#22323a"/>
+        <text class="fig-quiet" x="30" y="307">New game · Brain + search | alone · Teach it</text>
+        <!-- the brain column -->
+        <rect x="290" y="20" width="412" height="322" rx="10" fill="#0c111f" stroke="#22323a"/>
+        <text class="fig-label" x="302" y="38">The whole brain</text>
+        <text class="fig-quiet" x="600" y="38">settled in 64 sweeps</text>
+        <ellipse cx="500" cy="190" rx="190" ry="125" fill="none" stroke="#2a3550" stroke-dasharray="3 4"/>
+        <g fill="#66bdff" opacity="0.8"><circle cx="590" cy="150" r="2"/><circle cx="600" cy="165" r="2"/><circle cx="585" cy="175" r="2"/><circle cx="605" cy="140" r="2"/><circle cx="575" cy="160" r="2"/></g>
+        <g fill="#8f9eff" opacity="0.8"><circle cx="500" cy="170" r="2"/><circle cx="515" cy="190" r="2"/><circle cx="490" cy="200" r="2"/><circle cx="520" cy="160" r="2"/><circle cx="480" cy="180" r="2"/></g>
+        <g fill="#6b7590" opacity="0.6"><circle cx="370" cy="180" r="2"/><circle cx="385" cy="195" r="2"/><circle cx="360" cy="200" r="2"/></g>
+        <g fill="#3fe0cf"><circle cx="430" cy="110" r="4"/><circle cx="433" cy="135" r="4"/><circle cx="436" cy="160" r="4"/><circle cx="438" cy="185" r="5"/><circle cx="436" cy="210" r="4"/><circle cx="432" cy="235" r="4"/><circle cx="428" cy="258" r="4"/></g>
+        <g fill="#ffcc6b"><circle cx="470" cy="290" r="4"/><circle cx="492" cy="292" r="4"/><circle cx="514" cy="290" r="4"/></g>
+        <g stroke="#ff9e48" stroke-opacity="0.45" fill="none"><path d="M650 140 C 610 120 560 150 520 165"/><path d="M590 160 C 550 150 520 170 500 175"/><path d="M500 180 C 470 175 450 180 438 185"/></g>
+        <rect x="640" y="110" width="40" height="34" rx="3" fill="none" stroke="#3fe0cf" stroke-opacity="0.5"/>
+        <rect x="640" y="150" width="40" height="34" rx="3" fill="none" stroke="#ff9f4a" stroke-opacity="0.5"/>
+        <rect x="640" y="190" width="40" height="34" rx="3" fill="none" stroke="#c7cc80" stroke-opacity="0.5"/>
+        <rect x="304" y="300" width="120" height="30" rx="4" fill="none" stroke="#8ea4aa" stroke-dasharray="2 3"/>
+        <!-- labels -->
+        <text class="fig-label" x="621" y="246" text-anchor="middle">1 visual cortex</text>
+        <text class="fig-quiet" x="621" y="259" text-anchor="middle">the board, 3 ways</text>
+        <text class="fig-label" x="590" y="126" text-anchor="middle">2 module 0</text>
+        <text class="fig-label" x="505" y="148" text-anchor="middle">3 association</text>
+        <text class="fig-label" x="372" y="166" text-anchor="middle">4 prefrontal</text>
+        <text class="fig-quiet" x="372" y="218" text-anchor="middle">silent</text>
+        <text class="fig-label" x="433" y="96" text-anchor="middle">5 motor strip</text>
+        <text class="fig-label" x="492" y="314" text-anchor="middle">6 verdict</text>
+        <text class="fig-label" x="364" y="292" text-anchor="middle">7 verdict + search</text>
+        <text class="fig-label" x="143" y="334" text-anchor="middle">8 the board and its controls</text>
+      </svg>
+      <figcaption>The page after a move. The numbers match the list below.</figcaption>
+    </figure>
+    <ol>
+      <li><b>Visual cortex: the board.</b> Three small 6 by 7 boards at the back of the brain: one neuron for each cell holding its own stones, one for each cell holding yours, and one for each cell where the next stone in a column would land. These 126 neurons are the brain's eyes on the game.</li>
+      <li><b>Module 0.</b> 1,024 neurons that read the board cells and pass on what they see. Each sits where the cells it reads are.</li>
+      <li><b>Association.</b> 1,024 neurons wired both ways with module 0 and with the motor neurons. Here the settle comes to agree on a move. Each sits under the column it drives.</li>
+      <li><b>Prefrontal, silent.</b> Where Cadence's working memory enters a brain. A Connect Four board shows everything there is to know, so this brain settles fresh on each move, without memory, and the region stays dark.</li>
+      <li><b>Motor strip.</b> Seven neurons, one per column. The bars above the board are the same seven neurons. The strongest one whose column has room is the brain's own move.</li>
+      <li><b>Verdict.</b> Three neurons that judge the game for the side to move: loss, draw or win. They settle together with the move. The line "Its verdict before this move" above the board reads them. The move does not read them.</li>
+      <li><b>Verdict and search.</b> After a move, a small panel at the bottom left of the brain shows the verdict and the search's score for each column. A dashed box and a dashed arc mark the brain's own column when the search played another one.</li>
+      <li><b>The board.</b> Your stones are orange, the brain's teal. Under the board, a line says what is happening and what you can do next, and the buttons start games and teach the brain.</li>
+    </ol>
+    <p>The lines between regions are synapses, drawn in bundles like the fibre tracts of a real brain. A line glows with the message it carries in this sweep: warm when it excites the neuron it reaches, cool when it inhibits it. Rest the pointer on any neuron and a card shows its activity and its strongest inputs at that moment. Every part with a small <b>?</b> explains itself the same way.</p>
+
+    <h2 id="why">Why it matters</h2>
+    <p><b>A brain that plays well.</b> Connect Four is a solved game: whoever moves first can always win, but only by playing perfectly from the first stone to the last. A perfect player in the second seat loses to nothing less. Against such a perfect player, moving first, this brain with its search won 363 of 400 games, drew 25 and lost 12. The brain alone, with no search, won 119 of 200. Moving second, it lost every game, as every player does against perfect play.</p>
+    <p><b>An answer that settles.</b> A conventional neural network answers in one pass from input to output. A Cadence brain answers by settling: its regions send messages both ways, each neuron adjusts to the others, sweep by sweep, until the whole brain agrees and nothing changes. The page draws that settle as it happens. The move and the verdict come out of the same settle.</p>
+    <p><b>A brain that learns during its life.</b> Press <b>Teach it</b> and show the brain a better column: it takes a lesson right there, in your browser, and the same board settles again with the changed synapses. A Cadence lesson is local: the brain settles again with its output nudged toward your column, and each synapse changes by how the activity of the two neurons it joins differs between the two settles. No error is sent backwards through layers, and there is no separate training mode: the brain that plays is the brain that learns.</p>
+    <p class="note">No conventional network was trained for this demo, so the page makes no claim that Cadence plays better than one. It shows a Cadence brain playing strong games, the settle behind every move, and a lesson changing it.</p>
+
+    <h2 id="do">What you can do</h2>
+    <ul>
+      <li><b>Play.</b> Click a column (or press 1 to 7) to drop your stone. The brain settles and answers within a few seconds. Four in a row wins.</li>
+      <li><b>Watch it think.</b> While it settles, the motor bars rise and the regions light up as messages spread from the board through the brain and back. The readout at the top right counts the sweeps.</li>
+      <li><b>Read its verdict and the search.</b> After its move, the line above the board says how the brain judged the game, and the next line says what the search did: kept the brain's column, overruled it, or found a forced win.</li>
+      <li><b>Teach it.</b> After a brain move, press <b>Teach it</b>, then click the column it should have played. One lesson changes its synapses (the changed ones flash: gold stronger, blue weaker), and the board settles again. Click the column again to repeat the lesson. Press <b>Done</b> to go back to the game, and <b>Reset brain</b> to undo every lesson.</li>
+      <li><b>Brain alone.</b> Switch off the search and play the brain by itself: one settle, its strongest column.</li>
+      <li><b>Brain starts.</b> Give the brain the first stone, the winning seat.</li>
+      <li><b>Imagine.</b> Tick it, and before its move the brain privately settles on the board each of its columns would leave, from your seat, and shows the reply it would make there. Nothing in it changes, and its move does not use these. It adds a few seconds a move.</li>
+      <li><b>Undo</b> takes back your last move and the brain's reply. <b>New game</b> clears the board; the brain keeps what you taught it.</li>
+    </ul>
+
+    <h2 id="how">How it works</h2>
+    <p><b>Senses.</b> 126 neurons see the board: the 42 cells of the side to move (on its turn, the brain), your 42 cells, and the 42 cells where a stone would land.</p>
+    <p><b>Thinking.</b> On its turn the whole brain settles from rest. Every sweep, each neuron updates from the neurons it reads, in both directions between regions, until no neuron changes by more than 0.003 (at most 1,024 sweeps; a move here takes about 50 to 120). Nothing is carried from one move to the next: the board shows everything.</p>
+    <p><b>Acting.</b> The strongest of the seven column neurons whose column has room is the brain's move. With <b>Brain + search</b>, a search then looks ahead over the rules of the game, 9 to 12 moves deep: it plays a win it can prove, drops columns it proves lost, and otherwise keeps the brain's column unless another scores clearly higher. The search is ordinary code: it knows the rules, has no neurons, and does not learn. In the 400 games against the perfect player it changed the brain's column on 3.9% of moves.</p>
+    <p><b>Learning.</b> Offline, the brain learned from a perfect Connect Four player, 80,000 lessons in three stages, each on a batch of positions from that player's games: the best move, and the verdict. On the page it learns only from you, one lesson at a time.</p>
+    <p><b>Where it runs.</b> In your browser tab: Python and NumPy in Pyodide, the released <code>cadence-net</code> library and the trained brain, all checked against their hashes before anything runs. No server chooses the moves.</p>
+
+    <h2 id="numbers">The numbers</h2>
+    <table><thead><tr><th>Reading</th><th>Value</th></tr></thead><tbody>
+      <tr><td>Brain + search against the perfect player, brain first (won, drawn, lost)</td><td class="n">363 · 25 · 12 of 400</td></tr>
+      <tr><td>Brain + search against the perfect player, brain second</td><td class="n">0 · 0 · 40 of 40</td></tr>
+      <tr><td>Brain alone against the perfect player, brain first</td><td class="n">119 · 50 · 31 of 200</td></tr>
+      <tr><td>Brain alone against the perfect player, brain second</td><td class="n">0 · 0 · 40 of 40</td></tr>
+      <tr><td>Moves where the search changed the brain's column (brain + search, first, 400 games)</td><td class="n">327 of 8,381 (3.9%)</td></tr>
+      <tr><td>Brain alone: the perfect player's own move, on 3,000 positions it never saw</td><td class="n">77.3%</td></tr>
+      <tr><td>Brain alone: a move that keeps the game's result, in positions it can win or draw</td><td class="n">92.3%</td></tr>
+      <tr><td>Brain alone: an immediate win taken · a forced block made</td><td class="n">68.0% · 85.3%</td></tr>
+      <tr><td>The verdict agrees with the perfect player's result</td><td class="n">89.2%</td></tr>
+      <tr><td>The brain</td><td class="n">3,208 neurons · 3,295,232 synapses</td></tr>
+      <tr><td>One move in the browser (Apple M4, a busy machine): the settle · the search</td><td class="n">1.2 to 3.0 s · 0.30 to 0.53 s</td></tr>
+      <tr><td>One lesson on the empty board: synapses changed</td><td class="n">2,124,800</td></tr>
+    </tbody></table>
+    <p class="note">The games: <code>evidence/search_reading.json</code> (brain + search, and the brain alone moving second), <code>evidence/reading.json</code> (the brain alone moving first, and the readings on positions it never saw). The browser timings and the lesson: <code>evidence/page_check.json</code>. The perfect player is Pascal Pons' Connect Four solver, which knows the result of every position. The page's promise, played on the page itself: <code>evidence/promise_test-20261113.json</code>. All in the <code>connect-four/</code> folder of the repository.</p>
+
+    <h2 id="limits">Limits</h2>
+    <ul>
+      <li><b>The search is not Cadence.</b> The strongest result, 363 of 400, belongs to the brain and the search together. The brain alone wins 119 of 200 from the same seat.</li>
+      <li><b>Not a perfect player.</b> The brain alone misses about a third of the immediate wins it could take. With the search it takes every win the search can see, and loses some games from the winning seat as well.</li>
+      <li><b>No memory here.</b> Each move settles fresh from the board, which shows everything; this demo does not show Cadence's memory.</li>
+      <li><b>Taught by a perfect player.</b> The brain learned offline from a solver's answers, also on positions from its own games; it did not learn from winning or losing.</li>
+      <li><b>A lesson is one position.</b> Your lesson changes the brain's answer on that board and shifts its synapses a little everywhere; it does not make the brain stronger in general, and it may change its answers on other boards. Lessons stay in the tab: a reload or <b>Reset brain</b> brings back the trained brain.</li>
+      <li><b>A settled state</b> means the brain's equations agree, not that the move is good.</li>
+      <li><b>Brightness</b> is relative within each region, so a quiet region shows its pattern too; the neuron card shows the raw numbers.</li>
+    </ul>
+
+    <h2 id="keys">Keys</h2>
+    <div class="keys"><span><kbd>1</kbd> to <kbd>7</kbd></span><span>Drop a stone in that column, or, while teaching, teach that column.</span></div>
+
+    <footer>The brain runs in your browser with cadence-net 0.95.2. <a href="https://github.com/muellerberndt/cadence-demos/tree/main/connect-four" target="_blank" rel="noopener">The demo on GitHub</a> · <a href="https://github.com/muellerberndt/cadence" target="_blank" rel="noopener">Cadence on GitHub</a></footer>
+  </main>
+</body>
+</html>

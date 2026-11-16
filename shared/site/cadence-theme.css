@@ -1,0 +1,147 @@
+/* Shared Pragma presentation. Packed brains, observations and physics stay upstream. */
+:root {
+  color-scheme: dark;
+  --background: oklch(0.155 0.006 200); --foreground: oklch(0.93 0.03 195);
+  --surface: oklch(0.18 0.01 200); --surface-raised: oklch(0.22 0.012 200);
+  --primary: oklch(0.88 0.14 192); --muted-foreground: oklch(0.69 0.025 195);
+  --border: oklch(0.32 0.025 195); --memory: oklch(0.78 0.14 75);
+  --brain-signal: 73,221,228; --brain-inhibit: 156,145,224; --brain-memory: 241,191,98;
+  --brain-recall: 102,216,171; --brain-white: 220,243,244; --brain-dim: 132,158,165;
+  --brain-rest: 18,34,39; --brain-trace: 171,145,207;
+  --bg: var(--background); --panel: var(--surface); --panel-2: var(--surface-raised);
+  --raised: var(--surface-raised); --line: var(--border); --line-2: var(--border);
+  --ink: var(--foreground); --text: var(--foreground); --bone: var(--foreground);
+  --ink-2: var(--muted-foreground); --ink-3: var(--muted-foreground);
+  --muted: var(--muted-foreground); --dim: var(--muted-foreground); --faint: var(--muted-foreground);
+  --accent: var(--primary); --amber: var(--memory); --gold: var(--memory);
+  --live: var(--primary); --cyan: var(--primary); --radius: 6px;
+  --display: ui-monospace, "IBM Plex Mono", Menlo, monospace;
+  --body: var(--display); --mono: var(--display);
+}
+* { box-sizing: border-box; letter-spacing: 0 !important; }
+html, body { margin: 0; background: var(--background) !important; color: var(--foreground) !important; min-height: 100%; }
+body { font: 12px/1.55 var(--body) !important; background-attachment: scroll !important; }
+h1, h2, h3, .brand, .title, .kicker { font-family: var(--display) !important; text-shadow: none !important; }
+h1, h2, .kicker { color: var(--primary) !important; }
+h1 { font-size: 17px !important; } h2 { font-size: 12px !important; }
+p { line-height: 1.6; }
+a { color: var(--primary); }
+button, select, input { font-family: var(--body) !important; font-size: 11px !important; accent-color: var(--primary); }
+button { min-height: 30px; border-radius: 4px !important; border: 1px solid var(--border) !important; background: var(--surface-raised) !important; color: var(--foreground) !important; box-shadow: none !important; cursor: pointer; }
+button:hover:not(:disabled), button:focus-visible { border-color: var(--primary) !important; }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+button.primary, button.btn-active, button[aria-pressed="true"], button.on { background: color-mix(in oklab, var(--primary) 16%, var(--background)) !important; color: var(--primary) !important; border-color: color-mix(in oklab, var(--primary) 60%, var(--border)) !important; }
+button:disabled { opacity: .4; }
+.pick, .segmented { border-color: var(--border) !important; border-radius: 4px !important; }
+.pick a { font-family: var(--body); } .pick a.on { background: var(--primary); color: var(--background); }
+section, aside, .panel, .card, .net, .game, .brain, .view, .row, .world-wrap, .bv-wrap, .inspector { border-color: var(--border) !important; border-radius: 6px !important; box-shadow: none !important; }
+.panel, .card, .row, .brain, .inspector { background: var(--surface) !important; }
+canvas { filter: none !important; }
+/* The surrounding page owns the title, feature and first instruction. */
+.masthead .brand, .intro, .model-card, section.about, p.about, p.note, #legend-eye, .footer { display: none !important; }
+.masthead { height: 29px; border: 0; justify-content: flex-end; padding: 3px 20px; }
+.runtime, .loading.ready, .status.ready { color: var(--muted-foreground) !important; font-size: 10px !important; }
+.runtime i { box-shadow: none !important; }
+.brain-foot .legend { display: flex !important; }
+/* Tron: balanced, stable arena and anatomy instead of a very tall empty brain panel. */
+body[data-demo="tron"] .app { padding: 14px 20px; }
+body[data-demo="tron"] .stage { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); align-items: stretch; flex: none; }
+body[data-demo="tron"] .arena-wrap { width: 100%; height: auto; aspect-ratio: 1; }
+body[data-demo="tron"] .brain-wrap { min-height: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; }
+body[data-demo="tron"] .bar { margin-bottom: 12px; }
+body[data-demo="tron"] .brand { font-size: 12px; } body[data-demo="tron"] .score { font-size: 19px; }
+body[data-demo="tron"] .overlay.dim { backdrop-filter: none; }
+body[data-demo="tron"] .hint { color: var(--muted-foreground); }
+/* Atari: keep the real replay, but make the screen and brain equally readable. */
+body[data-demo="atari-arcade"] > header { border: 0; padding: 8px 20px; justify-content: flex-end; }
+body[data-demo="atari-arcade"] > header > h1, body[data-demo="atari-arcade"] > header > span:not(.pace) { display: none; }
+body[data-demo="atari-arcade"] #rows { padding: 0 20px 20px; gap: 18px; }
+body[data-demo="atari-arcade"] .row { background: transparent !important; padding: 0 0 16px; border: 0; border-bottom: 1px solid var(--border); }
+body[data-demo="atari-arcade"] .body { display: grid; grid-template-columns: minmax(0, .68fr) minmax(0, 1.32fr); align-items: center; }
+body[data-demo="atari-arcade"] .game canvas { width: 100%; }
+body[data-demo="atari-arcade"] .head b { color: var(--primary); }
+body[data-demo="atari-arcade"] .hud .stat:nth-child(2), body[data-demo="atari-arcade"] .hud .stat:nth-child(4) { display: none; }
+body[data-demo="atari-arcade"] .stat { min-width: 0; background: transparent; border: 0; border-left: 1px solid var(--border); }
+body[data-demo="atari-arcade"] .stat b { font-size: 18px; text-shadow: none; }
+/* Eyes: concise controls, anatomical labels and a small signal trace. */
+body[data-demo="eyes"] > header h1 { display: none; }
+body[data-demo="eyes"] > header { padding: 3px 20px; }
+body[data-demo="eyes"] main { padding: 8px 20px 20px; }
+body[data-demo="eyes"] section { background: transparent; border: 0; padding: 0; }
+body[data-demo="eyes"] .right { border-left: 1px solid var(--border); padding-left: 16px; }
+body[data-demo="eyes"] .stage { height: 470px; min-height: 300px; }
+body[data-demo="eyes"] .right > .hint, body[data-demo="eyes"] #montage { display: none; }
+body[data-demo="eyes"] .eyeviews canvas { width: 48px; height: 48px; }
+body[data-demo="eyes"] .hint { font-size: 11px; }
+body[data-demo="eyes"] .pill { border-radius: 4px; font-size: 10px; }
+/* Arm: title and instructions already sit outside the scene. Preserve controls/status. */
+body[data-demo="robot-arm"] .title { display: none; }
+body[data-demo="robot-arm"] .topbar { justify-content: flex-end; }
+body[data-demo="robot-arm"] .app { height: min(860px, 100dvh); grid-template-columns: minmax(0, 1fr) 390px; }
+body[data-demo="robot-arm"] .brain { background: var(--surface) !important; border-radius: 0 !important; }
+body[data-demo="robot-arm"] .brain-head { flex-wrap: wrap; }
+body[data-demo="robot-arm"] .stats { gap: 12px; }
+/* Connect Four stays one player: brain + search. */
+body[data-demo="connect-four"] main { padding-top: 4px; }
+body[data-demo="connect-four"] .game, body[data-demo="connect-four"] .brain { background: transparent !important; }
+body[data-demo="connect-four"] .brain-foot { font-size: 10px; }
+body[data-demo="connect-four"] .column { background: transparent !important; border: 0 !important; border-radius: 0 !important; min-height: 0; }
+body[data-demo="connect-four"] .column:hover:not(:disabled) { background: color-mix(in oklab, var(--memory) 8%, transparent) !important; }
+body[data-demo="connect-four"] .brain { height: 650px; }
+/* Patch World: world at left, selected live brain at right, details below. */
+body[data-demo="patch-world"] main { max-width: 1500px; padding: 4px 20px 24px; }
+body[data-demo="patch-world"] .stage { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+body[data-demo="patch-world"] .world-col { border: 0; }
+body[data-demo="patch-world"] .inspector { margin-top: 0; padding: 12px; }
+body[data-demo="patch-world"] .inspector > .foot, body[data-demo="patch-world"] .genes, body[data-demo="patch-world"] .story { display: none; }
+body[data-demo="patch-world"] .side { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; }
+body[data-demo="patch-world"] .side .panel { background: transparent !important; border: 0; padding: 12px 0; border-top: 1px solid var(--border); }
+body[data-demo="patch-world"] .side .panel:nth-child(n+3), body[data-demo="patch-world"] .side .foot { display: none; }
+body[data-demo="patch-world"] .tally th:nth-child(n+5), body[data-demo="patch-world"] .tally td:nth-child(n+5) { display: none; }
+body[data-demo="patch-world"] .hud > span { backdrop-filter: none; border-radius: 4px; }
+body[data-demo="patch-world"] .controls { gap: 6px; }
+body[data-demo="patch-world"] .controls button { padding: 0 8px; }
+/* Arena keeps its live inspector visible without extra introductory prose. */
+body[data-demo="robot-arena"] header h1, body[data-demo="robot-arena"] header .kicker, body[data-demo="robot-arena"] header > p { display: none; }
+body[data-demo="robot-arena"] header { padding-top: 6px; padding-bottom: 6px; }
+body[data-demo="robot-arena"] .league-details { margin-top: 4px; border-top: 1px solid var(--border); padding-top: 12px; }
+body[data-demo="robot-arena"] .league-details summary { color: var(--muted-foreground); cursor: pointer; padding: 6px 0; }
+body[data-demo="robot-arena"] .brain-explanation { font-size: 11px; }
+body[data-demo="robot-arena"] footer { display: none; }
+/* Connectome keeps measured wiring, not a substituted anatomical illustration. */
+body[data-demo="connectome"] .masthead, body[data-demo="connectome"] .mast, body[data-demo="connectome"] .papers { display: none; }
+body[data-demo="connectome"] { --matrix: var(--primary); --soft: var(--foreground); --glass: var(--surface); --burst: var(--memory); }
+body[data-demo="connectome"]::after { display: none; }
+body[data-demo="connectome"] #mast { display: none; }
+body[data-demo="connectome"] #page { position: relative; inset: auto; min-height: 700px; padding: 8px 20px 24px; }
+body[data-demo="connectome"] #main.two { grid-template-columns: minmax(0,1fr) minmax(0,1fr); height: 620px; }
+body[data-demo="connectome"] .view .top, body[data-demo="connectome"] #toolbar { background: var(--surface); }
+body[data-demo="connectome"] #credit, body[data-demo="connectome"] #card-toggle { display: none; }
+body[data-demo="connectome"] #status { position: relative; height: auto; min-height: 28px; background: var(--background); }
+body[data-demo="connectome"] #nav a { color: var(--muted-foreground); }
+body[data-demo="connectome"] #nav a[aria-current="page"] { color: var(--primary); background: var(--surface-raised); border-color: var(--primary); }
+body[data-demo="connectome"] .bv-overlay { color: var(--muted-foreground); }
+body[data-demo="connectome"] .bv-legend, body[data-demo="connectome"] .bv-active, body[data-demo="connectome"] .bv-hot { background: var(--surface); border-color: var(--border); }
+body[data-demo="connectome"] .bv-legend em { color: var(--muted-foreground); }
+body[data-demo="connectome"] .bv-legend input:checked, body[data-demo="connectome"] .bv-hot input:checked { background: var(--primary); border-color: var(--primary); }
+@media (max-width: 900px) {
+  body[data-demo="tron"] .stage, body[data-demo="patch-world"] .stage { grid-template-columns: minmax(0,1fr); }
+  body[data-demo="tron"] .brain-wrap { height: 430px; aspect-ratio: auto; }
+  body[data-demo="robot-arm"] .app { height: auto; grid-template-columns: minmax(0,1fr); }
+  body[data-demo="robot-arm"] .stage { height: 520px; min-height: 400px; }
+  body[data-demo="eyes"] .right { border-left: 0; padding: 16px 0 0; border-top: 1px solid var(--border); }
+  body[data-demo="patch-world"] .side { grid-template-columns: minmax(0,1fr); }
+}
+@media (max-width: 600px) {
+  body[data-demo="connectome"] #main.two { display: block; height: auto; }
+  body[data-demo="connectome"] #page { padding: 8px 12px; }
+  body[data-demo="connectome"] .view { height: 460px; }
+  body[data-demo="atari-arcade"] .body { grid-template-columns: minmax(0,1fr); }
+  body[data-demo="atari-arcade"] .game canvas { max-height: 380px; width: auto; max-width: 100%; margin: auto; }
+  body[data-demo="atari-arcade"] #rows, body[data-demo="patch-world"] main, body[data-demo="eyes"] main { padding-left: 12px; padding-right: 12px; }
+  body[data-demo="eyes"] .stage { height: 360px; }
+  body[data-demo="eyes"] .waverow { flex-wrap: wrap; }
+  body[data-demo="connect-four"] .stage { grid-template-columns: minmax(0,1fr); }
+  body[data-demo="connect-four"] .brain { height: 520px; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
