@@ -149,6 +149,7 @@ export class ParrotAudio {
       const AC = window.AudioContext || window.webkitAudioContext;
       this.ctx = new AC({ sampleRate: RATE });
       this.gain = this.ctx.createGain(); this.gain.gain.value = 0.9; this.gain.connect(this.ctx.destination);
+      this.outA = this.ctx.createAnalyser(); this.outA.fftSize = 4096; this.gain.connect(this.outA); this.outBuf = new Float32Array(4096); this.outPrev = 0; // (what the page plays: its own voice's copy for the ear)
     }
     if (this.ctx.state !== 'running') await this.ctx.resume();
     return this.ctx.state === 'running';
@@ -256,6 +257,12 @@ export class ParrotAudio {
     return this.said(this.speaking, ch.length / rate / speed);
   }
 
+  /** Its voice stops at once (a voice came in over a word it said by itself, as a bird stops calling). */
+  stopVoice() {
+    try { this.speaking?.node?.stop(); } catch (e) { /* already ended */ }
+    this.speaking = null; this.voiceUntil = performance.now() - 300;
+  }
+
   /** A word said without a sound (the page has none for it): the beak opens and closes once a syllable,
    *  about 180 ms each, with no sound played. */
   mouth(word) {
@@ -264,6 +271,17 @@ export class ParrotAudio {
     for (let s = 0; s < syl; s++) for (let i = 0; i < 18; i++) env.push(Math.sin(Math.PI * i / 18) ** 0.8 * 0.8);
     this.speaking = { start: performance.now(), env, node: null };
     return this.speaking;
+  }
+
+  /** What the page played over the last moments (the root mean square of its output): the copy of its own voice
+   *  that the ear compares what it hears with (the larger of this moment's and the last, the way to the ear takes time). */
+  outLevel() {
+    if (!this.outA) return 0;
+    this.outA.getFloatTimeDomainData(this.outBuf);
+    let e = 0; for (let i = 0; i < this.outBuf.length; i++) e += this.outBuf[i] * this.outBuf[i];
+    const now = Math.sqrt(e / this.outBuf.length), level = Math.max(now, this.outPrev);
+    this.outPrev = now;
+    return level;
   }
 
   /** The voice's loudness now, 0 to 1 (the beak opens with it). */

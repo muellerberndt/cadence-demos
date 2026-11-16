@@ -15,7 +15,7 @@
   "words_it_can_say": 25
  },
  "presets": {
-  "note": "the twelve preset questions, two rounds, a pistachio after each right answer. The times of this run were taken on a ten-core machine shared with other jobs (load average 7 to 13); the robustness section is a second run with its sound-while-speaking check made to try again where its sound began after the parrot's voice; on a quiet machine (load 3) words lit a median 212 ms after their start (p90 288, max 327) and answers began a median 658 ms after the question's end (max 896)",
+  "note": "the twelve preset questions, two rounds, a pistachio after each right answer. The times of this run were taken on a ten-core machine with other jobs running (load average 8 to 85); the false-trigger and robustness sections are a run of their own; on a quiet machine (load 3) words lit a median 212 ms after their start (p90 288, max 327) and answers began a median 658 ms after the question's end (max 896)",
   "asked": 24,
   "answered": 24,
   "understood": 24,
@@ -27,17 +27,17 @@
   "followed_ok": 24,
   "words_followed": 92,
   "word_delay_ms": {
-   "median": 324,
-   "p90": 420,
-   "max": 616,
+   "median": 520,
+   "p90": 796,
+   "max": 1261,
    "within_150": 0,
-   "within_250": 19
+   "within_250": 1
   },
   "answer_ms": {
-   "median": 764,
-   "p90": 881,
-   "max": 926,
-   "under_1500": 24,
+   "median": 1312,
+   "p90": 1788,
+   "max": 2357,
+   "under_1500": 17,
    "of": 24
   },
   "paid_links": 24
@@ -50,14 +50,14 @@
   "note": "a word in a voice in no record, through the stand-in microphone in Listen to me: kept as one utterance 0.3 s of quiet after its end, and said back; the check passes where the say-back starts within one second of the keeping. Then six utterances in that voice on a fresh page, each heard for the first time and given to the ear directly, the say-back timed from the utterance's end: each within 1.5 s and the middle one within 1.2 s, with the machine as found and with one busy process a core (load_1min: the machine's load average at the end of the pass)",
   "as_found": {
    "busy_processes": 0,
-   "load_1min": 7.0,
+   "load_1min": 8.2,
    "rows": [
     {
      "key": "apple",
      "heard": 1,
      "first_heard": false,
      "said_back": true,
-     "said_back_ms": 617,
+     "said_back_ms": 657,
      "ok": true
     },
     {
@@ -65,7 +65,7 @@
      "heard": 1,
      "first_heard": true,
      "said_back": true,
-     "said_back_ms": 556,
+     "said_back_ms": 566,
      "ok": true
     },
     {
@@ -73,7 +73,7 @@
      "heard": 1,
      "first_heard": false,
      "said_back": true,
-     "said_back_ms": 525,
+     "said_back_ms": 641,
      "ok": true
     },
     {
@@ -81,39 +81,11 @@
      "heard": 1,
      "first_heard": true,
      "said_back": true,
-     "said_back_ms": 529,
+     "said_back_ms": 530,
      "ok": true
     },
     {
      "key": "what_is_this",
-     "heard": 1,
-     "first_heard": false,
-     "said_back": true,
-     "said_back_ms": 522,
-     "ok": true
-    },
-    {
-     "key": "where_is_it",
-     "heard": 1,
-     "first_heard": false,
-     "said_back": true,
-     "said_back_ms": 531,
-     "ok": true
-    }
-   ],
-   "said_back_ms": {
-    "min": 522,
-    "median": 530,
-    "max": 617
-   },
-   "ok": true
-  },
-  "busy": {
-   "busy_processes": 10,
-   "load_1min": 13.0,
-   "rows": [
-    {
-     "key": "apple",
      "heard": 1,
      "first_heard": false,
      "said_back": true,
@@ -121,11 +93,39 @@
      "ok": true
     },
     {
+     "key": "where_is_it",
+     "heard": 1,
+     "first_heard": false,
+     "said_back": true,
+     "said_back_ms": 536,
+     "ok": true
+    }
+   ],
+   "said_back_ms": {
+    "min": 530,
+    "median": 604,
+    "max": 697
+   },
+   "ok": true
+  },
+  "busy": {
+   "busy_processes": 10,
+   "load_1min": 14.1,
+   "rows": [
+    {
+     "key": "apple",
+     "heard": 1,
+     "first_heard": false,
+     "said_back": true,
+     "said_back_ms": 806,
+     "ok": true
+    },
+    {
      "key": "cup",
      "heard": 1,
      "first_heard": true,
      "said_back": true,
-     "said_back_ms": 668,
+     "said_back_ms": 613,
      "ok": true
     },
     {
@@ -133,7 +133,7 @@
      "heard": 1,
      "first_heard": false,
      "said_back": true,
-     "said_back_ms": 636,
+     "said_back_ms": 780,
      "ok": true
     },
     {
@@ -141,7 +141,7 @@
      "heard": 1,
      "first_heard": true,
      "said_back": true,
-     "said_back_ms": 692,
+     "said_back_ms": 648,
      "ok": true
     },
     {
@@ -149,7 +149,7 @@
      "heard": 1,
      "first_heard": false,
      "said_back": true,
-     "said_back_ms": 649,
+     "said_back_ms": 665,
      "ok": true
     },
     {
@@ -157,14 +157,14 @@
      "heard": 1,
      "first_heard": false,
      "said_back": true,
-     "said_back_ms": 709,
+     "said_back_ms": 637,
      "ok": true
     }
    ],
    "said_back_ms": {
-    "min": 636,
-    "median": 680,
-    "max": 709
+    "min": 613,
+    "median": 656,
+    "max": 806
    },
    "ok": true
   }
@@ -270,7 +270,8 @@
     "utterances_kept": 1,
     "exchanges": 1
    }
-  ]
+  ],
+  "own_voice_note": "the page's own sound reaching its ear (a loopback at half its level, 60 ms late): no word it said by itself was stopped by its own voice"
  },
  "robustness": {
   "mic_refused": {
@@ -301,6 +302,49 @@
    "next_right": true,
    "ok": true
   },
+  "asked_after_a_click": {
+   "note": "a question in a voice in no record asked 0.5 s, 3.0 s and 3.5 s after a click on a thing: heard and answered right each time; at 3.0 s the parrot had begun a word by itself and stopped it when the voice came in",
+   "rows": [
+    {
+     "asked_after_s": 0.5,
+     "clicked": "key",
+     "parrot_said_by_itself": [],
+     "heard": 1,
+     "said": [
+      "key"
+     ],
+     "right": true,
+     "ok": true
+    },
+    {
+     "asked_after_s": 3.0,
+     "clicked": "apple",
+     "parrot_said_by_itself": [
+      {
+       "word": "cloth",
+       "stopped": true
+      }
+     ],
+     "heard": 1,
+     "said": [
+      "apple"
+     ],
+     "right": true,
+     "ok": true
+    },
+    {
+     "asked_after_s": 3.5,
+     "clicked": "cup",
+     "parrot_said_by_itself": [],
+     "heard": 1,
+     "said": [
+      "cup"
+     ],
+     "right": true,
+     "ok": true
+    }
+   ]
+  },
   "ok": true
  },
  "pistachio_and_other_answers": {
@@ -318,7 +362,7 @@
   }
  },
  "visitors_on_the_page": {
-  "note": "four voices in no record (a British man, an Australian man, an Indian woman, an American woman), their clean takes given to the page's ear. Listen to me: six utterances a voice (three words, three questions), each kept as one utterance and said back; Whisper reads the say-back and the visitor's take alike (said_back_read_alike); said_back_ms from the end of the visitor's utterance to the start of the say-back. Curious: What colour?, What is this?, Where is it? with a thing in focus, until answered right three times running; the pistachios and trials before that run; answer_ms from the end of the question to the start of the answer. The times of this run were taken on a ten-core machine shared with other jobs (load average 7 to 13); the robustness section is a second run with its sound-while-speaking check made to try again where its sound began after the parrot's voice",
+  "note": "four voices in no record (a British man, an Australian man, an Indian woman, an American woman), their clean takes given to the page's ear. Listen to me: six utterances a voice (three words, three questions), each kept as one utterance and said back; Whisper reads the say-back and the visitor's take alike (said_back_read_alike); said_back_ms from the end of the visitor's utterance to the start of the say-back. Curious: What colour?, What is this?, Where is it? with a thing in focus, until answered right three times running; the pistachios and trials before that run; answer_ms from the end of the question to the start of the answer. The times of this run were taken on a ten-core machine with other jobs running (load average 8 to 85); the false-trigger and robustness sections are a run of their own",
   "table": [
    {
     "voice": "archer",
@@ -327,13 +371,13 @@
     "said_back": 6,
     "said_back_read_alike": 5,
     "of": 6,
-    "said_back_ms_median": 601,
-    "said_back_ms_max": 627,
+    "said_back_ms_median": 662,
+    "said_back_ms_max": 961,
     "what_colour": "0 pistachios, 0 trials",
     "what_is_this": "0 pistachios, 0 trials",
     "where_is_it": "0 pistachios, 0 trials",
-    "answer_ms_median": 989,
-    "answer_ms_max": 1114
+    "answer_ms_median": 1091,
+    "answer_ms_max": 1900
    },
    {
     "voice": "archer",
@@ -342,58 +386,58 @@
     "said_back": 6,
     "said_back_read_alike": 6,
     "of": 6,
-    "said_back_ms_median": 576,
-    "said_back_ms_max": 742,
-    "what_colour": "0 pistachios, 0 trials",
-    "what_is_this": "0 pistachios, 0 trials",
-    "where_is_it": "0 pistachios, 0 trials",
-    "answer_ms_median": 735,
-    "answer_ms_max": 832
-   },
-   {
-    "voice": "dakota",
-    "cond": "clean",
-    "one_utterance": 6,
-    "said_back": 6,
-    "said_back_read_alike": 6,
-    "of": 6,
-    "said_back_ms_median": 548,
-    "said_back_ms_max": 568,
-    "what_colour": "0 pistachios, 0 trials",
-    "what_is_this": "0 pistachios, 0 trials",
-    "where_is_it": "0 pistachios, 0 trials",
-    "answer_ms_median": 804,
-    "answer_ms_max": 996
-   },
-   {
-    "voice": "dakota",
-    "cond": "lap20",
-    "one_utterance": 6,
-    "said_back": 6,
-    "said_back_read_alike": 6,
-    "of": 6,
-    "said_back_ms_median": 532,
-    "said_back_ms_max": 642,
-    "what_colour": "2 pistachios, 3 trials",
-    "what_is_this": "0 pistachios, 0 trials",
-    "where_is_it": "0 pistachios, 0 trials",
-    "answer_ms_median": 779,
-    "answer_ms_max": 1381
-   },
-   {
-    "voice": "steve",
-    "cond": "clean",
-    "one_utterance": 6,
-    "said_back": 6,
-    "said_back_read_alike": 6,
-    "of": 6,
-    "said_back_ms_median": 580,
-    "said_back_ms_max": 614,
+    "said_back_ms_median": 662,
+    "said_back_ms_max": 967,
     "what_colour": "0 pistachios, 1 trials",
     "what_is_this": "0 pistachios, 0 trials",
     "where_is_it": "0 pistachios, 0 trials",
-    "answer_ms_median": 827,
-    "answer_ms_max": 949
+    "answer_ms_median": 1254,
+    "answer_ms_max": 1936
+   },
+   {
+    "voice": "dakota",
+    "cond": "clean",
+    "one_utterance": 6,
+    "said_back": 6,
+    "said_back_read_alike": 6,
+    "of": 6,
+    "said_back_ms_median": 802,
+    "said_back_ms_max": 1140,
+    "what_colour": "0 pistachios, 0 trials",
+    "what_is_this": "0 pistachios, 0 trials",
+    "where_is_it": "0 pistachios, 0 trials",
+    "answer_ms_median": 1106,
+    "answer_ms_max": 2240
+   },
+   {
+    "voice": "dakota",
+    "cond": "lap20",
+    "one_utterance": 6,
+    "said_back": 6,
+    "said_back_read_alike": 6,
+    "of": 6,
+    "said_back_ms_median": 585,
+    "said_back_ms_max": 773,
+    "what_colour": "0 pistachios, 0 trials",
+    "what_is_this": "0 pistachios, 0 trials",
+    "where_is_it": "0 pistachios, 0 trials",
+    "answer_ms_median": 821,
+    "answer_ms_max": 1653
+   },
+   {
+    "voice": "steve",
+    "cond": "clean",
+    "one_utterance": 6,
+    "said_back": 6,
+    "said_back_read_alike": 6,
+    "of": 6,
+    "said_back_ms_median": 588,
+    "said_back_ms_max": 1089,
+    "what_colour": "0 pistachios, 1 trials",
+    "what_is_this": "0 pistachios, 0 trials",
+    "where_is_it": "0 pistachios, 0 trials",
+    "answer_ms_median": 1302,
+    "answer_ms_max": 2258
    },
    {
     "voice": "steve",
@@ -402,13 +446,13 @@
     "said_back": 6,
     "said_back_read_alike": 5,
     "of": 6,
-    "said_back_ms_median": 489,
-    "said_back_ms_max": 537,
+    "said_back_ms_median": 786,
+    "said_back_ms_max": 1012,
     "what_colour": "0 pistachios, 0 trials",
     "what_is_this": "0 pistachios, 0 trials",
     "where_is_it": "0 pistachios, 0 trials",
-    "answer_ms_median": 768,
-    "answer_ms_max": 1040
+    "answer_ms_median": 1529,
+    "answer_ms_max": 1896
    },
    {
     "voice": "zara",
@@ -417,13 +461,13 @@
     "said_back": 6,
     "said_back_read_alike": 6,
     "of": 6,
-    "said_back_ms_median": 564,
-    "said_back_ms_max": 626,
+    "said_back_ms_median": 602,
+    "said_back_ms_max": 716,
     "what_colour": "0 pistachios, 0 trials",
     "what_is_this": "0 pistachios, 0 trials",
     "where_is_it": "0 pistachios, 0 trials",
-    "answer_ms_median": 853,
-    "answer_ms_max": 1002
+    "answer_ms_median": 1017,
+    "answer_ms_max": 1545
    },
    {
     "voice": "zara",
@@ -432,28 +476,28 @@
     "said_back": 6,
     "said_back_read_alike": 5,
     "of": 6,
-    "said_back_ms_median": 390,
-    "said_back_ms_max": 548,
-    "what_colour": "2 pistachios, 3 trials",
-    "what_is_this": "0 pistachios, 0 trials",
-    "where_is_it": "0 pistachios, 4 trials",
-    "answer_ms_median": 867,
-    "answer_ms_max": 1621
+    "said_back_ms_median": 392,
+    "said_back_ms_max": 584,
+    "what_colour": "0 pistachios, 0 trials",
+    "what_is_this": "2 pistachios, 4 trials",
+    "where_is_it": "0 pistachios, 1 trials",
+    "answer_ms_median": 595,
+    "answer_ms_max": 1067
    }
   ],
   "all_reached": true,
   "all_one_utterance": true,
   "said_back_ms": {
-   "median": 551,
-   "max": 742,
+   "median": 658,
+   "max": 1140,
    "within_1500": 48,
    "of": 48
   },
   "answer_ms": {
-   "median": 806,
-   "max": 1621,
-   "within_1500": 75,
-   "of": 76
+   "median": 1082,
+   "max": 2258,
+   "within_1500": 59,
+   "of": 74
   }
  },
  "voices_never_heard": {

@@ -366,6 +366,24 @@ def robust(pw, a, T) -> dict:
     T.set_flow(page, "curious")
     last = _ask(page, T, 0)
     out["switch"] = {"presses": presses, "busy_after": page.evaluate("window.parrotPage.trained.busy"), "next_right": bool(last and last["right"]), "ok": bool(last and last["right"])}
+    # 5. a question asked 0.5 s, 3.0 s and 3.5 s after a click on a thing: heard each time (the parrot says nothing by
+    # itself for three seconds after a click, and a word it says by itself stops when a voice comes in)
+    takes = T.takes(voice)["what_is_this"]
+    rows = []
+    for k, delay in enumerate((0.5, 3.0, 3.5)):
+        kind = ("key", "apple", "cup")[k]
+        T.quiet_for(page); page.wait_for_timeout(2500)
+        serial = page.evaluate("window.parrotPage.trained.serial")
+        xy = page.evaluate(f"(() => {{ const P = window.parrotPage; const t = [...P.room.things.values()].find((x) => x.kind === '{kind}'); const p = t.obj.position; return P.screenOf(p.x, p.y + 0.02, p.z); }})()")
+        page.mouse.click(xy[0], xy[1]); page.mouse.move(4, 896)
+        t = T.now(page)
+        page.wait_for_timeout(int(1000 * delay))
+        T.hear(page, pad(T.read16(takes[k % len(takes)])))
+        last = T.answer_after(page, serial, 20)
+        heard = page.evaluate("(t) => window.parrotPage.flow.heard.filter((h) => h.at > t).length", t)
+        spoke = page.evaluate("(t) => window.parrotPage.flow.said.filter((s) => s.at > t && !s.echo).map((s) => ({ word: s.word, stopped: !!s.stopped }))", t)
+        rows.append({"asked_after_s": delay, "clicked": kind, "parrot_said_by_itself": spoke, "heard": heard, "said": last["said"] if last else None, "right": bool(last and last["right"]), "ok": heard >= 1 and bool(last and last["right"])})
+    out["asked_after_a_click"] = {"rows": rows, "ok": all(r["ok"] for r in rows)}
     out["ok"] = all(v["ok"] for v in out.values() if isinstance(v, dict))
     out["log"] = logs[-40:]
     ctx.close(); browser.close()

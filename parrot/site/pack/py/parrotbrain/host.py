@@ -53,6 +53,7 @@ ONSET, STAY = 2.5, 1.5  # nats above the room's level at which an utterance begi
 OWN_TAIL = 3     # moments after its own voice in which a sound counts as its own (the room's echo of it)
 ROOM = 256  # the slots a memory keeps free for a visit's sounds beyond the saved memory it starts from
 SHORTEST = 8  # frames (80 ms): the least a word stands above the room
+FOREIGN, FOREIGN_FRAMES, ECHO_RATE = 2.0, 3, 0.1  # a voice that is not its own: this far (log power) above the echo of its own voice it expects, for 30 ms, stops a word it says by itself; the echo is learned this fast a moment
 VOICED = 0.15    # the least share of an utterance's loud frames that repeat at a voice's pitch (speech reads 0.19 to 1, also in a noisy room; a cough, a breath, typing, a fan read 0)
 
 
@@ -280,6 +281,14 @@ class Host:
         self.follower = Follower(self.mem)
         self.spotted: list = []  # the words known in the utterance being heard, each as it was spoken
         self.echo = None         # in "listen": the sound just heard, to say back (slot, moment)
+        self.calling = False     # a word it is saying by itself (it stops for a voice that comes in, as a bird stops calling)
+        self.echo_gain = None    # how loud its own voice comes back to the ear against the voice it plays (log power), learned while it speaks
+        self.foreign_run = 0     # frames running of a voice over its own that its own voice does not explain
+        self.stopped = False     # it stopped its word this moment (the page stops the sound)
+        self.stopped_until = 0   # after it stops, the page's sign of its own voice is late: the ear does not take it for its own
+        self.own_log = None      # its own voice this moment as the page plays it (log power), or None
+        self.own_ref = None      # its own voice's last level and the moment it was heard
+        self.own_since = 0       # the moment its own voice began
         self.view_due = None     # the moment the memory's picture goes to the page after a change (a large reply, kept out of the moment a sound is answered in)
         self.view_shown = False  # whether the page showed the memory's picture at the last moment
         self.exchange = None     # a sound heard and answered: what a pistachio pays (the sound, its meaning, the sounds said)
@@ -518,6 +527,25 @@ class Host:
             out.append(row)
         return out
 
+    def _foreign(self, e: float, voiced_now: bool) -> bool:
+        """A frame of a voice that its own voice does not explain: voiced, and FOREIGN above the echo of its
+        own voice it expects (its voice as the page plays it, `own_level`, and the echo it learned while it
+        spoke); with its voice silent this moment, any voiced sound above the room."""
+        if not voiced_now:
+            return False
+        own = self.own_log
+        if own is None and self.own_ref is not None and self.t - self.own_ref[1] <= OWN_TAIL + 2:
+            own = self.own_ref[0]  # just after its voice: its echo dies away, at most as loud as its voice was
+        if own is None:
+            return True
+        if self.echo_gain is None:
+            return False  # (no echo learned yet: it cannot tell its voice from another)
+        return e > own + self.echo_gain + FOREIGN
+
+    def _stopped_now(self) -> bool:
+        stopped, self.stopped = self.stopped, False
+        return stopped
+
     def _view(self, changed: bool, shown: bool) -> dict | None:
         """The memory's picture for the page, while the page shows it (`shown`): a large reply, sent when it is
         first shown, two and a half seconds after a change (once the sound is said back or answered) and every
@@ -600,7 +628,13 @@ class Host:
         if meta.get("mode") != self.mode:  # another way of attending: the drive to call begins low (it listens first)
             self.drive = min(self.drive, 0.3)
         self.mode = meta.get("mode")
-        if meta.get("own_voice"):  # the page is playing its voice (an answer said with a kept sound): what the ear hears at that moment is its own
+        level = float(meta.get("own_level") or 0.0)  # what the page played this moment (its output's root mean square): the efference copy
+        self.own_log = 2.0 * math.log(level) if level > 1e-4 else None
+        if self.own_log is not None:
+            if self.own_ref is None or self.t - self.own_ref[1] > 1:
+                self.own_since = self.t  # its voice began (the ear's frames of its first moments hold little of it yet)
+            self.own_ref = (self.own_log, self.t)  # (its voice's last level: the echo of its end goes on a little after it)
+        if meta.get("own_voice") and self.t >= self.stopped_until:  # the page is playing its voice (an answer said with a kept sound): what the ear hears at that moment is its own
             self.saying = max(self.saying, OWN_TAIL)
         left, right = arrays["left"], arrays["right"]
         proprio = arrays.get("proprio", np.zeros(22, np.float32))
@@ -611,6 +645,7 @@ class Host:
         frames = mel.reshape(-1, 40) if mel is not None and mel.size % 40 == 0 and mel.size else np.full((10, 40), floor, np.float32)
         pcm = arrays.get("pcm")
         chunks = pcm.reshape(-1, 160) if pcm is not None and pcm.size == len(frames) * 160 else [None] * len(frames)
+        voiced_now = pcm is not None and pcm.size >= 512 and self.calling and voiced(np.asarray(pcm, np.float64)) >= VOICED  # (read only while it calls)
         self.heard = np.concatenate([self.heard, frames])[-800:]
         sl, sr = self._salience(L), self._salience(R)
         yaw = _value("head_yaw", float(proprio[0]))
@@ -709,6 +744,15 @@ class Host:
                 self.noise = np.logaddexp(self.noise + math.log(0.97), f.astype(np.float64) + math.log(0.03))
             loud = e > self.floor + (STAY if self.sound else ONSET)
             self.since_loud = 0 if loud else self.since_loud + 1
+            foreign = loud and self.saying > 0 and self.calling and self._foreign(e, voiced_now)
+            if foreign:  # a voice coming in over a word it says by itself: after 30 ms of it, it stops
+                self.foreign_run += 1
+                if self.foreign_run >= FOREIGN_FRAMES:
+                    self.saying, self.calling, self.stopped, self.spoiled = 0, False, True, False
+                    self.stopped_until = self.t + OWN_TAIL + 1
+                    self.last_said, self.unpaid = None, None
+            else:
+                self.foreign_run = 0
             if loud and self.saying > 0:
                 self.spoiled = True  # the visitor spoke while the parrot was making a sound
             elif self.since_loud >= 25 and not self.sound:
@@ -787,6 +831,11 @@ class Host:
         if self.exchange is not None and self.t - self.exchange["t"] >= 150:  # an answer no pistachio followed
             self.close_exchange()
         voice, call = None, None
+        if self.saying <= 1:
+            self.calling = False
+        if self.saying > 0 and self.own_log is not None and self.foreign_run == 0 and not self.stopped and self.t - self.own_since >= 2:
+            gap = float(np.max(np.log(np.exp(frames.astype(np.float64)).sum(axis=1)))) - self.own_log  # its own voice as the ear gets it at its loudest this moment, against the loudest it plays
+            self.echo_gain = gap if self.echo_gain is None else self.echo_gain + ECHO_RATE * (gap - self.echo_gain)
         free = meta.get("voice_ok") and self.saying <= 0 and not self.sound
         if self.echo and (self.mode != "listen" or self.t - self.echo[1] > 30):
             self.echo = None
@@ -809,6 +858,7 @@ class Host:
                     self.unpaid = (pick["slot"], self.recalled["kind"], self.t)
             self.last_said = (pick["id"], self.t, self.focus_kind, False)
             self.saying = int(math.ceil(len(voice) / 10)) + 2
+            self.calling, self.foreign_run = True, 0
             # saying relaxes its boredom, a word said well the most
             relief = 0.4 + 0.5 * (self.last_match or 0.0) if pick.get("source") == "you" else 0.6
             self.drive = max(0.0, self.drive - relief - 0.2)
@@ -841,7 +891,7 @@ class Host:
                 "words": len(self.mem.sayable()),
                 "memory": self._view(learned is not None or linked is not None, meta.get("memory_shown", True) is not False),
                 "repertoire": None if changed is None else self.repertoire_list(changed), "sayable": None if changed is None else [f"you-{s}" for s in self._sayable_sig],
-                "paid": {k: round(v, 2) for k, v in self.paid.items() if v}, "linked": linked}
+                "paid": {k: round(v, 2) for k, v in self.paid.items() if v}, "linked": linked, "stop_voice": self._stopped_now()}
 
     def handle(self, message: dict[str, Any]) -> dict[str, Any]:
         cmd = message.get("command")

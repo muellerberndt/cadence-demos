@@ -282,7 +282,7 @@ async function moment(now) {
     // while the trained brain hears a question and answers, the hearing layer's calls wait
     const calls = voiceOk && !(state.trained && (trained.busy || now < trained.quietUntil));
     // how it attends (flow.mode), and the page's knowledge of its own voice sounding (so its ear does not take its voice for yours)
-    const attend = state.trained ? { mode: flow.mode, own_voice: audio.ownVoice(now), hold: flow.asking || now - (flow.pointedAt || -1e9) < POINTED_HOLD_MS } : {}; // (hold: a question is about to sound, or you just pointed at a thing and may ask about it, so it says nothing by itself)
+    const attend = state.trained ? { mode: flow.mode, own_voice: audio.ownVoice(now), own_level: audio.outLevel() /* what the page played over the time the ear's frames of this moment cover: the efference copy */, hold: flow.asking || now - (flow.pointedAt || -1e9) < POINTED_HOLD_MS } : {}; // (hold: a question is about to sound, or you just pointed at a thing and may ask about it, so it says nothing by itself)
     reply = await brain.call('step', { meta: { t: state.moment, reward, voice_ok: calls, cue, things: room.things.size, focus_kind: focusKind, scene, learn: true, viz: !!state.composed && state.moment % VIZ_EVERY === 0, memory_shown: state.tab === 'tab-memory', ...attend, ...(op ? { meaning: op.meta } : {}) }, arrays: { left, right, proprio: pro, mel: sound.mel, audio: sound.audio, pcm: sound.pcm } },
       [left.buffer, right.buffer, pro.buffer, sound.mel.buffer, sound.audio.buffer, sound.pcm.buffer]);
   } catch (error) { state.pending = false; op?.reject(error); setStatus(`The brain stopped: ${error.message}`, 'error'); state.brainReady = false; return; }
@@ -312,6 +312,11 @@ async function moment(now) {
     const what = said ? (said.source === 'you' ? 'a sound learned from you' : said.source === 'recording' ? `a ${said.tag}` : 'a babble') : 'a sound';
     if (spoken) { ui.voiceNote.textContent = `${what}, ${(spoken.env.length / 100).toFixed(1)} s`; state.saying = said?.id; markChip(said?.id); }
     if (spoken && state.trained && said?.source === 'you') saidSound(said, !!own);
+  }
+  if (reply.stop_voice) { // a voice came in over a word it said by itself: it stops, and listens
+    audio.stopVoice(); bubble(null); flow.stopped = (flow.stopped || []).concat([{ at: performance.now(), id: flow.said[flow.said.length - 1]?.id || null }]).slice(-20);
+    if (flow.said.length) flow.said[flow.said.length - 1].stopped = true;
+    console.log('[voice] a voice came in: it stops its word');
   }
   if (reply.drive !== undefined) ui.driveLevel.style.width = `${Math.round(reply.drive * 100)}%`;
   teachUpdate(reply);
@@ -1073,16 +1078,7 @@ function showMind(mind, focusId) {
   }
   const w = mind.voice?.word;
   const link = w ? (state.lastReply?.knows || []).find((k) => k.kind === w) : null;
-  mindEl.voice.textContent = '';
-  if (w) {
-    mindEl.voice.append('Its voice is ready to say ');
-    const b = document.createElement('b'); b.textContent = w; mindEl.voice.append(b, ` (${mind.voice.level.toFixed(2)})`);
-    if (link && soundPcm.get(link.id)) {
-      const btn = document.createElement('button'); btn.type = 'button'; btn.textContent = 'hear it';
-      btn.addEventListener('click', async () => { await audio.unlock(); const k = soundPcm.get(link.id); if (k) audio.speakPcm(k.pcm, k.rate); });
-      mindEl.voice.append(btn);
-    }
-  }
+  mindEl.voice.textContent = ''; // (the word its voice neurons lean to during a look is not said: the page shows only words said)
   const kind = t ? t.kind : 'thing';
   mindEl.outside.textContent = `Outside its state: the written word (it never sees letters); the sound of the word, which the page keeps in its own sound memory${link ? `, linked to the ${kind}` : ''}.`;
 }
